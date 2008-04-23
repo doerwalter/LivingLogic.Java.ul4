@@ -36,6 +36,7 @@ public class Renderer
 		protected int r2;
 		protected int r3;
 		protected int r4;
+		protected int r5;
 		protected String arg;
 		protected int jump;
 		
@@ -71,7 +72,7 @@ public class Renderer
 		
 		public Opcode(String name, int r1, int r2, int r3)
 		{
-			this(name, r1, r2, r3, -1, null);
+			this(name, r1, r2, r3, null);
 		}
 		
 		public Opcode(String name, int r1, int r2, int r3, String arg)
@@ -83,14 +84,25 @@ public class Renderer
 		{
 			this(name, r1, r2, r3, r4, null);
 		}
-
+		
 		public Opcode(String name, int r1, int r2, int r3, int r4, String arg)
+		{
+			this(name, r1, r2, r3, r4, -1, arg);
+		}
+
+		public Opcode(String name, int r1, int r2, int r3, int r4, int r5)
+		{
+			this(name, r1, r2, r3, r4, r5, null);
+		}
+
+		public Opcode(String name, int r1, int r2, int r3, int r4, int r5, String arg)
 		{
 			this.name = name;
 			this.r1 = r1;
 			this.r2 = r2;
 			this.r3 = r3;
 			this.r4 = r4;
+			this.r5 = r5;
 			this.arg = arg;
 			this.jump = -1;
 		}
@@ -258,20 +270,6 @@ public class Renderer
 					continue;
 				}
 			}
-			else if (code.name.equals("foritems"))
-			{
-				Iterator<Object> iterator = new MapItemIterator((Map)reg[code.r1]);
-				if (iterator.hasNext())
-				{
-					variables.put(code.arg, iterator.next());
-					iterators.add(new IteratorStackEntry(code.arg, pc, iterator));
-				}
-				else
-				{
-					pc = code.jump+1;
-					continue;
-				}
-			}
 			else if (code.name.equals("endfor"))
 			{
 				IteratorStackEntry entry = iterators.getLast();
@@ -313,6 +311,26 @@ public class Renderer
 			else if (code.name.equals("and"))
 			{
 				reg[code.r1] = (Utils.getBool(reg[code.r2]) && Utils.getBool(reg[code.r3])) ? Boolean.TRUE : Boolean.FALSE;
+			}
+			else if (code.name.equals("add"))
+			{
+				reg[code.r1] = Utils.add(reg[code.r2], reg[code.r3]);
+			}
+			else if (code.name.equals("sub"))
+			{
+				reg[code.r1] = Utils.sub(reg[code.r2], reg[code.r3]);
+			}
+			else if (code.name.equals("mul"))
+			{
+				reg[code.r1] = Utils.mul(reg[code.r2], reg[code.r3]);
+			}
+			else if (code.name.equals("truediv"))
+			{
+				reg[code.r1] = Utils.truediv(reg[code.r2], reg[code.r3]);
+			}
+			else if (code.name.equals("floordiv"))
+			{
+				reg[code.r1] = Utils.floordiv(reg[code.r2], reg[code.r3]);
 			}
 			else if (code.name.equals("mod"))
 			{

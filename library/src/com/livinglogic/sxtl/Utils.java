@@ -22,7 +22,7 @@ class MapItemIterator implements Iterator
 
 	public Object next()
 	{
-		List retVal = new Vector(2);
+		Vector<Object> retVal = new Vector<Object>(2);
 		Map.Entry entry = (Map.Entry)iterator.next();
 		retVal.add(entry.getKey());
 		retVal.add(entry.getValue());
@@ -37,118 +37,225 @@ class MapItemIterator implements Iterator
 
 public class Utils
 {
-	protected static final Integer INTEGER_TRUE = 1;
+	protected static final Integer INTEGER_TRUE = new Integer(1);
 	
-	protected static final Integer INTEGER_FALSE = 0;
+	protected static final Integer INTEGER_FALSE = new Integer(0);
 	
+	public static Object add(Integer arg1, Integer arg2)
+	{
+		return new Integer(arg1.intValue() + arg2.intValue());
+	}
+	
+	public static Object add(Number arg1, Number arg2)
+	{
+		return new Double(arg1.doubleValue() + arg2.doubleValue());
+	}
+	
+	public static Object add(String arg1, String arg2)
+	{
+		return arg1 + arg2;
+	}
+
 	public static Object add(Object arg1, Object arg2)
 	{
-		if (arg1 instanceof Integer)
+		throw new UnsupportedOperationException("Can't add instances of " + arg1.getClass() + " and " + arg2.getClass() + "!");
+	}
+
+	public static Object sub(Integer arg1, Integer arg2)
+	{
+		return new Integer(arg1.intValue() - arg2.intValue());
+	}
+	
+	public static Object sub(Number arg1, Number arg2)
+	{
+		return new Double(arg1.doubleValue() - arg2.doubleValue());
+	}
+
+	public static Object sub(Object arg1, Object arg2)
+	{
+		throw new UnsupportedOperationException("Can't subtract instances of " + arg1.getClass() + " and " + arg2.getClass() + "!");
+	}
+
+	public static Object mul(String arg1, Integer arg2)
+	{
+		return mul(arg2, arg1);
+	}
+
+	public static Object mul(Integer arg1, String arg2)
+	{
+		int count = arg1.intValue();
+		StringBuffer retValBuffer = new StringBuffer(count * arg2.length());
+		for (int i = 0; i < count; i++)
 		{
-			if (arg2 instanceof Integer)
-			{
-				return new Integer(((Integer)arg1).intValue() + ((Integer)arg2).intValue());
-			}
-			else if (arg2 instanceof Double)
-			{
-				return new Double(((Integer)arg1).intValue() + ((Double)arg2).doubleValue());
-			}
+			retValBuffer.append(arg2);
 		}
-		else if (arg1 instanceof Double)
+		return retValBuffer.toString();
+	}
+
+	public static Object mul(Integer arg1, Integer arg2)
+	{
+		return new Integer(arg1.intValue() * arg2.intValue());
+	}
+
+	public static Object mul(Number arg1, Number arg2)
+	{
+		return new Double(arg1.doubleValue() * arg2.doubleValue());
+	}
+
+	public static Object mul(Object arg1, Object arg2)
+	{
+		throw new UnsupportedOperationException("Can't multiply instances of " + arg1.getClass() + " and " + arg2.getClass() + "!");
+	}
+
+	public static Object truediv(Number arg1, Number arg2)
+	{
+		return new Double(arg1.doubleValue() / arg2.doubleValue());
+	}
+
+	public static Object truediv(Object arg1, Object arg2)
+	{
+		throw new UnsupportedOperationException("Can't divide instances of " + arg1.getClass() + " and " + arg2.getClass() + "!");
+	}
+
+	public static Object floordiv(Integer arg1, Integer arg2)
+	{
+		return new Integer(arg1.intValue() / arg2.intValue());
+	}
+
+	public static Object floordiv(Number arg1, Number arg2)
+	{
+		return new Double((int)(arg1.doubleValue() / arg2.doubleValue()));
+	}
+
+	public static Object floordiv(Object arg1, Object arg2)
+	{
+		throw new UnsupportedOperationException("Can't divide instances of " + arg1.getClass() + " and " + arg2.getClass() + "!");
+	}
+
+	public static Object getItem(Map arg1, Object arg2)
+	{
+		return arg1.get(arg2);
+	}
+	
+	public static Object getItem(List arg1, Integer arg2)
+	{
+		int index = arg2.intValue();
+		if (0 > index)
 		{
-			if (arg2 instanceof Integer)
-			{
-				return new Double(((Double)arg1).doubleValue() + ((Integer)arg2).intValue());
-			}
-			else if (arg2 instanceof Double)
-			{
-				return new Double(((Double)arg1).doubleValue() + ((Double)arg2).doubleValue());
-			}
+			index += arg1.size();
 		}
-		throw new RuntimeException("type of " + arg1 + " and " + arg2 + " do not support addition");
+		return arg1.get(index);
+	}
+
+	public static Object getItem(String arg1, Integer arg2)
+	{
+		int index = arg2.intValue();
+		if (0 > index)
+		{
+			index += arg1.length();
+		}
+		return arg1.substring(index, index + 1);
 	}
 
 	public static Object getItem(Object arg1, Object arg2)
 	{
-		if (arg1 instanceof Map)
+		throw new UnsupportedOperationException("Instance of " + arg1.getClass() + " does not support getitem with argument of type " + arg2.getClass() + "!");
+	}
+
+	private static int getSliceStartPos(int sequenceSize, Integer virtualPos)
+	{
+		int retVal;
+		if (null == virtualPos)
 		{
-			return ((Map)arg1).get(arg2);
+			retVal = 0;
 		}
-		else if (arg1 instanceof List)
+		else
 		{
-			int index = ((Integer)arg2).intValue();
-			if (index < 0)
-				index += ((List)arg1).size();
-			return ((List)arg1).get(index);
+			retVal = virtualPos.intValue();
+			if (0 > retVal)
+			{
+				retVal += sequenceSize;
+			}
+			if (0 > retVal)
+			{
+				retVal = 0;
+			}
 		}
-		else if (arg1 instanceof String)
+		return retVal;
+	}
+
+	private static int getSliceEndPos(int sequenceSize, Integer virtualPos)
+	{
+		int retVal;
+		if (null == virtualPos)
 		{
-			int index = ((Integer)arg2).intValue();
-			if (index < 0)
-				index += ((String)arg1).length();
-			return ((String)arg1).substring(index, index + 1);
+			retVal = sequenceSize;
 		}
-		throw new RuntimeException("type of " + arg1 + " does not support getitem()");
+		else
+		{
+			retVal = virtualPos.intValue();
+			if (0 > retVal)
+			{
+				retVal += sequenceSize;
+			}
+			if (sequenceSize < retVal)
+			{
+				retVal = sequenceSize;
+			}
+		}
+		return retVal;
+	}
+
+	public static Object getSlice(List arg1, Integer arg2, Integer arg3)
+	{
+		int size = arg1.size();
+		return arg1.subList(getSliceStartPos(size, arg2), getSliceEndPos(size, arg3));
+	}
+
+	public static Object getSlice(String arg1, Integer arg2, Integer arg3)
+	{
+		int size = arg1.length();
+		return arg1.substring(getSliceStartPos(size, arg2), getSliceEndPos(size, arg3));
 	}
 
 	public static Object getSlice(Object arg1, Object arg2, Object arg3)
 	{
-		int size;
+		throw new UnsupportedOperationException("Instance of " + arg1.getClass() + " does not support getsclice with arguments of type " + arg2.getClass() + " and " + arg3.getClass() + "!");
+	}
 
-		if (arg1 instanceof List)
-			size = ((List)arg1).size();
-		else if (arg1 instanceof String)
-			size = ((String)arg1).length();
-		else
-			throw new RuntimeException("type of " + arg1 + " does not support getslice()");
+	public static boolean getBool(Boolean obj)
+	{
+		return obj.booleanValue();
+	}
 
-		int index1;
-		if (arg2 == null)
-			index1 = 0;
-		else
-		{
-			index1 = ((Integer)arg2).intValue();
-			if (index1 < 0)
-				index1 += size;
-			if (index1 < 0)
-				index1 = 0;
-		}
-		int index2;
-		if (arg3 == null)
-			index2 = size;
-		else
-		{
-			index2 = ((Integer)arg3).intValue();
-			if (index2 < 0)
-				index2 += size;
-			if (index2 > size)
-				index2 = size;
-		}
+	public static boolean getBool(String obj)
+	{
+		return (obj.length() > 0);
+	}
 
-		if (arg1 instanceof List)
-			return ((List)arg1).subList(index1, index2);
-		else
-			return ((String)arg1).substring(index1, index2);
+	public static boolean getBool(Integer obj)
+	{
+		return (obj.intValue() != 0);
+	}
+
+	public static boolean getBool(Double obj)
+	{
+		return (obj.doubleValue() != 0.);
+	}
+
+	public static boolean getBool(Collection obj)
+	{
+		return !obj.isEmpty();
+	}
+
+	public static boolean getBool(Map obj)
+	{
+		return !obj.isEmpty();
 	}
 
 	public static boolean getBool(Object obj)
 	{
-		if (obj == null)
-			return false;
-		else if (obj instanceof Boolean)
-			return ((Boolean)obj).booleanValue();
-		else if (obj instanceof String)
-			return (((String)obj).length() > 0);
-		else if (obj instanceof Integer)
-			return (((Integer)obj).intValue() != 0);
-		else if (obj instanceof Double)
-			return (((Double)obj).doubleValue() != 0.);
-		else if (obj instanceof Collection)
-			return !((Collection)obj).isEmpty();
-		else if (obj instanceof Map)
-			return !((Map)obj).isEmpty();
-		else
-			return false;
+		return false;
 	}
 
 	public static Iterator getForIterator(Object obj)
