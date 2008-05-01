@@ -29,89 +29,10 @@ class IteratorStackEntry
 
 public class Renderer
 {
-	protected static class Opcode
-	{
-		protected String name;
-		protected int r1;
-		protected int r2;
-		protected int r3;
-		protected int r4;
-		protected int r5;
-		protected String arg;
-		protected int jump;
-		
-		public Opcode(String name)
-		{
-			this(name, null);
-		}
-		
-		public Opcode(String name, String arg)
-		{
-			this(name, -1, arg);
-		}
-		
-		public Opcode(String name, int r1)
-		{
-			this(name, r1, null);
-		}
-		
-		public Opcode(String name, int r1, String arg)
-		{
-			this(name, r1, -1, arg);
-		}
-		
-		public Opcode(String name, int r1, int r2)
-		{
-			this(name, r1, r2, null);
-		}
-		
-		public Opcode(String name, int r1, int r2, String arg)
-		{
-			this(name, r1, r2, -1, arg);
-		}
-		
-		public Opcode(String name, int r1, int r2, int r3)
-		{
-			this(name, r1, r2, r3, null);
-		}
-		
-		public Opcode(String name, int r1, int r2, int r3, String arg)
-		{
-			this(name, r1, r2, r3, -1, arg);
-		}
-
-		public Opcode(String name, int r1, int r2, int r3, int r4)
-		{
-			this(name, r1, r2, r3, r4, null);
-		}
-		
-		public Opcode(String name, int r1, int r2, int r3, int r4, String arg)
-		{
-			this(name, r1, r2, r3, r4, -1, arg);
-		}
-
-		public Opcode(String name, int r1, int r2, int r3, int r4, int r5)
-		{
-			this(name, r1, r2, r3, r4, r5, null);
-		}
-
-		public Opcode(String name, int r1, int r2, int r3, int r4, int r5, String arg)
-		{
-			this.name = name;
-			this.r1 = r1;
-			this.r2 = r2;
-			this.r3 = r3;
-			this.r4 = r4;
-			this.r5 = r5;
-			this.arg = arg;
-			this.jump = -1;
-		}
-	}
-
-	private List<Opcode> codes;
+	private List<Template.Opcode> codes;
 	private int pc = 0;
 
-	public Renderer(List<Opcode> codes)
+	public Renderer(List<Template.Opcode> codes)
 	{
 		this.codes = codes;
 		annotate();
@@ -122,7 +43,7 @@ public class Renderer
 		LinkedList<Integer> stack = new LinkedList<Integer>();
 		for (int i = 0; i < codes.size(); ++i)
 		{
-			Opcode code = codes.get(i);
+			Template.Opcode code = codes.get(i);
 			if (code.name.equals("if"))
 			{
 				stack.add(i);
@@ -158,7 +79,7 @@ public class Renderer
 		StringBuilder output = new StringBuilder();
 		while (pc < codes.size())
 		{
-			Opcode code = codes.get(pc);
+			Template.Opcode code = codes.get(pc);
 
 			if (code.name.equals("text"))
 			{
@@ -414,18 +335,19 @@ public class Renderer
 	public static void main(String[] args) throws Exception
 	{
 		int layoutId = Integer.parseInt(args[0]);
-		LinkedList<Opcode> codes = new LinkedList<Opcode>();
+		LinkedList<Template.Opcode> codes = new LinkedList<Template.Opcode>();
 		String name;
 		int r1;
 		int r2;
 		int r3;
 		int r4;
+		int r5;
 		String arg;
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		Connection con = DriverManager.getConnection("jdbc:oracle:thin:@10.10.10.44:1521:DEV3", "ricci", "ll");
 		try
 		{
-			PreparedStatement stmt = con.prepareStatement("select lc_code, lc_r1, lc_r2, lc_r3, lc_r4, lc_arg from layoutcode where lay_id=? order by lc_order");
+			PreparedStatement stmt = con.prepareStatement("select lc_code, lc_r1, lc_r2, lc_r3, lc_r4, lc_r5, lc_arg from layoutcode where lay_id=? order by lc_order");
 			try
 			{
 				stmt.setInt(1, layoutId);
@@ -455,8 +377,13 @@ public class Renderer
 						{
 							r4 = -1;
 						}
+						r5 = rs.getInt("lc_r5");
+						if (rs.wasNull())
+						{
+							r5 = -1;
+						}
 						arg = rs.getString("lc_arg");
-						codes.add(new Opcode(name, r1, r2, r3, r4, arg));
+						codes.add(new Template.Opcode(name, r1, r2, r3, r4, r5, arg, null));
 					}
 				}
 				finally
