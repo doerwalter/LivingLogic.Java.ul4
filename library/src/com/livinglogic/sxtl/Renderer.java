@@ -15,13 +15,13 @@ import java.util.Vector;
 
 class IteratorStackEntry
 {
-	public String iteratorName;
+	public int iteratorRegSpec;
 	public int pc;
 	public Iterator<Object> iterator;
 	
-	public IteratorStackEntry(String iteratorName, int pc, Iterator<Object> iterator)
+	public IteratorStackEntry(int iteratorRegSpec, int pc, Iterator<Object> iterator)
 	{
-		this.iteratorName = iteratorName;
+		this.iteratorRegSpec = iteratorRegSpec;
 		this.pc = pc;
 		this.iterator = iterator;
 	}
@@ -81,9 +81,25 @@ public class Renderer
 		{
 			Template.Opcode code = codes.get(pc);
 
-			if (code.name.equals("text"))
+			if (null == code.name)
 			{
 				output.append(code.arg);
+			}
+			else if (code.name.equals("print"))
+			{
+				output.append(reg[code.r1]);
+			}
+			else if (code.name.equals("loadnone"))
+			{
+				reg[code.r1] = null;
+			}
+			else if (code.name.equals("loadfalse"))
+			{
+				reg[code.r1] = Boolean.FALSE;
+			}
+			else if (code.name.equals("loadtrue"))
+			{
+				reg[code.r1] = Boolean.TRUE;
 			}
 			else if (code.name.equals("loadstr"))
 			{
@@ -93,44 +109,100 @@ public class Renderer
 			{
 				reg[code.r1] = Integer.parseInt(code.arg);
 			}
-			else if (code.name.equals("loadnone"))
+			else if (code.name.equals("loadfloat"))
 			{
-				reg[code.r1] = null;
-			}
-			else if (code.name.equals("loadtrue"))
-			{
-				reg[code.r1] = Boolean.TRUE;
-			}
-			else if (code.name.equals("loadfalse"))
-			{
-				reg[code.r1] = Boolean.FALSE;
+				reg[code.r1] = Double.parseDouble(code.arg);
 			}
 			else if (code.name.equals("loadvar"))
 			{
-				// FIXME Exception
-				// raise SXTLUnknownVariableError(self, text)
 				reg[code.r1] = variables.get(code.arg);
 			}
 			else if (code.name.equals("storevar"))
 			{
-				//raise SXTLVariableExistsError(self, text)
 				variables.put(code.arg, reg[code.r1]);
 			}
 			else if (code.name.equals("addvar"))
 			{
-				//raise SXTLVariableExistsError(self, text)
-				int varInt = ((Integer)variables.get(code.arg)).intValue();
-				int regInt = ((Integer)reg[code.r1]).intValue();
-				variables.put(code.arg, new Integer(varInt + regInt));
+				variables.put(code.arg, Utils.add(variables.get(code.arg), reg[code.r1]));
+			}
+			else if (code.name.equals("subvar"))
+			{
+				variables.put(code.arg, Utils.sub(variables.get(code.arg), reg[code.r1]));
+			}
+			else if (code.name.equals("mulvar"))
+			{
+				variables.put(code.arg, Utils.mul(variables.get(code.arg), reg[code.r1]));
+			}
+			else if (code.name.equals("truedivvar"))
+			{
+				variables.put(code.arg, Utils.truediv(variables.get(code.arg), reg[code.r1]));
+			}
+			else if (code.name.equals("floordivvar"))
+			{
+				variables.put(code.arg, Utils.floordiv(variables.get(code.arg), reg[code.r1]));
+			}
+			else if (code.name.equals("modvar"))
+			{
+				variables.put(code.arg, Utils.mod(variables.get(code.arg), reg[code.r1]));
 			}
 			else if (code.name.equals("delvar"))
 			{
-				//raise SXTLUnknownVariableError(self, text)
 				variables.remove(code.arg);
+			}
+			else if (code.name.equals("for"))
+			{
+				Iterator<Object> iterator = null;
+				if (reg[code.r2] instanceof List)
+				{
+					iterator = ((List)reg[code.r2]).iterator();
+				}
+				else
+				{
+					iterator = ((Map)reg[code.r2]).keySet().iterator();
+				}
+				if (iterator.hasNext())
+				{
+					reg[code.r1] = iterator.next();
+					iterators.add(new IteratorStackEntry(code.r1, pc, iterator));
+				}
+				else
+				{
+					pc = code.jump+1;
+					continue;
+				}
+			}
+			else if (code.name.equals("endfor"))
+			{
+				IteratorStackEntry entry = iterators.getLast();
+				if (entry.iterator.hasNext())
+				{
+					reg[entry.iteratorRegSpec] = entry.iterator.next();
+					pc = entry.pc;
+				}
+				else
+				{
+					iterators.removeLast();
+				}
+			}
+			else if (code.name.equals("if"))
+			{
+				if (!Utils.getBool(reg[code.r1]))
+				{
+					pc = code.jump+1;
+					continue;
+				}
+			}
+			else if (code.name.equals("else"))
+			{
+				pc = code.jump+1;
+				continue;
+			}
+			else if (code.name.equals("endif"))
+			{
+				//Skip to next opcode
 			}
 			else if (code.name.equals("getattr"))
 			{
-				//raise SXTLAttributeError(self, reg1, text)
 				reg[code.r1] = ((Map)reg[code.r2]).get(code.arg);
 			}
 			else if (code.name.equals("getitem"))
@@ -153,65 +225,9 @@ public class Renderer
 			{
 				reg[code.r1] = Utils.getSlice(reg[code.r2], null, null);
 			}
-			else if (code.name.equals("printtext"))
+			else if (code.name.equals("not"))
 			{
-				output.append(String.valueOf(reg[code.r1]).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("'", "&apos;").replace("\"", "&quot;"));
-			}
-			else if (code.name.equals("printattr"))
-			{
-				output.append(String.valueOf(reg[code.r1]).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"));
-			}
-			else if (code.name.equals("printliteral"))
-			{
-				output.append(reg[code.r1]);
-			}
-			else if (code.name.equals("delvar"))
-			{
-				variables.remove(code.arg);
-			}
-			else if (code.name.equals("for"))
-			{
-				Iterator<Object> iterator = null;
-				if (reg[code.r1] instanceof List)
-				{
-					iterator = ((List)reg[code.r1]).iterator();
-				}
-				else
-				{
-					iterator = ((Map)reg[code.r1]).keySet().iterator();
-				}
-				if (iterator.hasNext())
-				{
-					variables.put(code.arg, iterator.next());
-					iterators.add(new IteratorStackEntry(code.arg, pc, iterator));
-				}
-				else
-				{
-					pc = code.jump+1;
-					continue;
-				}
-			}
-			else if (code.name.equals("endfor"))
-			{
-				IteratorStackEntry entry = iterators.getLast();
-				if (entry.iterator.hasNext())
-				{
-					variables.put(entry.iteratorName, entry.iterator.next());
-					pc = entry.pc;
-				}
-				else
-				{
-					variables.remove(entry.iteratorName);
-					iterators.removeLast();
-				}
-			}
-			else if (code.name.equals("contains"))
-			{
-				reg[code.r1] = Utils.contains(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
-			}
-			else if (code.name.equals("notcontains"))
-			{
-				reg[code.r1] = Utils.contains(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
+				reg[code.r1] = Utils.getBool(reg[code.r2]) ? Boolean.FALSE : Boolean.TRUE;
 			}
 			else if (code.name.equals("equals"))
 			{
@@ -221,9 +237,13 @@ public class Renderer
 			{
 				reg[code.r1] = Utils.equals(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
 			}
-			else if (code.name.equals("not"))
+			else if (code.name.equals("contains"))
 			{
-				reg[code.r1] = Utils.getBool(reg[code.r2]) ? Boolean.FALSE : Boolean.TRUE;
+				reg[code.r1] = Utils.contains(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
+			}
+			else if (code.name.equals("notcontains"))
+			{
+				reg[code.r1] = Utils.contains(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
 			}
 			else if (code.name.equals("or"))
 			{
@@ -255,9 +275,7 @@ public class Renderer
 			}
 			else if (code.name.equals("mod"))
 			{
-				int reg2Int = ((Integer)reg[code.r2]).intValue();
-				int reg3Int = ((Integer)reg[code.r3]).intValue();
-				reg[code.r1] = new Integer(reg2Int % reg3Int);
+				reg[code.r1] = Utils.mod(reg[code.r2], reg[code.r3]);
 			}
 			else if (code.name.equals("callfunc0"))
 			{
@@ -265,11 +283,23 @@ public class Renderer
 			}
 			else if (code.name.equals("callfunc1"))
 			{
-				if (code.arg.equals("str"))
+				if (code.arg.equals("xmlescape"))
 				{
-					reg[code.r1] = String.valueOf(reg[code.r2]);
+					reg[code.r1] = Utils.xmlescape(reg[code.r2]);
+				}
+				else if (code.arg.equals("str"))
+				{
+					reg[code.r1] = Utils.toString(reg[code.r2]);
 				}
 				else if (code.arg.equals("int"))
+				{
+					reg[code.r1] = Utils.toInteger(reg[code.r2]);
+				}
+				else if (code.arg.equals("len"))
+				{
+					reg[code.r1] = Integer.valueOf(String.valueOf(reg[code.r2]));
+				}
+				else if (code.arg.equals("enumerate"))
 				{
 					reg[code.r1] = Integer.valueOf(String.valueOf(reg[code.r2]));
 				}
@@ -305,23 +335,6 @@ public class Renderer
 			else if (code.name.equals("callfunc2"))
 			{
 				throw new RuntimeException("No function '" + code.arg + "' defined!");
-			}
-			else if (code.name.equals("if"))
-			{
-				if (!Utils.getBool(reg[code.r1]))
-				{
-					pc = code.jump+1;
-					continue;
-				}
-			}
-			else if (code.name.equals("else"))
-			{
-				pc = code.jump+1;
-				continue;
-			}
-			else if (code.name.equals("endif"))
-			{
-				//Skip to next opcode
 			}
 			else
 			{

@@ -132,6 +132,16 @@ public class Utils
 		throw new UnsupportedOperationException("Can't divide instances of " + arg1.getClass() + " and " + arg2.getClass() + "!");
 	}
 
+	public static Object mod(Integer arg1, Integer arg2)
+	{
+		return new Integer(arg1.intValue() % arg2.intValue());
+	}
+
+	public static Object mod(Object arg1, Object arg2)
+	{
+		throw new UnsupportedOperationException("Can't apply the modulo operator to instances of " + arg1.getClass() + " and " + arg2.getClass() + "!");
+	}
+
 	public static Object getItem(Map arg1, Object arg2)
 	{
 		return arg1.get(arg2);
@@ -258,19 +268,76 @@ public class Utils
 		return false;
 	}
 
+	public static Iterator getForIterator(Collection obj)
+	{
+		return obj.iterator();
+	}
+
+	public static Iterator getForIterator(Map obj)
+	{
+		return obj.keySet().iterator();
+	}
+
 	public static Iterator getForIterator(Object obj)
 	{
-		if (obj instanceof Collection)
-			return ((Collection)obj).iterator();
-		else if (obj instanceof Map)
-			return ((Map)obj).keySet().iterator();
-
-		throw new RuntimeException("type of " + obj + " not iterable");
+		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " does not support iteration!");
 	}
 
 	public static Iterator getForItemsIterator(Object obj)
 	{
 		return new MapItemIterator((Map)obj); 
+	}
+
+	public static Object xmlescape(String obj)
+	{
+		int length = obj.length();
+		StringBuffer sb = new StringBuffer((int)(1.2 * length));
+		for (int offset = 0; offset < length; offset++)
+		{
+			char c = text.charAt(offset);
+			switch (c)
+			{
+				case '<':
+					sb.append("&lt;");
+					break;
+				case '>':
+					sb.append("&gt;");
+					break;
+				case '&':
+					sb.append("&amp;");
+					break;
+				case '\'':
+					sb.append("&apos;");
+					break;
+				case '"':
+					sb.append("&quot;");
+					break;
+				case '\t':
+					sb.append(c);
+					break;
+				case '\n'
+					sb.append(c);
+					break;
+				case '\r'
+					sb.append(c);
+					break;
+				case '\u0085'
+					sb.append(c);
+					break;
+				default:
+					if ((('\u0020' <= c) && (c <= '\u007e')) || ('00A0' <= c))
+						sb.append(c);
+					else
+						sb.append("&#").append((int)character).append(';');	
+					break;
+			}
+		}
+		return sb.toString();
+	}
+
+	public static Object xmlescape(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't xmlescape instance of " + obj.getClass() + "!");
 	}
 
 	public static Object toInteger(Object obj)
