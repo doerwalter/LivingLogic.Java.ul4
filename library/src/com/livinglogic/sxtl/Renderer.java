@@ -151,15 +151,7 @@ public class Renderer
 			}
 			else if (code.name.equals("for"))
 			{
-				Iterator<Object> iterator = null;
-				if (reg[code.r2] instanceof List)
-				{
-					iterator = ((List)reg[code.r2]).iterator();
-				}
-				else
-				{
-					iterator = ((Map)reg[code.r2]).keySet().iterator();
-				}
+				Iterator<Object> iterator = Utils.iterator(reg[code.r2]);
 				if (iterator.hasNext())
 				{
 					reg[code.r1] = iterator.next();
@@ -297,11 +289,11 @@ public class Renderer
 				}
 				else if (code.arg.equals("len"))
 				{
-					reg[code.r1] = Integer.valueOf(String.valueOf(reg[code.r2]));
+					reg[code.r1] = Utils.length(reg[code.r2]);
 				}
 				else if (code.arg.equals("enumerate"))
 				{
-					reg[code.r1] = Integer.valueOf(String.valueOf(reg[code.r2]));
+					reg[code.r1] = Utils.enumerate(reg[code.r2]);
 				}
 				else if (code.arg.equals("isnone"))
 				{
@@ -315,6 +307,10 @@ public class Renderer
 				{
 					reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Integer)) ? Boolean.TRUE : Boolean.FALSE;
 				}
+				else if (code.arg.equals("isfloat"))
+				{
+					reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Double)) ? Boolean.TRUE : Boolean.FALSE;
+				}
 				else if (code.arg.equals("isbool"))
 				{
 					reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Boolean)) ? Boolean.TRUE : Boolean.FALSE;
@@ -327,6 +323,26 @@ public class Renderer
 				{
 					reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Map)) ? Boolean.TRUE : Boolean.FALSE;
 				}
+				else if (code.arg.equals("chr"))
+				{
+					reg[code.r1] = Utils.chr(reg[code.r2]);
+				}
+				else if (code.arg.equals("ord"))
+				{
+					reg[code.r1] = Utils.ord(reg[code.r2]);
+				}
+				else if (code.arg.equals("hex"))
+				{
+					reg[code.r1] = Utils.hex(reg[code.r2]);
+				}
+				else if (code.arg.equals("oct"))
+				{
+					reg[code.r1] = Utils.oct(reg[code.r2]);
+				}
+				else if (code.arg.equals("bin"))
+				{
+					reg[code.r1] = Utils.bin(reg[code.r2]);
+				}
 				else
 				{
 					throw new RuntimeException("No function '" + code.arg + "' defined!");
@@ -335,6 +351,43 @@ public class Renderer
 			else if (code.name.equals("callfunc2"))
 			{
 				throw new RuntimeException("No function '" + code.arg + "' defined!");
+			}
+			else if (code.name.equals("callmeth0"))
+			{
+				if (code.arg.equals("split") || code.arg.equals("rsplit"))
+				{
+					reg[code.r1] = Utils.split(reg[code.r2]);
+				}
+				/*
+				else if (code.arg.equals("strip"))
+				{
+					reg[code.r1] = Utils.strip(reg[code.r2]);
+				}
+				else if (code.arg.equals("lstrip"))
+				{
+					reg[code.r1] = Utils.lstrip(reg[code.r2]);
+				}
+				else if (code.arg.equals("rstrip"))
+				{
+					reg[code.r1] = Utils.rstrip(reg[code.r2]);
+				}
+				else if (code.arg.equals("upper"))
+				{
+					reg[code.r1] = Utils.upper(reg[code.r2]);
+				}
+				else if (code.arg.equals("lower"))
+				{
+					reg[code.r1] = Utils.lower(reg[code.r2]);
+				}
+				*/
+				else if (code.arg.equals("items"))
+				{
+					reg[code.r1] = Utils.items(reg[code.r2]);
+				}
+				else
+				{
+					throw new RuntimeException("No method '" + code.arg + "' defined!");
+				}
 			}
 			else
 			{

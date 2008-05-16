@@ -2,9 +2,45 @@ package com.livinglogic.sxtl;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+class StringIterator implements Iterator
+{
+	String string;
+
+	int stringSize;
+
+	int index;
+	
+	public StringIterator(String string)
+	{
+		this.string = string;
+		stringSize = string.length();
+		index = 0;
+	}
+
+	public boolean hasNext()
+	{
+		return index < stringSize;
+	}
+
+	public Object next()
+	{
+		if (index >= stringSize)
+		{
+			throw new NoSuchElementException("No more characters available!");
+		}
+		return String.valueOf(string.charAt(index++));
+	}
+
+	public void remove()
+	{
+		throw new UnsupportedOperationException("Strings don't support character removal!");
+	}
+}
 
 class MapItemIterator implements Iterator
 {
@@ -32,6 +68,36 @@ class MapItemIterator implements Iterator
 	public void remove()
 	{
 		iterator.remove();
+	}
+}
+
+class SequenceEnumerator implements Iterator
+{
+	Iterator sequenceIterator;
+
+	int index = 0;
+	
+	public SequenceEnumerator(Iterator sequenceIterator)
+	{
+		this.sequenceIterator = sequenceIterator;
+	}
+
+	public boolean hasNext()
+	{
+		return sequenceIterator.hasNext();
+	}
+
+	public Object next()
+	{
+		Vector<Object> retVal = new Vector<Object>(2);
+		retVal.add(new Integer(index++));
+		retVal.add(sequenceIterator.next());
+		return retVal;
+	}
+
+	public void remove()
+	{
+		sequenceIterator.remove();
 	}
 }
 
@@ -268,24 +334,32 @@ public class Utils
 		return false;
 	}
 
-	public static Iterator getForIterator(Collection obj)
+	public static boolean equals(Object obj1, Object obj2)
 	{
-		return obj.iterator();
+		if (null != obj1)
+			return obj1.equals(obj2);
+		else
+			return (null == obj2);
+	}
+	
+	public static boolean contains(String obj, String container)
+	{
+		return container.indexOf(obj) >= 0;
 	}
 
-	public static Iterator getForIterator(Map obj)
+	public static boolean contains(Object obj, Collection container)
 	{
-		return obj.keySet().iterator();
+		return container.contains(obj);
 	}
 
-	public static Iterator getForIterator(Object obj)
+	public static boolean contains(Object obj, Map container)
 	{
-		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " does not support iteration!");
+		return container.containsKey(obj);
 	}
 
-	public static Iterator getForItemsIterator(Object obj)
+	public static boolean contains(Object obj, Object container)
 	{
-		return new MapItemIterator((Map)obj); 
+		throw new RuntimeException("Can't determine presence for instance of " + obj.getClass() + " in container instance of class " + container.getClass() + "!");
 	}
 
 	public static Object xmlescape(String obj)
@@ -294,7 +368,7 @@ public class Utils
 		StringBuffer sb = new StringBuffer((int)(1.2 * length));
 		for (int offset = 0; offset < length; offset++)
 		{
-			char c = text.charAt(offset);
+			char c = obj.charAt(offset);
 			switch (c)
 			{
 				case '<':
@@ -315,20 +389,20 @@ public class Utils
 				case '\t':
 					sb.append(c);
 					break;
-				case '\n'
+				case '\n':
 					sb.append(c);
 					break;
-				case '\r'
+				case '\r':
 					sb.append(c);
 					break;
-				case '\u0085'
+				case '\u0085':
 					sb.append(c);
 					break;
 				default:
-					if ((('\u0020' <= c) && (c <= '\u007e')) || ('00A0' <= c))
+					if ((('\u0020' <= c) && (c <= '\u007e')) || ('\u00A0' <= c))
 						sb.append(c);
 					else
-						sb.append("&#").append((int)character).append(';');	
+						sb.append("&#").append((int)c).append(';');	
 					break;
 			}
 		}
@@ -340,40 +414,163 @@ public class Utils
 		throw new UnsupportedOperationException("Can't xmlescape instance of " + obj.getClass() + "!");
 	}
 
-	public static Object toInteger(Object obj)
-	{
-		if (obj instanceof String)
-			return Integer.valueOf((String)obj);
-		else if (obj instanceof Integer)
-			return obj;
-		else if (obj instanceof Double)
-			return new Integer(((Double)obj).intValue());
-		else if (obj instanceof Boolean)
-			return ((Boolean)obj).booleanValue() ? INTEGER_TRUE : INTEGER_FALSE; 
-		throw new RuntimeException("type of " + obj + " not convertable to integer");
-	}
-
 	public static Object toString(Object obj)
 	{
 		return obj != null ? obj.toString() : ""; 
 	}
 
-	public static boolean contains(Object obj, Object container)
+	public static Object toInteger(String obj)
 	{
-		if (container instanceof Collection)
-			return ((Collection)container).contains(obj);
-		else if (container instanceof Map)
-			return ((Map)container).containsKey(obj);
-		else if (container instanceof String)
-			return ((String)container).indexOf((String)obj) >= 0;
-		throw new RuntimeException("type of " + container + " not supported");
+		return Integer.valueOf(obj);
 	}
 
-	public static boolean equals(Object obj1, Object obj2)
+	public static Object toInteger(Integer obj)
 	{
-		if (null != obj1)
-			return obj1.equals(obj2);
-		else
-			return (null == obj2);
+		return obj;
+	}
+
+	public static Object toInteger(Number obj)
+	{
+		return new Integer(obj.intValue());
+	}
+
+	public static Object toInteger(Boolean obj)
+	{
+		return obj.booleanValue() ? INTEGER_TRUE : INTEGER_FALSE; 
+	}
+
+	public static Object toInteger(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't convert instance of " + obj.getClass() + " to an integer!");
+	}
+
+	public static Object length(String obj)
+	{
+		return obj.length();
+	}
+
+	public static Object length(Collection obj)
+	{
+		return obj.size();
+	}
+
+	public static Object length(Map obj)
+	{
+		return obj.size();
+	}
+
+	public static Object length(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't determine length for instance of " + obj.getClass() + "!");
+	}
+
+	public static Iterator iterator(String obj)
+	{
+		return new StringIterator(obj);
+	}
+
+	public static Iterator iterator(Collection obj)
+	{
+		return obj.iterator();
+	}
+
+	public static Iterator iterator(Map obj)
+	{
+		return obj.keySet().iterator();
+	}
+
+	public static Iterator iterator(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't iterate instance of " + obj.getClass() + "!");
+	}
+
+	public static Object enumerate(Object obj)
+	{
+		return new SequenceEnumerator(iterator(obj));
+	}
+
+	public static Object chr(Integer obj)
+	{
+		int intValue = obj.intValue();
+		char charValue = (char)intValue;
+		if (intValue != (int)charValue)
+		{
+			throw new IndexOutOfBoundsException("Code point " + intValue + " is invalid!");
+		}
+		return String.valueOf(charValue);
+	}
+
+	public static Object chr(Object obj)
+	{
+		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " is no valid unicode codepoint!");
+	}
+
+	public static Object ord(String obj)
+	{
+		if (1 != obj.length())
+		{
+			throw new IllegalArgumentException("String " + obj + " contains more than one unicode character!"); 
+		}
+		return new Integer((int)obj.charAt(0));
+	}
+
+	public static Object ord(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't determine unicode code point for instance of " + obj.getClass() + "!");
+	}
+
+	public static Object hex(Integer obj)
+	{
+		return "0x" + Integer.toHexString(obj);
+	}
+
+	public static Object hex(Object obj)
+	{
+		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be represented as a hexadecimal string!");
+	}
+
+	public static Object oct(Integer obj)
+	{
+		return "0o" + Integer.toOctalString(obj);
+	}
+
+	public static Object oct(Object obj)
+	{
+		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be represented as an octal string!");
+	}
+
+	public static Object bin(Integer obj)
+	{
+		return "0b" + Integer.toBinaryString(obj);
+	}
+
+	public static Object bin(Object obj)
+	{
+		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be represented as a binary string!");
+	}
+
+	public static Object split(String obj)
+	{
+		return obj.trim().split("\\s+");
+	}
+
+	public static Object split(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't split instance of " + obj.getClass() + "!");
+	}
+
+	public static Object items(Map obj)
+	{
+		return new MapItemIterator(obj); 
+	}
+
+	public static Object items(Object obj)
+	{
+		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be iterated as a map!");
+	}
+	
+	public static void main(String[] args)
+	{
+		System.out.println(java.util.Arrays.asList((String[])split("    gurk       hurz  schwumpl  ")));
 	}
 }
