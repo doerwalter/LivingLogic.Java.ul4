@@ -343,6 +343,14 @@ public class Renderer
 				{
 					reg[code.r1] = Utils.bin(reg[code.r2]);
 				}
+				else if (code.arg.equals("sorted"))
+				{
+					reg[code.r1] = Utils.sorted(reg[code.r2]);
+				}
+				else if (code.arg.equals("range"))
+				{
+					reg[code.r1] = Utils.range(reg[code.r2]);
+				}
 				else
 				{
 					throw new RuntimeException("No function '" + code.arg + "' defined!");
@@ -350,7 +358,25 @@ public class Renderer
 			}
 			else if (code.name.equals("callfunc2"))
 			{
-				throw new RuntimeException("No function '" + code.arg + "' defined!");
+				if (code.arg.equals("range"))
+				{
+					reg[code.r1] = Utils.range(reg[code.r2], reg[code.r3]);
+				}
+				else
+				{
+					throw new RuntimeException("No function '" + code.arg + "' defined!");
+				}
+			}
+			else if (code.name.equals("callfunc3"))
+			{
+				if (code.arg.equals("range"))
+				{
+					reg[code.r1] = Utils.range(reg[code.r2], reg[code.r3], reg[code.r4]);
+				}
+				else
+				{
+					throw new RuntimeException("No function '" + code.arg + "' defined!");
+				}
 			}
 			else if (code.name.equals("callmeth0"))
 			{
@@ -358,7 +384,6 @@ public class Renderer
 				{
 					reg[code.r1] = Utils.split(reg[code.r2]);
 				}
-				/*
 				else if (code.arg.equals("strip"))
 				{
 					reg[code.r1] = Utils.strip(reg[code.r2]);
@@ -379,7 +404,6 @@ public class Renderer
 				{
 					reg[code.r1] = Utils.lower(reg[code.r2]);
 				}
-				*/
 				else if (code.arg.equals("items"))
 				{
 					reg[code.r1] = Utils.items(reg[code.r2]);

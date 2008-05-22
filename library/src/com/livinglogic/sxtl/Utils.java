@@ -1,11 +1,68 @@
 package com.livinglogic.sxtl;
 
+import java.util.AbstractList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+class Range extends AbstractList 
+{
+	int start;
+
+	int stop;
+
+	int step;
+
+	int length;
+
+	public Range(int start, int stop, int step)
+	{
+		if (0 == step)
+		{
+			throw new IllegalArgumentException("Step argument must be different from zero!");
+		}
+		else if (0 < step)
+		{
+			this.length = rangeLength(start, stop, step);
+		}
+		else
+		{
+			this.length = rangeLength(stop, start, -step);
+		}
+		this.start = start;
+		this.stop = stop;
+		this.step = step;
+	}
+
+	public Object get(int index)
+	{
+		if ((index < 0) || (index >= length))
+		{
+			throw new IndexOutOfBoundsException("Invalid index: " + index);
+		}
+		return start + index * step;
+	}
+
+	protected int rangeLength(int lowerEnd, int higherEnd, int positiveStep)
+	{
+		int retVal = 0;
+		if (lowerEnd < higherEnd)
+		{
+			int diff = higherEnd - lowerEnd - 1;
+			retVal = diff/positiveStep + 1;
+		}
+		return retVal;
+	}
+
+	public int size()
+	{
+		return length;
+	}
+}
 
 class StringIterator implements Iterator
 {
@@ -208,21 +265,6 @@ public class Utils
 		throw new UnsupportedOperationException("Can't apply the modulo operator to instances of " + arg1.getClass() + " and " + arg2.getClass() + "!");
 	}
 
-	public static Object getItem(Map arg1, Object arg2)
-	{
-		return arg1.get(arg2);
-	}
-	
-	public static Object getItem(List arg1, Integer arg2)
-	{
-		int index = arg2.intValue();
-		if (0 > index)
-		{
-			index += arg1.size();
-		}
-		return arg1.get(index);
-	}
-
 	public static Object getItem(String arg1, Integer arg2)
 	{
 		int index = arg2.intValue();
@@ -233,6 +275,21 @@ public class Utils
 		return arg1.substring(index, index + 1);
 	}
 
+	public static Object getItem(List arg1, Integer arg2)
+	{
+		int index = arg2.intValue();
+		if (0 > index)
+		{
+			index += arg1.size();
+		}
+		return arg1.get(index);
+	}
+
+	public static Object getItem(Map arg1, Object arg2)
+	{
+		return arg1.get(arg2);
+	}
+	
 	public static Object getItem(Object arg1, Object arg2)
 	{
 		throw new UnsupportedOperationException("Instance of " + arg1.getClass() + " does not support getitem with argument of type " + arg2.getClass() + "!");
@@ -549,14 +606,170 @@ public class Utils
 		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be represented as a binary string!");
 	}
 
+	public static Object sorted(String obj)
+	{
+		Vector retVal;
+		int length = obj.length();
+		retVal = new Vector(obj.length());
+		for (int i = 0; i < length; i++)
+		{
+			retVal.add(String.valueOf(obj.charAt(i)));
+		}
+		Collections.sort(retVal);
+		return retVal;
+	}
+
+	public static Object sorted(Collection obj)
+	{
+		Vector retVal = new Vector(obj);
+		Collections.sort(retVal);
+		return retVal;
+	}
+
+	public static Object sorted(Map obj)
+	{
+		Vector retVal = new Vector(obj.keySet());
+		Collections.sort(retVal);
+		return retVal;
+	}
+
+	public static Object sorted(Object obj)
+	{
+		throw new RuntimeException("Can't sort instance of " + obj.getClass() + "!");
+	}
+
+	public static Object range(Integer obj)
+	{
+		return new Range(0, obj.intValue(), 1);
+	}
+
+	public static Object range(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't build a range for parameter: instance of " + obj.getClass() + "!");
+	}
+
+	public static Object range(Integer obj1, Integer obj2)
+	{
+		return new Range(obj1.intValue(), obj2.intValue(), 1);
+	}
+
+	public static Object range(Object obj1, Object obj2)
+	{
+		throw new UnsupportedOperationException("Can't build a range for parameters: instances of " + obj1.getClass() + " and " + obj2.getClass() + "!");
+	}
+
+	public static Object range(Integer obj1, Integer obj2, Integer obj3)
+	{
+		return new Range(obj1.intValue(), obj2.intValue(), obj3.intValue());
+	}
+
+	public static Object range(Object obj1, Object obj2, Object obj3)
+	{
+		throw new UnsupportedOperationException("Can't build a range for parameters: instances of " + obj1.getClass() + " and " + obj2.getClass() + " and " + obj3.getClass() + "!");
+	}
+
 	public static Object split(String obj)
 	{
-		return obj.trim().split("\\s+");
+		Vector retVal = new Vector();
+		int length = obj.length();
+		int pos1 = 0;
+		int pos2;
+		while (pos1 < length)
+		{
+			while ((pos1 < length) && Character.isWhitespace(obj.charAt(pos1)))
+			{
+				pos1++;
+			}
+			if (pos1 < length)
+			{
+				pos2 = pos1 + 1;
+				while ((pos2 < length) && !Character.isWhitespace(obj.charAt(pos2)))
+				{
+					pos2++;
+				}
+				retVal.add(obj.substring(pos1, ++pos2));
+				pos1 = pos2;
+			}
+		}
+		return retVal;
 	}
 
 	public static Object split(Object obj)
 	{
 		throw new UnsupportedOperationException("Can't split instance of " + obj.getClass() + "!");
+	}
+
+	protected static int getFirstNonWhitespaceIndex(String obj)
+	{
+		int retVal = 0;
+		int length = obj.length();
+		while ((retVal < length) && Character.isWhitespace(obj.charAt(retVal)))
+		{
+			retVal++;
+		}
+		return retVal;
+	}
+
+	protected static int getFirstTrailingWhitespaceIndex(String obj)
+	{
+		int retVal;
+		int length = obj.length();
+		retVal = length;
+		while ((retVal > 0) && Character.isWhitespace(obj.charAt(retVal - 1)))
+		{
+			retVal--;
+		}
+		return retVal;
+	}
+
+	public static Object strip(String obj)
+	{
+		return obj.substring(getFirstNonWhitespaceIndex(obj), getFirstTrailingWhitespaceIndex(obj));
+	}
+
+	public static Object strip(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't strip instance of " + obj.getClass() + "!");
+	}
+
+	public static Object lstrip(String obj)
+	{
+		return obj.substring(getFirstNonWhitespaceIndex(obj));
+	}
+
+	public static Object lstrip(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't lstrip instance of " + obj.getClass() + "!");
+	}
+
+	public static Object rstrip(String obj)
+	{
+		return obj.substring(0, getFirstTrailingWhitespaceIndex(obj));
+	}
+
+	public static Object rstrip(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't rstrip instance of " + obj.getClass() + "!");
+	}
+
+	public static Object upper(String obj)
+	{
+		return obj.toUpperCase();
+	}
+
+	public static Object upper(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't convert an instance of " + obj.getClass() + " to upper case!");
+	}
+
+	public static Object lower(String obj)
+	{
+		return obj.toLowerCase();
+	}
+
+	public static Object lower(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't convert an instance of " + obj.getClass() + " to lower case!");
 	}
 
 	public static Object items(Map obj)
@@ -571,6 +784,6 @@ public class Utils
 	
 	public static void main(String[] args)
 	{
-		System.out.println(java.util.Arrays.asList((String[])split("    gurk       hurz  schwumpl  ")));
+		//System.out.println(Arrays.asList((String[])split("    gurk       hurz  schwumpl  ")));
 	}
 }
