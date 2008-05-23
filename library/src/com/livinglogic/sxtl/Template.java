@@ -26,6 +26,11 @@ public class Template
 			this.startcode = startcode;
 			this.endcode = endcode;
 		}
+
+		public String getCode()
+		{
+			return source.substring(startcode, endcode);
+		}
 	}
 	
 	public static class Opcode
