@@ -181,6 +181,12 @@ public class Utils
 
 	public static Object add(Object arg1, Object arg2)
 	{
+		if (arg1 instanceof Integer && arg2 instanceof Integer)
+			return add((Integer)arg1, (Integer)arg2);
+		else if (arg1 instanceof Number && arg2 instanceof Number)
+			return add((Number)arg1, (Number)arg2);
+		else if (arg1 instanceof String && arg2 instanceof String)
+			return add((String)arg1, (String)arg2);
 		throw new UnsupportedOperationException("Can't add instances of " + arg1.getClass() + " and " + arg2.getClass() + "!");
 	}
 
@@ -196,6 +202,12 @@ public class Utils
 
 	public static Object sub(Object arg1, Object arg2)
 	{
+		if (arg1 instanceof Integer && arg2 instanceof Integer)
+			return sub((Integer)arg1, (Integer)arg2);
+		else if (arg1 instanceof Number && arg2 instanceof Number)
+			return sub((Number)arg1, (Number)arg2);
+		else if (arg1 instanceof String && arg2 instanceof String)
+			return sub((String)arg1, (String)arg2);
 		throw new UnsupportedOperationException("Can't subtract instances of " + arg1.getClass() + " and " + arg2.getClass() + "!");
 	}
 
@@ -292,6 +304,12 @@ public class Utils
 	
 	public static Object getItem(Object arg1, Object arg2)
 	{
+		if (arg1 instanceof String && arg2 instanceof Integer)
+			return getItem((String)arg1, (Integer)arg2);
+		else if (arg1 instanceof List && arg2 instanceof Integer)
+			return getItem((List)arg1, (Integer)arg2);
+		else if (arg1 instanceof Map && arg2 instanceof Integer)
+			return getItem((Map)arg1, (Integer)arg2);
 		throw new UnsupportedOperationException("Instance of " + arg1.getClass() + " does not support getitem with argument of type " + arg2.getClass() + "!");
 	}
 
@@ -498,6 +516,14 @@ public class Utils
 
 	public static Object toInteger(Object obj)
 	{
+		if (obj instanceof String)
+			return toInteger((String)obj);
+		else if (obj instanceof Integer)
+			return toInteger((Integer)obj);
+		else if (obj instanceof Number)
+			return toInteger((Number)obj);
+		else if (obj instanceof Boolean)
+			return toInteger((Boolean)obj);
 		throw new UnsupportedOperationException("Can't convert instance of " + obj.getClass() + " to an integer!");
 	}
 
@@ -518,6 +544,12 @@ public class Utils
 
 	public static Object length(Object obj)
 	{
+		if (obj instanceof String)
+			return length((String)obj);
+		else if (obj instanceof Collection)
+			return length((Collection)obj);
+		else if (obj instanceof Map)
+			return length((Map)obj);
 		throw new UnsupportedOperationException("Can't determine length for instance of " + obj.getClass() + "!");
 	}
 
@@ -538,6 +570,14 @@ public class Utils
 
 	public static Iterator iterator(Object obj)
 	{
+		if (obj instanceof String)
+			return iterator((String)obj);
+		else if (obj instanceof Collection)
+			return iterator((Collection)obj);
+		else if (obj instanceof Map)
+			return iterator((Map)obj);
+		else if (obj instanceof Iterator)
+			return (Iterator)obj;
 		throw new UnsupportedOperationException("Can't iterate instance of " + obj.getClass() + "!");
 	}
 
@@ -559,6 +599,8 @@ public class Utils
 
 	public static Object chr(Object obj)
 	{
+		if (obj instanceof Integer)
+			return chr((Integer)obj);
 		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " is no valid unicode codepoint!");
 	}
 
@@ -573,6 +615,8 @@ public class Utils
 
 	public static Object ord(Object obj)
 	{
+		if (obj instanceof String)
+			return chr((String)obj);
 		throw new UnsupportedOperationException("Can't determine unicode code point for instance of " + obj.getClass() + "!");
 	}
 
@@ -583,6 +627,8 @@ public class Utils
 
 	public static Object hex(Object obj)
 	{
+		if (obj instanceof Integer)
+			return chr((Integer)obj);
 		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be represented as a hexadecimal string!");
 	}
 
@@ -593,6 +639,8 @@ public class Utils
 
 	public static Object oct(Object obj)
 	{
+		if (obj instanceof Integer)
+			return chr((Integer)obj);
 		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be represented as an octal string!");
 	}
 
@@ -603,6 +651,8 @@ public class Utils
 
 	public static Object bin(Object obj)
 	{
+		if (obj instanceof Integer)
+			return chr((Integer)obj);
 		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be represented as a binary string!");
 	}
 
@@ -635,6 +685,12 @@ public class Utils
 
 	public static Object sorted(Object obj)
 	{
+		if (obj instanceof String)
+			return sorted((String)obj);
+		else if (obj instanceof Collection)
+			return sorted((Collection)obj);
+		else if (obj instanceof Map)
+			return sorted((Map)obj);
 		throw new RuntimeException("Can't sort instance of " + obj.getClass() + "!");
 	}
 
@@ -645,6 +701,8 @@ public class Utils
 
 	public static Object range(Object obj)
 	{
+		if (obj instanceof Integer)
+			return range((Integer)obj);
 		throw new UnsupportedOperationException("Can't build a range for parameter: instance of " + obj.getClass() + "!");
 	}
 
@@ -655,6 +713,8 @@ public class Utils
 
 	public static Object range(Object obj1, Object obj2)
 	{
+		if (obj1 instanceof Integer && obj2 instanceof Integer)
+			return range((Integer)obj1, (Integer)obj2);
 		throw new UnsupportedOperationException("Can't build a range for parameters: instances of " + obj1.getClass() + " and " + obj2.getClass() + "!");
 	}
 
@@ -665,6 +725,8 @@ public class Utils
 
 	public static Object range(Object obj1, Object obj2, Object obj3)
 	{
+		if (obj1 instanceof Integer && obj2 instanceof Integer && obj3 instanceof Integer)
+			return range((Integer)obj1, (Integer)obj2, (Integer)obj3);
 		throw new UnsupportedOperationException("Can't build a range for parameters: instances of " + obj1.getClass() + " and " + obj2.getClass() + " and " + obj3.getClass() + "!");
 	}
 
@@ -696,6 +758,8 @@ public class Utils
 
 	public static Object split(Object obj)
 	{
+		if (obj instanceof String)
+			return split((String)obj);
 		throw new UnsupportedOperationException("Can't split instance of " + obj.getClass() + "!");
 	}
 
@@ -729,6 +793,8 @@ public class Utils
 
 	public static Object strip(Object obj)
 	{
+		if (obj instanceof String)
+			return strip((String)obj);
 		throw new UnsupportedOperationException("Can't strip instance of " + obj.getClass() + "!");
 	}
 
@@ -739,6 +805,8 @@ public class Utils
 
 	public static Object lstrip(Object obj)
 	{
+		if (obj instanceof String)
+			return lstrip((String)obj);
 		throw new UnsupportedOperationException("Can't lstrip instance of " + obj.getClass() + "!");
 	}
 
@@ -749,6 +817,8 @@ public class Utils
 
 	public static Object rstrip(Object obj)
 	{
+		if (obj instanceof String)
+			return rstrip((String)obj);
 		throw new UnsupportedOperationException("Can't rstrip instance of " + obj.getClass() + "!");
 	}
 
@@ -759,6 +829,8 @@ public class Utils
 
 	public static Object upper(Object obj)
 	{
+		if (obj instanceof String)
+			return upper((String)obj);
 		throw new UnsupportedOperationException("Can't convert an instance of " + obj.getClass() + " to upper case!");
 	}
 
@@ -769,6 +841,8 @@ public class Utils
 
 	public static Object lower(Object obj)
 	{
+		if (obj instanceof String)
+			return lower((String)obj);
 		throw new UnsupportedOperationException("Can't convert an instance of " + obj.getClass() + " to lower case!");
 	}
 
@@ -779,6 +853,8 @@ public class Utils
 
 	public static Object items(Object obj)
 	{
+		if (obj instanceof Map)
+			return items((Map)obj);
 		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be iterated as a map!");
 	}
 	
