@@ -67,10 +67,16 @@ public class Template
 
 	protected List opcodes;
 
-	private Template()
+	public Template()
 	{
 		this.source = null;
 		this.opcodes = new LinkedList();
+	}
+
+	public Template(String source, List opcodes)
+	{
+		this.source = source;
+		this.opcodes = opcodes;
 	}
 
 	protected static int readintInternal(Reader reader, char terminator) throws IOException

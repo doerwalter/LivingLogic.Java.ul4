@@ -9,465 +9,13 @@
 
 
 import com.livinglogic.sxtl.L4CompilerType as L4CompilerType
-
-"""
-:mod:`ll.l4c` provides templating for XML/HTML as well as any other text-based
-format. A template defines placeholders for data output and basic logic (like
-loops and conditional blocks), that define how the final rendered output will
-look.
-
-:mod:`ll.l4c` compiles a template to a bytecode format, which makes it possible
-to implement renderers for these templates in multiple programming languages.
-
-
-Data objects
-============
-
-To render a template the renderer gets passed a data object. What :mod:`ll.l4`
-supports in this data object is very similar to what JSON_ supports.
-
-	.. _JSON: http://www.json.org/
-
-Supported types are:
-
-	*	strings
-	*	integers
-	*	floats
-	*	The "null" value (``None``)
-	*	boolean values (``True`` and ``False``)
-	*	lists
-	*	dictionaries
-
-Note that depending on the implementation language of the renderer additional
-types might be supported, e.g. a Python renderer will probably support tuples
-and lists and anything supporting :meth:`__getitem__` (or :meth:`__iter__ when
-the list is used in a loop) for lists, Java might support anything implementing
-the ``List`` interface (or the ``Collection`` interface if the list is used in a
-loop).
-
-The data object itself will be available inside the template code under the name
-``data``.
-
-The template code tries to mimic Python syntax as far as possible, but is
-limited to what is required for templates and does not allow executing arbitrary
-Python statements.
-
-
-Embedding
-=========
-
-In the template any text surrounded by ``<?`` and ``?>`` is a "template tag".
-The first word inside the template is the tag type. It defines what the tag
-does. For example ``<?print foo?>`` is a print tag (it prints the value of the
-variable ``foo``). A complete example template looks like this::
-
-	<?if data?>
-	<ul>
-	<?for lang in data?>
-	<li><?print xmlescape(lang)?></li>
-	<?end for?>
-	</ul>
-	<?end if?>
-
-(For text formats where the delimiters ``<?`` and ``?>`` collide with elements
-that are used often or where using these delimiters is inconvenient it's
-possible to specify a different delimiter pair when compiling the template.)
-
-A complete Python program that renders the template might look like this::
-
-	from ll import l4c
-
-	code = '''<?if data?>
-	<ul>
-	<?for lang in data?>
-	<li><?print xmlescape(lang)?></li>
-	<?end for?>
-	</ul>
-	<?end if?>'''
-
-	tmpl = l4c.compile(code)
-
-	data = [u"Python", u"Java", u"PHP"]
-
-	print u"".join(tmpl(data))
-
-The method :meth:`PythonCode.function` returns a Python generator that renders
-the template with the data object passed in.
-
-
-Template code
-=============
-
-:mod:`ll.l4` supports the following tag types:
-
-
-``print``
----------
-
-The ``print`` tag outputs the value of a variable or any other expression. If
-the expression doesn't evaluate to a string it will be converted to a string
-first. The format of the string depends on the renderer, but should follow
-Python's ``unicode()`` output as much as possible (except that for ``None`` no
-output may be produced)::
-
-	<h1><?print person.lastname?>, <?print person.firstname?></h1>
-
-
-``for``
--------
-
-The ``for`` tag can be used to loop over the items in a list, the characters in
-a string or the keys in a dictionary. The end of the loop body must be marked
-with an ``<?end for?>`` tag::
-
-	<ul>
-	<?for person in data.persons?>
-	<li><?print person.lastname?>, <?person.firstname?></li>
-	<?end for?>
-	</ul>
-
-In ``for`` loops tuple unpacking is supported for tuples of length 1 and 2, so
-you can do the following::
-
-	<?for (key, value) in data.items?>
-
-if ``items`` is an iterable containing lists with two elements.
-
-
-``if``
-------
-
-The ``if`` tag can be used to output a part of the template only when a
-condition is true. The end of the ``if`` block must be marked with an
-``<?end if?>`` tag. The truth value of an object is the same as in Python:
-
-	*	``None`` is false.
-	*	The integer ``0`` and the float value ``0.0`` are false.
-	*	Empty strings, lists and dictionaries are false.
-	*	``False`` is false.
-	*	Anything else is true.
-
-For example we can output the person list only if there are any persons::
-
-	<?if data.persons?>
-	<ul>
-	<?for person in data.persons?>
-	<li><?print person.lastname?>, <?person.firstname?></li>
-	<?end for?>
-	</ul>
-	<?end if?>
-
-``elif`` and ``else`` are supported too::
-
-	<?if data.persons?>
-	<ul>
-	<?for person in data.persons?>
-	<li><?print person.lastname?>, <?person.firstname?></li>
-	<?end for?>
-	</ul>
-	<?else?>
-	<p>No persons found!</p>
-	<?end if?>
-
-or::
-
-	<?if len(data.persons)==0?>
-	No persons found!
-	<?elif len(data.persons)==1?>
-	One person found!
-	<?else?>
-	<?print len(data.persons)?> persons found!
-	<?end if?>
-
-
-``code``
---------
-
-The ``code`` tag can be used to define or modify variables. Apart from the
-assigment operator ``=``, the following augmented assignment operators are
-supported:
-
-	*	``+=`` (adds a value to the variable)
-	*	``-=`` (subtracts a value from the variable)
-	*	``*=`` (multiplies the variable by a value)
-	*	``/=`` (divides the variable by a value)
-	*	``//=`` (divides the variable by a value, rounding down to the next
-		smallest integer)
-	*	``&=`` (Does a modulo operation and replaces the variable value with the
-		result)
-
-For example the following template will output ``40``::
-
-	<?code x = 17?>
-	<?code x += 23?>
-	<?print x?>
-
-
-Expressions
------------
-
-:mod:`ll.l4` supports many of the operators supported by Python. Getitem style
-element access is available, i.e. in the expression ``a[b]`` the following type
-combinations are supported:
-
-	*	string, integer: Returns the ``b``th character from the string ``a``. Note
-		that negative ``b`` values are supported and are relative to the end, so
-		``a[-1]`` is the last character.
-
-	*	list, integer: Returns the ``b``th list entry of the list ``a``. Negative
-		``b`` values are supported too.
-
-	*	dict, string: Return the value from the dictionary ``a`` corresponding to
-		the key ``b``. (Note that some implemenations might support keys other
-		than strings too.)
-
-Slices are also supported (for list and string objects). As in Python one or
-both of the indexes may be missing to start at the first or end at the last
-character/item. Negative indexes are relative to the end. Indexes that are out
-of bounds are simply clipped::
-
-	*	``<?print "Hello, World!"[7:-1]?>`` prints ``World``.
-
-	*	``<?print "Hello, World!"[:-1]?>`` prints ``Hello, World``.
-
-The following binary operators are supported: ``+``, ``-``, ``*``, ``/``,
-``//`` (truncating division) and ``&`` (modulo).
-
-The usual boolean operators ``not``, ``and`` and ``or`` are supported. However
-``and`` and ``or`` don't short-circuit and always return ``True`` or ``False``
-(instead of one of the operators).
-
-The two comparison operators ``==`` and ``!=`` are supported.
-
-Containment test via the ``in`` operator can be done, in the expression
-``a in b`` the following type combinations are supported:
-
-	*	string, string: Checks whether ``a`` is a substring of ``b``.
-	*	any object, list: Checks whether the object ``a`` is in the list ``b``
-		(comparison is done by value not by identity)
-	*	string, dict: Checks whether the key ``a`` is in the dictionary ``b``.
-		(Note that some implementations might support keys other than strings too.)
-
-The inverted containment test (via ``not in``) is available too.
-
-
-Functions
----------
-
-:mod:`ll.l4` supports a number of functions.
-
-``isnone``
-::::::::::
-
-``isnone(foo)`` returns ``True`` if ``foo`` is ``None``, else ``False`` is
-returned.
-
-``isbool``
-::::::::::
-
-``isbool(foo)`` returns ``True`` if ``foo`` is ``True`` or ``False``, else
-``False`` is returned.
-
-``isint``
-:::::::::
-
-``isint(foo)`` returns ``True`` if ``foo`` is an integer object, else ``False``
-is returned.
-
-``isfloat``
-::::::::::::
-
-``isfloat(foo)`` returns ``True`` if ``foo`` is a float object, else ``False``
-is returned.
-
-``isstr``
-::::::::::::
-
-``isstr(foo)`` returns ``True`` if ``foo`` is a string object, else ``False``
-is returned.
-
-``islist``
-::::::::::::
-
-``islist(foo)`` returns ``True`` if ``foo`` is a list object, else ``False``
-is returned.
-
-``isdict``
-::::::::::::
-
-``isdict(foo)`` returns ``True`` if ``foo`` is a dictionary object, else
-``False`` is returned.
-
-``int``
-:::::::
-
-``int(foo)`` converts ``foo`` to an integer. ``foo`` can be a string, a float
-a boolean or an integer.
-
-``str``
-:::::::
-
-``str(foo)`` converts ``foo`` to a string. If ``foo`` is ``None`` the result
-will be the empty string. For lists and dictionaries the exact format is
-undefined, but should follow Python's repr format.
-
-``repr``
-:::::::
-
-``repr(foo)`` converts ``foo`` to a string representation that is useful for
-debugging proposes. The output is the same as for Python's :func:`repr` function.
-
-``len``
-:::::::
-
-``len(foo)`` returns the length of a string, or the number of items in a list
-or dictionary.
-
-``enumerate``
-:::::::::::::
-
-Enumerates the items of the argument (which must be iterable, i.e. a string,
-a list or dictionary). For example the following code::
-
-	<?for (i, c) in "foo"?><?print i?>=<?print c?>;<?end for?>
-
-prints::
-
-	``0=f;1=o;2=o``
-	
-
-``xmlescape``
-:::::::::::::
-
-``xmlescape`` replaces the characters ``&``, ``<``, ``>``, ``'`` and ``"``
-with the appropriate XML entity references in the argument. For example::
-
-	<?print xmlescape("<'foo' & 'bar'>")?>
-
-prints:
-
-	``&lt;&apos;foo&apos; &amp; ;&apos;bar&apos&gt;``
-
-
-``sorted``
-:::::::::::::
-
-``sorted`` returns a sorted list with the items from it's argument. For example::
-
-	<?for c in sorted('bar')?><?print c?><?end for?>
-
-prints:
-
-	``abr``
-
-Supported arguments are string, lists and dictionaries.
-
-
-``chr``
-:::::::
-
-``chr(x)`` returns a one-character string with a character with the codepoint
-``x`` which must be an integer.
-
-
-``ord``
-:::::::
-
-The argument for ``ord`` must be a one-character string. ``ord`` returns the
-codepoint of that character as an integer.
-
-
-``hex``
-:::::::
-
-Return the hexadecimal representation of the integer argument (with a leading
-``0x``).
-
-
-``oct``
-:::::::
-
-Return the octal representation of the integer argument (with a leading ``0o``).
-
-
-``bin``
-:::::::
-
-Return the binary representation of the integer argument (with a leading ``0b``).
-
-
-Methods
--------
-
-"""
-
+import com.livinglogic.sxtl.Template as L4Template
+Location = L4Template.Location
+Opcode = L4Template.Opcode
 
 import sys, re, StringIO
 
 import spark
-
-if sys.platform.startswith("java"):
-	unicode = str
-
-
-###
-### Location information
-###
-
-class Location(object):
-	"""
-	A :class:`Location` object contains information about the location of a
-	template tag.
-	"""
-	__slots__ = ("source", "type", "starttag", "endtag", "startcode", "endcode")
-
-	def __init__(self, source, type, starttag, endtag, startcode, endcode):
-		"""
-		Create a new :class:`Location` object. The arguments have the following
-		meaning:
-
-		:var:`source`
-			The complete source string
-
-		:var:`type`
-			The tag type (i.e. ``"for"``, ``"if"``, etc.)
-
-		:var:`starttag`
-			The start position of the start delimiter.
-
-		:var:`endtag`
-			The end position of the end delimiter.
-
-		:var:`startcode`
-			The start position of the tag code.
-
-		:var:`endcode`
-			The end position of the tag code.
-		"""
-		self.source = source
-		self.type = type
-		self.starttag = starttag
-		self.endtag = endtag
-		self.startcode = startcode
-		self.endcode = endcode
-
-	def _code(self):
-		return self.source[self.startcode:self.endcode]
-	code = property(_code)
-
-	def _tag(self):
-		return self.source[self.starttag:self.endtag]
-	tag = property(_tag)
-
-	def __str__(self):
-		lastlinefeed = self.source.rfind("\n", 0, self.starttag)
-		if lastlinefeed >= 0:
-			line = self.source.count("\n", 0, self.starttag)+1
-			col = self.starttag - lastlinefeed
-		else:
-			line = 1
-			col = self.starttag + 1
-		return "%r at %d (line %d, col %d)" % (self.tag, self.starttag+1, line, col)
 
 
 ###
@@ -602,816 +150,109 @@ class OutOfRegistersError(Error):
 
 
 ###
-### opcode class
+### helper functions for compiling
 ###
 
-class Opcode(object):
-	"""
-	An :class:`Opcode` stores an opcode. The type of opcode is stored in the
-	:attr:`code` attribute. Furthermore each opcode has up to five register
-	specifications (for the source or targets of the opcode) in the attributes
-	:attr:`r1`, :attr:`r2`, :attr:`r3`, :attr:`r4` and :attr:`r5`. Furthermore
-	if the opcode requires an additional argument (like a variable name or a
-	string value) this will be stored in the :attr:`arg` attribute.
-
-	The following opcodes are available:
-
-	:const:`None`:
-		Print text. The text is available from ``location.code``.
-
-	``"print"``:
-		Print the content of register :attr:`r1`. (If the object in the register
-      is not a string, it will be converted to a string first.)
-
-	``"loadnone"``:
-		Load the constant :const:`None`.
-
-	``"loadfalse"``:
-		Load the constant :const:`False`.
-
-	``"loadtrue"``:
-		Load the constant :const:`True`.
-
-	``"loadstr"``:
-		Load the string :attr:`arg` into the register :attr:`r1`.
-
-	``"loadint"``:
-		Load the integer value :attr:`arg` into the register :attr:`r1`.
-
-	``"loadfloat"``:
-		Load the float value :attr:`arg` into the register :attr:`r1`.
-
-	``"loadvar"``:
-		Load the variable named :attr:`arg` into the register :attr:`r1`.
-
-	``"storevar"``:
-		Store the content of register :attr:`r1` in the variable named :attr:`arg`.
-
-	``"addvar"``:
-		Add the content of register :attr:`r1` to the variable named :attr:`arg`.
-
-	``"for"``:
-		Start a loop over the object in the register :attr:`r2` and store the
-		object from each loop iteration in the register :attr:`r1`.
-
-	``"endfor"``:
-		Ends the innermost running ``for`` loop.
-
-	``"if"``:
-		Starts a conditional block. If the objects in the register :attr:`r1` is
-		true the block will be executed. The "block" consists of all opcodes after
-		the ``if`` upto the matching ``else`` or ``endif`` opcode.
-
-	``"else"``:
-		Start the else branch of the previous ``if``.
-
-	``"endif"``:
-		End a conditional block.
-
-	``"getattr"``:
-		Get the attribute named :attr:`arg` from the object in register :attr:`r2`
-		and store it in register :attr:`r1`.
-
-	``"getitem"``:
-		Get an item from the object in register :attr:`r2`. If this object is a
-		list the object in register :attr:`r3` will be used as the index. If it is
-		a dictionary :attr:`r3` will be used as the the key. The result will be
-		stored in register :attr:`r1`.
-
-	``"getslice12"``:
-		Get an slice from the object in register :attr:`r2`. The object in
-		register :attr:`r3` (which must be an ``int`` or :const:`None`) specifies
-		the start index, If this object in register :attr:`r4` specifies the end
-		index. The result will be stored in register :attr:`r1`.
-
-	``"getslice1"``:
-		Similar to ``getslice12`` except that the end index is always the length
-		of the object.
-
-	``"getslice2"``:
-		Similar to ``getslice12`` except that the start index is always 0 and the
-		end index is in register :attr:`r3`.
-
-	``"getslice"``:
-		Similar to ``getslice12`` except that the start index is always 0 and the
-		end index alywas the length of the object.
-
-	``"not"``:
-		Invert the truth value of the object in register :attr:`r2` and stores the
-		resulting bool in the register :attr:`r1`.
-
-	``"equals"``:
-		Compare the objects in register :attr:`r2` and :attr:`r3` and store
-		``True`` in the register :attr:`r1` if they are equal, ``False`` otherwise.
-
-	``"notequals"``:
-		Compare the objects in register :attr:`r2` and :attr:`r3` and store
-		``False`` in the register :attr:`r1` if they are equal, ``True`` otherwise.
-
-	``"contains"``:
-		Test whether the object in register :attr:`r3` contains the object in
-		register :attr:`r2` (either as a key if it's a dictionary or as an item
-		if it's a list or as a substring if it's a string) and store ``True`` into
-		the register :attr:`r1` if it does, ``False`` otherwise.
-
-	``"notcontains"``:
-		Test whether the object in register :attr:`r3` contains the object in
-		register :attr:`r2` (either as a key if it's a dictionary or as an item
-		if it's a list or as a substring if it's a string) and store ``False`` into
-		the register :attr:`r1` if it does, ``True`` otherwise.
-
-	``"or"``:
-		Check the truth value of two object in registers :attr:`r2` and :attr:`r3`
-		and store ``True`` in the register :attr:`r1` if one of them is true
-		(``False`` otherwise).
-
-	``"and"``:
-		Check the truth value of two object in registers :attr:`r2` and :attr:`r3`
-		and store ``True`` in the register :attr:`r1` if both of them are true
-		(``False`` otherwise).
-
-	``"mod"``:
-		Does a modulo operation: Calculates :attr:`r2` modulo :attr:`r3` and stores
-		the result in the register :attr:`r1`.
-
-	``"callfunc0"``:
-		Call the function named :attr:`arg` without any arguments and store the
-		return value in register :attr:`r1`.
-
-	``"callfunc1"``:
-		Call the function named :attr:`arg` with the content of register :attr:`r2`
-		as an argument and store the return value in register :attr:`r1`.
-
-	``"callfunc2"``:
-		Call the function named :attr:`arg` with the contents of register
-		:attr:`r2` and :attr:`r3` as the two arguments and store the return value
-		in register :attr:`r1`.
-
-	``"callmeth0"``:
-		Call the method named :attr:`arg` on the object in register :attr:`r2`
-		and store the return value in register :attr:`r1`.
-
-	``"callmeth1"``:
-		Call the method named :attr:`arg` on the object in register :attr:`r2`
-		using the object in register :attr:`r3` as to only argument and store the
-		return value in register :attr:`r1`.
-
-	``"callmeth2"``:
-		Call the method named :attr:`arg` on the object in register :attr:`r2`
-		using the objects in register :attr:`r3` and :attr:`r4` as arguments and
-		store the return value in register :attr:`r1`.
-
-	``"callmeth3"``:
-		Call the method named :attr:`arg` on the object in register :attr:`r2`
-		using the objects in register :attr:`r3`, :attr:`r4` and :attr:`r5` as
-		arguments and store the return value in register :attr:`r1`.
-
-	``"render"``:
-		Render the template whose name is in the attribute :attr:`arg`. The
-		content of register :attr:`r1` will be passed as the data object to the
-		template.
-	"""
-	__slots__ = ("code", "r1", "r2", "r3", "r4", "r5", "arg", "location", "jump")
-
-	def __init__(self, code, r1=None, r2=None, r3=None, r4=None, r5=None, arg=None, location=None):
-		self.code = code
-		self.r1 = r1
-		self.r2 = r2
-		self.r3 = r3
-		self.r4 = r4
-		self.r5 = r5
-		self.arg = arg
-		self.location = location
-		self.jump = None
-
-	def __repr__(self):
-		v = ["<", self.__class__.__name__, " code=%r" % self.code]
-		for attrname in ("r1", "r2", "r3", "r4", "r5", "arg"):
-			attr = getattr(self, attrname)
-			if attr is not None:
-				v.append(" %s=%r" % (attrname, attr))
-		v.append(" at 0x%x>" % id(self))
-		return "".join(v)
-
-	def __str__(self):
-		if self.code is None:
-			return "print %r" % self.location.code
-		elif self.code == "print":
-			return "print r%r" % self.r1
-		elif self.code == "loadnone":
-			return "r%r = None" % self.r1
-		elif self.code == "loadfalse":
-			return "r%r = False" % self.r1
-		elif self.code == "loadtrue":
-			return "r%r = True" % self.r1
-		elif self.code == "loadstr":
-			return "r%r = %r" % (self.r1, self.arg)
-		elif self.code == "loadint":
-			return "r%r = %s" % (self.r1, self.arg)
-		elif self.code == "loadfloat":
-			return "r%r = %s" % (self.r1, self.arg)
-		elif self.code == "loadvar":
-			return "r%r = vars[%r]" % (self.r1, self.arg)
-		elif self.code == "storevar":
-			return "vars[%r] = r%r" % (self.arg, self.r1)
-		elif self.code == "addvar":
-			return "vars[%r] += r%r" % (self.arg, self.r1)
-		elif self.code == "subvar":
-			return "vars[%r] -= r%r" % (self.arg, self.r1)
-		elif self.code == "mulvar":
-			return "vars[%r] *= r%r" % (self.arg, self.r1)
-		elif self.code == "truedivvar":
-			return "vars[%r] /= r%r" % (self.arg, self.r1)
-		elif self.code == "floordivvar":
-			return "vars[%r] //= r%r" % (self.arg, self.r1)
-		elif self.code == "modvar":
-			return "vars[%r] %%= r%r" % (self.arg, self.r1)
-		elif self.code == "delvar":
-			return "del vars[%r]" % self.arg
-		elif self.code == "for":
-			return "for r%r in r%r" % (self.r1, self.r2)
-		elif self.code == "endfor":
-			return "endfor"
-		elif self.code == "if":
-			return "if r%r" % self.r1
-		elif self.code == "else":
-			return "else"
-		elif self.code == "endif":
-			return "endif"
-		elif self.code == "getattr":
-			return "r%r = getattr(r%r, %r)" % (self.r1, self.r2, self.arg)
-		elif self.code == "getitem":
-			return "r%r = r%r[r%r]" % (self.r1, self.r2, self.r3)
-		elif self.code == "getslice":
-			return "r%r = r%r[:]" % (self.r1, self.r2)
-		elif self.code == "getslice1":
-			return "r%r = r%r[r%r:]" % (self.r1, self.r2, self.r3)
-		elif self.code == "getslice2":
-			return "r%r = r%r[:r%r]" % (self.r1, self.r2, self.r4)
-		elif self.code == "getslice12":
-			return "r%r = r%r[r%r:r%r]" % (self.r1, self.r2, self.r3, self.r4)
-		elif self.code == "not":
-			return "r%r = not r%r" % (self.r1, self.r2)
-		elif self.code == "equals":
-			return "r%r = r%r == r%r" % (self.r1, self.r2, self.r3)
-		elif self.code == "notequals":
-			return "r%r = r%r != r%r" % (self.r1, self.r2, self.r3)
-		elif self.code == "contains":
-			return "r%r = r%r in r%r" % (self.r1, self.r2, self.r3)
-		elif self.code == "notcontains":
-			return "r%r = r%r not in r%r" % (self.r1, self.r2, self.r3)
-		elif self.code == "add":
-			return "r%r = r%r + r%r" % (self.r1, self.r2, self.r3)
-		elif self.code == "sub":
-			return "r%r = r%r - r%r" % (self.r1, self.r2, self.r3)
-		elif self.code == "mul":
-			return "r%r = r%r * r%r" % (self.r1, self.r2, self.r3)
-		elif self.code == "floordiv":
-			return "r%r = r%r // r%r" % (self.r1, self.r2, self.r3)
-		elif self.code == "trueiv":
-			return "r%r = r%r / r%r" % (self.r1, self.r2, self.r3)
-		elif self.code == "and":
-			return "r%r = r%r and r%r" % (self.r1, self.r2, self.r3)
-		elif self.code == "or":
-			return "r%r = r%r or r%r" % (self.r1, self.r2, self.r3)
-		elif self.code == "mod":
-			return "r%r = r%r %% r%r" % (self.r1, self.r2, self.r3)
-		elif self.code == "callfunc0":
-			return "r%r = %s()" % (self.r1, self.arg)
-		elif self.code == "callfunc1":
-			return "r%r = %s(r%r)" % (self.r1, self.arg, self.r2)
-		elif self.code == "callfunc2":
-			return "r%r = %s(r%r, r%r)" % (self.r1, self.arg, self.r2, self.r3)
-		elif self.code == "callmeth0":
-			return "r%r = r%r.%s()" % (self.r1, self.r2, self.arg)
-		elif self.code == "callmeth1":
-			return "r%r = r%r.%s(r%r)" % (self.r1, self.r2, self.arg, self.r3)
-		elif self.code == "callmeth2":
-			return "r%r = r%r.%s(r%r, r%r)" % (self.r1, self.r2, self.arg, self.r3, self.r4)
-		elif self.code == "callmeth3":
-			return "r%r = r%r.%s(r%r, r%r, r%r)" % (self.r1, self.r2, self.arg, self.r3, self.r4, self.r5)
-		elif self.code == "render":
-			return "render %s(r%r)" % (self.arg, self.r1)
-		else:
-			raise UnknownOpcodeError(self.code)
+def _tokenize(source, startdelim, enddelim):
+	tokens = []
+	pattern = "%s(print|code|for|if|elif|else|end|render)(\s*((.|\\n)*?)\s*)?%s" % (re.escape(startdelim), re.escape(enddelim))
+	pattern = re.compile(pattern)
+	pos = 0
+	while True:
+		match = pattern.search(source, pos)
+		if match is None:
+			break
+		if match.start() != pos:
+			tokens.append(Location(source, None, pos, match.start(), pos, match.start()))
+		tokens.append(Location(source, source[match.start(1):match.end(1)], match.start(), match.end(), match.start(3), match.end(3)))
+		pos = match.end()
+	end = len(source)
+	if pos != end:
+		tokens.append(Location(source, None, pos, end, pos, end))
+	return tokens
 
 
-class Template(object):
-	def __init__(self):
-		self.source = None
-		self.opcodes = None
-		# The following is used for converting the opcodes back to executable Python code
-		self._indent = 0
-		self._pythonfunction = None
+def _compile(string, startdelim, enddelim):
+	opcodes = []
+	scanner = Scanner()
+	parseexpr = ExprParser(scanner).compile
+	parsestmt = StmtParser(scanner).compile
+	parsefor = ForParser(scanner).compile
+	parserender = RenderParser(scanner).compile
 
-	def compile(cls, source, startdelim="<?", enddelim="?>"):
-		self = cls()
-		self.source = source
-		self.opcodes = list(cls._compile(source, startdelim, enddelim))
-		return self
-	compile = classmethod(compile)
-
-	def loads(cls, data):
-		def _readint(term):
-			i = 0
-			while True:
-				c = stream.read(1)
-				if c.isdigit():
-					i = 10*i+int(c)
-				elif c == term:
-					return i
-				else:
-					raise ValueError("invalid terminator, expected %r, got %r" % (term, c))
-
-		def _readstr(term):
-			i = 0
-			while True:
-				c = stream.read(1)
-				if c.isdigit():
-					i = 10*i+int(c)
-				elif c == term:
-					break
-				elif c.lower() == term:
-					return None
-				else:
-					raise ValueError("invalid terminator, expected %r, got %r" % (term, c))
-			s = stream.read(i)
-			if len(s) != i:
-				raise ValueError("short read")
-			return s
-
-		def _readspec():
-			c = stream.read(1)
-			if c == "-":
-				return None
-			elif c.isdigit():
-				return int(c)
-			else:
-				raise ValueError("invalid register spec %r" % c)
-
-		def _readcr():
-			c = stream.read(1)
-			if c != "\n":
-				raise ValueError("invalid linefeed %r" % c)
-
-		self = cls()
-		if isinstance(data, str):
-			data = data.decode("utf-8-sig")
-		stream = StringIO.StringIO(data)
-		header = stream.readline()
-		header = header.rstrip()
-		if header != "l4":
-			raise ValueError("invalid header, expected 'l4', got %r" % header)
-		version = stream.readline()
-		version = version.rstrip()
-		if version != "1":
-			raise ValueError("invalid version, expected 1 got, %r" % version)
-		self.source = _readstr("s")
-		self.opcodes = []
-		_readcr()
-		count = _readint("#")
-		_readcr()
-		location = None
-		while count:
-			r1 = _readspec()
-			r2 = _readspec()
-			r3 = _readspec()
-			r4 = _readspec()
-			r5 = _readspec()
-			code = _readstr("c")
-			arg = _readstr("a")
-			locspec = stream.read(1)
-			if locspec == "^":
-				if location is None:
-					raise ValueError("no previous location")
-			elif locspec == "*":
-				location = Location(self.source, _readstr("t"), _readint("<"), _readint(">"), _readint("["), _readint("]"))
-			else:
-				raise ValueError("invalid location spec %r" % locspec)
-			_readcr()
-			count -= 1
-			self.opcodes.append(Opcode(code, r1, r2, r3, r4, r5, arg, location))
-		return self
-	loads = classmethod(loads)
-
-	def load(cls, stream):
-		return cls.loads(stream.read())
-	load = classmethod(load)
-
-	def dump(self, stream):
-		def _writeint(term, number):
-			stream.write(unicode(number))
-			stream.write(term)
-
-		def _writestr(term, string):
-			if string:
-				stream.write(unicode(len(string)))
-			if string is None:
-				term = term.upper()
-			stream.write(term)
-			if string is not None:
-				stream.write(string)
-
-		stream.write("l4\n1\n")
-		_writestr("s", self.source)
-		stream.write("\n")
-		_writeint("#", len(self.opcodes))
-		stream.write("\n")
-		lastlocation = None
-		for opcode in self.opcodes:
-			if opcode.r1 is not None:
-				stream.write(unicode(opcode.r1))
-			else:
-				stream.write("-")
-			if opcode.r2 is not None:
-				stream.write(unicode(opcode.r2))
-			else:
-				stream.write("-")
-			if opcode.r3 is not None:
-				stream.write(unicode(opcode.r3))
-			else:
-				stream.write("-")
-			if opcode.r4 is not None:
-				stream.write(unicode(opcode.r4))
-			else:
-				stream.write("-")
-			if opcode.r5 is not None:
-				stream.write(unicode(opcode.r5))
-			else:
-				stream.write("-")
-			_writestr("c", opcode.code)
-			_writestr("a", opcode.arg)
-			if opcode.location is not lastlocation:
-				lastlocation = opcode.location
-				stream.write("*")
-				_writestr("t", lastlocation.type)
-				_writeint("<", lastlocation.starttag)
-				_writeint(">", lastlocation.endtag)
-				_writeint("[", lastlocation.startcode)
-				_writeint("]", lastlocation.endcode)
-			else:
-				stream.write("^")
-			stream.write("\n")
-
-	def dumps(self):
-		stream = StringIO.StringIO()
-		self.dump(stream)
-		return stream.getvalue()
-
-	def _code(self, code):
-		self._lines.append("%s%s\n" % ("\t"*self._indent, code))
-
-	def pythonsource(self, function=None):
-		self._lines = []
-		self._indent = 0
-		if function is not None:
-			self._code("def %s(data, templates={}):" % function)
-			self._indent += 1
-		self._code("import sys")
-		self._code("from ll.misc import xmlescape")
-		self._code("from ll import l4c")
-		self._code("variables = dict(data=data)")
-		self._code("source = %r" % self.source)
-		self._code("locations = %r" % (tuple([(oc.location.type, oc.location.starttag, oc.location.endtag, oc.location.startcode, oc.location.endcode) for oc in self.opcodes]),))
-		for i in xrange(10):
-			self._code("reg%d = None" % i)
-
-		self._code("try:")
-		self._indent += 1
-		self._code("startline = sys._getframe().f_lineno+1") # The source line of the first opcode
+	# This stack stores for each nested for/foritem/if/elif/else the following information:
+	# 1) Which construct we're in (i.e. "if" or "for")
+	# For ifs:
+	# 2) How many if's or elif's we have seen (this is used for simulating elif's via nested if's, for each additional elif, we have one more endif to add)
+	# 3) Whether we've already seen the else
+	stack = []
+	for location in _tokenize(string, startdelim, enddelim):
 		try:
-			for opcode in self.opcodes:
-				# The following code ensures that each opcode outputs exactly one source code line
-				# This makes it possible in case of an error to find out which opcode produced the error
-				if opcode.code is None:
-					self._code("yield %r" % opcode.location.code)
-				elif opcode.code == "loadstr":
-					self._code("reg%d = %r" % (opcode.r1, opcode.arg))
-				elif opcode.code == "loadint":
-					self._code("reg%d = %s" % (opcode.r1, opcode.arg))
-				elif opcode.code == "loadfloat":
-					self._code("reg%d = %s" % (opcode.r1, opcode.arg))
-				elif opcode.code == "loadnone":
-					self._code("reg%d = None" % opcode.r1)
-				elif opcode.code == "loadfalse":
-					self._code("reg%d = False" % opcode.r1)
-				elif opcode.code == "loadtrue":
-					self._code("reg%d = True" % opcode.r1)
-				elif opcode.code == "loadvar":
-					self._code("reg%d = variables[%r]" % (opcode.r1, opcode.arg))
-				elif opcode.code == "storevar":
-					self._code("variables[%r] = reg%d" % (opcode.arg, opcode.r1))
-				elif opcode.code == "addvar":
-					self._code("variables[%r] += reg%d" % (opcode.arg, opcode.r1))
-				elif opcode.code == "subvar":
-					self._code("variables[%r] -= reg%d" % (opcode.arg, opcode.r1))
-				elif opcode.code == "mulvar":
-					self._code("variables[%r] *= reg%d" % (opcode.arg, opcode.r1))
-				elif opcode.code == "truedivvar":
-					self._code("variables[%r] /= reg%d" % (opcode.arg, opcode.r1))
-				elif opcode.code == "floordivvar":
-					self._code("variables[%r] //= reg%d" % (opcode.arg, opcode.r1))
-				elif opcode.code == "modvar":
-					self._code("variables[%r] %%= reg%d" % (opcode.arg, opcode.r1))
-				elif opcode.code == "delvar":
-					self._code("del variables[%r]" % opcode.arg)
-				elif opcode.code == "getattr":
-					self._code("reg%d = reg%d[%r]" % (opcode.r1, opcode.r2, opcode.arg))
-				elif opcode.code == "getitem":
-					self._code("reg%d = reg%d[reg%d]" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "getslice12":
-					self._code("reg%d = reg%d[reg%d:reg%d]" % (opcode.r1, opcode.r2, opcode.r3, opcode.r4))
-				elif opcode.code == "getslice1":
-					self._code("reg%d = reg%d[reg%d:]" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "getslice2":
-					self._code("reg%d = reg%d[:reg%d]" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "getslice":
-					self._code("reg%d = reg%d[:]" % (opcode.r1, opcode.r2))
-				elif opcode.code == "print":
-					self._code("if reg%d is not None: yield unicode(reg%d)" % (opcode.r1, opcode.r1))
-				elif opcode.code == "for":
-					self._code("for reg%d in reg%d:" % (opcode.r1, opcode.r2))
-					self._indent += 1
-				elif opcode.code == "endfor":
-					self._indent -= 1
-					self._code("# end for")
-				elif opcode.code == "not":
-					self._code("reg%d = not reg%d" % (opcode.r1, opcode.r2))
-				elif opcode.code == "neg":
-					self._code("reg%d = -reg%d" % (opcode.r1, opcode.r2))
-				elif opcode.code == "contains":
-					self._code("reg%d = reg%d in reg%d" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "notcontains":
-					self._code("reg%d = reg%d not in reg%d" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "equals":
-					self._code("reg%d = reg%d == reg%d" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "notequals":
-					self._code("reg%d = reg%d != reg%d" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "add":
-					self._code("reg%d = reg%d + reg%d" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "sub":
-					self._code("reg%d = reg%d - reg%d" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "mul":
-					self._code("reg%d = reg%d * reg%d" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "floordiv":
-					self._code("reg%d = reg%d // reg%d" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "truediv":
-					self._code("reg%d = reg%d / reg%d" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "and":
-					self._code("reg%d = bool(reg%d and reg%d)" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "or":
-					self._code("reg%d = bool(reg%d or reg%d)" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "mod":
-					self._code("reg%d = reg%d %% reg%d" % (opcode.r1, opcode.r2, opcode.r3))
-				elif opcode.code == "callfunc0":
-					raise l4c.UnknownFunctionError(opcode.arg)
-				elif opcode.code == "callfunc1":
-					if opcode.arg == "xmlescape":
-						self._code("reg%d = xmlescape(reg%d)" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "str":
-						self._code("reg%d = unicode(reg%d) if reg%d is not None else u''" % (opcode.r1, opcode.r2, opcode.r2))
-					elif opcode.arg == "int":
-						self._code("reg%d = int(reg%d)" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "len":
-						self._code("reg%d = len(reg%d)" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "enumerate":
-						self._code("reg%d = enumerate(reg%d)" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "isnone":
-						self._code("reg%d = reg%d is None" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "isstr":
-						self._code("reg%d = isinstance(reg%d, basestring)" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "isint":
-						self._code("reg%d = isinstance(reg%d, (int, long)) and not isinstance(reg%d, bool)" % (opcode.r1, opcode.r2, opcode.r2))
-					elif opcode.arg == "isfloat":
-						self._code("reg%d = isinstance(reg%d, float)" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "isbool":
-						self._code("reg%d = isinstance(reg%d, bool)" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "islist":
-						self._code("reg%d = isinstance(reg%d, (list, tuple))" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "isdict":
-						self._code("reg%d = isinstance(reg%d, dict)" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "repr":
-						self._code("reg%d = unicode(repr(reg%d))" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "chr":
-						self._code("reg%d = unichr(reg%d)" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "ord":
-						self._code("reg%d = ord(reg%d)" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "hex":
-						self._code("reg%d = hex(reg%d)" % (opcode.r1, opcode.r2))
-					elif opcode.arg == "oct":
-						self._code('reg%d = "0o%%s" % oct(reg%d)[2:]' % (opcode.r1, opcode.r2))
-					elif opcode.arg == "bin":
-						self._code('reg%d = "0b" + ("".join("1" if reg%d & 1<<i else "0" for i in xrange(100)).rstrip("0"))[::-1]' % (opcode.r1, opcode.r2))
-					elif opcode.arg == "sorted":
-						self._code("reg%d = sorted(reg%d)" % (opcode.r1, opcode.r2))
+			if location.type is None:
+				opcodes.append(Opcode(None, -1, -1, -1, -1, -1, None, location))
+			elif location.type == "print":
+				(r, opcodeexpr) = parseexpr(location)
+				opcodes += opcodeexpr
+				opcodes.append(Opcode("print", r, -1, -1, -1, -1, None, location))
+			elif location.type == "code":
+				opcodes += parsestmt(location)[1]
+			elif location.type == "if":
+				(r, opcodeexpr) = parseexpr(location)
+				opcodes += opcodeexpr
+				opcodes.append(Opcode("if", r, -1, -1, -1, -1, None, location))
+				stack.append(("if", 1, False))
+			elif location.type == "elif":
+				if not stack or stack[-1][0] != "if":
+					raise BlockError("elif doesn't match any if")
+				elif stack[-1][2]:
+					raise BlockError("else already seen in elif")
+				opcodes.append(Opcode("else", -1, -1, -1, -1, -1, None, location))
+				(r, opcodeexpr) = parseexpr(location)
+				opcodes += opcodeexpr
+				opcodes.append(Opcode("if", r, -1, -1, -1, -1, None, location))
+				stack[-1] = ("if", stack[-1][1]+1, False)
+			elif location.type == "else":
+				if not stack or stack[-1][0] != "if":
+					raise BlockError("else doesn't match any if")
+				elif stack[-1][2]:
+					raise BlockError("duplicate else")
+				opcodes.append(Opcode("else", -1, -1, -1, -1, -1, location))
+				stack[-1] = ("if", stack[-1][1], True)
+			elif location.type == "end":
+				if not stack:
+					raise BlockError("not in any block")
+				code = location.code
+				if code:
+					if code == "if":
+						if stack[-1][0] != "if":
+							raise BlockError("endif doesn't match any if")
+					elif code == "for":
+						if stack[-1][0] != "for":
+							raise BlockError("endfor doesn't match any for")
 					else:
-						raise UnknownFunctionError(opcode.arg)
-				elif opcode.code == "callfunc2":
-					raise UnknownFunctionError(opcode.arg)
-				elif opcode.code == "callmeth0":
-					if opcode.arg in ("split", "rsplit", "strip", "lstrip", "rstrip", "upper", "lower"):
-						self._code("reg%d = reg%d.%s()" % (opcode.r1, opcode.r2, opcode.arg))
-					elif opcode.arg == "items":
-						self._code("reg%d = reg%d.iteritems()" % (opcode.r1, opcode.r2))
-					else:
-						raise UnknownMethodError(opcode.arg)
-				elif opcode.code == "callmeth1":
-					if opcode.arg in ("split", "rsplit", "strip", "lstrip", "rstrip", "startswith", "endswith", "find"):
-						self._code("reg%d = reg%d.%s(reg%d)" % (opcode.r1, opcode.r2, opcode.arg, opcode.r3))
-					else:
-						raise UnknownMethodError(opcode.arg)
-				elif opcode.code == "callmeth2":
-					if opcode.arg in ("split", "rsplit", "find"):
-						self._code("reg%d = reg%d.%s(reg%d, reg%d)" % (opcode.r1, opcode.r2, opcode.arg, opcode.r3, opcode.r4))
-					else:
-						raise UnknownMethodError(opcode.arg)
-				elif opcode.code == "callmeth3":
-					if opcode.arg == "find":
-						self._code("reg%d = reg%d.%s(reg%d, reg%d, reg%d)" % (opcode.r1, opcode.r2, opcode.arg, opcode.r3, opcode.r4, opcode.r5))
-					else:
-						raise UnknownMethodError(opcode.arg)
-				elif opcode.code == "if":
-					self._code("if reg%d:" % opcode.r1)
-					self._indent += 1
-				elif opcode.code == "else":
-					self._indent -= 1
-					self._code("else:")
-					self._indent += 1
-				elif opcode.code == "endif":
-					self._indent -= 1
-					self._code("# end if")
-				elif opcode.code == "render":
-					self._code("for chunk in templates[%r](reg%d, templates): yield chunk" % (opcode.arg, opcode.r1))
-				else:
-					raise UnknownOpcodeError(opcode.code)
+						raise BlockError("illegal end value %r" % code)
+				last = stack.pop()
+				if last[0] == "if":
+					for i in xrange(last[1]):
+						opcodes.append(Opcode("endif", -1, -1, -1, -1, -1, None, location))
+				else: # last[0] == "for":
+					opcodes.append(Opcode("endfor", -1, -1, -1, -1, -1, None, location))
+			elif location.type == "for":
+				opcodes += parsefor(location)[1]
+				stack.append(("for",))
+			elif location.type == "render":
+				opcodes += parserender(location)[1]
+			else: # Can't happen
+				raise ValueError("unknown tag %r" % location.type)
 		except Error, exc:
-			exc.decorate(opcode.location)
+			exc.decorate(location)
 			raise
 		except Exception, exc:
-			raise Error(exc).decorate(opcode.location)
-		self._indent -= 1
-		buildloc = "l4c.Location(source, *locations[sys.exc_info()[2].tb_lineno-startline])"
-		self._code("except l4c.Error, exc:")
-		self._indent += 1
-		self._code("exc.decorate(%s)" % buildloc)
-		self._code("raise")
-		self._indent -= 1
-		self._code("except Exception, exc:")
-		self._indent += 1
-		self._code("raise l4c.Error(exc).decorate(%s)" % buildloc)
-		result = "".join(self._lines)
-		del self._lines
-		return result
-
-	def pythonfunction(self):
-		if self._pythonfunction is None:
-			code = "".join(self.pythonsource("render"))
-			ns = {}
-			exec code.encode("utf-8") in ns
-			self._pythonfunction = ns["render"]
-		return self._pythonfunction
-
-	def __call__(self, data, templates={}):
-		return self.pythonfunction()(data, templates)
-
-	def render(self, data, templates={}):
-		return self.pythonfunction()(data, templates)
-
-	def renders(self, data, templates={}):
-		return "".join(self.render(data, templates))
-
-	def format(self, indent="\t"):
-		"""
-		Format the list of opcodes. This is a generator yielding lines to be output
-		(but without trailing newlines). :var:`indent` can be used to specify how
-		to indent block (defaulting to ``"\\t"``).
-		"""
-		i = 0
-		lines = []
-		for opcode in self:
-			if opcode.code in ("else", "endif", "endfor"):
-				i -= 1
-			if opcode.code in ("endif", "endfor"):
-				lines.append("%s}" % (i*indent))
-			elif opcode.code in ("for", "if"):
-				lines.append("%s%s {" % (i*indent, opcode))
-			elif opcode.code == "else":
-				lines.append("%s} else {" % (i*indent))
-			else:
-				lines.append("%s%s" % (i*indent, opcode))
-			if opcode.code in ("for", "if", "else"):
-				i += 1
-		return lines
-
-	def _tokenize(cls, source, startdelim, enddelim):
-		tokens = []
-		pattern = "%s(print|code|for|if|elif|else|end|render)(\s*((.|\\n)*?)\s*)?%s" % (re.escape(startdelim), re.escape(enddelim))
-		pattern = re.compile(pattern)
-		pos = 0
-		while True:
-			match = pattern.search(source, pos)
-			if match is None:
-				break
-			if match.start() != pos:
-				tokens.append(Location(source, None, pos, match.start(), pos, match.start()))
-			tokens.append(Location(source, source[match.start(1):match.end(1)], match.start(), match.end(), match.start(3), match.end(3)))
-			pos = match.end()
-		end = len(source)
-		if pos != end:
-			tokens.append(Location(source, None, pos, end, pos, end))
-		return tokens
-	_tokenize = classmethod(_tokenize)
-
-	def _compile(cls, string, startdelim, enddelim):
-		opcodes = []
-		scanner = Scanner()
-		parseexpr = ExprParser(scanner).compile
-		parsestmt = StmtParser(scanner).compile
-		parsefor = ForParser(scanner).compile
-		parserender = RenderParser(scanner).compile
-
-		# This stack stores for each nested for/foritem/if/elif/else the following information:
-		# 1) Which construct we're in (i.e. "if" or "for")
-		# For ifs:
-		# 2) How many if's or elif's we have seen (this is used for simulating elif's via nested if's, for each additional elif, we have one more endif to add)
-		# 3) Whether we've already seen the else
-		stack = []
-		for location in cls._tokenize(string, startdelim, enddelim):
-			try:
-				if location.type is None:
-					opcodes.append(Opcode(None, location=location))
-				elif location.type == "print":
-					(r, opcodeexpr) = parseexpr(location)
-					opcodes += opcodeexpr
-					opcodes.append(Opcode("print", r1=r, location=location))
-				elif location.type == "code":
-					opcodes += parsestmt(location)[1]
-				elif location.type == "if":
-					(r, opcodeexpr) = parseexpr(location)
-					opcodes += opcodeexpr
-					opcodes.append(Opcode("if", r1=r, location=location))
-					stack.append(("if", 1, False))
-				elif location.type == "elif":
-					if not stack or stack[-1][0] != "if":
-						raise BlockError("elif doesn't match any if")
-					elif stack[-1][2]:
-						raise BlockError("else already seen in elif")
-					opcodes.append(Opcode("else", location=location))
-					(r, opcodeexpr) = parseexpr(location)
-					opcodes += opcodeexpr
-					opcodes.append(Opcode("if", r1=r, location=location))
-					stack[-1] = ("if", stack[-1][1]+1, False)
-				elif location.type == "else":
-					if not stack or stack[-1][0] != "if":
-						raise BlockError("else doesn't match any if")
-					elif stack[-1][2]:
-						raise BlockError("duplicate else")
-					opcodes.append(Opcode("else", location=location))
-					stack[-1] = ("if", stack[-1][1], True)
-				elif location.type == "end":
-					if not stack:
-						raise BlockError("not in any block")
-					code = location.code
-					if code:
-						if code == "if":
-							if stack[-1][0] != "if":
-								raise BlockError("endif doesn't match any if")
-						elif code == "for":
-							if stack[-1][0] != "for":
-								raise BlockError("endfor doesn't match any for")
-						else:
-							raise BlockError("illegal end value %r" % code)
-					last = stack.pop()
-					if last[0] == "if":
-						for i in xrange(last[1]):
-							opcodes.append(Opcode("endif", location=location))
-					else: # last[0] == "for":
-						opcodes.append(Opcode("endfor", location=location))
-				elif location.type == "for":
-					opcodes += parsefor(location)[1]
-					stack.append(("for",))
-				elif location.type == "render":
-					opcodes += parserender(location)[1]
-				else: # Can't happen
-					raise ValueError("unknown tag %r" % location.type)
-			except Error, exc:
-				exc.decorate(location)
-				raise
-			except Exception, exc:
-				raise
-				raise Error(exc).decorate(location)
-		if stack:
-			raise BlockError("unclosed blocks")
-		return opcodes
-	_compile = classmethod(_compile)
-
-	def __str__(self):
-		return "\n".join(self.format())
-
-
-compile = Template.compile
-load = Template.load
-loads = Template.loads
+			raise
+			raise Error(exc).decorate(location)
+	if stack:
+		raise BlockError("unclosed blocks")
+	return opcodes
 
 
 ###
@@ -1462,7 +303,7 @@ class None_(Const):
 
 	def compile(self, registers, location):
 		r = allocreg(registers, location)
-		return (r, [Opcode("loadnone", r1=r, location=location)])
+		return (r, [Opcode("loadnone", r, -1, -1, -1, -1, None, location)])
 
 
 class True_(Const):
@@ -1474,7 +315,7 @@ class True_(Const):
 
 	def compile(self, registers, location):
 		r = allocreg(registers, location)
-		return (r, [Opcode("loadtrue", r1=r, location=location)])
+		return (r, [Opcode("loadtrue", r, -1, -1, -1, -1, None, location)])
 
 
 class False_(Const):
@@ -1486,7 +327,7 @@ class False_(Const):
 
 	def compile(self, registers, location):
 		r = allocreg(registers, location)
-		return (r, [Opcode("loadfalse", r1=r, location=location)])
+		return (r, [Opcode("loadfalse", r, -1, -1, -1, -1, None, location)])
 
 
 
@@ -1499,7 +340,7 @@ class Value(Const):
 
 	def compile(self, registers, location):
 		r = allocreg(registers, location)
-		return (r, [Opcode("load%s" % self.type, r1=r, arg=unicode(self.value), location=location)])
+		return (r, [Opcode("load%s" % self.type, r, -1, -1, -1, -1, str(self.value), location)])
 
 
 class Int(Value):
@@ -1511,7 +352,7 @@ class Float(Value):
 
 	def compile(self, registers, location):
 		r = allocreg(registers, location)
-		return (r, [Opcode("load%s" % self.type, r1=r, arg=repr(self.value), location=location)])
+		return (r, [Opcode("load%s" % self.type, r, -1, -1, -1, -1, repr(self.value), location)])
 
 
 class Str(Value):
@@ -1529,7 +370,7 @@ class Name(AST):
 
 	def compile(self, registers, location):
 		r = allocreg(registers, location)
-		return (r, [Opcode("loadvar", r1=r, arg=self.name, location=location)])
+		return (r, [Opcode("loadvar", r, -1, -1, -1, -1, self.name, location)])
 
 
 class For(AST):
@@ -1543,16 +384,16 @@ class For(AST):
 	def compile(self, registers, location):
 		(rc, opcodes) = self.cont.compile(registers, location)
 		ri = allocreg(registers, location)
-		opcodes.append(Opcode("for", r1=ri, r2=rc, location=location))
+		opcodes.append(Opcode("for", ri, rc, -1, -1, -1, None, location))
 		if isinstance(self.iter, list):
 			for (i, iter) in enumerate(self.iter):
 				rii = allocreg(registers, location)
-				opcodes.append(Opcode("loadint", r1=rii, arg=str(i), location=location))
-				opcodes.append(Opcode("getitem", r1=rii, r2=ri, r3=rii, location=location))
-				opcodes.append(Opcode("storevar", r1=rii, arg=iter.name, location=location))
+				opcodes.append(Opcode("loadint", rii, -1, -1, -1, -1, str(i), location))
+				opcodes.append(Opcode("getitem", rii, ri, rii, -1, -1, None, location))
+				opcodes.append(Opcode("storevar", rii, -1, -1, -1, -1, iter.name, location))
 				freereg(registers, rii)
 		else:
-			opcodes.append(Opcode("storevar", r1=ri, arg=self.iter.name, location=location))
+			opcodes.append(Opcode("storevar", ri, -1, -1, -1, -1, self.iter.name, location))
 		freereg(registers, ri)
 		freereg(registers, rc)
 		return (None, opcodes)
@@ -1568,7 +409,7 @@ class GetAttr(AST):
 
 	def compile(self, registers, location):
 		(r, opcodes) in self.obj.compile(registers, location)
-		opcodes.append(Opcode("getattr", r1=r, r2=r, arg=self.attr.name, location=location))
+		opcodes.append(Opcode("getattr", r, r, -1, -1, -1, self.attr.name, location))
 		return (r, opcodes)
 
 
@@ -1584,7 +425,7 @@ class GetItem(AST):
 		(r1, opcodes1) = self.obj.compile(registers, location)
 		(r2, opcodes2) = self.key.compile(registers, location)
 		opcodes = opcodes1 + opcodes2
-		opcodes.append(Opcode("getitem", r1=r1, r2=r1, r3=r2, location=location))
+		opcodes.append(Opcode("getitem", r1, r1, r2, -1, -1, None, location))
 		freereg(registers, r2)
 		return (r1, opcodes)
 
@@ -1603,7 +444,7 @@ class GetSlice12(AST):
 		(r2, opcodes2) = self.index1.compile(registers, location)
 		(r3, opcodes3) = self.index2.compile(registers, location)
 		opcodes = opcodes1 + opcodes2 + opcodes3
-		opcodes.append(Opcode("getslice12", r1=r1, r2=r1, r3=r2, r4=r3, location=location))
+		opcodes.append(Opcode("getslice12", r1, r1, r2, r3, -1, None, location))
 		freereg(registers, r2)
 		freereg(registers, r3)
 		return (r1, opcodes)
@@ -1621,7 +462,7 @@ class GetSlice1(AST):
 		(r1, opcodes1) = self.obj.compile(registers, location)
 		(r2, opcodes2) = self.index1.compile(registers, location)
 		opcodes = opcodes1 + opcodes2
-		opcodes.append(Opcode("getslice1", r1=r1, r2=r1, r3=r2, location=location))
+		opcodes.append(Opcode("getslice1", r1, r1, r2, -1, -1, None, location))
 		freereg(registers, r2)
 		return (r1, opcodes)
 
@@ -1638,7 +479,7 @@ class GetSlice2(AST):
 		(r1, opcodes1) = self.obj.compile(registers, location)
 		(r2, opcodes2) = self.index2.compile(registers, location)
 		opcodes = opcodes1 + opcodes2
-		opcodes.append(Opcode("getslice2", r1=r1, r2=r1, r3=r2, location=location))
+		opcodes.append(Opcode("getslice2", r1, r1, r2, -1, -1, None, location))
 		freereg(registers, r2)
 		return (r1, opcodes)
 
@@ -1652,7 +493,7 @@ class GetSlice(AST):
 
 	def compile(self, registers, location):
 		(r1, opcodes) = self.obj.compile(registers, location)
-		opcodes.append(Opcode("getslice", r1=r1, r2=r1, location=location))
+		opcodes.append(Opcode("getslice", r1, r1, -1, -1, -1, None, location))
 		return (r1, opcodes)
 
 
@@ -1667,7 +508,7 @@ class Unary(AST):
 
 	def compile(self, registers, location):
 		(r, opcodes) = self.obj.compile(registers, location)
-		opcodes.append(Opcode(self.opcode, r1=r, r2=r, location=location))
+		opcodes.append(Opcode(self.opcode, r, r, -1, -1, -1, None, location))
 		return (r, opcodes)
 
 
@@ -1693,7 +534,7 @@ class Binary(AST):
 		(r1, opcodes1) = self.obj1.compile(registers, location)
 		(r2, opcodes2) = self.obj2.compile(registers, location)
 		opcodes = opcodes1 + opcodes2
-		opcodes.append(Opcode(self.opcode, r1=r1, r2=r1, r3=r2, location=location))
+		opcodes.append(Opcode(self.opcode, r1, r1, r2, -1, -1, None, location))
 		freereg(registers, r2)
 		return (r1, opcodes)
 
@@ -1758,7 +599,7 @@ class ChangeVar(AST):
 
 	def compile(self, registers, location):
 		(r, opcodes) = self.value.compile(registers, location)
-		opcodes.append(Opcode(self.opcode, r1=r, arg=self.name.name, location=location))
+		opcodes.append(Opcode(self.opcode, r, -1, -1, -1, -1, self.name.name, location))
 		freereg(registers, r)
 		return (None, opcodes)
 
@@ -1799,7 +640,7 @@ class DelVar(AST):
 		return "%s(%r)" % (self.__class__.__name__, self.name)
 
 	def compile(self, registers, location):
-		return (None, [Opcode("delvar", arg=self.name.name, location=location)])
+		return (None, [Opcode("delvar", -1, -1, -1, -1, -1, self.name.name, location)])
 
 
 class CallFunc(AST):
@@ -1816,16 +657,16 @@ class CallFunc(AST):
 	def compile(self, registers, location):
 		if len(self.args) == 0:
 			r = allocreg(registers, location)
-			return (r, [Opcode("callfunc0", r1=r, arg=self.name.name, location=location)])
+			return (r, [Opcode("callfunc0", r, -1, -1, -1, -1, self.name.name, location)])
 		elif len(self.args) == 1:
 			(r0, opcodes) = self.args[0].compile(registers, location)
-			opcodes.append(Opcode("callfunc1", r1=r0, r2=r0, arg=self.name.name, location=location))
+			opcodes.append(Opcode("callfunc1", r0, r0, -1, -1, -1, self.name.name, location))
 			return (r0, opcodes)
 		elif len(self.args) == 2:
 			(r0, opcodes0) = self.args[0].compile(registers, location)
 			(r1, opcodes1) = self.args[1].compile(registers, location)
 			opcodes = opcodes0 + opcodes1
-			opcodes.append(Opcode("callfunc2", r1=r0, r2=r0, r3=r1, arg=self.name.name, location=location))
+			opcodes.append(Opcode("callfunc2", r0, r0, r1, -1, -1, self.name.name, location))
 			freereg(registers, r1)
 			return (r0, opcodes)
 		else:
@@ -1847,13 +688,13 @@ class CallMeth(AST):
 	def compile(self, registers, location):
 		if len(self.args) == 0:
 			(r, opcodes) = self.obj.compile(registers, location)
-			opcodes.append(Opcode("callmeth0", r1=r, r2=r, arg=self.name.name, location=location))
+			opcodes.append(Opcode("callmeth0", r, r, -1, -1, -1, self.name.name, location))
 			return (r, opcodes)
 		elif len(self.args) == 1:
 			(r, opcodes) = self.obj.compile(registers, location)
 			(r0, opcodes0) = self.args[0].compile(registers, location)
 			opcodes += opcodes0
-			opcodes.append(Opcode("callmeth1", r1=r, r2=r, r3=r0, arg=self.name.name, location=location))
+			opcodes.append(Opcode("callmeth1", r, r, r0, -1, -1, self.name.name, location))
 			freereg(registers, r0)
 			return (r, opcodes)
 		elif len(self.args) == 2:
@@ -1862,7 +703,7 @@ class CallMeth(AST):
 			(r1, opcodes1) = self.args[1].compile(registers, location)
 			opcodes += opcodes1
 			opcodes += opcodes2
-			opcodes.append(Opcode("callmeth2", r1=r, r2=r, r3=r0, r4=r1, arg=self.name.name, location=location))
+			opcodes.append(Opcode("callmeth2", r, r, r0, r1, -1, self.name.name, location))
 			freereg(registers, r0)
 			freereg(registers, r1)
 			return (r, opcodes)
@@ -1874,7 +715,7 @@ class CallMeth(AST):
 			opcodes += opcodes1
 			opcodes += opcodes2
 			opcodes += opcodes3
-			opcodes.append(Opcode("callmeth3", r1=r, r2=r, r3=r0, r4=r1, r5=r2, arg=self.name.name, location=location))
+			opcodes.append(Opcode("callmeth3", r, r, r0, r1, r2, self.name.name, location))
 			freereg(registers, r0)
 			freereg(registers, r1)
 			freereg(registers, r2)
@@ -1893,7 +734,7 @@ class Render(AST):
 
 	def compile(self, registers, location):
 		(r, opcodes) = self.value.compile(registers, location)
-		opcodes.append(Opcode("render", r1=r, arg=self.name.name, location=location))
+		opcodes.append(Opcode("render", r, -1, -1, -1, -1, self.name.name, location))
 		freereg(registers, r)
 		return (None, opcodes)
 
@@ -1923,7 +764,7 @@ class Scanner(spark.GenericScanner):
 
 	def token(self, s):
 		self.rv.append(Token(s))
-	token.spark = {"default": ["in|not|or|and|del|\\(|\\)|\\[|\\]|\\.|,|==|\\!=|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*|/|//"]}
+	token.spark = {"default": ["\\(|\\)|\\[|\\]|\\.|,|==|\\!=|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*|/|//"]}
 
 	def none(self, s):
 		self.rv.append(None_())
@@ -1938,7 +779,10 @@ class Scanner(spark.GenericScanner):
 	false.spark = {"default": ["False"]}
 
 	def name(self, s):
-		self.rv.append(Name(s))
+		if s in ("in", "not", "or", "and", "del"):
+			self.rv.append(Token(s))
+		else:
+			self.rv.append(Name(s))
 	name.spark = {"default": ["[a-zA-Z_][\\w]*"]}
 
 	# We don't have negatve numbers, this is handled by constant folding in the AST for unary minus
@@ -2369,6 +1213,5 @@ class RenderParser(ExprParser):
 
 
 class Compiler(L4CompilerType):
-	def compile(self, source):
-		t = compile(source)
-		return t.dumps()
+	def compile(self, source, startdelim, enddelim):
+		return L4Template(source, _compile(source, startdelim, enddelim))

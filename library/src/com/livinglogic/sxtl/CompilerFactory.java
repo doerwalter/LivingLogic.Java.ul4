@@ -1,7 +1,6 @@
 package com.livinglogic.sxtl;
 
 import java.util.Properties;
-import java.util.Date;
 
 import org.python.core.PyObject;
 import org.python.core.PyString;
@@ -21,12 +20,9 @@ public class CompilerFactory
 		compiler = (L4CompilerType)compilerObj.__tojava__(L4CompilerType.class);
 	}
 
-	public String compile(String source)
+	public Template compile(String source)
 	{
-		System.out.println(new Date().getTime());
-		String result = compiler.compile(source);
-		System.out.println(new Date().getTime());
-		return result;
+		return compiler.compile(source, "<?", "?>");
 	}
 
 	private L4CompilerType compiler;
