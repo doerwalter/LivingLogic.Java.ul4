@@ -986,6 +986,10 @@ class ExprParser(spark.GenericParser):
 		return CallFunc(name, [arg0, arg1])
 	expr_callfunc2.spark = ['expr10 ::= name ( expr0 , expr0 )']
 
+	def expr_callfunc3(self, (name, _0, arg0, _1, arg1, _2, arg2, _3)):
+		return CallFunc(name, [arg0, arg1, arg2])
+	expr_callfunc3.spark = ['expr10 ::= name ( expr0 , expr0 , expr0 )']
+
 	def expr_getitem(self, (expr, _0, key, _1)):
 		if isinstance(expr, Const) and isinstance(key, Const): # Constant folding
 			return self.makeconst(expr.value[key.value])
