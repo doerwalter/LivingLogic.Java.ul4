@@ -226,7 +226,7 @@ public class Template
 
 	protected List opcodes;
 
-	public Template()
+	private Template()
 	{
 		this.source = null;
 		this.opcodes = new LinkedList();
