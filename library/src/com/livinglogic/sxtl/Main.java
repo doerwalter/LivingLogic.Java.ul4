@@ -14,7 +14,7 @@ public class Main
 		long start = new Date().getTime();
 		CompilerFactory factory = new CompilerFactory();
 		System.out.println("make Factory " + (time()-start));
-		Template bytecode = factory.compile("<?for i in enumerate(data)?><?print int(i[0])?>:<?print i[1].upper()?>\\n<?end for?>");
+		Template bytecode = factory.compile("<?if data?><ul><?for item in data?><li><?print xmlescape(item)?></li><?end for?></ul><?end if?>");
 		System.out.println("Compile " + (time()-start));
 		Renderer renderer = new Renderer(bytecode.opcodes);
 		System.out.println("Make Renderer " + (time()-start));
