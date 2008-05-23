@@ -191,14 +191,12 @@ def _compile(string, startdelim, enddelim):
 			if location.type is None:
 				opcodes.append(Opcode(None, -1, -1, -1, -1, -1, None, location))
 			elif location.type == "print":
-				(r, opcodeexpr) = parseexpr(location)
-				opcodes += opcodeexpr
+				r = parseexpr(opcodes, location)
 				opcodes.append(Opcode("print", r, -1, -1, -1, -1, None, location))
 			elif location.type == "code":
-				opcodes += parsestmt(location)[1]
+				parsestmt(opcodes, location)
 			elif location.type == "if":
-				(r, opcodeexpr) = parseexpr(location)
-				opcodes += opcodeexpr
+				r = parseexpr(opcodes, location)
 				opcodes.append(Opcode("if", r, -1, -1, -1, -1, None, location))
 				stack.append(("if", 1, False))
 			elif location.type == "elif":
@@ -207,8 +205,7 @@ def _compile(string, startdelim, enddelim):
 				elif stack[-1][2]:
 					raise BlockError("else already seen in elif")
 				opcodes.append(Opcode("else", -1, -1, -1, -1, -1, None, location))
-				(r, opcodeexpr) = parseexpr(location)
-				opcodes += opcodeexpr
+				r = parseexpr(opcodes, location)
 				opcodes.append(Opcode("if", r, -1, -1, -1, -1, None, location))
 				stack[-1] = ("if", stack[-1][1]+1, False)
 			elif location.type == "else":
@@ -238,10 +235,10 @@ def _compile(string, startdelim, enddelim):
 				else: # last[0] == "for":
 					opcodes.append(Opcode("endfor", -1, -1, -1, -1, -1, None, location))
 			elif location.type == "for":
-				opcodes += parsefor(location)[1]
+				parsefor(opcodes, location)
 				stack.append(("for",))
 			elif location.type == "render":
-				opcodes += parserender(location)[1]
+				parserender(opcodes, location)
 			else: # Can't happen
 				raise ValueError("unknown tag %r" % location.type)
 		except Error, exc:
@@ -301,9 +298,10 @@ class None_(Const):
 	def __repr__(self):
 		return "%s()" % self.__class__.__name__
 
-	def compile(self, registers, location):
+	def compile(self, opcodes, registers, location):
 		r = allocreg(registers, location)
-		return (r, [Opcode("loadnone", r, -1, -1, -1, -1, None, location)])
+		opcodes.append(Opcode("loadnone", r, -1, -1, -1, -1, None, location))
+		return r
 
 
 class True_(Const):
@@ -313,9 +311,10 @@ class True_(Const):
 	def __repr__(self):
 		return "%s()" % self.__class__.__name__
 
-	def compile(self, registers, location):
+	def compile(self, opcodes, registers, location):
 		r = allocreg(registers, location)
-		return (r, [Opcode("loadtrue", r, -1, -1, -1, -1, None, location)])
+		opcodes.append(Opcode("loadtrue", r, -1, -1, -1, -1, None, location))
+		return r
 
 
 class False_(Const):
@@ -325,10 +324,10 @@ class False_(Const):
 	def __repr__(self):
 		return "%s()" % self.__class__.__name__
 
-	def compile(self, registers, location):
+	def compile(self, opcodes, registers, location):
 		r = allocreg(registers, location)
-		return (r, [Opcode("loadfalse", r, -1, -1, -1, -1, None, location)])
-
+		opcodes.append(Opcode("loadfalse", r, -1, -1, -1, -1, None, location))
+		return r
 
 
 class Value(Const):
@@ -338,9 +337,10 @@ class Value(Const):
 	def __repr__(self):
 		return "%s(%r)" % (self.__class__.__name__, self.value)
 
-	def compile(self, registers, location):
+	def compile(self, opcodes, registers, location):
 		r = allocreg(registers, location)
-		return (r, [Opcode("load%s" % self.type, r, -1, -1, -1, -1, str(self.value), location)])
+		opcodes.append(Opcode("load%s" % self.type, r, -1, -1, -1, -1, str(self.value), location))
+		return r
 
 
 class Int(Value):
@@ -350,9 +350,10 @@ class Int(Value):
 class Float(Value):
 	type = "float"
 
-	def compile(self, registers, location):
+	def compile(self, opcodes, registers, location):
 		r = allocreg(registers, location)
-		return (r, [Opcode("load%s" % self.type, r, -1, -1, -1, -1, repr(self.value), location)])
+		opcodes.append(Opcode("load%s" % self.type, r, -1, -1, -1, -1, repr(self.value), location))
+		return r
 
 
 class Str(Value):
@@ -368,9 +369,10 @@ class Name(AST):
 	def __repr__(self):
 		return "%s(%r)" % (self.__class__.__name__, self.name)
 
-	def compile(self, registers, location):
+	def compile(self, opcodes, registers, location):
 		r = allocreg(registers, location)
-		return (r, [Opcode("loadvar", r, -1, -1, -1, -1, self.name, location)])
+		opcodes.append(Opcode("loadvar", r, -1, -1, -1, -1, self.name, location))
+		return r
 
 
 class For(AST):
@@ -381,8 +383,8 @@ class For(AST):
 	def __repr__(self):
 		return "%s(%r, %r)" % (self.__class__.__name__, self.iter, self.cont)
 
-	def compile(self, registers, location):
-		(rc, opcodes) = self.cont.compile(registers, location)
+	def compile(self, opcodes, registers, location):
+		rc = self.cont.compile(opcodes, registers, location)
 		ri = allocreg(registers, location)
 		opcodes.append(Opcode("for", ri, rc, -1, -1, -1, None, location))
 		if isinstance(self.iter, list):
@@ -396,7 +398,7 @@ class For(AST):
 			opcodes.append(Opcode("storevar", ri, -1, -1, -1, -1, self.iter.name, location))
 		freereg(registers, ri)
 		freereg(registers, rc)
-		return (None, opcodes)
+		return None
 
 
 class GetAttr(AST):
@@ -407,10 +409,10 @@ class GetAttr(AST):
 	def __repr__(self):
 		return "%s(%r, %r)" % (self.__class__.__name__, self.obj, self.attr)
 
-	def compile(self, registers, location):
-		(r, opcodes) in self.obj.compile(registers, location)
+	def compile(self, opcodes, registers, location):
+		r = self.obj.compile(opcodes, registers, location)
 		opcodes.append(Opcode("getattr", r, r, -1, -1, -1, self.attr.name, location))
-		return (r, opcodes)
+		return r
 
 
 class GetItem(AST):
@@ -421,13 +423,12 @@ class GetItem(AST):
 	def __repr__(self):
 		return "%s(%r, %r)" % (self.__class__.__name__, self.obj, self.key)
 
-	def compile(self, registers, location):
-		(r1, opcodes1) = self.obj.compile(registers, location)
-		(r2, opcodes2) = self.key.compile(registers, location)
-		opcodes = opcodes1 + opcodes2
+	def compile(self, opcodes, registers, location):
+		r1 = self.obj.compile(opcodes, registers, location)
+		r2 = self.key.compile(opcodes, registers, location)
 		opcodes.append(Opcode("getitem", r1, r1, r2, -1, -1, None, location))
 		freereg(registers, r2)
-		return (r1, opcodes)
+		return r1
 
 
 class GetSlice12(AST):
@@ -439,15 +440,14 @@ class GetSlice12(AST):
 	def __repr__(self):
 		return "%s(%r, %r, %r)" % (self.__class__.__name__, self.obj, self.index1, self.index2)
 
-	def compile(self, registers, location):
-		(r1, opcodes1) = self.obj.compile(registers, location)
-		(r2, opcodes2) = self.index1.compile(registers, location)
-		(r3, opcodes3) = self.index2.compile(registers, location)
-		opcodes = opcodes1 + opcodes2 + opcodes3
+	def compile(self, opcodes, registers, location):
+		r1 = self.obj.compile(opcodes, registers, location)
+		r2 = self.index1.compile(opcodes, registers, location)
+		r3 = self.index2.compile(opcodes, registers, location)
 		opcodes.append(Opcode("getslice12", r1, r1, r2, r3, -1, None, location))
 		freereg(registers, r2)
 		freereg(registers, r3)
-		return (r1, opcodes)
+		return r1
 
 
 class GetSlice1(AST):
@@ -458,13 +458,12 @@ class GetSlice1(AST):
 	def __repr__(self):
 		return "%s(%r, %r)" % (self.__class__.__name__, self.obj, self.index1)
 
-	def compile(self, registers, location):
-		(r1, opcodes1) = self.obj.compile(registers, location)
-		(r2, opcodes2) = self.index1.compile(registers, location)
-		opcodes = opcodes1 + opcodes2
+	def compile(self, opcodes, registers, location):
+		r1 = self.obj.compile(opcodes, registers, location)
+		r2 = self.index1.compile(opcodes, registers, location)
 		opcodes.append(Opcode("getslice1", r1, r1, r2, -1, -1, None, location))
 		freereg(registers, r2)
-		return (r1, opcodes)
+		return r1
 
 
 class GetSlice2(AST):
@@ -475,13 +474,12 @@ class GetSlice2(AST):
 	def __repr__(self):
 		return "%s(%r, %r)" % (self.__class__.__name__, self.obj, self.index2)
 
-	def compile(self, registers, location):
-		(r1, opcodes1) = self.obj.compile(registers, location)
-		(r2, opcodes2) = self.index2.compile(registers, location)
-		opcodes = opcodes1 + opcodes2
+	def compile(self, opcodes, registers, location):
+		r1 = self.obj.compile(opcodes, registers, location)
+		r2 = self.index2.compile(opcodes, registers, location)
 		opcodes.append(Opcode("getslice2", r1, r1, r2, -1, -1, None, location))
 		freereg(registers, r2)
-		return (r1, opcodes)
+		return r1
 
 
 class GetSlice(AST):
@@ -491,10 +489,10 @@ class GetSlice(AST):
 	def __repr__(self):
 		return "%s(%r)" % (self.__class__.__name__, self.obj)
 
-	def compile(self, registers, location):
-		(r1, opcodes) = self.obj.compile(registers, location)
+	def compile(self, opcodes, registers, location):
+		r1 = self.obj.compile(opcodes, registers, location)
 		opcodes.append(Opcode("getslice", r1, r1, -1, -1, -1, None, location))
-		return (r1, opcodes)
+		return r1
 
 
 class Unary(AST):
@@ -506,10 +504,10 @@ class Unary(AST):
 	def __repr__(self):
 		return "%s(%r)" % (self.__class__.__name__, self.obj)
 
-	def compile(self, registers, location):
-		(r, opcodes) = self.obj.compile(registers, location)
+	def compile(self, opcodes, registers, location):
+		r = self.obj.compile(opcodes, registers, location)
 		opcodes.append(Opcode(self.opcode, r, r, -1, -1, -1, None, location))
-		return (r, opcodes)
+		return r
 
 
 class Not(Unary):
@@ -530,13 +528,12 @@ class Binary(AST):
 	def __repr__(self):
 		return "%s(%r, %r)" % (self.__class__.__name__, self.obj1, self.obj2)
 
-	def compile(self, registers, location):
-		(r1, opcodes1) = self.obj1.compile(registers, location)
-		(r2, opcodes2) = self.obj2.compile(registers, location)
-		opcodes = opcodes1 + opcodes2
+	def compile(self, opcodes, registers, location):
+		r1 = self.obj1.compile(opcodes, registers, location)
+		r2 = self.obj2.compile(opcodes, registers, location)
 		opcodes.append(Opcode(self.opcode, r1, r1, r2, -1, -1, None, location))
 		freereg(registers, r2)
-		return (r1, opcodes)
+		return r1
 
 
 class Equal(Binary):
@@ -597,11 +594,11 @@ class ChangeVar(AST):
 	def __repr__(self):
 		return "%s(%r, %r)" % (self.__class__.__name__, self.name, self.value)
 
-	def compile(self, registers, location):
-		(r, opcodes) = self.value.compile(registers, location)
+	def compile(self, opcodes, registers, location):
+		r = self.value.compile(opcodes, registers, location)
 		opcodes.append(Opcode(self.opcode, r, -1, -1, -1, -1, self.name.name, location))
 		freereg(registers, r)
-		return (None, opcodes)
+		return None
 
 
 class StoreVar(ChangeVar):
@@ -639,8 +636,9 @@ class DelVar(AST):
 	def __repr__(self):
 		return "%s(%r)" % (self.__class__.__name__, self.name)
 
-	def compile(self, registers, location):
-		return (None, [Opcode("delvar", -1, -1, -1, -1, -1, self.name.name, location)])
+	def compile(self, opcodes, registers, location):
+		opcodes.append(Opcode("delvar", -1, -1, -1, -1, -1, self.name.name, location))
+		return None
 
 
 class CallFunc(AST):
@@ -654,21 +652,21 @@ class CallFunc(AST):
 		else:
 			return "%s(%r)" % (self.__class__.__name__, self.name)
 
-	def compile(self, registers, location):
+	def compile(self, opcodes, registers, location):
 		if len(self.args) == 0:
 			r = allocreg(registers, location)
-			return (r, [Opcode("callfunc0", r, -1, -1, -1, -1, self.name.name, location)])
+			opcodes.append(Opcode("callfunc0", r, -1, -1, -1, -1, self.name.name, location))
+			return r
 		elif len(self.args) == 1:
-			(r0, opcodes) = self.args[0].compile(registers, location)
+			r0 = self.args[0].compile(opcodes, registers, location)
 			opcodes.append(Opcode("callfunc1", r0, r0, -1, -1, -1, self.name.name, location))
-			return (r0, opcodes)
+			return r0
 		elif len(self.args) == 2:
-			(r0, opcodes0) = self.args[0].compile(registers, location)
-			(r1, opcodes1) = self.args[1].compile(registers, location)
-			opcodes = opcodes0 + opcodes1
+			r0 = self.args[0].compile(opcodes, registers, location)
+			r1 = self.args[1].compile(opcodes, registers, location)
 			opcodes.append(Opcode("callfunc2", r0, r0, r1, -1, -1, self.name.name, location))
 			freereg(registers, r1)
-			return (r0, opcodes)
+			return r0
 		else:
 			raise ValueError("%d arguments not supported" % len(self.args))
 
@@ -685,41 +683,35 @@ class CallMeth(AST):
 		else:
 			return "%s(%r, %r)" % (self.__class__.__name__, self.name, self.obj)
 
-	def compile(self, registers, location):
+	def compile(self, opcodes, registers, location):
 		if len(self.args) == 0:
-			(r, opcodes) = self.obj.compile(registers, location)
+			r = self.obj.compile(opcodes, registers, location)
 			opcodes.append(Opcode("callmeth0", r, r, -1, -1, -1, self.name.name, location))
-			return (r, opcodes)
+			return r
 		elif len(self.args) == 1:
-			(r, opcodes) = self.obj.compile(registers, location)
-			(r0, opcodes0) = self.args[0].compile(registers, location)
-			opcodes += opcodes0
+			r = self.obj.compile(opcodes, registers, location)
+			r0 = self.args[0].compile(opcodes, registers, location)
 			opcodes.append(Opcode("callmeth1", r, r, r0, -1, -1, self.name.name, location))
 			freereg(registers, r0)
-			return (r, opcodes)
+			return r
 		elif len(self.args) == 2:
-			(r, opcodes) = self.obj.compile(registers, location)
-			(r0, opcodes0) = self.args[0].compile(registers, location)
-			(r1, opcodes1) = self.args[1].compile(registers, location)
-			opcodes += opcodes1
-			opcodes += opcodes2
+			r = self.obj.compile(opcodes, registers, location)
+			r0 = self.args[0].compile(opcodes, registers, location)
+			r1 = self.args[1].compile(opcodes, registers, location)
 			opcodes.append(Opcode("callmeth2", r, r, r0, r1, -1, self.name.name, location))
 			freereg(registers, r0)
 			freereg(registers, r1)
-			return (r, opcodes)
+			return r
 		elif len(self.args) == 3:
-			(r, opcodes) = self.obj.compile(registers, location)
-			(r0, opcodes0) = self.args[0].compile(registers, location)
-			(r1, opcodes1) = self.args[1].compile(registers, location)
-			(r2, opcodes2) = self.args[2].compile(registers, location)
-			opcodes += opcodes1
-			opcodes += opcodes2
-			opcodes += opcodes3
+			r = self.obj.compile(opcodes, registers, location)
+			r0 = self.args[0].compile(opcodes, registers, location)
+			r1 = self.args[1].compile(opcodes, registers, location)
+			r2 = self.args[2].compile(opcodes, registers, location)
 			opcodes.append(Opcode("callmeth3", r, r, r0, r1, r2, self.name.name, location))
 			freereg(registers, r0)
 			freereg(registers, r1)
 			freereg(registers, r2)
-			return (r, opcodes)
+			return r
 		else:
 			raise ValueError("%d arguments not supported" % len(self.args))
 
@@ -732,11 +724,11 @@ class Render(AST):
 	def __repr__(self):
 		return "%s(%r, %r)" % (self.__class__.__name__, self.name, self.value)
 
-	def compile(self, registers, location):
-		(r, opcodes) = self.value.compile(registers, location)
+	def compile(self, opcodes, registers, location):
+		r = self.value.compile(opcodes, registers, location)
 		opcodes.append(Opcode("render", r, -1, -1, -1, -1, self.name.name, location))
 		freereg(registers, r)
-		return (None, opcodes)
+		return None
 
 
 ###
@@ -899,7 +891,7 @@ class ExprParser(spark.GenericParser):
 		spark.GenericParser.__init__(self, start)
 		self.scanner = scanner
 
-	def compile(self, location):
+	def compile(self, opcodes, location):
 		if not location.code:
 			raise ValueError(self.emptyerror)
 		try:
@@ -907,12 +899,11 @@ class ExprParser(spark.GenericParser):
 			registers = {}
 			for i in xrange(10):
 				registers[i] = True
-			return ast.compile(registers, location) # return a generator-iterator
+			return ast.compile(opcodes, registers, location)
 		except Error, exc:
 			exc.decorate(location)
 			raise
 		except Exception, exc:
-			raise
 			raise Error(exc).decorate(location)
 
 	def typestring(self, token):
