@@ -14,11 +14,11 @@ public class Main
 		long start = new Date().getTime();
 		CompilerFactory factory = new CompilerFactory();
 		System.out.println("make Factory " + (time()-start));
-		Template bytecode = factory.compile("<?if data?><ul><?for item in data?><li><?print xmlescape(item)?></li><?end for?></ul><?end if?>");
+		Template bytecode = factory.compile("<?if data?><ul><?for item in data?><li>(<?print xmlescape(item)?>)</li><?end for?></ul><?end if?>");
 		System.out.println("Compile " + (time()-start));
 		Renderer renderer = new Renderer(bytecode.opcodes);
 		System.out.println("Make Renderer " + (time()-start));
-		String output = renderer.render("gurk");
+		String output = renderer.render("<gu&rk> & 'foo'");
 		System.out.println("Render " + (time()-start));
 		System.out.println(output);
 	}
