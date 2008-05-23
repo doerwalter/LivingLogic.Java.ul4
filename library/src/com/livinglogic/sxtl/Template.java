@@ -222,20 +222,19 @@ public class Template
 
 	public static final String SXTL_VERSION = "1";
 	
-	protected String source;
+	public String source;
 
-	protected List opcodes;
+	public List opcodes;
 
-	private Template()
+	public Template()
 	{
 		this.source = null;
 		this.opcodes = new LinkedList();
 	}
 
-	public Template(String source, List opcodes)
+	public void opcode(String name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
 	{
-		this.source = source;
-		this.opcodes = opcodes;
+		opcodes.add(new Opcode(name, r1, r2, r3, r4, r5, arg, location));
 	}
 
 	protected static int readintInternal(Reader reader, char terminator) throws IOException

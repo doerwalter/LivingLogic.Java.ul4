@@ -11,7 +11,7 @@ public class CompilerFactory
 	public CompilerFactory()
 	{
 		Properties props = new Properties();
-		props.setProperty("python.path", "/home/walter/jython/Lib:/var/home/walter/checkouts/LivingLogic.Java.sxtl/library/src/com/livinglogic/sxtl");
+		props.setProperty("python.path", "/Users/walter/jython/Lib:/Users/walter/checkouts/LivingLogic.Java.sxtl/library/src/com/livinglogic/sxtl");
 		PythonInterpreter.initialize(System.getProperties(), props, new String[] {""});
 		PythonInterpreter interpreter = new PythonInterpreter();
 		interpreter.exec("from l4c import Compiler");
