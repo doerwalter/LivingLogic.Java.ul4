@@ -406,6 +406,18 @@ public class Utils
 
 	public static boolean getBool(Object obj)
 	{
+		if (obj instanceof Boolean)
+			return getBool((Boolean)obj);
+		else if (obj instanceof String)
+			return getBool((String)obj);
+		else if (obj instanceof Integer)
+			return getBool((Integer)obj);
+		else if (obj instanceof Double)
+			return getBool((Double)obj);
+		else if (obj instanceof Collection)
+			return getBool((Collection)obj);
+		else if (obj instanceof Map)
+			return getBool((Map)obj);
 		return false;
 	}
 
@@ -456,7 +468,7 @@ public class Utils
 					sb.append("&amp;");
 					break;
 				case '\'':
-					sb.append("&apos;");
+					sb.append("&#39;");
 					break;
 				case '"':
 					sb.append("&quot;");
@@ -477,7 +489,7 @@ public class Utils
 					if ((('\u0020' <= c) && (c <= '\u007e')) || ('\u00A0' <= c))
 						sb.append(c);
 					else
-						sb.append("&#").append((int)c).append(';');	
+						sb.append("&#").append((int)c).append(';');
 					break;
 			}
 		}
@@ -486,6 +498,8 @@ public class Utils
 
 	public static Object xmlescape(Object obj)
 	{
+		if (obj instanceof String)
+			return xmlescape((String)obj);
 		throw new UnsupportedOperationException("Can't xmlescape instance of " + obj.getClass() + "!");
 	}
 
