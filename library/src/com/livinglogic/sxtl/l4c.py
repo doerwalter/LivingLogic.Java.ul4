@@ -8,9 +8,7 @@
 ## See ll/__init__.py for the license
 
 
-from __future__ import division
-
-import L4CompilerType
+import com.livinglogic.sxtl.L4CompilerType as L4CompilerType
 
 """
 :mod:`ll.l4c` provides templating for XML/HTML as well as any other text-based
