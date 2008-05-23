@@ -764,7 +764,7 @@ class Scanner(spark.GenericScanner):
 
 	def token(self, s):
 		self.rv.append(Token(s))
-	token.spark = {"default": ["\\(|\\)|\\[|\\]|\\.|,|==|\\!=|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*|/|//"]}
+	token.spark = {"default": ["\\(|\\)|\\[|\\]|\\.|,|==|\\!=|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*|//|/"]}
 
 	def none(self, s):
 		self.rv.append(None_())
