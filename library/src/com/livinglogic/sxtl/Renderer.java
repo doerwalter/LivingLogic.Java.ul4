@@ -44,37 +44,43 @@ public class Renderer
 		for (int i = 0; i < codes.size(); ++i)
 		{
 			Template.Opcode code = codes.get(i);
-			if (code.name.equals("if"))
+			if (code.name != null)
 			{
-				stack.add(i);
-			}
-			else if (code.name.equals("else"))
-			{
-				codes.get(stack.getLast()).jump = i;
-				stack.set(stack.size()-1, i);
-			}
-			else if (code.name.equals("endif"))
-			{
-				codes.get(stack.getLast()).jump = i;
-				stack.removeLast();
-			}
-			else if (code.name.equals("for"))
-			{
-				stack.add(i);
-			}
-			else if (code.name.equals("endfor"))
-			{
-				codes.get(stack.getLast()).jump = i;
-				stack.removeLast();
+				if (code.name.equals("if"))
+				{
+					stack.add(i);
+				}
+				else if (code.name.equals("else"))
+				{
+					codes.get(stack.getLast()).jump = i;
+					stack.set(stack.size()-1, i);
+				}
+				else if (code.name.equals("endif"))
+				{
+					codes.get(stack.getLast()).jump = i;
+					stack.removeLast();
+				}
+				else if (code.name.equals("for"))
+				{
+					stack.add(i);
+				}
+				else if (code.name.equals("endfor"))
+				{
+					codes.get(stack.getLast()).jump = i;
+					stack.removeLast();
+				}
 			}
 		}
 	}
 
-	public String render(HashMap<String, Object> variables)
+	public String render(Object data)
 	{
 		LinkedList<IteratorStackEntry> iterators = new LinkedList<IteratorStackEntry>();
-		
+
 		Object[] reg = new Object[10];
+
+		HashMap<String, Object> variables = new HashMap<String, Object>();
+		variables.put("data", data);
 		
 		StringBuilder output = new StringBuilder();
 		while (pc < codes.size())
@@ -83,7 +89,7 @@ public class Renderer
 
 			if (null == code.name)
 			{
-				output.append(code.arg);
+				output.append(code.location.getCode());
 			}
 			else if (code.name.equals("print"))
 			{
