@@ -869,33 +869,17 @@ class ExprParser(spark.GenericParser):
 	#    1) Expressions where there's no ambiguity, like the index for a getitem/getslice or function/method arguments;
 	#    2) Brackets, which can be used to boost the precedence of an expression to the level of an atomic expression.
 
-	def expr_none(self, (none,)):
-		return none
-	expr_none.spark = ['expr11 ::= none']
-
-	def expr_true(self, (true,)):
-		return true
-	expr_true.spark = ['expr11 ::= true']
-
-	def expr_false(self, (false,)):
-		return false
-	expr_false.spark = ['expr11 ::= false']
-
-	def expr_str(self, (value,)):
-		return value
-	expr_str.spark = ['expr11 ::= str']
-
-	def expr_int(self, (value,)):
-		return value
-	expr_int.spark = ['expr11 ::= int']
-
-	def expr_float(self, (value,)):
-		return value
-	expr_float.spark = ['expr11 ::= float']
-
-	def expr_name(self, (name,)):
-		return name
-	expr_name.spark = ['expr11 ::= name']
+	def expr_atomic(self, (atom,)):
+		return atom
+	expr_atomic.spark = [
+		'expr11 ::= none',
+		'expr11 ::= true',
+		'expr11 ::= false',
+		'expr11 ::= str',
+		'expr11 ::= int',
+		'expr11 ::= float',
+		'expr11 ::= name',
+	]
 
 	def expr_bracket(self, (_0, expr, _1)):
 		return expr
