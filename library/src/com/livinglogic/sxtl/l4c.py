@@ -1036,9 +1036,9 @@ class ExprParser(spark.GenericParser):
 	expr_or.spark = ['expr0 ::= expr0 or expr0']
 
 	# This rule makes operators of different precedences interoperable, by allowing an expression to "drop" its precedence.
-	def expr_dropprio(self, (expr, )):
+	def expr_droppecedence(self, (expr, )):
 		return expr
-	expr_dropprio.spark = [
+	expr_droppecedence.spark = [
 		'expr10 ::= expr11',
 		'expr9 ::= expr10',
 		'expr8 ::= expr9',
