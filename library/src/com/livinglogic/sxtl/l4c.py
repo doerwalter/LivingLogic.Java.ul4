@@ -1038,7 +1038,7 @@ class ExprParser(spark.GenericParser):
 	# These rules make operators of different precedences interoperable, by allowing an expression to "drop" its precedence.
 	def expr_dropprecedence(self, (expr, )):
 		return expr
-	expr_droppecedence.spark = [
+	expr_dropprecedence.spark = [
 		'expr10 ::= expr11',
 		'expr9 ::= expr10',
 		'expr8 ::= expr9',
