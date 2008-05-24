@@ -383,7 +383,6 @@ class For(AST):
 			template.opcode("storevar", ri, self.iter.name, location)
 		freereg(registers, ri)
 		freereg(registers, rc)
-		return None
 
 
 class GetAttr(AST):
@@ -538,7 +537,6 @@ class ChangeVar(AST):
 		r = self.value.compile(template, registers, location)
 		template.opcode(self.opcode, r, self.name.name, location)
 		freereg(registers, r)
-		return None
 
 
 class StoreVar(ChangeVar):
@@ -578,7 +576,6 @@ class DelVar(AST):
 
 	def compile(self, template, registers, location):
 		template.opcode("delvar", self.name.name, location)
-		return None
 
 
 class CallFunc(AST):
@@ -668,7 +665,6 @@ class Render(AST):
 		r = self.value.compile(template, registers, location)
 		template.opcode("render", r, -1, -1, -1, -1, self.name.name, location)
 		freereg(registers, r)
-		return None
 
 
 ###
