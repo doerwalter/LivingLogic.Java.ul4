@@ -189,31 +189,31 @@ def _compile(template, source, startdelim, enddelim):
 	for location in _tokenize(source, startdelim, enddelim):
 		try:
 			if location.type is None:
-				template.opcode(None, -1, -1, -1, -1, -1, None, location)
+				template.opcode(None, location)
 			elif location.type == "print":
 				r = parseexpr(template, location)
-				template.opcode("print", r, -1, -1, -1, -1, None, location)
+				template.opcode("print", r, location)
 			elif location.type == "code":
 				parsestmt(template, location)
 			elif location.type == "if":
 				r = parseexpr(template, location)
-				template.opcode("if", r, -1, -1, -1, -1, None, location)
+				template.opcode("if", r, location)
 				stack.append(("if", 1, False))
 			elif location.type == "elif":
 				if not stack or stack[-1][0] != "if":
 					raise BlockError("elif doesn't match any if")
 				elif stack[-1][2]:
 					raise BlockError("else already seen in elif")
-				template.opcode("else", -1, -1, -1, -1, -1, None, location)
+				template.opcode("else", location)
 				r = parseexpr(template, location)
-				template.opcode("if", r, -1, -1, -1, -1, None, location)
+				template.opcode("if", r, location)
 				stack[-1] = ("if", stack[-1][1]+1, False)
 			elif location.type == "else":
 				if not stack or stack[-1][0] != "if":
 					raise BlockError("else doesn't match any if")
 				elif stack[-1][2]:
 					raise BlockError("duplicate else")
-				template.opcode("else", -1, -1, -1, -1, -1, location)
+				template.opcode("else", location)
 				stack[-1] = ("if", stack[-1][1], True)
 			elif location.type == "end":
 				if not stack:
@@ -231,9 +231,9 @@ def _compile(template, source, startdelim, enddelim):
 				last = stack.pop()
 				if last[0] == "if":
 					for i in xrange(last[1]):
-						template.opcode("endif", -1, -1, -1, -1, -1, None, location)
+						template.opcode("endif", location)
 				else: # last[0] == "for":
-					template.opcode("endfor", -1, -1, -1, -1, -1, None, location)
+					template.opcode("endfor", location)
 			elif location.type == "for":
 				parsefor(template, location)
 				stack.append(("for",))
@@ -300,7 +300,7 @@ class None_(Const):
 
 	def compile(self, template, registers, location):
 		r = allocreg(registers, location)
-		template.opcode("loadnone", r, -1, -1, -1, -1, None, location)
+		template.opcode("loadnone", r, location)
 		return r
 
 
@@ -313,7 +313,7 @@ class True_(Const):
 
 	def compile(self, template, registers, location):
 		r = allocreg(registers, location)
-		template.opcode("loadtrue", r, -1, -1, -1, -1, None, location)
+		template.opcode("loadtrue", r, location)
 		return r
 
 
@@ -326,7 +326,7 @@ class False_(Const):
 
 	def compile(self, template, registers, location):
 		r = allocreg(registers, location)
-		template.opcode("loadfalse", r, -1, -1, -1, -1, None, location)
+		template.opcode("loadfalse", r, location)
 		return r
 
 
@@ -339,7 +339,7 @@ class Value(Const):
 
 	def compile(self, template, registers, location):
 		r = allocreg(registers, location)
-		template.opcode("load%s" % self.type, r, -1, -1, -1, -1, str(self.value), location)
+		template.opcode("load%s" % self.type, r, str(self.value), location)
 		return r
 
 
@@ -352,7 +352,7 @@ class Float(Value):
 
 	def compile(self, template, registers, location):
 		r = allocreg(registers, location)
-		template.opcode("load%s" % self.type, r, -1, -1, -1, -1, repr(self.value), location)
+		template.opcode("load%s" % self.type, r, repr(self.value), location)
 		return r
 
 
@@ -371,7 +371,7 @@ class Name(AST):
 
 	def compile(self, template, registers, location):
 		r = allocreg(registers, location)
-		template.opcode("loadvar", r, -1, -1, -1, -1, self.name, location)
+		template.opcode("loadvar", r, self.name, location)
 		return r
 
 
@@ -386,16 +386,16 @@ class For(AST):
 	def compile(self, template, registers, location):
 		rc = self.cont.compile(template, registers, location)
 		ri = allocreg(registers, location)
-		template.opcode("for", ri, rc, -1, -1, -1, None, location)
+		template.opcode("for", ri, rc, location)
 		if isinstance(self.iter, list):
 			for (i, iter) in enumerate(self.iter):
 				rii = allocreg(registers, location)
-				template.opcode("loadint", rii, -1, -1, -1, -1, str(i), location)
-				template.opcode("getitem", rii, ri, rii, -1, -1, None, location)
-				template.opcode("storevar", rii, -1, -1, -1, -1, iter.name, location)
+				template.opcode("loadint", rii, str(i), location)
+				template.opcode("getitem", rii, ri, rii, location)
+				template.opcode("storevar", rii, iter.name, location)
 				freereg(registers, rii)
 		else:
-			template.opcode("storevar", ri, -1, -1, -1, -1, self.iter.name, location)
+			template.opcode("storevar", ri, self.iter.name, location)
 		freereg(registers, ri)
 		freereg(registers, rc)
 		return None
@@ -411,7 +411,7 @@ class GetAttr(AST):
 
 	def compile(self, template, registers, location):
 		r = self.obj.compile(template, registers, location)
-		template.opcode("getattr", r, r, -1, -1, -1, self.attr.name, location)
+		template.opcode("getattr", r, r, self.attr.name, location)
 		return r
 
 
@@ -426,7 +426,7 @@ class GetItem(AST):
 	def compile(self, template, registers, location):
 		r1 = self.obj.compile(template, registers, location)
 		r2 = self.key.compile(template, registers, location)
-		template.opcode("getitem", r1, r1, r2, -1, -1, None, location)
+		template.opcode("getitem", r1, r1, r2, location)
 		freereg(registers, r2)
 		return r1
 
@@ -444,7 +444,7 @@ class GetSlice12(AST):
 		r1 = self.obj.compile(template, registers, location)
 		r2 = self.index1.compile(template, registers, location)
 		r3 = self.index2.compile(template, registers, location)
-		template.opcode("getslice12", r1, r1, r2, r3, -1, None, location)
+		template.opcode("getslice12", r1, r1, r2, r3, location)
 		freereg(registers, r2)
 		freereg(registers, r3)
 		return r1
@@ -461,7 +461,7 @@ class GetSlice1(AST):
 	def compile(self, template, registers, location):
 		r1 = self.obj.compile(template, registers, location)
 		r2 = self.index1.compile(template, registers, location)
-		template.opcode("getslice1", r1, r1, r2, -1, -1, None, location)
+		template.opcode("getslice1", r1, r1, r2, location)
 		freereg(registers, r2)
 		return r1
 
@@ -477,7 +477,7 @@ class GetSlice2(AST):
 	def compile(self, template, registers, location):
 		r1 = self.obj.compile(template, registers, location)
 		r2 = self.index2.compile(template, registers, location)
-		template.opcode("getslice2", r1, r1, r2, -1, -1, None, location)
+		template.opcode("getslice2", r1, r1, r2, location)
 		freereg(registers, r2)
 		return r1
 
@@ -491,7 +491,7 @@ class GetSlice(AST):
 
 	def compile(self, template, registers, location):
 		r1 = self.obj.compile(template, registers, location)
-		template.opcode("getslice", r1, r1, -1, -1, -1, None, location)
+		template.opcode("getslice", r1, r1, location)
 		return r1
 
 
@@ -506,7 +506,7 @@ class Unary(AST):
 
 	def compile(self, template, registers, location):
 		r = self.obj.compile(template, registers, location)
-		template.opcode(self.opcode, r, r, -1, -1, -1, None, location)
+		template.opcode(self.opcode, r, r, location)
 		return r
 
 
@@ -531,7 +531,7 @@ class Binary(AST):
 	def compile(self, template, registers, location):
 		r1 = self.obj1.compile(template, registers, location)
 		r2 = self.obj2.compile(template, registers, location)
-		template.opcode(self.opcode, r1, r1, r2, -1, -1, None, location)
+		template.opcode(self.opcode, r1, r1, r2, location)
 		freereg(registers, r2)
 		return r1
 
@@ -596,7 +596,7 @@ class ChangeVar(AST):
 
 	def compile(self, template, registers, location):
 		r = self.value.compile(template, registers, location)
-		template.opcode(self.opcode, r, -1, -1, -1, -1, self.name.name, location)
+		template.opcode(self.opcode, r, self.name.name, location)
 		freereg(registers, r)
 		return None
 
@@ -637,7 +637,7 @@ class DelVar(AST):
 		return "%s(%r)" % (self.__class__.__name__, self.name)
 
 	def compile(self, template, registers, location):
-		template.opcode("delvar", -1, -1, -1, -1, -1, self.name.name, location)
+		template.opcode("delvar", self.name.name, location)
 		return None
 
 
@@ -655,16 +655,16 @@ class CallFunc(AST):
 	def compile(self, template, registers, location):
 		if len(self.args) == 0:
 			r = allocreg(registers, location)
-			template.opcode("callfunc0", r, -1, -1, -1, -1, self.name.name, location)
+			template.opcode("callfunc0", r, self.name.name, location)
 			return r
 		elif len(self.args) == 1:
 			r0 = self.args[0].compile(template, registers, location)
-			template.opcode("callfunc1", r0, r0, -1, -1, -1, self.name.name, location)
+			template.opcode("callfunc1", r0, r0, self.name.name, location)
 			return r0
 		elif len(self.args) == 2:
 			r0 = self.args[0].compile(template, registers, location)
 			r1 = self.args[1].compile(template, registers, location)
-			template.opcode("callfunc2", r0, r0, r1, -1, -1, self.name.name, location)
+			template.opcode("callfunc2", r0, r0, r1, self.name.name, location)
 			freereg(registers, r1)
 			return r0
 		else:
@@ -686,19 +686,19 @@ class CallMeth(AST):
 	def compile(self, template, registers, location):
 		if len(self.args) == 0:
 			r = self.obj.compile(template, registers, location)
-			template.opcode("callmeth0", r, r, -1, -1, -1, self.name.name, location)
+			template.opcode("callmeth0", r, r, self.name.name, location)
 			return r
 		elif len(self.args) == 1:
 			r = self.obj.compile(template, registers, location)
 			r0 = self.args[0].compile(template, registers, location)
-			template.opcode("callmeth1", r, r, r0, -1, -1, self.name.name, location)
+			template.opcode("callmeth1", r, r, r0, self.name.name, location)
 			freereg(registers, r0)
 			return r
 		elif len(self.args) == 2:
 			r = self.obj.compile(template, registers, location)
 			r0 = self.args[0].compile(template, registers, location)
 			r1 = self.args[1].compile(template, registers, location)
-			template.opcode("callmeth2", r, r, r0, r1, -1, self.name.name, location)
+			template.opcode("callmeth2", r, r, r0, r1, self.name.name, location)
 			freereg(registers, r0)
 			freereg(registers, r1)
 			return r
