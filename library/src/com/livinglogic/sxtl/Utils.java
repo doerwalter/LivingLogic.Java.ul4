@@ -503,7 +503,7 @@ public class Utils
 		throw new UnsupportedOperationException("Can't xmlescape instance of " + obj.getClass() + "!");
 	}
 
-	public static Object toString(Object obj)
+	public static String toString(Object obj)
 	{
 		return obj != null ? obj.toString() : ""; 
 	}
