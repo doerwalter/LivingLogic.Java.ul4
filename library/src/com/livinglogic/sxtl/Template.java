@@ -518,14 +518,24 @@ public class Template
 
 	public Iterator<String> render(Object data)
 	{
-		return new Renderer(data);
+		return new Renderer(data, null);
+	}
+
+	public Iterator<String> render(Object data, HashMap<String, Template> templates)
+	{
+		return new Renderer(data, templates);
 	}
 
 	public String renders(Object data)
 	{
+		return renders(data, null);
+	}
+
+	public String renders(Object data, HashMap<String, Template> templates)
+	{
 		StringBuilder output = new StringBuilder();
 
-		for (Iterator<String> iterator = render(data); iterator.hasNext();)
+		for (Iterator<String> iterator = render(data, templates); iterator.hasNext();)
 		{
 			output.append(iterator.next());
 		}
@@ -535,16 +545,21 @@ public class Template
 	class Renderer implements Iterator<String>
 	{
 		private int pc = 0;
-		private LinkedList<IteratorStackEntry> iterators = new LinkedList<IteratorStackEntry>();
 		private Object[] reg = new Object[10];
 		private HashMap<String, Object> variables = new HashMap<String, Object>();
+		private HashMap<String, Template> templates;
+		private LinkedList<IteratorStackEntry> iterators = new LinkedList<IteratorStackEntry>();
+		private Iterator<String> subTemplateIterator = null;
 
 		private String nextChunk = null;
 
-		public Renderer(Object data)
+		public Renderer(Object data, HashMap<String, Template> templates)
 		{
 			annotate();
 			variables.put("data", data);
+			if (templates == null)
+				templates = new HashMap<String, Template>();
+			this.templates = templates;
 			getNextChunk();
 		}
 
@@ -567,6 +582,18 @@ public class Template
 
 		public void getNextChunk()
 		{
+			if (subTemplateIterator != null)
+			{
+				if (subTemplateIterator.hasNext())
+				{
+					nextChunk = subTemplateIterator.next();
+					return;
+				}
+				else
+				{
+					subTemplateIterator = null;
+				}
+			}
 			while (pc < opcodes.size())
 			{
 				Template.Opcode code = opcodes.get(pc);
@@ -857,6 +884,19 @@ public class Template
 						else
 						{
 							throw new RuntimeException("No method '" + code.arg + "' defined!");
+						}
+						break;
+					case RENDER:
+						subTemplateIterator = templates.get(code.arg).render(reg[code.r1], templates);
+						if (subTemplateIterator.hasNext())
+						{
+							nextChunk = subTemplateIterator.next();
+							++pc;
+							return;
+						}
+						else
+						{
+							subTemplateIterator = null;
 						}
 						break;
 					default:

@@ -1,6 +1,7 @@
 package com.livinglogic.sxtl;
 
 import java.util.Date;
+import java.util.HashMap;
 
 public class Main
 {
@@ -14,9 +15,12 @@ public class Main
 		long start = new Date().getTime();
 		CompilerFactory factory = new CompilerFactory();
 		System.out.println("made Factory " + (time()-start));
-		Template template = factory.compile("<?if data?><ul><?for item in data?><li>(<?print xmlescape(item)?>)</li><?end for?></ul><?end if?>");
+		Template tmpl = factory.compile("<?if data?><ul><?for item in data?><?render line(item)?><?end for?></ul><?end if?>");
+		Template linetmpl = factory.compile("<li>(<?print xmlescape(data)?>)</li>");
 		System.out.println("compiled " + (time()-start));
-		String output = template.renders("<gu&rk> & 'foo'");
+		HashMap<String, Template> templates = new HashMap<String, Template>();
+		templates.put("line", linetmpl);
+		String output = tmpl.renders("<gu&rk> & 'foo'", templates);
 		System.out.println("rendered " + (time()-start));
 		System.out.println(output);
 	}
