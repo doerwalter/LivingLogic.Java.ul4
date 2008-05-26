@@ -85,6 +85,11 @@ public class Template
 			this.endcode = endcode;
 		}
 
+		public String getTag()
+		{
+			return source.substring(starttag, endtag);
+		}
+
 		public String getCode()
 		{
 			return source.substring(startcode, endcode);
