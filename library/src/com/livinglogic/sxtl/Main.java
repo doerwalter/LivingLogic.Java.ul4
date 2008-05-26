@@ -14,11 +14,9 @@ public class Main
 		long start = new Date().getTime();
 		CompilerFactory factory = new CompilerFactory();
 		System.out.println("made Factory " + (time()-start));
-		Template bytecode = factory.compile("<?if data?><ul><?for item in data?><li>(<?print xmlescape(item)?>)</li><?end for?></ul><?end if?>");
+		Template template = factory.compile("<?if data?><ul><?for item in data?><li>(<?print xmlescape(item)?>)</li><?end for?></ul><?end if?>");
 		System.out.println("compiled " + (time()-start));
-		Renderer renderer = new Renderer(bytecode.opcodes);
-		System.out.println("made Renderer " + (time()-start));
-		String output = renderer.render("<gu&rk> & 'foo'");
+		String output = template.render("<gu&rk> & 'foo'");
 		System.out.println("rendered " + (time()-start));
 		System.out.println(output);
 	}
