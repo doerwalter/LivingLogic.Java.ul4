@@ -540,7 +540,7 @@ public class Template
 					output.append(code.location.getCode());
 					break;
 				case PRINT:
-					output.append(reg[code.r1]);
+					output.append(Utils.toString(reg[code.r1]));
 					break;
 				case LOADNONE:
 					reg[code.r1] = null;
@@ -827,5 +827,4 @@ public class Template
 		}
 		return output.toString();
 	}
-
 }
