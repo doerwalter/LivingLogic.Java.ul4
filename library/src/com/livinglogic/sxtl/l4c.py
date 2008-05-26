@@ -663,7 +663,7 @@ class Render(AST):
 
 	def compile(self, template, registers, location):
 		r = self.value.compile(template, registers, location)
-		template.opcode("render", r, -1, -1, -1, -1, self.name.name, location)
+		template.opcode("render", r, self.name.name, location)
 		freereg(registers, r)
 
 
