@@ -239,6 +239,14 @@ public class Utils
 
 	public static Object mul(Object arg1, Object arg2)
 	{
+		if (arg1 instanceof String && arg2 instanceof Integer)
+			return mul((String)arg1, (Integer)arg2);
+		if (arg1 instanceof Integer && arg2 instanceof String)
+			return mul((Integer)arg1, (String)arg2);
+		if (arg1 instanceof Integer && arg2 instanceof Integer)
+			return mul((Integer)arg1, (Integer)arg2);
+		if (arg1 instanceof Number && arg2 instanceof Number)
+			return mul((Number)arg1, (Number)arg2);
 		throw new UnsupportedOperationException("Can't multiply instances of " + arg1.getClass() + " and " + arg2.getClass() + "!");
 	}
 
