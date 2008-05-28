@@ -18,7 +18,7 @@ public class Main
 		Template tmpl = factory.compile("<?if data?><ul><?for item in data?><?render line(item)?><?end for?></ul><?end if?>");
 		Template linetmpl = factory.compile("<li>(<?print xmlescape(data)?>)</li>");
 		System.out.println("compiled " + (time()-start));
-		HashMap<String, Template> templates = new HashMap<String, Template>();
+		HashMap templates = new HashMap();
 		templates.put("line", linetmpl);
 		String output = tmpl.renders("<gu&rk> & 'foo'", templates);
 		System.out.println("rendered " + (time()-start));

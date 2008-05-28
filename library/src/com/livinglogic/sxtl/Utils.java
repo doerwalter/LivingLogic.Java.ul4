@@ -115,7 +115,7 @@ class MapItemIterator implements Iterator
 
 	public Object next()
 	{
-		Vector<Object> retVal = new Vector<Object>(2);
+		Vector retVal = new Vector(2);
 		Map.Entry entry = (Map.Entry)iterator.next();
 		retVal.add(entry.getKey());
 		retVal.add(entry.getValue());
@@ -146,7 +146,7 @@ class SequenceEnumerator implements Iterator
 
 	public Object next()
 	{
-		Vector<Object> retVal = new Vector<Object>(2);
+		Vector retVal = new Vector(2);
 		retVal.add(new Integer(index++));
 		retVal.add(sequenceIterator.next());
 		return retVal;

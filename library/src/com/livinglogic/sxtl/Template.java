@@ -229,9 +229,9 @@ public class Template
 	{
 		public int iteratorRegSpec;
 		public int pc;
-		public Iterator<Object> iterator;
+		public Iterator iterator;
 	
-		public IteratorStackEntry(int iteratorRegSpec, int pc, Iterator<Object> iterator)
+		public IteratorStackEntry(int iteratorRegSpec, int pc, Iterator iterator)
 		{
 			this.iteratorRegSpec = iteratorRegSpec;
 			this.pc = pc;
@@ -245,7 +245,7 @@ public class Template
 	
 	public String source;
 
-	public List<Opcode> opcodes;
+	public List opcodes;
 
 	private boolean annotated = false;
 
@@ -486,28 +486,28 @@ public class Template
 	{
 		if (!annotated)
 		{
-			LinkedList<Integer> stack = new LinkedList<Integer>();
+			LinkedList stack = new LinkedList();
 			for (int i = 0; i < opcodes.size(); ++i)
 			{
-				Template.Opcode opcode = opcodes.get(i);
+				Template.Opcode opcode = (Template.Opcode)opcodes.get(i);
 				switch (opcode.name)
 				{
 					case IF:
 						stack.add(i);
 						break;
 					case ELSE:
-						opcodes.get(stack.getLast()).jump = i;
+						((Template.Opcode)opcodes.get(((Integer)stack.getLast()).intValue())).jump = i;
 						stack.set(stack.size()-1, i);
 						break;
 					case ENDIF:
-						opcodes.get(stack.getLast()).jump = i;
+						((Template.Opcode)opcodes.get(((Integer)stack.getLast()).intValue())).jump = i;
 						stack.removeLast();
 						break;
 					case FOR:
 						stack.add(i);
 						break;
 					case ENDFOR:
-						opcodes.get(stack.getLast()).jump = i;
+						((Template.Opcode)opcodes.get(((Integer)stack.getLast()).intValue())).jump = i;
 						stack.removeLast();
 						break;
 				}
@@ -516,12 +516,12 @@ public class Template
 		}
 	}
 
-	public Iterator<String> render(Object data)
+	public Iterator render(Object data)
 	{
 		return new Renderer(data, null);
 	}
 
-	public Iterator<String> render(Object data, HashMap<String, Template> templates)
+	public Iterator render(Object data, Map templates)
 	{
 		return new Renderer(data, templates);
 	}
@@ -531,34 +531,34 @@ public class Template
 		return renders(data, null);
 	}
 
-	public String renders(Object data, HashMap<String, Template> templates)
+	public String renders(Object data, Map templates)
 	{
 		StringBuilder output = new StringBuilder();
 
-		for (Iterator<String> iterator = render(data, templates); iterator.hasNext();)
+		for (Iterator iterator = render(data, templates); iterator.hasNext();)
 		{
-			output.append(iterator.next());
+			output.append((String)iterator.next());
 		}
 		return output.toString();
 	}
 
-	class Renderer implements Iterator<String>
+	class Renderer implements Iterator
 	{
 		private int pc = 0;
 		private Object[] reg = new Object[10];
-		private HashMap<String, Object> variables = new HashMap<String, Object>();
-		private HashMap<String, Template> templates;
-		private LinkedList<IteratorStackEntry> iterators = new LinkedList<IteratorStackEntry>();
-		private Iterator<String> subTemplateIterator = null;
+		private HashMap variables = new HashMap();
+		private Map templates;
+		private LinkedList iterators = new LinkedList();
+		private Iterator subTemplateIterator = null;
 
 		private String nextChunk = null;
 
-		public Renderer(Object data, HashMap<String, Template> templates)
+		public Renderer(Object data, Map templates)
 		{
 			annotate();
 			variables.put("data", data);
 			if (templates == null)
-				templates = new HashMap<String, Template>();
+				templates = new HashMap();
 			this.templates = templates;
 			getNextChunk();
 		}
@@ -586,7 +586,7 @@ public class Template
 			{
 				if (subTemplateIterator.hasNext())
 				{
-					nextChunk = subTemplateIterator.next();
+					nextChunk = (String)subTemplateIterator.next();
 					return;
 				}
 				else
@@ -596,7 +596,7 @@ public class Template
 			}
 			while (pc < opcodes.size())
 			{
-				Template.Opcode code = opcodes.get(pc);
+				Template.Opcode code = (Template.Opcode)opcodes.get(pc);
 
 				switch (code.name)
 				{
@@ -654,7 +654,7 @@ public class Template
 						variables.remove(code.arg);
 						break;
 					case FOR:
-						Iterator<Object> iterator = Utils.iterator(reg[code.r2]);
+						Iterator iterator = Utils.iterator(reg[code.r2]);
 						if (iterator.hasNext())
 						{
 							reg[code.r1] = iterator.next();
@@ -667,7 +667,7 @@ public class Template
 						}
 						break;
 					case ENDFOR:
-						IteratorStackEntry entry = iterators.getLast();
+						IteratorStackEntry entry = (IteratorStackEntry)iterators.getLast();
 						if (entry.iterator.hasNext())
 						{
 							reg[entry.iteratorRegSpec] = entry.iterator.next();
@@ -887,10 +887,10 @@ public class Template
 						}
 						break;
 					case RENDER:
-						subTemplateIterator = templates.get(code.arg).render(reg[code.r1], templates);
+						subTemplateIterator = ((Template)templates.get(code.arg)).render(reg[code.r1], templates);
 						if (subTemplateIterator.hasNext())
 						{
-							nextChunk = subTemplateIterator.next();
+							nextChunk = (String)subTemplateIterator.next();
 							++pc;
 							return;
 						}
