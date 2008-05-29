@@ -68,21 +68,22 @@ class GenericScanner(object):
 		
 	def tokenize(self, s):
 		self.string = s
-		self.pos = 0
+		start = 0
 		self.mode = "default"
 		n = len(s)
-		while self.pos < n:
+		while start < n:
 			(pattern, index2func) = self.res[self.mode]
-			m = pattern.match(s, self.pos)
+			m = pattern.match(s, start)
 			if m is None:
-				self.error(s, self.pos)
+				self.error(s, start)
 
-			self.pos = m.end()
+			end = m.end()
 			for (i, group) in enumerate(m.groups()):
 				if group is not None and i in index2func:
-					index2func[i](group)
+					index2func[i](start, end, group)
+			start = end
 
-	def default(self, s):
+	def default(self, start, end, s):
 		print "Specification error: unmatched input"
 		raise SystemExit
 	default.spark = {"default" : [r'( . | \n )+']}
