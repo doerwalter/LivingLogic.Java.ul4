@@ -750,7 +750,7 @@ class ExprParser(spark.GenericParser):
 			raise Error(exc).decorate(location)
 
 	def typestring(self, token):
-		return token.getType()
+		return token.type
 
 	def error(self, token):
 		raise SyntaxError(token)
