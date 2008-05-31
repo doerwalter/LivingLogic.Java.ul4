@@ -1,6 +1,6 @@
 package com.livinglogic.sxtl;
 
-class Unary extends AST
+abstract class Unary extends AST
 {
 	protected AST obj;
 
@@ -10,7 +10,7 @@ class Unary extends AST
 		this.obj = obj;
 	}
 
-	public String getOpcode()
+	public String getType()
 	{
 		return null;
 	}
@@ -18,7 +18,7 @@ class Unary extends AST
 	public int compile(Template template, Registers registers, Template.Location location)
 	{
 		int r = obj.compile(template, registers, location);
-		template.opcode(getOpcode(), r, r, location);
+		template.opcode(getType(), r, r, location);
 		return r;
 	}
 }

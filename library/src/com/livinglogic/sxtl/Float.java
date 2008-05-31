@@ -10,6 +10,11 @@ public class Float extends AST
 		this.value = value;
 	}
 
+	public String getType()
+	{
+		return "float";
+	}
+
 	public int compile(Template template, Registers registers, Template.Location location)
 	{
 		int r = registers.alloc();

@@ -16,7 +16,7 @@ public class Main
 		CompilerFactory factory = new CompilerFactory();
 		System.out.println("made Factory " + (time()-start));
 		Template tmpl = factory.compile("<?if data?><ul><?for item in data?><?render line(item)?><?end for?></ul><?end if?>");
-		Template linetmpl = factory.compile("<li>(<?print xmlescape(data)?>)</li>");
+		Template linetmpl = factory.compile("<li><?print None?><?print False?><?print True?><?print 42?><?print 4.2?><?print 'gurk'?>(<?print xmlescape(data)?>)</li>");
 		System.out.println("compiled " + (time()-start));
 		HashMap templates = new HashMap();
 		templates.put("line", linetmpl);

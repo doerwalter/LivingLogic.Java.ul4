@@ -12,6 +12,11 @@ public class Render extends AST
 		this.name = name;
 	}
 
+	public String getType()
+	{
+		return "render";
+	}
+
 	public int compile(Template template, Registers registers, Template.Location location)
 	{
 		int r = obj.compile(template, registers, location);

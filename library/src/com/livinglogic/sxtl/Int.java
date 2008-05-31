@@ -10,6 +10,11 @@ public class Int extends AST
 		this.value = value;
 	}
 
+	public String getType()
+	{
+		return "int";
+	}
+
 	public int compile(Template template, Registers registers, Template.Location location)
 	{
 		int r = registers.alloc();

@@ -7,7 +7,7 @@ public class FloorDiv extends Binary
 		super(start, end, obj1, obj2);
 	}
 
-	public String getOpcode()
+	public String getType()
 	{
 		return "floordiv";
 	}

@@ -48,6 +48,11 @@ public class CallFunc extends AST
 		this.argcount = 0;
 	}
 
+	public String getType()
+	{
+		return "callfunc";
+	}
+
 	public int compile(Template template, Registers registers, Template.Location location)
 	{
 		int r1 = arg1 != null ? arg1.compile(template, registers, location) : -1;

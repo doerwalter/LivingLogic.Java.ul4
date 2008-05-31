@@ -12,7 +12,7 @@ class ChangeVar extends AST
 		this.value = value;
 	}
 
-	public String getOpcode()
+	public String getType()
 	{
 		return null;
 	}
@@ -20,7 +20,7 @@ class ChangeVar extends AST
 	public int compile(Template template, Registers registers, Template.Location location)
 	{
 		int r = value.compile(template, registers, location);
-		template.opcode(getOpcode(), r, name.value, location);
+		template.opcode(getType(), r, name.value, location);
 		registers.free(r);
 		return -1;
 	}

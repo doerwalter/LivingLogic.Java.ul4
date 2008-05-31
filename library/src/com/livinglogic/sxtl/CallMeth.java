@@ -53,6 +53,11 @@ public class CallMeth extends AST
 		this.argcount = 0;
 	}
 
+	public String getType()
+	{
+		return "callmeth";
+	}
+
 	public int compile(Template template, Registers registers, Template.Location location)
 	{
 		int ro = obj.compile(template, registers, location);

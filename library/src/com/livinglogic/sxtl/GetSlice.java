@@ -7,7 +7,7 @@ public class GetSlice extends Unary
 		super(start, end, obj);
 	}
 
-	public String getOpcode()
+	public String getType()
 	{
 		return "getslice";
 	}

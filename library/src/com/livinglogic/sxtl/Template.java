@@ -69,7 +69,7 @@ public class Template
 	public static class Location
 	{
 		public String source;
-		public String type;
+		protected String type;
 		public int starttag;
 		public int endtag;
 		public int startcode;
@@ -85,6 +85,10 @@ public class Template
 			this.endcode = endcode;
 		}
 
+		public String getType()
+		{
+			return type;
+		}
 		public String getTag()
 		{
 			return source.substring(starttag, endtag);

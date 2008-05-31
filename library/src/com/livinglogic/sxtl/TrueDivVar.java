@@ -7,7 +7,7 @@ public class TrueDivVar extends ChangeVar
 		super(start, end, name, value);
 	}
 
-	public String getOpcode()
+	public String getType()
 	{
 		return "truedivvar";
 	}

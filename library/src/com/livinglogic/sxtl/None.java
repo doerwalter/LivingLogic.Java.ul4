@@ -7,8 +7,8 @@ public class None extends Const
 		super(start, end);
 	}
 
-	public String getOpcode()
+	public String getType()
 	{
-		return "loadnone";
+		return "none";
 	}
 }

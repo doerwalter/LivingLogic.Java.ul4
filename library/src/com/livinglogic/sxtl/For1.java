@@ -12,6 +12,11 @@ public class For1 extends AST
 		this.container = container;
 	}
 
+	public String getType()
+	{
+		return "for1";
+	}
+
 	public int compile(Template template, Registers registers, Template.Location location)
 	{
 		int rc = container.compile(template, registers, location);

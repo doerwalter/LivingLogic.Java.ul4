@@ -7,7 +7,7 @@ public class StoreVar extends ChangeVar
 		super(start, end, name, value);
 	}
 
-	public String getOpcode()
+	public String getType()
 	{
 		return "storevar";
 	}

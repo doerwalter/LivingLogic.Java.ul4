@@ -7,7 +7,7 @@ class Const extends AST
 		super(start, end);
 	}
 
-	public String getOpcode()
+	public String getType()
 	{
 		return null;
 	}
@@ -15,7 +15,7 @@ class Const extends AST
 	public int compile(Template template, Registers registers, Template.Location location)
 	{
 		int r = registers.alloc();
-		template.opcode(getOpcode(), r, location);
+		template.opcode("load"+getType(), r, location);
 		return r;
 	}	
 }

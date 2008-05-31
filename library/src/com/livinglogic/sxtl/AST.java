@@ -1,6 +1,6 @@
 package com.livinglogic.sxtl;
 
-class AST
+abstract class AST
 {
 	public int start;
 	public int end;
@@ -11,8 +11,7 @@ class AST
 		this.end = end;
 	}
 
-	public int compile(Template template, Registers registers, Template.Location location)
-	{
-		return -1;
-	}
+	abstract public String getType();
+
+	abstract public int compile(Template template, Registers registers, Template.Location location);
 }

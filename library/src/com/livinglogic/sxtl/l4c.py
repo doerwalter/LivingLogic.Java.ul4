@@ -270,71 +270,20 @@ class Token(object):
 	def __str__(self):
 		return self.type
 
+	def getType(self):
+		return self.type
+
 
 class AST(object):
 	def __init__(self, start, end):
 		self.start = start
 		self.end = end
 
-
-class Const(AST):
-	"""
-	Common baseclass for all constants (used for type testing in constant folding)
-	"""
-
-	def __repr__(self):
-		return "%s(%r, %r)" % (self.__class__.__name__, self.start, self.end)
-
-	def compile(self, template, registers, location):
-		r = registers.alloc()
-		template.opcode("load%s" % self.type, r, location)
-		return r
+	def getType(self):
+		return self.type
 
 
-class None_(Const):
-	type = "none"
-	value = None
-
-
-class True_(Const):
-	type = "true"
-	value = True
-
-
-class False_(Const):
-	type = "false"
-	value = False
-
-
-class Value(Const):
-	def __init__(self, start, end, value):
-		Const.__init__(self, start, end)
-		self.value = value
-
-	def __repr__(self):
-		return "%s(%r)" % (self.__class__.__name__, self.value)
-
-	def compile(self, template, registers, location):
-		r = registers.alloc()
-		template.opcode("load%s" % self.type, r, str(self.value), location)
-		return r
-
-
-class Int(Value):
-	type = "int"
-
-
-class Float(Value):
-	type = "float"
-
-	def compile(self, template, registers, location):
-		r = registers.alloc()
-		template.opcode("load%s" % self.type, r, repr(self.value), location)
-		return r
-
-
-class Str(Value):
-	type = "str"
+from com.livinglogic.sxtl import None as None_, True as True_, False as False_, Int, Float, Str
 
 
 class Name(AST):
@@ -844,10 +793,11 @@ class ExprParser(spark.GenericParser):
 			exc.decorate(location)
 			raise
 		except Exception, exc:
+			raise
 			raise Error(exc).decorate(location)
 
 	def typestring(self, token):
-		return token.type
+		return token.getType()
 
 	def error(self, token):
 		raise SyntaxError(token)

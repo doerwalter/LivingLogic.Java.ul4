@@ -12,6 +12,11 @@ public class GetAttr extends AST
 		this.attr = attr;
 	}
 
+	public String getType()
+	{
+		return "getattr";
+	}
+
 	public int compile(Template template, Registers registers, Template.Location location)
 	{
 		int r = obj.compile(template, registers, location);
