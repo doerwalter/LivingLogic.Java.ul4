@@ -13,6 +13,16 @@ public class Token
 		this.type = type;
 	}
 
+	public int getStart()
+	{
+		return start;
+	}
+
+	public int getEnd()
+	{
+		return end;
+	}
+
 	public String getType()
 	{
 		return type;
