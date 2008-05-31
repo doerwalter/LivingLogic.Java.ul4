@@ -358,6 +358,10 @@ public class Utils
 			{
 				retVal = 0;
 			}
+			else if (sequenceSize < retVal)
+			{
+				retVal = sequenceSize;
+			}
 		}
 		return retVal;
 	}
@@ -376,7 +380,11 @@ public class Utils
 			{
 				retVal += sequenceSize;
 			}
-			if (sequenceSize < retVal)
+			if (0 > retVal)
+			{
+				retVal = 0;
+			}
+			else if (sequenceSize < retVal)
 			{
 				retVal = sequenceSize;
 			}
@@ -387,24 +395,29 @@ public class Utils
 	public static Object getSlice(List arg1, Integer arg2, Integer arg3)
 	{
 		int size = arg1.size();
-		return arg1.subList(getSliceStartPos(size, arg2), getSliceEndPos(size, arg3));
+		int start = getSliceStartPos(size, arg2);
+		int end = getSliceEndPos(size, arg3);
+		if (end < start)
+			end = start;
+		return arg1.subList(start, end);
 	}
 
 	public static Object getSlice(String arg1, Integer arg2, Integer arg3)
 	{
 		int size = arg1.length();
-		return arg1.substring(getSliceStartPos(size, arg2), getSliceEndPos(size, arg3));
+		int start = getSliceStartPos(size, arg2);
+		int end = getSliceEndPos(size, arg3);
+		if (end < start)
+			end = start;
+		return arg1.substring(start, end);
 	}
 
 	public static Object getSlice(Object arg1, Object arg2, Object arg3)
 	{
-		if (arg2 instanceof Integer && arg3 instanceof Integer)
-		{
-			if (arg1 instanceof List)
-				return getSlice((List)arg1, (Integer)arg2, (Integer)arg3);
-			else if (arg1 instanceof String)
-				return getSlice((String)arg1, (Integer)arg2, (Integer)arg3);
-		}
+		if (arg1 instanceof List)
+			return getSlice((List)arg1, (Integer)arg2, (Integer)arg3);
+		else if (arg1 instanceof String)
+			return getSlice((String)arg1, (Integer)arg2, (Integer)arg3);
 		throw new UnsupportedOperationException("Instance of " + arg1.getClass() + " does not support getslice with arguments of type " + arg2.getClass() + " and " + arg3.getClass() + "!");
 	}
 
