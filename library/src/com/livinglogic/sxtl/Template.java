@@ -893,6 +893,20 @@ public class Template
 							throw new RuntimeException("No method '" + code.arg + "' defined!");
 						}
 						break;
+					case CALLMETH1:
+						if (code.arg.equals("upper"))
+						{
+							reg[code.r1] = ((String)reg[code.r2]).toUpperCase();
+						}
+						else if (code.arg.equals("lower"))
+						{
+							reg[code.r1] = ((String)reg[code.r2]).toLowerCase();
+						}
+						else
+						{
+							throw new RuntimeException("No method '" + code.arg + "' defined!");
+						}
+						break;
 					case RENDER:
 						subTemplateIterator = ((Template)templates.get(code.arg)).render(reg[code.r1], templates);
 						if (subTemplateIterator.hasNext())
