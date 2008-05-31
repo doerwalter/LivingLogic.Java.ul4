@@ -53,7 +53,7 @@ public class CallFunc extends AST
 		return "callfunc";
 	}
 
-	public int compile(Template template, Registers registers, Template.Location location)
+	public int compile(Template template, Registers registers, Location location)
 	{
 		int r1 = arg1 != null ? arg1.compile(template, registers, location) : -1;
 		int r2 = arg2 != null ? arg2.compile(template, registers, location) : -1;

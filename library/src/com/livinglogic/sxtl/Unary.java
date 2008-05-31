@@ -15,7 +15,7 @@ abstract class Unary extends AST
 		return null;
 	}
 
-	public int compile(Template template, Registers registers, Template.Location location)
+	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = obj.compile(template, registers, location);
 		template.opcode(getType(), r, r, location);

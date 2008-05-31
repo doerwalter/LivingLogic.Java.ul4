@@ -17,7 +17,7 @@ class ChangeVar extends AST
 		return null;
 	}
 
-	public int compile(Template template, Registers registers, Template.Location location)
+	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = value.compile(template, registers, location);
 		template.opcode(getType(), r, name.value, location);

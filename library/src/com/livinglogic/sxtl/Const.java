@@ -7,7 +7,7 @@ public abstract class Const extends AST
 		super(start, end);
 	}
 
-	public int compile(Template template, Registers registers, Template.Location location)
+	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
 		template.opcode("load"+getType(), r, location);

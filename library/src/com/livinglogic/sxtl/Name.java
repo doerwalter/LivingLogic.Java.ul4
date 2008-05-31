@@ -20,7 +20,7 @@ public class Name extends AST
 		return value;
 	}
 
-	public int compile(Template template, Registers registers, Template.Location location)
+	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
 		template.opcode("loadvar", r, value, location);

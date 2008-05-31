@@ -8,12 +8,7 @@
 ## See ll/__init__.py for the license
 
 
-import com.livinglogic.sxtl.L4CompilerType as L4CompilerType
-import com.livinglogic.sxtl.Template as L4Template
-Location = L4Template.Location
-Opcode = L4Template.Opcode
-
-from com.livinglogic.sxtl import Registers
+from com.livinglogic.sxtl import CompilerType, Template, Opcode, Location, Registers
 
 import sys, re, StringIO
 
@@ -719,9 +714,9 @@ class RenderParser(ExprParser):
 	render.spark = ['render ::= name ( expr0 )']
 
 
-class Compiler(L4CompilerType):
+class Compiler(CompilerType):
 	def compile(self, source, startdelim, enddelim):
-		template = L4Template()
+		template = Template()
 		template.source = source
 		_compile(template, source, startdelim, enddelim)
 		return template

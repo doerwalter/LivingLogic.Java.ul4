@@ -17,7 +17,7 @@ public class CompilerFactory
 		interpreter.exec("from l4c import Compiler");
 		PyObject compilerclass = interpreter.get("Compiler");
 		PyObject compilerObj = compilerclass.__call__();
-		compiler = (L4CompilerType)compilerObj.__tojava__(L4CompilerType.class);
+		compiler = (CompilerType)compilerObj.__tojava__(CompilerType.class);
 	}
 
 	public Template compile(String source)
@@ -25,5 +25,5 @@ public class CompilerFactory
 		return compiler.compile(source, "<?", "?>");
 	}
 
-	private L4CompilerType compiler;
+	private CompilerType compiler;
 }

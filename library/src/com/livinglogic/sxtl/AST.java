@@ -23,5 +23,5 @@ abstract class AST
 
 	abstract public String getType();
 
-	abstract public int compile(Template template, Registers registers, Template.Location location);
+	abstract public int compile(Template template, Registers registers, Location location);
 }

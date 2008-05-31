@@ -15,7 +15,7 @@ public class Str extends AST
 		return "str";
 	}
 
-	public int compile(Template template, Registers registers, Template.Location location)
+	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
 		template.opcode("loadstr", r, value, location);

@@ -19,7 +19,7 @@ public class GetSlice12 extends AST
 		return "getslice12";
 	}
 
-	public int compile(Template template, Registers registers, Template.Location location)
+	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = obj.compile(template, registers, location);
 		int r1 = index1.compile(template, registers, location);

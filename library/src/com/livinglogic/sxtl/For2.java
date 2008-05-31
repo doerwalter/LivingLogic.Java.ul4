@@ -19,7 +19,7 @@ public class For2 extends AST
 		return "for2";
 	}
 
-	public int compile(Template template, Registers registers, Template.Location location)
+	public int compile(Template template, Registers registers, Location location)
 	{
 		int rc = container.compile(template, registers, location);
 		int ri = registers.alloc();

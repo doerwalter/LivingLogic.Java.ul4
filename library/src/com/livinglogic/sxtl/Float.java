@@ -15,7 +15,7 @@ public class Float extends AST
 		return "float";
 	}
 
-	public int compile(Template template, Registers registers, Template.Location location)
+	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
 		template.opcode("loadfloat", r, String.valueOf(value), location);

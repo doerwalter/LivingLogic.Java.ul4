@@ -12,7 +12,7 @@ abstract class Binary extends AST
 		this.obj2 = obj2;
 	}
 
-	public int compile(Template template, Registers registers, Template.Location location)
+	public int compile(Template template, Registers registers, Location location)
 	{
 		int r1 = obj1.compile(template, registers, location);
 		int r2 = obj2.compile(template, registers, location);

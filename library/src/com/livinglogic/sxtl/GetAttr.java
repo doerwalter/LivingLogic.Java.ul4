@@ -17,7 +17,7 @@ public class GetAttr extends AST
 		return "getattr";
 	}
 
-	public int compile(Template template, Registers registers, Template.Location location)
+	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = obj.compile(template, registers, location);
 		template.opcode("getattr", r, r, attr.value, location);
