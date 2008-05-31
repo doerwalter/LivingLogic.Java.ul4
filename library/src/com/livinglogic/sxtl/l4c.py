@@ -273,93 +273,7 @@ class Token(object):
 		return self.type
 
 
-class AST(object):
-	def __init__(self, start, end):
-		self.start = start
-		self.end = end
-
-	def getType(self):
-		return self.type
-
-
-from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod, GetSlice12, GetAttr, Render, For, For1, For2
-
-
-class CallFunc(AST):
-	def __init__(self, start, end, name, args):
-		AST.__init__(self, start, end)
-		self.name = name
-		self.args = args
-
-	def __repr__(self):
-		if self.args:
-			return "%s(%r, %r, %r, %s)" % (self.__class__.__name__, self.start, self.end, self.name, repr(self.args)[1:-1])
-		else:
-			return "%s(%r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.name)
-
-	def compile(self, template, registers, location):
-		if len(self.args) == 0:
-			r = registers.alloc()
-			template.opcode("callfunc0", r, self.name.name, location)
-			return r
-		elif len(self.args) == 1:
-			r0 = self.args[0].compile(template, registers, location)
-			template.opcode("callfunc1", r0, r0, self.name.value, location)
-			return r0
-		elif len(self.args) == 2:
-			r0 = self.args[0].compile(template, registers, location)
-			r1 = self.args[1].compile(template, registers, location)
-			template.opcode("callfunc2", r0, r0, r1, self.name.value, location)
-			registers.free(r1)
-			return r0
-		else:
-			raise ValueError("%d arguments not supported" % len(self.args))
-
-
-class CallMeth(AST):
-	def __init__(self, start, end, name, obj, args):
-		AST.__init__(self, start, end)
-		self.name = name
-		self.obj = obj
-		self.args = args
-
-	def __repr__(self):
-		if self.args:
-			return "%s(%r, %r, %r, %r, %s)" % (self.__class__.__name__, self.start, self.end, self.name, self.obj, repr(self.args)[1:-1])
-		else:
-			return "%s(%r, %r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.name, self.obj)
-
-	def compile(self, template, registers, location):
-		if len(self.args) == 0:
-			r = self.obj.compile(template, registers, location)
-			template.opcode("callmeth0", r, r, self.name.value, location)
-			return r
-		elif len(self.args) == 1:
-			r = self.obj.compile(template, registers, location)
-			r0 = self.args[0].compile(template, registers, location)
-			template.opcode("callmeth1", r, r, r0, self.name.value, location)
-			registers.free(r0)
-			return r
-		elif len(self.args) == 2:
-			r = self.obj.compile(template, registers, location)
-			r0 = self.args[0].compile(template, registers, location)
-			r1 = self.args[1].compile(template, registers, location)
-			template.opcode("callmeth2", r, r, r0, r1, self.name.value, location)
-			registers.free(r0)
-			registers.free(r1)
-			return r
-		elif len(self.args) == 3:
-			r = self.obj.compile(template, registers, location)
-			r0 = self.args[0].compile(template, registers, location)
-			r1 = self.args[1].compile(template, registers, location)
-			r2 = self.args[2].compile(template, registers, location)
-			template.opcode("callmeth3", r, r, r0, r1, r2, self.name.value, location)
-			registers.free(r0)
-			registers.free(r1)
-			registers.free(r2)
-			return r
-		else:
-			raise ValueError("%d arguments not supported" % len(self.args))
+from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod, GetSlice12, GetAttr, Render, For, For1, For2, CallFunc, CallMeth
 
 
 ###
@@ -581,19 +495,19 @@ class ExprParser(spark.GenericParser):
 	expr_bracket.spark = ['expr11 ::= ( expr0 )']
 
 	def expr_callfunc0(self, (name, _0, _1)):
-		return CallFunc(name.start, _1.end, name, [])
+		return CallFunc(name.start, _1.end, name)
 	expr_callfunc0.spark = ['expr10 ::= name ( )']
 
 	def expr_callfunc1(self, (name, _0, arg0, _1)):
-		return CallFunc(name.start, _1.end, name, [arg0])
+		return CallFunc(name.start, _1.end, name, arg0)
 	expr_callfunc1.spark = ['expr10 ::= name ( expr0 )']
 
 	def expr_callfunc2(self, (name, _0, arg0, _1, arg1, _2)):
-		return CallFunc(name.start, _2.end, name, [arg0, arg1])
+		return CallFunc(name.start, _2.end, name, arg0, arg1)
 	expr_callfunc2.spark = ['expr10 ::= name ( expr0 , expr0 )']
 
 	def expr_callfunc3(self, (name, _0, arg0, _1, arg1, _2, arg2, _3)):
-		return CallFunc(name.start, _3.end, name, [arg0, arg1, arg2])
+		return CallFunc(name.start, _3.end, name, arg0, arg1, arg2)
 	expr_callfunc3.spark = ['expr10 ::= name ( expr0 , expr0 , expr0 )']
 
 	def expr_getattr(self, (expr, _0, name)):
@@ -601,19 +515,19 @@ class ExprParser(spark.GenericParser):
 	expr_getattr.spark = ['expr9 ::= expr9 . name']
 
 	def expr_callmeth0(self, (expr, _0, name, _1, _2)):
-		return CallMeth(expr.start, _2.end, name, expr, [])
+		return CallMeth(expr.start, _2.end, expr, name)
 	expr_callmeth0.spark = ['expr9 ::= expr9 . name ( )']
 
 	def expr_callmeth1(self, (expr, _0, name, _1, arg1, _2)):
-		return CallMeth(expr.start, _2.end, name, expr, [arg1])
+		return CallMeth(expr.start, _2.end, expr, name, arg1)
 	expr_callmeth1.spark = ['expr9 ::= expr9 . name ( expr0 )']
 
 	def expr_callmeth2(self, (expr, _0, name, _1, arg1, _2, arg2, _3)):
-		return CallMeth(expr.start, _3.end, name, expr, [arg1, arg2])
+		return CallMeth(expr.start, _3.end, expr, name, arg1, arg2)
 	expr_callmeth2.spark = ['expr9 ::= expr9 . name ( expr0 , expr0 )']
 
 	def expr_callmeth3(self, (expr, _0, name, _1, arg1, _2, arg2, _3, arg3, _4)):
-		return CallMeth(expr.start, _4.end, name, expr, [arg1, arg2, arg3])
+		return CallMeth(expr.start, _4.end, expr, name, arg1, arg2, arg3)
 	expr_callmeth3.spark = ['expr9 ::= expr9 . name ( expr0 , expr0 , expr0 )']
 
 	def expr_getitem(self, (expr, _0, key, _1)):
