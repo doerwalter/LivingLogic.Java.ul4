@@ -282,7 +282,7 @@ class AST(object):
 		return self.type
 
 
-from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod
+from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod, GetSlice12
 
 
 class For(AST):
@@ -324,26 +324,6 @@ class GetAttr(AST):
 		r = self.obj.compile(template, registers, location)
 		template.opcode("getattr", r, r, self.attr.value, location)
 		return r
-
-
-class GetSlice12(AST):
-	def __init__(self, start, end, obj, index1, index2):
-		AST.__init__(self, start, end)
-		self.obj = obj
-		self.index1 = index1
-		self.index2 = index2
-
-	def __repr__(self):
-		return "%s(%r, %r, %r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.obj, self.index1, self.index2)
-
-	def compile(self, template, registers, location):
-		r1 = self.obj.compile(template, registers, location)
-		r2 = self.index1.compile(template, registers, location)
-		r3 = self.index2.compile(template, registers, location)
-		template.opcode("getslice12", r1, r1, r2, r3, location)
-		registers.free(r2)
-		registers.free(r3)
-		return r1
 
 
 class CallFunc(AST):
