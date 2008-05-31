@@ -716,6 +716,9 @@ public class Template
 					case NOT:
 						reg[code.r1] = Utils.getBool(reg[code.r2]) ? Boolean.FALSE : Boolean.TRUE;
 						break;
+					case NEG:
+						reg[code.r1] = Utils.neg(reg[code.r2]);
+						break;
 					case EQUALS:
 						reg[code.r1] = Utils.equals(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
 						break;

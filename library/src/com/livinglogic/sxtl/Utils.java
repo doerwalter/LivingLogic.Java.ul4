@@ -164,6 +164,25 @@ public class Utils
 	
 	protected static final Integer INTEGER_FALSE = new Integer(0);
 	
+	public static Object neg(Integer arg)
+	{
+		return new Integer(-arg.intValue());
+	}
+	
+	public static Object neg(Number arg)
+	{
+		return new Double(-arg.doubleValue());
+	}
+	
+	public static Object neg(Object arg)
+	{
+		if (arg instanceof Integer)
+			return neg((Integer)arg);
+		else if (arg instanceof Number)
+			return neg((Number)arg);
+		throw new UnsupportedOperationException("Can't negate instance of " + arg.getClass() + "!");
+	}
+
 	public static Object add(Integer arg1, Integer arg2)
 	{
 		return new Integer(arg1.intValue() + arg2.intValue());
