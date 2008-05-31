@@ -282,33 +282,7 @@ class AST(object):
 		return self.type
 
 
-from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod, GetSlice12, GetAttr, Render
-
-
-class For(AST):
-	def __init__(self, start, end, iter, cont):
-		AST.__init__(self, start, end)
-		self.iter = iter
-		self.cont = cont
-
-	def __repr__(self):
-		return "%s(%r, %r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.iter, self.cont)
-
-	def compile(self, template, registers, location):
-		rc = self.cont.compile(template, registers, location)
-		ri = registers.alloc()
-		template.opcode("for", ri, rc, location)
-		if isinstance(self.iter, list):
-			for (i, iter) in enumerate(self.iter):
-				rii = registers.alloc()
-				template.opcode("loadint", rii, str(i), location)
-				template.opcode("getitem", rii, ri, rii, location)
-				template.opcode("storevar", rii, iter.value, location)
-				registers.free(rii)
-		else:
-			template.opcode("storevar", ri, self.iter.value, location)
-		registers.free(ri)
-		registers.free(rc)
+from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod, GetSlice12, GetAttr, Render, For, For1, For2
 
 
 class CallFunc(AST):
@@ -785,15 +759,15 @@ class ForParser(ExprParser):
 	for0.spark = ['for ::= name in expr0']
 
 	def for1(self, (_0, iter, _1, _2, _3, cont)):
-		return For(_0.start, cont.end, [iter], cont)
+		return For1(_0.start, cont.end, iter, cont)
 	for1.spark = ['for ::= ( name , ) in expr0']
 
 	def for2a(self, (_0, iter1, _1, iter2, _2, _3, cont)):
-		return For(_0.start, cont.end, [iter1, iter2], cont)
+		return For2(_0.start, cont.end, iter1, iter2, cont)
 	for2a.spark = ['for ::= ( name , name ) in expr0']
 
 	def for2b(self, (_0, iter1, _1, iter2, _2, _3, _4, cont)):
-		return For(_0.start, cont.end, [iter1, iter2], cont)
+		return For2(_0.start, cont.end, iter1, iter2, cont)
 	for2a.spark = ['for ::= ( name , name , ) in expr0']
 
 
