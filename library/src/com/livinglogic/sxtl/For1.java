@@ -23,7 +23,7 @@ public class For1 extends AST
 		int ri = registers.alloc();
 		template.opcode("for", ri, rc, location);
 		int rii = registers.alloc();
-		template.opcode("loatint", rii, "0", location);
+		template.opcode("loadint", rii, "0", location);
 		template.opcode("getitem", rii, ri, rii, location);
 		template.opcode("storevar", rii, iter.value, location);
 		registers.free(rii);
