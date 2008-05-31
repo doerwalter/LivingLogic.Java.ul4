@@ -247,7 +247,6 @@ def _compile(template, source, startdelim, enddelim):
 			exc.decorate(location)
 			raise
 		except Exception, exc:
-			raise
 			raise Error(exc).decorate(location)
 	if stack:
 		raise BlockError("unclosed blocks")
@@ -283,7 +282,7 @@ class AST(object):
 		return self.type
 
 
-from com.livinglogic.sxtl import None as None_, True as True_, False as False_, Int, Float, Str, Name
+from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg
 
 
 class For(AST):
@@ -345,34 +344,6 @@ class GetSlice12(AST):
 		registers.free(r2)
 		registers.free(r3)
 		return r1
-
-
-class Unary(AST):
-	opcode = None
-
-	def __init__(self, start, end, obj):
-		AST.__init__(self, start, end)
-		self.obj = obj
-
-	def __repr__(self):
-		return "%s(%r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.obj)
-
-	def compile(self, template, registers, location):
-		r = self.obj.compile(template, registers, location)
-		template.opcode(self.opcode, r, r, location)
-		return r
-
-
-class GetSlice(Unary):
-	opcode = "getslice"
-
-
-class Not(Unary):
-	opcode = "not"
-
-
-class Neg(Unary):
-	opcode = "neg"
 
 
 class Binary(AST):
@@ -954,7 +925,7 @@ class ExprParser(spark.GenericParser):
 	expr_notcontains.spark = ['expr3 ::= expr3 not in expr3']
 
 	def expr_not(self, (_0, expr)):
-		if isinstance(expr1, Const): # Constant folding
+		if isinstance(expr, Const): # Constant folding
 			return self.makeconst(_0.start, expr.end, not expr.value)
 		return Not(_0.start, expr.end, expr)
 	expr_not.spark = ['expr2 ::= not expr2']

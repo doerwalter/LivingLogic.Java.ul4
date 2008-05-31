@@ -1,15 +1,10 @@
 package com.livinglogic.sxtl;
 
-class Const extends AST
+public abstract class Const extends AST
 {
 	public Const(int start, int end)
 	{
 		super(start, end);
-	}
-
-	public String getType()
-	{
-		return null;
 	}
 
 	public int compile(Template template, Registers registers, Template.Location location)
