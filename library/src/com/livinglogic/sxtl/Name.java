@@ -15,6 +15,11 @@ public class Name extends AST
 		return "name";
 	}
 
+	public String getValue()
+	{
+		return value;
+	}
+
 	public int compile(Template template, Registers registers, Template.Location location)
 	{
 		int r = registers.alloc();
