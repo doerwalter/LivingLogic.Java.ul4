@@ -283,23 +283,7 @@ class AST(object):
 		return self.type
 
 
-from com.livinglogic.sxtl import None as None_, True as True_, False as False_, Int, Float, Str
-
-
-class Name(AST):
-	type = "name"
-
-	def __init__(self, start, end, value):
-		AST.__init__(self, start, end)
-		self.value = value
-
-	def __repr__(self):
-		return "%s(%r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.value)
-
-	def compile(self, template, registers, location):
-		r = registers.alloc()
-		template.opcode("loadvar", r, self.value, location)
-		return r
+from com.livinglogic.sxtl import None as None_, True as True_, False as False_, Int, Float, Str, Name
 
 
 class For(AST):
