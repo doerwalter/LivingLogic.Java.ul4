@@ -398,7 +398,7 @@ public class Utils
 
 	public static Object getSlice(Object arg1, Object arg2, Object arg3)
 	{
-		throw new UnsupportedOperationException("Instance of " + arg1.getClass() + " does not support getsclice with arguments of type " + arg2.getClass() + " and " + arg3.getClass() + "!");
+		throw new UnsupportedOperationException("Instance of " + arg1.getClass() + " does not support getslice with arguments of type " + arg2.getClass() + " and " + arg3.getClass() + "!");
 	}
 
 	public static boolean getBool(Boolean obj)
