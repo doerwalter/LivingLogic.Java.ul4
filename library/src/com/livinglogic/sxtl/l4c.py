@@ -257,23 +257,7 @@ def _compile(template, source, startdelim, enddelim):
 ### Tokens and nodes for the AST
 ###
 
-class Token(object):
-	def __init__(self, start, end, type):
-		self.start = start
-		self.end = end
-		self.type = type
-
-	def __repr__(self):
-		return "%s(%r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.type)
-
-	def __str__(self):
-		return self.type
-
-	def getType(self):
-		return self.type
-
-
-from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod, GetSlice12, GetAttr, Render, For, For1, For2, CallFunc, CallMeth
+from com.livinglogic.sxtl import Token, Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod, GetSlice12, GetAttr, Render, For, For1, For2, CallFunc, CallMeth
 
 
 ###
