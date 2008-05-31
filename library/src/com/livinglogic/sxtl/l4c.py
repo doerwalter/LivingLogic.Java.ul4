@@ -282,7 +282,7 @@ class AST(object):
 		return self.type
 
 
-from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg
+from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar
 
 
 class For(AST):
@@ -423,63 +423,6 @@ class And(Binary):
 
 class Mod(Binary):
 	opcode = "mod"
-
-
-class ChangeVar(AST):
-	opcode = None
-
-	def __init__(self, start, end, name, value):
-		AST.__init__(self, start, end)
-		self.name = name
-		self.value = value
-
-	def __repr__(self):
-		return "%s(%r, %r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.name, self.value)
-
-	def compile(self, template, registers, location):
-		r = self.value.compile(template, registers, location)
-		template.opcode(self.opcode, r, self.name.value, location)
-		registers.free(r)
-
-
-class StoreVar(ChangeVar):
-	opcode = "storevar"
-
-
-class AddVar(ChangeVar):
-	opcode = "addvar"
-
-
-class SubVar(ChangeVar):
-	opcode = "subvar"
-
-
-class MulVar(ChangeVar):
-	opcode = "mulvar"
-
-
-class TrueDivVar(ChangeVar):
-	opcode = "truedivvar"
-
-
-class FloorDivVar(ChangeVar):
-	opcode = "floordivvar"
-
-
-class ModVar(ChangeVar):
-	opcode = "modvar"
-
-
-class DelVar(AST):
-	def __init__(self, start, end, name):
-		AST.__init__(self, start, end)
-		self.name = name
-
-	def __repr__(self):
-		return "%s(%r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.name)
-
-	def compile(self, template, registers, location):
-		template.opcode("delvar", self.name.value, location)
 
 
 class CallFunc(AST):
