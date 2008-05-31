@@ -53,10 +53,8 @@ public class CallMeth extends AST
 		this.argcount = 0;
 	}
 
-	public String getType()
-	{
-		return "callmeth";
-	}
+
+	private static final Opcode.Type[] opcodes = {Opcode.Type.CALLMETH0, Opcode.Type.CALLMETH1, Opcode.Type.CALLMETH2, Opcode.Type.CALLMETH3};
 
 	public int compile(Template template, Registers registers, Location location)
 	{
@@ -64,7 +62,7 @@ public class CallMeth extends AST
 		int r1 = arg1 != null ? arg1.compile(template, registers, location) : -1;
 		int r2 = arg2 != null ? arg2.compile(template, registers, location) : -1;
 		int r3 = arg3 != null ? arg3.compile(template, registers, location) : -1;
-		template.opcode("callmeth" + argcount, ro, ro, r1, r2, r3, name.value, location);
+		template.opcode(opcodes[argcount], ro, ro, r1, r2, r3, name.value, location);
 		if (r1 != -1)
 			registers.free(r1);
 		if (r2 != -1)

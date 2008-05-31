@@ -41,62 +41,62 @@ public class Template
 		this.opcodes = new LinkedList();
 	}
 
-	public void opcode(String name, Location location)
+	public void opcode(Opcode.Type name, Location location)
 	{
 		opcodes.add(new Opcode(name, -1, -1, -1, -1, -1, null, location));
 	}
 
-	public void opcode(String name, String arg, Location location)
+	public void opcode(Opcode.Type name, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, -1, -1, -1, -1, -1, arg, location));
 	}
 
-	public void opcode(String name, int r1, Location location)
+	public void opcode(Opcode.Type name, int r1, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, -1, -1, -1, -1, null, location));
 	}
 
-	public void opcode(String name, int r1, String arg, Location location)
+	public void opcode(Opcode.Type name, int r1, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, -1, -1, -1, -1, arg, location));
 	}
 
-	public void opcode(String name, int r1, int r2, Location location)
+	public void opcode(Opcode.Type name, int r1, int r2, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, -1, -1, -1, null, location));
 	}
 
-	public void opcode(String name, int r1, int r2, String arg, Location location)
+	public void opcode(Opcode.Type name, int r1, int r2, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, -1, -1, -1, arg, location));
 	}
 
-	public void opcode(String name, int r1, int r2, int r3, Location location)
+	public void opcode(Opcode.Type name, int r1, int r2, int r3, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, -1, -1, null, location));
 	}
 
-	public void opcode(String name, int r1, int r2, int r3, String arg, Location location)
+	public void opcode(Opcode.Type name, int r1, int r2, int r3, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, -1, -1, arg, location));
 	}
 
-	public void opcode(String name, int r1, int r2, int r3, int r4, Location location)
+	public void opcode(Opcode.Type name, int r1, int r2, int r3, int r4, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, -1, null, location));
 	}
 
-	public void opcode(String name, int r1, int r2, int r3, int r4, String arg, Location location)
+	public void opcode(Opcode.Type name, int r1, int r2, int r3, int r4, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, -1, arg, location));
 	}
 
-	public void opcode(String name, int r1, int r2, int r3, int r4, int r5, Location location)
+	public void opcode(Opcode.Type name, int r1, int r2, int r3, int r4, int r5, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, r5, null, location));
 	}
 
-	public void opcode(String name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
+	public void opcode(Opcode.Type name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, r5, arg, location));
 	}

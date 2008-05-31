@@ -7,7 +7,12 @@ public class True extends Const
 		super(start, end);
 	}
 
-	public String getType()
+	public Opcode.Type getType()
+	{
+		return Opcode.Type.LOADTRUE;
+	}
+
+	public String getTokenType()
 	{
 		return "true";
 	}

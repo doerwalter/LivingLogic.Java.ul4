@@ -10,7 +10,7 @@ public class Str extends AST
 		this.value = value;
 	}
 
-	public String getType()
+	public String getTokenType()
 	{
 		return "str";
 	}
@@ -18,7 +18,7 @@ public class Str extends AST
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
-		template.opcode("loadstr", r, value, location);
+		template.opcode(Opcode.Type.LOADSTR, r, value, location);
 		return r;
 	}
 }

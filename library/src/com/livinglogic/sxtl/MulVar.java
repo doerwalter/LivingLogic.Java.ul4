@@ -7,8 +7,8 @@ public class MulVar extends ChangeVar
 		super(start, end, name, value);
 	}
 
-	public String getType()
+	public Opcode.Type getType()
 	{
-		return "mulvar";
+		return Opcode.Type.MULVAR;
 	}
 }

@@ -14,17 +14,12 @@ public class GetSlice12 extends AST
 		this.index2 = index2;
 	}
 
-	public String getType()
-	{
-		return "getslice12";
-	}
-
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = obj.compile(template, registers, location);
 		int r1 = index1.compile(template, registers, location);
 		int r2 = index2.compile(template, registers, location);
-		template.opcode("getslice12", r, r, r1, r2, location);
+		template.opcode(Opcode.Type.GETSLICE12, r, r, r1, r2, location);
 		return r;
 	}
 }

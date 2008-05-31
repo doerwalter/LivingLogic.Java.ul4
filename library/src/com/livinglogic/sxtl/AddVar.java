@@ -7,8 +7,8 @@ public class AddVar extends ChangeVar
 		super(start, end, name, value);
 	}
 
-	public String getType()
+	public Opcode.Type getType()
 	{
-		return "addvar";
+		return Opcode.Type.ADDVAR;
 	}
 }

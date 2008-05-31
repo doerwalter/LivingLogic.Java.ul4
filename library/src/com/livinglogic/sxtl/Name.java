@@ -10,20 +10,20 @@ public class Name extends AST
 		this.value = value;
 	}
 
-	public String getType()
-	{
-		return "name";
-	}
-
 	public String getValue()
 	{
 		return value;
 	}
 
+	public String getTokenType()
+	{
+		return "name";
+	}
+
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
-		template.opcode("loadvar", r, value, location);
+		template.opcode(Opcode.Type.LOADVAR, r, value, location);
 		return r;
 	}
 }

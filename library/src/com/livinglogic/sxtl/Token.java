@@ -23,7 +23,7 @@ public class Token
 		return end;
 	}
 
-	public String getType()
+	public String getTokenType()
 	{
 		return type;
 	}

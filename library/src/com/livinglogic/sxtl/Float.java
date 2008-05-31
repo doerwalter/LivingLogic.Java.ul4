@@ -10,7 +10,7 @@ public class Float extends AST
 		this.value = value;
 	}
 
-	public String getType()
+	public String getTokenType()
 	{
 		return "float";
 	}
@@ -18,7 +18,7 @@ public class Float extends AST
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
-		template.opcode("loadfloat", r, String.valueOf(value), location);
+		template.opcode(Opcode.Type.LOADFLOAT, r, String.valueOf(value), location);
 		return r;
 	}
 }

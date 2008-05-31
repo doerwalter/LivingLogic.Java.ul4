@@ -7,8 +7,8 @@ public class GetItem extends Binary
 		super(start, end, obj1, obj2);
 	}
 
-	public String getType()
+	public Opcode.Type getType()
 	{
-		return "getitem";
+		return Opcode.Type.GETITEM;
 	}
 }

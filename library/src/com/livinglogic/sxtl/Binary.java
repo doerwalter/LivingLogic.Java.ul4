@@ -12,6 +12,8 @@ abstract class Binary extends AST
 		this.obj2 = obj2;
 	}
 
+	abstract public Opcode.Type getType();
+
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r1 = obj1.compile(template, registers, location);

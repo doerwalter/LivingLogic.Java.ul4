@@ -23,6 +23,7 @@ public class Location
 	{
 		return type;
 	}
+
 	public String getTag()
 	{
 		return source.substring(starttag, endtag);

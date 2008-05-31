@@ -7,8 +7,8 @@ public class Not extends Unary
 		super(start, end, obj);
 	}
 
-	public String getType()
+	public Opcode.Type getType()
 	{
-		return "not";
+		return Opcode.Type.NOT;
 	}
 }

@@ -7,8 +7,8 @@ public class SubVar extends ChangeVar
 		super(start, end, name, value);
 	}
 
-	public String getType()
+	public Opcode.Type getType()
 	{
-		return "subvar";
+		return Opcode.Type.SUBVAR;
 	}
 }

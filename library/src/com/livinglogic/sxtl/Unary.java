@@ -10,10 +10,7 @@ abstract class Unary extends AST
 		this.obj = obj;
 	}
 
-	public String getType()
-	{
-		return null;
-	}
+	abstract public Opcode.Type getType();
 
 	public int compile(Template template, Registers registers, Location location)
 	{

@@ -11,14 +11,9 @@ public class DelVar extends AST
 		this.name = name;
 	}
 
-	public String getType()
-	{
-		return "delvar";
-	}
-
 	public int compile(Template template, Registers registers, Location location)
 	{
-		template.opcode("delvar", name.value, location);
+		template.opcode(Opcode.Type.DELVAR, name.value, location);
 		return -1;
 	}
 }

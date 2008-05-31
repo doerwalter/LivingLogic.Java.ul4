@@ -21,7 +21,5 @@ abstract class AST
 		return end;
 	}
 
-	abstract public String getType();
-
 	abstract public int compile(Template template, Registers registers, Location location);
 }

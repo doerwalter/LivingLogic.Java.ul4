@@ -1,6 +1,6 @@
 package com.livinglogic.sxtl;
 
-class ChangeVar extends AST
+abstract class ChangeVar extends AST
 {
 	protected Name name;
 	protected AST value;
@@ -12,10 +12,7 @@ class ChangeVar extends AST
 		this.value = value;
 	}
 
-	public String getType()
-	{
-		return null;
-	}
+	abstract public Opcode.Type getType();
 
 	public int compile(Template template, Registers registers, Location location)
 	{

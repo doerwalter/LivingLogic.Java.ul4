@@ -14,23 +14,18 @@ public class For2 extends AST
 		this.container = container;
 	}
 
-	public String getType()
-	{
-		return "for2";
-	}
-
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int rc = container.compile(template, registers, location);
 		int ri = registers.alloc();
-		template.opcode("for", ri, rc, location);
+		template.opcode(Opcode.Type.FOR, ri, rc, location);
 		int rii = registers.alloc();
-		template.opcode("loadint", rii, "0", location);
-		template.opcode("getitem", rii, ri, rii, location);
-		template.opcode("storevar", rii, iter1.value, location);
-		template.opcode("loadint", rii, "1", location);
-		template.opcode("getitem", rii, ri, rii, location);
-		template.opcode("storevar", rii, iter2.value, location);
+		template.opcode(Opcode.Type.LOADINT, rii, "0", location);
+		template.opcode(Opcode.Type.GETITEM, rii, ri, rii, location);
+		template.opcode(Opcode.Type.STOREVAR, rii, iter1.value, location);
+		template.opcode(Opcode.Type.LOADINT, rii, "1", location);
+		template.opcode(Opcode.Type.GETITEM, rii, ri, rii, location);
+		template.opcode(Opcode.Type.STOREVAR, rii, iter2.value, location);
 		registers.free(rii);
 		registers.free(ri);
 		registers.free(rc);

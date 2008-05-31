@@ -69,110 +69,126 @@ public class Opcode
 	
 	public Opcode(String name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
 	{
+		Type type;
+
 		if (name == null)
-			this.name = Type.TEXT;
+			type = Type.TEXT;
 		else if (name.equals("loadnone"))
-			this.name = Type.LOADNONE;
+			type = Type.LOADNONE;
 		else if (name.equals("loadfalse"))
-			this.name = Type.LOADFALSE;
+			type = Type.LOADFALSE;
 		else if (name.equals("loadtrue"))
-			this.name = Type.LOADTRUE;
+			type = Type.LOADTRUE;
 		else if (name.equals("loadint"))
-			this.name = Type.LOADINT;
+			type = Type.LOADINT;
 		else if (name.equals("loadfloat"))
-			this.name = Type.LOADFLOAT;
+			type = Type.LOADFLOAT;
 		else if (name.equals("loadstr"))
-			this.name = Type.LOADSTR;
+			type = Type.LOADSTR;
 		else if (name.equals("loadvar"))
-			this.name = Type.LOADVAR;
+			type = Type.LOADVAR;
 		else if (name.equals("storevar"))
-			this.name = Type.STOREVAR;
+			type = Type.STOREVAR;
 		else if (name.equals("addvar"))
-			this.name = Type.ADDVAR;
+			type = Type.ADDVAR;
 		else if (name.equals("subvar"))
-			this.name = Type.SUBVAR;
+			type = Type.SUBVAR;
 		else if (name.equals("mulvar"))
-			this.name = Type.MULVAR;
+			type = Type.MULVAR;
 		else if (name.equals("truedivvar"))
-			this.name = Type.TRUEDIVVAR;
+			type = Type.TRUEDIVVAR;
 		else if (name.equals("floordivvar"))
-			this.name = Type.FLOORDIVVAR;
+			type = Type.FLOORDIVVAR;
 		else if (name.equals("modvar"))
-			this.name = Type.MODVAR;
+			type = Type.MODVAR;
 		else if (name.equals("delvar"))
-			this.name = Type.DELVAR;
+			type = Type.DELVAR;
 		else if (name.equals("getattr"))
-			this.name = Type.GETATTR;
+			type = Type.GETATTR;
 		else if (name.equals("getitem"))
-			this.name = Type.GETITEM;
+			type = Type.GETITEM;
 		else if (name.equals("getslice12"))
-			this.name = Type.GETSLICE12;
+			type = Type.GETSLICE12;
 		else if (name.equals("getslice1"))
-			this.name = Type.GETSLICE1;
+			type = Type.GETSLICE1;
 		else if (name.equals("getslice2"))
-			this.name = Type.GETSLICE2;
+			type = Type.GETSLICE2;
 		else if (name.equals("getslice"))
-			this.name = Type.GETSLICE;
+			type = Type.GETSLICE;
 		else if (name.equals("print"))
-			this.name = Type.PRINT;
+			type = Type.PRINT;
 		else if (name.equals("for"))
-			this.name = Type.FOR;
+			type = Type.FOR;
 		else if (name.equals("endfor"))
-			this.name = Type.ENDFOR;
+			type = Type.ENDFOR;
 		else if (name.equals("not"))
-			this.name = Type.NOT;
+			type = Type.NOT;
 		else if (name.equals("neg"))
-			this.name = Type.NEG;
+			type = Type.NEG;
 		else if (name.equals("contains"))
-			this.name = Type.CONTAINS;
+			type = Type.CONTAINS;
 		else if (name.equals("notcontains"))
-			this.name = Type.NOTCONTAINS;
+			type = Type.NOTCONTAINS;
 		else if (name.equals("equals"))
-			this.name = Type.EQUALS;
+			type = Type.EQUALS;
 		else if (name.equals("notequals"))
-			this.name = Type.NOTEQUALS;
+			type = Type.NOTEQUALS;
 		else if (name.equals("add"))
-			this.name = Type.ADD;
+			type = Type.ADD;
 		else if (name.equals("sub"))
-			this.name = Type.SUB;
+			type = Type.SUB;
 		else if (name.equals("mul"))
-			this.name = Type.MUL;
+			type = Type.MUL;
 		else if (name.equals("floordiv"))
-			this.name = Type.FLOORDIV;
+			type = Type.FLOORDIV;
 		else if (name.equals("truediv"))
-			this.name = Type.TRUEDIV;
+			type = Type.TRUEDIV;
 		else if (name.equals("and"))
-			this.name = Type.AND;
+			type = Type.AND;
 		else if (name.equals("or"))
-			this.name = Type.OR;
+			type = Type.OR;
 		else if (name.equals("mod"))
-			this.name = Type.MOD;
+			type = Type.MOD;
 		else if (name.equals("callfunc0"))
-			this.name = Type.CALLFUNC0;
+			type = Type.CALLFUNC0;
 		else if (name.equals("callfunc1"))
-			this.name = Type.CALLFUNC1;
+			type = Type.CALLFUNC1;
 		else if (name.equals("callfunc2"))
-			this.name = Type.CALLFUNC2;
+			type = Type.CALLFUNC2;
 		else if (name.equals("callfunc3"))
-			this.name = Type.CALLFUNC3;
+			type = Type.CALLFUNC3;
 		else if (name.equals("callmeth0"))
-			this.name = Type.CALLMETH0;
+			type = Type.CALLMETH0;
 		else if (name.equals("callmeth1"))
-			this.name = Type.CALLMETH1;
+			type = Type.CALLMETH1;
 		else if (name.equals("callmeth2"))
-			this.name = Type.CALLMETH2;
+			type = Type.CALLMETH2;
 		else if (name.equals("callmeth3"))
-			this.name = Type.CALLMETH3;
+			type = Type.CALLMETH3;
 		else if (name.equals("if"))
-			this.name = Type.IF;
+			type = Type.IF;
 		else if (name.equals("else"))
-			this.name = Type.ELSE;
+			type = Type.ELSE;
 		else if (name.equals("endif"))
-			this.name = Type.ENDIF;
+			type = Type.ENDIF;
 		else if (name.equals("render"))
-			this.name = Type.RENDER;
+			type = Type.RENDER;
 		else
-			throw new IllegalArgumentException("Opcode " + name + " unknown!"); 
+			throw new IllegalArgumentException("Opcode " + name + " unknown!");
+
+		this.r1 = r1;
+		this.r2 = r2;
+		this.r3 = r3;
+		this.r4 = r4;
+		this.r5 = r5;
+		this.arg = arg;
+		this.location = location;
+		this.jump = -1;
+	}
+
+	public Opcode(Type name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
+	{
+		this.name = name;
 		this.r1 = r1;
 		this.r2 = r2;
 		this.r3 = r3;
@@ -183,4 +199,3 @@ public class Opcode
 		this.jump = -1;
 	}
 }
-

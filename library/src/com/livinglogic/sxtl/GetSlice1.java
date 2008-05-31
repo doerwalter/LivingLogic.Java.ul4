@@ -7,8 +7,8 @@ public class GetSlice1 extends Binary
 		super(start, end, obj1, obj2);
 	}
 
-	public String getType()
+	public Opcode.Type getType()
 	{
-		return "getslice1";
+		return Opcode.Type.GETSLICE1;
 	}
 }

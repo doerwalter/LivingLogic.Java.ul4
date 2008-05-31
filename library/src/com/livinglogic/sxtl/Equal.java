@@ -7,8 +7,8 @@ public class Equal extends Binary
 		super(start, end, obj1, obj2);
 	}
 
-	public String getType()
+	public Opcode.Type getType()
 	{
-		return "equals";
+		return Opcode.Type.EQUALS;
 	}
 }

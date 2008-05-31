@@ -186,31 +186,31 @@ def _compile(template, source, startdelim, enddelim):
 	for location in _tokenize(source, startdelim, enddelim):
 		try:
 			if location.type is None:
-				template.opcode(None, location)
+				template.opcode(Opcode.Type.TEXT, location)
 			elif location.type == "print":
 				r = parseexpr(template, location)
-				template.opcode("print", r, location)
+				template.opcode(Opcode.Type.PRINT, r, location)
 			elif location.type == "code":
 				parsestmt(template, location)
 			elif location.type == "if":
 				r = parseexpr(template, location)
-				template.opcode("if", r, location)
+				template.opcode(Opcode.Type.IF, r, location)
 				stack.append(("if", 1, False))
 			elif location.type == "elif":
 				if not stack or stack[-1][0] != "if":
 					raise BlockError("elif doesn't match any if")
 				elif stack[-1][2]:
 					raise BlockError("else already seen in elif")
-				template.opcode("else", location)
+				template.opcode(Opcode.Type.ELSE, location)
 				r = parseexpr(template, location)
-				template.opcode("if", r, location)
+				template.opcode(Opcode.Type.IF, r, location)
 				stack[-1] = ("if", stack[-1][1]+1, False)
 			elif location.type == "else":
 				if not stack or stack[-1][0] != "if":
 					raise BlockError("else doesn't match any if")
 				elif stack[-1][2]:
 					raise BlockError("duplicate else")
-				template.opcode("else", location)
+				template.opcode(Opcode.Type.ELSE, location)
 				stack[-1] = ("if", stack[-1][1], True)
 			elif location.type == "end":
 				if not stack:
@@ -228,9 +228,9 @@ def _compile(template, source, startdelim, enddelim):
 				last = stack.pop()
 				if last[0] == "if":
 					for i in xrange(last[1]):
-						template.opcode("endif", location)
+						template.opcode(Opcode.Type.ENDIF, location)
 				else: # last[0] == "for":
-					template.opcode("endfor", location)
+					template.opcode(Opcode.Type.ENDFOR, location)
 			elif location.type == "for":
 				parsefor(template, location)
 				stack.append(("for",))
@@ -431,7 +431,7 @@ class ExprParser(spark.GenericParser):
 			raise Error(exc).decorate(location)
 
 	def typestring(self, token):
-		return token.type
+		return token.getTokenType()
 
 	def error(self, token):
 		raise SyntaxError(token)

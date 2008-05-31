@@ -12,15 +12,10 @@ public class Render extends AST
 		this.obj = obj;
 	}
 
-	public String getType()
-	{
-		return "render";
-	}
-
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = obj.compile(template, registers, location);
-		template.opcode("render", r, name.value, location);
+		template.opcode(Opcode.Type.RENDER, r, name.value, location);
 		registers.free(r);
 		return -1;
 	}

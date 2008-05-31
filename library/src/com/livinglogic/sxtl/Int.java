@@ -10,7 +10,7 @@ public class Int extends AST
 		this.value = value;
 	}
 
-	public String getType()
+	public String getTokenType()
 	{
 		return "int";
 	}
@@ -18,7 +18,7 @@ public class Int extends AST
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
-		template.opcode("loadint", r, String.valueOf(value), location);
+		template.opcode(Opcode.Type.LOADINT, r, String.valueOf(value), location);
 		return r;
 	}
 }

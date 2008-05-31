@@ -7,7 +7,12 @@ public class None extends Const
 		super(start, end);
 	}
 
-	public String getType()
+	public Opcode.Type getType()
+	{
+		return Opcode.Type.LOADNONE;
+	}
+
+	public String getTokenType()
 	{
 		return "none";
 	}

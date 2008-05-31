@@ -7,8 +7,8 @@ public class Neg extends Unary
 		super(start, end, obj);
 	}
 
-	public String getType()
+	public Opcode.Type getType()
 	{
-		return "neg";
+		return Opcode.Type.NEG;
 	}
 }
