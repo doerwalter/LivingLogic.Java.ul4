@@ -398,6 +398,13 @@ public class Utils
 
 	public static Object getSlice(Object arg1, Object arg2, Object arg3)
 	{
+		if (arg2 instanceof Integer && arg3 instanceof Integer)
+		{
+			if (arg1 instanceof List)
+				return getSlice((List)arg1, (Integer)arg2, (Integer)arg3);
+			else if (arg1 instanceof String)
+				return getSlice((String)arg1, (Integer)arg2, (Integer)arg3);
+		}
 		throw new UnsupportedOperationException("Instance of " + arg1.getClass() + " does not support getslice with arguments of type " + arg2.getClass() + " and " + arg3.getClass() + "!");
 	}
 
