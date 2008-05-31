@@ -5,11 +5,11 @@ public class Render extends AST
 	protected Name name;
 	protected AST obj;
 
-	public Render(int start, int end, AST obj, Name name)
+	public Render(int start, int end, Name name, AST obj)
 	{
 		super(start, end);
-		this.obj = obj;
 		this.name = name;
+		this.obj = obj;
 	}
 
 	public String getType()

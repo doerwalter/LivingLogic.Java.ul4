@@ -282,7 +282,7 @@ class AST(object):
 		return self.type
 
 
-from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod, GetSlice12
+from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod, GetSlice12, GetAttr, Render
 
 
 class For(AST):
@@ -309,21 +309,6 @@ class For(AST):
 			template.opcode("storevar", ri, self.iter.value, location)
 		registers.free(ri)
 		registers.free(rc)
-
-
-class GetAttr(AST):
-	def __init__(self, start, end, obj, attr):
-		AST.__init__(self, start, end)
-		self.obj = obj
-		self.attr = attr
-
-	def __repr__(self):
-		return "%s(%r, %r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.obj, self.attr)
-
-	def compile(self, template, registers, location):
-		r = self.obj.compile(template, registers, location)
-		template.opcode("getattr", r, r, self.attr.value, location)
-		return r
 
 
 class CallFunc(AST):
@@ -401,21 +386,6 @@ class CallMeth(AST):
 			return r
 		else:
 			raise ValueError("%d arguments not supported" % len(self.args))
-
-
-class Render(AST):
-	def __init__(self, start, end, name, value):
-		AST.__init__(self, start, end)
-		self.name = name
-		self.value = value
-
-	def __repr__(self):
-		return "%s(%r, %r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.name, self.value)
-
-	def compile(self, template, registers, location):
-		r = self.value.compile(template, registers, location)
-		template.opcode("render", r, self.name.value, location)
-		registers.free(r)
 
 
 ###
