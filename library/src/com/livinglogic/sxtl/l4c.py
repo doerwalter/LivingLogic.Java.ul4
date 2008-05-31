@@ -289,16 +289,16 @@ from com.livinglogic.sxtl import None as None_, True as True_, False as False_, 
 class Name(AST):
 	type = "name"
 
-	def __init__(self, start, end, name):
+	def __init__(self, start, end, value):
 		AST.__init__(self, start, end)
-		self.name = name
+		self.value = value
 
 	def __repr__(self):
-		return "%s(%r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.name)
+		return "%s(%r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.value)
 
 	def compile(self, template, registers, location):
 		r = registers.alloc()
-		template.opcode("loadvar", r, self.name, location)
+		template.opcode("loadvar", r, self.value, location)
 		return r
 
 
@@ -320,10 +320,10 @@ class For(AST):
 				rii = registers.alloc()
 				template.opcode("loadint", rii, str(i), location)
 				template.opcode("getitem", rii, ri, rii, location)
-				template.opcode("storevar", rii, iter.name, location)
+				template.opcode("storevar", rii, iter.value, location)
 				registers.free(rii)
 		else:
-			template.opcode("storevar", ri, self.iter.name, location)
+			template.opcode("storevar", ri, self.iter.value, location)
 		registers.free(ri)
 		registers.free(rc)
 
@@ -339,7 +339,7 @@ class GetAttr(AST):
 
 	def compile(self, template, registers, location):
 		r = self.obj.compile(template, registers, location)
-		template.opcode("getattr", r, r, self.attr.name, location)
+		template.opcode("getattr", r, r, self.attr.value, location)
 		return r
 
 
@@ -483,7 +483,7 @@ class ChangeVar(AST):
 
 	def compile(self, template, registers, location):
 		r = self.value.compile(template, registers, location)
-		template.opcode(self.opcode, r, self.name.name, location)
+		template.opcode(self.opcode, r, self.name.value, location)
 		registers.free(r)
 
 
@@ -524,7 +524,7 @@ class DelVar(AST):
 		return "%s(%r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.name)
 
 	def compile(self, template, registers, location):
-		template.opcode("delvar", self.name.name, location)
+		template.opcode("delvar", self.name.value, location)
 
 
 class CallFunc(AST):
@@ -546,12 +546,12 @@ class CallFunc(AST):
 			return r
 		elif len(self.args) == 1:
 			r0 = self.args[0].compile(template, registers, location)
-			template.opcode("callfunc1", r0, r0, self.name.name, location)
+			template.opcode("callfunc1", r0, r0, self.name.value, location)
 			return r0
 		elif len(self.args) == 2:
 			r0 = self.args[0].compile(template, registers, location)
 			r1 = self.args[1].compile(template, registers, location)
-			template.opcode("callfunc2", r0, r0, r1, self.name.name, location)
+			template.opcode("callfunc2", r0, r0, r1, self.name.value, location)
 			registers.free(r1)
 			return r0
 		else:
@@ -574,19 +574,19 @@ class CallMeth(AST):
 	def compile(self, template, registers, location):
 		if len(self.args) == 0:
 			r = self.obj.compile(template, registers, location)
-			template.opcode("callmeth0", r, r, self.name.name, location)
+			template.opcode("callmeth0", r, r, self.name.value, location)
 			return r
 		elif len(self.args) == 1:
 			r = self.obj.compile(template, registers, location)
 			r0 = self.args[0].compile(template, registers, location)
-			template.opcode("callmeth1", r, r, r0, self.name.name, location)
+			template.opcode("callmeth1", r, r, r0, self.name.value, location)
 			registers.free(r0)
 			return r
 		elif len(self.args) == 2:
 			r = self.obj.compile(template, registers, location)
 			r0 = self.args[0].compile(template, registers, location)
 			r1 = self.args[1].compile(template, registers, location)
-			template.opcode("callmeth2", r, r, r0, r1, self.name.name, location)
+			template.opcode("callmeth2", r, r, r0, r1, self.name.value, location)
 			registers.free(r0)
 			registers.free(r1)
 			return r
@@ -595,7 +595,7 @@ class CallMeth(AST):
 			r0 = self.args[0].compile(template, registers, location)
 			r1 = self.args[1].compile(template, registers, location)
 			r2 = self.args[2].compile(template, registers, location)
-			template.opcode("callmeth3", r, r, r0, r1, r2, self.name.name, location)
+			template.opcode("callmeth3", r, r, r0, r1, r2, self.name.value, location)
 			registers.free(r0)
 			registers.free(r1)
 			registers.free(r2)
@@ -615,7 +615,7 @@ class Render(AST):
 
 	def compile(self, template, registers, location):
 		r = self.value.compile(template, registers, location)
-		template.opcode("render", r, self.name.name, location)
+		template.opcode("render", r, self.name.value, location)
 		registers.free(r)
 
 
@@ -639,7 +639,6 @@ class Scanner(spark.GenericScanner):
 			exc.decorate(location)
 			raise
 		except Exception, exc:
-			raise
 			raise Error(exc).decorate(location)
 		return self.rv
 
@@ -793,7 +792,6 @@ class ExprParser(spark.GenericParser):
 			exc.decorate(location)
 			raise
 		except Exception, exc:
-			raise
 			raise Error(exc).decorate(location)
 
 	def typestring(self, token):
