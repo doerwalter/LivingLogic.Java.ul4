@@ -13,6 +13,8 @@ import com.livinglogic.sxtl.Template as L4Template
 Location = L4Template.Location
 Opcode = L4Template.Opcode
 
+from com.livinglogic.sxtl import Registers
+
 import sys, re, StringIO
 
 import spark
@@ -253,21 +255,6 @@ def _compile(template, source, startdelim, enddelim):
 
 
 ###
-### Helper functions for register allocation
-###
-
-def allocreg(registers, location):
-	try:
-		return registers.popitem()[0]
-	except KeyError:
-		raise OutOfRegistersError()
-
-
-def freereg(registers, register):
-	registers[register] = True
-
-
-###
 ### Tokens and nodes for the AST
 ###
 
@@ -299,7 +286,7 @@ class Const(AST):
 		return "%s(%r, %r)" % (self.__class__.__name__, self.start, self.end)
 
 	def compile(self, template, registers, location):
-		r = allocreg(registers, location)
+		r = registers.alloc()
 		template.opcode("load%s" % self.type, r, location)
 		return r
 
@@ -328,7 +315,7 @@ class Value(Const):
 		return "%s(%r)" % (self.__class__.__name__, self.value)
 
 	def compile(self, template, registers, location):
-		r = allocreg(registers, location)
+		r = registers.alloc()
 		template.opcode("load%s" % self.type, r, str(self.value), location)
 		return r
 
@@ -341,7 +328,7 @@ class Float(Value):
 	type = "float"
 
 	def compile(self, template, registers, location):
-		r = allocreg(registers, location)
+		r = registers.alloc()
 		template.opcode("load%s" % self.type, r, repr(self.value), location)
 		return r
 
@@ -361,7 +348,7 @@ class Name(AST):
 		return "%s(%r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.name)
 
 	def compile(self, template, registers, location):
-		r = allocreg(registers, location)
+		r = registers.alloc()
 		template.opcode("loadvar", r, self.name, location)
 		return r
 
@@ -377,19 +364,19 @@ class For(AST):
 
 	def compile(self, template, registers, location):
 		rc = self.cont.compile(template, registers, location)
-		ri = allocreg(registers, location)
+		ri = registers.alloc()
 		template.opcode("for", ri, rc, location)
 		if isinstance(self.iter, list):
 			for (i, iter) in enumerate(self.iter):
-				rii = allocreg(registers, location)
+				rii = registers.alloc()
 				template.opcode("loadint", rii, str(i), location)
 				template.opcode("getitem", rii, ri, rii, location)
 				template.opcode("storevar", rii, iter.name, location)
-				freereg(registers, rii)
+				registers.free(rii)
 		else:
 			template.opcode("storevar", ri, self.iter.name, location)
-		freereg(registers, ri)
-		freereg(registers, rc)
+		registers.free(ri)
+		registers.free(rc)
 
 
 class GetAttr(AST):
@@ -422,8 +409,8 @@ class GetSlice12(AST):
 		r2 = self.index1.compile(template, registers, location)
 		r3 = self.index2.compile(template, registers, location)
 		template.opcode("getslice12", r1, r1, r2, r3, location)
-		freereg(registers, r2)
-		freereg(registers, r3)
+		registers.free(r2)
+		registers.free(r3)
 		return r1
 
 
@@ -470,7 +457,7 @@ class Binary(AST):
 		r1 = self.obj1.compile(template, registers, location)
 		r2 = self.obj2.compile(template, registers, location)
 		template.opcode(self.opcode, r1, r1, r2, location)
-		freereg(registers, r2)
+		registers.free(r2)
 		return r1
 
 
@@ -548,7 +535,7 @@ class ChangeVar(AST):
 	def compile(self, template, registers, location):
 		r = self.value.compile(template, registers, location)
 		template.opcode(self.opcode, r, self.name.name, location)
-		freereg(registers, r)
+		registers.free(r)
 
 
 class StoreVar(ChangeVar):
@@ -605,7 +592,7 @@ class CallFunc(AST):
 
 	def compile(self, template, registers, location):
 		if len(self.args) == 0:
-			r = allocreg(registers, location)
+			r = registers.alloc()
 			template.opcode("callfunc0", r, self.name.name, location)
 			return r
 		elif len(self.args) == 1:
@@ -616,7 +603,7 @@ class CallFunc(AST):
 			r0 = self.args[0].compile(template, registers, location)
 			r1 = self.args[1].compile(template, registers, location)
 			template.opcode("callfunc2", r0, r0, r1, self.name.name, location)
-			freereg(registers, r1)
+			registers.free(r1)
 			return r0
 		else:
 			raise ValueError("%d arguments not supported" % len(self.args))
@@ -644,15 +631,15 @@ class CallMeth(AST):
 			r = self.obj.compile(template, registers, location)
 			r0 = self.args[0].compile(template, registers, location)
 			template.opcode("callmeth1", r, r, r0, self.name.name, location)
-			freereg(registers, r0)
+			registers.free(r0)
 			return r
 		elif len(self.args) == 2:
 			r = self.obj.compile(template, registers, location)
 			r0 = self.args[0].compile(template, registers, location)
 			r1 = self.args[1].compile(template, registers, location)
 			template.opcode("callmeth2", r, r, r0, r1, self.name.name, location)
-			freereg(registers, r0)
-			freereg(registers, r1)
+			registers.free(r0)
+			registers.free(r1)
 			return r
 		elif len(self.args) == 3:
 			r = self.obj.compile(template, registers, location)
@@ -660,9 +647,9 @@ class CallMeth(AST):
 			r1 = self.args[1].compile(template, registers, location)
 			r2 = self.args[2].compile(template, registers, location)
 			template.opcode("callmeth3", r, r, r0, r1, r2, self.name.name, location)
-			freereg(registers, r0)
-			freereg(registers, r1)
-			freereg(registers, r2)
+			registers.free(r0)
+			registers.free(r1)
+			registers.free(r2)
 			return r
 		else:
 			raise ValueError("%d arguments not supported" % len(self.args))
@@ -680,7 +667,7 @@ class Render(AST):
 	def compile(self, template, registers, location):
 		r = self.value.compile(template, registers, location)
 		template.opcode("render", r, self.name.name, location)
-		freereg(registers, r)
+		registers.free(r)
 
 
 ###
@@ -851,9 +838,7 @@ class ExprParser(spark.GenericParser):
 			raise ValueError(self.emptyerror)
 		try:
 			ast = self.parse(self.scanner.tokenize(location))
-			registers = {}
-			for i in xrange(10):
-				registers[i] = True
+			registers = Registers()
 			return ast.compile(template, registers, location)
 		except Error, exc:
 			exc.decorate(location)
