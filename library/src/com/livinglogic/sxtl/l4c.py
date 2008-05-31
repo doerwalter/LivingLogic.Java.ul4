@@ -282,7 +282,7 @@ class AST(object):
 		return self.type
 
 
-from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar
+from com.livinglogic.sxtl import Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod
 
 
 class For(AST):
@@ -344,85 +344,6 @@ class GetSlice12(AST):
 		registers.free(r2)
 		registers.free(r3)
 		return r1
-
-
-class Binary(AST):
-	opcode = None
-
-	def __init__(self, start, end, obj1, obj2):
-		AST.__init__(self, start, end)
-		self.obj1 = obj1
-		self.obj2 = obj2
-
-	def __repr__(self):
-		return "%s(%r, %r, %r, %r)" % (self.__class__.__name__, self.start, self.end, self.obj1, self.obj2)
-
-	def compile(self, template, registers, location):
-		r1 = self.obj1.compile(template, registers, location)
-		r2 = self.obj2.compile(template, registers, location)
-		template.opcode(self.opcode, r1, r1, r2, location)
-		registers.free(r2)
-		return r1
-
-
-class GetItem(Binary):
-	opcode = "getitem"
-
-
-class GetSlice1(Binary):
-	opcode = "getslice1"
-
-
-class GetSlice2(Binary):
-	opcode = "getslice2"
-
-
-class Equal(Binary):
-	opcode = "equals"
-
-
-class NotEqual(Binary):
-	opcode = "notequals"
-
-
-class Contains(Binary):
-	opcode = "contains"
-
-
-class NotContains(Binary):
-	opcode = "notcontains"
-
-
-class Add(Binary):
-	opcode = "add"
-
-
-class Sub(Binary):
-	opcode = "sub"
-
-
-class Mul(Binary):
-	opcode = "mul"
-
-
-class FloorDiv(Binary):
-	opcode = "floordiv"
-
-
-class TrueDiv(Binary):
-	opcode = "truediv"
-
-
-class Or(Binary):
-	opcode = "or"
-
-
-class And(Binary):
-	opcode = "and"
-
-
-class Mod(Binary):
-	opcode = "mod"
 
 
 class CallFunc(AST):
