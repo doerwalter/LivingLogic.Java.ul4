@@ -18,7 +18,7 @@ public class Float extends AST
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
-		template.opcode(Opcode.Type.LOADFLOAT, r, String.valueOf(value), location);
+		template.opcode(Opcode.OC_LOADFLOAT, r, String.valueOf(value), location);
 		return r;
 	}
 }

@@ -7,8 +7,8 @@ public class FloorDiv extends Binary
 		super(start, end, obj1, obj2);
 	}
 
-	public Opcode.Type getType()
+	public int getType()
 	{
-		return Opcode.Type.FLOORDIV;
+		return Opcode.OC_FLOORDIV;
 	}
 }

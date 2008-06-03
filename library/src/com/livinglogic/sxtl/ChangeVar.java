@@ -12,7 +12,7 @@ abstract class ChangeVar extends AST
 		this.value = value;
 	}
 
-	abstract public Opcode.Type getType();
+	abstract public int getType();
 
 	public int compile(Template template, Registers registers, Location location)
 	{

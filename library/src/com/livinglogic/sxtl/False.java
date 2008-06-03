@@ -7,9 +7,9 @@ public class False extends Const
 		super(start, end);
 	}
 
-	public Opcode.Type getType()
+	public int getType()
 	{
-		return Opcode.Type.LOADFALSE;
+		return Opcode.OC_LOADFALSE;
 	}
 
 	public String getTokenType()

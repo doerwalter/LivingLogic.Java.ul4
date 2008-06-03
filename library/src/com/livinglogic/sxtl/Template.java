@@ -41,62 +41,62 @@ public class Template
 		this.opcodes = new LinkedList();
 	}
 
-	public void opcode(Opcode.Type name, Location location)
+	public void opcode(int name, Location location)
 	{
 		opcodes.add(new Opcode(name, -1, -1, -1, -1, -1, null, location));
 	}
 
-	public void opcode(Opcode.Type name, String arg, Location location)
+	public void opcode(int name, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, -1, -1, -1, -1, -1, arg, location));
 	}
 
-	public void opcode(Opcode.Type name, int r1, Location location)
+	public void opcode(int name, int r1, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, -1, -1, -1, -1, null, location));
 	}
 
-	public void opcode(Opcode.Type name, int r1, String arg, Location location)
+	public void opcode(int name, int r1, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, -1, -1, -1, -1, arg, location));
 	}
 
-	public void opcode(Opcode.Type name, int r1, int r2, Location location)
+	public void opcode(int name, int r1, int r2, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, -1, -1, -1, null, location));
 	}
 
-	public void opcode(Opcode.Type name, int r1, int r2, String arg, Location location)
+	public void opcode(int name, int r1, int r2, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, -1, -1, -1, arg, location));
 	}
 
-	public void opcode(Opcode.Type name, int r1, int r2, int r3, Location location)
+	public void opcode(int name, int r1, int r2, int r3, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, -1, -1, null, location));
 	}
 
-	public void opcode(Opcode.Type name, int r1, int r2, int r3, String arg, Location location)
+	public void opcode(int name, int r1, int r2, int r3, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, -1, -1, arg, location));
 	}
 
-	public void opcode(Opcode.Type name, int r1, int r2, int r3, int r4, Location location)
+	public void opcode(int name, int r1, int r2, int r3, int r4, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, -1, null, location));
 	}
 
-	public void opcode(Opcode.Type name, int r1, int r2, int r3, int r4, String arg, Location location)
+	public void opcode(int name, int r1, int r2, int r3, int r4, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, -1, arg, location));
 	}
 
-	public void opcode(Opcode.Type name, int r1, int r2, int r3, int r4, int r5, Location location)
+	public void opcode(int name, int r1, int r2, int r3, int r4, int r5, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, r5, null, location));
 	}
 
-	public void opcode(Opcode.Type name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
+	public void opcode(int name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, r5, arg, location));
 	}
@@ -278,21 +278,21 @@ public class Template
 				Opcode opcode = (Opcode)opcodes.get(i);
 				switch (opcode.name)
 				{
-					case IF:
-						stack.add(i);
+					case Opcode.OC_IF:
+						stack.add(new Integer(i));
 						break;
-					case ELSE:
+					case Opcode.OC_ELSE:
 						((Opcode)opcodes.get(((Integer)stack.getLast()).intValue())).jump = i;
-						stack.set(stack.size()-1, i);
+						stack.set(stack.size()-1, new Integer(i));
 						break;
-					case ENDIF:
+					case Opcode.OC_ENDIF:
 						((Opcode)opcodes.get(((Integer)stack.getLast()).intValue())).jump = i;
 						stack.removeLast();
 						break;
-					case FOR:
-						stack.add(i);
+					case Opcode.OC_FOR:
+						stack.add(new Integer(i));
 						break;
-					case ENDFOR:
+					case Opcode.OC_ENDFOR:
 						((Opcode)opcodes.get(((Integer)stack.getLast()).intValue())).jump = i;
 						stack.removeLast();
 						break;
@@ -319,7 +319,7 @@ public class Template
 
 	public String renders(Object data, Map templates)
 	{
-		StringBuilder output = new StringBuilder();
+		StringBuffer output = new StringBuffer();
 
 		for (Iterator iterator = render(data, templates); iterator.hasNext();)
 		{
@@ -359,7 +359,7 @@ public class Template
 			return nextChunk != null;
 		}
 
-		public String next()
+		public Object next()
 		{
 			String result = nextChunk;
 			getNextChunk();
@@ -386,60 +386,60 @@ public class Template
 
 				switch (code.name)
 				{
-					case TEXT:
+					case Opcode.OC_TEXT:
 						nextChunk = code.location.getCode();
 						++pc;
 						return;
-					case PRINT:
+					case Opcode.OC_PRINT:
 						nextChunk = Utils.toString(reg[code.r1]);
 						++pc;
 						return;
-					case LOADNONE:
+					case Opcode.OC_LOADNONE:
 						reg[code.r1] = null;
 						break;
-					case LOADFALSE:
+					case Opcode.OC_LOADFALSE:
 						reg[code.r1] = Boolean.FALSE;
 						break;
-					case LOADTRUE:
+					case Opcode.OC_LOADTRUE:
 						reg[code.r1] = Boolean.TRUE;
 						break;
-					case LOADSTR:
+					case Opcode.OC_LOADSTR:
 						reg[code.r1] = code.arg;
 						break;
-					case LOADINT:
-						reg[code.r1] = Integer.parseInt(code.arg);
+					case Opcode.OC_LOADINT:
+						reg[code.r1] = new Integer(Integer.parseInt(code.arg));
 						break;
-					case LOADFLOAT:
-						reg[code.r1] = Double.parseDouble(code.arg);
+					case Opcode.OC_LOADFLOAT:
+						reg[code.r1] = new Double(Double.parseDouble(code.arg));
 						break;
-					case LOADVAR:
+					case Opcode.OC_LOADVAR:
 						reg[code.r1] = variables.get(code.arg);
 						break;
-					case STOREVAR:
+					case Opcode.OC_STOREVAR:
 						variables.put(code.arg, reg[code.r1]);
 						break;
-					case ADDVAR:
+					case Opcode.OC_ADDVAR:
 						variables.put(code.arg, Utils.add(variables.get(code.arg), reg[code.r1]));
 						break;
-					case SUBVAR:
+					case Opcode.OC_SUBVAR:
 						variables.put(code.arg, Utils.sub(variables.get(code.arg), reg[code.r1]));
 						break;
-					case MULVAR:
+					case Opcode.OC_MULVAR:
 						variables.put(code.arg, Utils.mul(variables.get(code.arg), reg[code.r1]));
 						break;
-					case TRUEDIVVAR:
+					case Opcode.OC_TRUEDIVVAR:
 						variables.put(code.arg, Utils.truediv(variables.get(code.arg), reg[code.r1]));
 						break;
-					case FLOORDIVVAR:
+					case Opcode.OC_FLOORDIVVAR:
 						variables.put(code.arg, Utils.floordiv(variables.get(code.arg), reg[code.r1]));
 						break;
-					case MODVAR:
+					case Opcode.OC_MODVAR:
 						variables.put(code.arg, Utils.mod(variables.get(code.arg), reg[code.r1]));
 						break;
-					case DELVAR:
+					case Opcode.OC_DELVAR:
 						variables.remove(code.arg);
 						break;
-					case FOR:
+					case Opcode.OC_FOR:
 						Iterator iterator = Utils.iterator(reg[code.r2]);
 						if (iterator.hasNext())
 						{
@@ -452,7 +452,7 @@ public class Template
 							continue;
 						}
 						break;
-					case ENDFOR:
+					case Opcode.OC_ENDFOR:
 						IteratorStackEntry entry = (IteratorStackEntry)iterators.getLast();
 						if (entry.iterator.hasNext())
 						{
@@ -464,82 +464,82 @@ public class Template
 							iterators.removeLast();
 						}
 						break;
-					case IF:
+					case Opcode.OC_IF:
 						if (!Utils.getBool(reg[code.r1]))
 						{
 							pc = code.jump+1;
 							continue;
 						}
 						break;
-					case ELSE:
+					case Opcode.OC_ELSE:
 						pc = code.jump+1;
 						continue;
-					case ENDIF:
+					case Opcode.OC_ENDIF:
 						//Skip to next opcode
 						break;
-					case GETATTR:
+					case Opcode.OC_GETATTR:
 						reg[code.r1] = ((Map)reg[code.r2]).get(code.arg);
 						break;
-					case GETITEM:
+					case Opcode.OC_GETITEM:
 						reg[code.r1] = Utils.getItem(reg[code.r2], reg[code.r3]);
 						break;
-					case GETSLICE12:
+					case Opcode.OC_GETSLICE12:
 						reg[code.r1] = Utils.getSlice(reg[code.r2], reg[code.r3], reg[code.r4]);
 						break;
-					case GETSLICE1:
+					case Opcode.OC_GETSLICE1:
 						reg[code.r1] = Utils.getSlice(reg[code.r2], reg[code.r3], null);
 						break;
-					case GETSLICE2:
+					case Opcode.OC_GETSLICE2:
 						reg[code.r1] = Utils.getSlice(reg[code.r2], null, reg[code.r4]);
 						break;
-					case GETSLICE:
+					case Opcode.OC_GETSLICE:
 						reg[code.r1] = Utils.getSlice(reg[code.r2], null, null);
 						break;
-					case NOT:
+					case Opcode.OC_NOT:
 						reg[code.r1] = Utils.getBool(reg[code.r2]) ? Boolean.FALSE : Boolean.TRUE;
 						break;
-					case NEG:
+					case Opcode.OC_NEG:
 						reg[code.r1] = Utils.neg(reg[code.r2]);
 						break;
-					case EQUALS:
+					case Opcode.OC_EQUALS:
 						reg[code.r1] = Utils.equals(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
 						break;
-					case NOTEQUALS:
+					case Opcode.OC_NOTEQUALS:
 						reg[code.r1] = Utils.equals(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
 						break;
-					case CONTAINS:
+					case Opcode.OC_CONTAINS:
 						reg[code.r1] = Utils.contains(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
 						break;
-					case NOTCONTAINS:
+					case Opcode.OC_NOTCONTAINS:
 						reg[code.r1] = Utils.contains(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
 						break;
-					case OR:
+					case Opcode.OC_OR:
 						reg[code.r1] = (Utils.getBool(reg[code.r2]) || Utils.getBool(reg[code.r3])) ? Boolean.TRUE : Boolean.FALSE;
 						break;
-					case AND:
+					case Opcode.OC_AND:
 						reg[code.r1] = (Utils.getBool(reg[code.r2]) && Utils.getBool(reg[code.r3])) ? Boolean.TRUE : Boolean.FALSE;
 						break;
-					case ADD:
+					case Opcode.OC_ADD:
 						reg[code.r1] = Utils.add(reg[code.r2], reg[code.r3]);
 						break;
-					case SUB:
+					case Opcode.OC_SUB:
 						reg[code.r1] = Utils.sub(reg[code.r2], reg[code.r3]);
 						break;
-					case MUL:
+					case Opcode.OC_MUL:
 						reg[code.r1] = Utils.mul(reg[code.r2], reg[code.r3]);
 						break;
-					case TRUEDIV:
+					case Opcode.OC_TRUEDIV:
 						reg[code.r1] = Utils.truediv(reg[code.r2], reg[code.r3]);
 						break;
-					case FLOORDIV:
+					case Opcode.OC_FLOORDIV:
 						reg[code.r1] = Utils.floordiv(reg[code.r2], reg[code.r3]);
 						break;
-					case MOD:
+					case Opcode.OC_MOD:
 						reg[code.r1] = Utils.mod(reg[code.r2], reg[code.r3]);
 						break;
-					case CALLFUNC0:
+					case Opcode.OC_CALLFUNC0:
 						throw new RuntimeException("No function '" + code.arg + "' defined!");
-					case CALLFUNC1:
+					case Opcode.OC_CALLFUNC1:
 						if (code.arg.equals("xmlescape"))
 						{
 							reg[code.r1] = Utils.xmlescape(reg[code.r2]);
@@ -621,7 +621,7 @@ public class Template
 							throw new RuntimeException("No function '" + code.arg + "' defined!");
 						}
 						break;
-					case CALLFUNC2:
+					case Opcode.OC_CALLFUNC2:
 						if (code.arg.equals("range"))
 						{
 							reg[code.r1] = Utils.range(reg[code.r2], reg[code.r3]);
@@ -631,7 +631,7 @@ public class Template
 							throw new RuntimeException("No function '" + code.arg + "' defined!");
 						}
 						break;
-					case CALLFUNC3:
+					case Opcode.OC_CALLFUNC3:
 						if (code.arg.equals("range"))
 						{
 							reg[code.r1] = Utils.range(reg[code.r2], reg[code.r3], reg[code.r4]);
@@ -641,7 +641,7 @@ public class Template
 							throw new RuntimeException("No function '" + code.arg + "' defined!");
 						}
 						break;
-					case CALLMETH0:
+					case Opcode.OC_CALLMETH0:
 						if (code.arg.equals("split") || code.arg.equals("rsplit"))
 						{
 							reg[code.r1] = Utils.split(reg[code.r2]);
@@ -675,13 +675,13 @@ public class Template
 							throw new RuntimeException("No method '" + code.arg + "' defined!");
 						}
 						break;
-					case CALLMETH1:
+					case Opcode.OC_CALLMETH1:
 						throw new RuntimeException("No method '" + code.arg + "' defined!");
-					case CALLMETH2:
+					case Opcode.OC_CALLMETH2:
 						throw new RuntimeException("No method '" + code.arg + "' defined!");
-					case CALLMETH3:
+					case Opcode.OC_CALLMETH3:
 						throw new RuntimeException("No method '" + code.arg + "' defined!");
-					case RENDER:
+					case Opcode.OC_RENDER:
 						subTemplateIterator = ((Template)templates.get(code.arg)).render(reg[code.r1], templates);
 						if (subTemplateIterator.hasNext())
 						{

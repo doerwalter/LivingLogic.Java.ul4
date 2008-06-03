@@ -7,8 +7,8 @@ public class FloorDivVar extends ChangeVar
 		super(start, end, name, value);
 	}
 
-	public Opcode.Type getType()
+	public int getType()
 	{
-		return Opcode.Type.FLOORDIVVAR;
+		return Opcode.OC_FLOORDIVVAR;
 	}
 }

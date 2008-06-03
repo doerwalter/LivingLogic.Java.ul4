@@ -7,9 +7,9 @@ public class True extends Const
 		super(start, end);
 	}
 
-	public Opcode.Type getType()
+	public int getType()
 	{
-		return Opcode.Type.LOADTRUE;
+		return Opcode.OC_LOADTRUE;
 	}
 
 	public String getTokenType()

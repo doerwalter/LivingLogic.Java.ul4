@@ -44,7 +44,7 @@ class Range extends AbstractList
 		{
 			throw new IndexOutOfBoundsException("Invalid index: " + index);
 		}
-		return start + index * step;
+		return new Integer(start + index * step);
 	}
 
 	protected int rangeLength(int lowerEnd, int higherEnd, int positiveStep)
@@ -590,17 +590,17 @@ public class Utils
 
 	public static Object length(String obj)
 	{
-		return obj.length();
+		return new Integer(obj.length());
 	}
 
 	public static Object length(Collection obj)
 	{
-		return obj.size();
+		return new Integer(obj.size());
 	}
 
 	public static Object length(Map obj)
 	{
-		return obj.size();
+		return new Integer(obj.size());
 	}
 
 	public static Object length(Object obj)
@@ -683,7 +683,7 @@ public class Utils
 
 	public static Object hex(Integer obj)
 	{
-		return "0x" + Integer.toHexString(obj);
+		return "0x" + Integer.toHexString(obj.intValue());
 	}
 
 	public static Object hex(Object obj)
@@ -695,7 +695,7 @@ public class Utils
 
 	public static Object oct(Integer obj)
 	{
-		return "0o" + Integer.toOctalString(obj);
+		return "0o" + Integer.toOctalString(obj.intValue());
 	}
 
 	public static Object oct(Object obj)
@@ -707,7 +707,7 @@ public class Utils
 
 	public static Object bin(Integer obj)
 	{
-		return "0b" + Integer.toBinaryString(obj);
+		return "0b" + Integer.toBinaryString(obj.intValue());
 	}
 
 	public static Object bin(Object obj)

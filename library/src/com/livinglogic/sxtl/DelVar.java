@@ -13,7 +13,7 @@ public class DelVar extends AST
 
 	public int compile(Template template, Registers registers, Location location)
 	{
-		template.opcode(Opcode.Type.DELVAR, name.value, location);
+		template.opcode(Opcode.OC_DELVAR, name.value, location);
 		return -1;
 	}
 }

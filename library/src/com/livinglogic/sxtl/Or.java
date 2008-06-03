@@ -7,8 +7,8 @@ public class Or extends Binary
 		super(start, end, obj1, obj2);
 	}
 
-	public Opcode.Type getType()
+	public int getType()
 	{
-		return Opcode.Type.OR;
+		return Opcode.OC_OR;
 	}
 }

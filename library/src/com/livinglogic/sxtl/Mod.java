@@ -7,8 +7,8 @@ public class Mod extends Binary
 		super(start, end, obj1, obj2);
 	}
 
-	public Opcode.Type getType()
+	public int getType()
 	{
-		return Opcode.Type.MOD;
+		return Opcode.OC_MOD;
 	}
 }

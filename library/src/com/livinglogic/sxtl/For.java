@@ -16,8 +16,8 @@ public class For extends AST
 	{
 		int rc = container.compile(template, registers, location);
 		int ri = registers.alloc();
-		template.opcode(Opcode.Type.FOR, ri, rc, location);
-		template.opcode(Opcode.Type.STOREVAR, ri, iter.value, location);
+		template.opcode(Opcode.OC_FOR, ri, rc, location);
+		template.opcode(Opcode.OC_STOREVAR, ri, iter.value, location);
 		registers.free(ri);
 		registers.free(rc);
 		return -1;

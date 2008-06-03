@@ -15,7 +15,7 @@ public class GetAttr extends AST
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = obj.compile(template, registers, location);
-		template.opcode(Opcode.Type.GETATTR, r, r, attr.value, location);
+		template.opcode(Opcode.OC_GETATTR, r, r, attr.value, location);
 		return r;
 	}
 }

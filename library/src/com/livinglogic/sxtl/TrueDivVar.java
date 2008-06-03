@@ -7,8 +7,8 @@ public class TrueDivVar extends ChangeVar
 		super(start, end, name, value);
 	}
 
-	public Opcode.Type getType()
+	public int getType()
 	{
-		return Opcode.Type.TRUEDIVVAR;
+		return Opcode.OC_TRUEDIVVAR;
 	}
 }

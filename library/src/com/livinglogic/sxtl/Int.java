@@ -18,7 +18,7 @@ public class Int extends AST
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
-		template.opcode(Opcode.Type.LOADINT, r, String.valueOf(value), location);
+		template.opcode(Opcode.OC_LOADINT, r, String.valueOf(value), location);
 		return r;
 	}
 }

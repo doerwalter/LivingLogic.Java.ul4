@@ -7,8 +7,8 @@ public class Add extends Binary
 		super(start, end, obj1, obj2);
 	}
 
-	public Opcode.Type getType()
+	public int getType()
 	{
-		return Opcode.Type.ADD;
+		return Opcode.OC_ADD;
 	}
 }

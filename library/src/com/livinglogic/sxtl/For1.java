@@ -16,11 +16,11 @@ public class For1 extends AST
 	{
 		int rc = container.compile(template, registers, location);
 		int ri = registers.alloc();
-		template.opcode(Opcode.Type.FOR, ri, rc, location);
+		template.opcode(Opcode.OC_FOR, ri, rc, location);
 		int rii = registers.alloc();
-		template.opcode(Opcode.Type.LOADINT, rii, "0", location);
-		template.opcode(Opcode.Type.GETITEM, rii, ri, rii, location);
-		template.opcode(Opcode.Type.STOREVAR, rii, iter.value, location);
+		template.opcode(Opcode.OC_LOADINT, rii, "0", location);
+		template.opcode(Opcode.OC_GETITEM, rii, ri, rii, location);
+		template.opcode(Opcode.OC_STOREVAR, rii, iter.value, location);
 		registers.free(rii);
 		registers.free(ri);
 		registers.free(rc);

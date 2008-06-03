@@ -2,62 +2,59 @@ package com.livinglogic.sxtl;
 
 public class Opcode
 {
-	public enum Type
-	{
-		TEXT,
-		LOADNONE,
-		LOADFALSE,
-		LOADTRUE,
-		LOADINT,
-		LOADFLOAT,
-		LOADSTR,
-		LOADVAR,
-		STOREVAR,
-		ADDVAR,
-		SUBVAR,
-		MULVAR,
-		TRUEDIVVAR,
-		FLOORDIVVAR,
-		MODVAR,
-		DELVAR,
-		GETATTR,
-		GETITEM,
-		GETSLICE12,
-		GETSLICE1,
-		GETSLICE2,
-		GETSLICE,
-		PRINT,
-		FOR,
-		ENDFOR,
-		NOT,
-		NEG,
-		CONTAINS,
-		NOTCONTAINS,
-		EQUALS,
-		NOTEQUALS,
-		ADD,
-		SUB,
-		MUL,
-		FLOORDIV,
-		TRUEDIV,
-		AND,
-		OR,
-		MOD,
-		CALLFUNC0,
-		CALLFUNC1,
-		CALLFUNC2,
-		CALLFUNC3,
-		CALLMETH0,
-		CALLMETH1,
-		CALLMETH2,
-		CALLMETH3,
-		IF,
-		ELSE,
-		ENDIF,
-		RENDER
-	};
+	public static final int OC_TEXT = 0;
+	public static final int OC_LOADNONE = 1;
+	public static final int OC_LOADFALSE = 2;
+	public static final int OC_LOADTRUE = 3;
+	public static final int OC_LOADINT = 4;
+	public static final int OC_LOADFLOAT = 5;
+	public static final int OC_LOADSTR = 6;
+	public static final int OC_LOADVAR = 7;
+	public static final int OC_STOREVAR = 8;
+	public static final int OC_ADDVAR = 9;
+	public static final int OC_SUBVAR = 10;
+	public static final int OC_MULVAR = 11;
+	public static final int OC_TRUEDIVVAR = 12;
+	public static final int OC_FLOORDIVVAR = 13;
+	public static final int OC_MODVAR = 14;
+	public static final int OC_DELVAR = 15;
+	public static final int OC_GETATTR = 16;
+	public static final int OC_GETITEM = 17;
+	public static final int OC_GETSLICE12 = 18;
+	public static final int OC_GETSLICE1 = 19;
+	public static final int OC_GETSLICE2 = 20;
+	public static final int OC_GETSLICE = 21;
+	public static final int OC_PRINT = 22;
+	public static final int OC_FOR = 23;
+	public static final int OC_ENDFOR = 24;
+	public static final int OC_NOT = 25;
+	public static final int OC_NEG = 26;
+	public static final int OC_CONTAINS = 27;
+	public static final int OC_NOTCONTAINS = 28;
+	public static final int OC_EQUALS = 29;
+	public static final int OC_NOTEQUALS = 30;
+	public static final int OC_ADD = 31;
+	public static final int OC_SUB = 32;
+	public static final int OC_MUL = 33;
+	public static final int OC_FLOORDIV = 34;
+	public static final int OC_TRUEDIV = 35;
+	public static final int OC_AND = 36;
+	public static final int OC_OR = 37;
+	public static final int OC_MOD = 38;
+	public static final int OC_CALLFUNC0 = 39;
+	public static final int OC_CALLFUNC1 = 40;
+	public static final int OC_CALLFUNC2 = 41;
+	public static final int OC_CALLFUNC3 = 42;
+	public static final int OC_CALLMETH0 = 43;
+	public static final int OC_CALLMETH1 = 44;
+	public static final int OC_CALLMETH2 = 45;
+	public static final int OC_CALLMETH3 = 46;
+	public static final int OC_IF = 47;
+	public static final int OC_ELSE = 48;
+	public static final int OC_ENDIF = 49;
+	public static final int OC_RENDER = 50;
 
-	public Type name;
+	public int name;
 	public int r1;
 	public int r2;
 	public int r3;
@@ -69,110 +66,110 @@ public class Opcode
 	
 	public Opcode(String name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
 	{
-		Type type;
+		int type;
 
 		if (name == null)
-			type = Type.TEXT;
+			type = OC_TEXT;
 		else if (name.equals("loadnone"))
-			type = Type.LOADNONE;
+			type = OC_LOADNONE;
 		else if (name.equals("loadfalse"))
-			type = Type.LOADFALSE;
+			type = OC_LOADFALSE;
 		else if (name.equals("loadtrue"))
-			type = Type.LOADTRUE;
+			type = OC_LOADTRUE;
 		else if (name.equals("loadint"))
-			type = Type.LOADINT;
+			type = OC_LOADINT;
 		else if (name.equals("loadfloat"))
-			type = Type.LOADFLOAT;
+			type = OC_LOADFLOAT;
 		else if (name.equals("loadstr"))
-			type = Type.LOADSTR;
+			type = OC_LOADSTR;
 		else if (name.equals("loadvar"))
-			type = Type.LOADVAR;
+			type = OC_LOADVAR;
 		else if (name.equals("storevar"))
-			type = Type.STOREVAR;
+			type = OC_STOREVAR;
 		else if (name.equals("addvar"))
-			type = Type.ADDVAR;
+			type = OC_ADDVAR;
 		else if (name.equals("subvar"))
-			type = Type.SUBVAR;
+			type = OC_SUBVAR;
 		else if (name.equals("mulvar"))
-			type = Type.MULVAR;
+			type = OC_MULVAR;
 		else if (name.equals("truedivvar"))
-			type = Type.TRUEDIVVAR;
+			type = OC_TRUEDIVVAR;
 		else if (name.equals("floordivvar"))
-			type = Type.FLOORDIVVAR;
+			type = OC_FLOORDIVVAR;
 		else if (name.equals("modvar"))
-			type = Type.MODVAR;
+			type = OC_MODVAR;
 		else if (name.equals("delvar"))
-			type = Type.DELVAR;
+			type = OC_DELVAR;
 		else if (name.equals("getattr"))
-			type = Type.GETATTR;
+			type = OC_GETATTR;
 		else if (name.equals("getitem"))
-			type = Type.GETITEM;
+			type = OC_GETITEM;
 		else if (name.equals("getslice12"))
-			type = Type.GETSLICE12;
+			type = OC_GETSLICE12;
 		else if (name.equals("getslice1"))
-			type = Type.GETSLICE1;
+			type = OC_GETSLICE1;
 		else if (name.equals("getslice2"))
-			type = Type.GETSLICE2;
+			type = OC_GETSLICE2;
 		else if (name.equals("getslice"))
-			type = Type.GETSLICE;
+			type = OC_GETSLICE;
 		else if (name.equals("print"))
-			type = Type.PRINT;
+			type = OC_PRINT;
 		else if (name.equals("for"))
-			type = Type.FOR;
+			type = OC_FOR;
 		else if (name.equals("endfor"))
-			type = Type.ENDFOR;
+			type = OC_ENDFOR;
 		else if (name.equals("not"))
-			type = Type.NOT;
+			type = OC_NOT;
 		else if (name.equals("neg"))
-			type = Type.NEG;
+			type = OC_NEG;
 		else if (name.equals("contains"))
-			type = Type.CONTAINS;
+			type = OC_CONTAINS;
 		else if (name.equals("notcontains"))
-			type = Type.NOTCONTAINS;
+			type = OC_NOTCONTAINS;
 		else if (name.equals("equals"))
-			type = Type.EQUALS;
+			type = OC_EQUALS;
 		else if (name.equals("notequals"))
-			type = Type.NOTEQUALS;
+			type = OC_NOTEQUALS;
 		else if (name.equals("add"))
-			type = Type.ADD;
+			type = OC_ADD;
 		else if (name.equals("sub"))
-			type = Type.SUB;
+			type = OC_SUB;
 		else if (name.equals("mul"))
-			type = Type.MUL;
+			type = OC_MUL;
 		else if (name.equals("floordiv"))
-			type = Type.FLOORDIV;
+			type = OC_FLOORDIV;
 		else if (name.equals("truediv"))
-			type = Type.TRUEDIV;
+			type = OC_TRUEDIV;
 		else if (name.equals("and"))
-			type = Type.AND;
+			type = OC_AND;
 		else if (name.equals("or"))
-			type = Type.OR;
+			type = OC_OR;
 		else if (name.equals("mod"))
-			type = Type.MOD;
+			type = OC_MOD;
 		else if (name.equals("callfunc0"))
-			type = Type.CALLFUNC0;
+			type = OC_CALLFUNC0;
 		else if (name.equals("callfunc1"))
-			type = Type.CALLFUNC1;
+			type = OC_CALLFUNC1;
 		else if (name.equals("callfunc2"))
-			type = Type.CALLFUNC2;
+			type = OC_CALLFUNC2;
 		else if (name.equals("callfunc3"))
-			type = Type.CALLFUNC3;
+			type = OC_CALLFUNC3;
 		else if (name.equals("callmeth0"))
-			type = Type.CALLMETH0;
+			type = OC_CALLMETH0;
 		else if (name.equals("callmeth1"))
-			type = Type.CALLMETH1;
+			type = OC_CALLMETH1;
 		else if (name.equals("callmeth2"))
-			type = Type.CALLMETH2;
+			type = OC_CALLMETH2;
 		else if (name.equals("callmeth3"))
-			type = Type.CALLMETH3;
+			type = OC_CALLMETH3;
 		else if (name.equals("if"))
-			type = Type.IF;
+			type = OC_IF;
 		else if (name.equals("else"))
-			type = Type.ELSE;
+			type = OC_ELSE;
 		else if (name.equals("endif"))
-			type = Type.ENDIF;
+			type = OC_ENDIF;
 		else if (name.equals("render"))
-			type = Type.RENDER;
+			type = OC_RENDER;
 		else
 			throw new IllegalArgumentException("Opcode " + name + " unknown!");
 
@@ -186,7 +183,7 @@ public class Opcode
 		this.jump = -1;
 	}
 
-	public Opcode(Type name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
+	public Opcode(int name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
 	{
 		this.name = name;
 		this.r1 = r1;

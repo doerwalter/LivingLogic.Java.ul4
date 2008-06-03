@@ -7,8 +7,8 @@ public class ModVar extends ChangeVar
 		super(start, end, name, value);
 	}
 
-	public Opcode.Type getType()
+	public int getType()
 	{
-		return Opcode.Type.MODVAR;
+		return Opcode.OC_MODVAR;
 	}
 }

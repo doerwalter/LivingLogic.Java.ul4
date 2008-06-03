@@ -7,7 +7,7 @@ public abstract class Const extends AST
 		super(start, end);
 	}
 
-	abstract public Opcode.Type getType();
+	abstract public int getType();
 
 	public int compile(Template template, Registers registers, Location location)
 	{

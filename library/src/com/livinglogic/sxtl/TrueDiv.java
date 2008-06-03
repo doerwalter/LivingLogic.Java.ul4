@@ -7,8 +7,8 @@ public class TrueDiv extends Binary
 		super(start, end, obj1, obj2);
 	}
 
-	public Opcode.Type getType()
+	public int getType()
 	{
-		return Opcode.Type.TRUEDIV;
+		return Opcode.OC_TRUEDIV;
 	}
 }

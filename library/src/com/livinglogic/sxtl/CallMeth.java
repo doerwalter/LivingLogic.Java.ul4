@@ -54,7 +54,7 @@ public class CallMeth extends AST
 	}
 
 
-	private static final Opcode.Type[] opcodes = {Opcode.Type.CALLMETH0, Opcode.Type.CALLMETH1, Opcode.Type.CALLMETH2, Opcode.Type.CALLMETH3};
+	private static final int[] opcodes = {Opcode.OC_CALLMETH0, Opcode.OC_CALLMETH1, Opcode.OC_CALLMETH2, Opcode.OC_CALLMETH3};
 
 	public int compile(Template template, Registers registers, Location location)
 	{

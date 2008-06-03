@@ -15,7 +15,7 @@ public class Render extends AST
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = obj.compile(template, registers, location);
-		template.opcode(Opcode.Type.RENDER, r, name.value, location);
+		template.opcode(Opcode.OC_RENDER, r, name.value, location);
 		registers.free(r);
 		return -1;
 	}

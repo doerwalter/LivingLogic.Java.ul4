@@ -48,7 +48,7 @@ public class CallFunc extends AST
 		this.argcount = 0;
 	}
 
-	private static final Opcode.Type[] opcodes = {Opcode.Type.CALLFUNC0, Opcode.Type.CALLFUNC1, Opcode.Type.CALLFUNC2, Opcode.Type.CALLFUNC3};
+	private static final int[] opcodes = {Opcode.OC_CALLFUNC0, Opcode.OC_CALLFUNC1, Opcode.OC_CALLFUNC2, Opcode.OC_CALLFUNC3};
 
 	public int compile(Template template, Registers registers, Location location)
 	{

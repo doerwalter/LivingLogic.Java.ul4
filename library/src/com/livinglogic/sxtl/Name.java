@@ -23,7 +23,7 @@ public class Name extends AST
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
-		template.opcode(Opcode.Type.LOADVAR, r, value, location);
+		template.opcode(Opcode.OC_LOADVAR, r, value, location);
 		return r;
 	}
 }

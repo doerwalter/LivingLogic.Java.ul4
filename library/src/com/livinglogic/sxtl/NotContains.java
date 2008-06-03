@@ -7,8 +7,8 @@ public class NotContains extends Binary
 		super(start, end, obj1, obj2);
 	}
 
-	public Opcode.Type getType()
+	public int getType()
 	{
-		return Opcode.Type.NOTCONTAINS;
+		return Opcode.OC_NOTCONTAINS;
 	}
 }
