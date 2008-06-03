@@ -101,7 +101,7 @@ public class Template
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, r5, arg, location));
 	}
 
-	protected static int readintInternal(Reader reader, char terminator) throws IOException
+	protected static int readintInternal(Reader reader, char terminator1, char terminator0) throws IOException
 	{
 		int retVal = 0;
 		boolean terminatorFound = false;
@@ -116,18 +116,18 @@ public class Template
 			{
 				retVal = retVal * 10 + intValue;
 			}
-			else if (charValue == terminator)
+			else if (charValue == terminator1)
 			{
 				terminatorFound = true;
 			}
-			else if (Character.toLowerCase(charValue) == terminator)
+			else if (charValue == terminator0)
 			{
 				terminatorFound = true;
 				retVal = -1;
 			}
 			else
 			{
-				throw new RuntimeException("Invalid terminator, expected " + terminator + ", got " + charValue);
+				throw new RuntimeException("Invalid terminator, expected " + terminator1 + " or " + terminator0 + ", got " + charValue);
 			}
 			if (!terminatorFound)
 			{
@@ -139,7 +139,7 @@ public class Template
 
 	protected static int readint(Reader reader, char terminator) throws IOException
 	{
-		int retVal = readintInternal(reader, terminator);
+		int retVal = readintInternal(reader, terminator, terminator);
 		if (0 > retVal)
 		{
 			throw new RuntimeException("Invalid integer read!");
@@ -147,10 +147,10 @@ public class Template
 		return retVal;
 	}
 
-	protected static String readstr(Reader reader, char terminator) throws IOException
+	protected static String readstr(Reader reader, char terminator1, char terminator0) throws IOException
 	{
 		String retVal = null;
-		int stringLength = readintInternal(reader, terminator);
+		int stringLength = readintInternal(reader, terminator1, terminator0);
 		if (-1 < stringLength)
 		{
 			char[] retValChars = new char[stringLength];
@@ -223,7 +223,7 @@ public class Template
 		{
 			throw new RuntimeException("Invalid version, expected " + SXTL_VERSION + ", got " + version);
 		}
-		retVal.source = readstr(bufferedReader, 's');
+		retVal.source = readstr(bufferedReader, '\'', '"');
 		readcr(bufferedReader);
 		int count = readint(bufferedReader, '#');
 		readcr(bufferedReader);
@@ -234,8 +234,8 @@ public class Template
 			int r3 = readspec(bufferedReader);
 			int r4 = readspec(bufferedReader);
 			int r5 = readspec(bufferedReader);
-			String code = readstr(bufferedReader, 'c');
-			String arg = readstr(bufferedReader, 'a');
+			String code = readstr(bufferedReader, ':', '.');
+			String arg = readstr(bufferedReader, ';', ',');
 			Location location = null;
 			int readInt = bufferedReader.read();
 			if (-1 < readInt)
@@ -250,7 +250,7 @@ public class Template
 				}
 				else if ('*' == charValue)
 				{
-					location = new Location(retVal.source, readstr(bufferedReader, 't'),
+					location = new Location(retVal.source, readstr(bufferedReader, '=', '-'),
 						readint(bufferedReader, '<'), readint(bufferedReader, '>'),
 						readint(bufferedReader, '['), readint(bufferedReader, ']'));
 				}
