@@ -27,9 +27,9 @@ public class Template
 		}
 	}
 
-	public static final String SXTL_HEADER = "ull";
+	public static final String HEADER = "ull";
 
-	public static final String SXTL_VERSION = "1";
+	public static final String VERSION = "1";
 	
 	public String source;
 
@@ -216,14 +216,14 @@ public class Template
 		Template retVal = new Template();
 		BufferedReader bufferedReader = new BufferedReader(reader);
 		String header = bufferedReader.readLine();
-		if (!SXTL_HEADER.equals(header))
+		if (!HEADER.equals(header))
 		{
-			throw new RuntimeException("Invalid header, expected " + SXTL_HEADER + ", got " + header);
+			throw new RuntimeException("Invalid header, expected " + HEADER + ", got " + header);
 		}
 		String version = bufferedReader.readLine();
-		if (!SXTL_VERSION.equals(version))
+		if (!VERSION.equals(version))
 		{
-			throw new RuntimeException("Invalid version, expected " + SXTL_VERSION + ", got " + version);
+			throw new RuntimeException("Invalid version, expected " + VERSION + ", got " + version);
 		}
 		retVal.source = readstr(bufferedReader, '\'', '"');
 		readcr(bufferedReader);
@@ -300,9 +300,9 @@ public class Template
 
 	public void dump(Writer writer) throws IOException
 	{
-		writer.write(SXTL_HEADER);
+		writer.write(HEADER);
 		writer.write("\n");
-		writer.write("1");
+		writer.write(VERSION);
 		writer.write("\n");
 		writestr(writer, source, '\'', '"');
 		writer.write("\n");
