@@ -11,7 +11,7 @@ public class CompilerFactory
 	public CompilerFactory()
 	{
 		Properties props = new Properties();
-		props.setProperty("python.path", "C:\\jython\\Lib:C:\\ull");
+		props.setProperty("python.path", "C:\\jython\\Lib;C:\\ull");
 		PythonInterpreter.initialize(System.getProperties(), props, new String[] {""});
 		PythonInterpreter interpreter = new PythonInterpreter();
 		interpreter.exec("from l4c import Compiler");
