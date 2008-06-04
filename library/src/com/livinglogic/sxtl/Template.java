@@ -3,6 +3,8 @@ package com.livinglogic.sxtl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
+import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
@@ -266,6 +268,79 @@ public class Template
 			retVal.opcodes.add(new Opcode(code, r1, r2, r3, r4, r5, arg, location));
 		}
 		return retVal;
+	}
+
+	protected static void writeint(Writer writer, int value, char terminator) throws IOException
+	{
+		writer.write(value);
+		writer.write(terminator);
+	}
+
+	protected static void writestr(Writer writer, String value, char terminator1, char terminator0) throws IOException
+	{
+		if (value == null)
+		{
+			writer.write(terminator0);
+		}
+		else
+		{
+			writer.write(value.length());
+			writer.write(terminator1);
+			writer.write(value);
+		}
+	}
+
+	protected static void writespec(Writer writer, int spec) throws IOException
+	{
+		if (spec == -1)
+			writer.write("-");
+		else
+			writer.write(spec);
+	}
+
+	public void dump(Writer writer) throws IOException
+	{
+		writer.write(SXTL_HEADER);
+		writer.write("\n");
+		writer.write(1);
+		writer.write("\n");
+		writestr(writer, source, '\'', '"');
+		writer.write("\n");
+		writeint(writer, opcodes.size(), '#');
+		writer.write("\n");
+		Location lastLocation = null;
+		for (int i = 0; i < opcodes.size(); ++i)
+		{
+			Opcode opcode = (Opcode)opcodes.get(i);
+			writespec(writer, opcode.r1);
+			writespec(writer, opcode.r2);
+			writespec(writer, opcode.r3);
+			writespec(writer, opcode.r4);
+			writespec(writer, opcode.r5);
+			writestr(writer, Opcode.code2name(opcode.name), ':', '.');
+			writestr(writer, opcode.arg, ';', ',');
+			if (opcode.location != lastLocation)
+			{
+				writer.write("*");
+				writestr(writer, opcode.location.type, '=', '-');
+				writeint(writer, opcode.location.starttag, '<');
+				writeint(writer, opcode.location.endtag, '>');
+				writeint(writer, opcode.location.startcode, '[');
+				writeint(writer, opcode.location.endcode, ']');
+				lastLocation = opcode.location;
+			}
+			else
+			{
+				writer.write("^");
+			}
+		}
+	}
+
+	public String dumps() throws IOException
+	{
+		StringWriter writer = new StringWriter();
+		dump(writer);
+		return writer.toString();
 	}
 
 	protected void annotate()
