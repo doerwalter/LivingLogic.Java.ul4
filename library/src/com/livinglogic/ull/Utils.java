@@ -4,6 +4,7 @@ import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.List;
 import java.util.Map;
@@ -793,7 +794,7 @@ public class Utils
 
 	public static Object split(String obj)
 	{
-		Vector retVal = new Vector();
+		LinkedList retVal = new LinkedList();
 		int length = obj.length();
 		int pos1 = 0;
 		int pos2;
@@ -810,7 +811,43 @@ public class Utils
 				{
 					pos2++;
 				}
-				retVal.add(obj.substring(pos1, ++pos2));
+				retVal.add(obj.substring(pos1, pos2));
+				pos1 = pos2;
+			}
+		}
+		return retVal;
+	}
+
+	public static Object split(String obj1, String obj2)
+	{
+		LinkedList retVal = new LinkedList();
+		int length = obj1.length();
+		int delimLength = obj2.length();
+		int pos1 = 0;
+		int pos2;
+		while (pos1 < length)
+		{
+			while ((pos1 < length) && obj1.startsWith(obj2, pos1))
+			{
+				if (0 == pos1)
+				{
+					retVal.add("");
+				}
+				pos1 += delimLength;
+				retVal.add("");
+			}
+			if (pos1 < length)
+			{
+				pos2 = pos1 + 1;
+				if (!retVal.isEmpty())
+				{
+					retVal.removeLast();
+				}
+				while ((pos2 < length) && !obj1.startsWith(obj2, pos2))
+				{
+					pos2++;
+				}
+				retVal.add(obj1.substring(pos1, pos2));
 				pos1 = pos2;
 			}
 		}
@@ -822,6 +859,13 @@ public class Utils
 		if (obj instanceof String)
 			return split((String)obj);
 		throw new UnsupportedOperationException("Can't split instance of " + obj.getClass() + "!");
+	}
+
+	public static Object split(Object obj1, Object obj2)
+	{
+		if ((obj1 instanceof String) && (obj2 instanceof String))
+			return split((String)obj1, (String)obj2);
+		throw new UnsupportedOperationException("Can't split instance of " + obj1.getClass() + " with delimiter instance of " + obj2.getClass() + "!");
 	}
 
 	protected static int getFirstNonWhitespaceIndex(String obj)
@@ -918,9 +962,13 @@ public class Utils
 			return items((Map)obj);
 		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be iterated as a map!");
 	}
-	
+
 	public static void main(String[] args)
 	{
-		//System.out.println(Arrays.asList((String[])split("    gurk       hurz  schwumpl  ")));
+		//System.out.println(split("\t\tgurk\t\t\t\t\t\thurz\t\tschwumpl\t\t\t\t", "\t\t"));
+		System.out.println(split("gurk\t\t\t\t\t\thurz\t\tschwumpl", "\t\t"));
+		//System.out.println(split("\t\tgurk\t\t\t\t\t\thurz\t\tschwumpl\t\t\t\t"));
+		//System.out.println(split("gurk\t\t\t\t\t\thurz\t\tschwumpl"));
+		//System.out.println(split("  gurk      hurz  schwumpl    "));
 	}
 }
