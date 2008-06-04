@@ -793,25 +793,46 @@ public class Utils
 
 	public static Object split(String obj)
 	{
+		return split(obj, null);
+	}
+
+	public static Object split(String obj1, String obj2)
+	{
 		Vector retVal = new Vector();
-		int length = obj.length();
+		int length = obj1.length();
+		int delimLength;
 		int pos1 = 0;
 		int pos2;
+		if (null != obj2)
+		{
+			delimLength = obj2.length();
+		}
+		else
+		{
+			delimLength = 1;
+			while ((pos1 < length) && Character.isWhitespace(obj1.charAt(pos1)))
+			{
+				pos1 += delimLength;
+			}
+		}
 		while (pos1 < length)
 		{
-			while ((pos1 < length) && Character.isWhitespace(obj.charAt(pos1)))
+			pos2 = pos1;
+			while ((pos2 < length) &&
+				((null != obj2) ? !obj1.startsWith(obj2, pos2) : !Character.isWhitespace(obj1.charAt(pos2))))
 			{
-				pos1++;
+				pos2++;
 			}
-			if (pos1 < length)
+			retVal.add(obj1.substring(pos1, pos2));
+			pos1 = pos2;
+			while ((pos1 < length) &&
+				((null != obj2) ? obj1.startsWith(obj2, pos1) : Character.isWhitespace(obj1.charAt(pos1))))
 			{
-				pos2 = pos1 + 1;
-				while ((pos2 < length) && !Character.isWhitespace(obj.charAt(pos2)))
+				pos1 += delimLength;
+				if ((pos1 == length) && (null != obj2))
 				{
-					pos2++;
+					retVal.add("");
 				}
-				retVal.add(obj.substring(pos1, ++pos2));
-				pos1 = pos2;
 			}
 		}
 		return retVal;
@@ -822,6 +843,13 @@ public class Utils
 		if (obj instanceof String)
 			return split((String)obj);
 		throw new UnsupportedOperationException("Can't split instance of " + obj.getClass() + "!");
+	}
+
+	public static Object split(Object obj1, Object obj2)
+	{
+		if ((obj1 instanceof String) && (obj2 instanceof String))
+			return split((String)obj1, (String)obj2);
+		throw new UnsupportedOperationException("Can't split instance of " + obj1.getClass() + " with delimiter instance of " + obj2.getClass() + "!");
 	}
 
 	protected static int getFirstNonWhitespaceIndex(String obj)
@@ -918,9 +946,9 @@ public class Utils
 			return items((Map)obj);
 		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be iterated as a map!");
 	}
-	
+
 	public static void main(String[] args)
 	{
-		//System.out.println(Arrays.asList((String[])split("    gurk       hurz  schwumpl  ")));
+		System.out.println(split("    gurk       hurz  schwumpl     ", " "));
 	}
 }

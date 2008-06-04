@@ -751,7 +751,43 @@ public class Template
 						}
 						break;
 					case Opcode.OC_CALLMETH1:
-						throw new RuntimeException("No method '" + code.arg + "' defined!");
+						if (code.arg.equals("split"))
+						{
+							reg[code.r1] = Utils.split(reg[code.r2], reg[code.r3]);
+						}
+						else if (code.arg.equals("rsplit"))
+						{
+							reg[code.r1] = Utils.rsplit(reg[code.r2], reg[code.r3]);
+						}
+						else if (code.arg.equals("strip"))
+						{
+							reg[code.r1] = Utils.strip(reg[code.r2], reg[code.r3]);
+						}
+						else if (code.arg.equals("lstrip"))
+						{
+							reg[code.r1] = Utils.lstrip(reg[code.r2], reg[code.r3]);
+						}
+						else if (code.arg.equals("rstrip"))
+						{
+							reg[code.r1] = Utils.rstrip(reg[code.r2], reg[code.r3]);
+						}
+						else if (code.arg.equals("startswith"))
+						{
+							reg[code.r1] = Utils.startswith(reg[code.r2], reg[code.r3]);
+						}
+						else if (code.arg.equals("endswith"))
+						{
+							reg[code.r1] = Utils.endswith(reg[code.r2], reg[code.r3]);
+						}
+						else if (code.arg.equals("find"))
+						{
+							reg[code.r1] = Utils.items(reg[code.r2], reg[code.r3]);
+						}
+						else
+						{
+							throw new RuntimeException("No method '" + code.arg + "' defined!");
+						}
+						break;
 					case Opcode.OC_CALLMETH2:
 						throw new RuntimeException("No method '" + code.arg + "' defined!");
 					case Opcode.OC_CALLMETH3:
