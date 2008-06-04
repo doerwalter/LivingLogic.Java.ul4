@@ -761,7 +761,7 @@ public class Template
 						if (code.arg.equals("split"))
 						{
 							reg[code.r1] = Utils.split(reg[code.r2], reg[code.r3]);
-						}
+						}/*
 						else if (code.arg.equals("rsplit"))
 						{
 							reg[code.r1] = Utils.rsplit(reg[code.r2], reg[code.r3]);
@@ -789,7 +789,7 @@ public class Template
 						else if (code.arg.equals("find"))
 						{
 							reg[code.r1] = Utils.items(reg[code.r2], reg[code.r3]);
-						}
+						}*/
 						else
 						{
 							throw new RuntimeException("No method '" + code.arg + "' defined!");

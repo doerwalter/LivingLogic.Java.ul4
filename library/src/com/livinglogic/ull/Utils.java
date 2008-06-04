@@ -4,6 +4,7 @@ import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.List;
 import java.util.Map;
@@ -793,46 +794,61 @@ public class Utils
 
 	public static Object split(String obj)
 	{
-		return split(obj, null);
+		LinkedList retVal = new LinkedList();
+		int length = obj.length();
+		int pos1 = 0;
+		int pos2;
+		while (pos1 < length)
+		{
+			while ((pos1 < length) && Character.isWhitespace(obj.charAt(pos1)))
+			{
+				pos1++;
+			}
+			if (pos1 < length)
+			{
+				pos2 = pos1 + 1;
+				while ((pos2 < length) && !Character.isWhitespace(obj.charAt(pos2)))
+				{
+					pos2++;
+				}
+				retVal.add(obj.substring(pos1, pos2));
+				pos1 = pos2;
+			}
+		}
+		return retVal;
 	}
 
 	public static Object split(String obj1, String obj2)
 	{
-		Vector retVal = new Vector();
+		LinkedList retVal = new LinkedList();
 		int length = obj1.length();
-		int delimLength;
+		int delimLength = obj2.length();
 		int pos1 = 0;
 		int pos2;
-		if (null != obj2)
-		{
-			delimLength = obj2.length();
-		}
-		else
-		{
-			delimLength = 1;
-			while ((pos1 < length) && Character.isWhitespace(obj1.charAt(pos1)))
-			{
-				pos1 += delimLength;
-			}
-		}
 		while (pos1 < length)
 		{
-			pos2 = pos1;
-			while ((pos2 < length) &&
-				((null != obj2) ? !obj1.startsWith(obj2, pos2) : !Character.isWhitespace(obj1.charAt(pos2))))
+			while ((pos1 < length) && obj1.startsWith(obj2, pos1))
 			{
-				pos2++;
-			}
-			retVal.add(obj1.substring(pos1, pos2));
-			pos1 = pos2;
-			while ((pos1 < length) &&
-				((null != obj2) ? obj1.startsWith(obj2, pos1) : Character.isWhitespace(obj1.charAt(pos1))))
-			{
-				pos1 += delimLength;
-				if ((pos1 == length) && (null != obj2))
+				if (0 == pos1)
 				{
 					retVal.add("");
 				}
+				pos1 += delimLength;
+				retVal.add("");
+			}
+			if (pos1 < length)
+			{
+				pos2 = pos1 + 1;
+				if (!retVal.isEmpty())
+				{
+					retVal.removeLast();
+				}
+				while ((pos2 < length) && !obj1.startsWith(obj2, pos2))
+				{
+					pos2++;
+				}
+				retVal.add(obj1.substring(pos1, pos2));
+				pos1 = pos2;
 			}
 		}
 		return retVal;
@@ -949,6 +965,10 @@ public class Utils
 
 	public static void main(String[] args)
 	{
-		System.out.println(split("    gurk       hurz  schwumpl     ", " "));
+		//System.out.println(split("\t\tgurk\t\t\t\t\t\thurz\t\tschwumpl\t\t\t\t", "\t\t"));
+		System.out.println(split("gurk\t\t\t\t\t\thurz\t\tschwumpl", "\t\t"));
+		//System.out.println(split("\t\tgurk\t\t\t\t\t\thurz\t\tschwumpl\t\t\t\t"));
+		//System.out.println(split("gurk\t\t\t\t\t\thurz\t\tschwumpl"));
+		//System.out.println(split("  gurk      hurz  schwumpl    "));
 	}
 }
