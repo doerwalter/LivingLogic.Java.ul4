@@ -27,7 +27,7 @@ public class Template
 		}
 	}
 
-	public static final String SXTL_HEADER = "sxtl";
+	public static final String SXTL_HEADER = "ull";
 
 	public static final String SXTL_VERSION = "1";
 	
@@ -272,7 +272,7 @@ public class Template
 
 	protected static void writeint(Writer writer, int value, char terminator) throws IOException
 	{
-		writer.write(value);
+		writer.write(String.valueOf(value));
 		writer.write(terminator);
 	}
 
@@ -284,7 +284,7 @@ public class Template
 		}
 		else
 		{
-			writer.write(value.length());
+			writer.write(String.valueOf(value.length()));
 			writer.write(terminator1);
 			writer.write(value);
 		}
@@ -295,14 +295,14 @@ public class Template
 		if (spec == -1)
 			writer.write("-");
 		else
-			writer.write(spec);
+			writer.write(String.valueOf(spec));
 	}
 
 	public void dump(Writer writer) throws IOException
 	{
 		writer.write(SXTL_HEADER);
 		writer.write("\n");
-		writer.write(1);
+		writer.write("1");
 		writer.write("\n");
 		writestr(writer, source, '\'', '"');
 		writer.write("\n");
@@ -333,13 +333,20 @@ public class Template
 			{
 				writer.write("^");
 			}
+			writer.write("\n");
 		}
 	}
 
-	public String dumps() throws IOException
+	public String dumps()
 	{
 		StringWriter writer = new StringWriter();
-		dump(writer);
+		try
+		{
+			dump(writer);
+		}
+		catch (IOException ex) // can not happen, when dumping the a StringWriter
+		{
+		}
 		return writer.toString();
 	}
 
