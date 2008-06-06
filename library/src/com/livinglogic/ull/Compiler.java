@@ -6,9 +6,9 @@ import org.python.core.PyObject;
 import org.python.core.PyString;
 import org.python.util.PythonInterpreter;
 
-public class CompilerFactory
+public class Compiler
 {
-	public CompilerFactory()
+	public Compiler()
 	{
 		Properties props = new Properties();
 		props.setProperty("python.path", "C:\\jython\\Lib;C:\\ull");

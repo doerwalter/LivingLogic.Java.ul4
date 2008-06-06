@@ -13,9 +13,9 @@ public class Main
 	public static void main(String[] args)
 	{
 		long start = new Date().getTime();
-		CompilerFactory factory = new CompilerFactory();
-		System.out.println("made Factory " + (time()-start));
-		Template tmpl = factory.compile("<?if data?><ul><?for item in data?><li><?print xmlescape(item)?></li><?end for?></ul><?end if?>");
+		Compiler compiler = new Compiler();
+		System.out.println("made Compiler " + (time()-start));
+		Template tmpl = compiler.compile("<?if data?><ul><?for item in data?><li><?print xmlescape(item)?></li><?end for?></ul><?end if?>");
 		System.out.println(tmpl.dumps());
 /*		Template linetmpl = factory.compile("<li><?print None?><?print False?><?print True?><?print 42?><?print 4.2?><?print 'gurk'?>(<?print xmlescape(data)?>)</li>");
 		System.out.println("compiled " + (time()-start));
