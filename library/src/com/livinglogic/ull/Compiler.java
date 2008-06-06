@@ -8,7 +8,9 @@ import org.python.util.PythonInterpreter;
 
 public class Compiler
 {
-	public Compiler()
+	static private CompilerType compiler;
+
+	static
 	{
 		Properties props = new Properties();
 		props.setProperty("python.path", "C:\\jython\\Lib;C:\\ull");
@@ -20,10 +22,8 @@ public class Compiler
 		compiler = (CompilerType)compilerObj.__tojava__(CompilerType.class);
 	}
 
-	public Template compile(String source)
+	public static Template compile(String source)
 	{
 		return compiler.compile(source, "<?", "?>");
 	}
-
-	private CompilerType compiler;
 }
