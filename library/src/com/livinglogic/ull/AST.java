@@ -1,6 +1,6 @@
 package com.livinglogic.ull;
 
-abstract class AST
+public abstract class AST
 {
 	protected int start;
 	protected int end;
