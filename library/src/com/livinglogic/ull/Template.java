@@ -230,6 +230,7 @@ public class Template
 		readcr(bufferedReader);
 		int count = readint(bufferedReader, '#');
 		readcr(bufferedReader);
+		Location location = null;
 		for (int i = 0; i < count; i++)
 		{
 			int r1 = readspec(bufferedReader);
@@ -239,7 +240,6 @@ public class Template
 			int r5 = readspec(bufferedReader);
 			String code = readstr(bufferedReader, ':', '.');
 			String arg = readstr(bufferedReader, ';', ',');
-			Location location = null;
 			int readInt = bufferedReader.read();
 			if (-1 < readInt)
 			{
@@ -267,6 +267,7 @@ public class Template
 				throw new RuntimeException("Short read!");
 			}
 			retVal.opcodes.add(new Opcode(code, r1, r2, r3, r4, r5, arg, location));
+			readcr(bufferedReader);
 		}
 		return retVal;
 	}
