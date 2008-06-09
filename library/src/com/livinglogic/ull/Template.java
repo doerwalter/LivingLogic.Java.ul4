@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.io.StringWriter;
+import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
@@ -211,7 +212,7 @@ public class Template
 		}
 	}
 
-	public static Template frombin(Reader reader) throws IOException
+	public static Template load(Reader reader) throws IOException
 	{
 		Template retVal = new Template();
 		BufferedReader bufferedReader = new BufferedReader(reader);
@@ -268,6 +269,19 @@ public class Template
 			retVal.opcodes.add(new Opcode(code, r1, r2, r3, r4, r5, arg, location));
 		}
 		return retVal;
+	}
+
+	public static Template loads(String bytecode)
+	{
+		StringReader reader = new StringReader(bytecode);
+		try
+		{
+			return load(reader);
+		}
+		catch (IOException ex) // can not happen, when reading from a StringReaders
+		{
+			return null;
+		}
 	}
 
 	protected static void writeint(Writer writer, int value, char terminator) throws IOException
