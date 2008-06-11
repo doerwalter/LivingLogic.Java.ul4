@@ -33,4 +33,31 @@ public class Location
 	{
 		return source.substring(startcode, endcode);
 	}
+
+	public String toString()
+	{
+		int line = 1;
+		int col;
+		int lastLineFeed = source.lastIndexOf("\n", starttag);
+		
+		if (lastLineFeed == -1)
+		{
+			col = starttag+1;
+		}
+		else
+		{
+			col = 1;
+			for (int i = 0; i < starttag; ++i)
+			{
+				if (source.charAt(i) == '\n')
+				{
+					++line;
+					col = 0;
+				}
+				++col;
+			}
+		}
+		return getTag() + " at " + (starttag+1) + " (line " + line + ", col " + col + ")";
+
+	}
 }
