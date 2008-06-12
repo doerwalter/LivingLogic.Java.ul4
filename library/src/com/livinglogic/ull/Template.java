@@ -635,7 +635,7 @@ public class Template
 						reg[code.r1] = Utils.mod(reg[code.r2], reg[code.r3]);
 						break;
 					case Opcode.OC_CALLFUNC0:
-						throw new RuntimeException("No function '" + code.arg + "' defined!");
+						throw new UnknownFunctionException(code.arg);
 					case Opcode.OC_CALLFUNC1:
 						if (code.arg.equals("xmlescape"))
 						{
@@ -715,7 +715,7 @@ public class Template
 						}
 						else
 						{
-							throw new RuntimeException("No function '" + code.arg + "' defined!");
+							throw new UnknownFunctionException(code.arg);
 						}
 						break;
 					case Opcode.OC_CALLFUNC2:
@@ -725,7 +725,7 @@ public class Template
 						}
 						else
 						{
-							throw new RuntimeException("No function '" + code.arg + "' defined!");
+							throw new UnknownFunctionException(code.arg);
 						}
 						break;
 					case Opcode.OC_CALLFUNC3:
@@ -735,7 +735,7 @@ public class Template
 						}
 						else
 						{
-							throw new RuntimeException("No function '" + code.arg + "' defined!");
+							throw new UnknownFunctionException(code.arg);
 						}
 						break;
 					case Opcode.OC_CALLMETH0:
@@ -769,7 +769,7 @@ public class Template
 						}
 						else
 						{
-							throw new RuntimeException("No method '" + code.arg + "' defined!");
+							throw new UnknownMethodException(code.arg);
 						}
 						break;
 					case Opcode.OC_CALLMETH1:
@@ -807,13 +807,13 @@ public class Template
 						}*/
 						else
 						{
-							throw new RuntimeException("No method '" + code.arg + "' defined!");
+							throw new UnknownMethodException(code.arg);
 						}
 						break;
 					case Opcode.OC_CALLMETH2:
-						throw new RuntimeException("No method '" + code.arg + "' defined!");
+							throw new UnknownMethodException(code.arg);
 					case Opcode.OC_CALLMETH3:
-						throw new RuntimeException("No method '" + code.arg + "' defined!");
+							throw new UnknownMethodException(code.arg);
 					case Opcode.OC_RENDER:
 						subTemplateIterator = ((Template)templates.get(code.arg)).render(reg[code.r1], templates);
 						if (subTemplateIterator.hasNext())

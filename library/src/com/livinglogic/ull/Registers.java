@@ -13,7 +13,14 @@ public class Registers extends Vector
 
 	public int alloc()
 	{
-		return ((Integer)remove(0)).intValue();
+		try
+		{
+			return ((Integer)remove(0)).intValue();
+		}
+		catch (ArrayIndexOutOfBoundsException ex)
+		{
+			throw new OutOfRegistersException();
+		}
 	}
 
 	public void free(int r)

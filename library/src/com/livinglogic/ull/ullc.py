@@ -72,80 +72,6 @@ class SyntaxError(Error):
 		return self.format("Lexical error near %s" % self.token)
 
 
-class UnterminatedStringError(Error):
-	"""
-	Exception that is raised when a string constant is not terminated.
-	"""
-	def __str__(self):
-		return self.format("Unterminated string")
-
-
-class BlockError(Error):
-	"""
-	Exception that is raised when an illegal block structure is detected (e.g.
-	an ``endif`` without a previous ``if``).
-	"""
-
-	def __init__(self, message):
-		Error.__init__(self)
-		self.message = message
-
-	def __str__(self):
-		return self.format(self.message)
-
-
-class UnknownFunctionError(Error):
-	"""
-	Exception that is raised the function to be executed by the ``callfunc0``,
-	``callfunc1`` or ``callfunc2`` opcodes is unknown to the renderer.
-	"""
-
-	def __init__(self, funcname):
-		Error.__init__(self)
-		self.funcname = funcname
-
-	def __str__(self):
-		return self.format("function %r unknown" % self.funcname)
-
-
-class UnknownMethodError(Error):
-	"""
-	Exception that is raised the method to be executed by the ``callmeth0``,
-	``callmeth1``, ``callmeth2``  or ``callmeth3`` opcodes is unknown to the
-	renderer.
-	"""
-
-	def __init__(self, methname):
-		Error.__init__(self)
-		self.methname = methname
-
-	def __str__(self):
-		return self.format("method %r unknown" % self.methname)
-
-
-class UnknownOpcodeError(Error):
-	"""
-	Exception that is raised when an unknown opcode is encountered.
-	"""
-
-	def __init__(self, opcode):
-		Error.__init__(self)
-		self.opcode = opcode
-
-	def __str__(self):
-		return self.format("opcode %r unknown" % self.opcode)
-
-
-class OutOfRegistersError(Error):
-	"""
-	Exception that is raised when there are no more free registers
-	(can't happen)
-	"""
-
-	def __str__(self):
-		return self.format("out of registers")
-
-
 ###
 ### helper functions for compiling
 ###
@@ -198,33 +124,33 @@ def _compile(template, source, startdelim, enddelim):
 				stack.append(("if", 1, False))
 			elif location.type == "elif":
 				if not stack or stack[-1][0] != "if":
-					raise BlockError("elif doesn't match any if")
+					raise BlockException("elif doesn't match any if")
 				elif stack[-1][2]:
-					raise BlockError("else already seen in elif")
+					raise BlockException("else already seen in elif")
 				template.opcode(Opcode.OC_ELSE, location)
 				r = parseexpr(template, location)
 				template.opcode(Opcode.OC_IF, r, location)
 				stack[-1] = ("if", stack[-1][1]+1, False)
 			elif location.type == "else":
 				if not stack or stack[-1][0] != "if":
-					raise BlockError("else doesn't match any if")
+					raise BlockException("else doesn't match any if")
 				elif stack[-1][2]:
-					raise BlockError("duplicate else")
+					raise BlockException("duplicate else")
 				template.opcode(Opcode.OC_ELSE, location)
 				stack[-1] = ("if", stack[-1][1], True)
 			elif location.type == "end":
 				if not stack:
-					raise BlockError("not in any block")
+					raise BlockException("not in any block")
 				code = location.code
 				if code:
 					if code == "if":
 						if stack[-1][0] != "if":
-							raise BlockError("endif doesn't match any if")
+							raise BlockException("endif doesn't match any if")
 					elif code == "for":
 						if stack[-1][0] != "for":
-							raise BlockError("endfor doesn't match any for")
+							raise BlockException("endfor doesn't match any for")
 					else:
-						raise BlockError("illegal end value %r" % code)
+						raise BlockException("illegal end value %r" % code)
 				last = stack.pop()
 				if last[0] == "if":
 					for i in xrange(last[1]):
@@ -244,16 +170,12 @@ def _compile(template, source, startdelim, enddelim):
 		except Exception, exc:
 			raise Error(exc).decorate(location)
 	if stack:
-		raise BlockError("unclosed blocks")
+		raise BlockException("unclosed blocks")
 	return opcodes
 
 
-###
-### Tokens and nodes for the AST
-###
-
 from com.livinglogic.ull import Token, Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod, GetSlice12, GetAttr, Render, For, For1, For2, CallFunc, CallMeth
-
+from com.livinglogic.ull import UnterminatedStringException, BlockException, OutOfRegistersException
 
 ###
 ### Tokenizer
@@ -270,7 +192,7 @@ class Scanner(spark.GenericScanner):
 		try:
 			spark.GenericScanner.tokenize(self, location.code)
 			if self.mode != "default":
-				raise UnterminatedStringError()
+				raise UnterminatedStringException()
 		except Error, exc:
 			exc.decorate(location)
 			raise
