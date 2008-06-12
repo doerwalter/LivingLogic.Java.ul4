@@ -26,4 +26,9 @@ public class Name extends AST
 		template.opcode(Opcode.OC_LOADVAR, r, value, location);
 		return r;
 	}
+
+	public String toString()
+	{
+		return "name \"" + value.replace("\"", "\\\"") + "\"";
+	}
 }

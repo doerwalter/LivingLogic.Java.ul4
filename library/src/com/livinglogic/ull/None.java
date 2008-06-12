@@ -16,4 +16,9 @@ public class None extends Const
 	{
 		return "none";
 	}
+
+	public String toString()
+	{
+		return "constant None";
+	}
 }

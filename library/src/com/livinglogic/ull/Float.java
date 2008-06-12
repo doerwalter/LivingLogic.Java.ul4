@@ -21,4 +21,9 @@ public class Float extends AST
 		template.opcode(Opcode.OC_LOADFLOAT, r, String.valueOf(value), location);
 		return r;
 	}
+
+	public String toString()
+	{
+		return "constant " + value;
+	}
 }

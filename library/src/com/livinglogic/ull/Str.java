@@ -21,4 +21,9 @@ public class Str extends AST
 		template.opcode(Opcode.OC_LOADSTR, r, value, location);
 		return r;
 	}
+
+	public String toString()
+	{
+		return "string \"" + value.replace("\"", "\\\"") + "\"";
+	}
 }

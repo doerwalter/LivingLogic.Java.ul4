@@ -16,4 +16,9 @@ public class True extends Const
 	{
 		return "true";
 	}
+
+	public String toString()
+	{
+		return "constant True";
+	}
 }

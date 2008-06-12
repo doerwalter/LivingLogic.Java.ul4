@@ -69,7 +69,7 @@ class SyntaxError(Error):
 		self.token = token
 
 	def __str__(self):
-		return self.format("Lexical error near %r" % str(self.token))
+		return self.format("Lexical error near %s" % self.token)
 
 
 class UnterminatedStringError(Error):

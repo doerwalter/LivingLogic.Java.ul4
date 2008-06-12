@@ -27,4 +27,9 @@ public class Token
 	{
 		return type;
 	}
+
+	public String toString()
+	{
+		return "token \"" + type.replace("\"", "\\\"") + "\"";
+	}
 }

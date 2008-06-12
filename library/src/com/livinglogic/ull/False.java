@@ -16,4 +16,9 @@ public class False extends Const
 	{
 		return "false";
 	}
+
+	public String toString()
+	{
+		return "constant False";
+	}
 }
