@@ -1,6 +1,6 @@
 package com.livinglogic.ull;
 
-public class LocationException extends Exception
+public class LocationException extends RuntimeException
 {
 	protected Location location;
 	
