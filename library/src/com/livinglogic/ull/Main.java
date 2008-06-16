@@ -12,15 +12,10 @@ public class Main
 
 	public static void main(String[] args)
 	{
+		Template tmpl = Compiler.compile("<?if data?><ul>\n<?for item in data?><li><?print xmlescape(item)?></li>\n</ul>\n<?end for?><?end if?>");
 		long start = new Date().getTime();
-		Template tmpl = Compiler.compile("<?if data?><ul>\n<?for item in data?><li><?print xmlescape(item)?></li>\n<?end for?></ul>\n<?end if?>");
-		System.out.println(tmpl.dumps());
-/*		Template linetmpl = factory.compile("<li><?print None?><?print False?><?print True?><?print 42?><?print 4.2?><?print 'gurk'?>(<?print xmlescape(data)?>)</li>");
-		System.out.println("compiled " + (time()-start));
-		HashMap templates = new HashMap();
-		templates.put("line", linetmpl);
-		String output = tmpl.renders("<gu&rk> & 'foo'", templates);
+		String output = tmpl.renders("<gu&rk> & 'foo'");
 		System.out.println("rendered " + (time()-start));
 		System.out.println(output);
-*/	}
+	}
 }
