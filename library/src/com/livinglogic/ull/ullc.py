@@ -16,63 +16,6 @@ import spark
 
 
 ###
-### Exceptions
-###
-
-class Error(Exception):
-	"""
-	base class of all exceptions.
-	"""
-	def __init__(self, exception=None):
-		self.location = None
-		self.exception = exception
-
-	def __str__(self):
-		if self.exception is not None:
-			return self.format(str(self.exception))
-		else:
-			return self.format("error")
-
-	def decorate(self, location):
-		self.location = location
-		return self
-
-	def format(self, message):
-		if self.exception is not None:
-			name = self.exception.__class__.__name__
-			module = self.exception.__class__.__module__
-			if module != "exceptions":
-				name = "%s.%s" % (module, name)
-			if self.location is not None:
-				return "%s in %s: %s" % (name, self.location, message)
-			else:
-				return "%s: %s" % (name, message)
-		else:
-			if self.location is not None:
-				return "in %s: %s" % (self.location, message)
-			else:
-				return message
-
-
-class LexicalError(Error):
-	def __init__(self, input):
-		Error.__init__(self)
-		self.input = input
-
-	def __str__(self):
-		return self.format("Unmatched input %r" % self.input)
-
-
-class SyntaxError(Error):
-	def __init__(self, token):
-		Error.__init__(self)
-		self.token = token
-
-	def __str__(self):
-		return self.format("Lexical error near %s" % self.token)
-
-
-###
 ### helper functions for compiling
 ###
 
@@ -164,18 +107,18 @@ def _compile(template, source, startdelim, enddelim):
 				parserender(template, location)
 			else: # Can't happen
 				raise ValueError("unknown tag %r" % location.type)
-		except Error, exc:
-			exc.decorate(location)
+		except LocationException, exc:
 			raise
-		except Exception, exc:
-			raise Error(exc).decorate(location)
+		except java.lang.Exception, exc:
+			raise LocationException(exc, location)
 	if stack:
 		raise BlockException("unclosed blocks")
 	return opcodes
 
 
 from com.livinglogic.ull import Token, Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod, GetSlice12, GetAttr, Render, For, For1, For2, CallFunc, CallMeth
-from com.livinglogic.ull import UnterminatedStringException, BlockException, OutOfRegistersException
+from com.livinglogic.ull import UnterminatedStringException, BlockException, OutOfRegistersException, LocationException, LexicalException, SyntaxException
+import java
 
 ###
 ### Tokenizer
@@ -193,11 +136,10 @@ class Scanner(spark.GenericScanner):
 			spark.GenericScanner.tokenize(self, location.code)
 			if self.mode != "default":
 				raise UnterminatedStringException()
-		except Error, exc:
-			exc.decorate(location)
+		except LocationException, exc:
 			raise
-		except Exception, exc:
-			raise Error(exc).decorate(location)
+		except java.lang.Exception, exc:
+			raise LocationException(exc, location)
 		return self.rv
 
 	def token(self, start, end, s):
@@ -321,11 +263,11 @@ class Scanner(spark.GenericScanner):
 	text.spark = {"str1": [".|\\n"], "str2": [".|\\n"]}
 
 	def default(self, start, end, s):
-		raise LexicalError(start, end, s)
+		raise LexicalException(start, end, s)
 	default.spark = {"default": ["(.|\\n)+"], "str1": ["(.|\\n)+"], "str2": ["(.|\\n)+"]}
 
 	def error(self, start, end, s):
-		raise LexicalError(start, end, s)
+		raise LexicalException(start, end, s)
 
 
 ###
@@ -346,17 +288,16 @@ class ExprParser(spark.GenericParser):
 			ast = self.parse(self.scanner.tokenize(location))
 			registers = Registers()
 			return ast.compile(template, registers, location)
-		except Error, exc:
-			exc.decorate(location)
+		except LocationException, exc:
 			raise
-		except Exception, exc:
-			raise Error(exc).decorate(location)
+		except java.lang.Exception, exc:
+			raise LocationException(exc, location)
 
 	def typestring(self, token):
 		return token.getTokenType()
 
 	def error(self, token):
-		raise SyntaxError(token)
+		raise SyntaxException(token)
 
 	def makeconst(self, start, end, value):
 		if value is None:
