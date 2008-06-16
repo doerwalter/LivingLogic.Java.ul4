@@ -24,6 +24,6 @@ public class Str extends AST
 
 	public String toString()
 	{
-		return "string \"" + value.replace("\"", "\\\"") + "\"";
+		return "string \"" + value.replaceAll("\"", "\\\\\"") + "\"";
 	}
 }

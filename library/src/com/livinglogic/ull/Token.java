@@ -30,6 +30,6 @@ public class Token
 
 	public String toString()
 	{
-		return "token \"" + type.replace("\"", "\\\"") + "\"";
+		return "token \"" + type.replaceAll("\"", "\\\\\"") + "\"";
 	}
 }
