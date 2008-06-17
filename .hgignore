@@ -3,3 +3,5 @@ syntax: glob
 build
 dist
 javadoc
+library/cachedir
+*$py.class
