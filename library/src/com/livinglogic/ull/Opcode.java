@@ -54,6 +54,47 @@ public class Opcode
 	public static final int OC_ENDIF = 49;
 	public static final int OC_RENDER = 50;
 
+	public static final int CF1_XMLESCAPE = 0;
+	public static final int CF1_STR = 1;
+	public static final int CF1_INT = 2;
+	public static final int CF1_LEN = 3;
+	public static final int CF1_ENUMERATE = 4;
+	public static final int CF1_ISNONE = 5;
+	public static final int CF1_ISSTR = 6;
+	public static final int CF1_ISINT = 7;
+	public static final int CF1_ISFLOAT = 8;
+	public static final int CF1_ISBOOL = 9;
+	public static final int CF1_ISLIST = 10;
+	public static final int CF1_ISDICT = 11;
+	public static final int CF1_CHR = 12;
+	public static final int CF1_ORD = 13;
+	public static final int CF1_HEX = 14;
+	public static final int CF1_OCT = 15;
+	public static final int CF1_BIN = 16;
+	public static final int CF1_SORTED = 17;
+	public static final int CF1_RANGE = 18;
+
+	public static final int CF2_RANGE = 0;
+
+	public static final int CF3_RANGE = 0;
+
+	public static final int CM0_SPLIT = 0;
+	public static final int CM0_STRIP = 1;
+	public static final int CM0_LSTRIP = 2;
+	public static final int CM0_RSTRIP = 3;
+	public static final int CM0_UPPER = 4;
+	public static final int CM0_LOWER = 5;
+	public static final int CM0_ITEMS = 6;
+
+	public static final int CM1_SPLIT = 0;
+	public static final int CM1_RSPLIT = 1;
+	public static final int CM1_STRIP = 2;
+	public static final int CM1_LSTRIP = 3;
+	public static final int CM1_RSTRIP = 4;
+	public static final int CM1_STARTSWITH = 5;
+	public static final int CM1_ENDSWITH = 6;
+	public static final int CM1_FIND = 7;
+
 	public int name;
 	public int r1;
 	public int r2;
@@ -61,6 +102,7 @@ public class Opcode
 	public int r4;
 	public int r5;
 	public String arg;
+	public int argcode;
 	public Location location;
 	public int jump;
 
@@ -170,6 +212,125 @@ public class Opcode
 			return OC_RENDER;
 		else
 			throw new IllegalArgumentException("Opcode name " + name + " unknown!");
+	}
+
+	public static int callfunc0name2code(String name)
+	{
+		throw new UnknownFunctionException(name);
+	}
+
+	public static int callfunc1name2code(String name)
+	{
+		if (name.equals("xmlescape"))
+			return CF1_XMLESCAPE;
+		else if (name.equals("str"))
+			return CF1_STR;
+		else if (name.equals("int"))
+			return CF1_INT;
+		else if (name.equals("len"))
+			return CF1_LEN;
+		else if (name.equals("enumerate"))
+			return CF1_ENUMERATE;
+		else if (name.equals("isnone"))
+			return CF1_ISNONE;
+		else if (name.equals("isstr"))
+			return CF1_ISSTR;
+		else if (name.equals("isint"))
+			return CF1_ISINT;
+		else if (name.equals("isfloat"))
+			return CF1_ISFLOAT;
+		else if (name.equals("isbool"))
+			return CF1_ISBOOL;
+		else if (name.equals("islist"))
+			return CF1_ISLIST;
+		else if (name.equals("isdict"))
+			return CF1_ISDICT;
+		else if (name.equals("chr"))
+			return CF1_CHR;
+		else if (name.equals("ord"))
+			return CF1_ORD;
+		else if (name.equals("hex"))
+			return CF1_HEX;
+		else if (name.equals("oct"))
+			return CF1_OCT;
+		else if (name.equals("bin"))
+			return CF1_BIN;
+		else if (name.equals("sorted"))
+			return CF1_SORTED;
+		else if (name.equals("range"))
+			return CF1_RANGE;
+		else
+			throw new UnknownFunctionException(name);
+	}
+
+	public static int callfunc2name2code(String name)
+	{
+		if (name.equals("range"))
+			return CF2_RANGE;
+		else
+			throw new UnknownFunctionException(name);
+	}
+
+	public static int callfunc3name2code(String name)
+	{
+		if (name.equals("range"))
+			return CF3_RANGE;
+		else
+			throw new UnknownFunctionException(name);
+	}
+
+	public static int callmeth0name2code(String name)
+	{
+		if (name.equals("split"))
+			return CM0_SPLIT;
+		else if (name.equals("rsplit"))
+			return CM0_SPLIT;
+		else if (name.equals("strip"))
+			return CM0_STRIP;
+		else if (name.equals("lstrip"))
+			return CM0_LSTRIP;
+		else if (name.equals("rstrip"))
+			return CM0_RSTRIP;
+		else if (name.equals("upper"))
+			return CM0_UPPER;
+		else if (name.equals("lower"))
+			return CM0_LOWER;
+		else if (name.equals("items"))
+			return CM0_ITEMS;
+		else
+			throw new UnknownMethodException(name);
+	}
+
+	public static int callmeth1name2code(String name)
+	{
+		if (name.equals("split"))
+			return CM1_SPLIT;
+		else if (name.equals("rsplit"))
+			return CM1_RSPLIT;
+		else if (name.equals("strip"))
+			return CM1_STRIP;
+		else if (name.equals("lstrip"))
+			return CM1_LSTRIP;
+		else if (name.equals("rstrip"))
+			return CM1_RSTRIP;
+		else if (name.equals("startswith"))
+			return CM1_STARTSWITH;
+		else if (name.equals("endswith"))
+			return CM1_ENDSWITH;
+		else if (name.equals("find"))
+			return CM1_FIND;
+		else
+			throw new UnknownMethodException(name);
+	}
+
+	public static int callmeth2name2code(String name)
+	{
+		throw new UnknownMethodException(name);
+	}
+
+	public static int callmeth3name2code(String name)
+	{
+		throw new UnknownMethodException(name);
 	}
 
 	public static String code2name(int code)
@@ -294,6 +455,33 @@ public class Opcode
 		this.r4 = r4;
 		this.r5 = r5;
 		this.arg = arg;
+		switch (name)
+		{
+			case OC_CALLFUNC0:
+				this.argcode = callfunc0name2code(arg);
+				break;
+			case OC_CALLFUNC1:
+				this.argcode = callfunc1name2code(arg);
+				break;
+			case OC_CALLFUNC2:
+				this.argcode = callfunc2name2code(arg);
+				break;
+			case OC_CALLFUNC3:
+				this.argcode = callfunc3name2code(arg);
+				break;
+			case OC_CALLMETH0:
+				this.argcode = callmeth0name2code(arg);
+				break;
+			case OC_CALLMETH1:
+				this.argcode = callmeth1name2code(arg);
+				break;
+			case OC_CALLMETH2:
+				this.argcode = callmeth2name2code(arg);
+				break;
+			case OC_CALLMETH3:
+				this.argcode = callmeth3name2code(arg);
+				break;
+		}
 		this.location = location;
 		this.jump = -1;
 	}

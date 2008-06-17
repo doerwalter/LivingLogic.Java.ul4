@@ -639,178 +639,137 @@ public class Template
 						case Opcode.OC_CALLFUNC0:
 							throw new UnknownFunctionException(code.arg);
 						case Opcode.OC_CALLFUNC1:
-							if (code.arg.equals("xmlescape"))
+							switch (code.argcode)
 							{
-								reg[code.r1] = Utils.xmlescape(reg[code.r2]);
-							}
-							else if (code.arg.equals("str"))
-							{
-								reg[code.r1] = Utils.toString(reg[code.r2]);
-							}
-							else if (code.arg.equals("int"))
-							{
-								reg[code.r1] = Utils.toInteger(reg[code.r2]);
-							}
-							else if (code.arg.equals("len"))
-							{
-								reg[code.r1] = Utils.length(reg[code.r2]);
-							}
-							else if (code.arg.equals("enumerate"))
-							{
-								reg[code.r1] = Utils.enumerate(reg[code.r2]);
-							}
-							else if (code.arg.equals("isnone"))
-							{
-								reg[code.r1] = (null == reg[code.r2]) ? Boolean.TRUE : Boolean.FALSE;
-							}
-							else if (code.arg.equals("isstr"))
-							{
-								reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof String)) ? Boolean.TRUE : Boolean.FALSE;
-							}
-							else if (code.arg.equals("isint"))
-							{
-								reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Integer)) ? Boolean.TRUE : Boolean.FALSE;
-							}
-							else if (code.arg.equals("isfloat"))
-							{
-								reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Double)) ? Boolean.TRUE : Boolean.FALSE;
-							}
-							else if (code.arg.equals("isbool"))
-							{
-								reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Boolean)) ? Boolean.TRUE : Boolean.FALSE;
-							}
-							else if (code.arg.equals("islist"))
-							{
-								reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof List)) ? Boolean.TRUE : Boolean.FALSE;
-							}
-							else if (code.arg.equals("isdict"))
-							{
-								reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Map)) ? Boolean.TRUE : Boolean.FALSE;
-							}
-							else if (code.arg.equals("chr"))
-							{
-								reg[code.r1] = Utils.chr(reg[code.r2]);
-							}
-							else if (code.arg.equals("ord"))
-							{
-								reg[code.r1] = Utils.ord(reg[code.r2]);
-							}
-							else if (code.arg.equals("hex"))
-							{
-								reg[code.r1] = Utils.hex(reg[code.r2]);
-							}
-							else if (code.arg.equals("oct"))
-							{
-								reg[code.r1] = Utils.oct(reg[code.r2]);
-							}
-							else if (code.arg.equals("bin"))
-							{
-								reg[code.r1] = Utils.bin(reg[code.r2]);
-							}
-							else if (code.arg.equals("sorted"))
-							{
-								reg[code.r1] = Utils.sorted(reg[code.r2]);
-							}
-							else if (code.arg.equals("range"))
-							{
-								reg[code.r1] = Utils.range(reg[code.r2]);
-							}
-							else
-							{
-								throw new UnknownFunctionException(code.arg);
+								case Opcode.CF1_XMLESCAPE:
+									reg[code.r1] = Utils.xmlescape(reg[code.r2]);
+									break;
+								case Opcode.CF1_STR:
+									reg[code.r1] = Utils.toString(reg[code.r2]);
+									break;
+								case Opcode.CF1_INT:
+									reg[code.r1] = Utils.toInteger(reg[code.r2]);
+									break;
+								case Opcode.CF1_LEN:
+									reg[code.r1] = Utils.length(reg[code.r2]);
+									break;
+								case Opcode.CF1_ENUMERATE:
+									reg[code.r1] = Utils.enumerate(reg[code.r2]);
+									break;
+								case Opcode.CF1_ISNONE:
+									reg[code.r1] = (null == reg[code.r2]) ? Boolean.TRUE : Boolean.FALSE;
+									break;
+								case Opcode.CF1_ISSTR:
+									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof String)) ? Boolean.TRUE : Boolean.FALSE;
+									break;
+								case Opcode.CF1_ISINT:
+									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Integer)) ? Boolean.TRUE : Boolean.FALSE;
+									break;
+								case Opcode.CF1_ISFLOAT:
+									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Double)) ? Boolean.TRUE : Boolean.FALSE;
+									break;
+								case Opcode.CF1_ISBOOL:
+									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Boolean)) ? Boolean.TRUE : Boolean.FALSE;
+									break;
+								case Opcode.CF1_ISLIST:
+									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof List)) ? Boolean.TRUE : Boolean.FALSE;
+									break;
+								case Opcode.CF1_ISDICT:
+									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Map)) ? Boolean.TRUE : Boolean.FALSE;
+									break;
+								case Opcode.CF1_CHR:
+									reg[code.r1] = Utils.chr(reg[code.r2]);
+									break;
+								case Opcode.CF1_ORD:
+									reg[code.r1] = Utils.ord(reg[code.r2]);
+									break;
+								case Opcode.CF1_HEX:
+									reg[code.r1] = Utils.hex(reg[code.r2]);
+									break;
+								case Opcode.CF1_OCT:
+									reg[code.r1] = Utils.oct(reg[code.r2]);
+									break;
+								case Opcode.CF1_BIN:
+									reg[code.r1] = Utils.bin(reg[code.r2]);
+									break;
+								case Opcode.CF1_SORTED:
+									reg[code.r1] = Utils.sorted(reg[code.r2]);
+									break;
+								case Opcode.CF1_RANGE:
+									reg[code.r1] = Utils.range(reg[code.r2]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLFUNC2:
-							if (code.arg.equals("range"))
+							switch (code.argcode)
 							{
-								reg[code.r1] = Utils.range(reg[code.r2], reg[code.r3]);
-							}
-							else
-							{
-								throw new UnknownFunctionException(code.arg);
+								case Opcode.CF2_RANGE:
+									reg[code.r1] = Utils.range(reg[code.r2], reg[code.r3]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLFUNC3:
-							if (code.arg.equals("range"))
+							switch (code.argcode)
 							{
-								reg[code.r1] = Utils.range(reg[code.r2], reg[code.r3], reg[code.r4]);
-							}
-							else
-							{
-								throw new UnknownFunctionException(code.arg);
+								case Opcode.CF3_RANGE:
+									reg[code.r1] = Utils.range(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLMETH0:
-							if (code.arg.equals("split") || code.arg.equals("rsplit"))
+							switch (code.argcode)
 							{
-								reg[code.r1] = Utils.split(reg[code.r2]);
-							}
-							else if (code.arg.equals("strip"))
-							{
-								reg[code.r1] = Utils.strip(reg[code.r2]);
-							}
-							else if (code.arg.equals("lstrip"))
-							{
-								reg[code.r1] = Utils.lstrip(reg[code.r2]);
-							}
-							else if (code.arg.equals("rstrip"))
-							{
-								reg[code.r1] = Utils.rstrip(reg[code.r2]);
-							}
-							else if (code.arg.equals("upper"))
-							{
-								reg[code.r1] = Utils.upper(reg[code.r2]);
-							}
-							else if (code.arg.equals("lower"))
-							{
-								reg[code.r1] = Utils.lower(reg[code.r2]);
-							}
-							else if (code.arg.equals("items"))
-							{
-								reg[code.r1] = Utils.items(reg[code.r2]);
-							}
-							else
-							{
-								throw new UnknownMethodException(code.arg);
+								case Opcode.CM0_SPLIT:
+									reg[code.r1] = Utils.split(reg[code.r2]);
+									break;
+								case Opcode.CM0_STRIP:
+									reg[code.r1] = Utils.strip(reg[code.r2]);
+									break;
+								case Opcode.CM0_LSTRIP:
+									reg[code.r1] = Utils.lstrip(reg[code.r2]);
+									break;
+								case Opcode.CM0_RSTRIP:
+									reg[code.r1] = Utils.rstrip(reg[code.r2]);
+									break;
+								case Opcode.CM0_UPPER:
+									reg[code.r1] = Utils.upper(reg[code.r2]);
+									break;
+								case Opcode.CM0_LOWER:
+									reg[code.r1] = Utils.lower(reg[code.r2]);
+									break;
+								case Opcode.CM0_ITEMS:
+									reg[code.r1] = Utils.items(reg[code.r2]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLMETH1:
-							if (code.arg.equals("split"))
+							switch (code.argcode)
 							{
-								reg[code.r1] = Utils.split(reg[code.r2], reg[code.r3]);
-							}/*
-							else if (code.arg.equals("rsplit"))
-							{
-								reg[code.r1] = Utils.rsplit(reg[code.r2], reg[code.r3]);
-							}
-							else if (code.arg.equals("strip"))
-							{
-								reg[code.r1] = Utils.strip(reg[code.r2], reg[code.r3]);
-							}
-							else if (code.arg.equals("lstrip"))
-							{
-								reg[code.r1] = Utils.lstrip(reg[code.r2], reg[code.r3]);
-							}
-							else if (code.arg.equals("rstrip"))
-							{
-								reg[code.r1] = Utils.rstrip(reg[code.r2], reg[code.r3]);
-							}
-							else if (code.arg.equals("startswith"))
-							{
-								reg[code.r1] = Utils.startswith(reg[code.r2], reg[code.r3]);
-							}
-							else if (code.arg.equals("endswith"))
-							{
-								reg[code.r1] = Utils.endswith(reg[code.r2], reg[code.r3]);
-							}
-							else if (code.arg.equals("find"))
-							{
-								reg[code.r1] = Utils.items(reg[code.r2], reg[code.r3]);
-							}*/
-							else
-							{
-								throw new UnknownMethodException(code.arg);
-							}
+								case Opcode.CM1_SPLIT:
+									reg[code.r1] = Utils.split(reg[code.r2], reg[code.r3]);
+									break;
+/*								case Opcode.CM1_RSPLIT:
+									reg[code.r1] = Utils.rsplit(reg[code.r2], reg[code.r3]);
+									break;
+								case Opcode.CM1_STRIP:
+									reg[code.r1] = Utils.strip(reg[code.r2], reg[code.r3]);
+									break;
+								case Opcode.CM1_LSTRIP:
+									reg[code.r1] = Utils.lstrip(reg[code.r2], reg[code.r3]);
+									break;
+								case Opcode.CM1_RSTRIP:
+									reg[code.r1] = Utils.rstrip(reg[code.r2], reg[code.r3]);
+									break;
+								case Opcode.CM1_STARTSWITH:
+									reg[code.r1] = Utils.startswith(reg[code.r2], reg[code.r3]);
+									break;
+								case Opcode.CM1_ENDSWITH:
+									reg[code.r1] = Utils.endswith(reg[code.r2], reg[code.r3]);
+									break;
+								case Opcode.CM1_FIND:
+									reg[code.r1] = Utils.items(reg[code.r2], reg[code.r3]);
+									break;
+*/							}
 							break;
 						case Opcode.OC_CALLMETH2:
 								throw new UnknownMethodException(code.arg);
