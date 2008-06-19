@@ -497,13 +497,17 @@ public class Utils
 		throw new RuntimeException("Can't determine presence for instance of " + obj.getClass() + " in container instance of class " + container.getClass() + "!");
 	}
 
-	public static Object xmlescape(String obj)
+	public static Object xmlescape(Object obj)
 	{
-		int length = obj.length();
+		if (obj == null)
+			return "";
+
+		String str = obj.toString();
+		int length = str.length();
 		StringBuffer sb = new StringBuffer((int)(1.2 * length));
 		for (int offset = 0; offset < length; offset++)
 		{
-			char c = obj.charAt(offset);
+			char c = str.charAt(offset);
 			switch (c)
 			{
 				case '<':
@@ -542,13 +546,6 @@ public class Utils
 			}
 		}
 		return sb.toString();
-	}
-
-	public static Object xmlescape(Object obj)
-	{
-		if (obj instanceof String)
-			return xmlescape((String)obj);
-		throw new UnsupportedOperationException("Can't xmlescape instance of " + obj.getClass() + "!");
 	}
 
 	public static String toString(Object obj)
