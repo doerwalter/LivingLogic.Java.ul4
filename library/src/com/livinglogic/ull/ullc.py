@@ -38,7 +38,7 @@ def _tokenize(source, startdelim, enddelim):
 	return tokens
 
 
-def _compile(template, source, startdelim, enddelim):
+def _compile(template):
 	opcodes = []
 	scanner = Scanner()
 	parseexpr = ExprParser(scanner).compile
@@ -52,7 +52,7 @@ def _compile(template, source, startdelim, enddelim):
 	# 2) How many if's or elif's we have seen (this is used for simulating elif's via nested if's, for each additional elif, we have one more endif to add)
 	# 3) Whether we've already seen the else
 	stack = []
-	for location in _tokenize(source, startdelim, enddelim):
+	for location in _tokenize(template.source, template.startdelim, template.enddelim):
 		try:
 			if location.type is None:
 				template.opcode(Opcode.OC_TEXT, location)
@@ -580,6 +580,8 @@ class RenderParser(ExprParser):
 class Compiler(CompilerType):
 	def compile(self, source, startdelim, enddelim):
 		template = Template()
+		template.startdelim = startdelim
+		template.enddelim = enddelim
 		template.source = source
-		_compile(template, source, startdelim, enddelim)
+		_compile(template)
 		return template

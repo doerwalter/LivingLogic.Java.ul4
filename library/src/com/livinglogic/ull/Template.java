@@ -31,7 +31,11 @@ public class Template
 	public static final String HEADER = "ull";
 
 	public static final String VERSION = "1";
-	
+
+	public String startdelim;
+
+	public String enddelim;
+
 	public String source;
 
 	public List opcodes;
@@ -226,6 +230,10 @@ public class Template
 		{
 			throw new RuntimeException("Invalid version, expected " + VERSION + ", got " + version);
 		}
+		retVal.startdelim = readstr(bufferedReader, '<', '[');
+		readcr(bufferedReader);
+		retVal.enddelim = readstr(bufferedReader, '>', ']');
+		readcr(bufferedReader);
 		retVal.source = readstr(bufferedReader, '\'', '"');
 		readcr(bufferedReader);
 		int count = readint(bufferedReader, '#');
@@ -254,8 +262,8 @@ public class Template
 				else if ('*' == charValue)
 				{
 					location = new Location(retVal.source, readstr(bufferedReader, '=', '-'),
-						readint(bufferedReader, '<'), readint(bufferedReader, '>'),
-						readint(bufferedReader, '['), readint(bufferedReader, ']'));
+						readint(bufferedReader, '('), readint(bufferedReader, ')'),
+						readint(bufferedReader, '{'), readint(bufferedReader, '}'));
 				}
 				else
 				{
@@ -319,6 +327,10 @@ public class Template
 		writer.write("\n");
 		writer.write(VERSION);
 		writer.write("\n");
+		writestr(writer, startdelim, '<', '[');
+		writer.write("\n");
+		writestr(writer, enddelim, '>', ']');
+		writer.write("\n");
 		writestr(writer, source, '\'', '"');
 		writer.write("\n");
 		writeint(writer, opcodes.size(), '#');
@@ -338,10 +350,10 @@ public class Template
 			{
 				writer.write("*");
 				writestr(writer, opcode.location.type, '=', '-');
-				writeint(writer, opcode.location.starttag, '<');
-				writeint(writer, opcode.location.endtag, '>');
-				writeint(writer, opcode.location.startcode, '[');
-				writeint(writer, opcode.location.endcode, ']');
+				writeint(writer, opcode.location.starttag, '(');
+				writeint(writer, opcode.location.endtag, ')');
+				writeint(writer, opcode.location.startcode, '{');
+				writeint(writer, opcode.location.endcode, '}');
 				lastLocation = opcode.location;
 			}
 			else
