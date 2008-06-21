@@ -19,26 +19,7 @@ import spark
 ### helper functions for compiling
 ###
 
-def _tokenize(source, startdelim, enddelim):
-	tokens = []
-	pattern = "%s(print|code|for|if|elif|else|end|render)(\s*((.|\\n)*?)\s*)?%s" % (re.escape(startdelim), re.escape(enddelim))
-	pattern = re.compile(pattern)
-	pos = 0
-	while True:
-		match = pattern.search(source, pos)
-		if match is None:
-			break
-		if match.start() != pos:
-			tokens.append(Location(source, None, pos, match.start(), pos, match.start()))
-		tokens.append(Location(source, source[match.start(1):match.end(1)], match.start(), match.end(), match.start(3), match.end(3)))
-		pos = match.end()
-	end = len(source)
-	if pos != end:
-		tokens.append(Location(source, None, pos, end, pos, end))
-	return tokens
-
-
-def _compile(template):
+def _compile(template, tags):
 	opcodes = []
 	scanner = Scanner()
 	parseexpr = ExprParser(scanner).compile
@@ -52,7 +33,7 @@ def _compile(template):
 	# 2) How many if's or elif's we have seen (this is used for simulating elif's via nested if's, for each additional elif, we have one more endif to add)
 	# 3) Whether we've already seen the else
 	stack = []
-	for location in _tokenize(template.source, template.startdelim, template.enddelim):
+	for location in tags:
 		try:
 			if location.type is None:
 				template.opcode(Opcode.OC_TEXT, location)
@@ -578,10 +559,10 @@ class RenderParser(ExprParser):
 
 
 class Compiler(CompilerType):
-	def compile(self, source, startdelim, enddelim):
+	def compile(self, source, tags, startdelim, enddelim):
 		template = Template()
 		template.startdelim = startdelim
 		template.enddelim = enddelim
 		template.source = source
-		_compile(template)
+		_compile(template, tags)
 		return template
