@@ -11,9 +11,41 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class Template
 {
+	// used by the code tokenizer
+	private static Pattern tokenPattern;
+	private static Pattern namePattern;
+	private static Pattern floatPattern;
+	private static Pattern hexintPattern;
+	private static Pattern octintPattern;
+	private static Pattern binintPattern;
+	private static Pattern intPattern;
+	private static Pattern whitespacePattern;
+	private static Pattern escaped8BitCharPattern;
+	private static Pattern escaped16BitCharPattern;
+	private static Pattern escaped32BitCharPattern;
+
+	static
+	{
+		// Initializes regular expressions
+		tokenPattern = Pattern.compile("\\(|\\)|\\[|\\]|\\.|,|==|\\!=|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*|//|/");
+		namePattern = Pattern.compile("[a-zA-Z_][\\w]*");
+		// We don't have negatve numbers, this is handled by constant folding in the AST for unary minus
+		floatPattern = Pattern.compile("(\\d+(\\.\\d*)?[eE][+-]?\\d+|\\d+\\.\\d*([eE][+-]?\\d+)?)");
+		hexintPattern = Pattern.compile("0[xX][\\da-fA-F]+");
+		octintPattern = Pattern.compile("0[oO][0-7]+");
+		binintPattern = Pattern.compile("0[bB][01]+");
+		intPattern = Pattern.compile("\\d+");
+		whitespacePattern = Pattern.compile("\\s+");
+		escaped8BitCharPattern = Pattern.compile("\\\\x[0-9a-fA-F]{2}");
+		escaped16BitCharPattern = Pattern.compile("\\\\u[0-9a-fA-F]{4}");
+		escaped32BitCharPattern = Pattern.compile("\\\\U[0-9a-fA-F]{8}");
+	}
+
 	class IteratorStackEntry
 	{
 		public int iteratorRegSpec;
@@ -813,5 +845,242 @@ public class Template
 			// finished => no next chunk available
 			nextChunk = null;
 		}
+	}
+
+	public static List tokenizeTags(String source, String startdelim, String enddelim)
+	{
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(print|code|for|if|elif|else|end|render)(\\s*((.|\\n)*?)\\s*)?" + escapeREchars(enddelim));
+		LinkedList tags = new LinkedList();
+		Matcher matcher = tagPattern.matcher(source);
+		int pos = 0;
+
+		int start;
+		int end;
+		while (matcher.find())
+		{
+			start = matcher.start();
+			end = start + matcher.group().length();
+			if (pos != start)
+				tags.add(new Location(source, null, pos, start, pos, start));
+			int codestart = matcher.start(3);
+			int codeend = codestart + matcher.group(3).length();
+			tags.add(new Location(source, matcher.group(1), start, end, codestart, codeend));
+			pos = end;
+		}
+		end = source.length();
+		if (pos != end)
+			tags.add(new Location(source, null, pos, end, pos, end));
+		return tags;
+	}
+
+	private static String escapeREchars(String input)
+	{
+		int len = input.length();
+
+		StringBuffer output = new StringBuffer(len);
+
+		for (int i = 0; i < len; ++i)
+		{
+			char c = input.charAt(i);
+			if (!(('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || ('0' <= c && c <= '9')))
+				output.append('\\');
+			output.append(c);
+		}
+		return output.toString();
+	}
+
+	public static List tokenizeCode(Location location) throws LexicalException
+	{
+		String source = location.getCode();
+
+		LinkedList tokens = new LinkedList();
+
+		int pos = 0;
+		int stringStartPos = 0; // The starting position of a string constant
+		int stringMode = 0; // 0 == default; 1 == single-quoted string; 2 == double-quoted strings
+		StringBuffer collectString = null; // characters are collected here, while we're in a string constant
+
+		try
+		{
+			while (source.length() != 0)
+			{
+				Matcher tokenMatcher = tokenPattern.matcher(source);
+				Matcher nameMatcher = namePattern.matcher(source);
+				Matcher floatMatcher = floatPattern.matcher(source);
+				Matcher hexintMatcher = hexintPattern.matcher(source);
+				Matcher octintMatcher = octintPattern.matcher(source);
+				Matcher binintMatcher = binintPattern.matcher(source);
+				Matcher intMatcher = intPattern.matcher(source);
+				Matcher whitespaceMatcher = whitespacePattern.matcher(source);
+				Matcher escaped8BitCharMatcher = escaped8BitCharPattern.matcher(source);
+				Matcher escaped16BitCharMatcher = escaped16BitCharPattern.matcher(source);
+				Matcher escaped32BitCharMatcher = escaped32BitCharPattern.matcher(source);
+
+				int len;
+				if (stringMode==0 && tokenMatcher.lookingAt())
+				{
+					len = tokenMatcher.end();
+					tokens.add(new Token(pos, pos+len, tokenMatcher.group()));
+				}
+				else if (stringMode==0 && nameMatcher.lookingAt())
+				{
+					len = nameMatcher.end();
+					String name = nameMatcher.group();
+					if (name.equals("in") || name.equals("not") || name.equals("or") || name.equals("and") || name.equals("del"))
+						tokens.add(new Token(pos, pos+len, name));
+					else if (name.equals("None"))
+						tokens.add(new None(pos, pos+len));
+					else if (name.equals("True"))
+						tokens.add(new True(pos, pos+len));
+					else if (name.equals("False"))
+						tokens.add(new False(pos, pos+len));
+					else
+						tokens.add(new Name(pos, pos+len, name));
+				}
+				else if (stringMode==0 && floatMatcher.lookingAt())
+				{
+					len = floatMatcher.end();
+					tokens.add(new Float(pos, pos+len, Double.parseDouble(floatMatcher.group())));
+				}
+				else if (stringMode==0 && hexintMatcher.lookingAt())
+				{
+					len = hexintMatcher.end();
+					tokens.add(new Int(pos, pos+len, Integer.parseInt(hexintMatcher.group().substring(2), 16)));
+				}
+				else if (stringMode==0 && octintMatcher.lookingAt())
+				{
+					len = octintMatcher.end();
+					tokens.add(new Int(pos, pos+len, Integer.parseInt(octintMatcher.group().substring(2), 8)));
+				}
+				else if (stringMode==0 && binintMatcher.lookingAt())
+				{
+					len = binintMatcher.end();
+					tokens.add(new Int(pos, pos+len, Integer.parseInt(binintMatcher.group().substring(2), 2)));
+				}
+				else if (stringMode==0 && intMatcher.lookingAt())
+				{
+					len = intMatcher.end();
+					tokens.add(new Int(pos, pos+len, Integer.parseInt(intMatcher.group())));
+				}
+				else if (stringMode==0 && source.startsWith("'"))
+				{
+					stringStartPos = pos;
+					len = 1;
+					stringMode = 1;
+					collectString = new StringBuffer();
+				}
+				else if (stringMode==0 && source.startsWith("\""))
+				{
+					stringStartPos = pos;
+					len = 1;
+					stringMode = 2;
+					collectString = new StringBuffer();
+				}
+				else if (stringMode==1 && source.startsWith("'") || (stringMode==2 && source.startsWith("\"")))
+				{
+					len = 1;
+					stringMode = 0;
+					tokens.add(new Str(stringStartPos, pos+len, collectString.toString()));
+					collectString = null;
+				}
+				else if (stringMode==0 && whitespaceMatcher.lookingAt())
+				{
+					len = whitespaceMatcher.end();
+				}
+				else if (stringMode!=0 && source.startsWith("\\\\"))
+				{
+					len = 2;
+					collectString.append("\\");
+				}
+				else if (stringMode!=0 && source.startsWith("\\'"))
+				{
+					len = 2;
+					collectString.append("'");
+				}
+				else if (stringMode!=0 && source.startsWith("\\\""))
+				{
+					len = 2;
+					collectString.append("\"");
+				}
+				else if (stringMode!=0 && source.startsWith("\\a"))
+				{
+					len = 2;
+					collectString.append("\u0007");
+				}
+				else if (stringMode!=0 && source.startsWith("\\b"))
+				{
+					len = 2;
+					collectString.append("\u0008");
+				}
+				else if (stringMode!=0 && source.startsWith("\\f"))
+				{
+					len = 2;
+					collectString.append("\u000c");
+				}
+				else if (stringMode!=0 && source.startsWith("\\n"))
+				{
+					len = 2;
+					collectString.append("\n");
+				}
+				else if (stringMode!=0 && source.startsWith("\\r"))
+				{
+					len = 2;
+					collectString.append("\r");
+				}
+				else if (stringMode!=0 && source.startsWith("\\t"))
+				{
+					len = 2;
+					collectString.append("\t");
+				}
+				else if (stringMode!=0 && source.startsWith("\\v"))
+				{
+					len = 2;
+					collectString.append("\u000b");
+				}
+				else if (stringMode!=0 && source.startsWith("\\e"))
+				{
+					len = 2;
+					collectString.append("\u001b");
+				}
+				else if (stringMode!=0 && escaped8BitCharMatcher.lookingAt())
+				{
+					len = 4;
+					collectString.append((char)Integer.parseInt(escaped8BitCharMatcher.group().substring(2), 16));
+				}
+				else if (stringMode!=0 && escaped16BitCharMatcher.lookingAt())
+				{
+					len = 6;
+					collectString.append((char)Integer.parseInt(escaped16BitCharMatcher.group().substring(2), 16));
+				}
+				else if (stringMode!=0 && escaped32BitCharMatcher.lookingAt())
+				{
+					len = 10;
+					throw new RuntimeException("character " + escaped32BitCharMatcher.group() + " (outside the BMP) not supported");
+				}
+				else if (stringMode!=0)
+				{
+					len = 1;
+					collectString.append(source.charAt(0));
+				}
+				else
+				{
+					throw new LexicalException(pos, pos+1, source.substring(0, 1));
+				}
+				pos += len;
+				source = source.substring(len);
+			}
+			if (stringMode != 0)
+				throw new UnterminatedStringException();
+		}
+		catch (LocationException ex)
+		{
+			throw ex;
+		}
+		catch (Exception ex)
+		{
+			// decorate inner exception with location information
+			throw new LocationException(ex, location);
+		}
+		return tokens;
 	}
 }

@@ -21,11 +21,10 @@ from com.livinglogic import ull
 
 def _compile(template, tags):
 	opcodes = []
-	scanner = Scanner()
-	parseexpr = ExprParser(scanner).compile
-	parsestmt = StmtParser(scanner).compile
-	parsefor = ForParser(scanner).compile
-	parserender = RenderParser(scanner).compile
+	parseexpr = ExprParser().compile
+	parsestmt = StmtParser().compile
+	parsefor = ForParser().compile
+	parserender = RenderParser().compile
 
 	# This stack stores for each nested for/foritem/if/elif/else the following information:
 	# 1) Which construct we're in (i.e. "if" or "for")
@@ -97,158 +96,6 @@ def _compile(template, tags):
 	return opcodes
 
 
-import java
-
-###
-### Tokenizer
-###
-
-class Scanner(spark.GenericScanner):
-	def __init__(self):
-		spark.GenericScanner.__init__(self, re.UNICODE)
-		self.collectstr = []
-
-	def tokenize(self, location):
-		self.rv = []
-		self.start = 0
-		try:
-			spark.GenericScanner.tokenize(self, location.code)
-			if self.mode != "default":
-				raise ull.UnterminatedStringException()
-		except ull.LocationException, exc:
-			raise
-		except java.lang.Exception, exc:
-			raise ull.LocationException(exc, location)
-		return self.rv
-
-	def token(self, start, end, s):
-		self.rv.append(ull.Token(start, end, s))
-	token.spark = {"default": ["\\(|\\)|\\[|\\]|\\.|,|==|\\!=|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*|//|/"]}
-
-	def none(self, start, end, s):
-		self.rv.append(ull.None(start, end))
-	none.spark = {"default": ["None"]}
-
-	def true(self, start, end, s):
-		self.rv.append(ull.True(start, end))
-	true.spark = {"default": ["True"]}
-
-	def false(self, start, end, s):
-		self.rv.append(ull.False(start, end))
-	false.spark = {"default": ["False"]}
-
-	def name(self, start, end, s):
-		if s in ("in", "not", "or", "and", "del"):
-			self.rv.append(ull.Token(start, end, s))
-		else:
-			self.rv.append(ull.Name(start, end, s))
-	name.spark = {"default": ["[a-zA-Z_][\\w]*"]}
-
-	# We don't have negatve numbers, this is handled by constant folding in the AST for unary minus
-	def float(self, start, end, s):
-		self.rv.append(ull.Float(start, end, float(s)))
-	float.spark = {"default": ["\\d+(\\.\\d*)?[eE][+-]?\\d+", "\\d+\\.\\d*([eE][+-]?\\d+)?"]}
-
-	def hexint(self, start, end, s):
-		self.rv.append(ull.Int(start, end, int(s[2:], 16)))
-	hexint.spark = {"default": ["0[xX][\\da-fA-F]+"]}
-
-	def octint(self, start, end, s):
-		self.rv.append(ull.Int(start, end, int(s[2:], 8)))
-	octint.spark = {"default": ["0[oO][0-7]+"]}
-
-	def binint(self, start, end, s):
-		self.rv.append(ull.Int(start, end, int(s[2:], 2)))
-	binint.spark = {"default": ["0[bB][01]+"]}
-
-	def int(self, start, end, s):
-		self.rv.append(ull.Int(start, end, int(s)))
-	int.spark = {"default": ["\\d+"]}
-
-	def beginstr1(self, start, end, s):
-		self.mode = "str1"
-		self.start = start
-	beginstr1.spark = {"default": ["'"]}
-
-	def beginstr2(self, start, end, s):
-		self.mode = "str2"
-		self.start = start
-	beginstr2.spark = {"default": ['"']}
-
-	def endstr(self, start, end, s):
-		self.rv.append(ull.Str(self.start, end, "".join(self.collectstr)))
-		self.collectstr = []
-		self.mode = "default"
-	endstr.spark = {"str1": ["'"], "str2": ['"']}
-
-	def whitespace(self, start, end, s):
-		pass
-	whitespace.spark = {"default": ["\\s+"]}
-
-	def escapedbackslash(self, start, end, s):
-		self.collectstr.append("\\")
-	escapedbackslash.spark = {"str1": ["\\\\\\\\"], "str2": ["\\\\\\\\"]}
-
-	def escapedapos(self, start, end, s):
-		self.collectstr.append("'")
-	escapedapos.spark = {"str1": ["\\\\'"], "str2": ["\\\\'"]}
-
-	def escapedquot(self, start, end, s):
-		self.collectstr.append('"')
-	escapedapos.spark = {"str1": ['\\\\"'], "str2": ['\\\\"']}
-
-	def escapedbell(self, start, end, s):
-		self.collectstr.append("\a")
-	escapedbell.spark = {"str1": ["\\\\a"], "str2": ["\\\\a"]}
-
-	def escapedbackspace(self, start, end, s):
-		self.collectstr.append("\b")
-	escapedbackspace.spark = {"str1": ["\\\\b"], "str2": ["\\\\b"]}
-
-	def escapedformfeed(self, start, end, s):
-		self.collectstr.append("\f")
-	escapedformfeed.spark = {"str1": ["\\\\f"], "str2": ["\\\\f"]}
-
-	def escapedlinefeed(self, start, end, s):
-		self.collectstr.append("\n")
-	escapedlinefeed.spark = {"str1": ["\\\\n"], "str2": ["\\\\n"]}
-
-	def escapedcarriagereturn(self, start, end, s):
-		self.collectstr.append("\r")
-	escapedcarriagereturn.spark = {"str1": ["\\\\r"], "str2": ["\\\\r"]}
-
-	def escapedtab(self, start, end, s):
-		self.collectstr.append("\t")
-	escapedtab.spark = {"str1": ["\\\\t"], "str2": ["\\\\t"]}
-
-	def escapedverticaltab(self, start, end, s):
-		self.collectstr.append("\v")
-	escapedverticaltab.spark = {"str1": ["\\\\v"], "str2": ["\\\\v"]}
-
-	def escapedescape(self, start, end, s):
-		self.collectstr.append("\x1b")
-	escapedescape.spark = {"str1": ["\\\\e"], "str2": ["\\\\e"]}
-
-	def escaped8bitchar(self, start, end, s):
-		self.collectstr.append(unichr(int(s[2:], 16)))
-	escaped8bitchar.spark = {"str1": ["\\\\x[0-9a-fA-F]{2}"], "str2": ["\\\\x[0-9a-fA-F]{2}"]}
-
-	def escaped16bitchar(self, start, end, s):
-		self.collectstr.append(unichr(int(s[2:], 16)))
-	escaped16bitchar.spark = {"str1": ["\\\\u[0-9a-fA-F]{4}"], "str2": ["\\\\u[0-9a-fA-F]{4}"]}
-
-	def text(self, start, end, s):
-		self.collectstr.append(s)
-	text.spark = {"str1": [".|\\n"], "str2": [".|\\n"]}
-
-	def default(self, start, end, s):
-		raise ull.LexicalException(start, end, s)
-	default.spark = {"default": ["(.|\\n)+"], "str1": ["(.|\\n)+"], "str2": ["(.|\\n)+"]}
-
-	def error(self, start, end, s):
-		raise ull.LexicalException(start, end, s)
-
-
 ###
 ### Parsers for different types of code
 ###
@@ -256,15 +103,14 @@ class Scanner(spark.GenericScanner):
 class ExprParser(spark.GenericParser):
 	emptyerror = "expression required"
 
-	def __init__(self, scanner, start="expr0"):
+	def __init__(self, start="expr0"):
 		spark.GenericParser.__init__(self, start)
-		self.scanner = scanner
 
 	def compile(self, template, location):
 		if not location.code:
 			raise ValueError(self.emptyerror)
 		try:
-			ast = self.parse(self.scanner.tokenize(location))
+			ast = self.parse(ull.Template.tokenizeCode(location))
 			registers = ull.Registers()
 			return ast.compile(template, registers, location)
 		except ull.LocationException, exc:
@@ -486,8 +332,8 @@ class ExprParser(spark.GenericParser):
 class ForParser(ExprParser):
 	emptyerror = "loop expression required"
 
-	def __init__(self, scanner, start="for"):
-		ExprParser.__init__(self, scanner, start)
+	def __init__(self, start="for"):
+		ExprParser.__init__(self, start)
 
 	def for0(self, (iter, _0, cont)):
 		return ull.For(iter.start, cont.end, iter, cont)
@@ -509,8 +355,8 @@ class ForParser(ExprParser):
 class StmtParser(ExprParser):
 	emptyerror = "statement required"
 
-	def __init__(self, scanner, start="stmt"):
-		ExprParser.__init__(self, scanner, start)
+	def __init__(self, start="stmt"):
+		ExprParser.__init__(self, start)
 
 	def stmt_assign(self, (name, _0, value)):
 		return ull.StoreVar(name.start, value.end, name, value)
@@ -548,8 +394,8 @@ class StmtParser(ExprParser):
 class RenderParser(ExprParser):
 	emptyerror = "render statement required"
 
-	def __init__(self, scanner, start="render"):
-		ExprParser.__init__(self, scanner, start)
+	def __init__(self, start="render"):
+		ExprParser.__init__(self, start)
 
 	def render(self, (name, _1, expr, _2)):
 		return ull.Render(name.start, _2.end, name, expr)
