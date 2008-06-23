@@ -201,7 +201,7 @@ class ExprParser(spark.GenericParser):
 		if isinstance(expr, ull.Const) and isinstance(key, ull.Const): # Constant folding
 			return self.makeconst(expr.start, _1.end, expr.value[key.value])
 		return ull.GetItem(expr.start, _1.end, expr, key)
-	expr_getitem.spark = ['expr8 ::= expr8 [ expr0 ]']
+	expr_getitem.spark = ['expr9 ::= expr9 [ expr0 ]']
 
 	def expr_getslice12(self, (expr, _0, index1, _1, index2, _2)):
 		if isinstance(expr, ull.Const) and isinstance(index1, ull.Const) and isinstance(index2, ull.Const): # Constant folding
