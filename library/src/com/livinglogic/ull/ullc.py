@@ -8,11 +8,11 @@
 ## See ll/__init__.py for the license
 
 
-from com.livinglogic.ull import CompilerType, Template, Opcode, Location, Registers
-
 import sys, re, StringIO
 
 import spark
+
+from com.livinglogic import ull
 
 
 ###
@@ -36,51 +36,51 @@ def _compile(template, tags):
 	for location in tags:
 		try:
 			if location.type is None:
-				template.opcode(Opcode.OC_TEXT, location)
+				template.opcode(ull.Opcode.OC_TEXT, location)
 			elif location.type == "print":
 				r = parseexpr(template, location)
-				template.opcode(Opcode.OC_PRINT, r, location)
+				template.opcode(ull.Opcode.OC_PRINT, r, location)
 			elif location.type == "code":
 				parsestmt(template, location)
 			elif location.type == "if":
 				r = parseexpr(template, location)
-				template.opcode(Opcode.OC_IF, r, location)
+				template.opcode(ull.Opcode.OC_IF, r, location)
 				stack.append(("if", 1, False))
 			elif location.type == "elif":
 				if not stack or stack[-1][0] != "if":
-					raise BlockException("elif doesn't match any if")
+					raise ull.BlockException("elif doesn't match any if")
 				elif stack[-1][2]:
-					raise BlockException("else already seen in elif")
-				template.opcode(Opcode.OC_ELSE, location)
+					raise ull.BlockException("else already seen in elif")
+				template.opcode(ull.Opcode.OC_ELSE, location)
 				r = parseexpr(template, location)
-				template.opcode(Opcode.OC_IF, r, location)
+				template.opcode(ull.Opcode.OC_IF, r, location)
 				stack[-1] = ("if", stack[-1][1]+1, False)
 			elif location.type == "else":
 				if not stack or stack[-1][0] != "if":
-					raise BlockException("else doesn't match any if")
+					raise ull.BlockException("else doesn't match any if")
 				elif stack[-1][2]:
-					raise BlockException("duplicate else")
-				template.opcode(Opcode.OC_ELSE, location)
+					raise ull.BlockException("duplicate else")
+				template.opcode(ull.Opcode.OC_ELSE, location)
 				stack[-1] = ("if", stack[-1][1], True)
 			elif location.type == "end":
 				if not stack:
-					raise BlockException("not in any block")
+					raise ull.BlockException("not in any block")
 				code = location.code
 				if code:
 					if code == "if":
 						if stack[-1][0] != "if":
-							raise BlockException("endif doesn't match any if")
+							raise ull.BlockException("endif doesn't match any if")
 					elif code == "for":
 						if stack[-1][0] != "for":
-							raise BlockException("endfor doesn't match any for")
+							raise ull.BlockException("endfor doesn't match any for")
 					else:
-						raise BlockException("illegal end value %r" % code)
+						raise ull.BlockException("illegal end value %r" % code)
 				last = stack.pop()
 				if last[0] == "if":
 					for i in xrange(last[1]):
-						template.opcode(Opcode.OC_ENDIF, location)
+						template.opcode(ull.Opcode.OC_ENDIF, location)
 				else: # last[0] == "for":
-					template.opcode(Opcode.OC_ENDFOR, location)
+					template.opcode(ull.Opcode.OC_ENDFOR, location)
 			elif location.type == "for":
 				parsefor(template, location)
 				stack.append(("for",))
@@ -88,17 +88,15 @@ def _compile(template, tags):
 				parserender(template, location)
 			else: # Can't happen
 				raise ValueError("unknown tag %r" % location.type)
-		except LocationException, exc:
+		except ull.LocationException, exc:
 			raise
 		except java.lang.Exception, exc:
-			raise LocationException(exc, location)
+			raise ull.LocationException(exc, location)
 	if stack:
-		raise BlockException("unclosed blocks")
+		raise ull.BlockException("unclosed blocks")
 	return opcodes
 
 
-from com.livinglogic.ull import Token, Const, None as None_, True as True_, False as False_, Int, Float, Str, Name, GetSlice, Not, Neg, StoreVar, AddVar, SubVar, MulVar, FloorDivVar, TrueDivVar, ModVar, DelVar, GetItem, GetSlice1, GetSlice2, Equal, NotEqual, Contains, NotContains, Add, Sub, Mul, FloorDiv, TrueDiv, Or, And, Mod, GetSlice12, GetAttr, Render, For, For1, For2, CallFunc, CallMeth
-from com.livinglogic.ull import UnterminatedStringException, BlockException, OutOfRegistersException, LocationException, LexicalException, SyntaxException
 import java
 
 ###
@@ -116,55 +114,55 @@ class Scanner(spark.GenericScanner):
 		try:
 			spark.GenericScanner.tokenize(self, location.code)
 			if self.mode != "default":
-				raise UnterminatedStringException()
-		except LocationException, exc:
+				raise ull.UnterminatedStringException()
+		except ull.LocationException, exc:
 			raise
 		except java.lang.Exception, exc:
-			raise LocationException(exc, location)
+			raise ull.LocationException(exc, location)
 		return self.rv
 
 	def token(self, start, end, s):
-		self.rv.append(Token(start, end, s))
+		self.rv.append(ull.Token(start, end, s))
 	token.spark = {"default": ["\\(|\\)|\\[|\\]|\\.|,|==|\\!=|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*|//|/"]}
 
 	def none(self, start, end, s):
-		self.rv.append(None_(start, end))
+		self.rv.append(ull.None(start, end))
 	none.spark = {"default": ["None"]}
 
 	def true(self, start, end, s):
-		self.rv.append(True_(start, end))
+		self.rv.append(ull.True(start, end))
 	true.spark = {"default": ["True"]}
 
 	def false(self, start, end, s):
-		self.rv.append(False_(start, end))
+		self.rv.append(ull.False(start, end))
 	false.spark = {"default": ["False"]}
 
 	def name(self, start, end, s):
 		if s in ("in", "not", "or", "and", "del"):
-			self.rv.append(Token(start, end, s))
+			self.rv.append(ull.Token(start, end, s))
 		else:
-			self.rv.append(Name(start, end, s))
+			self.rv.append(ull.Name(start, end, s))
 	name.spark = {"default": ["[a-zA-Z_][\\w]*"]}
 
 	# We don't have negatve numbers, this is handled by constant folding in the AST for unary minus
 	def float(self, start, end, s):
-		self.rv.append(Float(start, end, float(s)))
+		self.rv.append(ull.Float(start, end, float(s)))
 	float.spark = {"default": ["\\d+(\\.\\d*)?[eE][+-]?\\d+", "\\d+\\.\\d*([eE][+-]?\\d+)?"]}
 
 	def hexint(self, start, end, s):
-		self.rv.append(Int(start, end, int(s[2:], 16)))
+		self.rv.append(ull.Int(start, end, int(s[2:], 16)))
 	hexint.spark = {"default": ["0[xX][\\da-fA-F]+"]}
 
 	def octint(self, start, end, s):
-		self.rv.append(Int(start, end, int(s[2:], 8)))
+		self.rv.append(ull.Int(start, end, int(s[2:], 8)))
 	octint.spark = {"default": ["0[oO][0-7]+"]}
 
 	def binint(self, start, end, s):
-		self.rv.append(Int(start, end, int(s[2:], 2)))
+		self.rv.append(ull.Int(start, end, int(s[2:], 2)))
 	binint.spark = {"default": ["0[bB][01]+"]}
 
 	def int(self, start, end, s):
-		self.rv.append(Int(start, end, int(s)))
+		self.rv.append(ull.Int(start, end, int(s)))
 	int.spark = {"default": ["\\d+"]}
 
 	def beginstr1(self, start, end, s):
@@ -178,7 +176,7 @@ class Scanner(spark.GenericScanner):
 	beginstr2.spark = {"default": ['"']}
 
 	def endstr(self, start, end, s):
-		self.rv.append(Str(self.start, end, "".join(self.collectstr)))
+		self.rv.append(ull.Str(self.start, end, "".join(self.collectstr)))
 		self.collectstr = []
 		self.mode = "default"
 	endstr.spark = {"str1": ["'"], "str2": ['"']}
@@ -244,11 +242,11 @@ class Scanner(spark.GenericScanner):
 	text.spark = {"str1": [".|\\n"], "str2": [".|\\n"]}
 
 	def default(self, start, end, s):
-		raise LexicalException(start, end, s)
+		raise ull.LexicalException(start, end, s)
 	default.spark = {"default": ["(.|\\n)+"], "str1": ["(.|\\n)+"], "str2": ["(.|\\n)+"]}
 
 	def error(self, start, end, s):
-		raise LexicalException(start, end, s)
+		raise ull.LexicalException(start, end, s)
 
 
 ###
@@ -267,32 +265,32 @@ class ExprParser(spark.GenericParser):
 			raise ValueError(self.emptyerror)
 		try:
 			ast = self.parse(self.scanner.tokenize(location))
-			registers = Registers()
+			registers = ull.Registers()
 			return ast.compile(template, registers, location)
-		except LocationException, exc:
+		except ull.LocationException, exc:
 			raise
 		except java.lang.Exception, exc:
-			raise LocationException(exc, location)
+			raise ull.LocationException(exc, location)
 
 	def typestring(self, token):
 		return token.getTokenType()
 
 	def error(self, token):
-		raise SyntaxException(token)
+		raise ull.SyntaxException(token)
 
 	def makeconst(self, start, end, value):
 		if value is None:
-			return None_(start, end)
+			return ull.None(start, end)
 		elif value is True:
-			return True_(start, end)
+			return ull.True(start, end)
 		elif value is False:
-			return False_(start, end)
+			return ull.False(start, end)
 		elif isinstance(value, int):
-			return Int(start, end, value)
+			return ull.Int(start, end, value)
 		elif isinstance(value, float):
-			return Float(start, end, value)
+			return ull.Float(start, end, value)
 		elif isinstance(value, basestring):
-			return Str(start, end, value)
+			return ull.Str(start, end, value)
 		else:
 			raise TypeError("can't convert %r" % value)
 
@@ -318,153 +316,153 @@ class ExprParser(spark.GenericParser):
 	expr_bracket.spark = ['expr11 ::= ( expr0 )']
 
 	def expr_callfunc0(self, (name, _0, _1)):
-		return CallFunc(name.start, _1.end, name)
+		return ull.CallFunc(name.start, _1.end, name)
 	expr_callfunc0.spark = ['expr10 ::= name ( )']
 
 	def expr_callfunc1(self, (name, _0, arg0, _1)):
-		return CallFunc(name.start, _1.end, name, arg0)
+		return ull.CallFunc(name.start, _1.end, name, arg0)
 	expr_callfunc1.spark = ['expr10 ::= name ( expr0 )']
 
 	def expr_callfunc2(self, (name, _0, arg0, _1, arg1, _2)):
-		return CallFunc(name.start, _2.end, name, arg0, arg1)
+		return ull.CallFunc(name.start, _2.end, name, arg0, arg1)
 	expr_callfunc2.spark = ['expr10 ::= name ( expr0 , expr0 )']
 
 	def expr_callfunc3(self, (name, _0, arg0, _1, arg1, _2, arg2, _3)):
-		return CallFunc(name.start, _3.end, name, arg0, arg1, arg2)
+		return ull.CallFunc(name.start, _3.end, name, arg0, arg1, arg2)
 	expr_callfunc3.spark = ['expr10 ::= name ( expr0 , expr0 , expr0 )']
 
 	def expr_getattr(self, (expr, _0, name)):
-		return GetAttr(expr.start, name.end, expr, name)
+		return ull.GetAttr(expr.start, name.end, expr, name)
 	expr_getattr.spark = ['expr9 ::= expr9 . name']
 
 	def expr_callmeth0(self, (expr, _0, name, _1, _2)):
-		return CallMeth(expr.start, _2.end, expr, name)
+		return ull.CallMeth(expr.start, _2.end, expr, name)
 	expr_callmeth0.spark = ['expr9 ::= expr9 . name ( )']
 
 	def expr_callmeth1(self, (expr, _0, name, _1, arg1, _2)):
-		return CallMeth(expr.start, _2.end, expr, name, arg1)
+		return ull.CallMeth(expr.start, _2.end, expr, name, arg1)
 	expr_callmeth1.spark = ['expr9 ::= expr9 . name ( expr0 )']
 
 	def expr_callmeth2(self, (expr, _0, name, _1, arg1, _2, arg2, _3)):
-		return CallMeth(expr.start, _3.end, expr, name, arg1, arg2)
+		return ull.CallMeth(expr.start, _3.end, expr, name, arg1, arg2)
 	expr_callmeth2.spark = ['expr9 ::= expr9 . name ( expr0 , expr0 )']
 
 	def expr_callmeth3(self, (expr, _0, name, _1, arg1, _2, arg2, _3, arg3, _4)):
-		return CallMeth(expr.start, _4.end, expr, name, arg1, arg2, arg3)
+		return ull.CallMeth(expr.start, _4.end, expr, name, arg1, arg2, arg3)
 	expr_callmeth3.spark = ['expr9 ::= expr9 . name ( expr0 , expr0 , expr0 )']
 
 	def expr_getitem(self, (expr, _0, key, _1)):
-		if isinstance(expr, Const) and isinstance(key, Const): # Constant folding
+		if isinstance(expr, ull.Const) and isinstance(key, ull.Const): # Constant folding
 			return self.makeconst(expr.start, _1.end, expr.value[key.value])
-		return GetItem(expr.start, _1.end, expr, key)
+		return ull.GetItem(expr.start, _1.end, expr, key)
 	expr_getitem.spark = ['expr8 ::= expr8 [ expr0 ]']
 
 	def expr_getslice12(self, (expr, _0, index1, _1, index2, _2)):
-		if isinstance(expr, Const) and isinstance(index1, Const) and isinstance(index2, Const): # Constant folding
+		if isinstance(expr, ull.Const) and isinstance(index1, ull.Const) and isinstance(index2, ull.Const): # Constant folding
 			return self.makeconst(expr.start, _2.end, expr.value[index1.value:index1.value])
-		return GetSlice12(expr.start, _2.end, expr, index1, index2)
+		return ull.GetSlice12(expr.start, _2.end, expr, index1, index2)
 	expr_getslice12.spark = ['expr8 ::= expr8 [ expr0 : expr0 ]']
 
 	def expr_getslice1(self, (expr, _0, index1, _1, _2)):
-		if isinstance(expr, Const) and isinstance(index1, Const): # Constant folding
+		if isinstance(expr, ull.Const) and isinstance(index1, ull.Const): # Constant folding
 			return self.makeconst(expr.start, _2.end, expr.value[index1.value:])
-		return GetSlice1(expr.start, _2.end, expr, index1)
+		return ull.GetSlice1(expr.start, _2.end, expr, index1)
 	expr_getslice1.spark = ['expr8 ::= expr8 [ expr0 : ]']
 
 	def expr_getslice2(self, (expr, _0, _1, index2, _2)):
-		if isinstance(expr, Const) and isinstance(index2, Const): # Constant folding
+		if isinstance(expr, ull.Const) and isinstance(index2, ull.Const): # Constant folding
 			return self.makeconst(expr.start, _2.end, expr.value[:index2.value])
-		return GetSlice2(expr.start, _2.end, expr, index2)
+		return ull.GetSlice2(expr.start, _2.end, expr, index2)
 	expr_getslice2.spark = ['expr8 ::= expr8 [ : expr0 ]']
 
 	def expr_getslice(self, (expr, _0, _1, _2)):
-		if isinstance(expr, Const): # Constant folding
+		if isinstance(expr, ull.Const): # Constant folding
 			return self.makeconst(expr.start, _2.end, expr.value[:])
-		return GetSlice(expr.start, _2.end, expr)
+		return ull.GetSlice(expr.start, _2.end, expr)
 	expr_getslice.spark = ['expr8 ::= expr8 [ : ]']
 
 	def expr_neg(self, (_0, expr)):
-		if isinstance(expr, Const): # Constant folding
+		if isinstance(expr, ull.Const): # Constant folding
 			return self.makeconst(_0.start, expr.end, -expr.value)
-		return Neg(_0.start, expr.end, expr)
+		return ull.Neg(_0.start, expr.end, expr)
 	expr_neg.spark = ['expr7 ::= - expr7']
 
 	def expr_mul(self, (obj1, _0, obj2)):
-		if isinstance(obj1, Const) and isinstance(obj2, Const): # Constant folding
+		if isinstance(obj1, ull.Const) and isinstance(obj2, ull.Const): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value * obj2.value)
-		return Mul(obj1.start, obj2.end, obj1, obj2)
+		return ull.Mul(obj1.start, obj2.end, obj1, obj2)
 	expr_mul.spark = ['expr6 ::= expr6 * expr6']
 
 	def expr_floordiv(self, (obj1, _0, obj2)):
-		if isinstance(obj1, Const) and isinstance(obj2, Const): # Constant folding
+		if isinstance(obj1, ull.Const) and isinstance(obj2, ull.Const): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value // obj2.value)
-		return FloorDiv(obj1.start, obj2.end, obj1, obj2)
+		return ull.FloorDiv(obj1.start, obj2.end, obj1, obj2)
 	expr_floordiv.spark = ['expr6 ::= expr6 // expr6']
 
 	def expr_truediv(self, (obj1, _0, obj2)):
-		if isinstance(obj1, Const) and isinstance(obj2, Const): # Constant folding
+		if isinstance(obj1, ull.Const) and isinstance(obj2, ull.Const): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value / obj2.value)
-		return TrueDiv(obj1.start, obj2.end, obj1, obj2)
+		return ull.TrueDiv(obj1.start, obj2.end, obj1, obj2)
 	expr_truediv.spark = ['expr6 ::= expr6 / expr6']
 
 	def expr_mod(self, (obj1, _0, obj2)):
-		if isinstance(obj1, Const) and isinstance(obj2, Const): # Constant folding
+		if isinstance(obj1, ull.Const) and isinstance(obj2, ull.Const): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value % obj2.value)
-		return Mod(obj1.start, obj2.end, obj1, obj2)
+		return ull.Mod(obj1.start, obj2.end, obj1, obj2)
 	expr_mod.spark = ['expr6 ::= expr6 % expr6']
 
 	def expr_add(self, (obj1, _0, obj2)):
-		if isinstance(obj1, Const) and isinstance(obj2, Const): # Constant folding
+		if isinstance(obj1, ull.Const) and isinstance(obj2, ull.Const): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value + obj2.value)
-		return Add(obj1.start, obj2.end, obj1, obj2)
+		return ull.Add(obj1.start, obj2.end, obj1, obj2)
 	expr_add.spark = ['expr5 ::= expr5 + expr5']
 
 	def expr_sub(self, (obj1, _0, obj2)):
-		if isinstance(obj1, Const) and isinstance(obj2, Const): # Constant folding
+		if isinstance(obj1, ull.Const) and isinstance(obj2, ull.Const): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value - obj2.value)
-		return Sub(obj1.start, obj2.end, obj1, obj2)
+		return ull.Sub(obj1.start, obj2.end, obj1, obj2)
 	expr_sub.spark = ['expr5 ::= expr5 - expr5']
 
 	def expr_equal(self, (obj1, _0, obj2)):
-		if isinstance(obj1, Const) and isinstance(obj2, Const): # Constant folding
+		if isinstance(obj1, ull.Const) and isinstance(obj2, ull.Const): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value == obj2.value)
-		return Equal(obj1.start, obj2.end, obj1, obj2)
+		return ull.Equal(obj1.start, obj2.end, obj1, obj2)
 	expr_equal.spark = ['expr4 ::= expr4 == expr4']
 
 	def expr_notequal(self, (obj1, _0, obj2)):
-		if isinstance(obj1, Const) and isinstance(obj2, Const): # Constant folding
+		if isinstance(obj1, ull.Const) and isinstance(obj2, ull.Const): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value != obj2.value)
-		return NotEqual(obj1.start, obj2.end, obj1, obj2)
+		return ull.NotEqual(obj1.start, obj2.end, obj1, obj2)
 	expr_notequal.spark = ['expr4 ::= expr4 != expr4']
 
 	def expr_contains(self, (obj, _0, container)):
-		if isinstance(obj, Const) and isinstance(container, Const): # Constant folding
+		if isinstance(obj, ull.Const) and isinstance(container, ull.Const): # Constant folding
 			return self.makeconst(obj.start, container.end, obj.value in container.value)
-		return Contains(obj.start, container.end, obj, container)
+		return ull.Contains(obj.start, container.end, obj, container)
 	expr_contains.spark = ['expr3 ::= expr3 in expr3']
 
 	def expr_notcontains(self, (obj, _0, _1, container)):
-		if isinstance(obj, Const) and isinstance(container, Const): # Constant folding
+		if isinstance(obj, ull.Const) and isinstance(container, ull.Const): # Constant folding
 			return self.makeconst(obj.start, container.end, obj.value not in container.value)
-		return NotContains(obj.start, container.end, obj, container)
+		return ull.NotContains(obj.start, container.end, obj, container)
 	expr_notcontains.spark = ['expr3 ::= expr3 not in expr3']
 
 	def expr_not(self, (_0, expr)):
-		if isinstance(expr, Const): # Constant folding
+		if isinstance(expr, ull.Const): # Constant folding
 			return self.makeconst(_0.start, expr.end, not expr.value)
-		return Not(_0.start, expr.end, expr)
+		return ull.Not(_0.start, expr.end, expr)
 	expr_not.spark = ['expr2 ::= not expr2']
 
 	def expr_and(self, (obj1, _0, obj2)):
-		if isinstance(obj1, Const) and isinstance(obj2, Const): # Constant folding
+		if isinstance(obj1, ull.Const) and isinstance(obj2, ull.Const): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, bool(obj1.value and obj2.value))
-		return And(obj1.start, obj2.end, obj1, obj2)
+		return ull.And(obj1.start, obj2.end, obj1, obj2)
 	expr_and.spark = ['expr1 ::= expr1 and expr1']
 
 	def expr_or(self, (obj1, _0, obj2)):
-		if isinstance(obj1, Const) and isinstance(obj2, Const): # Constant folding
+		if isinstance(obj1, ull.Const) and isinstance(obj2, ull.Const): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, bool(obj1.value or obj2.value))
-		return Or(obj1.start, obj2.end, obj1, obj2)
+		return ull.Or(obj1.start, obj2.end, obj1, obj2)
 	expr_or.spark = ['expr0 ::= expr0 or expr0']
 
 	# These rules make operators of different precedences interoperable, by allowing an expression to "drop" its precedence.
@@ -492,19 +490,19 @@ class ForParser(ExprParser):
 		ExprParser.__init__(self, scanner, start)
 
 	def for0(self, (iter, _0, cont)):
-		return For(iter.start, cont.end, iter, cont)
+		return ull.For(iter.start, cont.end, iter, cont)
 	for0.spark = ['for ::= name in expr0']
 
 	def for1(self, (_0, iter, _1, _2, _3, cont)):
-		return For1(_0.start, cont.end, iter, cont)
+		return ull.For1(_0.start, cont.end, iter, cont)
 	for1.spark = ['for ::= ( name , ) in expr0']
 
 	def for2a(self, (_0, iter1, _1, iter2, _2, _3, cont)):
-		return For2(_0.start, cont.end, iter1, iter2, cont)
+		return ull.For2(_0.start, cont.end, iter1, iter2, cont)
 	for2a.spark = ['for ::= ( name , name ) in expr0']
 
 	def for2b(self, (_0, iter1, _1, iter2, _2, _3, _4, cont)):
-		return For2(_0.start, cont.end, iter1, iter2, cont)
+		return ull.For2(_0.start, cont.end, iter1, iter2, cont)
 	for2a.spark = ['for ::= ( name , name , ) in expr0']
 
 
@@ -515,35 +513,35 @@ class StmtParser(ExprParser):
 		ExprParser.__init__(self, scanner, start)
 
 	def stmt_assign(self, (name, _0, value)):
-		return StoreVar(name.start, value.end, name, value)
+		return ull.StoreVar(name.start, value.end, name, value)
 	stmt_assign.spark = ['stmt ::= name = expr0']
 
 	def stmt_iadd(self, (name, _0, value)):
-		return AddVar(name.start, value.end, name, value)
+		return ull.AddVar(name.start, value.end, name, value)
 	stmt_iadd.spark = ['stmt ::= name += expr0']
 
 	def stmt_isub(self, (name, _0, value)):
-		return SubVar(name.start, value.end, name, value)
+		return ull.SubVar(name.start, value.end, name, value)
 	stmt_isub.spark = ['stmt ::= name -= expr0']
 
 	def stmt_imul(self, (name, _0, value)):
-		return MulVar(name.start, value.end, name, value)
+		return ull.MulVar(name.start, value.end, name, value)
 	stmt_imul.spark = ['stmt ::= name *= expr0']
 
 	def stmt_itruediv(self, (name, _0, value)):
-		return TrueDivVar(name.start, value.end, name, value)
+		return ull.TrueDivVar(name.start, value.end, name, value)
 	stmt_itruediv.spark = ['stmt ::= name /= expr0']
 
 	def stmt_ifloordiv(self, (name, _0, value)):
-		return FloorDivVar(name.start, value.end, name, value)
+		return ull.FloorDivVar(name.start, value.end, name, value)
 	stmt_ifloordiv.spark = ['stmt ::= name //= expr0']
 
 	def stmt_imod(self, (name, _0, value)):
-		return ModVar(name.start, value.end, name, value)
+		return ull.ModVar(name.start, value.end, name, value)
 	stmt_imod.spark = ['stmt ::= name %= expr0']
 
 	def stmt_del(self, (_0, name)):
-		return DelVar(_0.start, name.end, name)
+		return ull.DelVar(_0.start, name.end, name)
 	stmt_del.spark = ['stmt ::= del name']
 
 
@@ -554,13 +552,13 @@ class RenderParser(ExprParser):
 		ExprParser.__init__(self, scanner, start)
 
 	def render(self, (name, _1, expr, _2)):
-		return Render(name.start, _2.end, name, expr)
+		return ull.Render(name.start, _2.end, name, expr)
 	render.spark = ['render ::= name ( expr0 )']
 
 
-class Compiler(CompilerType):
+class Compiler(ull.CompilerType):
 	def compile(self, source, tags, startdelim, enddelim):
-		template = Template()
+		template = ull.Template()
 		template.startdelim = startdelim
 		template.enddelim = enddelim
 		template.source = source
