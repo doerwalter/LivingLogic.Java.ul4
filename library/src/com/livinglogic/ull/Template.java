@@ -657,10 +657,10 @@ public class Template
 							reg[code.r1] = Utils.contains(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
 							break;
 						case Opcode.OC_OR:
-							reg[code.r1] = (Utils.getBool(reg[code.r2]) || Utils.getBool(reg[code.r3])) ? Boolean.TRUE : Boolean.FALSE;
+							reg[code.r1] = Utils.getBool(reg[code.r2]) ? reg[code.r2] : reg[code.r3];
 							break;
 						case Opcode.OC_AND:
-							reg[code.r1] = (Utils.getBool(reg[code.r2]) && Utils.getBool(reg[code.r3])) ? Boolean.TRUE : Boolean.FALSE;
+							reg[code.r1] = Utils.getBool(reg[code.r3]) ? reg[code.r2] : reg[code.r3];
 							break;
 						case Opcode.OC_ADD:
 							reg[code.r1] = Utils.add(reg[code.r2], reg[code.r3]);
@@ -693,6 +693,9 @@ public class Template
 									break;
 								case Opcode.CF1_INT:
 									reg[code.r1] = Utils.toInteger(reg[code.r2]);
+									break;
+								case Opcode.CF1_BOOL:
+									reg[code.r1] = Utils.getBool(reg[code.r2]) ? Boolean.TRUE : Boolean.FALSE;
 									break;
 								case Opcode.CF1_LEN:
 									reg[code.r1] = Utils.length(reg[code.r2]);
