@@ -1,4 +1,4 @@
-<project name="ull" default="all" basedir=".">
+<project name="ul4" default="all" basedir=".">
 
 	<!--
 		REMARK:
@@ -7,7 +7,7 @@
 	-->
 
 	<!-- set global properties for this build -->
-	<property name="project" value="ull" />
+	<property name="project" value="ul4" />
 	<property name="src" value="src" />
 	<property name="build" value="build" />
 	<property name="dist"  value="dist" />
