@@ -14,6 +14,7 @@ import spark
 
 from com.livinglogic import ul4
 
+import java.lang
 
 ###
 ### helper functions for compiling
