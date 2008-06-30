@@ -14,7 +14,7 @@ import spark
 
 from com.livinglogic import ul4
 
-import java.lang
+from java import lang
 
 ###
 ### helper functions for compiling
@@ -90,7 +90,7 @@ def _compile(template, tags):
 				raise ValueError("unknown tag %r" % location.type)
 		except ul4.LocationException, exc:
 			raise
-		except java.lang.Exception, exc:
+		except lang.Exception, exc:
 			raise ul4.LocationException(exc, location)
 	if stack:
 		raise ul4.BlockException("unclosed blocks")
@@ -116,7 +116,7 @@ class ExprParser(spark.GenericParser):
 			return ast.compile(template, registers, location)
 		except ul4.LocationException, exc:
 			raise
-		except java.lang.Exception, exc:
+		except lang.Exception, exc:
 			raise ul4.LocationException(exc, location)
 
 	def typestring(self, token):
