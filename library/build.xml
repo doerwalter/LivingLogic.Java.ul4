@@ -73,7 +73,7 @@
 		</javadoc>
 	</target>
 
-	<target name="all" depends="clean, test, javadoc"  />
+	<target name="all" depends="clean, javadoc"  />
 
 	<target name="clean">
 		<!-- Delete all the directories -->
