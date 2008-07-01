@@ -12,7 +12,7 @@ public class Main
 
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?if data?><ul>\n<?for item in data?><li><?print xmlescape(item)?></li>\n<?end for?></ul>\n<?end if?>");
+		Template tmpl = Compiler.compile("<?print now().isoformat()?>");
 		long start = new Date().getTime();
 		String output = tmpl.renders("<gu&rk> & 'foo'");
 		System.out.println("rendered " + (time()-start));

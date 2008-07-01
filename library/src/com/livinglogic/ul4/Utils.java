@@ -9,6 +9,8 @@ import java.util.NoSuchElementException;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 class Range extends AbstractList 
 {
@@ -946,6 +948,26 @@ public class Utils
 		if (obj instanceof String)
 			return lower((String)obj);
 		throw new UnsupportedOperationException("Can't convert an instance of " + obj.getClass() + " to lower case!");
+	}
+
+	private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy.MM.dd");
+	private static SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss.S");
+
+	public static Object isoformat(Date obj)
+	{
+		return dateFormatter.format(obj) + "T" + timeFormatter.format(obj) + "000";
+	}
+
+	public static Object isoformat(Object obj)
+	{
+		if (obj instanceof Date)
+			return isoformat((Date)obj);
+		throw new UnsupportedOperationException("Can't call isoformat on instance of " + obj.getClass() + "!");
+	}
+
+	public static Object format(Object obj)
+	{
+		throw new UnsupportedOperationException("Can't call format on instance of " + obj.getClass() + "!");
 	}
 
 	public static Object items(Map obj)

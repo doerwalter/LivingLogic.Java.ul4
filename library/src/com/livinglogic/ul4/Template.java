@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Date;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -681,7 +682,13 @@ public class Template
 							reg[code.r1] = Utils.mod(reg[code.r2], reg[code.r3]);
 							break;
 						case Opcode.OC_CALLFUNC0:
-							throw new UnknownFunctionException(code.arg);
+							switch (code.argcode)
+							{
+								case Opcode.CF0_NOW:
+									reg[code.r1] = new Date();
+									break;
+							}
+							break;
 						case Opcode.OC_CALLFUNC1:
 							switch (code.argcode)
 							{
@@ -786,6 +793,12 @@ public class Template
 									break;
 								case Opcode.CM0_ITEMS:
 									reg[code.r1] = Utils.items(reg[code.r2]);
+									break;
+								case Opcode.CM0_FORMAT:
+									reg[code.r1] = Utils.format(reg[code.r2]);
+									break;
+								case Opcode.CM0_ISOFORMAT:
+									reg[code.r1] = Utils.isoformat(reg[code.r2]);
 									break;
 							}
 							break;

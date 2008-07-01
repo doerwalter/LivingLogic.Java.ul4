@@ -54,6 +54,8 @@ public class Opcode
 	public static final int OC_ENDIF = 49;
 	public static final int OC_RENDER = 50;
 
+	public static final int CF0_NOW = 0;
+
 	public static final int CF1_XMLESCAPE = 0;
 	public static final int CF1_STR = 1;
 	public static final int CF1_INT = 2;
@@ -86,6 +88,8 @@ public class Opcode
 	public static final int CM0_UPPER = 4;
 	public static final int CM0_LOWER = 5;
 	public static final int CM0_ITEMS = 6;
+	public static final int CM0_FORMAT = 7;
+	public static final int CM0_ISOFORMAT = 8;
 
 	public static final int CM1_SPLIT = 0;
 	public static final int CM1_RSPLIT = 1;
@@ -217,7 +221,10 @@ public class Opcode
 
 	public static int callfunc0name2code(String name)
 	{
-		throw new UnknownFunctionException(name);
+		if (name.equals("now"))
+			return CF0_NOW;
+		else
+			throw new UnknownFunctionException(name);
 	}
 
 	public static int callfunc1name2code(String name)
@@ -300,6 +307,10 @@ public class Opcode
 			return CM0_LOWER;
 		else if (name.equals("items"))
 			return CM0_ITEMS;
+		else if (name.equals("format"))
+			return CM0_FORMAT;
+		else if (name.equals("isoformat"))
+			return CM0_ISOFORMAT;
 		else
 			throw new UnknownMethodException(name);
 	}
