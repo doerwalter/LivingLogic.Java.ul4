@@ -12,7 +12,7 @@ public class Main
 
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?print now().isoformat()?>");
+		Template tmpl = Compiler.compile("<?print now().format('%Y-%b-%d %H:%M:%S.%f')?>");
 		long start = new Date().getTime();
 		String output = tmpl.renders("<gu&rk> & 'foo'");
 		System.out.println("rendered " + (time()-start));

@@ -9,50 +9,51 @@ public class Opcode
 	public static final int OC_LOADINT = 4;
 	public static final int OC_LOADFLOAT = 5;
 	public static final int OC_LOADSTR = 6;
-	public static final int OC_LOADVAR = 7;
-	public static final int OC_STOREVAR = 8;
-	public static final int OC_ADDVAR = 9;
-	public static final int OC_SUBVAR = 10;
-	public static final int OC_MULVAR = 11;
-	public static final int OC_TRUEDIVVAR = 12;
-	public static final int OC_FLOORDIVVAR = 13;
-	public static final int OC_MODVAR = 14;
-	public static final int OC_DELVAR = 15;
-	public static final int OC_GETATTR = 16;
-	public static final int OC_GETITEM = 17;
-	public static final int OC_GETSLICE12 = 18;
-	public static final int OC_GETSLICE1 = 19;
-	public static final int OC_GETSLICE2 = 20;
-	public static final int OC_GETSLICE = 21;
-	public static final int OC_PRINT = 22;
-	public static final int OC_FOR = 23;
-	public static final int OC_ENDFOR = 24;
-	public static final int OC_NOT = 25;
-	public static final int OC_NEG = 26;
-	public static final int OC_CONTAINS = 27;
-	public static final int OC_NOTCONTAINS = 28;
-	public static final int OC_EQUALS = 29;
-	public static final int OC_NOTEQUALS = 30;
-	public static final int OC_ADD = 31;
-	public static final int OC_SUB = 32;
-	public static final int OC_MUL = 33;
-	public static final int OC_FLOORDIV = 34;
-	public static final int OC_TRUEDIV = 35;
-	public static final int OC_AND = 36;
-	public static final int OC_OR = 37;
-	public static final int OC_MOD = 38;
-	public static final int OC_CALLFUNC0 = 39;
-	public static final int OC_CALLFUNC1 = 40;
-	public static final int OC_CALLFUNC2 = 41;
-	public static final int OC_CALLFUNC3 = 42;
-	public static final int OC_CALLMETH0 = 43;
-	public static final int OC_CALLMETH1 = 44;
-	public static final int OC_CALLMETH2 = 45;
-	public static final int OC_CALLMETH3 = 46;
-	public static final int OC_IF = 47;
-	public static final int OC_ELSE = 48;
-	public static final int OC_ENDIF = 49;
-	public static final int OC_RENDER = 50;
+	public static final int OC_LOADDATE = 7;
+	public static final int OC_LOADVAR = 8;
+	public static final int OC_STOREVAR = 9;
+	public static final int OC_ADDVAR = 10;
+	public static final int OC_SUBVAR = 11;
+	public static final int OC_MULVAR = 12;
+	public static final int OC_TRUEDIVVAR = 13;
+	public static final int OC_FLOORDIVVAR = 14;
+	public static final int OC_MODVAR = 15;
+	public static final int OC_DELVAR = 16;
+	public static final int OC_GETATTR = 17;
+	public static final int OC_GETITEM = 18;
+	public static final int OC_GETSLICE12 = 19;
+	public static final int OC_GETSLICE1 = 20;
+	public static final int OC_GETSLICE2 = 21;
+	public static final int OC_GETSLICE = 22;
+	public static final int OC_PRINT = 23;
+	public static final int OC_FOR = 24;
+	public static final int OC_ENDFOR = 25;
+	public static final int OC_NOT = 26;
+	public static final int OC_NEG = 27;
+	public static final int OC_CONTAINS = 28;
+	public static final int OC_NOTCONTAINS = 29;
+	public static final int OC_EQUALS = 30;
+	public static final int OC_NOTEQUALS = 31;
+	public static final int OC_ADD = 32;
+	public static final int OC_SUB = 33;
+	public static final int OC_MUL = 34;
+	public static final int OC_FLOORDIV = 35;
+	public static final int OC_TRUEDIV = 36;
+	public static final int OC_AND = 37;
+	public static final int OC_OR = 38;
+	public static final int OC_MOD = 39;
+	public static final int OC_CALLFUNC0 = 40;
+	public static final int OC_CALLFUNC1 = 41;
+	public static final int OC_CALLFUNC2 = 42;
+	public static final int OC_CALLFUNC3 = 43;
+	public static final int OC_CALLMETH0 = 44;
+	public static final int OC_CALLMETH1 = 45;
+	public static final int OC_CALLMETH2 = 46;
+	public static final int OC_CALLMETH3 = 47;
+	public static final int OC_IF = 48;
+	public static final int OC_ELSE = 49;
+	public static final int OC_ENDIF = 50;
+	public static final int OC_RENDER = 51;
 
 	public static final int CF0_NOW = 0;
 
@@ -67,15 +68,16 @@ public class Opcode
 	public static final int CF1_ISINT = 8;
 	public static final int CF1_ISFLOAT = 9;
 	public static final int CF1_ISBOOL = 10;
-	public static final int CF1_ISLIST = 11;
-	public static final int CF1_ISDICT = 12;
-	public static final int CF1_CHR = 13;
-	public static final int CF1_ORD = 14;
-	public static final int CF1_HEX = 15;
-	public static final int CF1_OCT = 16;
-	public static final int CF1_BIN = 17;
-	public static final int CF1_SORTED = 18;
-	public static final int CF1_RANGE = 19;
+	public static final int CF1_ISDATE = 11;
+	public static final int CF1_ISLIST = 12;
+	public static final int CF1_ISDICT = 13;
+	public static final int CF1_CHR = 14;
+	public static final int CF1_ORD = 15;
+	public static final int CF1_HEX = 16;
+	public static final int CF1_OCT = 17;
+	public static final int CF1_BIN = 18;
+	public static final int CF1_SORTED = 19;
+	public static final int CF1_RANGE = 20;
 
 	public static final int CF2_RANGE = 0;
 
@@ -88,8 +90,7 @@ public class Opcode
 	public static final int CM0_UPPER = 4;
 	public static final int CM0_LOWER = 5;
 	public static final int CM0_ITEMS = 6;
-	public static final int CM0_FORMAT = 7;
-	public static final int CM0_ISOFORMAT = 8;
+	public static final int CM0_ISOFORMAT = 7;
 
 	public static final int CM1_SPLIT = 0;
 	public static final int CM1_RSPLIT = 1;
@@ -99,6 +100,7 @@ public class Opcode
 	public static final int CM1_STARTSWITH = 5;
 	public static final int CM1_ENDSWITH = 6;
 	public static final int CM1_FIND = 7;
+	public static final int CM1_FORMAT = 8;
 
 	public int name;
 	public int r1;
@@ -127,6 +129,8 @@ public class Opcode
 			return OC_LOADFLOAT;
 		else if (name.equals("loadstr"))
 			return OC_LOADSTR;
+		else if (name.equals("loaddate"))
+			return OC_LOADDATE;
 		else if (name.equals("loadvar"))
 			return OC_LOADVAR;
 		else if (name.equals("storevar"))
@@ -251,6 +255,8 @@ public class Opcode
 			return CF1_ISFLOAT;
 		else if (name.equals("isbool"))
 			return CF1_ISBOOL;
+		else if (name.equals("isdate"))
+			return CF1_ISDATE;
 		else if (name.equals("islist"))
 			return CF1_ISLIST;
 		else if (name.equals("isdict"))
@@ -307,8 +313,6 @@ public class Opcode
 			return CM0_LOWER;
 		else if (name.equals("items"))
 			return CM0_ITEMS;
-		else if (name.equals("format"))
-			return CM0_FORMAT;
 		else if (name.equals("isoformat"))
 			return CM0_ISOFORMAT;
 		else
@@ -333,6 +337,8 @@ public class Opcode
 			return CM1_ENDSWITH;
 		else if (name.equals("find"))
 			return CM1_FIND;
+		else if (name.equals("format"))
+			return CM1_FORMAT;
 		else
 			throw new UnknownMethodException(name);
 	}
@@ -363,6 +369,8 @@ public class Opcode
 			return "loadfloat";
 		else if (code == OC_LOADSTR)
 			return "loadstr";
+		else if (code == OC_LOADDATE)
+			return "loaddate";
 		else if (code == OC_LOADVAR)
 			return "loadvar";
 		else if (code == OC_STOREVAR)

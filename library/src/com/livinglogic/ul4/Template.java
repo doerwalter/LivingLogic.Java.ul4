@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -25,6 +26,7 @@ public class Template
 	private static Pattern octintPattern;
 	private static Pattern binintPattern;
 	private static Pattern intPattern;
+	private static Pattern datePattern;
 	private static Pattern whitespacePattern;
 	private static Pattern escaped8BitCharPattern;
 	private static Pattern escaped16BitCharPattern;
@@ -41,6 +43,7 @@ public class Template
 		octintPattern = Pattern.compile("0[oO][0-7]+");
 		binintPattern = Pattern.compile("0[bB][01]+");
 		intPattern = Pattern.compile("\\d+");
+		datePattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}T(\\d{2}:\\d{2}(:\\d{2}(.\\d{6})?)?)?");
 		whitespacePattern = Pattern.compile("\\s+");
 		escaped8BitCharPattern = Pattern.compile("\\\\x[0-9a-fA-F]{2}");
 		escaped16BitCharPattern = Pattern.compile("\\\\u[0-9a-fA-F]{4}");
@@ -52,7 +55,7 @@ public class Template
 		public int iteratorRegSpec;
 		public int pc;
 		public Iterator iterator;
-	
+
 		public IteratorStackEntry(int iteratorRegSpec, int pc, Iterator iterator)
 		{
 			this.iteratorRegSpec = iteratorRegSpec;
@@ -72,6 +75,8 @@ public class Template
 	public String source;
 
 	public List opcodes;
+	
+	public Locale defaultLocale;
 
 	private boolean annotated = false;
 
@@ -79,6 +84,7 @@ public class Template
 	{
 		this.source = null;
 		this.opcodes = new LinkedList();
+		this.defaultLocale = Locale.GERMANY;
 	}
 
 	public void opcode(int name, Location location)
@@ -556,6 +562,9 @@ public class Template
 						case Opcode.OC_LOADFLOAT:
 							reg[code.r1] = new Double(Double.parseDouble(code.arg));
 							break;
+						case Opcode.OC_LOADDATE:
+							reg[code.r1] = Utils.isoDateFormatter.parse(code.arg);
+							break;
 						case Opcode.OC_LOADVAR:
 							reg[code.r1] = variables.get(code.arg);
 							break;
@@ -725,6 +734,9 @@ public class Template
 								case Opcode.CF1_ISBOOL:
 									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Boolean)) ? Boolean.TRUE : Boolean.FALSE;
 									break;
+								case Opcode.CF1_ISDATE:
+									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Date)) ? Boolean.TRUE : Boolean.FALSE;
+									break;
 								case Opcode.CF1_ISLIST:
 									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof List)) ? Boolean.TRUE : Boolean.FALSE;
 									break;
@@ -794,9 +806,6 @@ public class Template
 								case Opcode.CM0_ITEMS:
 									reg[code.r1] = Utils.items(reg[code.r2]);
 									break;
-								case Opcode.CM0_FORMAT:
-									reg[code.r1] = Utils.format(reg[code.r2]);
-									break;
 								case Opcode.CM0_ISOFORMAT:
 									reg[code.r1] = Utils.isoformat(reg[code.r2]);
 									break;
@@ -828,8 +837,11 @@ public class Template
 									break;
 								case Opcode.CM1_FIND:
 									reg[code.r1] = Utils.items(reg[code.r2], reg[code.r3]);
+									break;*/
+								case Opcode.CM1_FORMAT:
+									reg[code.r1] = Utils.format(reg[code.r2], reg[code.r3], defaultLocale);
 									break;
-*/							}
+							}
 							break;
 						case Opcode.OC_CALLMETH2:
 								throw new UnknownMethodException(code.arg);
@@ -927,6 +939,7 @@ public class Template
 				Matcher octintMatcher = octintPattern.matcher(source);
 				Matcher binintMatcher = binintPattern.matcher(source);
 				Matcher intMatcher = intPattern.matcher(source);
+				Matcher dateMatcher = datePattern.matcher(source);
 				Matcher whitespaceMatcher = whitespacePattern.matcher(source);
 				Matcher escaped8BitCharMatcher = escaped8BitCharPattern.matcher(source);
 				Matcher escaped16BitCharMatcher = escaped16BitCharPattern.matcher(source);
@@ -952,6 +965,11 @@ public class Template
 						tokens.add(new False(pos, pos+len));
 					else
 						tokens.add(new Name(pos, pos+len, name));
+				}
+				else if (stringMode==0 && dateMatcher.lookingAt())
+				{
+					len = dateMatcher.end();
+					tokens.add(new com.livinglogic.ul4.Date(pos, pos+len, Utils.isoDateFormatter.parse(dateMatcher.group())));
 				}
 				else if (stringMode==0 && floatMatcher.lookingAt())
 				{

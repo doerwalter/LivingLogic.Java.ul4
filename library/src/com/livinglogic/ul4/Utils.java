@@ -7,12 +7,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-class Range extends AbstractList 
+class Range extends AbstractList
 {
 	int start;
 
@@ -74,7 +75,7 @@ class StringIterator implements Iterator
 	int stringSize;
 
 	int index;
-	
+
 	public StringIterator(String string)
 	{
 		this.string = string;
@@ -136,7 +137,7 @@ class SequenceEnumerator implements Iterator
 	Iterator sequenceIterator;
 
 	int index = 0;
-	
+
 	public SequenceEnumerator(Iterator sequenceIterator)
 	{
 		this.sequenceIterator = sequenceIterator;
@@ -164,19 +165,19 @@ class SequenceEnumerator implements Iterator
 public class Utils
 {
 	protected static final Integer INTEGER_TRUE = new Integer(1);
-	
+
 	protected static final Integer INTEGER_FALSE = new Integer(0);
-	
+
 	public static Object neg(Integer arg)
 	{
 		return new Integer(-arg.intValue());
 	}
-	
+
 	public static Object neg(Number arg)
 	{
 		return new Double(-arg.doubleValue());
 	}
-	
+
 	public static Object neg(Object arg)
 	{
 		if (arg instanceof Integer)
@@ -190,12 +191,12 @@ public class Utils
 	{
 		return new Integer(arg1.intValue() + arg2.intValue());
 	}
-	
+
 	public static Object add(Number arg1, Number arg2)
 	{
 		return new Double(arg1.doubleValue() + arg2.doubleValue());
 	}
-	
+
 	public static Object add(String arg1, String arg2)
 	{
 		return arg1 + arg2;
@@ -216,7 +217,7 @@ public class Utils
 	{
 		return new Integer(arg1.intValue() - arg2.intValue());
 	}
-	
+
 	public static Object sub(Number arg1, Number arg2)
 	{
 		return new Double(arg1.doubleValue() - arg2.doubleValue());
@@ -331,7 +332,7 @@ public class Utils
 	{
 		return arg1.get(arg2);
 	}
-	
+
 	public static Object getItem(Object arg1, Object arg2)
 	{
 		if (arg1 instanceof String && arg2 instanceof Integer)
@@ -444,6 +445,11 @@ public class Utils
 		return (obj.doubleValue() != 0.);
 	}
 
+	public static boolean getBool(Date obj)
+	{
+		return true;
+	}
+
 	public static boolean getBool(Collection obj)
 	{
 		return !obj.isEmpty();
@@ -456,7 +462,9 @@ public class Utils
 
 	public static boolean getBool(Object obj)
 	{
-		if (obj instanceof Boolean)
+		if (null == obj)
+			return false;
+		else if (obj instanceof Boolean)
 			return getBool((Boolean)obj);
 		else if (obj instanceof String)
 			return getBool((String)obj);
@@ -464,11 +472,13 @@ public class Utils
 			return getBool((Integer)obj);
 		else if (obj instanceof Double)
 			return getBool((Double)obj);
+		else if (obj instanceof Date)
+			return getBool((Date)obj);
 		else if (obj instanceof Collection)
 			return getBool((Collection)obj);
 		else if (obj instanceof Map)
 			return getBool((Map)obj);
-		return false;
+		return true;
 	}
 
 	public static boolean equals(Object obj1, Object obj2)
@@ -478,7 +488,7 @@ public class Utils
 		else
 			return (null == obj2);
 	}
-	
+
 	public static boolean contains(String obj, String container)
 	{
 		return container.indexOf(obj) >= 0;
@@ -552,7 +562,7 @@ public class Utils
 
 	public static String toString(Object obj)
 	{
-		return obj != null ? obj.toString() : ""; 
+		return obj != null ? obj.toString() : "";
 	}
 
 	public static Object toInteger(String obj)
@@ -572,7 +582,7 @@ public class Utils
 
 	public static Object toInteger(Boolean obj)
 	{
-		return obj.booleanValue() ? INTEGER_TRUE : INTEGER_FALSE; 
+		return obj.booleanValue() ? INTEGER_TRUE : INTEGER_FALSE;
 	}
 
 	public static Object toInteger(Object obj)
@@ -669,7 +679,7 @@ public class Utils
 	{
 		if (1 != obj.length())
 		{
-			throw new IllegalArgumentException("String " + obj + " contains more than one unicode character!"); 
+			throw new IllegalArgumentException("String " + obj + " contains more than one unicode character!");
 		}
 		return new Integer((int)obj.charAt(0));
 	}
@@ -950,12 +960,11 @@ public class Utils
 		throw new UnsupportedOperationException("Can't convert an instance of " + obj.getClass() + " to lower case!");
 	}
 
-	private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy.MM.dd");
-	private static SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss.S");
+	public static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy.MM.dd'T'HH:mm:ss.SSS'000'");
 
 	public static Object isoformat(Date obj)
 	{
-		return dateFormatter.format(obj) + "T" + timeFormatter.format(obj) + "000";
+		return isoDateFormatter.format(obj);
 	}
 
 	public static Object isoformat(Object obj)
@@ -965,14 +974,142 @@ public class Utils
 		throw new UnsupportedOperationException("Can't call isoformat on instance of " + obj.getClass() + "!");
 	}
 
-	public static Object format(Object obj)
+	public static Object format(Date obj, String formatString, Locale locale)
 	{
-		throw new UnsupportedOperationException("Can't call format on instance of " + obj.getClass() + "!");
+		StringBuffer javaFormatString = new StringBuffer();
+		int formatStringLength = formatString.length();
+		boolean escapeCharacterFound = false;
+		boolean inLiteral = false;
+		char formatChar;
+		String javaFormatSequence;
+		for (int i = 0; i < formatStringLength; i++)
+		{
+			formatChar = formatString.charAt(i);
+			if (escapeCharacterFound)
+			{
+				switch (formatChar)
+				{
+					case 'a':
+						javaFormatSequence = "EE";
+						break;
+					case 'A':
+						javaFormatSequence = "EEEE";
+						break;
+					case 'b':
+						javaFormatSequence = "MMM";
+						break;
+					case 'B':
+						javaFormatSequence = "MMMM";
+						break;
+					case 'c':
+						throw new UnsupportedOperationException("Unimplemented escape sequence %c");
+					case 'd':
+						javaFormatSequence = "dd";
+						break;
+					case 'f':
+						javaFormatSequence = "SSS'000";
+						break;
+					case 'H':
+						javaFormatSequence = "HH";
+						break;
+					case 'I':
+						javaFormatSequence = "hh";
+						break;
+					case 'j':
+						javaFormatSequence = "DDD";
+						break;
+					case 'm':
+						javaFormatSequence = "MM";
+						break;
+					case 'M':
+						javaFormatSequence = "mm";
+						break;
+					case 'p':
+						javaFormatSequence = "aa";
+						break;
+					case 'S':
+						javaFormatSequence = "ss";
+						break;
+					case 'U':
+						javaFormatSequence = "ww";
+						break;
+					case 'w':
+						throw new UnsupportedOperationException("Unimplemented escape sequence %w");
+					case 'W':
+						javaFormatSequence = "ww";
+						break;
+					case 'x':
+						throw new UnsupportedOperationException("Unimplemented escape sequence %x");
+					case 'X':
+						throw new UnsupportedOperationException("Unimplemented escape sequence %X");
+					case 'y':
+						javaFormatSequence = "yy";
+						break;
+					case 'Y':
+						javaFormatSequence = "yyyy";
+						break;
+					default:
+						javaFormatSequence = null;
+						break;
+				}
+				if (inLiteral != (null == javaFormatSequence))
+				{
+					javaFormatString.append('\'');
+					inLiteral = !inLiteral;
+				}
+				if (null != javaFormatSequence)
+				{
+					javaFormatString.append(javaFormatSequence);
+					if ('f' == formatChar)
+					{
+						inLiteral = true;
+					}
+				}
+				else
+				{
+					javaFormatString.append(formatChar);
+				}
+				escapeCharacterFound = false;
+			}
+			else
+			{
+				escapeCharacterFound = ('%' == formatChar);
+				if (!escapeCharacterFound)
+				{
+					if (inLiteral = !inLiteral)
+					{
+						javaFormatString.append('\'');
+					}
+					javaFormatString.append(formatChar);
+					if ('\'' == formatChar)
+					{
+						javaFormatString.append(formatChar);
+					}
+				}
+			}
+		}
+		if (inLiteral)
+		{
+			javaFormatString.append('\'');
+		}
+		return new SimpleDateFormat(javaFormatString.toString(), locale).format(obj);
+	}
+
+	public static Object format(Object obj, Object formatString, Locale locale)
+	{
+		if (formatString instanceof String)
+		{
+			if (obj instanceof Date)
+			{
+				return format((Date)obj, (String)formatString, locale);
+			}
+		}
+		throw new UnsupportedOperationException("Can't call format on instance of " + obj.getClass() + " with format string instance of " + formatString.getClass() + "!");
 	}
 
 	public static Object items(Map obj)
 	{
-		return new MapItemIterator(obj); 
+		return new MapItemIterator(obj);
 	}
 
 	public static Object items(Object obj)
