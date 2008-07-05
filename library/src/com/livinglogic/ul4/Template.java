@@ -451,26 +451,16 @@ public class Template
 		}
 	}
 
-	public Iterator render(Object data)
+	public Iterator render(Map variables, Map templates)
 	{
-		return new Renderer(data, null);
+		return new Renderer(variables, templates);
 	}
 
-	public Iterator render(Object data, Map templates)
-	{
-		return new Renderer(data, templates);
-	}
-
-	public String renders(Object data)
-	{
-		return renders(data, null);
-	}
-
-	public String renders(Object data, Map templates)
+	public String renders(Map variables, Map templates)
 	{
 		StringBuffer output = new StringBuffer();
 
-		for (Iterator iterator = render(data, templates); iterator.hasNext();)
+		for (Iterator iterator = render(variables, templates); iterator.hasNext();)
 		{
 			output.append((String)iterator.next());
 		}
@@ -481,17 +471,19 @@ public class Template
 	{
 		private int pc = 0;
 		private Object[] reg = new Object[10];
-		private HashMap variables = new HashMap();
+		private Map variables;
 		private Map templates;
 		private LinkedList iterators = new LinkedList();
 		private Iterator subTemplateIterator = null;
 
 		private String nextChunk = null;
 
-		public Renderer(Object data, Map templates)
+		public Renderer(Map variables, Map templates)
 		{
 			annotate();
-			variables.put("data", data);
+			if (variables == null)
+				variables = new HashMap();
+			this.variables = variables;
 			if (templates == null)
 				templates = new HashMap();
 			this.templates = templates;
@@ -861,7 +853,7 @@ public class Template
 						case Opcode.OC_CALLMETH3:
 								throw new UnknownMethodException(code.arg);
 						case Opcode.OC_RENDER:
-							subTemplateIterator = ((Template)templates.get(code.arg)).render(reg[code.r1], templates);
+							subTemplateIterator = ((Template)templates.get(code.arg)).render((Map)reg[code.r1], templates);
 							if (subTemplateIterator.hasNext())
 							{
 								nextChunk = (String)subTemplateIterator.next();
