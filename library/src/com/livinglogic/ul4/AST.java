@@ -21,5 +21,10 @@ public abstract class AST
 		return end;
 	}
 
+	public void setEnd(int end)
+	{
+		this.end = end;
+	}
+
 	abstract public int compile(Template template, Registers registers, Location location);
 }

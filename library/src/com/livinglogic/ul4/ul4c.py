@@ -159,6 +159,58 @@ class ExprParser(spark.GenericParser):
 		'expr11 ::= name',
 	]
 
+	def expr_emptylist(self, (_0, _1)):
+		return ul4.List(_0.start, _1.end)
+	expr_emptylist.spark = ['expr11 ::= [ ]']
+
+	def expr_buildlist(self, (_0, expr)):
+		list = ul4.List(_0.start, expr.end)
+		list.append(expr)
+		return list
+	expr_buildlist.spark = ['buildlist ::= [ expr0']
+
+	def expr_addlist(self, (list, _0, expr)):
+		list.append(expr)
+		list.end = expr.end
+		return list
+	expr_addlist.spark = ['buildlist ::= buildlist , expr0']
+
+	def expr_finishlist(self, (list, _0)):
+		list.end = _0.end
+		return list
+	expr_finishlist.spark = ['expr11 ::= buildlist ]']
+
+	def expr_finishlist1(self, (list, _0, _1)):
+		list.end = _1.end
+		return list
+	expr_finishlist1.spark = ['expr11 ::= buildlist , ]']
+
+	def expr_emptydict(self, (_0, _1)):
+		return ul4.Dict(_0.start, _1.end)
+	expr_emptydict.spark = ['expr11 ::= { }']
+
+	def expr_builddict(self, (_0, key, _1, value)):
+		dict = ul4.Dict(_0.start, value.end)
+		dict.append(key, value)
+		return dict
+	expr_builddict.spark = ['builddict ::= { expr0 : expr0']
+
+	def expr_adddict(self, (dict, _0, key, _1, value)):
+		dict.append(key, value)
+		dict.end = value.end
+		return dict
+	expr_adddict.spark = ['builddict ::= builddict , expr0 : expr0']
+
+	def expr_finishdict(self, (dict, _0)):
+		dict.end = _0.end
+		return dict
+	expr_finishdict.spark = ['expr11 ::= builddict }']
+
+	def expr_finishdict1(self, (dict, _0, _1)):
+		dict.end = _1.end
+		return dict
+	expr_finishdict1.spark = ['expr11 ::= builddict , }']
+
 	def expr_bracket(self, (_0, expr, _1)):
 		return expr
 	expr_bracket.spark = ['expr11 ::= ( expr0 )']
@@ -351,7 +403,7 @@ class ForParser(ExprParser):
 
 	def for2b(self, (_0, iter1, _1, iter2, _2, _3, _4, cont)):
 		return ul4.For2(_0.start, cont.end, iter1, iter2, cont)
-	for2a.spark = ['for ::= ( name , name , ) in expr0']
+	for2b.spark = ['for ::= ( name , name , ) in expr0']
 
 
 class StmtParser(ExprParser):

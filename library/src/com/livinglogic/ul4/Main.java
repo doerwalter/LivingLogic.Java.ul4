@@ -12,7 +12,7 @@ public class Main
 
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?print now().format('%Y-%b-%d %H:%M:%S.%f')?>");
+		Template tmpl = Compiler.compile("<?for (key, value) in {'eins': 1, 'zwei': 2, 'drei': 3,}.items()?><?print key?> (<?print value?>)\n<?end for?>");
 		long start = new Date().getTime();
 		String output = tmpl.renders("<gu&rk> & 'foo'");
 		System.out.println("rendered " + (time()-start));

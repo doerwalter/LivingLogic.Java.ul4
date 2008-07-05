@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Date;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -35,7 +36,7 @@ public class Template
 	static
 	{
 		// Initializes regular expressions
-		tokenPattern = Pattern.compile("\\(|\\)|\\[|\\]|\\.|,|==|\\!=|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*|//|/");
+		tokenPattern = Pattern.compile("\\(|\\)|\\[|\\]|\\{|\\}|\\.|,|==|\\!=|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*|//|/");
 		namePattern = Pattern.compile("[a-zA-Z_][\\w]*");
 		// We don't have negatve numbers, this is handled by constant folding in the AST for unary minus
 		floatPattern = Pattern.compile("(\\d+(\\.\\d*)?[eE][+-]?\\d+|\\d+\\.\\d*([eE][+-]?\\d+)?)");
@@ -564,6 +565,18 @@ public class Template
 							break;
 						case Opcode.OC_LOADDATE:
 							reg[code.r1] = Utils.isoDateFormatter.parse(code.arg);
+							break;
+						case Opcode.OC_BUILDLIST:
+							reg[code.r1] = new ArrayList();
+							break;
+						case Opcode.OC_BUILDDICT:
+							reg[code.r1] = new HashMap();
+							break;
+						case Opcode.OC_ADDLIST:
+							((List)reg[code.r1]).add(reg[code.r2]);
+							break;
+						case Opcode.OC_ADDDICT:
+							((Map)reg[code.r1]).put(reg[code.r2], reg[code.r3]);
 							break;
 						case Opcode.OC_LOADVAR:
 							reg[code.r1] = variables.get(code.arg);

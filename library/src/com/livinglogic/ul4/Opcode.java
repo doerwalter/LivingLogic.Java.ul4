@@ -10,50 +10,54 @@ public class Opcode
 	public static final int OC_LOADFLOAT = 5;
 	public static final int OC_LOADSTR = 6;
 	public static final int OC_LOADDATE = 7;
-	public static final int OC_LOADVAR = 8;
-	public static final int OC_STOREVAR = 9;
-	public static final int OC_ADDVAR = 10;
-	public static final int OC_SUBVAR = 11;
-	public static final int OC_MULVAR = 12;
-	public static final int OC_TRUEDIVVAR = 13;
-	public static final int OC_FLOORDIVVAR = 14;
-	public static final int OC_MODVAR = 15;
-	public static final int OC_DELVAR = 16;
-	public static final int OC_GETATTR = 17;
-	public static final int OC_GETITEM = 18;
-	public static final int OC_GETSLICE12 = 19;
-	public static final int OC_GETSLICE1 = 20;
-	public static final int OC_GETSLICE2 = 21;
-	public static final int OC_GETSLICE = 22;
-	public static final int OC_PRINT = 23;
-	public static final int OC_FOR = 24;
-	public static final int OC_ENDFOR = 25;
-	public static final int OC_NOT = 26;
-	public static final int OC_NEG = 27;
-	public static final int OC_CONTAINS = 28;
-	public static final int OC_NOTCONTAINS = 29;
-	public static final int OC_EQUALS = 30;
-	public static final int OC_NOTEQUALS = 31;
-	public static final int OC_ADD = 32;
-	public static final int OC_SUB = 33;
-	public static final int OC_MUL = 34;
-	public static final int OC_FLOORDIV = 35;
-	public static final int OC_TRUEDIV = 36;
-	public static final int OC_AND = 37;
-	public static final int OC_OR = 38;
-	public static final int OC_MOD = 39;
-	public static final int OC_CALLFUNC0 = 40;
-	public static final int OC_CALLFUNC1 = 41;
-	public static final int OC_CALLFUNC2 = 42;
-	public static final int OC_CALLFUNC3 = 43;
-	public static final int OC_CALLMETH0 = 44;
-	public static final int OC_CALLMETH1 = 45;
-	public static final int OC_CALLMETH2 = 46;
-	public static final int OC_CALLMETH3 = 47;
-	public static final int OC_IF = 48;
-	public static final int OC_ELSE = 49;
-	public static final int OC_ENDIF = 50;
-	public static final int OC_RENDER = 51;
+	public static final int OC_BUILDLIST = 8;
+	public static final int OC_BUILDDICT = 9;
+	public static final int OC_ADDLIST = 10;
+	public static final int OC_ADDDICT = 11;
+	public static final int OC_LOADVAR = 12;
+	public static final int OC_STOREVAR = 13;
+	public static final int OC_ADDVAR = 14;
+	public static final int OC_SUBVAR = 15;
+	public static final int OC_MULVAR = 16;
+	public static final int OC_TRUEDIVVAR = 17;
+	public static final int OC_FLOORDIVVAR = 18;
+	public static final int OC_MODVAR = 19;
+	public static final int OC_DELVAR = 20;
+	public static final int OC_GETATTR = 21;
+	public static final int OC_GETITEM = 22;
+	public static final int OC_GETSLICE12 = 23;
+	public static final int OC_GETSLICE1 = 24;
+	public static final int OC_GETSLICE2 = 25;
+	public static final int OC_GETSLICE = 26;
+	public static final int OC_PRINT = 27;
+	public static final int OC_FOR = 28;
+	public static final int OC_ENDFOR = 29;
+	public static final int OC_NOT = 30;
+	public static final int OC_NEG = 31;
+	public static final int OC_CONTAINS = 32;
+	public static final int OC_NOTCONTAINS = 33;
+	public static final int OC_EQUALS = 34;
+	public static final int OC_NOTEQUALS = 35;
+	public static final int OC_ADD = 36;
+	public static final int OC_SUB = 37;
+	public static final int OC_MUL = 38;
+	public static final int OC_FLOORDIV = 39;
+	public static final int OC_TRUEDIV = 40;
+	public static final int OC_AND = 41;
+	public static final int OC_OR = 42;
+	public static final int OC_MOD = 43;
+	public static final int OC_CALLFUNC0 = 44;
+	public static final int OC_CALLFUNC1 = 45;
+	public static final int OC_CALLFUNC2 = 46;
+	public static final int OC_CALLFUNC3 = 47;
+	public static final int OC_CALLMETH0 = 48;
+	public static final int OC_CALLMETH1 = 49;
+	public static final int OC_CALLMETH2 = 50;
+	public static final int OC_CALLMETH3 = 51;
+	public static final int OC_IF = 52;
+	public static final int OC_ELSE = 53;
+	public static final int OC_ENDIF = 54;
+	public static final int OC_RENDER = 55;
 
 	public static final int CF0_NOW = 0;
 
@@ -131,6 +135,14 @@ public class Opcode
 			return OC_LOADSTR;
 		else if (name.equals("loaddate"))
 			return OC_LOADDATE;
+		else if (name.equals("buildlist"))
+			return OC_BUILDLIST;
+		else if (name.equals("builddict"))
+			return OC_BUILDDICT;
+		else if (name.equals("addlist"))
+			return OC_ADDLIST;
+		else if (name.equals("adddict"))
+			return OC_ADDDICT;
 		else if (name.equals("loadvar"))
 			return OC_LOADVAR;
 		else if (name.equals("storevar"))
@@ -371,6 +383,14 @@ public class Opcode
 			return "loadstr";
 		else if (code == OC_LOADDATE)
 			return "loaddate";
+		else if (code == OC_BUILDLIST)
+			return "buildlist";
+		else if (code == OC_BUILDDICT)
+			return "builddict";
+		else if (code == OC_ADDLIST)
+			return "addlist";
+		else if (code == OC_ADDDICT)
+			return "adddict";
 		else if (code == OC_LOADVAR)
 			return "loadvar";
 		else if (code == OC_STOREVAR)
