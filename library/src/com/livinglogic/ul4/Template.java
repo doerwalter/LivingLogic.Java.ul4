@@ -51,10 +51,25 @@ public class Template
 		escaped32BitCharPattern = Pattern.compile("\\\\U[0-9a-fA-F]{8}");
 	}
 
+	/**
+	 * Contains information about the currently running loops during rendering
+	 * of the template.
+	 */
 	class IteratorStackEntry
 	{
+		/**
+		 * The register number where the loop variable has to be stored for each
+		 * run through the loop body.
+		 */
 		public int iteratorRegSpec;
+		/**
+		 * The program counter (i.e. the index of the opcode in the {@link #opcodes} list)
+		 * where the loop started (i.e. the location of the FOR ocode).
+		 */
 		public int pc;
+		/**
+		 * The iterator producing the values for the loop variable.
+		 */
 		public Iterator iterator;
 
 		public IteratorStackEntry(int iteratorRegSpec, int pc, Iterator iterator)
@@ -65,22 +80,49 @@ public class Template
 		}
 	}
 
+	/**
+	 * The header used in the compiled format of the template.
+	 */
 	public static final String HEADER = "ul4";
 
+	/**
+	 * The version number used in the compiled format of the template.
+	 */
 	public static final String VERSION = "2";
 
+	/**
+	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
+	 */ 
 	public String startdelim;
 
+	/**
+	 * The end delimiter for tags (defaults to <code>?&gt;</code>)
+	 */ 
 	public String enddelim;
 
+	/**
+	 * The template source.
+	 */ 
 	public String source;
 
+	/**
+	 * The list of opcodes.
+	 */ 
 	public List opcodes;
 	
+	/**
+	 * The locate to be used when formatting int, float or date objects.
+	 */ 
 	public Locale defaultLocale;
 
+	/**
+	 * Has {@link annotate} been called for this template?
+	 */
 	private boolean annotated = false;
 
+	/**
+	 * Creates an empty template object.
+	 */
 	public Template()
 	{
 		this.source = null;
@@ -88,69 +130,106 @@ public class Template
 		this.defaultLocale = Locale.GERMANY;
 	}
 
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
 	public void opcode(int name, Location location)
 	{
 		opcodes.add(new Opcode(name, -1, -1, -1, -1, -1, null, location));
 	}
 
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
 	public void opcode(int name, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, -1, -1, -1, -1, -1, arg, location));
 	}
 
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
 	public void opcode(int name, int r1, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, -1, -1, -1, -1, null, location));
 	}
 
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
 	public void opcode(int name, int r1, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, -1, -1, -1, -1, arg, location));
 	}
 
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
 	public void opcode(int name, int r1, int r2, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, -1, -1, -1, null, location));
 	}
 
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
 	public void opcode(int name, int r1, int r2, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, -1, -1, -1, arg, location));
 	}
 
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
 	public void opcode(int name, int r1, int r2, int r3, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, -1, -1, null, location));
 	}
 
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
 	public void opcode(int name, int r1, int r2, int r3, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, -1, -1, arg, location));
 	}
 
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
 	public void opcode(int name, int r1, int r2, int r3, int r4, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, -1, null, location));
 	}
 
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
 	public void opcode(int name, int r1, int r2, int r3, int r4, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, -1, arg, location));
 	}
 
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
 	public void opcode(int name, int r1, int r2, int r3, int r4, int r5, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, r5, null, location));
 	}
 
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
 	public void opcode(int name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, r5, arg, location));
 	}
 
-	protected static int readintInternal(Reader reader, char terminator1, char terminator0) throws IOException
+	protected static int readintInternal(Reader reader, char terminator) throws IOException
 	{
 		int retVal = 0;
+		boolean digitFound = false;
 		boolean terminatorFound = false;
 		int readInt = reader.read();
 		char charValue;
@@ -162,19 +241,17 @@ public class Template
 			if (-1 < intValue)
 			{
 				retVal = retVal * 10 + intValue;
+				digitFound = true;
 			}
-			else if (charValue == terminator1)
+			else if (charValue == terminator)
 			{
 				terminatorFound = true;
-			}
-			else if (charValue == terminator0)
-			{
-				terminatorFound = true;
-				retVal = -1;
+				if (!digitFound)
+					retVal = -1;
 			}
 			else
 			{
-				throw new RuntimeException("Invalid terminator, expected " + terminator1 + " or " + terminator0 + ", got " + charValue);
+				throw new RuntimeException("Invalid terminator, expected " + terminator + ", got " + charValue);
 			}
 			if (!terminatorFound)
 			{
@@ -186,7 +263,7 @@ public class Template
 
 	protected static int readint(Reader reader, char terminator) throws IOException
 	{
-		int retVal = readintInternal(reader, terminator, terminator);
+		int retVal = readintInternal(reader, terminator);
 		if (0 > retVal)
 		{
 			throw new RuntimeException("Invalid integer read!");
@@ -194,10 +271,10 @@ public class Template
 		return retVal;
 	}
 
-	protected static String readstr(Reader reader, char terminator1, char terminator0) throws IOException
+	protected static String readstr(Reader reader, char terminator) throws IOException
 	{
 		String retVal = null;
-		int stringLength = readintInternal(reader, terminator1, terminator0);
+		int stringLength = readintInternal(reader, terminator);
 		if (-1 < stringLength)
 		{
 			char[] retValChars = new char[stringLength];
@@ -256,18 +333,31 @@ public class Template
 		}
 	}
 
+	/**
+	 * loads the source of a template from a reader, whichout checking the version
+	 * number of the binary file. This is helpful when updating an old stored source.
+	 * @param reader the reader from which the source is read.
+	 * @return The source as a string.
+	 * @throws IOException if reading from the stream fails
+	 */
 	public static String loadsource(Reader reader) throws IOException
 	{
 		BufferedReader bufferedReader = new BufferedReader(reader);
 		bufferedReader.readLine(); // skip header (without checking)
 		bufferedReader.readLine(); // skip version number (with checking)
-		readstr(bufferedReader, '<', '['); // skip start delimiter
+		readstr(bufferedReader, '<'); // skip start delimiter
 		readcr(bufferedReader);
-		readstr(bufferedReader, '>', ']'); // skip end delimiter
+		readstr(bufferedReader, '>'); // skip end delimiter
 		readcr(bufferedReader);
-		return readstr(bufferedReader, '\'', '"');
+		return readstr(bufferedReader, '"');
 	}
 
+	/**
+	 * loads the source of a template from a string containing the compiled
+	 * template.
+	 * @param bytecode of the compiled template.
+	 * @return The source as a string.
+	 */
 	public static String loadsource(String bytecode)
 	{
 		try
@@ -280,6 +370,12 @@ public class Template
 		}
 	}
 
+	/**
+	 * loads a template from a reader.
+	 * @param reader the reader from which the template is read.
+	 * @return The template object.
+	 * @throws IOException if reading from the stream fails
+	 */
 	public static Template load(Reader reader) throws IOException
 	{
 		Template retVal = new Template();
@@ -294,11 +390,11 @@ public class Template
 		{
 			throw new RuntimeException("Invalid version, expected " + VERSION + ", got " + version);
 		}
-		retVal.startdelim = readstr(bufferedReader, '<', '[');
+		retVal.startdelim = readstr(bufferedReader, '<');
 		readcr(bufferedReader);
-		retVal.enddelim = readstr(bufferedReader, '>', ']');
+		retVal.enddelim = readstr(bufferedReader, '>');
 		readcr(bufferedReader);
-		retVal.source = readstr(bufferedReader, '\'', '"');
+		retVal.source = readstr(bufferedReader, '"');
 		readcr(bufferedReader);
 		int count = readint(bufferedReader, '#');
 		readcr(bufferedReader);
@@ -310,8 +406,8 @@ public class Template
 			int r3 = readspec(bufferedReader);
 			int r4 = readspec(bufferedReader);
 			int r5 = readspec(bufferedReader);
-			String code = readstr(bufferedReader, ':', '.');
-			String arg = readstr(bufferedReader, ';', ',');
+			String code = readstr(bufferedReader, ':');
+			String arg = readstr(bufferedReader, '.');
 			int readInt = bufferedReader.read();
 			if (-1 < readInt)
 			{
@@ -325,7 +421,7 @@ public class Template
 				}
 				else if ('*' == charValue)
 				{
-					location = new Location(retVal.source, readstr(bufferedReader, '=', '-'),
+					location = new Location(retVal.source, readstr(bufferedReader, '='),
 						readint(bufferedReader, '('), readint(bufferedReader, ')'),
 						readint(bufferedReader, '{'), readint(bufferedReader, '}'));
 				}
@@ -344,6 +440,12 @@ public class Template
 		return retVal;
 	}
 
+	/**
+	 * loads a template from a string.
+	 * @param bytecode of the compiled template.
+	 * @return The template object.
+	 * @throws IOException if reading from the stream fails
+	 */
 	public static Template load(String bytecode)
 	{
 		try
@@ -356,26 +458,46 @@ public class Template
 		}
 	}
 
+	/**
+	 * writes an int to a stream in such a way that the int can be reliable read again.
+	 * @param writer the stream to which to write.
+	 * @param value the int value to be written.
+	 * @param terminator a terminating character written after the value.
+	 * @throws IOException if writing to the stream fails
+	 */
 	protected static void writeint(Writer writer, int value, char terminator) throws IOException
 	{
 		writer.write(String.valueOf(value));
 		writer.write(terminator);
 	}
 
-	protected static void writestr(Writer writer, String value, char terminator1, char terminator0) throws IOException
+	/**
+	 * writes a string to a stream in such a way that the string can be reliable read again.
+	 * @param writer the stream to which to write.
+	 * @param value the string value to be written (may be null).
+	 * @param terminator a terminating character written after the string length.
+	 * @throws IOException if writing to the stream fails
+	 */
+	protected static void writestr(Writer writer, String value, char terminator) throws IOException
 	{
 		if (value == null)
 		{
-			writer.write(terminator0);
+			writer.write(terminator);
 		}
 		else
 		{
 			writer.write(String.valueOf(value.length()));
-			writer.write(terminator1);
+			writer.write(terminator);
 			writer.write(value);
 		}
 	}
 
+	/**
+	 * writes a register specification to a stream (which is either a digit or '-' in case the register spec is empty.
+	 * @param writer the stream to which to write.
+	 * @param spec the register number or -1 in case the register spec is empty.
+	 * @throws IOException if writing to the stream fails
+	 */
 	protected static void writespec(Writer writer, int spec) throws IOException
 	{
 		if (spec == -1)
@@ -384,17 +506,22 @@ public class Template
 			writer.write(String.valueOf(spec));
 	}
 
+	/**
+	 * writes the Template object to a stream.
+	 * @param writer the stream to which to write.
+	 * @throws IOException if writing to the stream fails
+	 */
 	public void dump(Writer writer) throws IOException
 	{
 		writer.write(HEADER);
 		writer.write("\n");
 		writer.write(VERSION);
 		writer.write("\n");
-		writestr(writer, startdelim, '<', '[');
+		writestr(writer, startdelim, '<');
 		writer.write("\n");
-		writestr(writer, enddelim, '>', ']');
+		writestr(writer, enddelim, '>');
 		writer.write("\n");
-		writestr(writer, source, '\'', '"');
+		writestr(writer, source, '"');
 		writer.write("\n");
 		writeint(writer, opcodes.size(), '#');
 		writer.write("\n");
@@ -407,12 +534,12 @@ public class Template
 			writespec(writer, opcode.r3);
 			writespec(writer, opcode.r4);
 			writespec(writer, opcode.r5);
-			writestr(writer, Opcode.code2name(opcode.name), ':', '.');
-			writestr(writer, opcode.arg, ';', ',');
+			writestr(writer, Opcode.code2name(opcode.name), ':');
+			writestr(writer, opcode.arg, '.');
 			if (opcode.location != lastLocation)
 			{
 				writer.write("*");
-				writestr(writer, opcode.location.type, '=', '-');
+				writestr(writer, opcode.location.type, '=');
 				writeint(writer, opcode.location.starttag, '(');
 				writeint(writer, opcode.location.endtag, ')');
 				writeint(writer, opcode.location.startcode, '{');
@@ -427,6 +554,11 @@ public class Template
 		}
 	}
 
+	/**
+	 * writes the Template object to a string.
+	 * @param writer the stream to which to write.
+	 * @return The string containing the template in compiled format.
+	 */
 	public String dumps()
 	{
 		StringWriter writer = new StringWriter();
@@ -434,12 +566,19 @@ public class Template
 		{
 			dump(writer);
 		}
-		catch (IOException ex) // can not happen, when dumping the a StringWriter
+		catch (IOException ex) // can not happen, when dumping to a StringWriter
 		{
 		}
 		return writer.toString();
 	}
 
+	/**
+	 * Annotates all control flow opcodes in the template with the jump location
+	 * (i.e. a FOR opcode gets annotated with the location of the associated
+	 * ENDFOR opcode, an IF opcode gets annotated with the location of
+	 * the associated ELSE or ENDIF opcode, an ELSE opcode gets annotated with
+	 * the location of ENDIF opcode).
+	 */
 	protected void annotate()
 	{
 		if (!annotated)
@@ -474,11 +613,27 @@ public class Template
 		}
 	}
 
+	/**
+	 * Renders the template.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the template code.
+	 * @param templates a map containing other template object that can be called
+	 *                  by the template via the <code>&lt;?render?&gt;</code> tag.
+	 * @return An iterator that returns the string output piece by piece.
+	 */
 	public Iterator render(Map variables, Map templates)
 	{
 		return new Renderer(variables, templates);
 	}
 
+	/**
+	 * Renders the template and returns the resulting string.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the template code.
+	 * @param templates a map containing other template object that can be called
+	 *                  by the template via the <code>&lt;?render?&gt;</code> tag.
+	 * @return The render output as a string.
+	 */
 	public String renders(Map variables, Map templates)
 	{
 		StringBuffer output = new StringBuffer();
@@ -492,13 +647,50 @@ public class Template
 
 	class Renderer implements Iterator
 	{
+		/**
+		 * The current program counter
+		 */
 		private int pc = 0;
+
+		/**
+		 * The ten registers of our CPU
+		 */
 		private Object[] reg = new Object[10];
+
+		/**
+		 * The variables passed to the {@com.livinglogic.ul4.Template#render} call
+		 * During the run of the iterator loop variables and variables from
+		 * <code>&lt;?code>&gt;</code> tag will be stored here
+		 */
 		private Map variables;
+
+		/**
+		 * A map containing other template object that can be called by the
+		 * template code via the <code>&lt;?render?&gt;</code> tag.
+		 */
 		private Map templates;
+
+		/**
+		 * The stack of active for loops
+		 */
 		private LinkedList iterators = new LinkedList();
+
+		/**
+		 * If a subtemplate is running (i.e. if we're inside a
+		 * <code>&lt;?render?&gt;</code> tag), this variable references the
+		 * active part iterator for the subtemplate.
+		 */
 		private Iterator subTemplateIterator = null;
 
+		/**
+		 * Since we implement the iterator interface we have to support both
+		 * <code>next</code> and <code>hasNext</code>. This means that neither
+		 * of the two methods can directly run the opcodes to get the next output
+		 * chunk. Instead of that we have a method {@link getNextChunk} that runs
+		 * the opcodes until the next output chunk is produced and stores it in
+		 * <code>nextChunk</code>, when both <code>next</code> and
+		 * <code>hasNext</code> can refer to it.
+		 */
 		private String nextChunk = null;
 
 		public Renderer(Map variables, Map templates)
@@ -530,6 +722,9 @@ public class Template
 			return result;
 		}
 
+		/**
+		 * Gets the next output chunk and stores it in {@link nextChunk}
+		 */
 		public void getNextChunk()
 		{
 			if (subTemplateIterator != null)
