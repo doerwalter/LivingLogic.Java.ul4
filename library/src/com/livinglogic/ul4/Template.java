@@ -261,6 +261,15 @@ public class Template
 		return retVal;
 	}
 
+	/**
+	 * Reads a (non-negative) integer value from a stream.
+	 * @param reader the reader from which the value is read.
+	 * @param terminator The character after the digits of the integer value
+	 * @return The integer value
+	 * @throws IOException if reading from the stream fails
+	 * @throws RuntimeException if the integer value is malformed (i.e. the
+	 *                          terminator is missing)
+	 */
 	protected static int readint(Reader reader, char terminator) throws IOException
 	{
 		int retVal = readintInternal(reader, terminator);
@@ -271,6 +280,15 @@ public class Template
 		return retVal;
 	}
 
+	/**
+	 * Reads a string value (or <code>null</code>) from a stream.
+	 * <code>readstr</code> is the inverse operation of {@link writestr}.
+	 * @param reader the reader from which the string is read.
+	 * @param terminator The terminator character that was used in {@link writestr}.
+	 * @return The string or <code>null</code>
+	 * @throws IOException if reading from the stream fails
+	 * @throws RuntimeException if the integer value is malformed
+	 */
 	protected static String readstr(Reader reader, char terminator) throws IOException
 	{
 		String retVal = null;
@@ -288,6 +306,14 @@ public class Template
 		return retVal;
 	}
 
+	/**
+	 * Reads a register specification from a stream. A register specification is
+	 * either a digit or the character '-'.
+	 * @param reader the reader from which the specification is read.
+	 * @return The register number or -1.
+	 * @throws IOException if reading from the stream fails
+	 * @throws RuntimeException if the register specification is malformed
+	 */
 	protected static int readspec(Reader reader) throws IOException
 	{
 		int retVal;
@@ -316,6 +342,15 @@ public class Template
 		return retVal;
 	}
 
+	/**
+	 * Reads a register specification from a stream. A register specification is
+	 * either a digit or the character '-'.
+	 * @param reader the reader from which the specification is read.
+	 * @return The register number or -1.
+	 * @throws IOException if reading from the stream fails
+	 * @throws RuntimeException if the character read from the stream is not a
+	 *                          linefeed
+	 */
 	protected static void readcr(Reader reader) throws IOException
 	{
 		int readInt = reader.read();
@@ -459,7 +494,9 @@ public class Template
 	}
 
 	/**
-	 * writes an int to a stream in such a way that the int can be reliable read again.
+	 * writes an int to a stream in such a way that the int can be reliable read
+	 * again. This is done by writing the digits of the integer followed by a
+	 * terminator character (that may not be a digit).
 	 * @param writer the stream to which to write.
 	 * @param value the int value to be written.
 	 * @param terminator a terminating character written after the value.
