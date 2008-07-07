@@ -256,6 +256,30 @@ public class Template
 		}
 	}
 
+	public static String loadsource(Reader reader) throws IOException
+	{
+		BufferedReader bufferedReader = new BufferedReader(reader);
+		bufferedReader.readLine(); // skip header (without checking)
+		bufferedReader.readLine(); // skip version number (with checking)
+		readstr(bufferedReader, '<', '['); // skip start delimiter
+		readcr(bufferedReader);
+		readstr(bufferedReader, '>', ']'); // skip end delimiter
+		readcr(bufferedReader);
+		return readstr(bufferedReader, '\'', '"');
+	}
+
+	public static String loadsource(String bytecode)
+	{
+		try
+		{
+			return loadsource(new StringReader(bytecode));
+		}
+		catch (IOException ex) // can not happen when reading from a StringReader
+		{
+			return null;
+		}
+	}
+
 	public static Template load(Reader reader) throws IOException
 	{
 		Template retVal = new Template();
@@ -320,14 +344,13 @@ public class Template
 		return retVal;
 	}
 
-	public static Template loads(String bytecode)
+	public static Template load(String bytecode)
 	{
-		StringReader reader = new StringReader(bytecode);
 		try
 		{
-			return load(reader);
+			return load(new StringReader(bytecode));
 		}
-		catch (IOException ex) // can not happen, when reading from a StringReaders
+		catch (IOException ex) // can not happen, when reading from a StringReader
 		{
 			return null;
 		}
