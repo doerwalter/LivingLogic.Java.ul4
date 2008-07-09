@@ -28,40 +28,39 @@ public class Opcode
 	public static final int OC_GETSLICE12 = 23;
 	public static final int OC_GETSLICE1 = 24;
 	public static final int OC_GETSLICE2 = 25;
-	public static final int OC_GETSLICE = 26;
-	public static final int OC_PRINT = 27;
-	public static final int OC_FOR = 28;
-	public static final int OC_ENDFOR = 29;
-	public static final int OC_NOT = 30;
-	public static final int OC_NEG = 31;
-	public static final int OC_CONTAINS = 32;
-	public static final int OC_NOTCONTAINS = 33;
-	public static final int OC_EQ = 34;
-	public static final int OC_NE = 35;
-	public static final int OC_LT = 36;
-	public static final int OC_LE = 37;
-	public static final int OC_GT = 38;
-	public static final int OC_GE = 39;
-	public static final int OC_ADD = 40;
-	public static final int OC_SUB = 41;
-	public static final int OC_MUL = 42;
-	public static final int OC_FLOORDIV = 43;
-	public static final int OC_TRUEDIV = 44;
-	public static final int OC_AND = 45;
-	public static final int OC_OR = 46;
-	public static final int OC_MOD = 47;
-	public static final int OC_CALLFUNC0 = 48;
-	public static final int OC_CALLFUNC1 = 49;
-	public static final int OC_CALLFUNC2 = 50;
-	public static final int OC_CALLFUNC3 = 51;
-	public static final int OC_CALLMETH0 = 52;
-	public static final int OC_CALLMETH1 = 53;
-	public static final int OC_CALLMETH2 = 54;
-	public static final int OC_CALLMETH3 = 55;
-	public static final int OC_IF = 56;
-	public static final int OC_ELSE = 57;
-	public static final int OC_ENDIF = 58;
-	public static final int OC_RENDER = 59;
+	public static final int OC_PRINT = 26;
+	public static final int OC_FOR = 27;
+	public static final int OC_ENDFOR = 28;
+	public static final int OC_NOT = 29;
+	public static final int OC_NEG = 30;
+	public static final int OC_CONTAINS = 31;
+	public static final int OC_NOTCONTAINS = 32;
+	public static final int OC_EQ = 33;
+	public static final int OC_NE = 34;
+	public static final int OC_LT = 35;
+	public static final int OC_LE = 36;
+	public static final int OC_GT = 37;
+	public static final int OC_GE = 38;
+	public static final int OC_ADD = 39;
+	public static final int OC_SUB = 40;
+	public static final int OC_MUL = 41;
+	public static final int OC_FLOORDIV = 42;
+	public static final int OC_TRUEDIV = 43;
+	public static final int OC_AND = 44;
+	public static final int OC_OR = 45;
+	public static final int OC_MOD = 46;
+	public static final int OC_CALLFUNC0 = 47;
+	public static final int OC_CALLFUNC1 = 48;
+	public static final int OC_CALLFUNC2 = 49;
+	public static final int OC_CALLFUNC3 = 50;
+	public static final int OC_CALLMETH0 = 51;
+	public static final int OC_CALLMETH1 = 52;
+	public static final int OC_CALLMETH2 = 53;
+	public static final int OC_CALLMETH3 = 54;
+	public static final int OC_IF = 55;
+	public static final int OC_ELSE = 56;
+	public static final int OC_ENDIF = 57;
+	public static final int OC_RENDER = 58;
 
 	public static final int CF0_NOW = 0;
 
@@ -175,8 +174,6 @@ public class Opcode
 			return OC_GETSLICE1;
 		else if (name.equals("getslice2"))
 			return OC_GETSLICE2;
-		else if (name.equals("getslice"))
-			return OC_GETSLICE;
 		else if (name.equals("print"))
 			return OC_PRINT;
 		else if (name.equals("for"))
@@ -431,8 +428,6 @@ public class Opcode
 			return "getslice1";
 		else if (code == OC_GETSLICE2)
 			return "getslice2";
-		else if (code == OC_GETSLICE)
-			return "getslice";
 		else if (code == OC_PRINT)
 			return "print";
 		else if (code == OC_FOR)

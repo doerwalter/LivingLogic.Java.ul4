@@ -902,9 +902,6 @@ public class Template
 						case Opcode.OC_GETSLICE2:
 							reg[code.r1] = Utils.getSlice(reg[code.r2], null, reg[code.r4]);
 							break;
-						case Opcode.OC_GETSLICE:
-							reg[code.r1] = Utils.getSlice(reg[code.r2], null, null);
-							break;
 						case Opcode.OC_NOT:
 							reg[code.r1] = Utils.getBool(reg[code.r2]) ? Boolean.FALSE : Boolean.TRUE;
 							break;
