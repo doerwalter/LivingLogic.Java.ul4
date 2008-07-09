@@ -1243,9 +1243,15 @@ public class Template
 							}
 							break;
 						case Opcode.OC_CALLMETH2:
-								throw new UnknownMethodException(code.arg);
+							switch (code.argcode)
+							{
+								case Opcode.CM2_REPLACE:
+									reg[code.r1] = Utils.replace(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+							}
+							break;
 						case Opcode.OC_CALLMETH3:
-								throw new UnknownMethodException(code.arg);
+							throw new UnknownMethodException(code.arg);
 						case Opcode.OC_RENDER:
 							subTemplateIterator = ((Template)templates.get(code.arg)).render((Map)reg[code.r1], templates);
 							if (subTemplateIterator.hasNext())

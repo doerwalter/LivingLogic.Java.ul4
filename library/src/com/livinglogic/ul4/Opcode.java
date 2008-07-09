@@ -111,6 +111,8 @@ public class Opcode
 	public static final int CM1_FIND = 7;
 	public static final int CM1_FORMAT = 8;
 
+	public static final int CM2_REPLACE = 0;
+
 	public int name;
 	public int r1;
 	public int r2;
@@ -372,7 +374,10 @@ public class Opcode
 
 	public static int callmeth2name2code(String name)
 	{
-		throw new UnknownMethodException(name);
+		if (name.equals("replace"))
+			return CM2_REPLACE;
+		else
+			throw new UnknownMethodException(name);
 	}
 
 	public static int callmeth3name2code(String name)

@@ -1108,6 +1108,13 @@ public class Utils
 		throw new UnsupportedOperationException("Can't call format on instance of " + obj.getClass() + " with format string instance of " + formatString.getClass() + "!");
 	}
 
+	public static Object replace(Object obj, Object arg1, Object arg2)
+	{
+		if (obj instanceof String && arg1 instanceof String && arg2 instanceof String)
+			return StringUtils.replace((String)obj, (String)arg1, (String)arg2);
+		throw new UnsupportedOperationException("Can't call replace on instance of " + obj.getClass() + "!");
+	}
+
 	public static Object items(Map obj)
 	{
 		return new MapItemIterator(obj);
