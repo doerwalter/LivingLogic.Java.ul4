@@ -62,20 +62,31 @@ public class Template
 		 * run through the loop body.
 		 */
 		public int iteratorRegSpec;
+
 		/**
-		 * The program counter (i.e. the index of the opcode in the {@link #opcodes} list)
-		 * where the loop started (i.e. the location of the FOR ocode).
+		 * The program counter (i.e. the index of the opcode in the
+		 * {@link #opcodes} list) where the loop started (i.e. the location of the
+		 * <code>for</code> opcode).
 		 */
-		public int pc;
+		public int pcFor;
+
+		/**
+		 * The program counter (i.e. the index of the opcode in the
+		 * {@link #opcodes} list) where the loop ends (i.e. the location of the
+		 * <code>endfor</code> opcode).
+		 */
+		public int pcEndFor;
+
 		/**
 		 * The iterator producing the values for the loop variable.
 		 */
 		public Iterator iterator;
 
-		public IteratorStackEntry(int iteratorRegSpec, int pc, Iterator iterator)
+		public IteratorStackEntry(int iteratorRegSpec, int pcFor, int pcEndFor, Iterator iterator)
 		{
 			this.iteratorRegSpec = iteratorRegSpec;
-			this.pc = pc;
+			this.pcFor = pcFor;
+			this.pcEndFor = pcEndFor;
 			this.iterator = iterator;
 		}
 	}
@@ -88,7 +99,7 @@ public class Template
 	/**
 	 * The version number used in the compiled format of the template.
 	 */
-	public static final String VERSION = "3";
+	public static final String VERSION = "4";
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
@@ -111,7 +122,7 @@ public class Template
 	public List opcodes;
 	
 	/**
-	 * The locate to be used when formatting int, float or date objects.
+	 * The locale to be used when formatting int, float or date objects.
 	 */ 
 	public Locale defaultLocale;
 
@@ -607,11 +618,19 @@ public class Template
 	}
 
 	/**
-	 * Annotates all control flow opcodes in the template with the jump location
-	 * (i.e. a FOR opcode gets annotated with the location of the associated
-	 * ENDFOR opcode, an IF opcode gets annotated with the location of
-	 * the associated ELSE or ENDIF opcode, an ELSE opcode gets annotated with
-	 * the location of ENDIF opcode).
+	 * Annotates all control flow opcodes in the template with a jump location.
+	 * <ul>
+	 * <li>(a <code>for</code> opcode gets annotated with the location of the
+	 * associated <code>endfor</code> opcode;</li>
+	 * <li>an <code>if</code> opcode gets annotated with the location of the
+	 * associated <code>else</code> or <code>endif</code> opcode;</li>
+	 * <li>an <code>else</code> opcode gets annotated with the location of
+	 * <code>endif</code> opcode;</li>
+	 * <li>a <code>break</code> opcode gets annotated with the location of next
+	 * opcode after the associated <code>endfor</code> opcode.</li>
+	 * <li>a <code>continue</code> opcode gets annotated with the location of next
+	 * opcode after the associated ENDFOR opcode.</li>
+	 * </ul>
 	 */
 	protected void annotate()
 	{
@@ -624,34 +643,125 @@ public class Template
 				switch (opcode.name)
 				{
 					case Opcode.OC_IF:
-						stack.add(new Integer(i));
-						break;
-					case Opcode.OC_ELSE:
-						((Opcode)opcodes.get(((Integer)stack.getLast()).intValue())).jump = i;
-						stack.set(stack.size()-1, new Integer(i));
-						break;
-					case Opcode.OC_ENDIF:
-						((Opcode)opcodes.get(((Integer)stack.getLast()).intValue())).jump = i;
-						stack.removeLast();
+						i = annotateIf(i, 0);
 						break;
 					case Opcode.OC_FOR:
-						stack.add(new Integer(i));
+						i = annotateFor(i, 0);
 						break;
+					case Opcode.OC_ELSE:
+						throw new BlockException("else outside if block");
+					case Opcode.OC_ENDIF:
+						throw new BlockException("endif outside if block");
 					case Opcode.OC_ENDFOR:
-						((Opcode)opcodes.get(((Integer)stack.getLast()).intValue())).jump = i;
-						stack.removeLast();
-						break;
+						throw new BlockException("endfor outside for loop");
+					case Opcode.OC_BREAK:
+						throw new BlockException("break outside for loop");
+					case Opcode.OC_CONTINUE:
+						throw new BlockException("continue outside for loop");
 				}
 			}
 			annotated = true;
 		}
 	}
 
+	protected int annotateIf(int ifStart, int forDepth)
+	{
+		int jump = ifStart;
+		for (int i = ifStart+1; i < opcodes.size(); ++i)
+		{
+			Opcode opcode = (Opcode)opcodes.get(i);
+			switch (opcode.name)
+			{
+				case Opcode.OC_IF:
+					i = annotateIf(i, forDepth);
+					break;
+				case Opcode.OC_FOR:
+					i = annotateFor(i, forDepth);
+					break;
+				case Opcode.OC_ELSE:
+					((Opcode)opcodes.get(jump)).jump = i;
+					jump = i;
+					break;
+				case Opcode.OC_ENDIF:
+					((Opcode)opcodes.get(jump)).jump = i;
+					return i;
+				case Opcode.OC_BREAK:
+					if (forDepth == 0)
+						throw new BlockException("break outside for loop");
+					break;
+				case Opcode.OC_CONTINUE:
+					if (forDepth == 0)
+						throw new BlockException("continue outside for loop");
+					break;
+				case Opcode.OC_ENDFOR:
+					throw new BlockException("endfor in if block");
+			}
+		}
+		throw new BlockException("unclosed if block");
+	}
+
+	protected int annotateFor(int loopStart, int forDepth)
+	{
+		++forDepth;
+		LinkedList breaks = new LinkedList();
+		LinkedList continues = new LinkedList();
+
+		for (int i = loopStart+1; i < opcodes.size(); ++i)
+		{
+			Opcode opcode = (Opcode)opcodes.get(i);
+			switch (opcode.name)
+			{
+				case Opcode.OC_IF:
+					i = annotateIf(i, forDepth);
+					break;
+				case Opcode.OC_FOR:
+					i = annotateFor(i, forDepth);
+					break;
+				case Opcode.OC_ELSE:
+					throw new BlockException("else in for loop");
+				case Opcode.OC_ENDIF:
+					throw new BlockException("endif in for loop");
+				case Opcode.OC_BREAK:
+					breaks.add(new Integer(i));
+					break;
+				case Opcode.OC_CONTINUE:
+					continues.add(new Integer(i));
+					break;
+				case Opcode.OC_ENDFOR:
+					int j;
+					int jump;
+					for (j = 0; i < breaks.size(); ++i)
+					{
+						jump = ((Integer)breaks.get(i)).intValue();
+						((Opcode)opcodes.get(jump)).jump = i;
+					}
+					for (j = 0; i < continues.size(); ++i)
+					{
+						jump = ((Integer)continues.get(i)).intValue();
+						((Opcode)opcodes.get(jump)).jump = i;
+					}
+					((Opcode)opcodes.get(loopStart)).jump = i;
+					return i;
+			}
+		}
+		throw new BlockException("unclosed loop");
+	}
+
+	public Iterator render()
+	{
+		return new Renderer(null, null);
+	}
+
+	public Iterator render(Map variables)
+	{
+		return new Renderer(variables, null);
+	}
+
 	/**
 	 * Renders the template.
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the template code.
-	 * @param templates a map containing other template object that can be called
+	 * @param templates a map containing other template objects that can be called
 	 *                  by the template via the <code>&lt;?render?&gt;</code> tag.
 	 * @return An iterator that returns the string output piece by piece.
 	 */
@@ -660,11 +770,21 @@ public class Template
 		return new Renderer(variables, templates);
 	}
 
+	public String renders()
+	{
+		return renders(null, null);
+	}
+
+	public String renders(Map variables)
+	{
+		return renders(variables, null);
+	}
+
 	/**
 	 * Renders the template and returns the resulting string.
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the template code.
-	 * @param templates a map containing other template object that can be called
+	 * @param templates a map containing other template objects that can be called
 	 *                  by the template via the <code>&lt;?render?&gt;</code> tag.
 	 * @return The render output as a string.
 	 */
@@ -759,7 +879,7 @@ public class Template
 		/**
 		 * Gets the next output chunk and stores it in {@link nextChunk}
 		 */
-		public void getNextChunk()
+		private void getNextChunk()
 		{
 			if (subTemplateIterator != null)
 			{
@@ -854,7 +974,7 @@ public class Template
 							if (iterator.hasNext())
 							{
 								reg[code.r1] = iterator.next();
-								iterators.add(new IteratorStackEntry(code.r1, pc, iterator));
+								iterators.add(new IteratorStackEntry(code.r1, pc, code.jump, iterator));
 							}
 							else
 							{
@@ -862,18 +982,33 @@ public class Template
 								continue;
 							}
 							break;
+						case Opcode.OC_BREAK:
+						{
+							IteratorStackEntry entry = (IteratorStackEntry)iterators.getLast();
+							pc = entry.pcEndFor;
+							iterators.removeLast();
+							break;
+						}
+						case Opcode.OC_CONTINUE:
+						{
+							IteratorStackEntry entry = (IteratorStackEntry)iterators.getLast();
+							pc = entry.pcEndFor;
+							// Fall through
+						}
 						case Opcode.OC_ENDFOR:
+						{
 							IteratorStackEntry entry = (IteratorStackEntry)iterators.getLast();
 							if (entry.iterator.hasNext())
 							{
 								reg[entry.iteratorRegSpec] = entry.iterator.next();
-								pc = entry.pc;
+								pc = entry.pcFor;
 							}
 							else
 							{
 								iterators.removeLast();
 							}
 							break;
+						}
 						case Opcode.OC_IF:
 							if (!Utils.getBool(reg[code.r1]))
 							{
@@ -885,7 +1020,7 @@ public class Template
 							pc = code.jump+1;
 							continue;
 						case Opcode.OC_ENDIF:
-							//Skip to next opcode
+							// Skip to next opcode
 							break;
 						case Opcode.OC_GETATTR:
 							reg[code.r1] = ((Map)reg[code.r2]).get(code.arg);
@@ -1140,7 +1275,7 @@ public class Template
 
 	public static List tokenizeTags(String source, String startdelim, String enddelim)
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(print|code|for|if|elif|else|end|render)(\\s*((.|\\n)*?)\\s*)?" + escapeREchars(enddelim));
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(print|code|for|if|elif|else|end|break|continue|render)(\\s*((.|\\n)*?)\\s*)?" + escapeREchars(enddelim));
 		LinkedList tags = new LinkedList();
 		Matcher matcher = tagPattern.matcher(source);
 		int pos = 0;

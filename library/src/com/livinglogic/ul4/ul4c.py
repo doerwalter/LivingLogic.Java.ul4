@@ -84,6 +84,20 @@ def _compile(template, tags):
 			elif location.type == "for":
 				parsefor(template, location)
 				stack.append(("for",))
+			elif location.type == "break":
+				for entry in stack:
+					if entry[0] == "for":
+						break
+				else:
+					raise BlockError("break outside of for loop")
+				template.opcode(ul4.Opcode.OC_BREAK, location)
+			elif location.type == "continue":
+				for entry in stack:
+					if entry[0] == "for":
+						break
+				else:
+					raise BlockError("continue outside of for loop")
+				template.opcode(ul4.Opcode.OC_CONTINUE, location)
 			elif location.type == "render":
 				parserender(template, location)
 			else: # Can't happen

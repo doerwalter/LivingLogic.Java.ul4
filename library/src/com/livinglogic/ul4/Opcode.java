@@ -29,38 +29,40 @@ public class Opcode
 	public static final int OC_GETSLICE1 = 24;
 	public static final int OC_GETSLICE2 = 25;
 	public static final int OC_PRINT = 26;
-	public static final int OC_FOR = 27;
-	public static final int OC_ENDFOR = 28;
-	public static final int OC_NOT = 29;
-	public static final int OC_NEG = 30;
-	public static final int OC_CONTAINS = 31;
-	public static final int OC_NOTCONTAINS = 32;
-	public static final int OC_EQ = 33;
-	public static final int OC_NE = 34;
-	public static final int OC_LT = 35;
-	public static final int OC_LE = 36;
-	public static final int OC_GT = 37;
-	public static final int OC_GE = 38;
-	public static final int OC_ADD = 39;
-	public static final int OC_SUB = 40;
-	public static final int OC_MUL = 41;
-	public static final int OC_FLOORDIV = 42;
-	public static final int OC_TRUEDIV = 43;
-	public static final int OC_AND = 44;
-	public static final int OC_OR = 45;
-	public static final int OC_MOD = 46;
-	public static final int OC_CALLFUNC0 = 47;
-	public static final int OC_CALLFUNC1 = 48;
-	public static final int OC_CALLFUNC2 = 49;
-	public static final int OC_CALLFUNC3 = 50;
-	public static final int OC_CALLMETH0 = 51;
-	public static final int OC_CALLMETH1 = 52;
-	public static final int OC_CALLMETH2 = 53;
-	public static final int OC_CALLMETH3 = 54;
-	public static final int OC_IF = 55;
-	public static final int OC_ELSE = 56;
-	public static final int OC_ENDIF = 57;
-	public static final int OC_RENDER = 58;
+	public static final int OC_NOT = 27;
+	public static final int OC_NEG = 28;
+	public static final int OC_CONTAINS = 29;
+	public static final int OC_NOTCONTAINS = 30;
+	public static final int OC_EQ = 31;
+	public static final int OC_NE = 32;
+	public static final int OC_LT = 33;
+	public static final int OC_LE = 34;
+	public static final int OC_GT = 35;
+	public static final int OC_GE = 36;
+	public static final int OC_ADD = 37;
+	public static final int OC_SUB = 38;
+	public static final int OC_MUL = 39;
+	public static final int OC_FLOORDIV = 40;
+	public static final int OC_TRUEDIV = 41;
+	public static final int OC_AND = 42;
+	public static final int OC_OR = 43;
+	public static final int OC_MOD = 44;
+	public static final int OC_CALLFUNC0 = 45;
+	public static final int OC_CALLFUNC1 = 46;
+	public static final int OC_CALLFUNC2 = 47;
+	public static final int OC_CALLFUNC3 = 48;
+	public static final int OC_CALLMETH0 = 49;
+	public static final int OC_CALLMETH1 = 50;
+	public static final int OC_CALLMETH2 = 51;
+	public static final int OC_CALLMETH3 = 52;
+	public static final int OC_IF = 53;
+	public static final int OC_ELSE = 54;
+	public static final int OC_ENDIF = 55;
+	public static final int OC_FOR = 56;
+	public static final int OC_ENDFOR = 57;
+	public static final int OC_BREAK = 58;
+	public static final int OC_CONTINUE = 59;
+	public static final int OC_RENDER = 60;
 
 	public static final int CF0_NOW = 0;
 
@@ -176,10 +178,6 @@ public class Opcode
 			return OC_GETSLICE2;
 		else if (name.equals("print"))
 			return OC_PRINT;
-		else if (name.equals("for"))
-			return OC_FOR;
-		else if (name.equals("endfor"))
-			return OC_ENDFOR;
 		else if (name.equals("not"))
 			return OC_NOT;
 		else if (name.equals("neg"))
@@ -238,6 +236,14 @@ public class Opcode
 			return OC_ELSE;
 		else if (name.equals("endif"))
 			return OC_ENDIF;
+		else if (name.equals("for"))
+			return OC_FOR;
+		else if (name.equals("endfor"))
+			return OC_ENDFOR;
+		else if (name.equals("break"))
+			return OC_BREAK;
+		else if (name.equals("continue"))
+			return OC_CONTINUE;
 		else if (name.equals("render"))
 			return OC_RENDER;
 		else
@@ -430,10 +436,6 @@ public class Opcode
 			return "getslice2";
 		else if (code == OC_PRINT)
 			return "print";
-		else if (code == OC_FOR)
-			return "for";
-		else if (code == OC_ENDFOR)
-			return "endfor";
 		else if (code == OC_NOT)
 			return "not";
 		else if (code == OC_NEG)
@@ -492,6 +494,14 @@ public class Opcode
 			return "else";
 		else if (code == OC_ENDIF)
 			return "endif";
+		else if (code == OC_FOR)
+			return "for";
+		else if (code == OC_ENDFOR)
+			return "endfor";
+		else if (code == OC_BREAK)
+			return "break";
+		else if (code == OC_CONTINUE)
+			return "continue";
 		else if (code == OC_RENDER)
 			return "render";
 		else
