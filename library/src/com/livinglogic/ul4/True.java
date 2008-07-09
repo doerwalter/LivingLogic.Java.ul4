@@ -17,6 +17,11 @@ public class True extends Const
 		return "true";
 	}
 
+	public Object getValue()
+	{
+		return Boolean.TRUE;
+	}
+
 	public String toString()
 	{
 		return "constant True";

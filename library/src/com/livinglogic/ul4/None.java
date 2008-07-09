@@ -17,6 +17,11 @@ public class None extends Const
 		return "none";
 	}
 
+	public Object getValue()
+	{
+		return null;
+	}
+
 	public String toString()
 	{
 		return "constant None";

@@ -15,6 +15,11 @@ public class Int extends AST
 		return "int";
 	}
 
+	public Object getValue()
+	{
+		return new Integer(value);
+	}
+
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();

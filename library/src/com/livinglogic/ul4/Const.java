@@ -9,6 +9,8 @@ public abstract class Const extends AST
 
 	abstract public int getType();
 
+	abstract public Object getValue();
+
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import org.apache.commons.lang.StringUtils;
 
 class Range extends AbstractList
 {
@@ -236,18 +237,12 @@ public class Utils
 
 	public static Object mul(String arg1, Integer arg2)
 	{
-		return mul(arg2, arg1);
+		return StringUtils.repeat(arg1, arg2.intValue());
 	}
 
 	public static Object mul(Integer arg1, String arg2)
 	{
-		int count = arg1.intValue();
-		StringBuffer retValBuffer = new StringBuffer(count * arg2.length());
-		for (int i = 0; i < count; i++)
-		{
-			retValBuffer.append(arg2);
-		}
-		return retValBuffer.toString();
+		return StringUtils.repeat(arg2, arg1.intValue());
 	}
 
 	public static Object mul(Integer arg1, Integer arg2)
@@ -408,12 +403,7 @@ public class Utils
 
 	public static Object getSlice(String arg1, Integer arg2, Integer arg3)
 	{
-		int size = arg1.length();
-		int start = getSliceStartPos(size, arg2);
-		int end = getSliceEndPos(size, arg3);
-		if (end < start)
-			end = start;
-		return arg1.substring(start, end);
+		return StringUtils.substring(arg1, arg2, arg3);
 	}
 
 	public static Object getSlice(Object arg1, Object arg2, Object arg3)
@@ -479,14 +469,6 @@ public class Utils
 		else if (obj instanceof Map)
 			return getBool((Map)obj);
 		return true;
-	}
-
-	public static boolean eq(Object obj1, Object obj2)
-	{
-		if (null != obj1)
-			return obj1.equals(obj2);
-		else
-			return (null == obj2);
 	}
 
 	public static boolean lt(Object obj1, Object obj2)
@@ -582,11 +564,6 @@ public class Utils
 			}
 		}
 		return sb.toString();
-	}
-
-	public static String toString(Object obj)
-	{
-		return obj != null ? obj.toString() : "";
 	}
 
 	public static Object toInteger(String obj)

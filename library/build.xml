@@ -27,6 +27,7 @@
 		<javac srcdir="${src}" destdir="${build}" debug="on">
 			<classpath>
 				<pathelement path="jython.jar" />
+				<pathelement path="commons-lang-2.4.jar" />
 				<pathelement path="${classpath}" />
 				<pathelement location="${build}" />
 			</classpath>

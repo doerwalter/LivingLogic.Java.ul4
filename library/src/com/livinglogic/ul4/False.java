@@ -17,6 +17,11 @@ public class False extends Const
 		return "false";
 	}
 
+	public Object getValue()
+	{
+		return Boolean.FALSE;
+	}
+
 	public String toString()
 	{
 		return "constant False";

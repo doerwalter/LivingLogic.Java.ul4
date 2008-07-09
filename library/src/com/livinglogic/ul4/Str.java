@@ -1,6 +1,6 @@
 package com.livinglogic.ul4;
 
-public class Str extends AST
+public class Str extends Const
 {
 	protected String value;
 
@@ -10,9 +10,19 @@ public class Str extends AST
 		this.value = value;
 	}
 
+	public int getType()
+	{
+		return Opcode.OC_LOADSTR;
+	}
+
 	public String getTokenType()
 	{
 		return "str";
+	}
+
+	public Object getValue()
+	{
+		return value;
 	}
 
 	public int compile(Template template, Registers registers, Location location)

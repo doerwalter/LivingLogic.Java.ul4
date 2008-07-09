@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import org.apache.commons.lang.ObjectUtils;
 
 public class Template
 {
@@ -906,7 +907,7 @@ public class Template
 							++pc;
 							return;
 						case Opcode.OC_PRINT:
-							nextChunk = Utils.toString(reg[code.r1]);
+							nextChunk = ObjectUtils.toString(reg[code.r1]);
 							++pc;
 							return;
 						case Opcode.OC_LOADNONE:
@@ -1044,10 +1045,10 @@ public class Template
 							reg[code.r1] = Utils.neg(reg[code.r2]);
 							break;
 						case Opcode.OC_EQ:
-							reg[code.r1] = Utils.eq(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
+							reg[code.r1] = ObjectUtils.equals(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
 							break;
 						case Opcode.OC_NE:
-							reg[code.r1] = Utils.eq(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
+							reg[code.r1] = ObjectUtils.equals(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
 							break;
 						case Opcode.OC_LT:
 							reg[code.r1] = Utils.lt(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
@@ -1103,7 +1104,7 @@ public class Template
 									reg[code.r1] = Utils.xmlescape(reg[code.r2]);
 									break;
 								case Opcode.CF1_STR:
-									reg[code.r1] = Utils.toString(reg[code.r2]);
+									reg[code.r1] = ObjectUtils.toString(reg[code.r2]);
 									break;
 								case Opcode.CF1_INT:
 									reg[code.r1] = Utils.toInteger(reg[code.r2]);
