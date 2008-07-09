@@ -1,5 +1,5 @@
 exp-1:
 ------
-file format: 2
+file format: 3
 
 * Initial version.
