@@ -802,32 +802,6 @@ public class Utils
 		throw new UnsupportedOperationException("Can't build a range for parameters: instances of " + obj1.getClass() + " and " + obj2.getClass() + " and " + obj3.getClass() + "!");
 	}
 
-	public static Object split(String obj)
-	{
-		LinkedList retVal = new LinkedList();
-		int length = obj.length();
-		int pos1 = 0;
-		int pos2;
-		while (pos1 < length)
-		{
-			while ((pos1 < length) && Character.isWhitespace(obj.charAt(pos1)))
-			{
-				pos1++;
-			}
-			if (pos1 < length)
-			{
-				pos2 = pos1 + 1;
-				while ((pos2 < length) && !Character.isWhitespace(obj.charAt(pos2)))
-				{
-					pos2++;
-				}
-				retVal.add(obj.substring(pos1, pos2));
-				pos1 = pos2;
-			}
-		}
-		return retVal;
-	}
-
 	public static Object split(String obj1, String obj2)
 	{
 		LinkedList retVal = new LinkedList();
@@ -867,7 +841,7 @@ public class Utils
 	public static Object split(Object obj)
 	{
 		if (obj instanceof String)
-			return split((String)obj);
+			return StringUtils.split(obj);
 		throw new UnsupportedOperationException("Can't split instance of " + obj.getClass() + "!");
 	}
 
@@ -878,62 +852,24 @@ public class Utils
 		throw new UnsupportedOperationException("Can't split instance of " + obj1.getClass() + " with delimiter instance of " + obj2.getClass() + "!");
 	}
 
-	protected static int getFirstNonWhitespaceIndex(String obj)
-	{
-		int retVal = 0;
-		int length = obj.length();
-		while ((retVal < length) && Character.isWhitespace(obj.charAt(retVal)))
-		{
-			retVal++;
-		}
-		return retVal;
-	}
-
-	protected static int getFirstTrailingWhitespaceIndex(String obj)
-	{
-		int retVal;
-		int length = obj.length();
-		retVal = length;
-		while ((retVal > 0) && Character.isWhitespace(obj.charAt(retVal - 1)))
-		{
-			retVal--;
-		}
-		return retVal;
-	}
-
-	public static Object strip(String obj)
-	{
-		return obj.substring(getFirstNonWhitespaceIndex(obj), getFirstTrailingWhitespaceIndex(obj));
-	}
-
 	public static Object strip(Object obj)
 	{
 		if (obj instanceof String)
-			return strip((String)obj);
+			return StringUtils.strip((String)obj);
 		throw new UnsupportedOperationException("Can't strip instance of " + obj.getClass() + "!");
-	}
-
-	public static Object lstrip(String obj)
-	{
-		return obj.substring(getFirstNonWhitespaceIndex(obj));
 	}
 
 	public static Object lstrip(Object obj)
 	{
 		if (obj instanceof String)
-			return lstrip((String)obj);
+		return StringUtils.stripStart((String)obj);
 		throw new UnsupportedOperationException("Can't lstrip instance of " + obj.getClass() + "!");
-	}
-
-	public static Object rstrip(String obj)
-	{
-		return obj.substring(0, getFirstTrailingWhitespaceIndex(obj));
 	}
 
 	public static Object rstrip(Object obj)
 	{
 		if (obj instanceof String)
-			return rstrip((String)obj);
+		return StringUtils.stripEnd((StringU)obj);
 		throw new UnsupportedOperationException("Can't rstrip instance of " + obj.getClass() + "!");
 	}
 
