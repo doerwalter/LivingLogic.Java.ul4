@@ -88,6 +88,7 @@ public class Opcode
 	public static final int CF1_BIN = 19;
 	public static final int CF1_SORTED = 20;
 	public static final int CF1_RANGE = 21;
+	public static final int CF1_CSVESCAPE = 22;
 
 	public static final int CF2_RANGE = 0;
 
@@ -307,6 +308,8 @@ public class Opcode
 			return CF1_SORTED;
 		else if (name.equals("range"))
 			return CF1_RANGE;
+		if (name.equals("csvescape"))
+			return CF1_CSVESCAPE;
 		else
 			throw new UnknownFunctionException(name);
 	}

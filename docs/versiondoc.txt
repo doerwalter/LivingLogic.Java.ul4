@@ -1,5 +1,11 @@
+exp-4:
+-----
+Comments:
+* Added support for a csvescape() function.
+
+
 exp-3:
-------
+-----
 Comments:
 * The org.apache.commons package is now used to implement some of the operations.
 * Added support for a string method replace().

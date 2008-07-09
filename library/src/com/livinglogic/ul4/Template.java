@@ -1103,6 +1103,9 @@ public class Template
 								case Opcode.CF1_XMLESCAPE:
 									reg[code.r1] = Utils.xmlescape(reg[code.r2]);
 									break;
+								case Opcode.CF1_CSVESCAPE:
+									reg[code.r1] = Utils.csvescape(reg[code.r2]);
+									break;
 								case Opcode.CF1_STR:
 									reg[code.r1] = ObjectUtils.toString(reg[code.r2]);
 									break;

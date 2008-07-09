@@ -516,7 +516,7 @@ public class Utils
 		throw new RuntimeException("Can't determine presence for instance of " + obj.getClass() + " in container instance of class " + container.getClass() + "!");
 	}
 
-	public static Object xmlescape(Object obj)
+	public static String xmlescape(Object obj)
 	{
 		if (obj == null)
 			return "";
@@ -565,6 +565,15 @@ public class Utils
 			}
 		}
 		return sb.toString();
+	}
+
+	public static String csvescape(Object obj)
+	{
+		if (obj == null)
+			return "";
+		if (!(obj instanceof String))
+			obj = repr(obj);
+		return StringEscapeUtils.escapeCsv((String)obj);
 	}
 
 	public static Object toInteger(String obj)
