@@ -88,7 +88,7 @@ public class Template
 	/**
 	 * The version number used in the compiled format of the template.
 	 */
-	public static final String VERSION = "2";
+	public static final String VERSION = "3";
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
