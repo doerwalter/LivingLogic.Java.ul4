@@ -591,7 +591,6 @@ public class Template
 
 	/**
 	 * writes the Template object to a string.
-	 * @param writer the stream to which to write.
 	 * @return The string containing the template in compiled format.
 	 */
 	public String dumps()
