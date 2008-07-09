@@ -13,6 +13,7 @@ import java.util.Vector;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 
 class Range extends AbstractList
 {
@@ -599,6 +600,62 @@ public class Utils
 		throw new UnsupportedOperationException("Can't convert instance of " + obj.getClass() + " to an integer!");
 	}
 
+	public static String repr(Object obj)
+	{
+		if (obj == null)
+			return "None";
+		else if (obj instanceof Boolean)
+			return ((Boolean)obj).booleanValue() ? "True" : "False";
+		else if (obj instanceof Integer)
+			return String.valueOf(((Integer)obj).intValue());
+		else if (obj instanceof Double)
+			return String.valueOf(((Double)obj).doubleValue());
+		else if (obj instanceof String)
+			return new StringBuffer()
+				.append("\"")
+				.append(StringEscapeUtils.escapeJava(((String)obj)))
+				.append("\"")
+				.toString();
+		else if (obj instanceof Date)
+			return isoformat((Date)obj);
+		else if (obj instanceof Collection)
+		{
+			StringBuffer sb = new StringBuffer();
+			sb.append("[");
+			boolean first = true;
+			for (Iterator iter = ((Collection)obj).iterator(); iter.hasNext();)
+			{
+				if (first)
+					first = false;
+				else
+					sb.append(", ");
+				sb.append(repr(iter.next()));
+			}
+			sb.append("]");
+			return sb.toString();
+		}
+		else if (obj instanceof Map)
+		{
+			StringBuffer sb = new StringBuffer();
+			sb.append("{");
+			boolean first = true;
+			for (Iterator iter = ((Map)obj).entrySet().iterator(); iter.hasNext();)
+			{
+				if (first)
+					first = false;
+				else
+					sb.append(", ");
+				Map.Entry entry = (Map.Entry)iter.next();
+				sb.append(repr(entry.getKey()));
+				sb.append(": ");
+				sb.append(repr(entry.getValue()));
+			}
+			sb.append("}");
+			return sb.toString();
+		}
+		return null;
+	}
+	
 	public static Object length(String obj)
 	{
 		return new Integer(obj.length());
@@ -841,7 +898,7 @@ public class Utils
 	public static Object split(Object obj)
 	{
 		if (obj instanceof String)
-			return StringUtils.split(obj);
+			return StringUtils.split((String)obj);
 		throw new UnsupportedOperationException("Can't split instance of " + obj.getClass() + "!");
 	}
 
@@ -862,14 +919,14 @@ public class Utils
 	public static Object lstrip(Object obj)
 	{
 		if (obj instanceof String)
-		return StringUtils.stripStart((String)obj);
+			return StringUtils.stripStart((String)obj, null);
 		throw new UnsupportedOperationException("Can't lstrip instance of " + obj.getClass() + "!");
 	}
 
 	public static Object rstrip(Object obj)
 	{
 		if (obj instanceof String)
-		return StringUtils.stripEnd((StringU)obj);
+			return StringUtils.stripEnd((String)obj, null);
 		throw new UnsupportedOperationException("Can't rstrip instance of " + obj.getClass() + "!");
 	}
 
@@ -899,12 +956,12 @@ public class Utils
 
 	public static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy.MM.dd'T'HH:mm:ss.SSS'000'");
 
-	public static Object isoformat(Date obj)
+	public static String isoformat(Date obj)
 	{
 		return isoDateFormatter.format(obj);
 	}
 
-	public static Object isoformat(Object obj)
+	public static String isoformat(Object obj)
 	{
 		if (obj instanceof Date)
 			return isoformat((Date)obj);

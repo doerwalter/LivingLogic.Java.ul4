@@ -68,25 +68,26 @@ public class Opcode
 
 	public static final int CF1_XMLESCAPE = 0;
 	public static final int CF1_STR = 1;
-	public static final int CF1_INT = 2;
-	public static final int CF1_BOOL = 3;
-	public static final int CF1_LEN = 4;
-	public static final int CF1_ENUMERATE = 5;
-	public static final int CF1_ISNONE = 6;
-	public static final int CF1_ISSTR = 7;
-	public static final int CF1_ISINT = 8;
-	public static final int CF1_ISFLOAT = 9;
-	public static final int CF1_ISBOOL = 10;
-	public static final int CF1_ISDATE = 11;
-	public static final int CF1_ISLIST = 12;
-	public static final int CF1_ISDICT = 13;
-	public static final int CF1_CHR = 14;
-	public static final int CF1_ORD = 15;
-	public static final int CF1_HEX = 16;
-	public static final int CF1_OCT = 17;
-	public static final int CF1_BIN = 18;
-	public static final int CF1_SORTED = 19;
-	public static final int CF1_RANGE = 20;
+	public static final int CF1_REPR = 2;
+	public static final int CF1_INT = 3;
+	public static final int CF1_BOOL = 4;
+	public static final int CF1_LEN = 5;
+	public static final int CF1_ENUMERATE = 6;
+	public static final int CF1_ISNONE = 7;
+	public static final int CF1_ISSTR = 8;
+	public static final int CF1_ISINT = 9;
+	public static final int CF1_ISFLOAT = 10;
+	public static final int CF1_ISBOOL = 11;
+	public static final int CF1_ISDATE = 12;
+	public static final int CF1_ISLIST = 13;
+	public static final int CF1_ISDICT = 14;
+	public static final int CF1_CHR = 15;
+	public static final int CF1_ORD = 16;
+	public static final int CF1_HEX = 17;
+	public static final int CF1_OCT = 18;
+	public static final int CF1_BIN = 19;
+	public static final int CF1_SORTED = 20;
+	public static final int CF1_RANGE = 21;
 
 	public static final int CF2_RANGE = 0;
 
@@ -266,6 +267,8 @@ public class Opcode
 			return CF1_XMLESCAPE;
 		else if (name.equals("str"))
 			return CF1_STR;
+		else if (name.equals("repr"))
+			return CF1_REPR;
 		else if (name.equals("int"))
 			return CF1_INT;
 		else if (name.equals("bool"))

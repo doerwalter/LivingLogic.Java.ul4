@@ -13,7 +13,7 @@ public class Main
 
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?for i in [1,2,3,4]?><?for j in [1,2,3,4]?><?print j?>, <?if j>=i?><?break?><?end if?><?end for?><?if i>=3?><?break?><?end if?>\n<?end for?>");
+		Template tmpl = Compiler.compile("<?for o in [None, True, False, 42, 4.2, 'fo\\'\"\\r\\n', now(), [0, 1, None], {1: 'eins', 2: 'zwei', 3: 'drei'}]?><?print repr(o)?>\n<?end for?>");
 		long start = new Date().getTime();
 		String output = tmpl.renders();
 		System.out.println("rendered " + (time()-start));

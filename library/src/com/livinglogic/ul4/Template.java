@@ -1106,6 +1106,9 @@ public class Template
 								case Opcode.CF1_STR:
 									reg[code.r1] = ObjectUtils.toString(reg[code.r2]);
 									break;
+								case Opcode.CF1_REPR:
+									reg[code.r1] = Utils.repr(reg[code.r2]);
+									break;
 								case Opcode.CF1_INT:
 									reg[code.r1] = Utils.toInteger(reg[code.r2]);
 									break;
