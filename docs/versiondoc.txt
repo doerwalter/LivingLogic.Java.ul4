@@ -1,8 +1,9 @@
-HEAD:
+exp-3:
 ------
 Comments:
 * The org.apache.commons package is now used to implement some of the operations.
-* Added support for a string method replace.
+* Added support for a string method replace().
+* Added support for a repr() function.
 
 
 exp-2:
