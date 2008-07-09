@@ -36,28 +36,32 @@ public class Opcode
 	public static final int OC_NEG = 31;
 	public static final int OC_CONTAINS = 32;
 	public static final int OC_NOTCONTAINS = 33;
-	public static final int OC_EQUALS = 34;
-	public static final int OC_NOTEQUALS = 35;
-	public static final int OC_ADD = 36;
-	public static final int OC_SUB = 37;
-	public static final int OC_MUL = 38;
-	public static final int OC_FLOORDIV = 39;
-	public static final int OC_TRUEDIV = 40;
-	public static final int OC_AND = 41;
-	public static final int OC_OR = 42;
-	public static final int OC_MOD = 43;
-	public static final int OC_CALLFUNC0 = 44;
-	public static final int OC_CALLFUNC1 = 45;
-	public static final int OC_CALLFUNC2 = 46;
-	public static final int OC_CALLFUNC3 = 47;
-	public static final int OC_CALLMETH0 = 48;
-	public static final int OC_CALLMETH1 = 49;
-	public static final int OC_CALLMETH2 = 50;
-	public static final int OC_CALLMETH3 = 51;
-	public static final int OC_IF = 52;
-	public static final int OC_ELSE = 53;
-	public static final int OC_ENDIF = 54;
-	public static final int OC_RENDER = 55;
+	public static final int OC_EQ = 34;
+	public static final int OC_NE = 35;
+	public static final int OC_LT = 36;
+	public static final int OC_LE = 37;
+	public static final int OC_GT = 38;
+	public static final int OC_GE = 39;
+	public static final int OC_ADD = 40;
+	public static final int OC_SUB = 41;
+	public static final int OC_MUL = 42;
+	public static final int OC_FLOORDIV = 43;
+	public static final int OC_TRUEDIV = 44;
+	public static final int OC_AND = 45;
+	public static final int OC_OR = 46;
+	public static final int OC_MOD = 47;
+	public static final int OC_CALLFUNC0 = 48;
+	public static final int OC_CALLFUNC1 = 49;
+	public static final int OC_CALLFUNC2 = 50;
+	public static final int OC_CALLFUNC3 = 51;
+	public static final int OC_CALLMETH0 = 52;
+	public static final int OC_CALLMETH1 = 53;
+	public static final int OC_CALLMETH2 = 54;
+	public static final int OC_CALLMETH3 = 55;
+	public static final int OC_IF = 56;
+	public static final int OC_ELSE = 57;
+	public static final int OC_ENDIF = 58;
+	public static final int OC_RENDER = 59;
 
 	public static final int CF0_NOW = 0;
 
@@ -187,10 +191,18 @@ public class Opcode
 			return OC_CONTAINS;
 		else if (name.equals("notcontains"))
 			return OC_NOTCONTAINS;
-		else if (name.equals("equals"))
-			return OC_EQUALS;
-		else if (name.equals("notequals"))
-			return OC_NOTEQUALS;
+		else if (name.equals("eq"))
+			return OC_EQ;
+		else if (name.equals("ne"))
+			return OC_NE;
+		else if (name.equals("lt"))
+			return OC_LT;
+		else if (name.equals("le"))
+			return OC_LE;
+		else if (name.equals("gt"))
+			return OC_GT;
+		else if (name.equals("ge"))
+			return OC_GE;
 		else if (name.equals("add"))
 			return OC_ADD;
 		else if (name.equals("sub"))
@@ -431,14 +443,22 @@ public class Opcode
 			return "not";
 		else if (code == OC_NEG)
 			return "neg";
+		else if (code == OC_EQ)
+			return "eq";
+		else if (code == OC_NE)
+			return "ne";
+		else if (code == OC_LT)
+			return "lt";
+		else if (code == OC_LE)
+			return "le";
+		else if (code == OC_GT)
+			return "gt";
+		else if (code == OC_GE)
+			return "ge";
 		else if (code == OC_CONTAINS)
 			return "contains";
 		else if (code == OC_NOTCONTAINS)
 			return "notcontains";
-		else if (code == OC_EQUALS)
-			return "equals";
-		else if (code == OC_NOTEQUALS)
-			return "notequals";
 		else if (code == OC_ADD)
 			return "add";
 		else if (code == OC_SUB)

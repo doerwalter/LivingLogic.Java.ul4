@@ -323,17 +323,41 @@ class ExprParser(spark.GenericParser):
 		return ul4.Sub(obj1.start, obj2.end, obj1, obj2)
 	expr_sub.spark = ['expr5 ::= expr5 - expr5']
 
-	def expr_equal(self, (obj1, _0, obj2)):
+	def expr_eq(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value == obj2.value)
-		return ul4.Equal(obj1.start, obj2.end, obj1, obj2)
-	expr_equal.spark = ['expr4 ::= expr4 == expr4']
+		return ul4.EQ(obj1.start, obj2.end, obj1, obj2)
+	expr_eq.spark = ['expr4 ::= expr4 == expr4']
 
-	def expr_notequal(self, (obj1, _0, obj2)):
+	def expr_ne(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value != obj2.value)
-		return ul4.NotEqual(obj1.start, obj2.end, obj1, obj2)
-	expr_notequal.spark = ['expr4 ::= expr4 != expr4']
+		return ul4.NE(obj1.start, obj2.end, obj1, obj2)
+	expr_ne.spark = ['expr4 ::= expr4 != expr4']
+
+	def expr_lt(self, (obj1, _0, obj2)):
+		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+			return self.makeconst(obj1.start, obj2.end, obj1.value < obj2.value)
+		return ul4.LT(obj1.start, obj2.end, obj1, obj2)
+	expr_lt.spark = ['expr4 ::= expr4 < expr4']
+
+	def expr_le(self, (obj1, _0, obj2)):
+		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+			return self.makeconst(obj1.start, obj2.end, obj1.value <= obj2.value)
+		return ul4.LE(obj1.start, obj2.end, obj1, obj2)
+	expr_le.spark = ['expr4 ::= expr4 <= expr4']
+
+	def expr_gt(self, (obj1, _0, obj2)):
+		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+			return self.makeconst(obj1.start, obj2.end, obj1.value > obj2.value)
+		return ul4.GT(obj1.start, obj2.end, obj1, obj2)
+	expr_gt.spark = ['expr4 ::= expr4 > expr4']
+
+	def expr_ge(self, (obj1, _0, obj2)):
+		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+			return self.makeconst(obj1.start, obj2.end, obj1.value >= obj2.value)
+		return ul4.GE(obj1.start, obj2.end, obj1, obj2)
+	expr_ge.spark = ['expr4 ::= expr4 >= expr4']
 
 	def expr_contains(self, (obj, _0, container)):
 		if isinstance(obj, ul4.Const) and isinstance(container, ul4.Const): # Constant folding

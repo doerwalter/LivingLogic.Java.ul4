@@ -36,7 +36,7 @@ public class Template
 	static
 	{
 		// Initializes regular expressions
-		tokenPattern = Pattern.compile("\\(|\\)|\\[|\\]|\\{|\\}|\\.|,|==|\\!=|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*|//|/");
+		tokenPattern = Pattern.compile("\\(|\\)|\\[|\\]|\\{|\\}|\\.|,|==|\\!=|<=|<|>=|>|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*|//|/");
 		namePattern = Pattern.compile("[a-zA-Z_][\\w]*");
 		// We don't have negatve numbers, this is handled by constant folding in the AST for unary minus
 		floatPattern = Pattern.compile("(\\d+(\\.\\d*)?[eE][+-]?\\d+|\\d+\\.\\d*([eE][+-]?\\d+)?)");
@@ -343,10 +343,8 @@ public class Template
 	}
 
 	/**
-	 * Reads a register specification from a stream. A register specification is
-	 * either a digit or the character '-'.
-	 * @param reader the reader from which the specification is read.
-	 * @return The register number or -1.
+	 * Reads a linefeed from a stream.
+	 * @param reader the reader from which the linefeed is read.
 	 * @throws IOException if reading from the stream fails
 	 * @throws RuntimeException if the character read from the stream is not a
 	 *                          linefeed
@@ -914,14 +912,23 @@ public class Template
 						case Opcode.OC_NEG:
 							reg[code.r1] = Utils.neg(reg[code.r2]);
 							break;
-						case Opcode.OC_EQUALS:
-							reg[code.r1] = Utils.equals(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
+						case Opcode.OC_EQ:
+							reg[code.r1] = Utils.eq(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
 							break;
-						case Opcode.OC_NOTEQUALS:
-							reg[code.r1] = Utils.equals(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
+						case Opcode.OC_NE:
+							reg[code.r1] = Utils.eq(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
 							break;
-						case Opcode.OC_CONTAINS:
-							reg[code.r1] = Utils.contains(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
+						case Opcode.OC_LT:
+							reg[code.r1] = Utils.lt(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
+							break;
+						case Opcode.OC_LE:
+							reg[code.r1] = Utils.le(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
+							break;
+						case Opcode.OC_GT:
+							reg[code.r1] = Utils.le(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
+							break;
+						case Opcode.OC_GE:
+							reg[code.r1] = Utils.lt(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
 							break;
 						case Opcode.OC_NOTCONTAINS:
 							reg[code.r1] = Utils.contains(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;

@@ -481,12 +481,36 @@ public class Utils
 		return true;
 	}
 
-	public static boolean equals(Object obj1, Object obj2)
+	public static boolean eq(Object obj1, Object obj2)
 	{
 		if (null != obj1)
 			return obj1.equals(obj2);
 		else
 			return (null == obj2);
+	}
+
+	public static boolean lt(Object obj1, Object obj2)
+	{
+		if (null != obj1)
+		{
+			if (null != obj2)
+				return ((Comparable)obj1).compareTo(obj2) < 0;
+		}
+		else if (null == obj2)
+			return false;
+		throw new RuntimeException("Can't compare object to null!");
+	}
+
+	public static boolean le(Object obj1, Object obj2)
+	{
+		if (null != obj1)
+		{
+			if (null != obj2)
+				return ((Comparable)obj1).compareTo(obj2) <= 0;
+		}
+		else if (null == obj2)
+			return true;
+		throw new RuntimeException("Can't compare object to null!");
 	}
 
 	public static boolean contains(String obj, String container)
