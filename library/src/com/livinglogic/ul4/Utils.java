@@ -404,7 +404,7 @@ public class Utils
 
 	public static Object getSlice(String arg1, Integer arg2, Integer arg3)
 	{
-		return StringUtils.substring(arg1, arg2, arg3);
+		return StringUtils.substring(arg1, arg2.intValue(), arg3.intValue());
 	}
 
 	public static Object getSlice(Object arg1, Object arg2, Object arg3)
