@@ -289,12 +289,6 @@ class ExprParser(spark.GenericParser):
 		return ul4.GetSlice2(expr.start, _2.end, expr, index2)
 	expr_getslice2.spark = ['expr8 ::= expr8 [ : expr0 ]']
 
-	def expr_getslice(self, (expr, _0, _1, _2)):
-		if isinstance(expr, ul4.Const): # Constant folding
-			return self.makeconst(expr.start, _2.end, expr.value[:])
-		return ul4.GetSlice(expr.start, _2.end, expr)
-	expr_getslice.spark = ['expr8 ::= expr8 [ : ]']
-
 	def expr_neg(self, (_0, expr)):
 		if isinstance(expr, ul4.Const): # Constant folding
 			return self.makeconst(_0.start, expr.end, -expr.value)
