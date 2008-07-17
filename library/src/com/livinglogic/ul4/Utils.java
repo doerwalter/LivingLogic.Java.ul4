@@ -965,7 +965,7 @@ public class Utils
 
 	public static Object capitalize(String obj)
 	{
-		return Character.toTitleCase(obj.charAt(0)) + obj.substring(1).toLowerCase();
+		return String.valueOf(Character.toTitleCase(obj.charAt(0))) + obj.substring(1).toLowerCase();
 	}
 
 	public static Object capitalize(Object obj)
