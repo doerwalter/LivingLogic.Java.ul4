@@ -90,8 +90,10 @@ public class Opcode
 	public static final int CF1_SORTED = 20;
 	public static final int CF1_RANGE = 21;
 	public static final int CF1_CSVESCAPE = 22;
+	public static final int CF1_GET = 23;
 
 	public static final int CF2_RANGE = 0;
+	public static final int CF2_GET = 1;
 
 	public static final int CF3_RANGE = 0;
 
@@ -114,8 +116,10 @@ public class Opcode
 	public static final int CM1_ENDSWITH = 6;
 	public static final int CM1_FIND = 7;
 	public static final int CM1_FORMAT = 8;
+	public static final int CM1_GET = 9;
 
 	public static final int CM2_REPLACE = 0;
+	public static final int CM2_GET = 1;
 
 	public int name;
 	public int r1;
@@ -312,8 +316,10 @@ public class Opcode
 			return CF1_SORTED;
 		else if (name.equals("range"))
 			return CF1_RANGE;
-		if (name.equals("csvescape"))
+		else if (name.equals("csvescape"))
 			return CF1_CSVESCAPE;
+		else if (name.equals("get"))
+			return CF1_GET;
 		else
 			throw new UnknownFunctionException(name);
 	}
@@ -322,6 +328,8 @@ public class Opcode
 	{
 		if (name.equals("range"))
 			return CF2_RANGE;
+		else if (name.equals("get"))
+			return CF2_GET;
 		else
 			throw new UnknownFunctionException(name);
 	}
@@ -380,6 +388,8 @@ public class Opcode
 			return CM1_FIND;
 		else if (name.equals("format"))
 			return CM1_FORMAT;
+		else if (name.equals("get"))
+			return CM1_GET;
 		else
 			throw new UnknownMethodException(name);
 	}
@@ -388,6 +398,8 @@ public class Opcode
 	{
 		if (name.equals("replace"))
 			return CM2_REPLACE;
+		else if (name.equals("get"))
+			return CM2_GET;
 		else
 			throw new UnknownMethodException(name);
 	}

@@ -637,7 +637,6 @@ public class Template
 	{
 		if (!annotated)
 		{
-			LinkedList stack = new LinkedList();
 			for (int i = 0; i < opcodes.size(); ++i)
 			{
 				Opcode opcode = (Opcode)opcodes.get(i);
@@ -731,14 +730,14 @@ public class Template
 				case Opcode.OC_ENDFOR:
 					int j;
 					int jump;
-					for (j = 0; i < breaks.size(); ++i)
+					for (j = 0; j < breaks.size(); ++j)
 					{
-						jump = ((Integer)breaks.get(i)).intValue();
+						jump = ((Integer)breaks.get(j)).intValue();
 						((Opcode)opcodes.get(jump)).jump = i;
 					}
-					for (j = 0; i < continues.size(); ++i)
+					for (j = 0; j < continues.size(); ++j)
 					{
-						jump = ((Integer)continues.get(i)).intValue();
+						jump = ((Integer)continues.get(j)).intValue();
 						((Opcode)opcodes.get(jump)).jump = i;
 					}
 					((Opcode)opcodes.get(loopStart)).jump = i;
@@ -1173,6 +1172,9 @@ public class Template
 								case Opcode.CF1_RANGE:
 									reg[code.r1] = Utils.range(reg[code.r2]);
 									break;
+								case Opcode.CF1_GET:
+									reg[code.r1] = variables.get(reg[code.r2]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLFUNC2:
@@ -1180,6 +1182,9 @@ public class Template
 							{
 								case Opcode.CF2_RANGE:
 									reg[code.r1] = Utils.range(reg[code.r2], reg[code.r3]);
+									break;
+								case Opcode.CF2_GET:
+									reg[code.r1] = variables.containsKey(reg[code.r2]) ? variables.get(reg[code.r2]) : reg[code.r3];
 									break;
 							}
 							break;
@@ -1253,6 +1258,9 @@ public class Template
 								case Opcode.CM1_FORMAT:
 									reg[code.r1] = Utils.format(reg[code.r2], reg[code.r3], defaultLocale);
 									break;
+								case Opcode.CM1_GET:
+									reg[code.r1] = ((Map)reg[code.r2]).get(reg[code.r3]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLMETH2:
@@ -1260,6 +1268,9 @@ public class Template
 							{
 								case Opcode.CM2_REPLACE:
 									reg[code.r1] = Utils.replace(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+								case Opcode.CM2_GET:
+									reg[code.r1] = ((Map)reg[code.r2]).containsKey(reg[code.r3]) ? ((Map)reg[code.r2]).get(reg[code.r3]) : reg[code.r4];
 									break;
 							}
 							break;
