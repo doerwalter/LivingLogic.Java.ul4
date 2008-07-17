@@ -910,6 +910,10 @@ public class Template
 							nextChunk = ObjectUtils.toString(reg[code.r1]);
 							++pc;
 							return;
+						case Opcode.OC_PRINTX:
+							nextChunk = Utils.xmlescape(ObjectUtils.toString(reg[code.r1]));
+							++pc;
+							return;
 						case Opcode.OC_LOADNONE:
 							reg[code.r1] = null;
 							break;
@@ -1288,7 +1292,7 @@ public class Template
 
 	public static List tokenizeTags(String source, String startdelim, String enddelim)
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(print|code|for|if|elif|else|end|break|continue|render)(\\s*((.|\\n)*?)\\s*)?" + escapeREchars(enddelim));
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|render)(\\s*((.|\\n)*?)\\s*)?" + escapeREchars(enddelim));
 		LinkedList tags = new LinkedList();
 		Matcher matcher = tagPattern.matcher(source);
 		int pos = 0;

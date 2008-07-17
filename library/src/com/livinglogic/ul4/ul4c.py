@@ -40,6 +40,9 @@ def _compile(template, tags):
 			elif location.type == "print":
 				r = parseexpr(template, location)
 				template.opcode(ul4.Opcode.OC_PRINT, r, location)
+			elif location.type == "printx":
+				r = parseexpr(template, location)
+				template.opcode(ul4.Opcode.OC_PRINTX, r, location)
 			elif location.type == "code":
 				parsestmt(template, location)
 			elif location.type == "if":
