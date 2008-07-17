@@ -29,9 +29,10 @@ def _compile(template, tags):
 
 	# This stack stores for each nested for/foritem/if/elif/else the following information:
 	# 1) Which construct we're in (i.e. "if" or "for")
+	# 2) The start location of the construct
 	# For ifs:
-	# 2) How many if's or elif's we have seen (this is used for simulating elif's via nested if's, for each additional elif, we have one more endif to add)
-	# 3) Whether we've already seen the else
+	# 3) How many if's or elif's we have seen (this is used for simulating elif's via nested if's, for each additional elif, we have one more endif to add)
+	# 4) Whether we've already seen the else
 	stack = []
 	for location in tags:
 		try:
@@ -48,7 +49,7 @@ def _compile(template, tags):
 			elif location.type == "if":
 				r = parseexpr(template, location)
 				template.opcode(ul4.Opcode.OC_IF, r, location)
-				stack.append(("if", 1, False))
+				stack.append(("if", location, 1, False))
 			elif location.type == "elif":
 				if not stack or stack[-1][0] != "if":
 					raise ul4.BlockException("elif doesn't match any if")
@@ -57,14 +58,14 @@ def _compile(template, tags):
 				template.opcode(ul4.Opcode.OC_ELSE, location)
 				r = parseexpr(template, location)
 				template.opcode(ul4.Opcode.OC_IF, r, location)
-				stack[-1] = ("if", stack[-1][1]+1, False)
+				stack[-1] = ("if", stack[-1][1]+1, stack[-1][2], False)
 			elif location.type == "else":
 				if not stack or stack[-1][0] != "if":
 					raise ul4.BlockException("else doesn't match any if")
-				elif stack[-1][2]:
+				elif stack[-1][3]:
 					raise ul4.BlockException("duplicate else")
 				template.opcode(ul4.Opcode.OC_ELSE, location)
-				stack[-1] = ("if", stack[-1][1], True)
+				stack[-1] = ("if", stack[-1][1], stack[-1][2], True)
 			elif location.type == "end":
 				if not stack:
 					raise ul4.BlockException("not in any block")
@@ -86,7 +87,7 @@ def _compile(template, tags):
 					template.opcode(ul4.Opcode.OC_ENDFOR, location)
 			elif location.type == "for":
 				parsefor(template, location)
-				stack.append(("for",))
+				stack.append(("for", location))
 			elif location.type == "break":
 				for entry in stack:
 					if entry[0] == "for":
@@ -110,7 +111,7 @@ def _compile(template, tags):
 		except lang.Exception, exc:
 			raise ul4.LocationException(exc, location)
 	if stack:
-		raise ul4.BlockException("unclosed blocks")
+		raise ul4.LocationException(ul4.BlockException("block unclosed"), stack[-1][1])
 	return opcodes
 
 
