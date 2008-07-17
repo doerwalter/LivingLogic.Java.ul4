@@ -99,10 +99,11 @@ public class Opcode
 	public static final int CM0_STRIP = 1;
 	public static final int CM0_LSTRIP = 2;
 	public static final int CM0_RSTRIP = 3;
-	public static final int CM0_UPPER = 4;
-	public static final int CM0_LOWER = 5;
-	public static final int CM0_ITEMS = 6;
-	public static final int CM0_ISOFORMAT = 7;
+	public static final int CM0_LOWER = 4;
+	public static final int CM0_UPPER = 5;
+	public static final int CM0_CAPITALIZE = 6;
+	public static final int CM0_ITEMS = 7;
+	public static final int CM0_ISOFORMAT = 8;
 
 	public static final int CM1_SPLIT = 0;
 	public static final int CM1_RSPLIT = 1;
@@ -349,6 +350,8 @@ public class Opcode
 			return CM0_UPPER;
 		else if (name.equals("lower"))
 			return CM0_LOWER;
+		else if (name.equals("capitalize"))
+			return CM0_CAPITALIZE;
 		else if (name.equals("items"))
 			return CM0_ITEMS;
 		else if (name.equals("isoformat"))

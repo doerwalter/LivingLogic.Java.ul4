@@ -963,6 +963,18 @@ public class Utils
 		throw new UnsupportedOperationException("Can't convert an instance of " + obj.getClass() + " to lower case!");
 	}
 
+	public static Object capitalize(String obj)
+	{
+		return Character.toTitleCase(obj.charAt(0)) + obj.substring(1).toLowerCase();
+	}
+
+	public static Object capitalize(Object obj)
+	{
+		if (obj instanceof String)
+			return capitalize((String)obj);
+		throw new UnsupportedOperationException("Can't convert an instance of " + obj.getClass() + " to capital case!");
+	}
+
 	public static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy.MM.dd'T'HH:mm:ss.SSS'000'");
 
 	public static String isoformat(Date obj)

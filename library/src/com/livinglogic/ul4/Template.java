@@ -1212,6 +1212,9 @@ public class Template
 								case Opcode.CM0_LOWER:
 									reg[code.r1] = Utils.lower(reg[code.r2]);
 									break;
+								case Opcode.CM0_CAPITALIZE:
+									reg[code.r1] = Utils.capitalize(reg[code.r2]);
+									break;
 								case Opcode.CM0_ITEMS:
 									reg[code.r1] = Utils.items(reg[code.r2]);
 									break;
