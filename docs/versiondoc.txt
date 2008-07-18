@@ -1,3 +1,15 @@
+exp-5:
+-----
+file format: 5
+
+Comments:
+* Added printx tag/opcode.
+* Added string method capitalize().
+* Enhance exception for unclosed blocks.
+* Added function get() and dictionary method get().
+* Fixed jump calculation for breaks and continues in for-blocks.
+
+
 exp-4:
 -----
 Comments:
