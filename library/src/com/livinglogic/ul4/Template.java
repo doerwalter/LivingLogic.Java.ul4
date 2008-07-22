@@ -1027,7 +1027,7 @@ public class Template
 							// Skip to next opcode
 							break;
 						case Opcode.OC_GETATTR:
-							reg[code.r1] = ((Map)reg[code.r2]).get(code.arg);
+							reg[code.r1] = Utils.getItem(reg[code.r2], code.arg);
 							break;
 						case Opcode.OC_GETITEM:
 							reg[code.r1] = Utils.getItem(reg[code.r2], reg[code.r3]);

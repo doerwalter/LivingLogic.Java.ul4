@@ -370,7 +370,10 @@ public class Utils
 
 	public static Object getItem(Map arg1, Object arg2)
 	{
-		return arg1.get(arg2);
+		if (arg1.containsKey(arg2))
+			return arg1.get(arg2);
+		else
+			throw new KeyException(arg2);
 	}
 
 	public static Object getItem(Object arg1, Object arg2)
@@ -379,8 +382,8 @@ public class Utils
 			return getItem((String)arg1, (Integer)arg2);
 		else if (arg1 instanceof List && arg2 instanceof Integer)
 			return getItem((List)arg1, (Integer)arg2);
-		else if (arg1 instanceof Map && arg2 instanceof Integer)
-			return getItem((Map)arg1, (Integer)arg2);
+		else if (arg1 instanceof Map)
+			return getItem((Map)arg1, arg2);
 		throw new UnsupportedOperationException("Instance of " + arg1.getClass() + " does not support getitem with argument of type " + arg2.getClass() + "!");
 	}
 
