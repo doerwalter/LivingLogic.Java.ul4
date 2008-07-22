@@ -94,8 +94,10 @@ public class Opcode
 
 	public static final int CF2_RANGE = 0;
 	public static final int CF2_GET = 1;
+	public static final int CF2_ZIP = 2;
 
 	public static final int CF3_RANGE = 0;
+	public static final int CF3_ZIP = 1;
 
 	public static final int CM0_SPLIT = 0;
 	public static final int CM0_STRIP = 1;
@@ -330,6 +332,8 @@ public class Opcode
 			return CF2_RANGE;
 		else if (name.equals("get"))
 			return CF2_GET;
+		else if (name.equals("zip"))
+			return CF2_ZIP;
 		else
 			throw new UnknownFunctionException(name);
 	}
@@ -338,6 +342,8 @@ public class Opcode
 	{
 		if (name.equals("range"))
 			return CF3_RANGE;
+		if (name.equals("zip"))
+			return CF3_ZIP;
 		else
 			throw new UnknownFunctionException(name);
 	}

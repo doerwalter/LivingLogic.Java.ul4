@@ -134,6 +134,50 @@ class MapItemIterator implements Iterator
 	}
 }
 
+class ZipIterator implements Iterator
+{
+	Iterator iterator1;
+	Iterator iterator2;
+	Iterator iterator3;
+
+	public ZipIterator(Iterator iterator1, Iterator iterator2)
+	{
+		this.iterator1 = iterator1;
+		this.iterator2 = iterator2;
+		this.iterator3 = null;
+	}
+
+	public ZipIterator(Iterator iterator1, Iterator iterator2, Iterator iterator3)
+	{
+		this.iterator1 = iterator1;
+		this.iterator2 = iterator2;
+		this.iterator3 = iterator3;
+	}
+
+	public boolean hasNext()
+	{
+		return iterator1.hasNext() && iterator2.hasNext() && (iterator3 == null || iterator3.hasNext());
+	}
+
+	public Object next()
+	{
+		Vector retVal = new Vector(iterator3 != null ? 3 : 2);
+		retVal.add(iterator1.next());
+		retVal.add(iterator2.next());
+		if (iterator3 != null)
+			retVal.add(iterator3.next());
+		return retVal;
+	}
+
+	public void remove()
+	{
+		iterator1.remove();
+		iterator2.remove();
+		if (iterator3 != null)
+			iterator3.remove();
+	}
+}
+
 class SequenceEnumerator implements Iterator
 {
 	Iterator sequenceIterator;
@@ -866,6 +910,16 @@ public class Utils
 		if (obj1 instanceof Integer && obj2 instanceof Integer && obj3 instanceof Integer)
 			return range((Integer)obj1, (Integer)obj2, (Integer)obj3);
 		throw new UnsupportedOperationException("Can't build a range for parameters: instances of " + obj1.getClass() + " and " + obj2.getClass() + " and " + obj3.getClass() + "!");
+	}
+
+	public static Object zip(Object obj1, Object obj2)
+	{
+		return new ZipIterator(iterator(obj1), iterator(obj2));
+	}
+
+	public static Object zip(Object obj1, Object obj2, Object obj3)
+	{
+		return new ZipIterator(iterator(obj1), iterator(obj2), iterator(obj3));
 	}
 
 	public static Object split(String obj1, String obj2)

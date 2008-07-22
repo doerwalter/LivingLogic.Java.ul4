@@ -8,7 +8,7 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?print get('y')?>");
+		Template tmpl = Compiler.compile("<?for (x,y) in zip([1,2,3],[4,5,6])?><?print x?>,<?print y?>?<?end for?>");
 		long start = System.currentTimeMillis();
 		Map map = new HashMap();
 		map.put("x", "42");

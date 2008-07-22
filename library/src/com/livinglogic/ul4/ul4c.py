@@ -441,6 +441,14 @@ class ForParser(ExprParser):
 		return ul4.For2(_0.start, cont.end, iter1, iter2, cont)
 	for2b.spark = ['for ::= ( name , name , ) in expr0']
 
+	def for3a(self, (_0, iter1, _1, iter2, _2, iter3, _3, _4, cont)):
+		return ul4.For3(_0.start, cont.end, iter1, iter2, iter3, cont)
+	for3a.spark = ['for ::= ( name , name , name ) in expr0']
+
+	def for3b(self, (_0, iter1, _1, iter2, _2, iter3, _3, _4, _5, cont)):
+		return ul4.For3(_0.start, cont.end, iter1, iter2, iter3, cont)
+	for3b.spark = ['for ::= ( name , name , name , ) in expr0']
+
 
 class StmtParser(ExprParser):
 	emptyerror = "statement required"

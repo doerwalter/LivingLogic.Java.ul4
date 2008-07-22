@@ -1186,6 +1186,9 @@ public class Template
 								case Opcode.CF2_GET:
 									reg[code.r1] = variables.containsKey(reg[code.r2]) ? variables.get(reg[code.r2]) : reg[code.r3];
 									break;
+								case Opcode.CF2_ZIP:
+									reg[code.r1] = Utils.zip(reg[code.r2], reg[code.r3]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLFUNC3:
@@ -1193,6 +1196,9 @@ public class Template
 							{
 								case Opcode.CF3_RANGE:
 									reg[code.r1] = Utils.range(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+								case Opcode.CF3_ZIP:
+									reg[code.r1] = Utils.zip(reg[code.r2], reg[code.r3], reg[code.r4]);
 									break;
 							}
 							break;
