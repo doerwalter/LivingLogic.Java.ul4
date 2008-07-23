@@ -370,10 +370,11 @@ public class Utils
 
 	public static Object getItem(Map arg1, Object arg2)
 	{
-		if (arg1.containsKey(arg2))
-			return arg1.get(arg2);
-		else
+		Object result = arg1.get(arg2);
+
+		if ((result == null) && !arg1.containsKey(arg2))
 			throw new KeyException(arg2);
+		return result;
 	}
 
 	public static Object getItem(Object arg1, Object arg2)
