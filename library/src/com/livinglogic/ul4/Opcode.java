@@ -589,4 +589,137 @@ public class Opcode
 		this.location = location;
 		this.jump = -1;
 	}
+
+	public String toString()
+	{
+		switch (name)
+		{
+			case OC_TEXT:
+				return "print " + location.getCode();
+			case OC_LOADNONE:
+				return "r" + r1 + " = None";
+			case OC_LOADFALSE:
+				return "r" + r1 + " = False";
+			case OC_LOADTRUE:
+				return "r" + r1 + " = True";
+			case OC_LOADINT:
+				return "r" + r1 + " = " + arg;
+			case OC_LOADFLOAT:
+				return "r" + r1 + " = " + arg;
+			case OC_LOADSTR:
+				return "r" + r1 + " = " + Utils.repr(arg);
+			case OC_LOADDATE:
+				return "r" + r1 + " = " + Utils.repr(arg);
+			case OC_BUILDLIST:
+				return "r" + r1 + " = []";
+			case OC_BUILDDICT:
+				return "r" + r1 + " = {}";
+			case OC_ADDLIST:
+				return "r" + r1 + ".append(r" + r2 + ")";
+			case OC_ADDDICT:
+				return "r" + r1 + "[r" + r2 + "] = r" + r3;
+			case OC_LOADVAR:
+				return "r" + r1 + " = vars[" + Utils.repr(arg) + "]";
+			case OC_STOREVAR:
+				return "vars[" + Utils.repr(arg) + "] = r" + r1;
+			case OC_ADDVAR:
+				return "vars[" + Utils.repr(arg) + "] += r" + r1;
+			case OC_SUBVAR:
+				return "vars[" + Utils.repr(arg) + "] -= r" + r1;
+			case OC_MULVAR:
+				return "vars[" + Utils.repr(arg) + "] *= r" + r1;
+			case OC_TRUEDIVVAR:
+				return "vars[" + Utils.repr(arg) + "] /= r" + r1;
+			case OC_FLOORDIVVAR:
+				return "vars[" + Utils.repr(arg) + "] //= r" + r1;
+			case OC_MODVAR:
+				return "vars[" + Utils.repr(arg) + "] %= r" + r1;
+			case OC_DELVAR:
+				return "del vars[" + Utils.repr(arg) + "]";
+			case OC_GETATTR:
+				return "r" + r1 + " = getattr(r" + r2 + ", " + Utils.repr(arg) + ")";
+			case OC_GETITEM:
+				return "r" + r1 + " = r" + r2 + "[r" + r3 + "]";
+			case OC_GETSLICE12:
+				return "r" + r1 + " = r" + r2 + "[r" + r3 + ":r" + r4 + "]";
+			case OC_GETSLICE1:
+				return "r" + r1 + " = r" + r2 + "[r" + r3 + ":]";
+			case OC_GETSLICE2:
+				return "r" + r1 + " = r" + r2 + "[:r" + r4 + "]";
+			case OC_PRINT:
+				return "print r" + r1;
+			case OC_PRINTX:
+				return "print xmlescape(r" + r1 + ")";
+			case OC_NOT:
+				return "r" + r1 + " = not r" + r2;
+			case OC_NEG:
+				return "r" + r1 + " = -r" + r2;
+			case OC_EQ:
+				return "r" + r1 + " = r" + r2 + " == r" + r3;
+			case OC_NE:
+				return "r" + r1 + " = r" + r2 + " != r" + r3;
+			case OC_LT:
+				return "r" + r1 + " = r" + r2 + " < r" + r3;
+			case OC_LE:
+				return "r" + r1 + " = r" + r2 + " <= r" + r3;
+			case OC_GT:
+				return "r" + r1 + " = r" + r2 + " > r" + r3;
+			case OC_GE:
+				return "r" + r1 + " = r" + r2 + " >= r" + r3;
+			case OC_CONTAINS:
+				return "r" + r1 + " = r" + r2 + " in r" + r3;
+			case OC_NOTCONTAINS:
+				return "r" + r1 + " = r" + r2 + " not in r" + r3;
+			case OC_ADD:
+				return "r" + r1 + " = r" + r2 + " + r" + r3;
+			case OC_SUB:
+				return "r" + r1 + " = r" + r2 + " - r" + r3;
+			case OC_MUL:
+				return "r" + r1 + " = r" + r2 + " == r" + r3;
+			case OC_FLOORDIV:
+				return "r" + r1 + " = r" + r2 + " // r" + r3;
+			case OC_TRUEDIV:
+				return "r" + r1 + " = r" + r2 + " / r" + r3;
+			case OC_AND:
+				return "r" + r1 + " = r" + r2 + " and r" + r3;
+			case OC_OR:
+				return "r" + r1 + " = r" + r2 + " or r" + r3;
+			case OC_MOD:
+				return "r" + r1 + " = r" + r2 + " % r" + r3;
+			case OC_CALLFUNC0:
+				return "r" + r1 + " = " + arg + "()";
+			case OC_CALLFUNC1:
+				return "r" + r1 + " = " + arg + "(r" + r2 + ")";
+			case OC_CALLFUNC2:
+				return "r" + r1 + " = " + arg + "(r" + r2 + ", " + r3 + ")";
+			case OC_CALLFUNC3:
+				return "r" + r1 + " = " + arg + "(r" + r2 + ", " + r3 + ", " + r4 + ")";
+			case OC_CALLMETH0:
+				return "r" + r1 + " = r" + r2 + "." + arg + "()";
+			case OC_CALLMETH1:
+				return "r" + r1 + " = r" + r2 + "." + arg + "(r" + r3 + ")";
+			case OC_CALLMETH2:
+				return "r" + r1 + " = r" + r2 + "." + arg + "(r" + r3 + ", " + r4 + ")";
+			case OC_CALLMETH3:
+				return "r" + r1 + " = r" + r2 + "." + arg + "(r" + r3 + ", " + r4 + ", " + r5 + ")";
+			case OC_IF:
+				return "if r" + r1;
+			case OC_ELSE:
+				return "else";
+			case OC_ENDIF:
+				return "endif";
+			case OC_FOR:
+				return "for r" + r1 + " in r" + r2;
+			case OC_ENDFOR:
+				return "endfor";
+			case OC_BREAK:
+				return "break";
+			case OC_CONTINUE:
+				return "continue";
+			case OC_RENDER:
+				return "render " + arg + "(r" + r1 + ")";
+			default:
+				throw new IllegalArgumentException("Opcode code " + name + " unknown!");
+		}
+	}
 }

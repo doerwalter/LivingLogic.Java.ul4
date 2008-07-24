@@ -1552,4 +1552,33 @@ public class Template
 		}
 		return tokens;
 	}
+
+	public String toString()
+	{
+		StringBuffer buffer = new StringBuffer();
+		int indent = 0;
+
+		int size = opcodes.size();
+		for (int i = 0; i < size; ++i)
+		{
+			Opcode code = (Opcode)opcodes.get(i);
+
+			if (code.name == Opcode.OC_ELSE || code.name == Opcode.OC_ENDIF || code.name == Opcode.OC_ENDFOR)
+				--indent;
+			for (int j = 0; j < indent; ++j)
+				buffer.append("\t");
+			if (code.name == Opcode.OC_ENDIF || code.name == Opcode.OC_ENDFOR)
+				buffer.append("}");
+			else if (code.name == Opcode.OC_FOR || code.name == Opcode.OC_IF)
+				buffer.append(code + " {");
+			else if (code.name == Opcode.OC_ELSE)
+				buffer.append("} else {");
+			else
+				buffer.append(code);
+			buffer.append("\n");
+			if (code.name == Opcode.OC_FOR || code.name == Opcode.OC_IF || code.name == Opcode.OC_ELSE)
+				++indent;
+		}
+		return buffer.toString();
+	}
 }
