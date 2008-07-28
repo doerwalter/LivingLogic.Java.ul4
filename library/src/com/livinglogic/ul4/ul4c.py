@@ -81,7 +81,7 @@ def _compile(template, tags):
 						raise ul4.BlockException("illegal end value %r" % code)
 				last = stack.pop()
 				if last[0] == "if":
-					for i in xrange(last[1]):
+					for i in xrange(last[2]):
 						template.opcode(ul4.Opcode.OC_ENDIF, location)
 				else: # last[0] == "for":
 					template.opcode(ul4.Opcode.OC_ENDFOR, location)
