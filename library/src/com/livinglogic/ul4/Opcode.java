@@ -120,8 +120,13 @@ public class Opcode
 	public static final int CM1_FORMAT = 8;
 	public static final int CM1_GET = 9;
 
-	public static final int CM2_REPLACE = 0;
-	public static final int CM2_GET = 1;
+	public static final int CM2_SPLIT = 0;
+	public static final int CM2_RSPLIT = 1;
+	public static final int CM2_FIND = 2;
+	public static final int CM2_REPLACE = 3;
+	public static final int CM2_GET = 4;
+
+	public static final int CM3_FIND = 0;
 
 	public int name;
 	public int r1;

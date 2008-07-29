@@ -1581,4 +1581,463 @@ public class Template
 		}
 		return buffer.toString();
 	}
+
+	private void code(StringBuffer buffer, int indent, String code)
+	{
+		for (int i = 0; i < indent; ++i)
+			buffer.append("\t");
+		buffer.append(code);
+		buffer.append("\n");
+	}
+
+	public String pythonSource(String function)
+	{
+		StringBuffer buffer = new StringBuffer();
+		int indent = 0;
+
+		if (function != null)
+		{
+			code(buffer, indent, "def " + function + "(templates={}, **variables):");
+			indent += 1;
+		}
+		code(buffer, indent, "import sys, marshal, datetime, itertools");
+		code(buffer, indent, "from ll.misc import xmlescape");
+		code(buffer, indent, "from ll import ul4c");
+		code(buffer, indent, "source = u" + Utils.repr(source));
+		code(buffer, indent, "variables = dict((key.decode('utf-8'), value) for (key, value) in variables.iteritems())");
+
+		int size = opcodes.size();
+
+		StringBuffer locations = new StringBuffer();
+		StringBuffer lines2locs = new StringBuffer();
+		int index = -1;
+		Location lastLocation = null;
+
+		for (int i = 0; i < size; ++i)
+		{
+			Opcode opcode = (Opcode)opcodes.get(i);
+			
+			if (lastLocation != opcode.location)
+			{
+				if (locations.length()>0)
+					locations.append(", ");
+
+				lastLocation = opcode.location;
+
+				locations.append("(")
+				         .append(Utils.repr(lastLocation.type))
+				         .append(", ")
+				         .append(lastLocation.starttag)
+				         .append(", ")
+				         .append(lastLocation.endtag)
+				         .append(", ")
+				         .append(lastLocation.startcode)
+				         .append(", ")
+				         .append(lastLocation.endcode)
+				         .append(")");
+				++index;
+			}
+			if (lines2locs.length()>0)
+				lines2locs.append(", ");
+			lines2locs.append(index);
+		}
+		code(buffer, indent, "locations = (" + locations + ")");
+		code(buffer, indent, "lines2locs = (" + lines2locs + ")");
+
+		code(buffer, indent, "reg0 = reg1 = reg2 = reg3 = reg4 = reg5 = reg6 = reg7 = reg8 = reg9 = None");
+
+		code(buffer, indent, "try:");
+		indent += 1;
+		code(buffer, indent, "startline = sys._getframe().f_lineno+1"); // The source line of the first opcode
+
+		int lastOpcode = -1;
+		for (int i = 0; i < size; ++i)
+		{
+			Opcode opcode = (Opcode)opcodes.get(i);
+		
+			switch (opcode.name)
+			{
+				case Opcode.OC_TEXT:
+					code(buffer, indent, "yield u" + Utils.repr(opcode.location.getCode()));
+					break;
+				case Opcode.OC_LOADSTR:
+					code(buffer, indent, "reg" + opcode.r1 + " = u" + Utils.repr(opcode.arg));
+					break;
+				case Opcode.OC_LOADINT:
+					code(buffer, indent, "reg" + opcode.r1 + " = " + opcode.arg);
+					break;
+				case Opcode.OC_LOADFLOAT:
+					code(buffer, indent, "reg" + opcode.r1 + " = " + opcode.arg);
+					break;
+				case Opcode.OC_LOADNONE:
+					code(buffer, indent, "reg" + opcode.r1 + " = None");
+					break;
+				case Opcode.OC_LOADFALSE:
+					code(buffer, indent, "reg" + opcode.r1 + " = False");
+					break;
+				case Opcode.OC_LOADTRUE:
+					code(buffer, indent, "reg" + opcode.r1 + " = True");
+					break;
+				case Opcode.OC_LOADDATE:
+					code(buffer, indent, "reg" + opcode.r1 + " = !!!");
+					break;
+				case Opcode.OC_BUILDLIST:
+					code(buffer, indent, "reg" + opcode.r1 + " = []");
+					break;
+				case Opcode.OC_BUILDDICT:
+					code(buffer, indent, "reg" + opcode.r1 + " = {}");
+					break;
+				case Opcode.OC_ADDLIST:
+					code(buffer, indent, "reg" + opcode.r1 + ".append(reg" + opcode.r2 + ")");
+					break;
+				case Opcode.OC_ADDDICT:
+					code(buffer, indent, "reg" + opcode.r1 + "[reg" + opcode.r2 + "] = reg" + opcode.r3);
+					break;
+				case Opcode.OC_LOADVAR:
+					code(buffer, indent, "reg" + opcode.r1 + " = variables[u" + Utils.repr(opcode.arg) + "]");
+					break;
+				case Opcode.OC_STOREVAR:
+					code(buffer, indent, "variables[u" + Utils.repr(opcode.arg) + "] = reg" + opcode.r1);
+					break;
+				case Opcode.OC_ADDVAR:
+					code(buffer, indent, "variables[u" + Utils.repr(opcode.arg) + "] += reg" + opcode.r1);
+					break;
+				case Opcode.OC_SUBVAR:
+					code(buffer, indent, "variables[u" + Utils.repr(opcode.arg) + "] -= reg" + opcode.r1);
+					break;
+				case Opcode.OC_MULVAR:
+					code(buffer, indent, "variables[u" + Utils.repr(opcode.arg) + "] *= reg" + opcode.r1);
+					break;
+				case Opcode.OC_TRUEDIVVAR:
+					code(buffer, indent, "variables[u" + Utils.repr(opcode.arg) + "] /= reg" + opcode.r1);
+					break;
+				case Opcode.OC_FLOORDIVVAR:
+					code(buffer, indent, "variables[u" + Utils.repr(opcode.arg) + "] //= reg" + opcode.r1);
+					break;
+				case Opcode.OC_DELVAR:
+					code(buffer, indent, "del variables[u" + Utils.repr(opcode.arg) + "]");
+					break;
+				case Opcode.OC_GETATTR:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + "[u" + Utils.repr(opcode.arg) + "]");
+					break;
+				case Opcode.OC_GETITEM:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + "[reg" + opcode.r3 + "]");
+					break;
+				case Opcode.OC_GETSLICE12:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + "[reg" + opcode.r3 + ":reg" + opcode.r4 + "]");
+					break;
+				case Opcode.OC_GETSLICE1:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + "[reg" + opcode.r3 + ":]");
+					break;
+				case Opcode.OC_GETSLICE2:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + "[:reg" + opcode.r3 + "]");
+					break;
+				case Opcode.OC_PRINT:
+					code(buffer, indent, "if reg" + opcode.r1 + " is not None: yield unicode(reg" + opcode.r1 + ")");
+					break;
+				case Opcode.OC_PRINTX:
+					code(buffer, indent, "if reg" + opcode.r1 + " is not None: yield xmlescape(unicode(reg" + opcode.r1 + "))");
+					break;
+				case Opcode.OC_FOR:
+					code(buffer, indent, "for reg" + opcode.r1 + " in reg" + opcode.r2 + ":");
+					indent += 1;
+					break;
+				case Opcode.OC_ENDFOR:
+					indent -= 1;
+					code(buffer, indent, "# end for");
+					break;
+				case Opcode.OC_BREAK:
+					code(buffer, indent, "break");
+					break;
+				case Opcode.OC_CONTINUE:
+					code(buffer, indent, "continue");
+					break;
+				case Opcode.OC_NOT:
+					code(buffer, indent, "reg" + opcode.r1 + " = not reg" + opcode.r2);
+					break;
+				case Opcode.OC_NEG:
+					code(buffer, indent, "reg" + opcode.r1 + " = -reg" + opcode.r2);
+					break;
+				case Opcode.OC_CONTAINS:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " in reg" + opcode.r3);
+					break;
+				case Opcode.OC_NOTCONTAINS:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " not in reg" + opcode.r3);
+					break;
+				case Opcode.OC_EQ:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " == reg" + opcode.r3);
+					break;
+				case Opcode.OC_NE:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " != reg" + opcode.r3);
+					break;
+				case Opcode.OC_LT:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " < reg" + opcode.r3);
+					break;
+				case Opcode.OC_LE:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " <= reg" + opcode.r3);
+					break;
+				case Opcode.OC_GT:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " > reg" + opcode.r3);
+					break;
+				case Opcode.OC_GE:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " >= reg" + opcode.r3);
+					break;
+				case Opcode.OC_ADD:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " + reg" + opcode.r3);
+					break;
+				case Opcode.OC_SUB:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " - reg" + opcode.r3);
+					break;
+				case Opcode.OC_MUL:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " * reg" + opcode.r3);
+					break;
+				case Opcode.OC_FLOORDIV:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " // reg" + opcode.r3);
+					break;
+				case Opcode.OC_TRUEDIV:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " / reg" + opcode.r3);
+					break;
+				case Opcode.OC_AND:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " and reg" + opcode.r3);
+					break;
+				case Opcode.OC_OR:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " or reg" + opcode.r3);
+					break;
+				case Opcode.OC_MOD:
+					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " % reg" + opcode.r3);
+					break;
+				case Opcode.OC_CALLFUNC0:
+					switch (opcode.argcode)
+					{
+						case Opcode.CF0_NOW:
+							code(buffer, indent, "reg" + opcode.r1 + " = datetime.datetime.now()");
+							break;
+					}
+					break;
+				case Opcode.OC_CALLFUNC1:
+					switch (opcode.argcode)
+					{
+						case Opcode.CF1_XMLESCAPE:
+							code(buffer, indent, "reg" + opcode.r1 + " = xmlescape(unicode(reg" + opcode.r2 + ")) if reg" + opcode.r2 + " is not None else u''");
+							break;
+						case Opcode.CF1_CSVESCAPE:
+							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._csvescape(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_STR:
+							code(buffer, indent, "reg" + opcode.r1 + " = unicode(reg" + opcode.r2 + ") if reg" + opcode.r2 + " is not None else u''");
+							break;
+						case Opcode.CF1_INT:
+							code(buffer, indent, "reg" + opcode.r1 + " = int(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_BOOL:
+							code(buffer, indent, "reg" + opcode.r1 + " = bool(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_LEN:
+							code(buffer, indent, "reg" + opcode.r1 + " = len(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_ENUMERATE:
+							code(buffer, indent, "reg" + opcode.r1 + " = enumerate(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_ISNONE:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " is not None");
+							break;
+						case Opcode.CF1_ISSTR:
+							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", basestring)");
+							break;
+						case Opcode.CF1_ISINT:
+							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", (int, long)) and not isinstance(reg" + opcode.r2 + ", bool)");
+							break;
+						case Opcode.CF1_ISFLOAT:
+							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", float)");
+							break;
+						case Opcode.CF1_ISBOOL:
+							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", bool)");
+							break;
+						case Opcode.CF1_ISDATE:
+							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", datetime.datetime)");
+							break;
+						case Opcode.CF1_ISLIST:
+							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", (list, tuple))");
+							break;
+						case Opcode.CF1_ISDICT:
+							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", dict)");
+							break;
+						case Opcode.CF1_REPR:
+							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._repr(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_GET:
+							code(buffer, indent, "reg" + opcode.r1 + " = variables.get(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_CHR:
+							code(buffer, indent, "reg" + opcode.r1 + " = unichr(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_ORD:
+							code(buffer, indent, "reg" + opcode.r1 + " = ord(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_HEX:
+							code(buffer, indent, "reg" + opcode.r1 + " = hex(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_OCT:
+							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._oct(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_BIN:
+							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._bin(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_SORTED:
+							code(buffer, indent, "reg" + opcode.r1 + " = sorted(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_RANGE:
+							code(buffer, indent, "reg" + opcode.r1 + " = xrange(reg" + opcode.r2 + ")");
+							break;
+					}
+					break;
+				case Opcode.OC_CALLFUNC2:
+					switch (opcode.argcode)
+					{
+						case Opcode.CF2_RANGE:
+							code(buffer, indent, "reg" + opcode.r1 + " = xrange(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CF2_GET:
+							code(buffer, indent, "reg" + opcode.r1 + " = variables.get(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CF2_ZIP:
+							code(buffer, indent, "reg" + opcode.r1 + " = itertools.izip(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
+							break;
+					}
+					break;
+				case Opcode.OC_CALLFUNC3:
+					switch (opcode.argcode)
+					{
+						case Opcode.CF3_RANGE:
+							code(buffer, indent, "reg" + opcode.r1 + " = xrange(reg" + opcode.r2 + ", reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							break;
+						case Opcode.CF3_ZIP:
+							code(buffer, indent, "reg" + opcode.r1 + " = itertools.izip(reg" + opcode.r2 + ", reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							break;
+					}
+					break;
+				case Opcode.OC_CALLMETH0:
+					switch (opcode.argcode)
+					{
+						case Opcode.CM0_SPLIT:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".split()");
+							break;
+						case Opcode.CM0_STRIP:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".strip()");
+							break;
+						case Opcode.CM0_LSTRIP:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".lstrip()");
+							break;
+						case Opcode.CM0_RSTRIP:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".rstrip()");
+							break;
+						case Opcode.CM0_UPPER:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".upper()");
+							break;
+						case Opcode.CM0_LOWER:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".lower()");
+							break;
+						case Opcode.CM0_CAPITALIZE:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".capitalize()");
+							break;
+						case Opcode.CM0_ISOFORMAT:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".isoformat()");
+							break;
+						case Opcode.CM0_ITEMS:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".iteritems()");
+							break;
+					}
+					break;
+				case Opcode.OC_CALLMETH1:
+					switch (opcode.argcode)
+					{
+						case Opcode.CM1_SPLIT:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".split(reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_RSPLIT:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".rsplit(reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_STRIP:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".strip(reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_LSTRIP:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".lstrip(reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_RSTRIP:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".rstrip(reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_STARTSWITH:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".startswith(reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_ENDSWITH:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".endswith(reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_FIND:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".find(reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_GET:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".get(reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_FORMAT:
+							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._format(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
+							break;
+					}
+					break;
+				case Opcode.OC_CALLMETH2:
+					switch (opcode.argcode)
+					{
+						case Opcode.CM2_SPLIT:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".split(reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							break;
+						case Opcode.CM2_RSPLIT:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".rsplit(reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							break;
+						case Opcode.CM2_FIND:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".find(reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							break;
+						case Opcode.CM2_REPLACE:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".replace(reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							break;
+						case Opcode.CM2_GET:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".get(reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							break;
+					}
+					break;
+				case Opcode.OC_CALLMETH3:
+					switch (opcode.argcode)
+					{
+						case Opcode.CM3_FIND:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".find(reg" + opcode.r3 + ", reg" + opcode.r4 + ", reg" + opcode.r5 + ")");
+							break;
+					}
+					break;
+				case Opcode.OC_IF:
+					code(buffer, indent, "if reg" + opcode.r1 + ":");
+					indent += 1;
+					break;
+				case Opcode.OC_ELSE:
+					if (lastOpcode == Opcode.OC_IF)
+						buffer.insert(buffer.length()-1, " pass");
+					indent -= 1;
+					code(buffer, indent, "else:");
+					indent += 1;
+					break;
+				case Opcode.OC_ENDIF:
+					if (lastOpcode == Opcode.OC_IF || lastOpcode == Opcode.OC_ELSE)
+						buffer.insert(buffer.length()-1, " pass");
+					indent -= 1;
+					code(buffer, indent, "# end if");
+					break;
+				case Opcode.OC_RENDER:
+					code(buffer, indent, "for chunk in templates[u" + Utils.repr(opcode.arg) + "](templates, **dict((key.encode('utf-8'), value) for (key, value) in reg" + opcode.r1 + ".iteritems())): yield chunk");
+					break;
+			}
+			lastOpcode = opcode.name;
+		}
+		indent -= 1;
+		code(buffer, indent, "except Exception, exc:");
+		indent += 1;
+		code(buffer, indent, "raise ul4c.Error(ul4c.Location(source, *locations[lines2locs[sys.exc_info()[2].tb_lineno-startline]]), exc)");
+		return buffer.toString();
+	}
 }
