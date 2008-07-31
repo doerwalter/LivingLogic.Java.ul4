@@ -1039,7 +1039,7 @@ public class Template
 							reg[code.r1] = Utils.getSlice(reg[code.r2], reg[code.r3], null);
 							break;
 						case Opcode.OC_GETSLICE2:
-							reg[code.r1] = Utils.getSlice(reg[code.r2], null, reg[code.r4]);
+							reg[code.r1] = Utils.getSlice(reg[code.r2], null, reg[code.r3]);
 							break;
 						case Opcode.OC_NOT:
 							reg[code.r1] = Utils.getBool(reg[code.r2]) ? Boolean.FALSE : Boolean.TRUE;
@@ -1257,10 +1257,13 @@ public class Template
 									break;
 								case Opcode.CM1_ENDSWITH:
 									reg[code.r1] = Utils.endswith(reg[code.r2], reg[code.r3]);
-									break;
-								case Opcode.CM1_FIND:
-									reg[code.r1] = Utils.items(reg[code.r2], reg[code.r3]);
 									break;*/
+								case Opcode.CM1_FIND:
+									reg[code.r1] = Utils.find(reg[code.r2], reg[code.r3]);
+									break;
+								case Opcode.CM1_RFIND:
+									reg[code.r1] = Utils.rfind(reg[code.r2], reg[code.r3]);
+									break;
 								case Opcode.CM1_FORMAT:
 									reg[code.r1] = Utils.format(reg[code.r2], reg[code.r3], defaultLocale);
 									break;

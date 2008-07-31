@@ -452,7 +452,12 @@ public class Utils
 
 	public static Object getSlice(String arg1, Integer arg2, Integer arg3)
 	{
-		return StringUtils.substring(arg1, arg2.intValue(), arg3.intValue());
+		int size = arg1.length();
+		int start = getSliceStartPos(size, arg2);
+		int end = getSliceEndPos(size, arg3);
+		if (end < start)
+			end = start;
+		return StringUtils.substring(arg1, start, end);
 	}
 
 	public static Object getSlice(Object arg1, Object arg2, Object arg3)
@@ -1185,6 +1190,20 @@ public class Utils
 		if (obj instanceof String && arg1 instanceof String && arg2 instanceof String)
 			return StringUtils.replace((String)obj, (String)arg1, (String)arg2);
 		throw new UnsupportedOperationException("Can't call replace on instance of " + obj.getClass() + "!");
+	}
+
+	public static Object find(Object obj, Object arg1)
+	{
+		if (obj instanceof String && arg1 instanceof String)
+			return new Integer(((String)obj).indexOf((String)arg1));
+		throw new UnsupportedOperationException("Can't call find on instance of " + obj.getClass() + "!");
+	}
+
+	public static Object rfind(Object obj, Object arg1)
+	{
+		if (obj instanceof String && arg1 instanceof String)
+			return new Integer(((String)obj).lastIndexOf((String)arg1));
+		throw new UnsupportedOperationException("Can't call rfind on instance of " + obj.getClass() + "!");
 	}
 
 	public static Object items(Map obj)

@@ -117,8 +117,9 @@ public class Opcode
 	public static final int CM1_STARTSWITH = 5;
 	public static final int CM1_ENDSWITH = 6;
 	public static final int CM1_FIND = 7;
-	public static final int CM1_FORMAT = 8;
-	public static final int CM1_GET = 9;
+	public static final int CM1_RFIND = 8;
+	public static final int CM1_FORMAT = 9;
+	public static final int CM1_GET = 10;
 
 	public static final int CM2_SPLIT = 0;
 	public static final int CM2_RSPLIT = 1;
@@ -397,6 +398,8 @@ public class Opcode
 			return CM1_ENDSWITH;
 		else if (name.equals("find"))
 			return CM1_FIND;
+		else if (name.equals("rfind"))
+			return CM1_RFIND;
 		else if (name.equals("format"))
 			return CM1_FORMAT;
 		else if (name.equals("get"))
