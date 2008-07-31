@@ -603,7 +603,7 @@ public class Opcode
 		switch (name)
 		{
 			case OC_TEXT:
-				return "print " + location.getCode();
+				return "print " + Utils.repr(location.getCode());
 			case OC_LOADNONE:
 				return "r" + r1 + " = None";
 			case OC_LOADFALSE:
