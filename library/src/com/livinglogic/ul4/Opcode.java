@@ -82,15 +82,16 @@ public class Opcode
 	public static final int CF1_ISDATE = 12;
 	public static final int CF1_ISLIST = 13;
 	public static final int CF1_ISDICT = 14;
-	public static final int CF1_CHR = 15;
-	public static final int CF1_ORD = 16;
-	public static final int CF1_HEX = 17;
-	public static final int CF1_OCT = 18;
-	public static final int CF1_BIN = 19;
-	public static final int CF1_SORTED = 20;
-	public static final int CF1_RANGE = 21;
-	public static final int CF1_CSVESCAPE = 22;
-	public static final int CF1_GET = 23;
+	public static final int CF1_ISTEMPLATE = 15;
+	public static final int CF1_CHR = 16;
+	public static final int CF1_ORD = 17;
+	public static final int CF1_HEX = 18;
+	public static final int CF1_OCT = 19;
+	public static final int CF1_BIN = 20;
+	public static final int CF1_SORTED = 21;
+	public static final int CF1_RANGE = 22;
+	public static final int CF1_CSVESCAPE = 23;
+	public static final int CF1_GET = 24;
 
 	public static final int CF2_RANGE = 0;
 	public static final int CF2_GET = 1;
@@ -310,6 +311,8 @@ public class Opcode
 			return CF1_ISLIST;
 		else if (name.equals("isdict"))
 			return CF1_ISDICT;
+		else if (name.equals("istemplate"))
+			return CF1_ISTEMPLATE;
 		else if (name.equals("chr"))
 			return CF1_CHR;
 		else if (name.equals("ord"))

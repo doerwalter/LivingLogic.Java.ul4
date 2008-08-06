@@ -495,15 +495,15 @@ class RenderParser(ExprParser):
 	def __init__(self, start="render"):
 		ExprParser.__init__(self, start)
 
-	def emptyrender(self, (name, _1, _2)):
-		return ul4.Render(name.start, _2.end, name)
-	emptyrender.spark = ['render ::= name ( )']
+	def emptyrender(self, (template, _1, _2)):
+		return ul4.Render(template.start, _2.end, template)
+	emptyrender.spark = ['render ::= expr0 ( )']
 
-	def startrender(self, (name, _1, argname, _2, argexpr)):
-		render = ul4.Render(name.start, argexpr.end, name)
+	def startrender(self, (template, _1, argname, _2, argexpr)):
+		render = ul4.Render(template.start, argexpr.end, template)
 		render.append(argname.value, argexpr)
 		return render
-	startrender.spark = ['buildrender ::= name ( name = expr0 ']
+	startrender.spark = ['buildrender ::= expr0 ( name = expr0 ']
 
 	def buildrender(self, (render, _1, argname, _2, argexpr)):
 		render.append(argname.value, argexpr)

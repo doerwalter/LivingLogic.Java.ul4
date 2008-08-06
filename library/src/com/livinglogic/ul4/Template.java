@@ -749,50 +749,36 @@ public class Template
 
 	public Iterator render()
 	{
-		return new Renderer(null, null);
-	}
-
-	public Iterator render(Map variables)
-	{
-		return new Renderer(variables, null);
+		return new Renderer(null);
 	}
 
 	/**
 	 * Renders the template.
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the template code.
-	 * @param templates a map containing other template objects that can be called
-	 *                  by the template via the <code>&lt;?render?&gt;</code> tag.
 	 * @return An iterator that returns the string output piece by piece.
 	 */
-	public Iterator render(Map variables, Map templates)
+	public Iterator render(Map variables)
 	{
-		return new Renderer(variables, templates);
+		return new Renderer(variables);
 	}
 
 	public String renders()
 	{
-		return renders(null, null);
-	}
-
-	public String renders(Map variables)
-	{
-		return renders(variables, null);
+		return renders(null);
 	}
 
 	/**
 	 * Renders the template and returns the resulting string.
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the template code.
-	 * @param templates a map containing other template objects that can be called
-	 *                  by the template via the <code>&lt;?render?&gt;</code> tag.
 	 * @return The render output as a string.
 	 */
-	public String renders(Map variables, Map templates)
+	public String renders(Map variables)
 	{
 		StringBuffer output = new StringBuffer();
 
-		for (Iterator iterator = render(variables, templates); iterator.hasNext();)
+		for (Iterator iterator = render(variables); iterator.hasNext();)
 		{
 			output.append((String)iterator.next());
 		}
@@ -819,12 +805,6 @@ public class Template
 		private Map variables;
 
 		/**
-		 * A map containing other template object that can be called by the
-		 * template code via the <code>&lt;?render?&gt;</code> tag.
-		 */
-		private Map templates;
-
-		/**
 		 * The stack of active for loops
 		 */
 		private LinkedList iterators = new LinkedList();
@@ -847,15 +827,12 @@ public class Template
 		 */
 		private String nextChunk = null;
 
-		public Renderer(Map variables, Map templates)
+		public Renderer(Map variables)
 		{
 			annotate();
 			if (variables == null)
 				variables = new HashMap();
 			this.variables = variables;
-			if (templates == null)
-				templates = new HashMap();
-			this.templates = templates;
 			getNextChunk();
 		}
 
@@ -1151,6 +1128,9 @@ public class Template
 								case Opcode.CF1_ISDICT:
 									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Map)) ? Boolean.TRUE : Boolean.FALSE;
 									break;
+								case Opcode.CF1_ISTEMPLATE:
+									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Template)) ? Boolean.TRUE : Boolean.FALSE;
+									break;
 								case Opcode.CF1_CHR:
 									reg[code.r1] = Utils.chr(reg[code.r2]);
 									break;
@@ -1286,7 +1266,7 @@ public class Template
 						case Opcode.OC_CALLMETH3:
 							throw new UnknownMethodException(code.arg);
 						case Opcode.OC_RENDER:
-							subTemplateIterator = ((Template)templates.get(code.arg)).render((Map)reg[code.r1], templates);
+							subTemplateIterator = ((Template)reg[code.r1]).render((Map)reg[code.r2]);
 							if (subTemplateIterator.hasNext())
 							{
 								nextChunk = (String)subTemplateIterator.next();
@@ -1600,7 +1580,7 @@ public class Template
 
 		if (function != null)
 		{
-			code(buffer, indent, "def " + function + "(templates={}, **variables):");
+			code(buffer, indent, "def " + function + "(**variables):");
 			indent += 1;
 		}
 		code(buffer, indent, "import sys, marshal, datetime, itertools");
@@ -1865,6 +1845,9 @@ public class Template
 						case Opcode.CF1_ISDICT:
 							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", dict)");
 							break;
+						case Opcode.CF1_ISTEMPLATE:
+							code(buffer, indent, "reg" + opcode.r1 + " = hasattr(reg" + opcode.r2 + ", '__call__')");
+							break;
 						case Opcode.CF1_REPR:
 							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._repr(reg" + opcode.r2 + ")");
 							break;
@@ -2032,7 +2015,7 @@ public class Template
 					code(buffer, indent, "# end if");
 					break;
 				case Opcode.OC_RENDER:
-					code(buffer, indent, "for chunk in templates[u" + Utils.repr(opcode.arg) + "](templates, **dict((key.encode('utf-8'), value) for (key, value) in reg" + opcode.r1 + ".iteritems())): yield chunk");
+					code(buffer, indent, "for chunk in reg" + opcode.r1 + "(**dict((key.encode('utf-8'), value) for (key, value) in reg" + opcode.r2 + ".iteritems())): yield chunk");
 					break;
 			}
 			lastOpcode = opcode.name;

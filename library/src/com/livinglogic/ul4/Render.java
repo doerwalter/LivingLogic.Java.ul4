@@ -4,13 +4,13 @@ import java.util.LinkedList;
 
 public class Render extends AST
 {
-	protected Name name;
+	protected AST template;
 	protected LinkedList args = new LinkedList();
 
-	public Render(int start, int end, Name name)
+	public Render(int start, int end, AST template)
 	{
 		super(start, end);
-		this.name = name;
+		this.template = template;
 	}
 
 	public void append(String name, AST value)
@@ -33,7 +33,10 @@ public class Render extends AST
 			registers.free(rk);
 			registers.free(rv);
 		}
-		template.opcode(Opcode.OC_RENDER, ra, name.value, location);
+		int rt = this.template.compile(template, registers, location);
+		template.opcode(Opcode.OC_RENDER, rt, ra, location);
+		registers.free(rt);
+		registers.free(ra);
 		return -1;
 	}
 }
