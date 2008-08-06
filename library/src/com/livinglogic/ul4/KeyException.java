@@ -4,6 +4,6 @@ public class KeyException extends RuntimeException
 {
 	public KeyException(Object key)
 	{
-		super("Key '" + key + "' now found!");
+		super("Key '" + key + "' not found!");
 	}
 }
