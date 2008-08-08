@@ -16,6 +16,11 @@ public class Dict extends AST
 		items.add(new DictEntry(key, value));
 	}
 
+	public void append(AST value)
+	{
+		items.add(new DictEntry(value));
+	}
+
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
@@ -24,11 +29,18 @@ public class Dict extends AST
 		for (int i = 0; i < itemCount; ++i)
 		{
 			DictEntry item = (DictEntry)items.get(i);
-			int rk = item.key.compile(template, registers, location);
 			int rv = item.value.compile(template, registers, location);
-			template.opcode(Opcode.OC_ADDDICT, r, rk, rv, location);
+			if (item.isdict)
+			{
+				template.opcode(Opcode.OC_UPDATEDICT, r, rv, location);
+			}
+			else
+			{
+				int rk = item.key.compile(template, registers, location);
+				template.opcode(Opcode.OC_ADDDICT, r, rk, rv, location);
+				registers.free(rk);
+			}
 			registers.free(rv);
-			registers.free(rk);
 		}
 		return r;
 	}

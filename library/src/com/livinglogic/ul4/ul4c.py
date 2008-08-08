@@ -213,11 +213,23 @@ class ExprParser(spark.GenericParser):
 		return dict
 	expr_builddict.spark = ['builddict ::= { expr0 : expr0']
 
+	def expr_builddictupdate(self, (_0, _1, value)):
+		dict = ul4.Dict(_0.start, value.end)
+		dict.append(value)
+		return dict
+	expr_builddictupdate.spark = ['builddict ::= { ** expr0']
+
 	def expr_adddict(self, (dict, _0, key, _1, value)):
 		dict.append(key, value)
 		dict.end = value.end
 		return dict
 	expr_adddict.spark = ['builddict ::= builddict , expr0 : expr0']
+
+	def expr_updatedict(self, (dict, _0, _1, value)):
+		dict.append(value)
+		dict.end = value.end
+		return dict
+	expr_updatedict.spark = ['builddict ::= builddict , ** expr0']
 
 	def expr_finishdict(self, (dict, _0)):
 		dict.end = _0.end
