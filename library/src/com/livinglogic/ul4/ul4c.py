@@ -505,11 +505,23 @@ class RenderParser(ExprParser):
 		return render
 	startrender.spark = ['buildrender ::= expr0 ( name = expr0 ']
 
+	def startrenderupdate(self, (template, _0, _1, arg)):
+		render = ul4.Render(template.start, arg.end, template)
+		render.append(arg)
+		return render
+	startrenderupdate.spark = ['buildrender ::= expr0 ( ** expr0']
+
 	def buildrender(self, (render, _1, argname, _2, argexpr)):
 		render.append(argname.value, argexpr)
 		render.end = argexpr.end
 		return render
 	buildrender.spark = ['buildrender ::= buildrender , name = expr0']
+
+	def buildrenderupdate(self, (render, _0, _1, arg)):
+		render.append(arg)
+		render.end = arg.end
+		return render
+	buildrenderupdate.spark = ['buildrender ::= buildrender , ** expr0']
 
 	def finishrender(self, (render, _0)):
 		render.end = _0.end

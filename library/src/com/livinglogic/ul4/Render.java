@@ -18,6 +18,11 @@ public class Render extends AST
 		args.add(new RenderArg(name, value));
 	}
 
+	public void append(AST value)
+	{
+		args.add(new RenderArg(null, value));
+	}
+
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int ra = registers.alloc();
@@ -27,10 +32,17 @@ public class Render extends AST
 		{
 			RenderArg arg = (RenderArg)args.get(i);
 			int rv = arg.value.compile(template, registers, location);
-			int rk = registers.alloc();
-			template.opcode(Opcode.OC_LOADSTR, rk, arg.name, location);
-			template.opcode(Opcode.OC_ADDDICT, ra, rk, rv, location);
-			registers.free(rk);
+			if (arg.name == null)
+			{
+				template.opcode(Opcode.OC_UPDATEDICT, ra, rv, location);
+			}
+			else
+			{
+				int rk = registers.alloc();
+				template.opcode(Opcode.OC_LOADSTR, rk, arg.name, location);
+				template.opcode(Opcode.OC_ADDDICT, ra, rk, rv, location);
+				registers.free(rk);
+			}
 			registers.free(rv);
 		}
 		int rt = this.template.compile(template, registers, location);

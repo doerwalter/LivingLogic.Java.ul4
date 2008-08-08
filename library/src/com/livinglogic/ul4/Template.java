@@ -37,7 +37,7 @@ public class Template
 	static
 	{
 		// Initializes regular expressions
-		tokenPattern = Pattern.compile("\\(|\\)|\\[|\\]|\\{|\\}|\\.|,|==|\\!=|<=|<|>=|>|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*|//|/");
+		tokenPattern = Pattern.compile("\\(|\\)|\\[|\\]|\\{|\\}|\\.|,|==|\\!=|<=|<|>=|>|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*\\*|\\*|//|/");
 		namePattern = Pattern.compile("[a-zA-Z_][\\w]*");
 		// We don't have negatve numbers, this is handled by constant folding in the AST for unary minus
 		floatPattern = Pattern.compile("(\\d+(\\.\\d*)?[eE][+-]?\\d+|\\d+\\.\\d*([eE][+-]?\\d+)?)");
@@ -922,6 +922,9 @@ public class Template
 							break;
 						case Opcode.OC_ADDDICT:
 							((Map)reg[code.r1]).put(reg[code.r2], reg[code.r3]);
+							break;
+						case Opcode.OC_UPDATEDICT:
+							((Map)reg[code.r1]).putAll((Map)reg[code.r2]);
 							break;
 						case Opcode.OC_LOADVAR:
 							reg[code.r1] = variables.get(code.arg);

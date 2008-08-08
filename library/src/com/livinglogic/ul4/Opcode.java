@@ -14,56 +14,57 @@ public class Opcode
 	public static final int OC_BUILDDICT = 9;
 	public static final int OC_ADDLIST = 10;
 	public static final int OC_ADDDICT = 11;
-	public static final int OC_LOADVAR = 12;
-	public static final int OC_STOREVAR = 13;
-	public static final int OC_ADDVAR = 14;
-	public static final int OC_SUBVAR = 15;
-	public static final int OC_MULVAR = 16;
-	public static final int OC_TRUEDIVVAR = 17;
-	public static final int OC_FLOORDIVVAR = 18;
-	public static final int OC_MODVAR = 19;
-	public static final int OC_DELVAR = 20;
-	public static final int OC_GETATTR = 21;
-	public static final int OC_GETITEM = 22;
-	public static final int OC_GETSLICE12 = 23;
-	public static final int OC_GETSLICE1 = 24;
-	public static final int OC_GETSLICE2 = 25;
-	public static final int OC_PRINT = 26;
-	public static final int OC_PRINTX = 27;
-	public static final int OC_NOT = 28;
-	public static final int OC_NEG = 29;
-	public static final int OC_CONTAINS = 30;
-	public static final int OC_NOTCONTAINS = 31;
-	public static final int OC_EQ = 32;
-	public static final int OC_NE = 33;
-	public static final int OC_LT = 34;
-	public static final int OC_LE = 35;
-	public static final int OC_GT = 36;
-	public static final int OC_GE = 37;
-	public static final int OC_ADD = 38;
-	public static final int OC_SUB = 39;
-	public static final int OC_MUL = 40;
-	public static final int OC_FLOORDIV = 41;
-	public static final int OC_TRUEDIV = 42;
-	public static final int OC_AND = 43;
-	public static final int OC_OR = 44;
-	public static final int OC_MOD = 45;
-	public static final int OC_CALLFUNC0 = 46;
-	public static final int OC_CALLFUNC1 = 47;
-	public static final int OC_CALLFUNC2 = 48;
-	public static final int OC_CALLFUNC3 = 49;
-	public static final int OC_CALLMETH0 = 50;
-	public static final int OC_CALLMETH1 = 51;
-	public static final int OC_CALLMETH2 = 52;
-	public static final int OC_CALLMETH3 = 53;
-	public static final int OC_IF = 54;
-	public static final int OC_ELSE = 55;
-	public static final int OC_ENDIF = 56;
-	public static final int OC_FOR = 57;
-	public static final int OC_ENDFOR = 58;
-	public static final int OC_BREAK = 59;
-	public static final int OC_CONTINUE = 60;
-	public static final int OC_RENDER = 61;
+	public static final int OC_UPDATEDICT = 12;
+	public static final int OC_LOADVAR = 13;
+	public static final int OC_STOREVAR = 14;
+	public static final int OC_ADDVAR = 15;
+	public static final int OC_SUBVAR = 16;
+	public static final int OC_MULVAR = 17;
+	public static final int OC_TRUEDIVVAR = 18;
+	public static final int OC_FLOORDIVVAR = 19;
+	public static final int OC_MODVAR = 20;
+	public static final int OC_DELVAR = 21;
+	public static final int OC_GETATTR = 22;
+	public static final int OC_GETITEM = 23;
+	public static final int OC_GETSLICE12 = 24;
+	public static final int OC_GETSLICE1 = 25;
+	public static final int OC_GETSLICE2 = 26;
+	public static final int OC_PRINT = 27;
+	public static final int OC_PRINTX = 28;
+	public static final int OC_NOT = 29;
+	public static final int OC_NEG = 30;
+	public static final int OC_CONTAINS = 31;
+	public static final int OC_NOTCONTAINS = 32;
+	public static final int OC_EQ = 33;
+	public static final int OC_NE = 34;
+	public static final int OC_LT = 35;
+	public static final int OC_LE = 36;
+	public static final int OC_GT = 37;
+	public static final int OC_GE = 38;
+	public static final int OC_ADD = 39;
+	public static final int OC_SUB = 40;
+	public static final int OC_MUL = 41;
+	public static final int OC_FLOORDIV = 42;
+	public static final int OC_TRUEDIV = 43;
+	public static final int OC_AND = 44;
+	public static final int OC_OR = 45;
+	public static final int OC_MOD = 46;
+	public static final int OC_CALLFUNC0 = 47;
+	public static final int OC_CALLFUNC1 = 48;
+	public static final int OC_CALLFUNC2 = 49;
+	public static final int OC_CALLFUNC3 = 50;
+	public static final int OC_CALLMETH0 = 51;
+	public static final int OC_CALLMETH1 = 52;
+	public static final int OC_CALLMETH2 = 53;
+	public static final int OC_CALLMETH3 = 54;
+	public static final int OC_IF = 55;
+	public static final int OC_ELSE = 56;
+	public static final int OC_ENDIF = 57;
+	public static final int OC_FOR = 58;
+	public static final int OC_ENDFOR = 59;
+	public static final int OC_BREAK = 60;
+	public static final int OC_CONTINUE = 61;
+	public static final int OC_RENDER = 62;
 
 	public static final int CF0_NOW = 0;
 	public static final int CF0_VARS = 1;
@@ -168,6 +169,8 @@ public class Opcode
 			return OC_ADDLIST;
 		else if (name.equals("adddict"))
 			return OC_ADDDICT;
+		else if (name.equals("updatedict"))
+			return OC_UPDATEDICT;
 		else if (name.equals("loadvar"))
 			return OC_LOADVAR;
 		else if (name.equals("storevar"))
@@ -455,6 +458,8 @@ public class Opcode
 			return "addlist";
 		else if (code == OC_ADDDICT)
 			return "adddict";
+		else if (code == OC_UPDATEDICT)
+			return "updatedict";
 		else if (code == OC_LOADVAR)
 			return "loadvar";
 		else if (code == OC_STOREVAR)
@@ -632,6 +637,8 @@ public class Opcode
 				return "r" + r1 + ".append(r" + r2 + ")";
 			case OC_ADDDICT:
 				return "r" + r1 + "[r" + r2 + "] = r" + r3;
+			case OC_UPDATEDICT:
+				return "r" + r1 + ".update(r" + r2 + ")";
 			case OC_LOADVAR:
 				return "r" + r1 + " = vars[" + Utils.repr(arg) + "]";
 			case OC_STOREVAR:
