@@ -1075,6 +1075,9 @@ public class Template
 								case Opcode.CF0_NOW:
 									reg[code.r1] = new Date();
 									break;
+								case Opcode.CF0_VARS:
+									reg[code.r1] = variables;
+									break;
 							}
 							break;
 						case Opcode.OC_CALLFUNC1:
