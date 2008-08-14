@@ -1304,7 +1304,7 @@ public class Template
 
 	public static List tokenizeTags(String source, String startdelim, String enddelim)
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|render)(\\s*((.|\\n)*?)\\s*)?" + escapeREchars(enddelim));
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|render|note)(\\s*((.|\\n)*?)\\s*)?" + escapeREchars(enddelim));
 		LinkedList tags = new LinkedList();
 		Matcher matcher = tagPattern.matcher(source);
 		int pos = 0;
@@ -1319,7 +1319,9 @@ public class Template
 				tags.add(new Location(source, null, pos, start, pos, start));
 			int codestart = matcher.start(3);
 			int codeend = codestart + matcher.group(3).length();
-			tags.add(new Location(source, matcher.group(1), start, end, codestart, codeend));
+			String type = matcher.group(1);
+			if (!type.equals("note"))
+				tags.add(new Location(source, matcher.group(1), start, end, codestart, codeend));
 			pos = end;
 		}
 		end = source.length();
