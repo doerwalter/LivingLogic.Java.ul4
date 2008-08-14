@@ -1158,6 +1158,9 @@ public class Template
 								case Opcode.CF1_RANGE:
 									reg[code.r1] = Utils.range(reg[code.r2]);
 									break;
+								case Opcode.CF1_TYPE:
+									reg[code.r1] = Utils.type(reg[code.r2]);
+									break;
 								case Opcode.CF1_GET:
 									reg[code.r1] = variables.get(reg[code.r2]);
 									break;

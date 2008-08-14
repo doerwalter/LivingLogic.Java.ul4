@@ -1218,6 +1218,30 @@ public class Utils
 		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be iterated as a map!");
 	}
 
+	public static String type(Object obj)
+	{
+		if (obj == null)
+			return "none";
+		else if (obj instanceof String)
+			return "str";
+		else if (obj instanceof Boolean)
+			return "bool";
+		else if (obj instanceof Integer)
+			return "int";
+		else if (obj instanceof Double)
+			return "float";
+		else if (obj instanceof Date)
+			return "date";
+		else if (obj instanceof List)
+			return "list";
+		else if (obj instanceof Map)
+			return "dict";
+		else if (obj instanceof Template)
+			return "template";
+		else
+			return null;
+	}
+
 	public static void main(String[] args)
 	{
 		//System.out.println(split("\t\tgurk\t\t\t\t\t\thurz\t\tschwumpl\t\t\t\t", "\t\t"));

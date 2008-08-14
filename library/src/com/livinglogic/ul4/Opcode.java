@@ -92,8 +92,9 @@ public class Opcode
 	public static final int CF1_BIN = 20;
 	public static final int CF1_SORTED = 21;
 	public static final int CF1_RANGE = 22;
-	public static final int CF1_CSVESCAPE = 23;
-	public static final int CF1_GET = 24;
+	public static final int CF1_TYPE = 23;
+	public static final int CF1_CSVESCAPE = 24;
+	public static final int CF1_GET = 25;
 
 	public static final int CF2_RANGE = 0;
 	public static final int CF2_GET = 1;
@@ -333,6 +334,8 @@ public class Opcode
 			return CF1_SORTED;
 		else if (name.equals("range"))
 			return CF1_RANGE;
+		else if (name.equals("type"))
+			return CF1_TYPE;
 		else if (name.equals("csvescape"))
 			return CF1_CSVESCAPE;
 		else if (name.equals("get"))
