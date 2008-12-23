@@ -620,7 +620,7 @@ public class Utils
 		return sb.toString();
 	}
 
-	public static String csvescape(Object obj)
+	public static String csv(Object obj)
 	{
 		if (obj == null)
 			return "";

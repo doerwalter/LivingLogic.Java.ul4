@@ -8,7 +8,7 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?print {**{'y':42}}?>");
+		Template tmpl = Compiler.compile("<?print csv('a,b')?>");
 		long start = System.currentTimeMillis();
 		Map map = new HashMap();
 		String output = tmpl.renders(map);

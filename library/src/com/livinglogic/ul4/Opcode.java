@@ -93,7 +93,7 @@ public class Opcode
 	public static final int CF1_SORTED = 21;
 	public static final int CF1_RANGE = 22;
 	public static final int CF1_TYPE = 23;
-	public static final int CF1_CSVESCAPE = 24;
+	public static final int CF1_CSV = 24;
 	public static final int CF1_GET = 25;
 
 	public static final int CF2_RANGE = 0;
@@ -336,8 +336,8 @@ public class Opcode
 			return CF1_RANGE;
 		else if (name.equals("type"))
 			return CF1_TYPE;
-		else if (name.equals("csvescape"))
-			return CF1_CSVESCAPE;
+		else if (name.equals("csv"))
+			return CF1_CSV;
 		else if (name.equals("get"))
 			return CF1_GET;
 		else

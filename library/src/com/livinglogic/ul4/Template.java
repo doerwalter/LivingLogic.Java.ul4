@@ -1089,8 +1089,8 @@ public class Template
 								case Opcode.CF1_XMLESCAPE:
 									reg[code.r1] = Utils.xmlescape(reg[code.r2]);
 									break;
-								case Opcode.CF1_CSVESCAPE:
-									reg[code.r1] = Utils.csvescape(reg[code.r2]);
+								case Opcode.CF1_CSV:
+									reg[code.r1] = Utils.csv(reg[code.r2]);
 									break;
 								case Opcode.CF1_STR:
 									reg[code.r1] = ObjectUtils.toString(reg[code.r2]);
@@ -1814,8 +1814,8 @@ public class Template
 						case Opcode.CF1_XMLESCAPE:
 							code(buffer, indent, "reg" + opcode.r1 + " = xmlescape(unicode(reg" + opcode.r2 + ")) if reg" + opcode.r2 + " is not None else u''");
 							break;
-						case Opcode.CF1_CSVESCAPE:
-							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._csvescape(reg" + opcode.r2 + ")");
+						case Opcode.CF1_CSV:
+							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._csv(reg" + opcode.r2 + ")");
 							break;
 						case Opcode.CF1_STR:
 							code(buffer, indent, "reg" + opcode.r1 + " = unicode(reg" + opcode.r2 + ") if reg" + opcode.r2 + " is not None else u''");
