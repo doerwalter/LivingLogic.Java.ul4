@@ -8,7 +8,7 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?print csv('a,b')?>");
+		Template tmpl = Compiler.compile("<?print json([None, True, False, 42, 42., ['a','b'], {'a': 'b', 'c': 'd'}])?>");
 		long start = System.currentTimeMillis();
 		Map map = new HashMap();
 		String output = tmpl.renders(map);

@@ -1164,6 +1164,9 @@ public class Template
 								case Opcode.CF1_GET:
 									reg[code.r1] = variables.get(reg[code.r2]);
 									break;
+								case Opcode.CF1_JSON:
+									reg[code.r1] = Utils.json(reg[code.r2]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLFUNC2:
@@ -1864,6 +1867,9 @@ public class Template
 							break;
 						case Opcode.CF1_GET:
 							code(buffer, indent, "reg" + opcode.r1 + " = variables.get(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_JSON:
+							code(buffer, indent, "reg" + opcode.r1 + " = json(reg" + opcode.r2 + ")");
 							break;
 						case Opcode.CF1_CHR:
 							code(buffer, indent, "reg" + opcode.r1 + " = unichr(reg" + opcode.r2 + ")");

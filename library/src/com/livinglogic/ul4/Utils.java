@@ -718,6 +718,62 @@ public class Utils
 		return null;
 	}
 	
+	public static String json(Object obj)
+	{
+		if (obj == null)
+			return "null";
+		else if (obj instanceof Boolean)
+			return ((Boolean)obj).booleanValue() ? "true" : "false";
+		else if (obj instanceof Integer)
+			return String.valueOf(((Integer)obj).intValue());
+		else if (obj instanceof Double)
+			return String.valueOf(((Double)obj).doubleValue());
+		else if (obj instanceof String)
+			return new StringBuffer()
+				.append("\"")
+				.append(StringEscapeUtils.escapeJavaScript(((String)obj)))
+				.append("\"")
+				.toString();
+		else if (obj instanceof Date)
+			return json(isoformat((Date)obj));
+		else if (obj instanceof Collection)
+		{
+			StringBuffer sb = new StringBuffer();
+			sb.append("[");
+			boolean first = true;
+			for (Iterator iter = ((Collection)obj).iterator(); iter.hasNext();)
+			{
+				if (first)
+					first = false;
+				else
+					sb.append(", ");
+				sb.append(json(iter.next()));
+			}
+			sb.append("]");
+			return sb.toString();
+		}
+		else if (obj instanceof Map)
+		{
+			StringBuffer sb = new StringBuffer();
+			sb.append("{");
+			boolean first = true;
+			for (Iterator iter = ((Map)obj).entrySet().iterator(); iter.hasNext();)
+			{
+				if (first)
+					first = false;
+				else
+					sb.append(", ");
+				Map.Entry entry = (Map.Entry)iter.next();
+				sb.append(json(entry.getKey()));
+				sb.append(": ");
+				sb.append(json(entry.getValue()));
+			}
+			sb.append("}");
+			return sb.toString();
+		}
+		return null;
+	}
+	
 	public static Object length(String obj)
 	{
 		return new Integer(obj.length());
