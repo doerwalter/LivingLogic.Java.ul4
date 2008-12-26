@@ -681,6 +681,8 @@ public class Opcode
 				return "r" + r1 + " = " + Utils.repr(arg);
 			case OC_LOADDATE:
 				return "r" + r1 + " = " + Utils.repr(arg);
+			case OC_LOADCOLOR:
+				return "r" + r1 + " = " + Color.fromdump(arg).repr();
 			case OC_BUILDLIST:
 				return "r" + r1 + " = []";
 			case OC_BUILDDICT:

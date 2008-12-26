@@ -19,19 +19,7 @@ public class LoadColor extends AST
 	{
 		int r = registers.alloc();
 		
-		String sr = Integer.toHexString(value.getR());
-		if (sr.length() < 2)
-			sr = "0" + sr;
-
-		String sg = Integer.toHexString(value.getG());
-		if (sg.length() < 2)
-			sg = "0" + sg;
-
-		String sb = Integer.toHexString(value.getB());
-		if (sb.length() < 2)
-			sb = "0" + sb;
-
-		template.opcode(Opcode.OC_LOADCOLOR, r, sr + sg + sb, location);
+		template.opcode(Opcode.OC_LOADCOLOR, r, value.dump(), location);
 		return r;
 	}
 

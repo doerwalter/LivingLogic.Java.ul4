@@ -10,7 +10,7 @@ public class Main
 	{
 		Color c = new Color(0x00, 0x63, 0xa8, 0x33);
 		Color b = new Color(0x00, 0x00, 0x00, 0xff);
-		Template tmpl = Compiler.compile("<?for c in rgb(-1,2,0.5, 1)?><?print hex(c)?>,<?end for?>");
+		Template tmpl = Compiler.compile("<?for c in #fc96?><?print hex(c)?>,<?end for?>");
 		System.out.println(tmpl);
 		long start = System.currentTimeMillis();
 		Map vars = new HashMap();

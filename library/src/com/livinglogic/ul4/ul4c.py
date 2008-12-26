@@ -174,6 +174,7 @@ class ExprParser(spark.GenericParser):
 		'expr11 ::= int',
 		'expr11 ::= float',
 		'expr11 ::= date',
+		'expr11 ::= color',
 		'expr11 ::= name',
 	]
 

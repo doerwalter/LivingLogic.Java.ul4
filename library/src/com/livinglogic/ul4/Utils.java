@@ -704,6 +704,8 @@ public class Utils
 				.toString();
 		else if (obj instanceof Date)
 			return isoformat((Date)obj);
+		else if (obj instanceof Color)
+			return ((Color)obj).repr();
 		else if (obj instanceof Collection)
 		{
 			StringBuffer sb = new StringBuffer();

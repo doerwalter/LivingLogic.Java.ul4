@@ -231,6 +231,83 @@ public class Color implements Collection
 		}
 	}
 
+	public String repr()
+	{
+		StringBuffer buffer = new StringBuffer(9);
+
+		buffer.append("#");
+		if (((r>>4) == (r&0xf)) && ((g>>4) == (g&0xf)) && ((b>>4) == (b&0xf)) && ((a>>4) == (a&0xf)))
+		{
+			buffer.append(Integer.toHexString(r>>4));
+			buffer.append(Integer.toHexString(g>>4));
+			buffer.append(Integer.toHexString(b>>4));
+			if (a != 255)
+				buffer.append(Integer.toHexString(a>>4));
+		}
+		else
+		{
+			String sr = Integer.toHexString(r);
+			if (sr.length() < 2)
+				buffer.append("0");
+			buffer.append(sr);
+
+			String sg = Integer.toHexString(g);
+			if (sg.length() < 2)
+				buffer.append("0");
+			buffer.append(sg);
+
+			String sb = Integer.toHexString(b);
+			if (sb.length() < 2)
+				buffer.append("0");
+			buffer.append(sb);
+
+			if (a != 255)
+			{
+				String sa = Integer.toHexString(a);
+				if (sa.length() < 2)
+					buffer.append("0");
+				buffer.append(sa);
+			}
+		}
+		return buffer.toString();
+	}
+
+	public String dump()
+	{
+		StringBuffer buffer = new StringBuffer(8);
+
+		String sr = Integer.toHexString(r);
+		if (sr.length() < 2)
+			buffer.append("0");
+		buffer.append(sr);
+
+		String sg = Integer.toHexString(g);
+		if (sg.length() < 2)
+			buffer.append("0");
+		buffer.append(sg);
+
+		String sb = Integer.toHexString(b);
+		if (sb.length() < 2)
+			buffer.append("0");
+		buffer.append(sb);
+
+		String sa = Integer.toHexString(a);
+		if (sa.length() < 2)
+			buffer.append("0");
+		buffer.append(sa);
+
+		return buffer.toString();
+	}
+
+	public static Color fromdump(String value)
+	{
+		int r = Integer.valueOf(value.substring(0, 2), 16);
+		int g = Integer.valueOf(value.substring(2, 4), 16);
+		int b = Integer.valueOf(value.substring(4, 6), 16);
+		int a = Integer.valueOf(value.substring(6, 8), 16);
+		return new Color(r, g, b, a);
+	}
+
 	public Color blend(Color color)
 	{
 		double sa = a/255.;
