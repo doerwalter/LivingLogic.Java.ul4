@@ -100,7 +100,7 @@ public class Template
 	/**
 	 * The version number used in the compiled format of the template.
 	 */
-	public static final String VERSION = "5";
+	public static final String VERSION = "7";
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
@@ -1192,6 +1192,29 @@ public class Template
 								case Opcode.CF3_ZIP:
 									reg[code.r1] = Utils.zip(reg[code.r2], reg[code.r3], reg[code.r4]);
 									break;
+								case Opcode.CF3_RGB:
+									reg[code.r1] = Utils.rgb(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+								case Opcode.CF3_HLS:
+									reg[code.r1] = Utils.hls(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+								case Opcode.CF3_HSV:
+									reg[code.r1] = Utils.hsv(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+							}
+							break;
+						case Opcode.OC_CALLFUNC4:
+							switch (code.argcode)
+							{
+								case Opcode.CF4_RGB:
+									reg[code.r1] = Utils.rgb(reg[code.r2], reg[code.r3], reg[code.r4], reg[code.r5]);
+									break;
+								case Opcode.CF4_HLS:
+									reg[code.r1] = Utils.hls(reg[code.r2], reg[code.r3], reg[code.r4], reg[code.r5]);
+									break;
+								case Opcode.CF4_HSV:
+									reg[code.r1] = Utils.hsv(reg[code.r2], reg[code.r3], reg[code.r4], reg[code.r5]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLMETH0:
@@ -1223,6 +1246,18 @@ public class Template
 									break;
 								case Opcode.CM0_ISOFORMAT:
 									reg[code.r1] = Utils.isoformat(reg[code.r2]);
+									break;
+								case Opcode.CM0_HLS:
+									reg[code.r1] = ((Color)reg[code.r2]).hls();
+									break;
+								case Opcode.CM0_HLSA:
+									reg[code.r1] = ((Color)reg[code.r2]).hlsa();
+									break;
+								case Opcode.CM0_HSV:
+									reg[code.r1] = ((Color)reg[code.r2]).hsv();
+									break;
+								case Opcode.CM0_HSVA:
+									reg[code.r1] = ((Color)reg[code.r2]).hsva();
 									break;
 							}
 							break;
@@ -1390,43 +1425,43 @@ public class Template
 					if (name.equals("in") || name.equals("not") || name.equals("or") || name.equals("and") || name.equals("del"))
 						tokens.add(new Token(pos, pos+len, name));
 					else if (name.equals("None"))
-						tokens.add(new None(pos, pos+len));
+						tokens.add(new LoadNone(pos, pos+len));
 					else if (name.equals("True"))
-						tokens.add(new True(pos, pos+len));
+						tokens.add(new LoadTrue(pos, pos+len));
 					else if (name.equals("False"))
-						tokens.add(new False(pos, pos+len));
+						tokens.add(new LoadFalse(pos, pos+len));
 					else
 						tokens.add(new Name(pos, pos+len, name));
 				}
 				else if (stringMode==0 && dateMatcher.lookingAt())
 				{
 					len = dateMatcher.end();
-					tokens.add(new com.livinglogic.ul4.Date(pos, pos+len, Utils.isoDateFormatter.parse(dateMatcher.group())));
+					tokens.add(new LoadDate(pos, pos+len, Utils.isoDateFormatter.parse(dateMatcher.group())));
 				}
 				else if (stringMode==0 && floatMatcher.lookingAt())
 				{
 					len = floatMatcher.end();
-					tokens.add(new Float(pos, pos+len, Double.parseDouble(floatMatcher.group())));
+					tokens.add(new LoadFloat(pos, pos+len, Double.parseDouble(floatMatcher.group())));
 				}
 				else if (stringMode==0 && hexintMatcher.lookingAt())
 				{
 					len = hexintMatcher.end();
-					tokens.add(new Int(pos, pos+len, Integer.parseInt(hexintMatcher.group().substring(2), 16)));
+					tokens.add(new LoadInt(pos, pos+len, Integer.parseInt(hexintMatcher.group().substring(2), 16)));
 				}
 				else if (stringMode==0 && octintMatcher.lookingAt())
 				{
 					len = octintMatcher.end();
-					tokens.add(new Int(pos, pos+len, Integer.parseInt(octintMatcher.group().substring(2), 8)));
+					tokens.add(new LoadInt(pos, pos+len, Integer.parseInt(octintMatcher.group().substring(2), 8)));
 				}
 				else if (stringMode==0 && binintMatcher.lookingAt())
 				{
 					len = binintMatcher.end();
-					tokens.add(new Int(pos, pos+len, Integer.parseInt(binintMatcher.group().substring(2), 2)));
+					tokens.add(new LoadInt(pos, pos+len, Integer.parseInt(binintMatcher.group().substring(2), 2)));
 				}
 				else if (stringMode==0 && intMatcher.lookingAt())
 				{
 					len = intMatcher.end();
-					tokens.add(new Int(pos, pos+len, Integer.parseInt(intMatcher.group())));
+					tokens.add(new LoadInt(pos, pos+len, Integer.parseInt(intMatcher.group())));
 				}
 				else if (stringMode==0 && source.startsWith("'"))
 				{
@@ -1446,7 +1481,7 @@ public class Template
 				{
 					len = 1;
 					stringMode = 0;
-					tokens.add(new Str(stringStartPos, pos+len, collectString.toString()));
+					tokens.add(new LoadStr(stringStartPos, pos+len, collectString.toString()));
 					collectString = null;
 				}
 				else if (stringMode==0 && whitespaceMatcher.lookingAt())
@@ -1948,6 +1983,18 @@ public class Template
 							break;
 						case Opcode.CM0_ITEMS:
 							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".iteritems()");
+							break;
+						case Opcode.CM0_HLS:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hls()");
+							break;
+						case Opcode.CM0_HLSA:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hlsa()");
+							break;
+						case Opcode.CM0_HSV:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hsv()");
+							break;
+						case Opcode.CM0_HSVA:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hsva()");
 							break;
 					}
 					break;

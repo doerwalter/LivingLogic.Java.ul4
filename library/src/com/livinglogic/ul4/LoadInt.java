@@ -1,10 +1,10 @@
 package com.livinglogic.ul4;
 
-public class Float extends AST
+public class LoadInt extends AST
 {
-	protected double value;
+	protected int value;
 
-	public Float(int start, int end, double value)
+	public LoadInt(int start, int end, int value)
 	{
 		super(start, end);
 		this.value = value;
@@ -12,18 +12,18 @@ public class Float extends AST
 
 	public String getTokenType()
 	{
-		return "float";
+		return "int";
 	}
 
 	public Object getValue()
 	{
-		return new Double(value);
+		return new Integer(value);
 	}
 
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
-		template.opcode(Opcode.OC_LOADFLOAT, r, String.valueOf(value), location);
+		template.opcode(Opcode.OC_LOADINT, r, String.valueOf(value), location);
 		return r;
 	}
 

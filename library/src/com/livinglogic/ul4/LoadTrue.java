@@ -1,8 +1,8 @@
 package com.livinglogic.ul4;
 
-public class True extends Const
+public class LoadTrue extends LoadConst
 {
-	public True(int start, int end)
+	public LoadTrue(int start, int end)
 	{
 		super(start, end);
 	}

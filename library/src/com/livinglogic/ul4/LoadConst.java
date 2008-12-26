@@ -1,8 +1,8 @@
 package com.livinglogic.ul4;
 
-public abstract class Const extends AST
+public abstract class LoadConst extends AST
 {
-	public Const(int start, int end)
+	public LoadConst(int start, int end)
 	{
 		super(start, end);
 	}

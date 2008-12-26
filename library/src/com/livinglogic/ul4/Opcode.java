@@ -10,61 +10,63 @@ public class Opcode
 	public static final int OC_LOADFLOAT = 5;
 	public static final int OC_LOADSTR = 6;
 	public static final int OC_LOADDATE = 7;
-	public static final int OC_BUILDLIST = 8;
-	public static final int OC_BUILDDICT = 9;
-	public static final int OC_ADDLIST = 10;
-	public static final int OC_ADDDICT = 11;
-	public static final int OC_UPDATEDICT = 12;
-	public static final int OC_LOADVAR = 13;
-	public static final int OC_STOREVAR = 14;
-	public static final int OC_ADDVAR = 15;
-	public static final int OC_SUBVAR = 16;
-	public static final int OC_MULVAR = 17;
-	public static final int OC_TRUEDIVVAR = 18;
-	public static final int OC_FLOORDIVVAR = 19;
-	public static final int OC_MODVAR = 20;
-	public static final int OC_DELVAR = 21;
-	public static final int OC_GETATTR = 22;
-	public static final int OC_GETITEM = 23;
-	public static final int OC_GETSLICE12 = 24;
-	public static final int OC_GETSLICE1 = 25;
-	public static final int OC_GETSLICE2 = 26;
-	public static final int OC_PRINT = 27;
-	public static final int OC_PRINTX = 28;
-	public static final int OC_NOT = 29;
-	public static final int OC_NEG = 30;
-	public static final int OC_CONTAINS = 31;
-	public static final int OC_NOTCONTAINS = 32;
-	public static final int OC_EQ = 33;
-	public static final int OC_NE = 34;
-	public static final int OC_LT = 35;
-	public static final int OC_LE = 36;
-	public static final int OC_GT = 37;
-	public static final int OC_GE = 38;
-	public static final int OC_ADD = 39;
-	public static final int OC_SUB = 40;
-	public static final int OC_MUL = 41;
-	public static final int OC_FLOORDIV = 42;
-	public static final int OC_TRUEDIV = 43;
-	public static final int OC_AND = 44;
-	public static final int OC_OR = 45;
-	public static final int OC_MOD = 46;
-	public static final int OC_CALLFUNC0 = 47;
-	public static final int OC_CALLFUNC1 = 48;
-	public static final int OC_CALLFUNC2 = 49;
-	public static final int OC_CALLFUNC3 = 50;
-	public static final int OC_CALLMETH0 = 51;
-	public static final int OC_CALLMETH1 = 52;
-	public static final int OC_CALLMETH2 = 53;
-	public static final int OC_CALLMETH3 = 54;
-	public static final int OC_IF = 55;
-	public static final int OC_ELSE = 56;
-	public static final int OC_ENDIF = 57;
-	public static final int OC_FOR = 58;
-	public static final int OC_ENDFOR = 59;
-	public static final int OC_BREAK = 60;
-	public static final int OC_CONTINUE = 61;
-	public static final int OC_RENDER = 62;
+	public static final int OC_LOADCOLOR = 8;
+	public static final int OC_BUILDLIST = 9;
+	public static final int OC_BUILDDICT = 10;
+	public static final int OC_ADDLIST = 11;
+	public static final int OC_ADDDICT = 12;
+	public static final int OC_UPDATEDICT = 13;
+	public static final int OC_LOADVAR = 14;
+	public static final int OC_STOREVAR = 15;
+	public static final int OC_ADDVAR = 16;
+	public static final int OC_SUBVAR = 17;
+	public static final int OC_MULVAR = 18;
+	public static final int OC_TRUEDIVVAR = 19;
+	public static final int OC_FLOORDIVVAR = 20;
+	public static final int OC_MODVAR = 21;
+	public static final int OC_DELVAR = 22;
+	public static final int OC_GETATTR = 23;
+	public static final int OC_GETITEM = 24;
+	public static final int OC_GETSLICE12 = 25;
+	public static final int OC_GETSLICE1 = 26;
+	public static final int OC_GETSLICE2 = 27;
+	public static final int OC_PRINT = 28;
+	public static final int OC_PRINTX = 29;
+	public static final int OC_NOT = 30;
+	public static final int OC_NEG = 31;
+	public static final int OC_CONTAINS = 32;
+	public static final int OC_NOTCONTAINS = 33;
+	public static final int OC_EQ = 34;
+	public static final int OC_NE = 35;
+	public static final int OC_LT = 36;
+	public static final int OC_LE = 37;
+	public static final int OC_GT = 38;
+	public static final int OC_GE = 39;
+	public static final int OC_ADD = 40;
+	public static final int OC_SUB = 41;
+	public static final int OC_MUL = 42;
+	public static final int OC_FLOORDIV = 43;
+	public static final int OC_TRUEDIV = 44;
+	public static final int OC_AND = 45;
+	public static final int OC_OR = 46;
+	public static final int OC_MOD = 47;
+	public static final int OC_CALLFUNC0 = 48;
+	public static final int OC_CALLFUNC1 = 49;
+	public static final int OC_CALLFUNC2 = 50;
+	public static final int OC_CALLFUNC3 = 51;
+	public static final int OC_CALLFUNC4 = 52;
+	public static final int OC_CALLMETH0 = 53;
+	public static final int OC_CALLMETH1 = 54;
+	public static final int OC_CALLMETH2 = 55;
+	public static final int OC_CALLMETH3 = 56;
+	public static final int OC_IF = 57;
+	public static final int OC_ELSE = 58;
+	public static final int OC_ENDIF = 59;
+	public static final int OC_FOR = 60;
+	public static final int OC_ENDFOR = 61;
+	public static final int OC_BREAK = 62;
+	public static final int OC_CONTINUE = 63;
+	public static final int OC_RENDER = 64;
 
 	public static final int CF0_NOW = 0;
 	public static final int CF0_VARS = 1;
@@ -103,6 +105,13 @@ public class Opcode
 
 	public static final int CF3_RANGE = 0;
 	public static final int CF3_ZIP = 1;
+	public static final int CF3_RGB = 2;
+	public static final int CF3_HLS = 3;
+	public static final int CF3_HSV = 4;
+
+	public static final int CF4_RGB = 0;
+	public static final int CF4_HLS = 1;
+	public static final int CF4_HSV = 2;
 
 	public static final int CM0_SPLIT = 0;
 	public static final int CM0_STRIP = 1;
@@ -113,6 +122,10 @@ public class Opcode
 	public static final int CM0_CAPITALIZE = 6;
 	public static final int CM0_ITEMS = 7;
 	public static final int CM0_ISOFORMAT = 8;
+	public static final int CM0_HLS = 9;
+	public static final int CM0_HLSA = 10;
+	public static final int CM0_HSV = 11;
+	public static final int CM0_HSVA = 12;
 
 	public static final int CM1_SPLIT = 0;
 	public static final int CM1_RSPLIT = 1;
@@ -249,6 +262,8 @@ public class Opcode
 			return OC_CALLFUNC2;
 		else if (name.equals("callfunc3"))
 			return OC_CALLFUNC3;
+		else if (name.equals("callfunc4"))
+			return OC_CALLFUNC4;
 		else if (name.equals("callmeth0"))
 			return OC_CALLMETH0;
 		else if (name.equals("callmeth1"))
@@ -365,6 +380,24 @@ public class Opcode
 			return CF3_RANGE;
 		if (name.equals("zip"))
 			return CF3_ZIP;
+		else if (name.equals("rgb"))
+			return CF3_RGB;
+		else if (name.equals("hls"))
+			return CF3_HLS;
+		else if (name.equals("hsv"))
+			return CF3_HSV;
+		else
+			throw new UnknownFunctionException(name);
+	}
+
+	public static int callfunc4name2code(String name)
+	{
+		if (name.equals("rgb"))
+			return CF4_RGB;
+		else if (name.equals("hls"))
+			return CF4_HLS;
+		else if (name.equals("hsv"))
+			return CF4_HSV;
 		else
 			throw new UnknownFunctionException(name);
 	}
@@ -391,6 +424,14 @@ public class Opcode
 			return CM0_ITEMS;
 		else if (name.equals("isoformat"))
 			return CM0_ISOFORMAT;
+		else if (name.equals("hls"))
+			return CM0_HLS;
+		else if (name.equals("hlsa"))
+			return CM0_HLSA;
+		else if (name.equals("hsv"))
+			return CM0_HSV;
+		else if (name.equals("hsva"))
+			return CM0_HSVA;
 		else
 			throw new UnknownMethodException(name);
 	}
@@ -542,6 +583,8 @@ public class Opcode
 			return "callfunc2";
 		else if (code == OC_CALLFUNC3)
 			return "callfunc3";
+		else if (code == OC_CALLFUNC4)
+			return "callfunc4";
 		else if (code == OC_CALLMETH0)
 			return "callmeth0";
 		else if (code == OC_CALLMETH1)
@@ -597,6 +640,9 @@ public class Opcode
 				break;
 			case OC_CALLFUNC3:
 				this.argcode = callfunc3name2code(arg);
+				break;
+			case OC_CALLFUNC4:
+				this.argcode = callfunc4name2code(arg);
 				break;
 			case OC_CALLMETH0:
 				this.argcode = callmeth0name2code(arg);
@@ -718,17 +764,19 @@ public class Opcode
 			case OC_CALLFUNC1:
 				return "r" + r1 + " = " + arg + "(r" + r2 + ")";
 			case OC_CALLFUNC2:
-				return "r" + r1 + " = " + arg + "(r" + r2 + ", " + r3 + ")";
+				return "r" + r1 + " = " + arg + "(r" + r2 + ", r" + r3 + ")";
 			case OC_CALLFUNC3:
-				return "r" + r1 + " = " + arg + "(r" + r2 + ", " + r3 + ", " + r4 + ")";
+				return "r" + r1 + " = " + arg + "(r" + r2 + ", r" + r3 + ", r" + r4 + ")";
+			case OC_CALLFUNC4:
+				return "r" + r1 + " = " + arg + "(r" + r2 + ", r" + r3 + ", r" + r4 + ", r" + r5 + ")";
 			case OC_CALLMETH0:
 				return "r" + r1 + " = r" + r2 + "." + arg + "()";
 			case OC_CALLMETH1:
 				return "r" + r1 + " = r" + r2 + "." + arg + "(r" + r3 + ")";
 			case OC_CALLMETH2:
-				return "r" + r1 + " = r" + r2 + "." + arg + "(r" + r3 + ", " + r4 + ")";
+				return "r" + r1 + " = r" + r2 + "." + arg + "(r" + r3 + ", r" + r4 + ")";
 			case OC_CALLMETH3:
-				return "r" + r1 + " = r" + r2 + "." + arg + "(r" + r3 + ", " + r4 + ", " + r5 + ")";
+				return "r" + r1 + " = r" + r2 + "." + arg + "(r" + r3 + ", r" + r4 + ", r" + r5 + ")";
 			case OC_IF:
 				return "if r" + r1;
 			case OC_ELSE:

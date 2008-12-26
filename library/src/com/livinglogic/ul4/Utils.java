@@ -345,6 +345,10 @@ public class Utils
 
 	public static Object mod(Object arg1, Object arg2)
 	{
+		if (arg1 instanceof Integer && arg2 instanceof Integer)
+			return mod((Integer)arg1, (Integer)arg2);
+		else if (arg1 instanceof Color && arg2 instanceof Color)
+			return ((Color)arg1).blend((Color)arg2);
 		throw new UnsupportedOperationException("Can't apply the modulo operator to instances of " + arg1.getClass() + " and " + arg2.getClass() + "!");
 	}
 
@@ -368,6 +372,24 @@ public class Utils
 		return arg1.get(index);
 	}
 
+	public static Object getItem(Color arg1, Integer arg2)
+	{
+		int index = arg2.intValue();
+		switch (index)
+		{
+			case 0:
+				return new Integer(arg1.getR());
+			case 1:
+				return new Integer(arg1.getG());
+			case 2:
+				return new Integer(arg1.getB());
+			case 3:
+				return new Integer(arg1.getA());
+			default:
+				throw new ArrayIndexOutOfBoundsException();
+		}
+	}
+
 	public static Object getItem(Map arg1, Object arg2)
 	{
 		Object result = arg1.get(arg2);
@@ -383,6 +405,8 @@ public class Utils
 			return getItem((String)arg1, (Integer)arg2);
 		else if (arg1 instanceof List && arg2 instanceof Integer)
 			return getItem((List)arg1, (Integer)arg2);
+		else if (arg1 instanceof Color && arg2 instanceof Integer)
+			return getItem((Color)arg1, (Integer)arg2);
 		else if (arg1 instanceof Map)
 			return getItem((Map)arg1, arg2);
 		throw new UnsupportedOperationException("Instance of " + arg1.getClass() + " does not support getitem with argument of type " + arg2.getClass() + "!");
@@ -875,7 +899,7 @@ public class Utils
 	public static Object hex(Object obj)
 	{
 		if (obj instanceof Integer)
-			return chr((Integer)obj);
+			return hex((Integer)obj);
 		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be represented as a hexadecimal string!");
 	}
 
@@ -887,7 +911,7 @@ public class Utils
 	public static Object oct(Object obj)
 	{
 		if (obj instanceof Integer)
-			return chr((Integer)obj);
+			return oct((Integer)obj);
 		throw new UnsupportedOperationException("Instance of " + obj.getClass() + " can't be represented as an octal string!");
 	}
 
@@ -1288,6 +1312,8 @@ public class Utils
 			return "float";
 		else if (obj instanceof Date)
 			return "date";
+		else if (obj instanceof Color)
+			return "color";
 		else if (obj instanceof List)
 			return "list";
 		else if (obj instanceof Map)
@@ -1296,6 +1322,46 @@ public class Utils
 			return "template";
 		else
 			return null;
+	}
+
+	private static double _getdouble(Object arg)
+	{
+		if (arg instanceof Integer)
+			return ((Integer)arg).doubleValue();
+		else if (arg instanceof Double)
+			return ((Double)arg).doubleValue();
+		else
+			throw new UnsupportedOperationException("can't convert " + arg.getClass() + " to float!");
+	}
+
+	public static Color rgb(Object arg1, Object arg2, Object arg3)
+	{
+		return Color.fromrgb(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3));
+	}
+
+	public static Color rgb(Object arg1, Object arg2, Object arg3, Object arg4)
+	{
+		return Color.fromrgb(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3), _getdouble(arg4));
+	}
+
+	public static Color hsv(Object arg1, Object arg2, Object arg3)
+	{
+		return Color.fromhsv(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3));
+	}
+
+	public static Color hsv(Object arg1, Object arg2, Object arg3, Object arg4)
+	{
+		return Color.fromhsv(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3), _getdouble(arg4));
+	}
+
+	public static Color hls(Object arg1, Object arg2, Object arg3)
+	{
+		return Color.fromhls(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3));
+	}
+
+	public static Color hls(Object arg1, Object arg2, Object arg3, Object arg4)
+	{
+		return Color.fromhls(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3), _getdouble(arg4));
 	}
 
 	public static void main(String[] args)

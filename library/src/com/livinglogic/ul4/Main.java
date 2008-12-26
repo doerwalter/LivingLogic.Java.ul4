@@ -8,10 +8,13 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?print json([None, True, False, 42, 42., ['a','b'], {'a': 'b', 'c': 'd'}])?>");
+		Color c = new Color(0x00, 0x63, 0xa8, 0x33);
+		Color b = new Color(0x00, 0x00, 0x00, 0xff);
+		Template tmpl = Compiler.compile("<?for c in rgb(-1,2,0.5, 1)?><?print hex(c)?>,<?end for?>");
+		System.out.println(tmpl);
 		long start = System.currentTimeMillis();
-		Map map = new HashMap();
-		String output = tmpl.renders(map);
+		Map vars = new HashMap();
+		String output = tmpl.renders(vars);
 		System.out.println("rendered " + (System.currentTimeMillis()-start));
 		System.out.println(output);
 	}
