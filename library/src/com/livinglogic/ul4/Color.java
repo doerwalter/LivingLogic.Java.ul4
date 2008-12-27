@@ -177,9 +177,9 @@ public class Color implements Collection
 		return new Color((int)(255.*r), (int)(255.*g), (int)(255.*b), (int)(255.*a));
 	}
 
-	public static Color fromhls(double h, double s, double v)
+	public static Color fromhls(double h, double l, double s)
 	{
-		return fromhls(h, s, v, 1.0);
+		return fromhls(h, l, s, 1.0);
 	}
 
 	public int getR()
@@ -344,7 +344,7 @@ public class Color implements Collection
 		double bc = (dmaxc-b/255.) / (dmaxc-dminc);
 
 		double h;
-		if (r == dmaxc)
+		if (r == maxc)
 			h = bc-gc;
 		else if (g == maxc)
 			h = 2.0+rc-bc;
@@ -421,6 +421,37 @@ public class Color implements Collection
 		double dminc = minc/255.;
 
 		return (dminc+dmaxc)/2.0;
+	}
+
+	public Color withlum(double lum)
+	{
+		int maxc = NumberUtils.max((int)r, (int)g, (int)b);
+		int minc = NumberUtils.min((int)r, (int)g, (int)b);
+
+		double dmaxc = maxc/255.;
+		double dminc = minc/255.;
+
+		double l = (dminc+dmaxc)/2.0;
+
+		if (minc == maxc)
+			return fromhls(0., lum, 0., a);
+
+		double s = l <= 0.5 ? (dmaxc-dminc) / (dmaxc+dminc) : (dmaxc-dminc) / (2.0-dmaxc-dminc);
+
+		double rc = (dmaxc-r/255.) / (dmaxc-dminc);
+		double gc = (dmaxc-g/255.) / (dmaxc-dminc);
+		double bc = (dmaxc-b/255.) / (dmaxc-dminc);
+
+		double h;
+		if (r == maxc)
+			h = bc-gc;
+		else if (g == maxc)
+			h = 2.0+rc-bc;
+		else
+			h = 4.0+gc-rc;
+		h = (h/6.0) % 1.0;
+
+		return fromhls(h, lum, s, a);
 	}
 
 	// Collection interface

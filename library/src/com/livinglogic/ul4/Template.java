@@ -1311,6 +1311,9 @@ public class Template
 								case Opcode.CM1_GET:
 									reg[code.r1] = ((Map)reg[code.r2]).get(reg[code.r3]);
 									break;
+								case Opcode.CM1_WITHLUM:
+									reg[code.r1] = Utils.withlum(reg[code.r2], reg[code.r3]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLMETH2:
@@ -2089,6 +2092,9 @@ public class Template
 							break;
 						case Opcode.CM1_FORMAT:
 							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._format(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_WITHLUM:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".withlum(reg" + opcode.r3 + ")");
 							break;
 					}
 					break;

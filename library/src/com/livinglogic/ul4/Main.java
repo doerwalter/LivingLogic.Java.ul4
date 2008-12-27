@@ -10,7 +10,7 @@ public class Main
 	{
 		Color c = new Color(0x00, 0x63, 0xa8, 0x33);
 		Color b = new Color(0x00, 0x00, 0x00, 0xff);
-		Template tmpl = Compiler.compile("<?print #fc9.lum()?>");
+		Template tmpl = Compiler.compile("<?print #fc9.withlum(0.2)?>");
 		System.out.println(tmpl);
 		long start = System.currentTimeMillis();
 		Map vars = new HashMap();

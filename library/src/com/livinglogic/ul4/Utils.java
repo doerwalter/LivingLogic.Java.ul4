@@ -1366,6 +1366,11 @@ public class Utils
 		return Color.fromhls(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3), _getdouble(arg4));
 	}
 
+	public static Color withlum(Object arg1, Object arg2)
+	{
+		return ((Color)arg1).withlum(_getdouble(arg2));
+	}
+
 	public static void main(String[] args)
 	{
 		//System.out.println(split("\t\tgurk\t\t\t\t\t\thurz\t\tschwumpl\t\t\t\t", "\t\t"));
