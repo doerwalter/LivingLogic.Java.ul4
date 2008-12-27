@@ -1270,6 +1270,9 @@ public class Template
 								case Opcode.CM0_HSVA:
 									reg[code.r1] = ((Color)reg[code.r2]).hsva();
 									break;
+								case Opcode.CM0_LUM:
+									reg[code.r1] = new Double(((Color)reg[code.r2]).lum());
+									break;
 							}
 							break;
 						case Opcode.OC_CALLMETH1:
@@ -2048,6 +2051,9 @@ public class Template
 							break;
 						case Opcode.CM0_HSVA:
 							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hsva()");
+							break;
+						case Opcode.CM0_LUM:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".lum()");
 							break;
 					}
 					break;

@@ -126,6 +126,7 @@ public class Opcode
 	public static final int CM0_HLSA = 10;
 	public static final int CM0_HSV = 11;
 	public static final int CM0_HSVA = 12;
+	public static final int CM0_LUM = 13;
 
 	public static final int CM1_SPLIT = 0;
 	public static final int CM1_RSPLIT = 1;
@@ -432,6 +433,8 @@ public class Opcode
 			return CM0_HSV;
 		else if (name.equals("hsva"))
 			return CM0_HSVA;
+		else if (name.equals("lum"))
+			return CM0_LUM;
 		else
 			throw new UnknownMethodException(name);
 	}

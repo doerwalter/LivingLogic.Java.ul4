@@ -412,6 +412,17 @@ public class Color implements Collection
 		return retVal;
 	}
 
+	public double lum()
+	{
+		int maxc = NumberUtils.max((int)r, (int)g, (int)b);
+		int minc = NumberUtils.min((int)r, (int)g, (int)b);
+
+		double dmaxc = maxc/255.;
+		double dminc = minc/255.;
+
+		return (dminc+dmaxc)/2.0;
+	}
+
 	// Collection interface
 	public boolean add(Object o)
 	{
