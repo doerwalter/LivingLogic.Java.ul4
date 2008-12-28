@@ -454,6 +454,11 @@ public class Color implements Collection
 		return fromhls(h, lum, s, a);
 	}
 
+	public Color witha(int a)
+	{
+		return new Color(r, g, b, a);
+	}
+
 	// Collection interface
 	public boolean add(Object o)
 	{
