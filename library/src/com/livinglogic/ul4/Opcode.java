@@ -140,6 +140,7 @@ public class Opcode
 	public static final int CM1_FORMAT = 9;
 	public static final int CM1_GET = 10;
 	public static final int CM1_WITHLUM = 11;
+	public static final int CM1_WITHA = 12;
 
 	public static final int CM2_SPLIT = 0;
 	public static final int CM2_RSPLIT = 1;
@@ -466,6 +467,8 @@ public class Opcode
 			return CM1_GET;
 		else if (name.equals("withlum"))
 			return CM1_WITHLUM;
+		else if (name.equals("witha"))
+			return CM1_WITHA;
 		else
 			throw new UnknownMethodException(name);
 	}

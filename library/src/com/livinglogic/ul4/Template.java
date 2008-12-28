@@ -1314,6 +1314,9 @@ public class Template
 								case Opcode.CM1_WITHLUM:
 									reg[code.r1] = Utils.withlum(reg[code.r2], reg[code.r3]);
 									break;
+								case Opcode.CM1_WITHA:
+									reg[code.r1] = Utils.witha(reg[code.r2], reg[code.r3]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLMETH2:
@@ -2095,6 +2098,9 @@ public class Template
 							break;
 						case Opcode.CM1_WITHLUM:
 							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".withlum(reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_WITHA:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".witha(reg" + opcode.r3 + ")");
 							break;
 					}
 					break;

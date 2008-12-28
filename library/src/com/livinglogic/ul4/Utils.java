@@ -1336,6 +1336,16 @@ public class Utils
 			throw new UnsupportedOperationException("can't convert " + arg.getClass() + " to float!");
 	}
 
+	private static int _getint(Object arg)
+	{
+		if (arg instanceof Integer)
+			return ((Integer)arg).intValue();
+		else if (arg instanceof Double)
+			return ((Double)arg).intValue();
+		else
+			throw new UnsupportedOperationException("can't convert " + arg.getClass() + " to int!");
+	}
+
 	public static Color rgb(Object arg1, Object arg2, Object arg3)
 	{
 		return Color.fromrgb(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3));
@@ -1369,6 +1379,11 @@ public class Utils
 	public static Color withlum(Object arg1, Object arg2)
 	{
 		return ((Color)arg1).withlum(_getdouble(arg2));
+	}
+
+	public static Color witha(Object arg1, Object arg2)
+	{
+		return ((Color)arg1).witha(_getint(arg2));
 	}
 
 	public static void main(String[] args)
