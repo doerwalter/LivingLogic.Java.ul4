@@ -1466,38 +1466,38 @@ public class Template
 				{
 					len = color8Matcher.end();
 					String value = color8Matcher.group();
-					int r = Integer.valueOf(value.substring(1, 3), 16);
-					int g = Integer.valueOf(value.substring(3, 5), 16);
-					int b = Integer.valueOf(value.substring(5, 7), 16);
-					int a = Integer.valueOf(value.substring(7, 9), 16);
+					int r = Integer.valueOf(value.substring(1, 3), 16).intValue();
+					int g = Integer.valueOf(value.substring(3, 5), 16).intValue();
+					int b = Integer.valueOf(value.substring(5, 7), 16).intValue();
+					int a = Integer.valueOf(value.substring(7, 9), 16).intValue();
 					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b, a)));
 				}
 				else if (stringMode==0 && color6Matcher.lookingAt())
 				{
 					len = color6Matcher.end();
 					String value = color6Matcher.group();
-					int r = Integer.valueOf(value.substring(1, 3), 16);
-					int g = Integer.valueOf(value.substring(3, 5), 16);
-					int b = Integer.valueOf(value.substring(5, 7), 16);
+					int r = Integer.valueOf(value.substring(1, 3), 16).intValue();
+					int g = Integer.valueOf(value.substring(3, 5), 16).intValue();
+					int b = Integer.valueOf(value.substring(5, 7), 16).intValue();
 					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b)));
 				}
 				else if (stringMode==0 && color4Matcher.lookingAt())
 				{
 					len = color4Matcher.end();
 					String value = color4Matcher.group();
-					int r = 17*Integer.valueOf(value.substring(1, 2), 16);
-					int g = 17*Integer.valueOf(value.substring(2, 3), 16);
-					int b = 17*Integer.valueOf(value.substring(3, 4), 16);
-					int a = 17*Integer.valueOf(value.substring(4, 5), 16);
+					int r = 17*Integer.valueOf(value.substring(1, 2), 16).intValue();
+					int g = 17*Integer.valueOf(value.substring(2, 3), 16).intValue();
+					int b = 17*Integer.valueOf(value.substring(3, 4), 16).intValue();
+					int a = 17*Integer.valueOf(value.substring(4, 5), 16).intValue();
 					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b, a)));
 				}
 				else if (stringMode==0 && color3Matcher.lookingAt())
 				{
 					len = color3Matcher.end();
 					String value = color3Matcher.group();
-					int r = 17*Integer.valueOf(value.substring(1, 2), 16);
-					int g = 17*Integer.valueOf(value.substring(2, 3), 16);
-					int b = 17*Integer.valueOf(value.substring(3, 4), 16);
+					int r = 17*Integer.valueOf(value.substring(1, 2), 16).intValue();
+					int g = 17*Integer.valueOf(value.substring(2, 3), 16).intValue();
+					int b = 17*Integer.valueOf(value.substring(3, 4), 16).intValue();
 					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b)));
 				}
 				else if (stringMode==0 && floatMatcher.lookingAt())

@@ -301,10 +301,10 @@ public class Color implements Collection
 
 	public static Color fromdump(String value)
 	{
-		int r = Integer.valueOf(value.substring(0, 2), 16);
-		int g = Integer.valueOf(value.substring(2, 4), 16);
-		int b = Integer.valueOf(value.substring(4, 6), 16);
-		int a = Integer.valueOf(value.substring(6, 8), 16);
+		int r = Integer.valueOf(value.substring(0, 2), 16).intValue();
+		int g = Integer.valueOf(value.substring(2, 4), 16).intValue();
+		int b = Integer.valueOf(value.substring(4, 6), 16).intValue();
+		int a = Integer.valueOf(value.substring(6, 8), 16).intValue();
 		return new Color(r, g, b, a);
 	}
 
@@ -362,7 +362,7 @@ public class Color implements Collection
 	public Vector hlsa()
 	{
 		Vector retVal = hls();
-		retVal.add(a/255.);
+		retVal.add(new Double(a/255.));
 		return retVal;
 	}
 
@@ -408,7 +408,7 @@ public class Color implements Collection
 	public Vector hsva()
 	{
 		Vector retVal = hsv();
-		retVal.add(a/255.);
+		retVal.add(new Double(a/255.));
 		return retVal;
 	}
 
