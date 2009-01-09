@@ -1,3 +1,15 @@
+exp-6:
+-----
+file format: 7
+
+Comments:
+* Added <?note?> tag.
+* Added functions type(), vars(), zip().
+* Added one-arg find and rfind methods.
+* Added support for ** in dict literals and render calls.
+* Added Template method pythonSource().
+
+
 exp-5:
 -----
 file format: 5
