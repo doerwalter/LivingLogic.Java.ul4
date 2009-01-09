@@ -8,6 +8,7 @@ Comments:
 * Added one-arg find and rfind methods.
 * Added support for ** in dict literals and render calls.
 * Added Template method pythonSource().
+* Added support for color objects.
 
 
 exp-5:
