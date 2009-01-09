@@ -8,10 +8,13 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?print {**{'y':42}}?>");
+		Color c = new Color(0x00, 0x63, 0xa8, 0x33);
+		Color b = new Color(0x00, 0x00, 0x00, 0xff);
+		Template tmpl = Compiler.compile("<?print repr(#fc9.witha(0x32))?>");
+		System.out.println(tmpl);
 		long start = System.currentTimeMillis();
-		Map map = new HashMap();
-		String output = tmpl.renders(map);
+		Map vars = new HashMap();
+		String output = tmpl.renders(vars);
 		System.out.println("rendered " + (System.currentTimeMillis()-start));
 		System.out.println(output);
 	}

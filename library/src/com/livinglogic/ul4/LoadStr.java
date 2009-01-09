@@ -1,10 +1,10 @@
 package com.livinglogic.ul4;
 
-public class Str extends Const
+public class LoadStr extends LoadConst
 {
 	protected String value;
 
-	public Str(int start, int end, String value)
+	public LoadStr(int start, int end, String value)
 	{
 		super(start, end);
 		this.value = value;

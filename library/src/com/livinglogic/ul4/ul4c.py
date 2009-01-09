@@ -145,17 +145,17 @@ class ExprParser(spark.GenericParser):
 
 	def makeconst(self, start, end, value):
 		if value is None:
-			return ul4.None(start, end)
+			return ul4.LoadNone(start, end)
 		elif value is True:
-			return ul4.True(start, end)
+			return ul4.LoadTrue(start, end)
 		elif value is False:
-			return ul4.False(start, end)
+			return ul4.LoadFalse(start, end)
 		elif isinstance(value, int):
-			return ul4.Int(start, end, value)
+			return ul4.LoadInt(start, end, value)
 		elif isinstance(value, float):
-			return ul4.Float(start, end, value)
+			return ul4.LoadFloat(start, end, value)
 		elif isinstance(value, basestring):
-			return ul4.Str(start, end, value)
+			return ul4.LoadStr(start, end, value)
 		else:
 			raise TypeError("can't convert %r" % value)
 
@@ -174,6 +174,7 @@ class ExprParser(spark.GenericParser):
 		'expr11 ::= int',
 		'expr11 ::= float',
 		'expr11 ::= date',
+		'expr11 ::= color',
 		'expr11 ::= name',
 	]
 
@@ -261,6 +262,10 @@ class ExprParser(spark.GenericParser):
 		return ul4.CallFunc(name.start, _3.end, name, arg0, arg1, arg2)
 	expr_callfunc3.spark = ['expr10 ::= name ( expr0 , expr0 , expr0 )']
 
+	def expr_callfunc4(self, (name, _0, arg0, _1, arg1, _2, arg2, _3, arg3, _4)):
+		return ul4.CallFunc(name.start, _4.end, name, arg0, arg1, arg2, arg3)
+	expr_callfunc4.spark = ['expr10 ::= name ( expr0 , expr0 , expr0 , expr0 )']
+
 	def expr_getattr(self, (expr, _0, name)):
 		return ul4.GetAttr(expr.start, name.end, expr, name)
 	expr_getattr.spark = ['expr9 ::= expr9 . name']
@@ -282,133 +287,133 @@ class ExprParser(spark.GenericParser):
 	expr_callmeth3.spark = ['expr9 ::= expr9 . name ( expr0 , expr0 , expr0 )']
 
 	def expr_getitem(self, (expr, _0, key, _1)):
-		if isinstance(expr, ul4.Const) and isinstance(key, ul4.Const): # Constant folding
+		if isinstance(expr, ul4.LoadConst) and isinstance(key, ul4.LoadConst): # Constant folding
 			return self.makeconst(expr.start, _1.end, expr.value[key.value])
 		return ul4.GetItem(expr.start, _1.end, expr, key)
 	expr_getitem.spark = ['expr9 ::= expr9 [ expr0 ]']
 
 	def expr_getslice12(self, (expr, _0, index1, _1, index2, _2)):
-		if isinstance(expr, ul4.Const) and isinstance(index1, ul4.Const) and isinstance(index2, ul4.Const): # Constant folding
+		if isinstance(expr, ul4.LoadConst) and isinstance(index1, ul4.LoadConst) and isinstance(index2, ul4.LoadConst): # Constant folding
 			return self.makeconst(expr.start, _2.end, expr.value[index1.value:index1.value])
 		return ul4.GetSlice12(expr.start, _2.end, expr, index1, index2)
 	expr_getslice12.spark = ['expr8 ::= expr8 [ expr0 : expr0 ]']
 
 	def expr_getslice1(self, (expr, _0, index1, _1, _2)):
-		if isinstance(expr, ul4.Const) and isinstance(index1, ul4.Const): # Constant folding
+		if isinstance(expr, ul4.LoadConst) and isinstance(index1, ul4.LoadConst): # Constant folding
 			return self.makeconst(expr.start, _2.end, expr.value[index1.value:])
 		return ul4.GetSlice1(expr.start, _2.end, expr, index1)
 	expr_getslice1.spark = ['expr8 ::= expr8 [ expr0 : ]']
 
 	def expr_getslice2(self, (expr, _0, _1, index2, _2)):
-		if isinstance(expr, ul4.Const) and isinstance(index2, ul4.Const): # Constant folding
+		if isinstance(expr, ul4.LoadConst) and isinstance(index2, ul4.LoadConst): # Constant folding
 			return self.makeconst(expr.start, _2.end, expr.value[:index2.value])
 		return ul4.GetSlice2(expr.start, _2.end, expr, index2)
 	expr_getslice2.spark = ['expr8 ::= expr8 [ : expr0 ]']
 
 	def expr_neg(self, (_0, expr)):
-		if isinstance(expr, ul4.Const): # Constant folding
+		if isinstance(expr, ul4.LoadConst): # Constant folding
 			return self.makeconst(_0.start, expr.end, -expr.value)
 		return ul4.Neg(_0.start, expr.end, expr)
 	expr_neg.spark = ['expr7 ::= - expr7']
 
 	def expr_mul(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value * obj2.value)
 		return ul4.Mul(obj1.start, obj2.end, obj1, obj2)
 	expr_mul.spark = ['expr6 ::= expr6 * expr6']
 
 	def expr_floordiv(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value // obj2.value)
 		return ul4.FloorDiv(obj1.start, obj2.end, obj1, obj2)
 	expr_floordiv.spark = ['expr6 ::= expr6 // expr6']
 
 	def expr_truediv(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value / obj2.value)
 		return ul4.TrueDiv(obj1.start, obj2.end, obj1, obj2)
 	expr_truediv.spark = ['expr6 ::= expr6 / expr6']
 
 	def expr_mod(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value % obj2.value)
 		return ul4.Mod(obj1.start, obj2.end, obj1, obj2)
 	expr_mod.spark = ['expr6 ::= expr6 % expr6']
 
 	def expr_add(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value + obj2.value)
 		return ul4.Add(obj1.start, obj2.end, obj1, obj2)
 	expr_add.spark = ['expr5 ::= expr5 + expr5']
 
 	def expr_sub(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value - obj2.value)
 		return ul4.Sub(obj1.start, obj2.end, obj1, obj2)
 	expr_sub.spark = ['expr5 ::= expr5 - expr5']
 
 	def expr_eq(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value == obj2.value)
 		return ul4.EQ(obj1.start, obj2.end, obj1, obj2)
 	expr_eq.spark = ['expr4 ::= expr4 == expr4']
 
 	def expr_ne(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value != obj2.value)
 		return ul4.NE(obj1.start, obj2.end, obj1, obj2)
 	expr_ne.spark = ['expr4 ::= expr4 != expr4']
 
 	def expr_lt(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value < obj2.value)
 		return ul4.LT(obj1.start, obj2.end, obj1, obj2)
 	expr_lt.spark = ['expr4 ::= expr4 < expr4']
 
 	def expr_le(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value <= obj2.value)
 		return ul4.LE(obj1.start, obj2.end, obj1, obj2)
 	expr_le.spark = ['expr4 ::= expr4 <= expr4']
 
 	def expr_gt(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value > obj2.value)
 		return ul4.GT(obj1.start, obj2.end, obj1, obj2)
 	expr_gt.spark = ['expr4 ::= expr4 > expr4']
 
 	def expr_ge(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, obj1.value >= obj2.value)
 		return ul4.GE(obj1.start, obj2.end, obj1, obj2)
 	expr_ge.spark = ['expr4 ::= expr4 >= expr4']
 
 	def expr_contains(self, (obj, _0, container)):
-		if isinstance(obj, ul4.Const) and isinstance(container, ul4.Const): # Constant folding
+		if isinstance(obj, ul4.LoadConst) and isinstance(container, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj.start, container.end, obj.value in container.value)
 		return ul4.Contains(obj.start, container.end, obj, container)
 	expr_contains.spark = ['expr3 ::= expr3 in expr3']
 
 	def expr_notcontains(self, (obj, _0, _1, container)):
-		if isinstance(obj, ul4.Const) and isinstance(container, ul4.Const): # Constant folding
+		if isinstance(obj, ul4.LoadConst) and isinstance(container, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj.start, container.end, obj.value not in container.value)
 		return ul4.NotContains(obj.start, container.end, obj, container)
 	expr_notcontains.spark = ['expr3 ::= expr3 not in expr3']
 
 	def expr_not(self, (_0, expr)):
-		if isinstance(expr, ul4.Const): # Constant folding
+		if isinstance(expr, ul4.LoadConst): # Constant folding
 			return self.makeconst(_0.start, expr.end, not expr.value)
 		return ul4.Not(_0.start, expr.end, expr)
 	expr_not.spark = ['expr2 ::= not expr2']
 
 	def expr_and(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, bool(obj1.value and obj2.value))
 		return ul4.And(obj1.start, obj2.end, obj1, obj2)
 	expr_and.spark = ['expr1 ::= expr1 and expr1']
 
 	def expr_or(self, (obj1, _0, obj2)):
-		if isinstance(obj1, ul4.Const) and isinstance(obj2, ul4.Const): # Constant folding
+		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.start, obj2.end, bool(obj1.value or obj2.value))
 		return ul4.Or(obj1.start, obj2.end, obj1, obj2)
 	expr_or.spark = ['expr0 ::= expr0 or expr0']

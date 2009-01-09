@@ -29,6 +29,10 @@ public class Template
 	private static Pattern binintPattern;
 	private static Pattern intPattern;
 	private static Pattern datePattern;
+	private static Pattern color3Pattern;
+	private static Pattern color4Pattern;
+	private static Pattern color6Pattern;
+	private static Pattern color8Pattern;
 	private static Pattern whitespacePattern;
 	private static Pattern escaped8BitCharPattern;
 	private static Pattern escaped16BitCharPattern;
@@ -46,6 +50,10 @@ public class Template
 		binintPattern = Pattern.compile("0[bB][01]+");
 		intPattern = Pattern.compile("\\d+");
 		datePattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}T(\\d{2}:\\d{2}(:\\d{2}(.\\d{6})?)?)?");
+		color3Pattern = Pattern.compile("[#][0-9a-zA-Z]{3}");
+		color4Pattern = Pattern.compile("[#][0-9a-zA-Z]{4}");
+		color6Pattern = Pattern.compile("[#][0-9a-zA-Z]{6}");
+		color8Pattern = Pattern.compile("[#][0-9a-zA-Z]{8}");
 		whitespacePattern = Pattern.compile("\\s+");
 		escaped8BitCharPattern = Pattern.compile("\\\\x[0-9a-fA-F]{2}");
 		escaped16BitCharPattern = Pattern.compile("\\\\u[0-9a-fA-F]{4}");
@@ -911,6 +919,9 @@ public class Template
 						case Opcode.OC_LOADDATE:
 							reg[code.r1] = Utils.isoDateFormatter.parse(code.arg);
 							break;
+						case Opcode.OC_LOADCOLOR:
+							reg[code.r1] = Color.fromdump(code.arg);
+							break;
 						case Opcode.OC_BUILDLIST:
 							reg[code.r1] = new ArrayList();
 							break;
@@ -1089,8 +1100,8 @@ public class Template
 								case Opcode.CF1_XMLESCAPE:
 									reg[code.r1] = Utils.xmlescape(reg[code.r2]);
 									break;
-								case Opcode.CF1_CSVESCAPE:
-									reg[code.r1] = Utils.csvescape(reg[code.r2]);
+								case Opcode.CF1_CSV:
+									reg[code.r1] = Utils.csv(reg[code.r2]);
 									break;
 								case Opcode.CF1_STR:
 									reg[code.r1] = ObjectUtils.toString(reg[code.r2]);
@@ -1164,6 +1175,9 @@ public class Template
 								case Opcode.CF1_GET:
 									reg[code.r1] = variables.get(reg[code.r2]);
 									break;
+								case Opcode.CF1_JSON:
+									reg[code.r1] = Utils.json(reg[code.r2]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLFUNC2:
@@ -1188,6 +1202,29 @@ public class Template
 									break;
 								case Opcode.CF3_ZIP:
 									reg[code.r1] = Utils.zip(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+								case Opcode.CF3_RGB:
+									reg[code.r1] = Utils.rgb(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+								case Opcode.CF3_HLS:
+									reg[code.r1] = Utils.hls(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+								case Opcode.CF3_HSV:
+									reg[code.r1] = Utils.hsv(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+							}
+							break;
+						case Opcode.OC_CALLFUNC4:
+							switch (code.argcode)
+							{
+								case Opcode.CF4_RGB:
+									reg[code.r1] = Utils.rgb(reg[code.r2], reg[code.r3], reg[code.r4], reg[code.r5]);
+									break;
+								case Opcode.CF4_HLS:
+									reg[code.r1] = Utils.hls(reg[code.r2], reg[code.r3], reg[code.r4], reg[code.r5]);
+									break;
+								case Opcode.CF4_HSV:
+									reg[code.r1] = Utils.hsv(reg[code.r2], reg[code.r3], reg[code.r4], reg[code.r5]);
 									break;
 							}
 							break;
@@ -1220,6 +1257,21 @@ public class Template
 									break;
 								case Opcode.CM0_ISOFORMAT:
 									reg[code.r1] = Utils.isoformat(reg[code.r2]);
+									break;
+								case Opcode.CM0_HLS:
+									reg[code.r1] = ((Color)reg[code.r2]).hls();
+									break;
+								case Opcode.CM0_HLSA:
+									reg[code.r1] = ((Color)reg[code.r2]).hlsa();
+									break;
+								case Opcode.CM0_HSV:
+									reg[code.r1] = ((Color)reg[code.r2]).hsv();
+									break;
+								case Opcode.CM0_HSVA:
+									reg[code.r1] = ((Color)reg[code.r2]).hsva();
+									break;
+								case Opcode.CM0_LUM:
+									reg[code.r1] = new Double(((Color)reg[code.r2]).lum());
 									break;
 							}
 							break;
@@ -1258,6 +1310,12 @@ public class Template
 									break;
 								case Opcode.CM1_GET:
 									reg[code.r1] = ((Map)reg[code.r2]).get(reg[code.r3]);
+									break;
+								case Opcode.CM1_WITHLUM:
+									reg[code.r1] = Utils.withlum(reg[code.r2], reg[code.r3]);
+									break;
+								case Opcode.CM1_WITHA:
+									reg[code.r1] = Utils.witha(reg[code.r2], reg[code.r3]);
 									break;
 							}
 							break;
@@ -1369,6 +1427,10 @@ public class Template
 				Matcher binintMatcher = binintPattern.matcher(source);
 				Matcher intMatcher = intPattern.matcher(source);
 				Matcher dateMatcher = datePattern.matcher(source);
+				Matcher color3Matcher = color3Pattern.matcher(source);
+				Matcher color4Matcher = color4Pattern.matcher(source);
+				Matcher color6Matcher = color6Pattern.matcher(source);
+				Matcher color8Matcher = color8Pattern.matcher(source);
 				Matcher whitespaceMatcher = whitespacePattern.matcher(source);
 				Matcher escaped8BitCharMatcher = escaped8BitCharPattern.matcher(source);
 				Matcher escaped16BitCharMatcher = escaped16BitCharPattern.matcher(source);
@@ -1387,43 +1449,81 @@ public class Template
 					if (name.equals("in") || name.equals("not") || name.equals("or") || name.equals("and") || name.equals("del"))
 						tokens.add(new Token(pos, pos+len, name));
 					else if (name.equals("None"))
-						tokens.add(new None(pos, pos+len));
+						tokens.add(new LoadNone(pos, pos+len));
 					else if (name.equals("True"))
-						tokens.add(new True(pos, pos+len));
+						tokens.add(new LoadTrue(pos, pos+len));
 					else if (name.equals("False"))
-						tokens.add(new False(pos, pos+len));
+						tokens.add(new LoadFalse(pos, pos+len));
 					else
 						tokens.add(new Name(pos, pos+len, name));
 				}
 				else if (stringMode==0 && dateMatcher.lookingAt())
 				{
 					len = dateMatcher.end();
-					tokens.add(new com.livinglogic.ul4.Date(pos, pos+len, Utils.isoDateFormatter.parse(dateMatcher.group())));
+					tokens.add(new LoadDate(pos, pos+len, Utils.isoDateFormatter.parse(dateMatcher.group())));
+				}
+				else if (stringMode==0 && color8Matcher.lookingAt())
+				{
+					len = color8Matcher.end();
+					String value = color8Matcher.group();
+					int r = Integer.valueOf(value.substring(1, 3), 16);
+					int g = Integer.valueOf(value.substring(3, 5), 16);
+					int b = Integer.valueOf(value.substring(5, 7), 16);
+					int a = Integer.valueOf(value.substring(7, 9), 16);
+					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b, a)));
+				}
+				else if (stringMode==0 && color6Matcher.lookingAt())
+				{
+					len = color6Matcher.end();
+					String value = color6Matcher.group();
+					int r = Integer.valueOf(value.substring(1, 3), 16);
+					int g = Integer.valueOf(value.substring(3, 5), 16);
+					int b = Integer.valueOf(value.substring(5, 7), 16);
+					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b)));
+				}
+				else if (stringMode==0 && color4Matcher.lookingAt())
+				{
+					len = color4Matcher.end();
+					String value = color4Matcher.group();
+					int r = 17*Integer.valueOf(value.substring(1, 2), 16);
+					int g = 17*Integer.valueOf(value.substring(2, 3), 16);
+					int b = 17*Integer.valueOf(value.substring(3, 4), 16);
+					int a = 17*Integer.valueOf(value.substring(4, 5), 16);
+					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b, a)));
+				}
+				else if (stringMode==0 && color3Matcher.lookingAt())
+				{
+					len = color3Matcher.end();
+					String value = color3Matcher.group();
+					int r = 17*Integer.valueOf(value.substring(1, 2), 16);
+					int g = 17*Integer.valueOf(value.substring(2, 3), 16);
+					int b = 17*Integer.valueOf(value.substring(3, 4), 16);
+					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b)));
 				}
 				else if (stringMode==0 && floatMatcher.lookingAt())
 				{
 					len = floatMatcher.end();
-					tokens.add(new Float(pos, pos+len, Double.parseDouble(floatMatcher.group())));
+					tokens.add(new LoadFloat(pos, pos+len, Double.parseDouble(floatMatcher.group())));
 				}
 				else if (stringMode==0 && hexintMatcher.lookingAt())
 				{
 					len = hexintMatcher.end();
-					tokens.add(new Int(pos, pos+len, Integer.parseInt(hexintMatcher.group().substring(2), 16)));
+					tokens.add(new LoadInt(pos, pos+len, Integer.parseInt(hexintMatcher.group().substring(2), 16)));
 				}
 				else if (stringMode==0 && octintMatcher.lookingAt())
 				{
 					len = octintMatcher.end();
-					tokens.add(new Int(pos, pos+len, Integer.parseInt(octintMatcher.group().substring(2), 8)));
+					tokens.add(new LoadInt(pos, pos+len, Integer.parseInt(octintMatcher.group().substring(2), 8)));
 				}
 				else if (stringMode==0 && binintMatcher.lookingAt())
 				{
 					len = binintMatcher.end();
-					tokens.add(new Int(pos, pos+len, Integer.parseInt(binintMatcher.group().substring(2), 2)));
+					tokens.add(new LoadInt(pos, pos+len, Integer.parseInt(binintMatcher.group().substring(2), 2)));
 				}
 				else if (stringMode==0 && intMatcher.lookingAt())
 				{
 					len = intMatcher.end();
-					tokens.add(new Int(pos, pos+len, Integer.parseInt(intMatcher.group())));
+					tokens.add(new LoadInt(pos, pos+len, Integer.parseInt(intMatcher.group())));
 				}
 				else if (stringMode==0 && source.startsWith("'"))
 				{
@@ -1443,7 +1543,7 @@ public class Template
 				{
 					len = 1;
 					stringMode = 0;
-					tokens.add(new Str(stringStartPos, pos+len, collectString.toString()));
+					tokens.add(new LoadStr(stringStartPos, pos+len, collectString.toString()));
 					collectString = null;
 				}
 				else if (stringMode==0 && whitespaceMatcher.lookingAt())
@@ -1814,8 +1914,8 @@ public class Template
 						case Opcode.CF1_XMLESCAPE:
 							code(buffer, indent, "reg" + opcode.r1 + " = xmlescape(unicode(reg" + opcode.r2 + ")) if reg" + opcode.r2 + " is not None else u''");
 							break;
-						case Opcode.CF1_CSVESCAPE:
-							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._csvescape(reg" + opcode.r2 + ")");
+						case Opcode.CF1_CSV:
+							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._csv(reg" + opcode.r2 + ")");
 							break;
 						case Opcode.CF1_STR:
 							code(buffer, indent, "reg" + opcode.r1 + " = unicode(reg" + opcode.r2 + ") if reg" + opcode.r2 + " is not None else u''");
@@ -1864,6 +1964,9 @@ public class Template
 							break;
 						case Opcode.CF1_GET:
 							code(buffer, indent, "reg" + opcode.r1 + " = variables.get(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_JSON:
+							code(buffer, indent, "reg" + opcode.r1 + " = json(reg" + opcode.r2 + ")");
 							break;
 						case Opcode.CF1_CHR:
 							code(buffer, indent, "reg" + opcode.r1 + " = unichr(reg" + opcode.r2 + ")");
@@ -1943,6 +2046,21 @@ public class Template
 						case Opcode.CM0_ITEMS:
 							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".iteritems()");
 							break;
+						case Opcode.CM0_HLS:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hls()");
+							break;
+						case Opcode.CM0_HLSA:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hlsa()");
+							break;
+						case Opcode.CM0_HSV:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hsv()");
+							break;
+						case Opcode.CM0_HSVA:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hsva()");
+							break;
+						case Opcode.CM0_LUM:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".lum()");
+							break;
 					}
 					break;
 				case Opcode.OC_CALLMETH1:
@@ -1977,6 +2095,12 @@ public class Template
 							break;
 						case Opcode.CM1_FORMAT:
 							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._format(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_WITHLUM:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".withlum(reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CM1_WITHA:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".witha(reg" + opcode.r3 + ")");
 							break;
 					}
 					break;

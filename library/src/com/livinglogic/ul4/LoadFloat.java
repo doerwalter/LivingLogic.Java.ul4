@@ -1,10 +1,10 @@
 package com.livinglogic.ul4;
 
-public class Date extends AST
+public class LoadFloat extends AST
 {
-	protected java.util.Date value;
+	protected double value;
 
-	public Date(int start, int end, java.util.Date value)
+	public LoadFloat(int start, int end, double value)
 	{
 		super(start, end);
 		this.value = value;
@@ -12,13 +12,18 @@ public class Date extends AST
 
 	public String getTokenType()
 	{
-		return "date";
+		return "float";
+	}
+
+	public Object getValue()
+	{
+		return new Double(value);
 	}
 
 	public int compile(Template template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
-		template.opcode(Opcode.OC_LOADDATE, r, (String)Utils.isoformat(value), location);
+		template.opcode(Opcode.OC_LOADFLOAT, r, String.valueOf(value), location);
 		return r;
 	}
 

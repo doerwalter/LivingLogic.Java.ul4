@@ -1,8 +1,8 @@
 package com.livinglogic.ul4;
 
-public class None extends Const
+public class LoadNone extends LoadConst
 {
-	public None(int start, int end)
+	public LoadNone(int start, int end)
 	{
 		super(start, end);
 	}
