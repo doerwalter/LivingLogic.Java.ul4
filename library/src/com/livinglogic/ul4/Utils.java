@@ -590,6 +590,12 @@ public class Utils
 
 	public static boolean contains(Object obj, Object container)
 	{
+		if (container instanceof String)
+			return contains(obj, (String)container);
+		else if (container instanceof Collection)
+			return contains(obj, (Collection)container);
+		else if (container instanceof Map)
+			return contains(obj, (Map)container);
 		throw new RuntimeException("Can't determine presence for instance of " + obj.getClass() + " in container instance of class " + container.getClass() + "!");
 	}
 
