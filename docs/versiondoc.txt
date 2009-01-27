@@ -1,3 +1,10 @@
+exp-7:
+-----
+
+Comments:
+* Added interface JSPTemplate for an UL4 template convered to JSP.
+
+
 exp-6:
 -----
 file format: 7
