@@ -16,9 +16,12 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.jsp.*;
 import org.apache.commons.lang.ObjectUtils;
 
-public class Template
+public class Template implements JSPTemplate
 {
 	// used by the code tokenizer
 	private static Pattern tokenPattern;
@@ -2160,5 +2163,13 @@ public class Template
 		indent += 1;
 		code(buffer, indent, "raise ul4c.Error(ul4c.Location(source, *locations[lines2locs[sys.exc_info()[2].tb_lineno-startline]]), exc)");
 		return buffer.toString();
+	}
+
+	public void execute(JspWriter out, Map variables) throws java.io.IOException, javax.servlet.ServletException
+	{
+		for (Iterator iterator = render(variables); iterator.hasNext();)
+		{
+			out.write((String)iterator.next());
+		}
 	}
 }
