@@ -1,8 +1,15 @@
+exp-8:
+-----
+
+Comments:
+* Added support for Long in a few spots in Utils.java.
+
+
 exp-7:
 -----
 
 Comments:
-* Added interface JSPTemplate for an UL4 template convered to JSP.
+* Added interface JSPTemplate for an UL4 template converted to JSP.
 
 
 exp-6:

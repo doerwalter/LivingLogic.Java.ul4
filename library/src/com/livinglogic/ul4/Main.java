@@ -8,12 +8,12 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Color c = new Color(0x00, 0x63, 0xa8, 0x33);
-		Color b = new Color(0x00, 0x00, 0x00, 0xff);
-		Template tmpl = Compiler.compile("<?print repr(#fc9.witha(0x32))?>");
+		Long c = new Long(42);
+		Template tmpl = Compiler.compile("<?print json(c)?>");
 		System.out.println(tmpl);
 		long start = System.currentTimeMillis();
 		Map vars = new HashMap();
+		vars.put("c", c);
 		String output = tmpl.renders(vars);
 		System.out.println("rendered " + (System.currentTimeMillis()-start));
 		System.out.println(output);

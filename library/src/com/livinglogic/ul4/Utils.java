@@ -508,6 +508,11 @@ public class Utils
 		return (obj.intValue() != 0);
 	}
 
+	public static boolean getBool(Long obj)
+	{
+		return (obj.longValue() != 0);
+	}
+
 	public static boolean getBool(Double obj)
 	{
 		return (obj.doubleValue() != 0.);
@@ -538,6 +543,8 @@ public class Utils
 			return getBool((String)obj);
 		else if (obj instanceof Integer)
 			return getBool((Integer)obj);
+		else if (obj instanceof Long)
+			return getBool((Long)obj);
 		else if (obj instanceof Double)
 			return getBool((Double)obj);
 		else if (obj instanceof Date)
@@ -669,6 +676,11 @@ public class Utils
 		return obj;
 	}
 
+	public static Object toInteger(Long obj)
+	{
+		return obj;
+	}
+
 	public static Object toInteger(Number obj)
 	{
 		return new Integer(obj.intValue());
@@ -685,6 +697,8 @@ public class Utils
 			return toInteger((String)obj);
 		else if (obj instanceof Integer)
 			return toInteger((Integer)obj);
+		else if (obj instanceof Long)
+			return toInteger((Long)obj);
 		else if (obj instanceof Number)
 			return toInteger((Number)obj);
 		else if (obj instanceof Boolean)
@@ -700,6 +714,8 @@ public class Utils
 			return ((Boolean)obj).booleanValue() ? "True" : "False";
 		else if (obj instanceof Integer)
 			return String.valueOf(((Integer)obj).intValue());
+		else if (obj instanceof Long)
+			return String.valueOf(((Long)obj).longValue());
 		else if (obj instanceof Double)
 			return String.valueOf(((Double)obj).doubleValue());
 		else if (obj instanceof String)
@@ -758,6 +774,8 @@ public class Utils
 			return ((Boolean)obj).booleanValue() ? "true" : "false";
 		else if (obj instanceof Integer)
 			return String.valueOf(((Integer)obj).intValue());
+		else if (obj instanceof Long)
+			return String.valueOf(((Long)obj).longValue());
 		else if (obj instanceof Double)
 			return String.valueOf(((Double)obj).doubleValue());
 		else if (obj instanceof String)
@@ -1314,7 +1332,7 @@ public class Utils
 			return "str";
 		else if (obj instanceof Boolean)
 			return "bool";
-		else if (obj instanceof Integer)
+		else if (obj instanceof Integer || obj instanceof Long)
 			return "int";
 		else if (obj instanceof Double)
 			return "float";
@@ -1336,6 +1354,8 @@ public class Utils
 	{
 		if (arg instanceof Integer)
 			return ((Integer)arg).doubleValue();
+		else if (arg instanceof Long)
+			return ((Long)arg).doubleValue();
 		else if (arg instanceof Double)
 			return ((Double)arg).doubleValue();
 		else
@@ -1346,6 +1366,8 @@ public class Utils
 	{
 		if (arg instanceof Integer)
 			return ((Integer)arg).intValue();
+		else if (arg instanceof Long)
+			return ((Long)arg).intValue();
 		else if (arg instanceof Double)
 			return ((Double)arg).intValue();
 		else
