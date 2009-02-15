@@ -15,12 +15,12 @@ public class Render extends AST
 
 	public void append(String name, AST value)
 	{
-		args.add(new RenderArg(name, value));
+		args.add(new KeywordArg(name, value));
 	}
 
 	public void append(AST value)
 	{
-		args.add(new RenderArg(null, value));
+		args.add(new KeywordArg(null, value));
 	}
 
 	public int compile(Template template, Registers registers, Location location)
@@ -30,7 +30,7 @@ public class Render extends AST
 		int argCount = args.size();
 		for (int i = 0; i < argCount; ++i)
 		{
-			RenderArg arg = (RenderArg)args.get(i);
+			KeywordArg arg = (KeywordArg)args.get(i);
 			int rv = arg.value.compile(template, registers, location);
 			if (arg.name == null)
 			{

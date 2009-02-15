@@ -1,11 +1,11 @@
 package com.livinglogic.ul4;
 
-public class RenderArg
+public class KeywordArg
 {
 	protected String name;
 	protected AST value;
 
-	public RenderArg(String name, AST value)
+	public KeywordArg(String name, AST value)
 	{
 		this.name = name;
 		this.value = value;
