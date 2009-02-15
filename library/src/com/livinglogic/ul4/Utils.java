@@ -706,6 +706,20 @@ public class Utils
 		throw new UnsupportedOperationException("Can't convert instance of " + obj.getClass() + " to an integer!");
 	}
 
+	public static Object toInteger(String obj1, Integer obj2)
+	{
+		return Integer.valueOf(obj1, obj2.intValue());
+	}
+
+	public static Object toInteger(Object obj1, Object obj2)
+	{
+		if (obj1 instanceof String && obj2 instanceof Integer)
+		{
+			return toInteger((String)obj1, (Integer)obj2);
+		}
+		throw new UnsupportedOperationException("Can't convert instance of " + obj1.getClass() + " to an integer using " + obj2.getClass() + " as base!");
+	}
+
 	public static String repr(Object obj)
 	{
 		if (obj == null)

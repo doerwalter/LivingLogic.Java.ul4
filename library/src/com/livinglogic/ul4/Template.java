@@ -111,7 +111,7 @@ public class Template implements JSPTemplate
 	/**
 	 * The version number used in the compiled format of the template.
 	 */
-	public static final String VERSION = "7";
+	public static final String VERSION = "8";
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
@@ -1195,6 +1195,9 @@ public class Template implements JSPTemplate
 								case Opcode.CF2_ZIP:
 									reg[code.r1] = Utils.zip(reg[code.r2], reg[code.r3]);
 									break;
+								case Opcode.CF2_INT:
+									reg[code.r1] = Utils.toInteger(reg[code.r2], reg[code.r3]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLFUNC3:
@@ -2005,6 +2008,9 @@ public class Template implements JSPTemplate
 							break;
 						case Opcode.CF2_ZIP:
 							code(buffer, indent, "reg" + opcode.r1 + " = itertools.izip(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
+							break;
+						case Opcode.CF2_INT:
+							code(buffer, indent, "reg" + opcode.r1 + " = int(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
 							break;
 					}
 					break;
