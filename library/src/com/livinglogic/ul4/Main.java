@@ -8,13 +8,12 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Long c = new Long(42);
-		Template tmpl = Compiler.compile("<?print int('42', 16)?>");
-		System.out.println(tmpl);
+		Template tmpl1 = Compiler.compile("<?print 2*x?>");
+		Template tmpl2 = Compiler.compile("<?print 2*t.render(x=42)?>");
 		long start = System.currentTimeMillis();
 		Map vars = new HashMap();
-		vars.put("c", c);
-		String output = tmpl.renders(vars);
+		vars.put("t", tmpl1);
+		String output = tmpl2.renders(vars);
 		System.out.println("rendered " + (System.currentTimeMillis()-start));
 		System.out.println(output);
 	}

@@ -59,14 +59,15 @@ public class Opcode
 	public static final int OC_CALLMETH1 = 54;
 	public static final int OC_CALLMETH2 = 55;
 	public static final int OC_CALLMETH3 = 56;
-	public static final int OC_IF = 57;
-	public static final int OC_ELSE = 58;
-	public static final int OC_ENDIF = 59;
-	public static final int OC_FOR = 60;
-	public static final int OC_ENDFOR = 61;
-	public static final int OC_BREAK = 62;
-	public static final int OC_CONTINUE = 63;
-	public static final int OC_RENDER = 64;
+	public static final int OC_CALLMETHKW = 57;
+	public static final int OC_IF = 58;
+	public static final int OC_ELSE = 59;
+	public static final int OC_ENDIF = 60;
+	public static final int OC_FOR = 61;
+	public static final int OC_ENDFOR = 62;
+	public static final int OC_BREAK = 63;
+	public static final int OC_CONTINUE = 64;
+	public static final int OC_RENDER = 65;
 
 	public static final int CF0_NOW = 0;
 	public static final int CF0_VARS = 1;
@@ -150,6 +151,8 @@ public class Opcode
 	public static final int CM2_GET = 4;
 
 	public static final int CM3_FIND = 0;
+
+	public static final int CMKW_RENDER = 0;
 
 	public int name;
 	public int r1;
@@ -276,6 +279,8 @@ public class Opcode
 			return OC_CALLMETH2;
 		else if (name.equals("callmeth3"))
 			return OC_CALLMETH3;
+		else if (name.equals("callmethkw"))
+			return OC_CALLMETHKW;
 		else if (name.equals("if"))
 			return OC_IF;
 		else if (name.equals("else"))
@@ -491,6 +496,14 @@ public class Opcode
 		throw new UnknownMethodException(name);
 	}
 
+	public static int callmethkwname2code(String name)
+	{
+		if (name.equals("render"))
+			return CMKW_RENDER;
+		else
+			throw new UnknownMethodException(name);
+	}
+
 	public static String code2name(int code)
 	{
 		if (code == OC_TEXT)
@@ -605,6 +618,8 @@ public class Opcode
 			return "callmeth2";
 		else if (code == OC_CALLMETH3)
 			return "callmeth3";
+		else if (code == OC_CALLMETHKW)
+			return "callmethkw";
 		else if (code == OC_IF)
 			return "if";
 		else if (code == OC_ELSE)
@@ -667,6 +682,9 @@ public class Opcode
 				break;
 			case OC_CALLMETH3:
 				this.argcode = callmeth3name2code(arg);
+				break;
+			case OC_CALLMETHKW:
+				this.argcode = callmethkwname2code(arg);
 				break;
 		}
 		this.location = location;

@@ -286,6 +286,35 @@ class ExprParser(spark.GenericParser):
 		return ul4.CallMeth(expr.start, _4.end, expr, name, arg1, arg2, arg3)
 	expr_callmeth3.spark = ['expr9 ::= expr9 . name ( expr0 , expr0 , expr0 )']
 
+	def methkw_startname(self, (expr, _0, methname, _1, argname, _2, argvalue)):
+		call = ul4.CallMethKeywords(expr.start, argvalue.end, methname, expr)
+		call.append(argname.value, argvalue)
+		return call
+	methkw_startname.spark = ['callmethkw ::= expr9 . name ( name = expr0']
+
+	def methkw_startdict(self, (expr, _0, methname, _1, _2, argvalue)):
+		call = ul4.CallMethKeywords(expr.start, argvalue.end, methname, expr)
+		call.append(argvalue)
+		return call
+	methkw_startdict.spark = ['callmethkw ::= expr9 . name ( ** expr0']
+
+	def methkw_buildname(self, (call, _0, argname, _1, argvalue)):
+		call.args.append(argname.value, argvalue)
+		call.end = argvalue.end
+		return call
+	methkw_buildname.spark = ['callmethkw ::= callmethkw , name = expr0']
+
+	def methkw_builddict(self, (call, _0, _1, argvalue)):
+		call.args.append(argvalue)
+		call.end = argvalue.end
+		return call
+	methkw_builddict.spark = ['callmethkw ::= callmethkw , ** expr0']
+
+	def methkw_finish(self, (call, _0)):
+		call.end = _0.end
+		return call
+	methkw_finish.spark = ['expr9 ::= callmethkw )']
+
 	def expr_getitem(self, (expr, _0, key, _1)):
 		if isinstance(expr, ul4.LoadConst) and isinstance(key, ul4.LoadConst): # Constant folding
 			return self.makeconst(expr.start, _1.end, expr.value[key.value])

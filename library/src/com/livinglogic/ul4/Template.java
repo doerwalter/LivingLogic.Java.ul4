@@ -1338,6 +1338,16 @@ public class Template implements JSPTemplate
 							break;
 						case Opcode.OC_CALLMETH3:
 							throw new UnknownMethodException(code.arg);
+						case Opcode.OC_CALLMETHKW:
+							switch (code.argcode)
+							{
+								case Opcode.CMKW_RENDER:
+									reg[code.r1] = ((Template)reg[code.r2]).renders((Map)reg[code.r3]);
+									break;
+								default:
+									throw new UnknownMethodException(code.arg);
+							}
+							break;
 						case Opcode.OC_RENDER:
 							subTemplateIterator = ((Template)reg[code.r1]).render((Map)reg[code.r2]);
 							if (subTemplateIterator.hasNext())
@@ -2138,6 +2148,14 @@ public class Template implements JSPTemplate
 					{
 						case Opcode.CM3_FIND:
 							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".find(reg" + opcode.r3 + ", reg" + opcode.r4 + ", reg" + opcode.r5 + ")");
+							break;
+					}
+					break;
+				case Opcode.OC_CALLMETHKW:
+					switch (opcode.argcode)
+					{
+						case Opcode.CMKW_RENDER:
+							code(buffer, indent, "reg" + opcode.r1 + " = ''.join(reg" + opcode.r2 + "(**dict((key.encode(\"utf-8\"), value) for (key, value) in reg" + opcode.r3 + ".iteritems())))");
 							break;
 					}
 					break;
