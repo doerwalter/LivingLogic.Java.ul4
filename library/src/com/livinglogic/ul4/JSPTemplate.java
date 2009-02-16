@@ -23,36 +23,26 @@ import javax.servlet.jsp.*;
 
 public abstract class JSPTemplate implements Template
 {
-	private Writer writer = null;
-
-	public void ship(String output)
-	{
-		try
-		{
-			writer.write(output);
-		}
-		catch (IOException ex) // can not happen when reading from a StringWriter
-		{
-			throw new RuntimeException("writing failed", ex);
-		}
-	}
-
 	public String renders(Map variables)
 	{
-		writer = new StringWriter();
+		StringWriter out = new StringWriter();
 
-		execute(variables);
-		String result = writer.toString();
-		writer = null;
+		try
+		{
+			execute(out, variables);
+		}
+		catch (IOException ex)
+		{
+			// does not happen!
+		}
+		String result = out.toString();
 		return result;
 	}
 
 	public void renderjsp(JspWriter out, Map variables) throws java.io.IOException
 	{
-		writer = out;
-		execute(variables);
-		writer = null;
+		execute(out, variables);
 	}
 
-	abstract void execute(Map variables);
+	public abstract void execute(Writer out, Map variables) throws java.io.IOException;
 }
