@@ -26,5 +26,5 @@ public abstract class AST
 		this.end = end;
 	}
 
-	abstract public int compile(Template template, Registers registers, Location location);
+	abstract public int compile(InterpretedTemplate template, Registers registers, Location location);
 }

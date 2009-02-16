@@ -56,7 +56,7 @@ public class CallMeth extends AST
 
 	private static final int[] opcodes = {Opcode.OC_CALLMETH0, Opcode.OC_CALLMETH1, Opcode.OC_CALLMETH2, Opcode.OC_CALLMETH3};
 
-	public int compile(Template template, Registers registers, Location location)
+	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int ro = obj.compile(template, registers, location);
 		int r1 = arg1 != null ? arg1.compile(template, registers, location) : -1;

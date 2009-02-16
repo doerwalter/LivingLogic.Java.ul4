@@ -23,7 +23,7 @@ public class Render extends AST
 		args.add(new KeywordArg(null, value));
 	}
 
-	public int compile(Template template, Registers registers, Location location)
+	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int ra = registers.alloc();
 		template.opcode(Opcode.OC_BUILDDICT, ra, location);

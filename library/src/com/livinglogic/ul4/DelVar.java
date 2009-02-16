@@ -11,7 +11,7 @@ public class DelVar extends AST
 		this.name = name;
 	}
 
-	public int compile(Template template, Registers registers, Location location)
+	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		template.opcode(Opcode.OC_DELVAR, name.value, location);
 		return -1;

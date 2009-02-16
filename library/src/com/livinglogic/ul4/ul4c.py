@@ -129,7 +129,7 @@ class ExprParser(spark.GenericParser):
 		if not location.code:
 			raise ValueError(self.emptyerror)
 		try:
-			ast = self.parse(ul4.Template.tokenizeCode(location))
+			ast = self.parse(ul4.InterpretedTemplate.tokenizeCode(location))
 			registers = ul4.Registers()
 			return ast.compile(template, registers, location)
 		except ul4.LocationException, exc:
@@ -582,7 +582,7 @@ class RenderParser(ExprParser):
 
 class Compiler(ul4.CompilerType):
 	def compile(self, source, tags, startdelim, enddelim):
-		template = ul4.Template()
+		template = ul4.InterpretedTemplate()
 		template.startdelim = startdelim
 		template.enddelim = enddelim
 		template.source = source
