@@ -99,6 +99,7 @@ public class Opcode
 	public static final int CF1_CSV = 24;
 	public static final int CF1_GET = 25;
 	public static final int CF1_JSON = 26;
+	public static final int CF1_REVERSED = 27;
 
 	public static final int CF2_RANGE = 0;
 	public static final int CF2_GET = 1;
@@ -367,6 +368,8 @@ public class Opcode
 			return CF1_GET;
 		else if (name.equals("json"))
 			return CF1_JSON;
+		else if (name.equals("reversed"))
+			return CF1_REVERSED;
 		else
 			throw new UnknownFunctionException(name);
 	}

@@ -105,6 +105,76 @@ class StringIterator implements Iterator
 	}
 }
 
+class StringReversedIterator implements Iterator
+{
+	String string;
+
+	int stringSize;
+
+	int index;
+
+	public StringReversedIterator(String string)
+	{
+		this.string = string;
+		stringSize = string.length();
+		index = stringSize - 1;
+	}
+
+	public boolean hasNext()
+	{
+		return index >= 0;
+	}
+
+	public Object next()
+	{
+		if (index < 0)
+		{
+			throw new NoSuchElementException("No more characters available!");
+		}
+		return String.valueOf(string.charAt(index--));
+	}
+
+	public void remove()
+	{
+		throw new UnsupportedOperationException("Strings don't support character removal!");
+	}
+}
+
+class ListReversedIterator implements Iterator
+{
+	List list;
+
+	int listSize;
+
+	int index;
+
+	public ListReversedIterator(List list)
+	{
+		this.list = list;
+		listSize = list.size();
+		index = listSize - 1;
+	}
+
+	public boolean hasNext()
+	{
+		return index >= 0;
+	}
+
+	public Object next()
+	{
+		if (index < 0)
+		{
+			throw new NoSuchElementException("No more items available!");
+		}
+		return list.get(index--);
+	}
+
+	public void remove()
+	{
+		list.remove(index);
+	}
+}
+
 class MapItemIterator implements Iterator
 {
 	Iterator iterator;
@@ -836,6 +906,15 @@ public class Utils
 			return sb.toString();
 		}
 		return null;
+	}
+	
+	public static Iterator reversed(Object obj)
+	{
+		if (obj instanceof String)
+			return new StringReversedIterator((String)obj);
+		else if (obj instanceof List)
+			return new ListReversedIterator((List)obj);
+		throw new UnsupportedOperationException("Can't created reversed iterator for instance of " + obj.getClass() + "!");
 	}
 	
 	public static Object length(String obj)

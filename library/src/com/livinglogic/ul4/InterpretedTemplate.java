@@ -111,7 +111,7 @@ public class InterpretedTemplate implements Template
 	/**
 	 * The version number used in the compiled format of the template.
 	 */
-	public static final String VERSION = "8";
+	public static final String VERSION = "9";
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
@@ -1181,6 +1181,9 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF1_JSON:
 									reg[code.r1] = Utils.json(reg[code.r2]);
 									break;
+								case Opcode.CF1_REVERSED:
+									reg[code.r1] = Utils.reversed(reg[code.r2]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLFUNC2:
@@ -1988,6 +1991,9 @@ public class InterpretedTemplate implements Template
 							break;
 						case Opcode.CF1_JSON:
 							code(buffer, indent, "reg" + opcode.r1 + " = json(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_REVERSED:
+							code(buffer, indent, "reg" + opcode.r1 + " = reversed(reg" + opcode.r2 + ")");
 							break;
 						case Opcode.CF1_CHR:
 							code(buffer, indent, "reg" + opcode.r1 + " = unichr(reg" + opcode.r2 + ")");

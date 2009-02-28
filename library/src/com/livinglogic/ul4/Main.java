@@ -8,12 +8,11 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl1 = Compiler.compile("<?print 2*x?>");
-		Template tmpl2 = Compiler.compile("<?print 2*t.render(x=42)?>");
+		Template tmpl = Compiler.compile("<?for i in reversed([1, 2, 3])?>(<?print i?>)<?end for?>");
 		long start = System.currentTimeMillis();
 		Map vars = new HashMap();
-		vars.put("t", tmpl1);
-		String output = tmpl2.renders(vars);
+		vars.put("t", "123");
+		String output = tmpl.renders(vars);
 		System.out.println("rendered " + (System.currentTimeMillis()-start));
 		System.out.println(output);
 	}

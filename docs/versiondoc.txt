@@ -1,3 +1,10 @@
+exp-10:
+-----
+
+Comments:
+* Added reversed() function.
+
+
 exp-9:
 -----
 
