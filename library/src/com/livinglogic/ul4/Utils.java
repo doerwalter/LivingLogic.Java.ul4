@@ -1507,12 +1507,23 @@ public class Utils
 		return ((Color)arg1).witha(_getint(arg2));
 	}
 
-	public static void main(String[] args)
+	public static String join(Object arg1, Object arg2)
 	{
-		//System.out.println(split("\t\tgurk\t\t\t\t\t\thurz\t\tschwumpl\t\t\t\t", "\t\t"));
-		System.out.println(split("gurk\t\t\t\t\t\thurz\t\tschwumpl", "\t\t"));
-		//System.out.println(split("\t\tgurk\t\t\t\t\t\thurz\t\tschwumpl\t\t\t\t"));
-		//System.out.println(split("gurk\t\t\t\t\t\thurz\t\tschwumpl"));
-		//System.out.println(split("  gurk      hurz  schwumpl    "));
+		if (arg1 instanceof String)
+		{
+			StringBuffer buffer = new StringBuffer();
+
+			for (Iterator iter = iterator(arg2); iter.hasNext();)
+			{
+				Object item = iter.next();
+				if (buffer.length() != 0)
+					buffer.append(arg1);
+				if (item != null)
+					buffer.append(item);
+			}
+			return buffer.toString();
+		}
+		else
+			throw new UnsupportedOperationException("can't call join on instance of " + arg1.getClass() + "!");
 	}
 }
