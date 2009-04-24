@@ -12,7 +12,7 @@ import javax.servlet.jsp.*;
  *
  * See LICENSE for the license
  *
- * Interface for various methods for generating tempalte output.
+ * Interface for various methods for generating template output.
  *
  * @author W. Dörwald
  * @version $Revision$ $Date$
