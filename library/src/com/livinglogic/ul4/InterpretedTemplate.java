@@ -1154,6 +1154,9 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF1_ISTEMPLATE:
 									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Template)) ? Boolean.TRUE : Boolean.FALSE;
 									break;
+								case Opcode.CF1_ISCOLOR:
+									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Color)) ? Boolean.TRUE : Boolean.FALSE;
+									break;
 								case Opcode.CF1_CHR:
 									reg[code.r1] = Utils.chr(reg[code.r2]);
 									break;
@@ -1991,6 +1994,9 @@ public class InterpretedTemplate implements Template
 							break;
 						case Opcode.CF1_ISTEMPLATE:
 							code(buffer, indent, "reg" + opcode.r1 + " = hasattr(reg" + opcode.r2 + ", '__call__')");
+							break;
+						case Opcode.CF1_ISCOLOR:
+							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", color.Color)");
 							break;
 						case Opcode.CF1_REPR:
 							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._repr(reg" + opcode.r2 + ")");

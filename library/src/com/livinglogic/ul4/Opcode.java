@@ -351,6 +351,8 @@ public class Opcode
 			return CF1_ISDICT;
 		else if (name.equals("istemplate"))
 			return CF1_ISTEMPLATE;
+		else if (name.equals("iscolor"))
+			return CF1_ISCOLOR;
 		else if (name.equals("chr"))
 			return CF1_CHR;
 		else if (name.equals("ord"))
