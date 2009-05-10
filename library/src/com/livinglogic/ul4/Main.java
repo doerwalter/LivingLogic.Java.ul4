@@ -8,7 +8,7 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?print ', '.join(reversed([1, 2, 3]))?>");
+		Template tmpl = Compiler.compile("<?print isfloat(float(42))?>");
 		long start = System.currentTimeMillis();
 		Map vars = new HashMap();
 		vars.put("t", "123");

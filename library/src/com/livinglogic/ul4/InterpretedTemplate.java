@@ -1115,6 +1115,9 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF1_INT:
 									reg[code.r1] = Utils.toInteger(reg[code.r2]);
 									break;
+								case Opcode.CF1_FLOAT:
+									reg[code.r1] = Utils.toFloat(reg[code.r2]);
+									break;
 								case Opcode.CF1_BOOL:
 									reg[code.r1] = Utils.getBool(reg[code.r2]) ? Boolean.TRUE : Boolean.FALSE;
 									break;
@@ -1949,6 +1952,9 @@ public class InterpretedTemplate implements Template
 							break;
 						case Opcode.CF1_INT:
 							code(buffer, indent, "reg" + opcode.r1 + " = int(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_FLOAT:
+							code(buffer, indent, "reg" + opcode.r1 + " = float(reg" + opcode.r2 + ")");
 							break;
 						case Opcode.CF1_BOOL:
 							code(buffer, indent, "reg" + opcode.r1 + " = bool(reg" + opcode.r2 + ")");

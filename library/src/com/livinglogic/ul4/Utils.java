@@ -790,6 +790,46 @@ public class Utils
 		throw new UnsupportedOperationException("Can't convert instance of " + obj1.getClass() + " to an integer using " + obj2.getClass() + " as base!");
 	}
 
+	public static Object toFloat(String obj)
+	{
+		return Float.valueOf(obj);
+	}
+
+	public static Object toFloat(Integer obj)
+	{
+		return new Float(obj.intValue());
+	}
+
+	public static Object toFloat(Long obj)
+	{
+		return new Float(obj.longValue());
+	}
+
+	public static Object toFloat(Float obj)
+	{
+		return obj;
+	}
+
+	public static Object toFloat(Boolean obj)
+	{
+		return new Float(obj.booleanValue() ? 1.0 : 0.0);
+	}
+
+	public static Object toFloat(Object obj)
+	{
+		if (obj instanceof String)
+			return toFloat((String)obj);
+		else if (obj instanceof Integer)
+			return toFloat((Integer)obj);
+		else if (obj instanceof Long)
+			return toFloat((Long)obj);
+		else if (obj instanceof Number)
+			return toFloat((Number)obj);
+		else if (obj instanceof Boolean)
+			return toFloat((Boolean)obj);
+		throw new UnsupportedOperationException("Can't convert instance of " + obj.getClass() + " to a float!");
+	}
+
 	public static String repr(Object obj)
 	{
 		if (obj == null)

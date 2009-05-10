@@ -76,30 +76,32 @@ public class Opcode
 	public static final int CF1_STR = 1;
 	public static final int CF1_REPR = 2;
 	public static final int CF1_INT = 3;
-	public static final int CF1_BOOL = 4;
-	public static final int CF1_LEN = 5;
-	public static final int CF1_ENUMERATE = 6;
-	public static final int CF1_ISNONE = 7;
-	public static final int CF1_ISSTR = 8;
-	public static final int CF1_ISINT = 9;
-	public static final int CF1_ISFLOAT = 10;
-	public static final int CF1_ISBOOL = 11;
-	public static final int CF1_ISDATE = 12;
-	public static final int CF1_ISLIST = 13;
-	public static final int CF1_ISDICT = 14;
-	public static final int CF1_ISTEMPLATE = 15;
-	public static final int CF1_CHR = 16;
-	public static final int CF1_ORD = 17;
-	public static final int CF1_HEX = 18;
-	public static final int CF1_OCT = 19;
-	public static final int CF1_BIN = 20;
-	public static final int CF1_SORTED = 21;
-	public static final int CF1_RANGE = 22;
-	public static final int CF1_TYPE = 23;
-	public static final int CF1_CSV = 24;
-	public static final int CF1_GET = 25;
-	public static final int CF1_JSON = 26;
-	public static final int CF1_REVERSED = 27;
+	public static final int CF1_FLOAT = 4;
+	public static final int CF1_BOOL = 5;
+	public static final int CF1_LEN = 6;
+	public static final int CF1_ENUMERATE = 7;
+	public static final int CF1_ISNONE = 8;
+	public static final int CF1_ISSTR = 9;
+	public static final int CF1_ISINT = 10;
+	public static final int CF1_ISFLOAT = 11;
+	public static final int CF1_ISBOOL = 12;
+	public static final int CF1_ISDATE = 13;
+	public static final int CF1_ISLIST = 14;
+	public static final int CF1_ISDICT = 15;
+	public static final int CF1_ISTEMPLATE = 16;
+	public static final int CF1_ISCOLOR = 17;
+	public static final int CF1_CHR = 18;
+	public static final int CF1_ORD = 19;
+	public static final int CF1_HEX = 20;
+	public static final int CF1_OCT = 21;
+	public static final int CF1_BIN = 22;
+	public static final int CF1_SORTED = 23;
+	public static final int CF1_RANGE = 24;
+	public static final int CF1_TYPE = 25;
+	public static final int CF1_CSV = 26;
+	public static final int CF1_GET = 27;
+	public static final int CF1_JSON = 28;
+	public static final int CF1_REVERSED = 29;
 
 	public static final int CF2_RANGE = 0;
 	public static final int CF2_GET = 1;
@@ -323,6 +325,8 @@ public class Opcode
 			return CF1_REPR;
 		else if (name.equals("int"))
 			return CF1_INT;
+		else if (name.equals("float"))
+			return CF1_FLOAT;
 		else if (name.equals("bool"))
 			return CF1_BOOL;
 		else if (name.equals("len"))
