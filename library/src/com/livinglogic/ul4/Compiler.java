@@ -14,7 +14,7 @@ public class Compiler
 	static
 	{
 		Properties props = new Properties();
-		props.setProperty("python.path", "/Users/walter/jython/Lib:/Users/walter/checkouts/LivingLogic.Java.ul4/library/src/com/livinglogic/ul4");
+		props.setProperty("python.path", "C:\\jython\\Lib;C:\\ul4");
 		PythonInterpreter.initialize(System.getProperties(), props, new String[] {""});
 		PythonInterpreter interpreter = new PythonInterpreter();
 		interpreter.exec("from ul4c import Compiler");
