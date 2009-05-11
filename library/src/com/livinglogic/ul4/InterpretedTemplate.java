@@ -111,7 +111,7 @@ public class InterpretedTemplate implements Template
 	/**
 	 * The version number used in the compiled format of the template.
 	 */
-	public static final String VERSION = "10";
+	public static final String VERSION = "11";
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)

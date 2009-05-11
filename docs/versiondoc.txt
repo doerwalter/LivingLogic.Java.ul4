@@ -1,3 +1,11 @@
+exp-12:
+-----
+file format: 11
+
+Comments:
+* Added float() and iscolor functions.
+
+
 exp-11:
 -----
 file format: 10
