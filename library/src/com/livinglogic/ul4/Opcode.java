@@ -67,6 +67,8 @@ public class Opcode
 	public static final int OC_BREAK = 62;
 	public static final int OC_CONTINUE = 63;
 	public static final int OC_RENDER = 64;
+	public static final int OC_DEF = 65;
+	public static final int OC_ENDDEF = 66;
 
 	public static final int CF0_NOW = 0;
 	public static final int CF0_VARS = 1;
@@ -291,6 +293,10 @@ public class Opcode
 			return OC_CONTINUE;
 		else if (name.equals("render"))
 			return OC_RENDER;
+		else if (name.equals("def"))
+			return OC_DEF;
+		else if (name.equals("enddef"))
+			return OC_ENDDEF;
 		else
 			throw new IllegalArgumentException("Opcode name " + name + " unknown!");
 	}
@@ -618,6 +624,10 @@ public class Opcode
 			return "continue";
 		else if (code == OC_RENDER)
 			return "render";
+		else if (code == OC_DEF)
+			return "def";
+		else if (code == OC_ENDDEF)
+			return "enddef";
 		else
 			throw new IllegalArgumentException("Opcode code " + code + " unknown!");
 	}
@@ -803,7 +813,11 @@ public class Opcode
 			case OC_CONTINUE:
 				return "continue";
 			case OC_RENDER:
-				return "render " + arg + "(r" + r1 + ")";
+				return "render r" + r1 + "(r" + r2 + ")";
+			case OC_DEF:
+				return "def " + arg + "(**vars)";
+			case OC_ENDDEF:
+				return "enddef";
 			default:
 				throw new IllegalArgumentException("Opcode code " + name + " unknown!");
 		}

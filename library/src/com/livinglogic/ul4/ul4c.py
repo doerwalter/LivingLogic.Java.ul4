@@ -77,14 +77,19 @@ def _compile(template, tags):
 					elif code == "for":
 						if stack[-1][0] != "for":
 							raise ul4.BlockException("endfor doesn't match any for")
+					elif code == "def":
+						if stack[-1][0] != "def":
+							raise ul4.BlockException("enddef doesn't match any def")
 					else:
 						raise ul4.BlockException("illegal end value %r" % code)
 				last = stack.pop()
 				if last[0] == "if":
 					for i in xrange(last[2]):
 						template.opcode(ul4.Opcode.OC_ENDIF, location)
-				else: # last[0] == "for":
+				elif last[0] == "for":
 					template.opcode(ul4.Opcode.OC_ENDFOR, location)
+				else: # last[0] == "def":
+					template.opcode(ul4.Opcode.OC_ENDDEF, location)
 			elif location.type == "for":
 				parsefor(template, location)
 				stack.append(("for", location))
@@ -104,6 +109,9 @@ def _compile(template, tags):
 				template.opcode(ul4.Opcode.OC_CONTINUE, location)
 			elif location.type == "render":
 				parserender(template, location)
+			elif location.type == "def":
+				template.opcode(ul4.Opcode.OC_DEF, location.code, location)
+				stack.append(("def", location))
 			else: # Can't happen
 				raise ValueError("unknown tag %r" % location.type)
 		except ul4.LocationException, exc:

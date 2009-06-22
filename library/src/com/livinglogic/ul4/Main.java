@@ -9,7 +9,7 @@ public class Main
 	public static void main(String[] args)
 	{
 		Long c = new Long(42);
-		Template tmpl = Compiler.compile("<?print json(c)?>");
+		Template tmpl = Compiler.compile("<?def x?><?def y?><?print arg+2?><?end?><?render y(arg=arg)?><?end def?><?render x(arg='gurk')?>");
 		System.out.println(tmpl);
 		long start = System.currentTimeMillis();
 		Map vars = new HashMap();

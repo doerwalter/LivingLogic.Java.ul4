@@ -111,7 +111,7 @@ public class Template implements JSPTemplate
 	/**
 	 * The version number used in the compiled format of the template.
 	 */
-	public static final String VERSION = "7";
+	public static final String VERSION = "11";
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
@@ -150,6 +150,31 @@ public class Template implements JSPTemplate
 	{
 		this.source = null;
 		this.opcodes = new LinkedList();
+		this.defaultLocale = Locale.GERMANY;
+	}
+
+	/**
+	 * Creates an template object for a source string and a list of opcodes.
+	 */
+	public Template(String source, List opcodes, String startdelim, String enddelim, int startindex, int endindex)
+	{
+		this.source = source;
+		this.startdelim = startdelim;
+		this.enddelim = enddelim;
+		this.opcodes = opcodes.subList(startindex, endindex);
+		this.defaultLocale = Locale.GERMANY;
+	}
+
+
+	/**
+	 * Creates an template object for a source string and a list of opcodes.
+	 */
+	public Template(String source, List opcodes, String startdelim, String enddelim)
+	{
+		this.source = source;
+		this.startdelim = startdelim;
+		this.enddelim = enddelim;
+		this.opcodes = opcodes.subList(0, opcodes.size());
 		this.defaultLocale = Locale.GERMANY;
 	}
 
@@ -508,7 +533,7 @@ public class Template implements JSPTemplate
 		{
 			return load(new StringReader(bytecode));
 		}
-		catch (IOException ex) // can not happen, when reading from a StringReader
+		catch (IOException ex) // can not happen when reading from a StringReader
 		{
 			return null;
 		}
@@ -623,7 +648,7 @@ public class Template implements JSPTemplate
 		{
 			dump(writer);
 		}
-		catch (IOException ex) // can not happen, when dumping to a StringWriter
+		catch (IOException ex) // can not happen when dumping to a StringWriter
 		{
 		}
 		return writer.toString();
@@ -634,6 +659,8 @@ public class Template implements JSPTemplate
 	 * <ul>
 	 * <li>(a <code>for</code> opcode gets annotated with the location of the
 	 * associated <code>endfor</code> opcode;</li>
+	 * <li>a <code>def</code> opcode gets annotated with the location of the
+	 * associated <code>enddef</code> opcode;</li>
 	 * <li>an <code>if</code> opcode gets annotated with the location of the
 	 * associated <code>else</code> or <code>endif</code> opcode;</li>
 	 * <li>an <code>else</code> opcode gets annotated with the location of
@@ -659,6 +686,9 @@ public class Template implements JSPTemplate
 					case Opcode.OC_FOR:
 						i = annotateFor(i, 0);
 						break;
+					case Opcode.OC_DEF:
+						i = annotateDef(i, 0);
+						break;
 					case Opcode.OC_ELSE:
 						throw new BlockException("else outside if block");
 					case Opcode.OC_ENDIF:
@@ -669,6 +699,8 @@ public class Template implements JSPTemplate
 						throw new BlockException("break outside for loop");
 					case Opcode.OC_CONTINUE:
 						throw new BlockException("continue outside for loop");
+					case Opcode.OC_ENDDEF:
+						throw new BlockException("enddef outside def block");
 				}
 			}
 			annotated = true;
@@ -689,6 +721,9 @@ public class Template implements JSPTemplate
 				case Opcode.OC_FOR:
 					i = annotateFor(i, forDepth);
 					break;
+				case Opcode.OC_DEF:
+					i = annotateDef(i, forDepth);
+					break;
 				case Opcode.OC_ELSE:
 					((Opcode)opcodes.get(jump)).jump = i;
 					jump = i;
@@ -706,9 +741,46 @@ public class Template implements JSPTemplate
 					break;
 				case Opcode.OC_ENDFOR:
 					throw new BlockException("endfor in if block");
+				case Opcode.OC_ENDDEF:
+					throw new BlockException("enddef in if block");
 			}
 		}
 		throw new BlockException("unclosed if block");
+	}
+
+	protected int annotateDef(int defStart, int forDepth)
+	{
+		int jump = defStart;
+		for (int i = defStart+1; i < opcodes.size(); ++i)
+		{
+			Opcode opcode = (Opcode)opcodes.get(i);
+			switch (opcode.name)
+			{
+				case Opcode.OC_IF:
+					i = annotateIf(i, forDepth);
+					break;
+				case Opcode.OC_FOR:
+					i = annotateFor(i, forDepth);
+					break;
+				case Opcode.OC_DEF:
+					i = annotateDef(i, forDepth);
+					break;
+				case Opcode.OC_ELSE:
+					throw new BlockException("else in def");
+				case Opcode.OC_ENDIF:
+					throw new BlockException("endif in def");
+				case Opcode.OC_BREAK:
+					throw new BlockException("break in def");
+				case Opcode.OC_CONTINUE:
+					throw new BlockException("continue in def");
+				case Opcode.OC_ENDFOR:
+					throw new BlockException("endfor in def");
+				case Opcode.OC_ENDDEF:
+					((Opcode)opcodes.get(defStart)).jump = i;
+					return i;
+			}
+		}
+		throw new BlockException("unclosed def block");
 	}
 
 	protected int annotateFor(int loopStart, int forDepth)
@@ -727,6 +799,9 @@ public class Template implements JSPTemplate
 					break;
 				case Opcode.OC_FOR:
 					i = annotateFor(i, forDepth);
+					break;
+				case Opcode.OC_DEF:
+					i = annotateDef(i, forDepth);
 					break;
 				case Opcode.OC_ELSE:
 					throw new BlockException("else in for loop");
@@ -753,6 +828,8 @@ public class Template implements JSPTemplate
 					}
 					((Opcode)opcodes.get(loopStart)).jump = i;
 					return i;
+				case Opcode.OC_ENDDEF:
+					throw new BlockException("enddef in for loop");
 			}
 		}
 		throw new BlockException("unclosed loop");
@@ -830,10 +907,10 @@ public class Template implements JSPTemplate
 		/**
 		 * Since we implement the iterator interface we have to support both
 		 * <code>next</code> and <code>hasNext</code>. This means that neither
-		 * of the two methods can directly run the opcodes to get the next output
-		 * chunk. Instead of that we have a method {@link getNextChunk} that runs
-		 * the opcodes until the next output chunk is produced and stores it in
-		 * <code>nextChunk</code>, when both <code>next</code> and
+		 * of the two methods can directly execute the opcodes to get the next
+		 * output chunk. Instead of that we have a method {@link getNextChunk}
+		 * that executes the opcodes until the next output chunk is produced and
+		 * stores it in <code>nextChunk</code>, when both <code>next</code> and
 		 * <code>hasNext</code> can refer to it.
 		 */
 		private String nextChunk = null;
@@ -1018,6 +1095,13 @@ public class Template implements JSPTemplate
 							pc = code.jump+1;
 							continue;
 						case Opcode.OC_ENDIF:
+							// Skip to next opcode
+							break;
+						case Opcode.OC_DEF:
+							variables.put(code.arg, new Template(source.substring(code.location.endtag, ((Opcode)opcodes.get(code.jump)).location.starttag), opcodes, startdelim, enddelim, pc+1, code.jump));
+							pc = code.jump+1;
+							continue;
+						case Opcode.OC_ENDDEF:
 							// Skip to next opcode
 							break;
 						case Opcode.OC_GETATTR:
@@ -1365,7 +1449,7 @@ public class Template implements JSPTemplate
 
 	public static List tokenizeTags(String source, String startdelim, String enddelim)
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|render|note)(\\s*((.|\\n)*?)\\s*)?" + escapeREchars(enddelim));
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|render|def|note)(\\s*((.|\\n)*?)\\s*)?" + escapeREchars(enddelim));
 		LinkedList tags = new LinkedList();
 		Matcher matcher = tagPattern.matcher(source);
 		int pos = 0;
