@@ -15,7 +15,7 @@ public class LoadDate extends AST
 		return "date";
 	}
 
-	public int compile(Template template, Registers registers, Location location)
+	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
 		template.opcode(Opcode.OC_LOADDATE, r, (String)Utils.isoformat(value), location);

@@ -1,6 +1,9 @@
 package com.livinglogic.ul4;
 
 import java.util.Map;
+import java.io.Writer;
+import java.io.StringWriter;
+import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
@@ -12,13 +15,34 @@ import javax.servlet.jsp.*;
  *
  * See LICENSE for the license
  *
- * Interface for JSP code that has been put into a method to be reusable.
+ * Base class for template code that has been converted to JSP.
  *
  * @author W. Dörwald
  * @version $Revision$ $Date$
  */
 
-public interface JSPTemplate
+public abstract class JSPTemplate implements Template
 {
-	public void execute(JspWriter out, Map variables) throws java.io.IOException, javax.servlet.ServletException;
+	public String renders(Map variables)
+	{
+		StringWriter out = new StringWriter();
+
+		try
+		{
+			execute(out, variables);
+		}
+		catch (IOException ex)
+		{
+			// does not happen!
+		}
+		String result = out.toString();
+		return result;
+	}
+
+	public void renderjsp(JspWriter out, Map variables) throws java.io.IOException
+	{
+		execute(out, variables);
+	}
+
+	public abstract void execute(Writer out, Map variables) throws java.io.IOException;
 }

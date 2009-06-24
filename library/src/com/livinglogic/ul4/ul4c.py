@@ -98,14 +98,14 @@ def _compile(template, tags):
 					if entry[0] == "for":
 						break
 				else:
-					raise BlockError("break outside of for loop")
+					raise BlockException("break outside of for loop")
 				template.opcode(ul4.Opcode.OC_BREAK, location)
 			elif location.type == "continue":
 				for entry in stack:
 					if entry[0] == "for":
 						break
 				else:
-					raise BlockError("continue outside of for loop")
+					raise BlockException("continue outside of for loop")
 				template.opcode(ul4.Opcode.OC_CONTINUE, location)
 			elif location.type == "render":
 				parserender(template, location)
@@ -137,7 +137,7 @@ class ExprParser(spark.GenericParser):
 		if not location.code:
 			raise ValueError(self.emptyerror)
 		try:
-			ast = self.parse(ul4.Template.tokenizeCode(location))
+			ast = self.parse(ul4.InterpretedTemplate.tokenizeCode(location))
 			registers = ul4.Registers()
 			return ast.compile(template, registers, location)
 		except ul4.LocationException, exc:
@@ -293,6 +293,35 @@ class ExprParser(spark.GenericParser):
 	def expr_callmeth3(self, (expr, _0, name, _1, arg1, _2, arg2, _3, arg3, _4)):
 		return ul4.CallMeth(expr.start, _4.end, expr, name, arg1, arg2, arg3)
 	expr_callmeth3.spark = ['expr9 ::= expr9 . name ( expr0 , expr0 , expr0 )']
+
+	def methkw_startname(self, (expr, _0, methname, _1, argname, _2, argvalue)):
+		call = ul4.CallMethKeywords(expr.start, argvalue.end, methname, expr)
+		call.append(argname.value, argvalue)
+		return call
+	methkw_startname.spark = ['callmethkw ::= expr9 . name ( name = expr0']
+
+	def methkw_startdict(self, (expr, _0, methname, _1, _2, argvalue)):
+		call = ul4.CallMethKeywords(expr.start, argvalue.end, methname, expr)
+		call.append(argvalue)
+		return call
+	methkw_startdict.spark = ['callmethkw ::= expr9 . name ( ** expr0']
+
+	def methkw_buildname(self, (call, _0, argname, _1, argvalue)):
+		call.args.append(argname.value, argvalue)
+		call.end = argvalue.end
+		return call
+	methkw_buildname.spark = ['callmethkw ::= callmethkw , name = expr0']
+
+	def methkw_builddict(self, (call, _0, _1, argvalue)):
+		call.args.append(argvalue)
+		call.end = argvalue.end
+		return call
+	methkw_builddict.spark = ['callmethkw ::= callmethkw , ** expr0']
+
+	def methkw_finish(self, (call, _0)):
+		call.end = _0.end
+		return call
+	methkw_finish.spark = ['expr9 ::= callmethkw )']
 
 	def expr_getitem(self, (expr, _0, key, _1)):
 		if isinstance(expr, ul4.LoadConst) and isinstance(key, ul4.LoadConst): # Constant folding
@@ -561,7 +590,7 @@ class RenderParser(ExprParser):
 
 class Compiler(ul4.CompilerType):
 	def compile(self, source, tags, startdelim, enddelim):
-		template = ul4.Template()
+		template = ul4.InterpretedTemplate()
 		template.startdelim = startdelim
 		template.enddelim = enddelim
 		template.source = source

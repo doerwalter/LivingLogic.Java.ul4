@@ -14,7 +14,7 @@ public class GetSlice12 extends AST
 		this.index2 = index2;
 	}
 
-	public int compile(Template template, Registers registers, Location location)
+	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r = obj.compile(template, registers, location);
 		int r1 = index1.compile(template, registers, location);

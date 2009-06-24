@@ -20,7 +20,7 @@ public class LoadInt extends AST
 		return new Integer(value);
 	}
 
-	public int compile(Template template, Registers registers, Location location)
+	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
 		template.opcode(Opcode.OC_LOADINT, r, String.valueOf(value), location);

@@ -105,6 +105,76 @@ class StringIterator implements Iterator
 	}
 }
 
+class StringReversedIterator implements Iterator
+{
+	String string;
+
+	int stringSize;
+
+	int index;
+
+	public StringReversedIterator(String string)
+	{
+		this.string = string;
+		stringSize = string.length();
+		index = stringSize - 1;
+	}
+
+	public boolean hasNext()
+	{
+		return index >= 0;
+	}
+
+	public Object next()
+	{
+		if (index < 0)
+		{
+			throw new NoSuchElementException("No more characters available!");
+		}
+		return String.valueOf(string.charAt(index--));
+	}
+
+	public void remove()
+	{
+		throw new UnsupportedOperationException("Strings don't support character removal!");
+	}
+}
+
+class ListReversedIterator implements Iterator
+{
+	List list;
+
+	int listSize;
+
+	int index;
+
+	public ListReversedIterator(List list)
+	{
+		this.list = list;
+		listSize = list.size();
+		index = listSize - 1;
+	}
+
+	public boolean hasNext()
+	{
+		return index >= 0;
+	}
+
+	public Object next()
+	{
+		if (index < 0)
+		{
+			throw new NoSuchElementException("No more items available!");
+		}
+		return list.get(index--);
+	}
+
+	public void remove()
+	{
+		list.remove(index);
+	}
+}
+
 class MapItemIterator implements Iterator
 {
 	Iterator iterator;
@@ -706,6 +776,60 @@ public class Utils
 		throw new UnsupportedOperationException("Can't convert instance of " + obj.getClass() + " to an integer!");
 	}
 
+	public static Object toInteger(String obj1, Integer obj2)
+	{
+		return Integer.valueOf(obj1, obj2.intValue());
+	}
+
+	public static Object toInteger(Object obj1, Object obj2)
+	{
+		if (obj1 instanceof String && obj2 instanceof Integer)
+		{
+			return toInteger((String)obj1, (Integer)obj2);
+		}
+		throw new UnsupportedOperationException("Can't convert instance of " + obj1.getClass() + " to an integer using " + obj2.getClass() + " as base!");
+	}
+
+	public static Object toFloat(String obj)
+	{
+		return Float.valueOf(obj);
+	}
+
+	public static Object toFloat(Integer obj)
+	{
+		return new Float(obj.intValue());
+	}
+
+	public static Object toFloat(Long obj)
+	{
+		return new Float(obj.longValue());
+	}
+
+	public static Object toFloat(Float obj)
+	{
+		return obj;
+	}
+
+	public static Object toFloat(Boolean obj)
+	{
+		return new Float(obj.booleanValue() ? 1.0 : 0.0);
+	}
+
+	public static Object toFloat(Object obj)
+	{
+		if (obj instanceof String)
+			return toFloat((String)obj);
+		else if (obj instanceof Integer)
+			return toFloat((Integer)obj);
+		else if (obj instanceof Long)
+			return toFloat((Long)obj);
+		else if (obj instanceof Number)
+			return toFloat((Number)obj);
+		else if (obj instanceof Boolean)
+			return toFloat((Boolean)obj);
+		throw new UnsupportedOperationException("Can't convert instance of " + obj.getClass() + " to a float!");
+	}
+
 	public static String repr(Object obj)
 	{
 		if (obj == null)
@@ -822,6 +946,15 @@ public class Utils
 			return sb.toString();
 		}
 		return null;
+	}
+	
+	public static Iterator reversed(Object obj)
+	{
+		if (obj instanceof String)
+			return new StringReversedIterator((String)obj);
+		else if (obj instanceof List)
+			return new ListReversedIterator((List)obj);
+		throw new UnsupportedOperationException("Can't created reversed iterator for instance of " + obj.getClass() + "!");
 	}
 	
 	public static Object length(String obj)
@@ -1414,12 +1547,23 @@ public class Utils
 		return ((Color)arg1).witha(_getint(arg2));
 	}
 
-	public static void main(String[] args)
+	public static String join(Object arg1, Object arg2)
 	{
-		//System.out.println(split("\t\tgurk\t\t\t\t\t\thurz\t\tschwumpl\t\t\t\t", "\t\t"));
-		System.out.println(split("gurk\t\t\t\t\t\thurz\t\tschwumpl", "\t\t"));
-		//System.out.println(split("\t\tgurk\t\t\t\t\t\thurz\t\tschwumpl\t\t\t\t"));
-		//System.out.println(split("gurk\t\t\t\t\t\thurz\t\tschwumpl"));
-		//System.out.println(split("  gurk      hurz  schwumpl    "));
+		if (arg1 instanceof String)
+		{
+			StringBuffer buffer = new StringBuffer();
+
+			for (Iterator iter = iterator(arg2); iter.hasNext();)
+			{
+				Object item = iter.next();
+				if (buffer.length() != 0)
+					buffer.append(arg1);
+				if (item != null)
+					buffer.append(item);
+			}
+			return buffer.toString();
+		}
+		else
+			throw new UnsupportedOperationException("can't call join on instance of " + arg1.getClass() + "!");
 	}
 }

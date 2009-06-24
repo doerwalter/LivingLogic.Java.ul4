@@ -23,14 +23,14 @@ public class Compiler
 		compiler = (CompilerType)compilerObj.__tojava__(CompilerType.class);
 	}
 
-	public static Template compile(String source)
+	public static InterpretedTemplate compile(String source)
 	{
 		return compile(source, "<?", "?>");
 	}
 
-	public static Template compile(String source, String startdelim, String enddelim)
+	public static InterpretedTemplate compile(String source, String startdelim, String enddelim)
 	{
-		List tags = Template.tokenizeTags(source, startdelim, enddelim);
+		List tags = InterpretedTemplate.tokenizeTags(source, startdelim, enddelim);
 		return compiler.compile(source, tags, startdelim, enddelim);
 	}
 }

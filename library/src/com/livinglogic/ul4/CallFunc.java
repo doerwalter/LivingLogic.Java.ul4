@@ -66,7 +66,7 @@ public class CallFunc extends AST
 
 	private static final int[] opcodes = {Opcode.OC_CALLFUNC0, Opcode.OC_CALLFUNC1, Opcode.OC_CALLFUNC2, Opcode.OC_CALLFUNC3, Opcode.OC_CALLFUNC4};
 
-	public int compile(Template template, Registers registers, Location location)
+	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r1 = arg1 != null ? arg1.compile(template, registers, location) : -1;
 		int r2 = arg2 != null ? arg2.compile(template, registers, location) : -1;

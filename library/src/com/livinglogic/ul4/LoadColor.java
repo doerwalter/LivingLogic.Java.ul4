@@ -15,7 +15,7 @@ public class LoadColor extends AST
 		return "color";
 	}
 
-	public int compile(Template template, Registers registers, Location location)
+	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
 		

@@ -59,16 +59,17 @@ public class Opcode
 	public static final int OC_CALLMETH1 = 54;
 	public static final int OC_CALLMETH2 = 55;
 	public static final int OC_CALLMETH3 = 56;
-	public static final int OC_IF = 57;
-	public static final int OC_ELSE = 58;
-	public static final int OC_ENDIF = 59;
-	public static final int OC_FOR = 60;
-	public static final int OC_ENDFOR = 61;
-	public static final int OC_BREAK = 62;
-	public static final int OC_CONTINUE = 63;
-	public static final int OC_RENDER = 64;
-	public static final int OC_DEF = 65;
-	public static final int OC_ENDDEF = 66;
+	public static final int OC_CALLMETHKW = 57;
+	public static final int OC_IF = 58;
+	public static final int OC_ELSE = 59;
+	public static final int OC_ENDIF = 60;
+	public static final int OC_FOR = 61;
+	public static final int OC_ENDFOR = 62;
+	public static final int OC_BREAK = 63;
+	public static final int OC_CONTINUE = 64;
+	public static final int OC_RENDER = 65;
+	public static final int OC_DEF = 66;
+	public static final int OC_ENDDEF = 67;
 
 	public static final int CF0_NOW = 0;
 	public static final int CF0_VARS = 1;
@@ -77,33 +78,37 @@ public class Opcode
 	public static final int CF1_STR = 1;
 	public static final int CF1_REPR = 2;
 	public static final int CF1_INT = 3;
-	public static final int CF1_BOOL = 4;
-	public static final int CF1_LEN = 5;
-	public static final int CF1_ENUMERATE = 6;
-	public static final int CF1_ISNONE = 7;
-	public static final int CF1_ISSTR = 8;
-	public static final int CF1_ISINT = 9;
-	public static final int CF1_ISFLOAT = 10;
-	public static final int CF1_ISBOOL = 11;
-	public static final int CF1_ISDATE = 12;
-	public static final int CF1_ISLIST = 13;
-	public static final int CF1_ISDICT = 14;
-	public static final int CF1_ISTEMPLATE = 15;
-	public static final int CF1_CHR = 16;
-	public static final int CF1_ORD = 17;
-	public static final int CF1_HEX = 18;
-	public static final int CF1_OCT = 19;
-	public static final int CF1_BIN = 20;
-	public static final int CF1_SORTED = 21;
-	public static final int CF1_RANGE = 22;
-	public static final int CF1_TYPE = 23;
-	public static final int CF1_CSV = 24;
-	public static final int CF1_GET = 25;
-	public static final int CF1_JSON = 26;
+	public static final int CF1_FLOAT = 4;
+	public static final int CF1_BOOL = 5;
+	public static final int CF1_LEN = 6;
+	public static final int CF1_ENUMERATE = 7;
+	public static final int CF1_ISNONE = 8;
+	public static final int CF1_ISSTR = 9;
+	public static final int CF1_ISINT = 10;
+	public static final int CF1_ISFLOAT = 11;
+	public static final int CF1_ISBOOL = 12;
+	public static final int CF1_ISDATE = 13;
+	public static final int CF1_ISLIST = 14;
+	public static final int CF1_ISDICT = 15;
+	public static final int CF1_ISTEMPLATE = 16;
+	public static final int CF1_ISCOLOR = 17;
+	public static final int CF1_CHR = 18;
+	public static final int CF1_ORD = 19;
+	public static final int CF1_HEX = 20;
+	public static final int CF1_OCT = 21;
+	public static final int CF1_BIN = 22;
+	public static final int CF1_SORTED = 23;
+	public static final int CF1_RANGE = 24;
+	public static final int CF1_TYPE = 25;
+	public static final int CF1_CSV = 26;
+	public static final int CF1_GET = 27;
+	public static final int CF1_JSON = 28;
+	public static final int CF1_REVERSED = 29;
 
 	public static final int CF2_RANGE = 0;
 	public static final int CF2_GET = 1;
 	public static final int CF2_ZIP = 2;
+	public static final int CF2_INT = 3;
 
 	public static final int CF3_RANGE = 0;
 	public static final int CF3_ZIP = 1;
@@ -143,6 +148,7 @@ public class Opcode
 	public static final int CM1_GET = 10;
 	public static final int CM1_WITHLUM = 11;
 	public static final int CM1_WITHA = 12;
+	public static final int CM1_JOIN = 13;
 
 	public static final int CM2_SPLIT = 0;
 	public static final int CM2_RSPLIT = 1;
@@ -151,6 +157,8 @@ public class Opcode
 	public static final int CM2_GET = 4;
 
 	public static final int CM3_FIND = 0;
+
+	public static final int CMKW_RENDER = 0;
 
 	public int name;
 	public int r1;
@@ -277,6 +285,8 @@ public class Opcode
 			return OC_CALLMETH2;
 		else if (name.equals("callmeth3"))
 			return OC_CALLMETH3;
+		else if (name.equals("callmethkw"))
+			return OC_CALLMETHKW;
 		else if (name.equals("if"))
 			return OC_IF;
 		else if (name.equals("else"))
@@ -321,6 +331,8 @@ public class Opcode
 			return CF1_REPR;
 		else if (name.equals("int"))
 			return CF1_INT;
+		else if (name.equals("float"))
+			return CF1_FLOAT;
 		else if (name.equals("bool"))
 			return CF1_BOOL;
 		else if (name.equals("len"))
@@ -345,6 +357,8 @@ public class Opcode
 			return CF1_ISDICT;
 		else if (name.equals("istemplate"))
 			return CF1_ISTEMPLATE;
+		else if (name.equals("iscolor"))
+			return CF1_ISCOLOR;
 		else if (name.equals("chr"))
 			return CF1_CHR;
 		else if (name.equals("ord"))
@@ -367,6 +381,8 @@ public class Opcode
 			return CF1_GET;
 		else if (name.equals("json"))
 			return CF1_JSON;
+		else if (name.equals("reversed"))
+			return CF1_REVERSED;
 		else
 			throw new UnknownFunctionException(name);
 	}
@@ -379,6 +395,8 @@ public class Opcode
 			return CF2_GET;
 		else if (name.equals("zip"))
 			return CF2_ZIP;
+		else if (name.equals("int"))
+			return CF2_INT;
 		else
 			throw new UnknownFunctionException(name);
 	}
@@ -475,6 +493,8 @@ public class Opcode
 			return CM1_WITHLUM;
 		else if (name.equals("witha"))
 			return CM1_WITHA;
+		else if (name.equals("join"))
+			return CM1_JOIN;
 		else
 			throw new UnknownMethodException(name);
 	}
@@ -492,6 +512,14 @@ public class Opcode
 	public static int callmeth3name2code(String name)
 	{
 		throw new UnknownMethodException(name);
+	}
+
+	public static int callmethkwname2code(String name)
+	{
+		if (name.equals("render"))
+			return CMKW_RENDER;
+		else
+			throw new UnknownMethodException(name);
 	}
 
 	public static String code2name(int code)
@@ -608,6 +636,8 @@ public class Opcode
 			return "callmeth2";
 		else if (code == OC_CALLMETH3)
 			return "callmeth3";
+		else if (code == OC_CALLMETHKW)
+			return "callmethkw";
 		else if (code == OC_IF)
 			return "if";
 		else if (code == OC_ELSE)
@@ -674,6 +704,9 @@ public class Opcode
 				break;
 			case OC_CALLMETH3:
 				this.argcode = callmeth3name2code(arg);
+				break;
+			case OC_CALLMETHKW:
+				this.argcode = callmethkwname2code(arg);
 				break;
 		}
 		this.location = location;

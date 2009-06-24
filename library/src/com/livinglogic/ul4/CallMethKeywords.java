@@ -2,14 +2,16 @@ package com.livinglogic.ul4;
 
 import java.util.LinkedList;
 
-public class Render extends AST
+public class CallMethKeywords extends AST
 {
+	protected Name name;
 	protected AST template;
 	protected LinkedList args = new LinkedList();
 
-	public Render(int start, int end, AST template)
+	public CallMethKeywords(int start, int end, Name name, AST template)
 	{
 		super(start, end);
+		this.name = name;
 		this.template = template;
 	}
 
@@ -46,9 +48,8 @@ public class Render extends AST
 			registers.free(rv);
 		}
 		int rt = this.template.compile(template, registers, location);
-		template.opcode(Opcode.OC_RENDER, rt, ra, location);
-		registers.free(rt);
+		template.opcode(Opcode.OC_CALLMETHKW, rt, rt, ra, name.value, location);
 		registers.free(ra);
-		return -1;
+		return rt;
 	}
 }
