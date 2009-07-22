@@ -414,7 +414,7 @@ public class InterpretedTemplate implements Template
 	}
 
 	/**
-	 * loads the source of a template from a reader, whichout checking the version
+	 * loads the source of a template from a reader, without checking the version
 	 * number of the binary file. This is helpful when updating an old stored source.
 	 * @param reader the reader from which the source is read.
 	 * @return The source as a string.
