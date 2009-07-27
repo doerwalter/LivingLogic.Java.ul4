@@ -301,10 +301,10 @@ public class Color implements Collection
 
 	public static Color fromdump(String value)
 	{
-		int r = Integer.valueOf(value.substring(0, 2), 16).intValue();
-		int g = Integer.valueOf(value.substring(2, 4), 16).intValue();
-		int b = Integer.valueOf(value.substring(4, 6), 16).intValue();
-		int a = Integer.valueOf(value.substring(6, 8), 16).intValue();
+		int r = Integer.valueOf(value.substring(0, 2), 16);
+		int g = Integer.valueOf(value.substring(2, 4), 16);
+		int b = Integer.valueOf(value.substring(4, 6), 16);
+		int a = Integer.valueOf(value.substring(6, 8), 16);
 		return new Color(r, g, b, a);
 	}
 
@@ -479,16 +479,15 @@ public class Color implements Collection
 	{
 		if (o == null || !(o instanceof Integer))
 			return false;
-		int ov = ((Integer)o).intValue();
+		int ov = ((Integer)o);
 
 		return ((r == ov) || (g == ov) || (b == ov) || (a == ov));
 	}
 
 	public boolean containsAll(Collection c)
 	{
-		for (Iterator iterator = c.iterator(); iterator.hasNext();)
+		for (Object o : c)
 		{
-			Object o = iterator.next();
 			if (!contains(o))
 				return false;
 		}
@@ -532,13 +531,13 @@ public class Color implements Collection
 			switch (index++)
 			{
 				case 0:
-					return new Integer(r);
+					return r;
 				case 1:
-					return new Integer(g);
+					return g;
 				case 2:
-					return new Integer(b);
+					return b;
 				case 3:
-					return new Integer(a);
+					return a;
 				default:
 					throw new NoSuchElementException("No more components available!");
 			}
@@ -588,5 +587,4 @@ public class Color implements Collection
 	{
 		return 4;
 	}
-
 }

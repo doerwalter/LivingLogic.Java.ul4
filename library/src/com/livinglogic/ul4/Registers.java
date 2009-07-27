@@ -2,20 +2,20 @@ package com.livinglogic.ul4;
 
 import java.util.Vector;
 
-public class Registers extends Vector
+public class Registers extends Vector<Integer>
 {
 	public Registers()
 	{
 		super(10);
 		for (int i = 0; i < 10; ++i)
-			add(new Integer(i));
+			add(i);
 	}
 
 	public int alloc()
 	{
 		try
 		{
-			return ((Integer)remove(0)).intValue();
+			return remove(0);
 		}
 		catch (ArrayIndexOutOfBoundsException ex)
 		{
@@ -25,6 +25,6 @@ public class Registers extends Vector
 
 	public void free(int r)
 	{
-		add(0, new Integer(r));
+		add(0, r);
 	}
 }

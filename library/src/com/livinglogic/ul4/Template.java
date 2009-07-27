@@ -20,7 +20,7 @@ import javax.servlet.jsp.*;
 
 public interface Template
 {
-	public String renders(Map variables);
+	public String renders(Map<String, Object> variables);
 
-	public void renderjsp(JspWriter out, Map variables) throws java.io.IOException;
+	public void renderjsp(JspWriter out, Map<String, Object> variables) throws java.io.IOException;
 }

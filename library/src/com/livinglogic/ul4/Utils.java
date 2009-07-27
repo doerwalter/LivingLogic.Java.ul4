@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
+import java.util.Set;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import org.apache.commons.lang.StringUtils;
@@ -50,7 +51,7 @@ class Range extends AbstractList
 		{
 			throw new IndexOutOfBoundsException("Invalid index: " + index);
 		}
-		return new Integer(start + index * step);
+		return start + index * step;
 	}
 
 	protected int rangeLength(int lowerEnd, int higherEnd, int positiveStep)
@@ -70,7 +71,7 @@ class Range extends AbstractList
 	}
 }
 
-class StringIterator implements Iterator
+class StringIterator implements Iterator<String>
 {
 	String string;
 
@@ -90,7 +91,7 @@ class StringIterator implements Iterator
 		return index < stringSize;
 	}
 
-	public Object next()
+	public String next()
 	{
 		if (index >= stringSize)
 		{
@@ -105,7 +106,7 @@ class StringIterator implements Iterator
 	}
 }
 
-class StringReversedIterator implements Iterator
+class StringReversedIterator implements Iterator<String>
 {
 	String string;
 
@@ -125,7 +126,7 @@ class StringReversedIterator implements Iterator
 		return index >= 0;
 	}
 
-	public Object next()
+	public String next()
 	{
 		if (index < 0)
 		{
@@ -175,7 +176,7 @@ class ListReversedIterator implements Iterator
 	}
 }
 
-class MapItemIterator implements Iterator
+class MapItemIterator implements Iterator<Vector>
 {
 	Iterator iterator;
 
@@ -189,7 +190,7 @@ class MapItemIterator implements Iterator
 		return iterator.hasNext();
 	}
 
-	public Object next()
+	public Vector next()
 	{
 		Vector retVal = new Vector(2);
 		Map.Entry entry = (Map.Entry)iterator.next();
@@ -204,7 +205,7 @@ class MapItemIterator implements Iterator
 	}
 }
 
-class ZipIterator implements Iterator
+class ZipIterator implements Iterator<Vector>
 {
 	Iterator iterator1;
 	Iterator iterator2;
@@ -229,7 +230,7 @@ class ZipIterator implements Iterator
 		return iterator1.hasNext() && iterator2.hasNext() && (iterator3 == null || iterator3.hasNext());
 	}
 
-	public Object next()
+	public Vector next()
 	{
 		Vector retVal = new Vector(iterator3 != null ? 3 : 2);
 		retVal.add(iterator1.next());
@@ -248,7 +249,7 @@ class ZipIterator implements Iterator
 	}
 }
 
-class SequenceEnumerator implements Iterator
+class SequenceEnumerator implements Iterator<Vector>
 {
 	Iterator sequenceIterator;
 
@@ -264,7 +265,7 @@ class SequenceEnumerator implements Iterator
 		return sequenceIterator.hasNext();
 	}
 
-	public Object next()
+	public Vector next()
 	{
 		Vector retVal = new Vector(2);
 		retVal.add(new Integer(index++));
@@ -305,12 +306,12 @@ public class Utils
 
 	public static Object add(Integer arg1, Integer arg2)
 	{
-		return new Integer(arg1.intValue() + arg2.intValue());
+		return arg1.intValue() + arg2.intValue();
 	}
 
 	public static Object add(Number arg1, Number arg2)
 	{
-		return new Double(arg1.doubleValue() + arg2.doubleValue());
+		return arg1.doubleValue() + arg2.doubleValue();
 	}
 
 	public static Object add(String arg1, String arg2)
@@ -331,12 +332,12 @@ public class Utils
 
 	public static Object sub(Integer arg1, Integer arg2)
 	{
-		return new Integer(arg1.intValue() - arg2.intValue());
+		return arg1.intValue() - arg2.intValue();
 	}
 
 	public static Object sub(Number arg1, Number arg2)
 	{
-		return new Double(arg1.doubleValue() - arg2.doubleValue());
+		return arg1.doubleValue() - arg2.doubleValue();
 	}
 
 	public static Object sub(Object arg1, Object arg2)
@@ -362,12 +363,12 @@ public class Utils
 
 	public static Object mul(Integer arg1, Integer arg2)
 	{
-		return new Integer(arg1.intValue() * arg2.intValue());
+		return arg1.intValue() * arg2.intValue();
 	}
 
 	public static Object mul(Number arg1, Number arg2)
 	{
-		return new Double(arg1.doubleValue() * arg2.doubleValue());
+		return arg1.doubleValue() * arg2.doubleValue();
 	}
 
 	public static Object mul(Object arg1, Object arg2)
@@ -385,7 +386,7 @@ public class Utils
 
 	public static Object truediv(Number arg1, Number arg2)
 	{
-		return new Double(arg1.doubleValue() / arg2.doubleValue());
+		return arg1.doubleValue() / arg2.doubleValue();
 	}
 
 	public static Object truediv(Object arg1, Object arg2)
@@ -395,12 +396,12 @@ public class Utils
 
 	public static Object floordiv(Integer arg1, Integer arg2)
 	{
-		return new Integer(arg1.intValue() / arg2.intValue());
+		return arg1.intValue() / arg2.intValue();
 	}
 
 	public static Object floordiv(Number arg1, Number arg2)
 	{
-		return new Double((int)(arg1.doubleValue() / arg2.doubleValue()));
+		return (double)((int)(arg1.doubleValue() / arg2.doubleValue()));
 	}
 
 	public static Object floordiv(Object arg1, Object arg2)
@@ -410,7 +411,7 @@ public class Utils
 
 	public static Object mod(Integer arg1, Integer arg2)
 	{
-		return new Integer(arg1.intValue() % arg2.intValue());
+		return arg1.intValue() % arg2.intValue();
 	}
 
 	public static Object mod(Object arg1, Object arg2)
@@ -448,13 +449,13 @@ public class Utils
 		switch (index)
 		{
 			case 0:
-				return new Integer(arg1.getR());
+				return arg1.getR();
 			case 1:
-				return new Integer(arg1.getG());
+				return arg1.getG();
 			case 2:
-				return new Integer(arg1.getB());
+				return arg1.getB();
 			case 3:
-				return new Integer(arg1.getA());
+				return arg1.getA();
 			default:
 				throw new ArrayIndexOutOfBoundsException();
 		}
@@ -517,7 +518,7 @@ public class Utils
 		}
 		else
 		{
-			retVal = virtualPos.intValue();
+			retVal = virtualPos;
 			if (0 > retVal)
 			{
 				retVal += sequenceSize;
@@ -797,22 +798,22 @@ public class Utils
 
 	public static Object toFloat(Integer obj)
 	{
-		return new Float(obj.intValue());
+		return (double)(obj.intValue());
 	}
 
 	public static Object toFloat(Long obj)
 	{
-		return new Float(obj.longValue());
+		return (double)(obj.longValue());
 	}
 
 	public static Object toFloat(Float obj)
 	{
-		return obj;
+		return (double)obj;
 	}
 
 	public static Object toFloat(Boolean obj)
 	{
-		return new Float(obj.booleanValue() ? 1.0 : 0.0);
+		return obj.booleanValue() ? 1.0d : 0.0d;
 	}
 
 	public static Object toFloat(Object obj)
@@ -857,13 +858,13 @@ public class Utils
 			StringBuffer sb = new StringBuffer();
 			sb.append("[");
 			boolean first = true;
-			for (Iterator iter = ((Collection)obj).iterator(); iter.hasNext();)
+			for (Object o : ((Collection)obj))
 			{
 				if (first)
 					first = false;
 				else
 					sb.append(", ");
-				sb.append(repr(iter.next()));
+				sb.append(repr(o));
 			}
 			sb.append("]");
 			return sb.toString();
@@ -873,13 +874,14 @@ public class Utils
 			StringBuffer sb = new StringBuffer();
 			sb.append("{");
 			boolean first = true;
-			for (Iterator iter = ((Map)obj).entrySet().iterator(); iter.hasNext();)
+
+			Set<Map.Entry> entrySet = ((Map)obj).entrySet();
+			for (Map.Entry entry : entrySet)
 			{
 				if (first)
 					first = false;
 				else
 					sb.append(", ");
-				Map.Entry entry = (Map.Entry)iter.next();
 				sb.append(repr(entry.getKey()));
 				sb.append(": ");
 				sb.append(repr(entry.getValue()));
@@ -915,13 +917,13 @@ public class Utils
 			StringBuffer sb = new StringBuffer();
 			sb.append("[");
 			boolean first = true;
-			for (Iterator iter = ((Collection)obj).iterator(); iter.hasNext();)
+			for (Object o : (Collection)obj)
 			{
 				if (first)
 					first = false;
 				else
 					sb.append(", ");
-				sb.append(json(iter.next()));
+				sb.append(json(o));
 			}
 			sb.append("]");
 			return sb.toString();
@@ -931,13 +933,13 @@ public class Utils
 			StringBuffer sb = new StringBuffer();
 			sb.append("{");
 			boolean first = true;
-			for (Iterator iter = ((Map)obj).entrySet().iterator(); iter.hasNext();)
+			Set<Map.Entry> entrySet = ((Map)obj).entrySet();
+			for (Map.Entry entry : entrySet)
 			{
 				if (first)
 					first = false;
 				else
 					sb.append(", ");
-				Map.Entry entry = (Map.Entry)iter.next();
 				sb.append(json(entry.getKey()));
 				sb.append(": ");
 				sb.append(json(entry.getValue()));
@@ -959,17 +961,17 @@ public class Utils
 	
 	public static Object length(String obj)
 	{
-		return new Integer(obj.length());
+		return obj.length();
 	}
 
 	public static Object length(Collection obj)
 	{
-		return new Integer(obj.size());
+		return obj.size();
 	}
 
 	public static Object length(Map obj)
 	{
-		return new Integer(obj.size());
+		return obj.size();
 	}
 
 	public static Object length(Object obj)
@@ -1040,7 +1042,7 @@ public class Utils
 		{
 			throw new IllegalArgumentException("String " + obj + " contains more than one unicode character!");
 		}
-		return new Integer((int)obj.charAt(0));
+		return (int)obj.charAt(0);
 	}
 
 	public static Object ord(Object obj)
@@ -1052,7 +1054,7 @@ public class Utils
 
 	public static Object hex(Integer obj)
 	{
-		return "0x" + Integer.toHexString(obj.intValue());
+		return "0x" + Integer.toHexString(obj);
 	}
 
 	public static Object hex(Object obj)
@@ -1064,7 +1066,7 @@ public class Utils
 
 	public static Object oct(Integer obj)
 	{
-		return "0o" + Integer.toOctalString(obj.intValue());
+		return "0o" + Integer.toOctalString(obj);
 	}
 
 	public static Object oct(Object obj)
@@ -1076,7 +1078,7 @@ public class Utils
 
 	public static Object bin(Integer obj)
 	{
-		return "0b" + Integer.toBinaryString(obj.intValue());
+		return "0b" + Integer.toBinaryString(obj);
 	}
 
 	public static Object bin(Object obj)
@@ -1126,7 +1128,7 @@ public class Utils
 
 	public static Object range(Integer obj)
 	{
-		return new Range(0, obj.intValue(), 1);
+		return new Range(0, obj, 1);
 	}
 
 	public static Object range(Object obj)
@@ -1138,7 +1140,7 @@ public class Utils
 
 	public static Object range(Integer obj1, Integer obj2)
 	{
-		return new Range(obj1.intValue(), obj2.intValue(), 1);
+		return new Range(obj1, obj2, 1);
 	}
 
 	public static Object range(Object obj1, Object obj2)
@@ -1150,7 +1152,7 @@ public class Utils
 
 	public static Object range(Integer obj1, Integer obj2, Integer obj3)
 	{
-		return new Range(obj1.intValue(), obj2.intValue(), obj3.intValue());
+		return new Range(obj1, obj2, obj3);
 	}
 
 	public static Object range(Object obj1, Object obj2, Object obj3)
@@ -1172,7 +1174,7 @@ public class Utils
 
 	public static Object split(String obj1, String obj2)
 	{
-		LinkedList retVal = new LinkedList();
+		LinkedList<String> retVal = new LinkedList<String>();
 		int length = obj1.length();
 		int delimLength = obj2.length();
 		int pos1 = 0;
@@ -1434,14 +1436,14 @@ public class Utils
 	public static Object find(Object obj, Object arg1)
 	{
 		if (obj instanceof String && arg1 instanceof String)
-			return new Integer(((String)obj).indexOf((String)arg1));
+			return ((String)obj).indexOf((String)arg1);
 		throw new UnsupportedOperationException("Can't call find on instance of " + obj.getClass() + "!");
 	}
 
 	public static Object rfind(Object obj, Object arg1)
 	{
 		if (obj instanceof String && arg1 instanceof String)
-			return new Integer(((String)obj).lastIndexOf((String)arg1));
+			return ((String)obj).lastIndexOf((String)arg1);
 		throw new UnsupportedOperationException("Can't call rfind on instance of " + obj.getClass() + "!");
 	}
 

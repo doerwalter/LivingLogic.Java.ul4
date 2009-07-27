@@ -23,7 +23,7 @@ import javax.servlet.jsp.*;
 
 public abstract class JSPTemplate implements Template
 {
-	public String renders(Map variables)
+	public String renders(Map<String, Object> variables)
 	{
 		StringWriter out = new StringWriter();
 
@@ -39,10 +39,10 @@ public abstract class JSPTemplate implements Template
 		return result;
 	}
 
-	public void renderjsp(JspWriter out, Map variables) throws java.io.IOException
+	public void renderjsp(JspWriter out, Map<String, Object> variables) throws java.io.IOException
 	{
 		execute(out, variables);
 	}
 
-	public abstract void execute(Writer out, Map variables) throws java.io.IOException;
+	public abstract void execute(Writer out, Map<String, Object> variables) throws java.io.IOException;
 }

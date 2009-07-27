@@ -27,7 +27,7 @@ public class Compiler
 
 	public static InterpretedTemplate compile(String source, String startdelim, String enddelim)
 	{
-		List tags = InterpretedTemplate.tokenizeTags(source, startdelim, enddelim);
+		List<Location> tags = InterpretedTemplate.tokenizeTags(source, startdelim, enddelim);
 		return compiler.compile(source, tags, startdelim, enddelim);
 	}
 }

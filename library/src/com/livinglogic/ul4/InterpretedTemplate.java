@@ -131,7 +131,7 @@ public class InterpretedTemplate implements Template
 	/**
 	 * The list of opcodes.
 	 */ 
-	public List opcodes;
+	public List<Opcode> opcodes;
 	
 	/**
 	 * The locale to be used when formatting int, float or date objects.
@@ -149,14 +149,14 @@ public class InterpretedTemplate implements Template
 	public InterpretedTemplate()
 	{
 		this.source = null;
-		this.opcodes = new LinkedList();
+		this.opcodes = new LinkedList<Opcode>();
 		this.defaultLocale = Locale.GERMANY;
 	}
 
 	/**
 	 * Creates an template object for a source string and a list of opcodes.
 	 */
-	public InterpretedTemplate(String source, List opcodes, String startdelim, String enddelim, int startindex, int endindex)
+	public InterpretedTemplate(String source, List<Opcode> opcodes, String startdelim, String enddelim, int startindex, int endindex)
 	{
 		this.source = source;
 		this.startdelim = startdelim;
@@ -168,7 +168,7 @@ public class InterpretedTemplate implements Template
 	/**
 	 * Creates an template object for a source string and a list of opcodes.
 	 */
-	public InterpretedTemplate(String source, List opcodes, String startdelim, String enddelim)
+	public InterpretedTemplate(String source, List<Opcode> opcodes, String startdelim, String enddelim)
 	{
 		this.source = source;
 		this.startdelim = startdelim;
@@ -608,9 +608,10 @@ public class InterpretedTemplate implements Template
 		writeint(writer, opcodes.size(), '#');
 		writer.write("\n");
 		Location lastLocation = null;
-		for (int i = 0; i < opcodes.size(); ++i)
+		int size = opcodes.size();
+		for (int i = 0; i < size; ++i)
 		{
-			Opcode opcode = (Opcode)opcodes.get(i);
+			Opcode opcode = opcodes.get(i);
 			writespec(writer, opcode.r1);
 			writespec(writer, opcode.r2);
 			writespec(writer, opcode.r3);
@@ -674,9 +675,10 @@ public class InterpretedTemplate implements Template
 	{
 		if (!annotated)
 		{
-			for (int i = 0; i < opcodes.size(); ++i)
+			int size = opcodes.size();
+			for (int i = 0; i < size; ++i)
 			{
-				Opcode opcode = (Opcode)opcodes.get(i);
+				Opcode opcode = opcodes.get(i);
 				switch (opcode.name)
 				{
 					case Opcode.OC_IF:
@@ -709,9 +711,10 @@ public class InterpretedTemplate implements Template
 	protected int annotateIf(int ifStart, int forDepth)
 	{
 		int jump = ifStart;
-		for (int i = ifStart+1; i < opcodes.size(); ++i)
+		int size = opcodes.size();
+		for (int i = ifStart+1; i < size; ++i)
 		{
-			Opcode opcode = (Opcode)opcodes.get(i);
+			Opcode opcode = opcodes.get(i);
 			switch (opcode.name)
 			{
 				case Opcode.OC_IF:
@@ -724,11 +727,11 @@ public class InterpretedTemplate implements Template
 					i = annotateDef(i, forDepth);
 					break;
 				case Opcode.OC_ELSE:
-					((Opcode)opcodes.get(jump)).jump = i;
+					opcodes.get(jump).jump = i;
 					jump = i;
 					break;
 				case Opcode.OC_ENDIF:
-					((Opcode)opcodes.get(jump)).jump = i;
+					opcodes.get(jump).jump = i;
 					return i;
 				case Opcode.OC_BREAK:
 					if (forDepth == 0)
@@ -750,9 +753,10 @@ public class InterpretedTemplate implements Template
 	protected int annotateDef(int defStart, int forDepth)
 	{
 		int jump = defStart;
-		for (int i = defStart+1; i < opcodes.size(); ++i)
+		int size = opcodes.size();
+		for (int i = defStart+1; i < size; ++i)
 		{
-			Opcode opcode = (Opcode)opcodes.get(i);
+			Opcode opcode = opcodes.get(i);
 			switch (opcode.name)
 			{
 				case Opcode.OC_IF:
@@ -775,7 +779,7 @@ public class InterpretedTemplate implements Template
 				case Opcode.OC_ENDFOR:
 					throw new BlockException("endfor in def");
 				case Opcode.OC_ENDDEF:
-					((Opcode)opcodes.get(defStart)).jump = i;
+					opcodes.get(defStart).jump = i;
 					return i;
 			}
 		}
@@ -785,12 +789,13 @@ public class InterpretedTemplate implements Template
 	protected int annotateFor(int loopStart, int forDepth)
 	{
 		++forDepth;
-		LinkedList breaks = new LinkedList();
-		LinkedList continues = new LinkedList();
+		LinkedList<Integer> breaks = new LinkedList<Integer>();
+		LinkedList<Integer> continues = new LinkedList<Integer>();
 
-		for (int i = loopStart+1; i < opcodes.size(); ++i)
+		int size = opcodes.size();
+		for (int i = loopStart+1; i < size; ++i)
 		{
-			Opcode opcode = (Opcode)opcodes.get(i);
+			Opcode opcode = opcodes.get(i);
 			switch (opcode.name)
 			{
 				case Opcode.OC_IF:
@@ -807,25 +812,25 @@ public class InterpretedTemplate implements Template
 				case Opcode.OC_ENDIF:
 					throw new BlockException("endif in for loop");
 				case Opcode.OC_BREAK:
-					breaks.add(new Integer(i));
+					breaks.add(i);
 					break;
 				case Opcode.OC_CONTINUE:
-					continues.add(new Integer(i));
+					continues.add(i);
 					break;
 				case Opcode.OC_ENDFOR:
 					int j;
 					int jump;
 					for (j = 0; j < breaks.size(); ++j)
 					{
-						jump = ((Integer)breaks.get(j)).intValue();
-						((Opcode)opcodes.get(jump)).jump = i;
+						jump = breaks.get(j);
+						opcodes.get(jump).jump = i;
 					}
 					for (j = 0; j < continues.size(); ++j)
 					{
-						jump = ((Integer)continues.get(j)).intValue();
-						((Opcode)opcodes.get(jump)).jump = i;
+						jump = continues.get(j);
+						opcodes.get(jump).jump = i;
 					}
-					((Opcode)opcodes.get(loopStart)).jump = i;
+					opcodes.get(loopStart).jump = i;
 					return i;
 				case Opcode.OC_ENDDEF:
 					throw new BlockException("enddef in for loop");
@@ -834,7 +839,7 @@ public class InterpretedTemplate implements Template
 		throw new BlockException("unclosed loop");
 	}
 
-	public Iterator render()
+	public Iterator<String> render()
 	{
 		return new Renderer(null);
 	}
@@ -845,7 +850,7 @@ public class InterpretedTemplate implements Template
 	 *                  available to the template code.
 	 * @return An iterator that returns the string output piece by piece.
 	 */
-	public Iterator render(Map variables)
+	public Iterator<String> render(Map variables)
 	{
 		return new Renderer(variables);
 	}
@@ -861,18 +866,18 @@ public class InterpretedTemplate implements Template
 	 *                  available to the template code.
 	 * @return The render output as a string.
 	 */
-	public String renders(Map variables)
+	public String renders(Map<String, Object> variables)
 	{
 		StringBuffer output = new StringBuffer();
 
-		for (Iterator iterator = render(variables); iterator.hasNext();)
+		for (Iterator<String> iterator = render(variables); iterator.hasNext();)
 		{
-			output.append((String)iterator.next());
+			output.append(iterator.next());
 		}
 		return output.toString();
 	}
 
-	class Renderer implements Iterator
+	class Renderer implements Iterator<String>
 	{
 		/**
 		 * The current program counter
@@ -889,19 +894,19 @@ public class InterpretedTemplate implements Template
 		 * During the run of the iterator loop variables and variables from
 		 * <code>&lt;?code>&gt;</code> tag will be stored here
 		 */
-		private Map variables;
+		private Map<String, Object> variables;
 
 		/**
 		 * The stack of active for loops
 		 */
-		private LinkedList iterators = new LinkedList();
+		private LinkedList<IteratorStackEntry> iterators = new LinkedList<IteratorStackEntry>();
 
 		/**
 		 * If a subtemplate is running (i.e. if we're inside a
 		 * <code>&lt;?render?&gt;</code> tag), this variable references the
 		 * active part iterator for the subtemplate.
 		 */
-		private Iterator subTemplateIterator = null;
+		private Iterator<String> subTemplateIterator = null;
 
 		/**
 		 * Since we implement the iterator interface we have to support both
@@ -914,11 +919,11 @@ public class InterpretedTemplate implements Template
 		 */
 		private String nextChunk = null;
 
-		public Renderer(Map variables)
+		public Renderer(Map<String, Object> variables)
 		{
 			annotate();
 			if (variables == null)
-				variables = new HashMap();
+				variables = new HashMap<String, Object>();
 			this.variables = variables;
 			getNextChunk();
 		}
@@ -933,7 +938,7 @@ public class InterpretedTemplate implements Template
 			return nextChunk != null;
 		}
 
-		public Object next()
+		public String next()
 		{
 			String result = nextChunk;
 			getNextChunk();
@@ -949,7 +954,7 @@ public class InterpretedTemplate implements Template
 			{
 				if (subTemplateIterator.hasNext())
 				{
-					nextChunk = (String)subTemplateIterator.next();
+					nextChunk = subTemplateIterator.next();
 					return;
 				}
 				else
@@ -959,7 +964,7 @@ public class InterpretedTemplate implements Template
 			}
 			while (pc < opcodes.size())
 			{
-				Opcode code = (Opcode)opcodes.get(pc);
+				Opcode code = opcodes.get(pc);
 
 				try
 				{
@@ -990,10 +995,10 @@ public class InterpretedTemplate implements Template
 							reg[code.r1] = code.arg;
 							break;
 						case Opcode.OC_LOADINT:
-							reg[code.r1] = new Integer(Integer.parseInt(code.arg));
+							reg[code.r1] = Integer.parseInt(code.arg);
 							break;
 						case Opcode.OC_LOADFLOAT:
-							reg[code.r1] = new Double(Double.parseDouble(code.arg));
+							reg[code.r1] = Double.parseDouble(code.arg);
 							break;
 						case Opcode.OC_LOADDATE:
 							reg[code.r1] = Utils.isoDateFormatter.parse(code.arg);
@@ -1058,20 +1063,20 @@ public class InterpretedTemplate implements Template
 							break;
 						case Opcode.OC_BREAK:
 						{
-							IteratorStackEntry entry = (IteratorStackEntry)iterators.getLast();
+							IteratorStackEntry entry = iterators.getLast();
 							pc = entry.pcEndFor;
 							iterators.removeLast();
 							break;
 						}
 						case Opcode.OC_CONTINUE:
 						{
-							IteratorStackEntry entry = (IteratorStackEntry)iterators.getLast();
+							IteratorStackEntry entry = iterators.getLast();
 							pc = entry.pcEndFor;
 							// Fall through
 						}
 						case Opcode.OC_ENDFOR:
 						{
-							IteratorStackEntry entry = (IteratorStackEntry)iterators.getLast();
+							IteratorStackEntry entry = iterators.getLast();
 							if (entry.iterator.hasNext())
 							{
 								reg[entry.iteratorRegSpec] = entry.iterator.next();
@@ -1455,7 +1460,7 @@ public class InterpretedTemplate implements Template
 							else
 								nextChunk = ((Template)reg[code.r1]).renders((Map)reg[code.r2]);
 						case Opcode.OC_DEF:
-							variables.put(code.arg, new InterpretedTemplate(source.substring(code.location.endtag, ((Opcode)opcodes.get(code.jump)).location.starttag), opcodes, startdelim, enddelim, pc+1, code.jump));
+							variables.put(code.arg, new InterpretedTemplate(source.substring(code.location.endtag, opcodes.get(code.jump).location.starttag), opcodes, startdelim, enddelim, pc+1, code.jump));
 							pc = code.jump+1;
 							continue;
 						case Opcode.OC_ENDDEF:
@@ -1476,10 +1481,10 @@ public class InterpretedTemplate implements Template
 		}
 	}
 
-	public static List tokenizeTags(String source, String startdelim, String enddelim)
+	public static List<Location> tokenizeTags(String source, String startdelim, String enddelim)
 	{
 		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|render|def|note)(\\s*((.|\\n)*?)\\s*)?" + escapeREchars(enddelim));
-		LinkedList tags = new LinkedList();
+		LinkedList<Location> tags = new LinkedList<Location>();
 		if (source != null)
 		{
 			Matcher matcher = tagPattern.matcher(source);
@@ -1585,38 +1590,38 @@ public class InterpretedTemplate implements Template
 				{
 					len = color8Matcher.end();
 					String value = color8Matcher.group();
-					int r = Integer.valueOf(value.substring(1, 3), 16).intValue();
-					int g = Integer.valueOf(value.substring(3, 5), 16).intValue();
-					int b = Integer.valueOf(value.substring(5, 7), 16).intValue();
-					int a = Integer.valueOf(value.substring(7, 9), 16).intValue();
+					int r = Integer.valueOf(value.substring(1, 3), 16);
+					int g = Integer.valueOf(value.substring(3, 5), 16);
+					int b = Integer.valueOf(value.substring(5, 7), 16);
+					int a = Integer.valueOf(value.substring(7, 9), 16);
 					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b, a)));
 				}
 				else if (stringMode==0 && color6Matcher.lookingAt())
 				{
 					len = color6Matcher.end();
 					String value = color6Matcher.group();
-					int r = Integer.valueOf(value.substring(1, 3), 16).intValue();
-					int g = Integer.valueOf(value.substring(3, 5), 16).intValue();
-					int b = Integer.valueOf(value.substring(5, 7), 16).intValue();
+					int r = Integer.valueOf(value.substring(1, 3), 16);
+					int g = Integer.valueOf(value.substring(3, 5), 16);
+					int b = Integer.valueOf(value.substring(5, 7), 16);
 					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b)));
 				}
 				else if (stringMode==0 && color4Matcher.lookingAt())
 				{
 					len = color4Matcher.end();
 					String value = color4Matcher.group();
-					int r = 17*Integer.valueOf(value.substring(1, 2), 16).intValue();
-					int g = 17*Integer.valueOf(value.substring(2, 3), 16).intValue();
-					int b = 17*Integer.valueOf(value.substring(3, 4), 16).intValue();
-					int a = 17*Integer.valueOf(value.substring(4, 5), 16).intValue();
+					int r = 17*Integer.valueOf(value.substring(1, 2), 16);
+					int g = 17*Integer.valueOf(value.substring(2, 3), 16);
+					int b = 17*Integer.valueOf(value.substring(3, 4), 16);
+					int a = 17*Integer.valueOf(value.substring(4, 5), 16);
 					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b, a)));
 				}
 				else if (stringMode==0 && color3Matcher.lookingAt())
 				{
 					len = color3Matcher.end();
 					String value = color3Matcher.group();
-					int r = 17*Integer.valueOf(value.substring(1, 2), 16).intValue();
-					int g = 17*Integer.valueOf(value.substring(2, 3), 16).intValue();
-					int b = 17*Integer.valueOf(value.substring(3, 4), 16).intValue();
+					int r = 17*Integer.valueOf(value.substring(1, 2), 16);
+					int g = 17*Integer.valueOf(value.substring(2, 3), 16);
+					int b = 17*Integer.valueOf(value.substring(3, 4), 16);
 					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b)));
 				}
 				else if (stringMode==0 && floatMatcher.lookingAt())
@@ -1774,7 +1779,7 @@ public class InterpretedTemplate implements Template
 		int size = opcodes.size();
 		for (int i = 0; i < size; ++i)
 		{
-			Opcode code = (Opcode)opcodes.get(i);
+			Opcode code = opcodes.get(i);
 
 			if (code.name == Opcode.OC_ELSE || code.name == Opcode.OC_ENDIF || code.name == Opcode.OC_ENDFOR)
 				--indent;
@@ -1828,7 +1833,7 @@ public class InterpretedTemplate implements Template
 
 		for (int i = 0; i < size; ++i)
 		{
-			Opcode opcode = (Opcode)opcodes.get(i);
+			Opcode opcode = opcodes.get(i);
 			
 			if (lastLocation != opcode.location)
 			{
@@ -1866,7 +1871,7 @@ public class InterpretedTemplate implements Template
 		int lastOpcode = -1;
 		for (int i = 0; i < size; ++i)
 		{
-			Opcode opcode = (Opcode)opcodes.get(i);
+			Opcode opcode = opcodes.get(i);
 		
 			switch (opcode.name)
 			{
@@ -2306,9 +2311,9 @@ public class InterpretedTemplate implements Template
 
 	public void renderjsp(JspWriter out, Map variables) throws java.io.IOException
 	{
-		for (Iterator iterator = render(variables); iterator.hasNext();)
+		for (Iterator<String> iterator = render(variables); iterator.hasNext();)
 		{
-			out.write((String)iterator.next());
+			out.write(iterator.next());
 		}
 	}
 }
