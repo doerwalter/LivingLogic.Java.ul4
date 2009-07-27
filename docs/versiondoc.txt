@@ -1,3 +1,11 @@
+exp-13:
+-----
+Comments:
+* Updated to use Jython 2.5 (i.e. Java 1.5).
+* All that's needed to use Jython is now in ul4jython.jar (which is generated
+  by makejar.sh).
+
+
 exp-12:
 -----
 file format: 11

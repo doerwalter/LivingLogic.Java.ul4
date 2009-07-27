@@ -1480,27 +1480,30 @@ public class InterpretedTemplate implements Template
 	{
 		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|render|def|note)(\\s*((.|\\n)*?)\\s*)?" + escapeREchars(enddelim));
 		LinkedList tags = new LinkedList();
-		Matcher matcher = tagPattern.matcher(source);
-		int pos = 0;
-
-		int start;
-		int end;
-		while (matcher.find())
+		if (source != null)
 		{
-			start = matcher.start();
-			end = start + matcher.group().length();
-			if (pos != start)
-				tags.add(new Location(source, null, pos, start, pos, start));
-			int codestart = matcher.start(3);
-			int codeend = codestart + matcher.group(3).length();
-			String type = matcher.group(1);
-			if (!type.equals("note"))
-				tags.add(new Location(source, matcher.group(1), start, end, codestart, codeend));
-			pos = end;
+			Matcher matcher = tagPattern.matcher(source);
+			int pos = 0;
+
+			int start;
+			int end;
+			while (matcher.find())
+			{
+				start = matcher.start();
+				end = start + matcher.group().length();
+				if (pos != start)
+					tags.add(new Location(source, null, pos, start, pos, start));
+				int codestart = matcher.start(3);
+				int codeend = codestart + matcher.group(3).length();
+				String type = matcher.group(1);
+				if (!type.equals("note"))
+					tags.add(new Location(source, matcher.group(1), start, end, codestart, codeend));
+				pos = end;
+			}
+			end = source.length();
+			if (pos != end)
+				tags.add(new Location(source, null, pos, end, pos, end));
 		}
-		end = source.length();
-		if (pos != end)
-			tags.add(new Location(source, null, pos, end, pos, end));
 		return tags;
 	}
 

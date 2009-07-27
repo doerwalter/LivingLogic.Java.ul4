@@ -13,9 +13,6 @@ public class Compiler
 
 	static
 	{
-		Properties props = new Properties();
-		props.setProperty("python.path", "C:\\jython\\Lib;C:\\ul4");
-		PythonInterpreter.initialize(System.getProperties(), props, new String[] {""});
 		PythonInterpreter interpreter = new PythonInterpreter();
 		interpreter.exec("from ul4c import Compiler");
 		PyObject compilerclass = interpreter.get("Compiler");
