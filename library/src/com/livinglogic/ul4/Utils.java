@@ -1511,12 +1511,12 @@ public class Utils
 
 	public static Color rgb(Object arg1, Object arg2, Object arg3)
 	{
-		return new Color(_getint(arg1), _getint(arg2), _getint(arg3));
+		return Color.fromrgb(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3));
 	}
 
 	public static Color rgb(Object arg1, Object arg2, Object arg3, Object arg4)
 	{
-		return new Color(_getint(arg1), _getint(arg2), _getint(arg3), _getint(arg4));
+		return Color.fromrgb(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3), _getdouble(arg4));
 	}
 
 	public static Color hsv(Object arg1, Object arg2, Object arg3)

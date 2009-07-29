@@ -1,3 +1,10 @@
+exp-15:
+-----
+Comments:
+* Reverted the fix to the rgb() function (argument are float values between 0
+  and 1).
+
+
 exp-14:
 -----
 Comments:

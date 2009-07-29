@@ -9,7 +9,7 @@ public class Main
 	public static void main(String[] args)
 	{
 		Long c = new Long(42);
-		Template tmpl = Compiler.compile("<?print repr({'a': 1, 'b': 2})?><?print rgb(1,2,3,4)?>");
+		Template tmpl = Compiler.compile("<?print repr({'a': 1, 'b': 2})?><?print rgb(0,0.2,0.5)?>");
 		System.out.println(tmpl);
 		long start = System.currentTimeMillis();
 		Map vars = new HashMap<String, Object>();
