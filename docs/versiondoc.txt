@@ -1,3 +1,9 @@
+exp-14:
+-----
+Comments:
+* Fixed the rgb() function.
+
+
 exp-13:
 -----
 Comments:
