@@ -1,7 +1,7 @@
 HEAD:
 -----
 Comments:
-* Fixed error reporting in Utils.length().
+* Fixed error for unsupported operations.
 
 
 exp-16:
