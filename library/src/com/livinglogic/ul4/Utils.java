@@ -982,7 +982,10 @@ public class Utils
 			return length((Collection)obj);
 		else if (obj instanceof Map)
 			return length((Map)obj);
-		throw new UnsupportedOperationException("Can't determine length for instance of " + obj.getClass() + "!");
+		if (obj == null)
+			throw new UnsupportedOperationException("Can't determine length for null!");
+		else
+			throw new UnsupportedOperationException("Can't determine length for instance of " + obj.getClass() + "!");
 	}
 
 	public static Iterator iterator(String obj)
