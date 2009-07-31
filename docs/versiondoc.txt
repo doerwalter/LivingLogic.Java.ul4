@@ -1,18 +1,24 @@
+exp-16:
+-------
+Comments:
+* Fixed bug in the block nesting check logic.
+
+
 exp-15:
------
+-------
 Comments:
 * Reverted the fix to the rgb() function (argument are float values between 0
   and 1).
 
 
 exp-14:
------
+-------
 Comments:
 * Fixed the rgb() function.
 
 
 exp-13:
------
+-------
 Comments:
 * Updated to use Jython 2.5 (i.e. Java 1.5).
 * All that's needed to use Jython is now in ul4jython.jar (which is generated
@@ -20,7 +26,7 @@ Comments:
 
 
 exp-12:
------
+-------
 file format: 11
 
 Comments:
@@ -28,7 +34,7 @@ Comments:
 
 
 exp-11:
------
+-------
 file format: 10
 
 Comments:
@@ -36,7 +42,7 @@ Comments:
 
 
 exp-10:
------
+-------
 file format: 9
 
 Comments:
@@ -44,7 +50,7 @@ Comments:
 
 
 exp-9:
------
+------
 
 Comments:
 * Added int() with two arguments.
@@ -52,21 +58,21 @@ Comments:
 
 
 exp-8:
------
+------
 
 Comments:
 * Added support for Long in a few spots in Utils.java.
 
 
 exp-7:
------
+------
 
 Comments:
 * Added interface JSPTemplate for an UL4 template converted to JSP.
 
 
 exp-6:
------
+------
 file format: 7
 
 Comments:
@@ -79,7 +85,7 @@ Comments:
 
 
 exp-5:
------
+------
 file format: 5
 
 Comments:
@@ -91,13 +97,13 @@ Comments:
 
 
 exp-4:
------
+------
 Comments:
 * Added support for a csvescape() function.
 
 
 exp-3:
------
+------
 Comments:
 * The org.apache.commons package is now used to implement some of the operations.
 * Added support for a string method replace().

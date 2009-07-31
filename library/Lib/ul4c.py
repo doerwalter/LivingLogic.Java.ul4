@@ -53,7 +53,7 @@ def _compile(template, tags):
 			elif location.type == "elif":
 				if not stack or stack[-1][0] != "if":
 					raise ul4.BlockException("elif doesn't match any if")
-				elif stack[-1][2]:
+				elif stack[-1][3]:
 					raise ul4.BlockException("else already seen in elif")
 				template.opcode(ul4.Opcode.OC_ELSE, location)
 				r = parseexpr(template, location)
