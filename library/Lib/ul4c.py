@@ -58,7 +58,7 @@ def _compile(template, tags):
 				template.opcode(ul4.Opcode.OC_ELSE, location)
 				r = parseexpr(template, location)
 				template.opcode(ul4.Opcode.OC_IF, r, location)
-				stack[-1] = ("if", stack[-1][1]+1, stack[-1][2], False)
+				stack[-1] = ("if", stack[-1][1], stack[-1][2]+1, False)
 			elif location.type == "else":
 				if not stack or stack[-1][0] != "if":
 					raise ul4.BlockException("else doesn't match any if")
