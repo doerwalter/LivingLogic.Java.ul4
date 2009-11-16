@@ -998,7 +998,7 @@ public class Utils
 		return new StringIterator(obj);
 	}
 
-	public static Iterator iterator(Collection obj)
+	public static Iterator iterator(Iterable obj)
 	{
 		return obj.iterator();
 	}
@@ -1012,8 +1012,8 @@ public class Utils
 	{
 		if (obj instanceof String)
 			return iterator((String)obj);
-		else if (obj instanceof Collection)
-			return iterator((Collection)obj);
+		else if (obj instanceof Iterable)
+			return iterator((Iterable)obj);
 		else if (obj instanceof Map)
 			return iterator((Map)obj);
 		else if (obj instanceof Iterator)
