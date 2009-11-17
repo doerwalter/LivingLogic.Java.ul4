@@ -1,3 +1,9 @@
+exp-18:
+-----
+Comments:
+* Utils.xmlescape() now uses ObjectUtils.toString() to support null.
+
+
 exp-17:
 -----
 Comments:

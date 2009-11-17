@@ -15,6 +15,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.ObjectUtils;
 
 class Range extends AbstractList
 {
@@ -690,7 +691,7 @@ public class Utils
 		if (obj == null)
 			return "";
 
-		String str = obj.toString();
+		String str = ObjectUtils.toString(obj);
 		int length = str.length();
 		StringBuffer sb = new StringBuffer((int)(1.2 * length));
 		for (int offset = 0; offset < length; offset++)
