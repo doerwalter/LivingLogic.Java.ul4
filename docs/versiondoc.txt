@@ -1,3 +1,9 @@
+exp-19:
+-----
+Comments:
+* Utils.add() now supports all combinations of bool/int/float operands.
+
+
 exp-18:
 -----
 Comments:

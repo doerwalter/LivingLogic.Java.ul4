@@ -313,9 +313,44 @@ public class Utils
 		throw new UnsupportedOperationException("Can't negate " + objectType(arg) + "!");
 	}
 
+	public static Object add(Boolean arg1, Boolean arg2)
+	{
+		return (arg1.booleanValue() ? 1 : 0) + (arg2.booleanValue() ? 1 : 0);
+	}
+
+	public static Object add(Boolean arg1, Integer arg2)
+	{
+		return (arg1.booleanValue() ? 1 : 0) + arg2.intValue();
+	}
+
+	public static Object add(Boolean arg1, Number arg2)
+	{
+		return (arg1.booleanValue() ? 1 : 0) + arg2.doubleValue();
+	}
+
+	public static Object add(Integer arg1, Boolean arg2)
+	{
+		return arg1.intValue() + (arg2.booleanValue() ? 1 : 0);
+	}
+
 	public static Object add(Integer arg1, Integer arg2)
 	{
 		return arg1.intValue() + arg2.intValue();
+	}
+
+	public static Object add(Integer arg1, Number arg2)
+	{
+		return arg1.intValue() + arg2.doubleValue();
+	}
+
+	public static Object add(Number arg1, Boolean arg2)
+	{
+		return arg1.doubleValue() + (arg2.booleanValue() ? 1 : 0);
+	}
+
+	public static Object add(Number arg1, Integer arg2)
+	{
+		return arg1.doubleValue() + arg2.intValue();
 	}
 
 	public static Object add(Number arg1, Number arg2)
@@ -330,10 +365,33 @@ public class Utils
 
 	public static Object add(Object arg1, Object arg2)
 	{
-		if (arg1 instanceof Integer && arg2 instanceof Integer)
-			return add((Integer)arg1, (Integer)arg2);
-		else if (arg1 instanceof Number && arg2 instanceof Number)
-			return add((Number)arg1, (Number)arg2);
+		if (arg1 instanceof Boolean)
+		{
+			if (arg2 instanceof Boolean)
+				return add((Boolean)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return add((Boolean)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return add((Boolean)arg1, (Number)arg2);
+		}
+		else if (arg1 instanceof Integer)
+		{
+			if (arg2 instanceof Boolean)
+				return add((Integer)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return add((Integer)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return add((Integer)arg1, (Number)arg2);
+		}
+		else if (arg1 instanceof Number)
+		{
+			if (arg2 instanceof Boolean)
+				return add((Number)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return add((Number)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return add((Number)arg1, (Number)arg2);
+		}
 		else if (arg1 instanceof String && arg2 instanceof String)
 			return add((String)arg1, (String)arg2);
 		throw new UnsupportedOperationException("Can't add " + objectType(arg1) + " and " + objectType(arg2) + "!");
