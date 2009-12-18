@@ -296,12 +296,12 @@ public class Utils
 
 	public static Object neg(Integer arg)
 	{
-		return new Integer(-arg.intValue());
+		return -arg.intValue();
 	}
 
 	public static Object neg(Number arg)
 	{
-		return new Double(-arg.doubleValue());
+		return -arg.doubleValue();
 	}
 
 	public static Object neg(Object arg)
