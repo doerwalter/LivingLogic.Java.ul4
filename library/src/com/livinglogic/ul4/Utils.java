@@ -397,9 +397,44 @@ public class Utils
 		throw new UnsupportedOperationException("Can't add " + objectType(arg1) + " and " + objectType(arg2) + "!");
 	}
 
+	public static Object sub(Boolean arg1, Boolean arg2)
+	{
+		return (arg1.booleanValue() ? 1 : 0) - (arg2.booleanValue() ? 1 : 0);
+	}
+
+	public static Object sub(Boolean arg1, Integer arg2)
+	{
+		return (arg1.booleanValue() ? 1 : 0) - arg2.intValue();
+	}
+
+	public static Object sub(Boolean arg1, Number arg2)
+	{
+		return (arg1.booleanValue() ? 1 : 0) - arg2.doubleValue();
+	}
+
+	public static Object sub(Integer arg1, Boolean arg2)
+	{
+		return arg1.intValue() - (arg2.booleanValue() ? 1 : 0);
+	}
+
 	public static Object sub(Integer arg1, Integer arg2)
 	{
 		return arg1.intValue() - arg2.intValue();
+	}
+
+	public static Object sub(Integer arg1, Number arg2)
+	{
+		return arg1.intValue() - arg2.doubleValue();
+	}
+
+	public static Object sub(Number arg1, Boolean arg2)
+	{
+		return arg1.doubleValue() - (arg2.booleanValue() ? 1 : 0);
+	}
+
+	public static Object sub(Number arg1, Integer arg2)
+	{
+		return arg1.doubleValue() - arg2.intValue();
 	}
 
 	public static Object sub(Number arg1, Number arg2)
@@ -409,18 +444,45 @@ public class Utils
 
 	public static Object sub(Object arg1, Object arg2)
 	{
-		if (arg1 instanceof Integer && arg2 instanceof Integer)
-			return sub((Integer)arg1, (Integer)arg2);
-		else if (arg1 instanceof Number && arg2 instanceof Number)
-			return sub((Number)arg1, (Number)arg2);
-		else if (arg1 instanceof String && arg2 instanceof String)
-			return sub((String)arg1, (String)arg2);
-		throw new UnsupportedOperationException("Can't subtract " + objectType(arg1) + " and " + objectType(arg2) + "!");
+		if (arg1 instanceof Boolean)
+		{
+			if (arg2 instanceof Boolean)
+				return sub((Boolean)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return sub((Boolean)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return sub((Boolean)arg1, (Number)arg2);
+		}
+		else if (arg1 instanceof Integer)
+		{
+			if (arg2 instanceof Boolean)
+				return sub((Integer)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return sub((Integer)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return sub((Integer)arg1, (Number)arg2);
+		}
+		else if (arg1 instanceof Number)
+		{
+			if (arg2 instanceof Boolean)
+				return sub((Number)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return sub((Number)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return sub((Number)arg1, (Number)arg2);
+		}
+		throw new UnsupportedOperationException("Can't substract " + objectType(arg1) + " and " + objectType(arg2) + "!");
 	}
+
 
 	public static Object mul(String arg1, Integer arg2)
 	{
 		return StringUtils.repeat(arg1, arg2.intValue());
+	}
+
+	public static Object mul(String arg1, Boolean arg2)
+	{
+		return arg2.booleanValue() ? arg1 : "";
 	}
 
 	public static Object mul(Integer arg1, String arg2)
@@ -428,9 +490,49 @@ public class Utils
 		return StringUtils.repeat(arg2, arg1.intValue());
 	}
 
+	public static Object mul(Boolean arg1, String arg2)
+	{
+		return arg1.booleanValue() ? arg2 : "";
+	}
+
+	public static Object mul(Boolean arg1, Boolean arg2)
+	{
+		return (arg1.booleanValue() ? 1 : 0) * (arg2.booleanValue() ? 1 : 0);
+	}
+
+	public static Object mul(Boolean arg1, Integer arg2)
+	{
+		return (arg1.booleanValue() ? 1 : 0) * arg2.intValue();
+	}
+
+	public static Object mul(Boolean arg1, Number arg2)
+	{
+		return (arg1.booleanValue() ? 1 : 0) * arg2.doubleValue();
+	}
+
+	public static Object mul(Integer arg1, Boolean arg2)
+	{
+		return arg1.intValue() * (arg2.booleanValue() ? 1 : 0);
+	}
+
 	public static Object mul(Integer arg1, Integer arg2)
 	{
 		return arg1.intValue() * arg2.intValue();
+	}
+
+	public static Object mul(Integer arg1, Number arg2)
+	{
+		return arg1.intValue() * arg2.doubleValue();
+	}
+
+	public static Object mul(Number arg1, Boolean arg2)
+	{
+		return arg1.doubleValue() * (arg2.booleanValue() ? 1 : 0);
+	}
+
+	public static Object mul(Number arg1, Integer arg2)
+	{
+		return arg1.doubleValue() * arg2.intValue();
 	}
 
 	public static Object mul(Number arg1, Number arg2)
@@ -440,15 +542,85 @@ public class Utils
 
 	public static Object mul(Object arg1, Object arg2)
 	{
-		if (arg1 instanceof String && arg2 instanceof Integer)
-			return mul((String)arg1, (Integer)arg2);
-		if (arg1 instanceof Integer && arg2 instanceof String)
-			return mul((Integer)arg1, (String)arg2);
-		if (arg1 instanceof Integer && arg2 instanceof Integer)
-			return mul((Integer)arg1, (Integer)arg2);
-		if (arg1 instanceof Number && arg2 instanceof Number)
-			return mul((Number)arg1, (Number)arg2);
+		if (arg1 instanceof Boolean)
+		{
+			if (arg2 instanceof Boolean)
+				return mul((Boolean)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return mul((Boolean)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return mul((Boolean)arg1, (Number)arg2);
+			else if (arg2 instanceof String)
+				return mul((Boolean)arg1, (String)arg2);
+		}
+		else if (arg1 instanceof Integer)
+		{
+			if (arg2 instanceof Boolean)
+				return mul((Integer)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return mul((Integer)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return mul((Integer)arg1, (Number)arg2);
+			else if (arg2 instanceof String)
+				return mul((Integer)arg1, (String)arg2);
+		}
+		else if (arg1 instanceof Number)
+		{
+			if (arg2 instanceof Boolean)
+				return mul((Number)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return mul((Number)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return mul((Number)arg1, (Number)arg2);
+		}
+		else if (arg1 instanceof String)
+		{
+			if (arg2 instanceof Boolean)
+				return mul((String)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return mul((String)arg1, (Integer)arg2);
+		}
 		throw new UnsupportedOperationException("Can't multiply " + objectType(arg1) + " and " + objectType(arg2) + "!");
+	}
+
+	public static Object truediv(Boolean arg1, Boolean arg2)
+	{
+		return (arg1.booleanValue() ? 1.0 : 0.0) / (arg2.booleanValue() ? 1.0 : 0.0);
+	}
+
+	public static Object truediv(Boolean arg1, Integer arg2)
+	{
+		return (arg1.booleanValue() ? 1.0 : 0.0) / arg2.intValue();
+	}
+
+	public static Object truediv(Boolean arg1, Number arg2)
+	{
+		return (arg1.booleanValue() ? 1.0 : 0.0) / arg2.doubleValue();
+	}
+
+	public static Object truediv(Integer arg1, Boolean arg2)
+	{
+		return arg1.intValue() / (arg2.booleanValue() ? 1.0 : 0.0);
+	}
+
+	public static Object truediv(Integer arg1, Integer arg2)
+	{
+		return ((double)arg1.intValue()) / arg2.intValue();
+	}
+
+	public static Object truediv(Integer arg1, Number arg2)
+	{
+		return arg1.intValue() / arg2.doubleValue();
+	}
+
+	public static Object truediv(Number arg1, Boolean arg2)
+	{
+		return arg1.doubleValue() / (arg2.booleanValue() ? 1.0 : 0.0);
+	}
+
+	public static Object truediv(Number arg1, Integer arg2)
+	{
+		return arg1.doubleValue() / arg2.intValue();
 	}
 
 	public static Object truediv(Number arg1, Number arg2)
@@ -458,12 +630,74 @@ public class Utils
 
 	public static Object truediv(Object arg1, Object arg2)
 	{
+		if (arg1 instanceof Boolean)
+		{
+			if (arg2 instanceof Boolean)
+				return truediv((Boolean)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return truediv((Boolean)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return truediv((Boolean)arg1, (Number)arg2);
+		}
+		else if (arg1 instanceof Integer)
+		{
+			if (arg2 instanceof Boolean)
+				return truediv((Integer)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return truediv((Integer)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return truediv((Integer)arg1, (Number)arg2);
+		}
+		else if (arg1 instanceof Number)
+		{
+			if (arg2 instanceof Boolean)
+				return truediv((Number)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return truediv((Number)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return truediv((Number)arg1, (Number)arg2);
+		}
 		throw new UnsupportedOperationException("Can't divide " + objectType(arg1) + " and " + objectType(arg2) + "!");
+	}
+
+	public static Object floordiv(Boolean arg1, Boolean arg2)
+	{
+		return (arg1.booleanValue() ? 1 : 0) / (arg2.booleanValue() ? 1 : 0);
+	}
+
+	public static Object floordiv(Boolean arg1, Integer arg2)
+	{
+		return (arg1.booleanValue() ? 1 : 0) / arg2.intValue();
+	}
+
+	public static Object floordiv(Boolean arg1, Number arg2)
+	{
+		return (arg1.booleanValue() ? 1 : 0) / arg2.doubleValue();
+	}
+
+	public static Object floordiv(Integer arg1, Boolean arg2)
+	{
+		return arg1.intValue() / (arg2.booleanValue() ? 1 : 0);
 	}
 
 	public static Object floordiv(Integer arg1, Integer arg2)
 	{
 		return arg1.intValue() / arg2.intValue();
+	}
+
+	public static Object floordiv(Integer arg1, Number arg2)
+	{
+		return arg1.intValue() / arg2.doubleValue();
+	}
+
+	public static Object floordiv(Number arg1, Boolean arg2)
+	{
+		return arg1.doubleValue() / (arg2.booleanValue() ? 1 : 0);
+	}
+
+	public static Object floordiv(Number arg1, Integer arg2)
+	{
+		return arg1.doubleValue() / arg2.intValue();
 	}
 
 	public static Object floordiv(Number arg1, Number arg2)
@@ -473,6 +707,33 @@ public class Utils
 
 	public static Object floordiv(Object arg1, Object arg2)
 	{
+		if (arg1 instanceof Boolean)
+		{
+			if (arg2 instanceof Boolean)
+				return floordiv((Boolean)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return floordiv((Boolean)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return floordiv((Boolean)arg1, (Number)arg2);
+		}
+		else if (arg1 instanceof Integer)
+		{
+			if (arg2 instanceof Boolean)
+				return floordiv((Integer)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return floordiv((Integer)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return floordiv((Integer)arg1, (Number)arg2);
+		}
+		else if (arg1 instanceof Number)
+		{
+			if (arg2 instanceof Boolean)
+				return floordiv((Number)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return floordiv((Number)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return floordiv((Number)arg1, (Number)arg2);
+		}
 		throw new UnsupportedOperationException("Can't divide " + objectType(arg1) + " and " + objectType(arg2) + "!");
 	}
 
