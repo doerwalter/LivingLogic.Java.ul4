@@ -5,19 +5,19 @@ Comments:
   all valid combinations of bool/int/float/string operands.
 
 exp-19:
------
+-------
 Comments:
 * Utils.add() now supports all combinations of bool/int/float operands.
 
 
 exp-18:
------
+-------
 Comments:
 * Utils.xmlescape() now uses ObjectUtils.toString() to support null.
 
 
 exp-17:
------
+-------
 Comments:
 * Fixed error for unsupported operations.
 * Utils.iterator() now supports Iterable not just Collection.
