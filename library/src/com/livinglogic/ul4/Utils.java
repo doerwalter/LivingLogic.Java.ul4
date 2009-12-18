@@ -800,14 +800,17 @@ public class Utils
 
 	public static Object getItem(Object arg1, Object arg2)
 	{
-		if (arg1 instanceof String && arg2 instanceof Integer)
-			return getItem((String)arg1, (Integer)arg2);
-		else if (arg1 instanceof List && arg2 instanceof Integer)
-			return getItem((List)arg1, (Integer)arg2);
-		else if (arg1 instanceof Color && arg2 instanceof Integer)
-			return getItem((Color)arg1, (Integer)arg2);
-		else if (arg1 instanceof Map)
+		if (arg1 instanceof Map)
 			return getItem((Map)arg1, arg2);
+		else if (arg2 instanceof Integer)
+		{
+			if (arg1 instanceof String)
+				return getItem((String)arg1, (Integer)arg2);
+			else if (arg1 instanceof List)
+				return getItem((List)arg1, (Integer)arg2);
+			else if (arg1 instanceof Color)
+				return getItem((Color)arg1, (Integer)arg2);
+		}
 		throw new UnsupportedOperationException(objectType(arg1) + " don't not support getitem with " + objectType(arg2) + " as index!");
 	}
 
