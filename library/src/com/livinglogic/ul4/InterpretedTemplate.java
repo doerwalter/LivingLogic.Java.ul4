@@ -1260,6 +1260,9 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF1_BIN:
 									reg[code.r1] = Utils.bin(reg[code.r2]);
 									break;
+								case Opcode.CF1_ABS:
+									reg[code.r1] = Utils.abs(reg[code.r2]);
+									break;
 								case Opcode.CF1_SORTED:
 									reg[code.r1] = Utils.sorted(reg[code.r2]);
 									break;
@@ -2122,6 +2125,9 @@ public class InterpretedTemplate implements Template
 							break;
 						case Opcode.CF1_BIN:
 							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._bin(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_ABS:
+							code(buffer, indent, "reg" + opcode.r1 + " = abs(reg" + opcode.r2 + ")");
 							break;
 						case Opcode.CF1_SORTED:
 							code(buffer, indent, "reg" + opcode.r1 + " = sorted(reg" + opcode.r2 + ")");

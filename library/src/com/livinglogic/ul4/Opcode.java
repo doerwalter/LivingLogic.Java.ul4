@@ -97,13 +97,14 @@ public class Opcode
 	public static final int CF1_HEX = 20;
 	public static final int CF1_OCT = 21;
 	public static final int CF1_BIN = 22;
-	public static final int CF1_SORTED = 23;
-	public static final int CF1_RANGE = 24;
-	public static final int CF1_TYPE = 25;
-	public static final int CF1_CSV = 26;
-	public static final int CF1_GET = 27;
-	public static final int CF1_JSON = 28;
-	public static final int CF1_REVERSED = 29;
+	public static final int CF1_ABS = 23;
+	public static final int CF1_SORTED = 24;
+	public static final int CF1_RANGE = 25;
+	public static final int CF1_TYPE = 26;
+	public static final int CF1_CSV = 27;
+	public static final int CF1_GET = 28;
+	public static final int CF1_JSON = 29;
+	public static final int CF1_REVERSED = 30;
 
 	public static final int CF2_RANGE = 0;
 	public static final int CF2_GET = 1;
@@ -369,6 +370,8 @@ public class Opcode
 			return CF1_OCT;
 		else if (name.equals("bin"))
 			return CF1_BIN;
+		else if (name.equals("abs"))
+			return CF1_ABS;
 		else if (name.equals("sorted"))
 			return CF1_SORTED;
 		else if (name.equals("range"))

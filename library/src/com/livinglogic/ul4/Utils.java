@@ -1024,6 +1024,61 @@ public class Utils
 		throw new RuntimeException("Can't determine presence for " + objectType(obj) + " in " + objectType(container) + " container!");
 	}
 
+	public static Object abs(Object arg)
+	{
+		if (arg instanceof Integer)
+		{
+			int value = ((Integer)arg).intValue();
+			if (value >= 0)
+				return arg;
+			else if (value == -0x80000000) // Prevent overflow by switching to long
+				return 0x80000000L;
+			else
+				return -value;
+		}
+		else if (arg instanceof Long)
+		{
+			long value = ((Long)arg).longValue();
+			if (value >= 0)
+				return arg;
+			else if (value == -0x8000000000000000L) // Prevent overflow by switching to BigInteger
+				return new BigInteger("8000000000000000", 16);
+			else
+				return -value;
+		}
+		else if (arg instanceof Boolean)
+			return ((Boolean)arg).booleanValue() ? 1 : 0;
+		else if (arg instanceof Byte || arg instanceof Short)
+		{
+			int value = ((Number)arg).intValue();
+			if (value >= 0)
+				return arg;
+			else
+				return -value;
+		}
+		else if (arg instanceof Float)
+		{
+			float value = ((Float)arg).floatValue();
+			if (value >= 0)
+				return arg;
+			else
+				return -value;
+		}
+		else if (arg instanceof Double)
+		{
+			double value = ((Double)arg).doubleValue();
+			if (value >= 0)
+				return arg;
+			else
+				return -value;
+		}
+		else if (arg instanceof BigInteger)
+			return ((BigInteger)arg).abs();
+		else if (arg instanceof BigDecimal)
+			return ((BigDecimal)arg).abs();
+		throw new UnsupportedOperationException("Can't take absolute value of " + objectType(arg) + "!");
+	}
+
 	public static String xmlescape(Object obj)
 	{
 		if (obj == null)
