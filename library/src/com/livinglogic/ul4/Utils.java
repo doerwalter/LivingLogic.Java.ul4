@@ -13,6 +13,8 @@ import java.util.Vector;
 import java.util.Set;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.math.BigInteger;
+import java.math.BigDecimal;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.ObjectUtils;
@@ -294,22 +296,36 @@ public class Utils
 			return "instance of" + obj.getClass();
 	}
 
-	public static Object neg(Integer arg)
-	{
-		return -arg.intValue();
-	}
-
-	public static Object neg(Number arg)
-	{
-		return -arg.doubleValue();
-	}
-
 	public static Object neg(Object arg)
 	{
 		if (arg instanceof Integer)
-			return neg((Integer)arg);
-		else if (arg instanceof Number)
-			return neg((Number)arg);
+		{
+			int value = ((Integer)arg).intValue();
+			if (value == -0x80000000) // Prevent overflow by switching to long
+				return 0x80000000L;
+			else
+				return -value;
+		}
+		else if (arg instanceof Long)
+		{
+			long value = ((Long)arg).longValue();
+			if (value == -0x8000000000000000L) // Prevent overflow by switching to BigInteger
+				return new BigInteger("8000000000000000", 16);
+			else
+				return -value;
+		}
+		else if (arg instanceof Boolean)
+			return ((Boolean)arg).booleanValue() ? -1 : 0;
+		else if (arg instanceof Short || arg instanceof Byte || arg instanceof Boolean)
+			return -((Number)arg).intValue();
+		else if (arg instanceof Float)
+			return -((Float)arg).floatValue();
+		else if (arg instanceof Double)
+			return -((Double)arg).doubleValue();
+		else if (arg instanceof BigInteger)
+			return ((BigInteger)arg).negate();
+		else if (arg instanceof BigDecimal)
+			return ((BigDecimal)arg).negate();
 		throw new UnsupportedOperationException("Can't negate " + objectType(arg) + "!");
 	}
 
@@ -365,16 +381,7 @@ public class Utils
 
 	public static Object add(Object arg1, Object arg2)
 	{
-		if (arg1 instanceof Boolean)
-		{
-			if (arg2 instanceof Boolean)
-				return add((Boolean)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return add((Boolean)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return add((Boolean)arg1, (Number)arg2);
-		}
-		else if (arg1 instanceof Integer)
+		if (arg1 instanceof Integer)
 		{
 			if (arg2 instanceof Boolean)
 				return add((Integer)arg1, (Boolean)arg2);
@@ -382,6 +389,15 @@ public class Utils
 				return add((Integer)arg1, (Integer)arg2);
 			else if (arg2 instanceof Number)
 				return add((Integer)arg1, (Number)arg2);
+		}
+		else if (arg1 instanceof Boolean)
+		{
+			if (arg2 instanceof Boolean)
+				return add((Boolean)arg1, (Boolean)arg2);
+			else if (arg2 instanceof Integer)
+				return add((Boolean)arg1, (Integer)arg2);
+			else if (arg2 instanceof Number)
+				return add((Boolean)arg1, (Number)arg2);
 		}
 		else if (arg1 instanceof Number)
 		{

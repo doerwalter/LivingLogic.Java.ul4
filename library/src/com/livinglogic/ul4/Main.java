@@ -2,6 +2,8 @@ package com.livinglogic.ul4;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.Byte;
+import java.math.BigInteger;
 
 
 public class Main
@@ -11,9 +13,9 @@ public class Main
 		Long c = new Long(42);
 		Template tmpl = Compiler.compile("<?print -t?>");
 		System.out.println(tmpl);
-		long start = System.currentTimeMillis();
 		Map vars = new HashMap<String, Object>();
-		vars.put("t", 42);
+		vars.put("t", new BigInteger("42"));
+		long start = System.currentTimeMillis();
 		String output = tmpl.renders(vars);
 		System.out.println("rendered " + (System.currentTimeMillis()-start));
 		System.out.println(output);
