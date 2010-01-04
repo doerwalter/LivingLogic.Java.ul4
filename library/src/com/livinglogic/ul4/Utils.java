@@ -1814,9 +1814,9 @@ public class Utils
 			return "str";
 		else if (obj instanceof Boolean)
 			return "bool";
-		else if (obj instanceof Integer || obj instanceof Long)
+		else if (obj instanceof Integer || obj instanceof Long || obj instanceof Byte || obj instanceof Short || obj instanceof BigInteger)
 			return "int";
-		else if (obj instanceof Double)
+		else if (obj instanceof Double || obj instanceof Float || obj instanceof BigDecimal)
 			return "float";
 		else if (obj instanceof Date)
 			return "date";
