@@ -329,9 +329,20 @@ public class Utils
 		throw new UnsupportedOperationException("Can't negate " + objectType(arg) + "!");
 	}
 
+	private static BigInteger toBigInteger(int arg)
+	{
+		return new BigInteger(Integer.toString(arg));
+	}
+
 	public static Object add(int arg1, int arg2)
 	{
-		return arg1 + arg2;
+		int result = arg1 + arg2;
+		if ((arg1 >= 0) != (arg2 >= 0)) // arguments have different sign, so there can be no overflow
+			return result;
+		else if ((arg1 >= 0) == (result >= 0)) // result didn't change sign, so there was no overflow
+			return result;
+		else // we had an overflow => promote to BigInteger
+			return toBigInteger(arg1).add(toBigInteger(arg2));
 	}
 
 	public static Object add(float arg1, float arg2)
@@ -368,9 +379,9 @@ public class Utils
 			else if (arg2 instanceof Double)
 				return value1 + (((Double)arg2).doubleValue());
 			else if (arg2 instanceof BigInteger)
-				return ((BigInteger)arg2).add(new BigInteger(Integer.toString(value1)));
+				return ((BigInteger)arg2).add(toBigInteger(value1));
 			else if (arg2 instanceof BigDecimal)
-				return ((BigDecimal)arg2).add(new BigDecimal(Integer.toString(value1)));
+				return ((BigDecimal)arg2).add(new BigDecimal((double)value1));
 		}
 		else if (arg1 instanceof Float)
 		{
@@ -412,7 +423,7 @@ public class Utils
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
 			{
 				int value2 = arg2 instanceof Boolean ? (((Boolean)arg2).booleanValue() ? 1 : 0) : ((Number)arg2).intValue();
-				return value1.add(new BigInteger(Integer.toString(value2)));
+				return value1.add(toBigInteger(value2));
 			}
 			else if (arg2 instanceof Float)
 				return new BigDecimal(value1).add(new BigDecimal(Float.toString(((Float)arg2).floatValue())));
