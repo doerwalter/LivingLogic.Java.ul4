@@ -293,7 +293,7 @@ public class Utils
 		if (obj == null)
 			return "null";
 		else
-			return "instance of" + obj.getClass();
+			return "instance of " + obj.getClass();
 	}
 
 	public static Object neg(Object arg)
@@ -329,49 +329,19 @@ public class Utils
 		throw new UnsupportedOperationException("Can't negate " + objectType(arg) + "!");
 	}
 
-	public static Object add(Boolean arg1, Boolean arg2)
+	public static Object add(int arg1, int arg2)
 	{
-		return (arg1.booleanValue() ? 1 : 0) + (arg2.booleanValue() ? 1 : 0);
+		return arg1 + arg2;
 	}
 
-	public static Object add(Boolean arg1, Integer arg2)
+	public static Object add(float arg1, float arg2)
 	{
-		return (arg1.booleanValue() ? 1 : 0) + arg2.intValue();
+		return arg1 + arg2;
 	}
 
-	public static Object add(Boolean arg1, Number arg2)
+	public static Object add(double arg1, double arg2)
 	{
-		return (arg1.booleanValue() ? 1 : 0) + arg2.doubleValue();
-	}
-
-	public static Object add(Integer arg1, Boolean arg2)
-	{
-		return arg1.intValue() + (arg2.booleanValue() ? 1 : 0);
-	}
-
-	public static Object add(Integer arg1, Integer arg2)
-	{
-		return arg1.intValue() + arg2.intValue();
-	}
-
-	public static Object add(Integer arg1, Number arg2)
-	{
-		return arg1.intValue() + arg2.doubleValue();
-	}
-
-	public static Object add(Number arg1, Boolean arg2)
-	{
-		return arg1.doubleValue() + (arg2.booleanValue() ? 1 : 0);
-	}
-
-	public static Object add(Number arg1, Integer arg2)
-	{
-		return arg1.doubleValue() + arg2.intValue();
-	}
-
-	public static Object add(Number arg1, Number arg2)
-	{
-		return arg1.doubleValue() + arg2.doubleValue();
+		return arg1 + arg2;
 	}
 
 	public static Object add(String arg1, String arg2)
@@ -381,32 +351,94 @@ public class Utils
 
 	public static Object add(Object arg1, Object arg2)
 	{
-		if (arg1 instanceof Integer)
+		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
 		{
-			if (arg2 instanceof Boolean)
-				return add((Integer)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return add((Integer)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return add((Integer)arg1, (Number)arg2);
+			int value1 = arg1 instanceof Boolean ? (((Boolean)arg1).booleanValue() ? 1 : 0) : ((Number)arg1).intValue();
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short)
+				return add(value1, ((Number)arg2).intValue());
+			else if (arg2 instanceof Boolean)
+			{
+				if (((Boolean)arg2).booleanValue())
+					return add(value1, 1);
+				else
+					return arg1;
+			}
+			else if (arg2 instanceof Float)
+				return value1 + (((Float)arg2).floatValue());
+			else if (arg2 instanceof Double)
+				return value1 + (((Double)arg2).doubleValue());
+			else if (arg2 instanceof BigInteger)
+				return ((BigInteger)arg2).add(new BigInteger(Integer.toString(value1)));
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg2).add(new BigDecimal(Integer.toString(value1)));
 		}
-		else if (arg1 instanceof Boolean)
+		else if (arg1 instanceof Float)
 		{
-			if (arg2 instanceof Boolean)
-				return add((Boolean)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return add((Boolean)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return add((Boolean)arg1, (Number)arg2);
+			float value1 = (((Float)arg1).floatValue());
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+			{
+				float value2 = arg2 instanceof Boolean ? (((Boolean)arg2).booleanValue() ? 1.0f : 0.0f) : ((Number)arg2).floatValue();
+				return add(value1, value2);
+			}
+			else if (arg2 instanceof Float)
+				return add(value1, (((Float)arg2).floatValue()));
+			else if (arg2 instanceof Double)
+				return add((double)value1, (((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return new BigDecimal((BigInteger)arg2).add(new BigDecimal((double)value1));
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg2).add(new BigDecimal((double)value1));
 		}
-		else if (arg1 instanceof Number)
+		else if (arg1 instanceof Double)
 		{
-			if (arg2 instanceof Boolean)
-				return add((Number)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return add((Number)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return add((Number)arg1, (Number)arg2);
+			double value1 = (((Double)arg1).doubleValue());
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+			{
+				double value2 = arg2 instanceof Boolean ? (((Boolean)arg2).booleanValue() ? 1.0d : 0.0d) : ((Number)arg2).doubleValue();
+				return add(value1, value2);
+			}
+			else if (arg2 instanceof Float)
+				return add(value1, (((Float)arg2).doubleValue()));
+			else if (arg2 instanceof Double)
+				return add(value1, (((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return new BigDecimal((BigInteger)arg2).add(new BigDecimal((double)value1));
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg2).add(new BigDecimal(value1));
+		}
+		else if (arg1 instanceof BigInteger)
+		{
+			BigInteger value1 = (BigInteger)arg1;
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+			{
+				int value2 = arg2 instanceof Boolean ? (((Boolean)arg2).booleanValue() ? 1 : 0) : ((Number)arg2).intValue();
+				return value1.add(new BigInteger(Integer.toString(value2)));
+			}
+			else if (arg2 instanceof Float)
+				return new BigDecimal(value1).add(new BigDecimal(Float.toString(((Float)arg2).floatValue())));
+			else if (arg2 instanceof Double)
+				return new BigDecimal(value1).add(new BigDecimal(Double.toString(((Double)arg2).doubleValue())));
+			else if (arg2 instanceof BigInteger)
+				return value1.add((BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg2).add(new BigDecimal(value1));
+		}
+		else if (arg1 instanceof BigDecimal)
+		{
+			BigDecimal value1 = (BigDecimal)arg1;
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+			{
+				float value2 = arg2 instanceof Boolean ? (((Boolean)arg2).booleanValue() ? 1.0f : 0.0f) : ((Number)arg2).floatValue();
+				return value1.add(new BigDecimal(Float.toString(value2)));
+			}
+			else if (arg2 instanceof Float)
+				return value1.add(new BigDecimal(Float.toString(((Float)arg2).floatValue())));
+			else if (arg2 instanceof Double)
+				return value1.add(new BigDecimal(Double.toString(((Double)arg2).doubleValue())));
+			else if (arg2 instanceof BigInteger)
+				return value1.add(new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return value1.add((BigDecimal)arg2);
 		}
 		else if (arg1 instanceof String && arg2 instanceof String)
 			return add((String)arg1, (String)arg2);
