@@ -329,9 +329,33 @@ public class Utils
 		throw new UnsupportedOperationException("Can't negate " + objectType(arg) + "!");
 	}
 
-	private static BigInteger toBigInteger(int arg)
+	private static BigInteger _toBigInteger(int arg)
 	{
 		return new BigInteger(Integer.toString(arg));
+	}
+
+	private static int _toInt(Object arg)
+	{
+		if (arg instanceof Boolean)
+			return ((Boolean)arg).booleanValue() ? 1 : 0;
+		else
+			return ((Number)arg).intValue();
+	}
+
+	private static float _toFloat(Object arg)
+	{
+		if (arg instanceof Boolean)
+			return ((Boolean)arg).booleanValue() ? 1.0f : 0.0f;
+		else
+			return ((Number)arg).floatValue();
+	}
+
+	private static double _toDouble(Object arg)
+	{
+		if (arg instanceof Boolean)
+			return ((Boolean)arg).booleanValue() ? 1.0d : 0.0d;
+		else
+			return ((Number)arg).doubleValue();
 	}
 
 	public static Object add(int arg1, int arg2)
@@ -342,7 +366,7 @@ public class Utils
 		else if ((arg1 >= 0) == (result >= 0)) // result didn't change sign, so there was no overflow
 			return result;
 		else // we had an overflow => promote to BigInteger
-			return toBigInteger(arg1).add(toBigInteger(arg2));
+			return _toBigInteger(arg1).add(_toBigInteger(arg2));
 	}
 
 	public static Object add(float arg1, float arg2)
@@ -364,56 +388,35 @@ public class Utils
 	{
 		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
 		{
-			int value1 = arg1 instanceof Boolean ? (((Boolean)arg1).booleanValue() ? 1 : 0) : ((Number)arg1).intValue();
-			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short)
-				return add(value1, ((Number)arg2).intValue());
-			else if (arg2 instanceof Boolean)
-			{
-				if (((Boolean)arg2).booleanValue())
-					return add(value1, 1);
-				else
-					return arg1;
-			}
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return add(_toInt(arg1), _toInt(arg2));
 			else if (arg2 instanceof Float)
-				return value1 + (((Float)arg2).floatValue());
+				return add(_toFloat(arg1), _toFloat(arg2));
 			else if (arg2 instanceof Double)
-				return value1 + (((Double)arg2).doubleValue());
+				return add(_toDouble(arg1), _toDouble(arg2));
 			else if (arg2 instanceof BigInteger)
-				return ((BigInteger)arg2).add(toBigInteger(value1));
+				return ((BigInteger)arg2).add(_toBigInteger(_toInt(arg1)));
 			else if (arg2 instanceof BigDecimal)
-				return ((BigDecimal)arg2).add(new BigDecimal((double)value1));
+				return ((BigDecimal)arg2).add(new BigDecimal(_toDouble(arg1)));
 		}
 		else if (arg1 instanceof Float)
 		{
-			float value1 = (((Float)arg1).floatValue());
-			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-			{
-				float value2 = arg2 instanceof Boolean ? (((Boolean)arg2).booleanValue() ? 1.0f : 0.0f) : ((Number)arg2).floatValue();
-				return add(value1, value2);
-			}
-			else if (arg2 instanceof Float)
-				return add(value1, (((Float)arg2).floatValue()));
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float)
+				return add(_toFloat(arg1), _toFloat(arg2));
 			else if (arg2 instanceof Double)
-				return add((double)value1, (((Double)arg2).doubleValue()));
+				return add(_toDouble(arg1), (((Double)arg2).doubleValue()));
 			else if (arg2 instanceof BigInteger)
-				return new BigDecimal((BigInteger)arg2).add(new BigDecimal((double)value1));
+				return new BigDecimal((BigInteger)arg2).add(new BigDecimal(_toDouble(arg1)));
 			else if (arg2 instanceof BigDecimal)
-				return ((BigDecimal)arg2).add(new BigDecimal((double)value1));
+				return ((BigDecimal)arg2).add(new BigDecimal(_toDouble(arg1)));
 		}
 		else if (arg1 instanceof Double)
 		{
 			double value1 = (((Double)arg1).doubleValue());
-			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-			{
-				double value2 = arg2 instanceof Boolean ? (((Boolean)arg2).booleanValue() ? 1.0d : 0.0d) : ((Number)arg2).doubleValue();
-				return add(value1, value2);
-			}
-			else if (arg2 instanceof Float)
-				return add(value1, (((Float)arg2).doubleValue()));
-			else if (arg2 instanceof Double)
-				return add(value1, (((Double)arg2).doubleValue()));
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
+				return add(value1, _toDouble(arg2));
 			else if (arg2 instanceof BigInteger)
-				return new BigDecimal((BigInteger)arg2).add(new BigDecimal((double)value1));
+				return new BigDecimal((BigInteger)arg2).add(new BigDecimal(value1));
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg2).add(new BigDecimal(value1));
 		}
@@ -421,14 +424,11 @@ public class Utils
 		{
 			BigInteger value1 = (BigInteger)arg1;
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-			{
-				int value2 = arg2 instanceof Boolean ? (((Boolean)arg2).booleanValue() ? 1 : 0) : ((Number)arg2).intValue();
-				return value1.add(toBigInteger(value2));
-			}
+				return value1.add(_toBigInteger(_toInt(arg2)));
 			else if (arg2 instanceof Float)
-				return new BigDecimal(value1).add(new BigDecimal(Float.toString(((Float)arg2).floatValue())));
+				return new BigDecimal(value1).add(new BigDecimal(((Float)arg2).doubleValue()));
 			else if (arg2 instanceof Double)
-				return new BigDecimal(value1).add(new BigDecimal(Double.toString(((Double)arg2).doubleValue())));
+				return new BigDecimal(value1).add(new BigDecimal(((Double)arg2).doubleValue()));
 			else if (arg2 instanceof BigInteger)
 				return value1.add((BigInteger)arg2);
 			else if (arg2 instanceof BigDecimal)
@@ -438,14 +438,11 @@ public class Utils
 		{
 			BigDecimal value1 = (BigDecimal)arg1;
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-			{
-				float value2 = arg2 instanceof Boolean ? (((Boolean)arg2).booleanValue() ? 1.0f : 0.0f) : ((Number)arg2).floatValue();
-				return value1.add(new BigDecimal(Float.toString(value2)));
-			}
+				return value1.add(new BigDecimal(Integer.toString(_toInt(arg2))));
 			else if (arg2 instanceof Float)
-				return value1.add(new BigDecimal(Float.toString(((Float)arg2).floatValue())));
+				return value1.add(new BigDecimal(((Float)arg2).doubleValue()));
 			else if (arg2 instanceof Double)
-				return value1.add(new BigDecimal(Double.toString(((Double)arg2).doubleValue())));
+				return value1.add(new BigDecimal(((Double)arg2).doubleValue()));
 			else if (arg2 instanceof BigInteger)
 				return value1.add(new BigDecimal((BigInteger)arg2));
 			else if (arg2 instanceof BigDecimal)
@@ -456,83 +453,86 @@ public class Utils
 		throw new UnsupportedOperationException("Can't add " + objectType(arg1) + " and " + objectType(arg2) + "!");
 	}
 
-	public static Object sub(Boolean arg1, Boolean arg2)
+	public static Object sub(int arg1, int arg2)
 	{
-		return (arg1.booleanValue() ? 1 : 0) - (arg2.booleanValue() ? 1 : 0);
+		int result = arg1 - arg2;
+		if ((arg1 >= 0) == (arg2 >= 0)) // arguments have same sign, so there can be no overflow
+			return result;
+		else if ((arg1 >= 0) == (result >= 0)) // result didn't change sign, so there was no overflow
+			return result;
+		else // we had an overflow => promote to BigInteger
+			return _toBigInteger(arg1).add(_toBigInteger(arg2).negate());
 	}
 
-	public static Object sub(Boolean arg1, Integer arg2)
+	public static Object sub(float arg1, float arg2)
 	{
-		return (arg1.booleanValue() ? 1 : 0) - arg2.intValue();
+		return arg1 - arg2;
 	}
 
-	public static Object sub(Boolean arg1, Number arg2)
+	public static Object sub(double arg1, double arg2)
 	{
-		return (arg1.booleanValue() ? 1 : 0) - arg2.doubleValue();
-	}
-
-	public static Object sub(Integer arg1, Boolean arg2)
-	{
-		return arg1.intValue() - (arg2.booleanValue() ? 1 : 0);
-	}
-
-	public static Object sub(Integer arg1, Integer arg2)
-	{
-		return arg1.intValue() - arg2.intValue();
-	}
-
-	public static Object sub(Integer arg1, Number arg2)
-	{
-		return arg1.intValue() - arg2.doubleValue();
-	}
-
-	public static Object sub(Number arg1, Boolean arg2)
-	{
-		return arg1.doubleValue() - (arg2.booleanValue() ? 1 : 0);
-	}
-
-	public static Object sub(Number arg1, Integer arg2)
-	{
-		return arg1.doubleValue() - arg2.intValue();
-	}
-
-	public static Object sub(Number arg1, Number arg2)
-	{
-		return arg1.doubleValue() - arg2.doubleValue();
+		return arg1 - arg2;
 	}
 
 	public static Object sub(Object arg1, Object arg2)
 	{
-		if (arg1 instanceof Boolean)
+		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
 		{
-			if (arg2 instanceof Boolean)
-				return sub((Boolean)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return sub((Boolean)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return sub((Boolean)arg1, (Number)arg2);
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return sub(_toInt(arg1), _toInt(arg2));
+			else if (arg2 instanceof Float)
+				return sub(_toFloat(arg1), ((Float)arg2).floatValue());
+			else if (arg2 instanceof Double)
+				return sub(_toDouble(arg1), ((Double)arg2).doubleValue());
+			else if (arg2 instanceof BigInteger)
+				return ((BigInteger)arg2).negate().add(_toBigInteger(_toInt(arg1)));
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg2).negate().add(new BigDecimal(_toDouble(arg1)));
 		}
-		else if (arg1 instanceof Integer)
+		else if (arg1 instanceof Float)
 		{
-			if (arg2 instanceof Boolean)
-				return sub((Integer)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return sub((Integer)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return sub((Integer)arg1, (Number)arg2);
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float)
+				return sub(_toFloat(arg1), _toFloat(arg2));
+			else if (arg2 instanceof Double)
+				return sub(_toDouble(arg1), (((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return new BigDecimal(((BigInteger)arg2).negate()).add(new BigDecimal(_toDouble(arg1)));
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg2).negate().add(new BigDecimal(_toDouble(arg1)));
 		}
-		else if (arg1 instanceof Number)
+		else if (arg1 instanceof Double)
 		{
-			if (arg2 instanceof Boolean)
-				return sub((Number)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return sub((Number)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return sub((Number)arg1, (Number)arg2);
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
+				return sub(_toDouble(arg1), _toDouble(arg2));
+			else if (arg2 instanceof BigInteger)
+				return new BigDecimal(((BigInteger)arg2).negate()).add(new BigDecimal(_toDouble(arg1)));
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg2).negate().add(new BigDecimal(_toDouble(arg1)));
+		}
+		else if (arg1 instanceof BigInteger)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return ((BigInteger)arg1).add(_toBigInteger(_toInt(arg2)).negate());
+			else if (arg2 instanceof Float)
+				return new BigDecimal((BigInteger)arg1).add(new BigDecimal(((Float)arg2).doubleValue()).negate());
+			else if (arg2 instanceof Double)
+				return new BigDecimal((BigInteger)arg1).add(new BigDecimal(((Double)arg2).doubleValue()).negate());
+			else if (arg2 instanceof BigInteger)
+				return ((BigInteger)arg1).add(((BigInteger)arg2).negate());
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg2).negate().add(new BigDecimal((BigInteger)arg1));
+		}
+		else if (arg1 instanceof BigDecimal)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
+				return ((BigDecimal)arg1).add(new BigDecimal(_toDouble(arg2)).negate());
+			else if (arg2 instanceof BigInteger)
+				return ((BigDecimal)arg1).add(new BigDecimal(((BigInteger)arg2).negate()));
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg1).add(((BigDecimal)arg2).negate());
 		}
 		throw new UnsupportedOperationException("Can't substract " + objectType(arg1) + " and " + objectType(arg2) + "!");
 	}
-
 
 	public static Object mul(String arg1, Integer arg2)
 	{
