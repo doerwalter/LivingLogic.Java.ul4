@@ -338,24 +338,27 @@ public class Utils
 	{
 		if (arg instanceof Boolean)
 			return ((Boolean)arg).booleanValue() ? 1 : 0;
-		else
+		else if (arg instanceof Number)
 			return ((Number)arg).intValue();
+		throw new UnsupportedOperationException("can't convert " + objectType(arg) + " to int!");
 	}
 
 	private static float _toFloat(Object arg)
 	{
 		if (arg instanceof Boolean)
 			return ((Boolean)arg).booleanValue() ? 1.0f : 0.0f;
-		else
+		else if (arg instanceof Number)
 			return ((Number)arg).floatValue();
+		throw new UnsupportedOperationException("can't convert " + objectType(arg) + " to float!");
 	}
 
 	private static double _toDouble(Object arg)
 	{
 		if (arg instanceof Boolean)
 			return ((Boolean)arg).booleanValue() ? 1.0d : 0.0d;
-		else
+		else if (arg instanceof Number)
 			return ((Number)arg).doubleValue();
+		throw new UnsupportedOperationException("can't convert " + objectType(arg) + " to double!");
 	}
 
 	public static Object add(int arg1, int arg2)
@@ -1930,68 +1933,44 @@ public class Utils
 			return null;
 	}
 
-	private static double _getdouble(Object arg)
-	{
-		if (arg instanceof Integer)
-			return ((Integer)arg).doubleValue();
-		else if (arg instanceof Long)
-			return ((Long)arg).doubleValue();
-		else if (arg instanceof Double)
-			return ((Double)arg).doubleValue();
-		else
-			throw new UnsupportedOperationException("can't convert " + objectType(arg) + " to float!");
-	}
-
-	private static int _getint(Object arg)
-	{
-		if (arg instanceof Integer)
-			return ((Integer)arg).intValue();
-		else if (arg instanceof Long)
-			return ((Long)arg).intValue();
-		else if (arg instanceof Double)
-			return ((Double)arg).intValue();
-		else
-			throw new UnsupportedOperationException("can't convert " + objectType(arg) + " to int!");
-	}
-
 	public static Color rgb(Object arg1, Object arg2, Object arg3)
 	{
-		return Color.fromrgb(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3));
+		return Color.fromrgb(_toDouble(arg1), _toDouble(arg2), _toDouble(arg3));
 	}
 
 	public static Color rgb(Object arg1, Object arg2, Object arg3, Object arg4)
 	{
-		return Color.fromrgb(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3), _getdouble(arg4));
+		return Color.fromrgb(_toDouble(arg1), _toDouble(arg2), _toDouble(arg3), _toDouble(arg4));
 	}
 
 	public static Color hsv(Object arg1, Object arg2, Object arg3)
 	{
-		return Color.fromhsv(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3));
+		return Color.fromhsv(_toDouble(arg1), _toDouble(arg2), _toDouble(arg3));
 	}
 
 	public static Color hsv(Object arg1, Object arg2, Object arg3, Object arg4)
 	{
-		return Color.fromhsv(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3), _getdouble(arg4));
+		return Color.fromhsv(_toDouble(arg1), _toDouble(arg2), _toDouble(arg3), _toDouble(arg4));
 	}
 
 	public static Color hls(Object arg1, Object arg2, Object arg3)
 	{
-		return Color.fromhls(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3));
+		return Color.fromhls(_toDouble(arg1), _toDouble(arg2), _toDouble(arg3));
 	}
 
 	public static Color hls(Object arg1, Object arg2, Object arg3, Object arg4)
 	{
-		return Color.fromhls(_getdouble(arg1), _getdouble(arg2), _getdouble(arg3), _getdouble(arg4));
+		return Color.fromhls(_toDouble(arg1), _toDouble(arg2), _toDouble(arg3), _toDouble(arg4));
 	}
 
 	public static Color withlum(Object arg1, Object arg2)
 	{
-		return ((Color)arg1).withlum(_getdouble(arg2));
+		return ((Color)arg1).withlum(_toDouble(arg2));
 	}
 
 	public static Color witha(Object arg1, Object arg2)
 	{
-		return ((Color)arg1).witha(_getint(arg2));
+		return ((Color)arg1).witha(_toInt(arg2));
 	}
 
 	public static String join(Object arg1, Object arg2)

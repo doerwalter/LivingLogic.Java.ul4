@@ -36,20 +36,14 @@ public class Main
 	public static void main(String[] args)
 	{
 		Long c = new Long(42);
-		Template tmpl = Compiler.compile("<?print a?>(<?print type(a)?>) + <?print b?>(<?print type(b)?>) = <?print a + b?>(<?print type(a+b)?>)");
+		Template tmpl = Compiler.compile("<?print rgb(0,0.5,1)?>");
 		System.out.println(tmpl);
-		for (int i = 0; i <= 7; ++i)
-		{
-			for (int j = 0; j <= 7; ++j)
-			{
-				Map vars = new HashMap<String, Object>();
-				vars.put("a", dings(i, 17));
-				vars.put("b", dings(j, 23));
-				long start = System.currentTimeMillis();
-				String output = tmpl.renders(vars);
-				// System.out.println("rendered " + (System.currentTimeMillis()-start));
-				System.out.println(output);
-			}
-		}
+		Map vars = new HashMap<String, Object>();
+		vars.put("a", 17);
+		vars.put("b", 23);
+		long start = System.currentTimeMillis();
+		String output = tmpl.renders(vars);
+		System.out.println("rendered " + (System.currentTimeMillis()-start));
+		System.out.println(output);
 	}
 }
