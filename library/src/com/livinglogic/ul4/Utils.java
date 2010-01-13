@@ -537,110 +537,93 @@ public class Utils
 		throw new UnsupportedOperationException("Can't substract " + objectType(arg1) + " and " + objectType(arg2) + "!");
 	}
 
-	public static Object mul(String arg1, Integer arg2)
+	public static Object mul(int arg1, String arg2)
 	{
-		return StringUtils.repeat(arg1, arg2.intValue());
+		return StringUtils.repeat(arg2, arg1);
 	}
 
-	public static Object mul(String arg1, Boolean arg2)
+	public static Object mul(int arg1, int arg2)
 	{
-		return arg2.booleanValue() ? arg1 : "";
+		int result = arg1 * arg2;
+		if (result/arg1 == arg2) // result doesn't seem to have overflowed
+			return result;
+		else // we had an overflow => promote to BigInteger
+			return _toBigInteger(arg1).multiply(_toBigInteger(arg2));
 	}
 
-	public static Object mul(Integer arg1, String arg2)
+	public static Object mul(float arg1, float arg2)
 	{
-		return StringUtils.repeat(arg2, arg1.intValue());
+		return arg1 * arg2;
 	}
 
-	public static Object mul(Boolean arg1, String arg2)
+	public static Object mul(double arg1, double arg2)
 	{
-		return arg1.booleanValue() ? arg2 : "";
-	}
-
-	public static Object mul(Boolean arg1, Boolean arg2)
-	{
-		return (arg1.booleanValue() ? 1 : 0) * (arg2.booleanValue() ? 1 : 0);
-	}
-
-	public static Object mul(Boolean arg1, Integer arg2)
-	{
-		return (arg1.booleanValue() ? 1 : 0) * arg2.intValue();
-	}
-
-	public static Object mul(Boolean arg1, Number arg2)
-	{
-		return (arg1.booleanValue() ? 1 : 0) * arg2.doubleValue();
-	}
-
-	public static Object mul(Integer arg1, Boolean arg2)
-	{
-		return arg1.intValue() * (arg2.booleanValue() ? 1 : 0);
-	}
-
-	public static Object mul(Integer arg1, Integer arg2)
-	{
-		return arg1.intValue() * arg2.intValue();
-	}
-
-	public static Object mul(Integer arg1, Number arg2)
-	{
-		return arg1.intValue() * arg2.doubleValue();
-	}
-
-	public static Object mul(Number arg1, Boolean arg2)
-	{
-		return arg1.doubleValue() * (arg2.booleanValue() ? 1 : 0);
-	}
-
-	public static Object mul(Number arg1, Integer arg2)
-	{
-		return arg1.doubleValue() * arg2.intValue();
-	}
-
-	public static Object mul(Number arg1, Number arg2)
-	{
-		return arg1.doubleValue() * arg2.doubleValue();
+		return arg1 * arg2;
 	}
 
 	public static Object mul(Object arg1, Object arg2)
 	{
-		if (arg1 instanceof Boolean)
+		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
 		{
-			if (arg2 instanceof Boolean)
-				return mul((Boolean)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return mul((Boolean)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return mul((Boolean)arg1, (Number)arg2);
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return mul(_toInt(arg1), _toInt(arg2));
+			else if (arg2 instanceof Float)
+				return mul(_toFloat(arg1), ((Float)arg2).floatValue());
+			else if (arg2 instanceof Double)
+				return mul(_toDouble(arg1), ((Double)arg2).doubleValue());
 			else if (arg2 instanceof String)
-				return mul((Boolean)arg1, (String)arg2);
+				return mul(_toInt(arg1), (String)arg2);
+			else if (arg2 instanceof BigInteger)
+				return ((BigInteger)arg2).multiply(_toBigInteger(_toInt(arg1)));
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg2).multiply(new BigDecimal(_toDouble(arg1)));
 		}
-		else if (arg1 instanceof Integer)
+		else if (arg1 instanceof Float)
 		{
-			if (arg2 instanceof Boolean)
-				return mul((Integer)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return mul((Integer)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return mul((Integer)arg1, (Number)arg2);
-			else if (arg2 instanceof String)
-				return mul((Integer)arg1, (String)arg2);
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float)
+				return mul(_toFloat(arg1), _toFloat(arg2));
+			else if (arg2 instanceof Double)
+				return mul(_toDouble(arg1), (((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return new BigDecimal((BigInteger)arg2).multiply(new BigDecimal(_toDouble(arg1)));
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg2).multiply(new BigDecimal(_toDouble(arg1)));
 		}
-		else if (arg1 instanceof Number)
+		else if (arg1 instanceof Double)
 		{
-			if (arg2 instanceof Boolean)
-				return mul((Number)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return mul((Number)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return mul((Number)arg1, (Number)arg2);
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
+				return mul(_toDouble(arg1), _toDouble(arg2));
+			else if (arg2 instanceof BigInteger)
+				return new BigDecimal((BigInteger)arg2).multiply(new BigDecimal(_toDouble(arg1)));
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg2).multiply(new BigDecimal(_toDouble(arg1)));
+		}
+		else if (arg1 instanceof BigInteger)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return ((BigInteger)arg1).multiply(_toBigInteger(_toInt(arg2)));
+			else if (arg2 instanceof Float)
+				return new BigDecimal((BigInteger)arg1).multiply(new BigDecimal(((Float)arg2).doubleValue()));
+			else if (arg2 instanceof Double)
+				return new BigDecimal((BigInteger)arg1).multiply(new BigDecimal(((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return ((BigInteger)arg1).multiply(((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg2).multiply(new BigDecimal((BigInteger)arg1));
+		}
+		else if (arg1 instanceof BigDecimal)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
+				return ((BigDecimal)arg1).multiply(new BigDecimal(_toDouble(arg2)));
+			else if (arg2 instanceof BigInteger)
+				return ((BigDecimal)arg1).multiply(new BigDecimal(((BigInteger)arg2)));
+			else if (arg2 instanceof BigDecimal)
+				return ((BigDecimal)arg1).multiply(((BigDecimal)arg2));
 		}
 		else if (arg1 instanceof String)
 		{
-			if (arg2 instanceof Boolean)
-				return mul((String)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return mul((String)arg1, (Integer)arg2);
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return mul(_toInt(arg2), (String)arg1);
 		}
 		throw new UnsupportedOperationException("Can't multiply " + objectType(arg1) + " and " + objectType(arg2) + "!");
 	}
