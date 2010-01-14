@@ -34,7 +34,7 @@ class Range extends AbstractList
 	{
 		if (0 == step)
 		{
-			throw new IllegalArgumentException("Step argument must be different from zero!");
+			throw new IllegalArgumentException("Step argument must be non-zero!");
 		}
 		else if (0 < step)
 		{
