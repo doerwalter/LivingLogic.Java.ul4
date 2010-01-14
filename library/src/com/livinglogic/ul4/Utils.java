@@ -546,9 +546,9 @@ public class Utils
 			else if (arg2 instanceof Double)
 				return sub(_toDouble(arg1), ((Double)arg2).doubleValue());
 			else if (arg2 instanceof BigInteger)
-				return ((BigInteger)arg2).negate().add(_toBigInteger(_toInt(arg1)));
+				return _toBigInteger(_toInt(arg1)).subtract((BigInteger)arg2);
 			else if (arg2 instanceof BigDecimal)
-				return ((BigDecimal)arg2).negate().add(new BigDecimal(_toDouble(arg1)));
+				return new BigDecimal(_toDouble(arg1)).subtract((BigDecimal)arg2);
 		}
 		else if (arg1 instanceof Long)
 		{
@@ -559,9 +559,9 @@ public class Utils
 			else if (arg2 instanceof Double)
 				return sub(_toDouble(arg1), ((Double)arg2).doubleValue());
 			else if (arg2 instanceof BigInteger)
-				return ((BigInteger)arg2).negate().add(_toBigInteger(_toLong(arg1)));
+				return _toBigInteger(_toLong(arg1)).subtract((BigInteger)arg2);
 			else if (arg2 instanceof BigDecimal)
-				return ((BigDecimal)arg2).negate().add(new BigDecimal(_toDouble(arg1)));
+				return new BigDecimal(_toDouble(arg1)).subtract((BigDecimal)arg2);
 		}
 		else if (arg1 instanceof Float)
 		{
@@ -570,44 +570,44 @@ public class Utils
 			else if (arg2 instanceof Double)
 				return sub(_toDouble(arg1), (((Double)arg2).doubleValue()));
 			else if (arg2 instanceof BigInteger)
-				return new BigDecimal(((BigInteger)arg2).negate()).add(new BigDecimal(_toDouble(arg1)));
+				return new BigDecimal(_toDouble(arg1)).subtract(new BigDecimal((BigInteger)arg2));
 			else if (arg2 instanceof BigDecimal)
-				return ((BigDecimal)arg2).negate().add(new BigDecimal(_toDouble(arg1)));
+				return new BigDecimal(_toDouble(arg1)).subtract((BigDecimal)arg2);
 		}
 		else if (arg1 instanceof Double)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
 				return sub(_toDouble(arg1), _toDouble(arg2));
 			else if (arg2 instanceof BigInteger)
-				return new BigDecimal(((BigInteger)arg2).negate()).add(new BigDecimal(_toDouble(arg1)));
+				return new BigDecimal(_toDouble(arg1)).subtract(new BigDecimal((BigInteger)arg2));
 			else if (arg2 instanceof BigDecimal)
-				return ((BigDecimal)arg2).negate().add(new BigDecimal(_toDouble(arg1)));
+				return new BigDecimal(_toDouble(arg1)).subtract((BigDecimal)arg2);
 		}
 		else if (arg1 instanceof BigInteger)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return ((BigInteger)arg1).add(_toBigInteger(_toInt(arg2)).negate());
+				return ((BigInteger)arg1).subtract(_toBigInteger(_toInt(arg2)));
 			else if (arg2 instanceof Long)
-				return ((BigInteger)arg1).add(_toBigInteger(_toLong(arg2)).negate());
+				return ((BigInteger)arg1).subtract(_toBigInteger(_toLong(arg2)));
 			else if (arg2 instanceof Float)
-				return new BigDecimal((BigInteger)arg1).add(new BigDecimal(((Float)arg2).doubleValue()).negate());
+				return new BigDecimal((BigInteger)arg1).subtract(new BigDecimal(((Float)arg2).doubleValue()));
 			else if (arg2 instanceof Double)
-				return new BigDecimal((BigInteger)arg1).add(new BigDecimal(((Double)arg2).doubleValue()).negate());
+				return new BigDecimal((BigInteger)arg1).subtract(new BigDecimal(((Double)arg2).doubleValue()));
 			else if (arg2 instanceof BigInteger)
-				return ((BigInteger)arg1).add(((BigInteger)arg2).negate());
+				return ((BigInteger)arg1).subtract((BigInteger)arg2);
 			else if (arg2 instanceof BigDecimal)
-				return ((BigDecimal)arg2).negate().add(new BigDecimal((BigInteger)arg1));
+				return new BigDecimal((BigInteger)arg1).subtract((BigDecimal)arg2);
 		}
 		else if (arg1 instanceof BigDecimal)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
-				return ((BigDecimal)arg1).add(new BigDecimal(_toDouble(arg2)).negate());
+				return ((BigDecimal)arg1).subtract(new BigDecimal(_toDouble(arg2)));
 			else if (arg2 instanceof BigInteger)
-				return ((BigDecimal)arg1).add(new BigDecimal(((BigInteger)arg2).negate()));
+				return ((BigDecimal)arg1).subtract(new BigDecimal((BigInteger)arg2));
 			else if (arg2 instanceof BigDecimal)
-				return ((BigDecimal)arg1).add(((BigDecimal)arg2).negate());
+				return ((BigDecimal)arg1).subtract((BigDecimal)arg2);
 		}
-		throw new UnsupportedOperationException("Can't substract " + objectType(arg1) + " and " + objectType(arg2) + "!");
+		throw new UnsupportedOperationException("Can't subtract " + objectType(arg1) + " and " + objectType(arg2) + "!");
 	}
 
 	public static Object mul(int arg1, String arg2)
@@ -819,32 +819,86 @@ public class Utils
 
 	public static Object floordiv(Object arg1, Object arg2)
 	{
-		if (arg1 instanceof Boolean)
+		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
 		{
-			if (arg2 instanceof Boolean)
-				return floordiv((Boolean)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return floordiv((Boolean)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return floordiv((Boolean)arg1, (Number)arg2);
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return _toInt(arg1) / _toInt(arg2);
+			else if (arg2 instanceof Long)
+				return _toInt(arg1) / _toLong(arg2);
+			else if (arg2 instanceof Float)
+				return Math.floor(_toInt(arg1) / _toFloat(arg2));
+			else if (arg2 instanceof Double)
+				return Math.floor(_toInt(arg1) / _toDouble(arg2));
+			else if (arg2 instanceof BigInteger)
+				return _toBigInteger(_toInt(arg1)).divide((BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return new BigDecimal(_toDouble(arg1)).divideToIntegralValue((BigDecimal)arg2);
 		}
-		else if (arg1 instanceof Integer)
+		else if (arg1 instanceof Long)
 		{
-			if (arg2 instanceof Boolean)
-				return floordiv((Integer)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return floordiv((Integer)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return floordiv((Integer)arg1, (Number)arg2);
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return _toLong(arg1) / _toLong(arg2);
+			else if (arg2 instanceof Float)
+				return Math.floor(_toLong(arg1) / _toFloat(arg2));
+			else if (arg2 instanceof Double)
+				return Math.floor(_toLong(arg1) / _toDouble(arg2));
+			else if (arg2 instanceof BigInteger)
+				return _toBigInteger(_toLong(arg1)).divide((BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return new BigDecimal(_toDouble(arg1)).divideToIntegralValue((BigDecimal)arg2);
 		}
-		else if (arg1 instanceof Number)
+		else if (arg1 instanceof Float)
 		{
-			if (arg2 instanceof Boolean)
-				return floordiv((Number)arg1, (Boolean)arg2);
-			else if (arg2 instanceof Integer)
-				return floordiv((Number)arg1, (Integer)arg2);
-			else if (arg2 instanceof Number)
-				return floordiv((Number)arg1, (Number)arg2);
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float)
+				return Math.floor(_toFloat(arg1) / _toFloat(arg2));
+			else if (arg2 instanceof Double)
+				return Math.floor(_toDouble(arg1) / (((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return new BigDecimal(_toDouble(arg1)).divideToIntegralValue(new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return new BigDecimal(_toDouble(arg1)).divideToIntegralValue((BigDecimal)arg2);
+		}
+		else if (arg1 instanceof Double)
+		{
+			double value1 = (((Double)arg1).doubleValue());
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
+				return Math.floor(value1 / _toDouble(arg2));
+			else if (arg2 instanceof BigInteger)
+				return new BigDecimal(value1).divideToIntegralValue(new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return new BigDecimal(value1).divideToIntegralValue((BigDecimal)arg2);
+		}
+		else if (arg1 instanceof BigInteger)
+		{
+			BigInteger value1 = (BigInteger)arg1;
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return value1.divide(_toBigInteger(_toInt(arg2)));
+			else if (arg2 instanceof Long)
+				return value1.divide(_toBigInteger(_toLong(arg2)));
+			else if (arg2 instanceof Float)
+				return new BigDecimal(value1).divideToIntegralValue(new BigDecimal(((Float)arg2).doubleValue()));
+			else if (arg2 instanceof Double)
+				return new BigDecimal(value1).divideToIntegralValue(new BigDecimal(((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return value1.divide((BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return new BigDecimal(value1).divideToIntegralValue((BigDecimal)arg2);
+		}
+		else if (arg1 instanceof BigDecimal)
+		{
+			BigDecimal value1 = (BigDecimal)arg1;
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return value1.divideToIntegralValue(new BigDecimal(Integer.toString(_toInt(arg2))));
+			else if (arg2 instanceof Long)
+				return value1.divideToIntegralValue(new BigDecimal(Long.toString(_toLong(arg2))));
+			else if (arg2 instanceof Float)
+				return value1.divideToIntegralValue(new BigDecimal(((Float)arg2).doubleValue()));
+			else if (arg2 instanceof Double)
+				return value1.divideToIntegralValue(new BigDecimal(((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return value1.divideToIntegralValue(new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return value1.divideToIntegralValue((BigDecimal)arg2);
 		}
 		throw new UnsupportedOperationException("Can't divide " + objectType(arg1) + " and " + objectType(arg2) + "!");
 	}

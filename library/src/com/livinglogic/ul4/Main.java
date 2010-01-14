@@ -37,13 +37,14 @@ public class Main
 	}
 	public static void main(String[] args)
 	{
-		Long c = new Long(42);
-		Template tmpl = Compiler.compile("<?print a?>(<?print type(a)?>) / <?print b?>(<?print type(b)?>) = <?print a / b?>(<?print type(a/b)?>)");
-		System.out.println(tmpl);
+		Template tmpl = Compiler.compile("<?print a?>(<?print type(a)?>) // <?print b?>(<?print type(b)?>) = <?print a // b?>(<?print type(a//b)?>)");
+		// System.out.println(tmpl);
 		for (int i = 0; i <= 8; ++i)
 		{
 			for (int j = 0; j <= 8; ++j)
 			{
+				Object a = dings(i, 23);
+				Object b = dings(j, 17);
 				Map vars = new HashMap<String, Object>();
 				vars.put("a", dings(i, 23));
 				vars.put("b", dings(j, 17));
