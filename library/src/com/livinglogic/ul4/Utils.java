@@ -1562,7 +1562,7 @@ public class Utils
 			return iterator((Map)obj);
 		else if (obj instanceof Iterator)
 			return (Iterator)obj;
-		throw new UnsupportedOperationException("Can't iterate over" + objectType(obj) + "!");
+		throw new UnsupportedOperationException("Can't iterate over " + objectType(obj) + "!");
 	}
 
 	public static Object enumerate(Object obj)
