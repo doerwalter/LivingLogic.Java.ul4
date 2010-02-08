@@ -1978,6 +1978,11 @@ public class Utils
 		throw new UnsupportedOperationException("Can't call format on " + objectType(obj) + " with " + objectType(formatString) + " as format string!");
 	}
 
+	public static Object format(Object obj, Object formatString)
+	{
+		return format(obj, formatString, Locale.getDefault());
+	}
+
 	public static Object replace(Object obj, Object arg1, Object arg2)
 	{
 		if (obj instanceof String && arg1 instanceof String && arg2 instanceof String)
