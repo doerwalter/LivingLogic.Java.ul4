@@ -1,3 +1,9 @@
+exp-22:
+-------
+Comments:
+* The build file now forces compilation with Java 1.5.
+
+
 exp-21:
 -------
 Comments:
