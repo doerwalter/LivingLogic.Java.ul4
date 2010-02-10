@@ -1510,7 +1510,7 @@ public class Utils
 		}
 		else if (obj instanceof Boolean)
 		{
-			return ((Boolean)obj).booleanValue() ? "\x01" : "\x00";
+			return ((Boolean)obj).booleanValue() ? "\u0001" : "\u0000";
 		}
 		else if (obj instanceof Long)
 		{
