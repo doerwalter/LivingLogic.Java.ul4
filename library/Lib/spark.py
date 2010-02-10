@@ -227,8 +227,7 @@ class GenericParser(object):
 			else:
 				self.error(None)
 
-		return self.buildTree(self._START, finalitem,
-				      tokens, len(sets)-2)
+		return self.buildTree(self._START, finalitem, tokens, len(sets)-2)
 
 	def isnullable(self, sym):
 		#
