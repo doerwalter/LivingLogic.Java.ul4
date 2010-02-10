@@ -1478,29 +1478,14 @@ public class Utils
 		throw new UnsupportedOperationException("Can't determine length for " + objectType(obj) + "!");
 	}
 
-	public static Iterator iterator(String obj)
-	{
-		return new StringIterator(obj);
-	}
-
-	public static Iterator iterator(Iterable obj)
-	{
-		return obj.iterator();
-	}
-
-	public static Iterator iterator(Map obj)
-	{
-		return obj.keySet().iterator();
-	}
-
 	public static Iterator iterator(Object obj)
 	{
 		if (obj instanceof String)
-			return iterator((String)obj);
+			return new StringIterator((String)obj);
 		else if (obj instanceof Iterable)
-			return iterator((Iterable)obj);
+			return ((Iterable)obj).iterator();
 		else if (obj instanceof Map)
-			return iterator((Map)obj);
+			return ((Map)obj).keySet().iterator();
 		else if (obj instanceof Iterator)
 			return (Iterator)obj;
 		throw new UnsupportedOperationException("Can't iterate over " + objectType(obj) + "!");
