@@ -6,4 +6,9 @@ public class SyntaxException extends Exception
 	{
 		super("Lexical error near " + token);
 	}
+
+	public SyntaxException(Object object)
+	{
+		super("Lexical error near " + object);
+	}
 }
