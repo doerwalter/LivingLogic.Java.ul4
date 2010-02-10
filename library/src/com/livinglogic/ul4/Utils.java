@@ -1289,56 +1289,27 @@ public class Utils
 		return StringEscapeUtils.escapeCsv((String)obj);
 	}
 
-	public static Object toInteger(String obj)
-	{
-		return Integer.valueOf(obj);
-	}
-
-	public static Object toInteger(Integer obj)
-	{
-		return obj;
-	}
-
-	public static Object toInteger(Long obj)
-	{
-		return obj;
-	}
-
-	public static Object toInteger(Number obj)
-	{
-		return new Integer(obj.intValue());
-	}
-
-	public static Object toInteger(Boolean obj)
-	{
-		return obj.booleanValue() ? INTEGER_TRUE : INTEGER_FALSE;
-	}
-
 	public static Object toInteger(Object obj)
 	{
 		if (obj instanceof String)
 			return toInteger((String)obj);
-		else if (obj instanceof Integer)
-			return toInteger((Integer)obj);
-		else if (obj instanceof Long)
-			return toInteger((Long)obj);
-		else if (obj instanceof Number)
-			return toInteger((Number)obj);
+		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger)
+			return obj;
 		else if (obj instanceof Boolean)
-			return toInteger((Boolean)obj);
+			return ((Boolean)obj).booleanValue() ? INTEGER_TRUE : INTEGER_FALSE;
+		else if (obj instanceof Float || obj instanceof Double)
+			return ((Number)obj).intValue();
+		else if (obj instanceof BigDecimal)
+			return ((BigDecimal)obj).toBigInteger();
 		throw new UnsupportedOperationException("Can't convert " + objectType(obj) + " to an integer!");
-	}
-
-	public static Object toInteger(String obj1, Integer obj2)
-	{
-		return Integer.valueOf(obj1, obj2.intValue());
 	}
 
 	public static Object toInteger(Object obj1, Object obj2)
 	{
-		if (obj1 instanceof String && obj2 instanceof Integer)
+		if (obj1 instanceof String)
 		{
-			return toInteger((String)obj1, (Integer)obj2);
+			if (obj2 instanceof Integer || obj2 instanceof Byte || obj2 instanceof Short || obj2 instanceof Long || obj2 instanceof BigInteger)
+				return Integer.valueOf((String)obj1, ((Number)obj2).intValue());
 		}
 		throw new UnsupportedOperationException("Can't convert " + objectType(obj1) + " to an integer using " + objectType(obj2) + " as base!");
 	}
