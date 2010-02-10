@@ -2,6 +2,7 @@ HEAD:
 -----
 Comments:
 * Add support for more types in the 1 and 2 arg version of toInteger().
+* Add support for more types to toFloat().
 
 
 exp-22:

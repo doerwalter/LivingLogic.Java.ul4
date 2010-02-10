@@ -9,11 +9,11 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?print int(x)?>");
+		Template tmpl = Compiler.compile("<?print float(x)?>");
 		System.out.println(tmpl);
 
 		Map vars = new HashMap<String, Object>();
-		vars.put("x", -4.2);
+		vars.put("x", new BigInteger("42"));
 		long start = System.currentTimeMillis();
 		String output = tmpl.renders(vars);
 		System.out.println("rendered " + (System.currentTimeMillis()-start));

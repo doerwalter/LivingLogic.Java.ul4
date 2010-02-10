@@ -1314,43 +1314,20 @@ public class Utils
 		throw new UnsupportedOperationException("Can't convert " + objectType(obj1) + " to an integer using " + objectType(obj2) + " as base!");
 	}
 
-	public static Object toFloat(String obj)
-	{
-		return Float.valueOf(obj);
-	}
-
-	public static Object toFloat(Integer obj)
-	{
-		return (double)(obj.intValue());
-	}
-
-	public static Object toFloat(Long obj)
-	{
-		return (double)(obj.longValue());
-	}
-
-	public static Object toFloat(Float obj)
-	{
-		return (double)obj;
-	}
-
-	public static Object toFloat(Boolean obj)
-	{
-		return obj.booleanValue() ? 1.0d : 0.0d;
-	}
-
 	public static Object toFloat(Object obj)
 	{
 		if (obj instanceof String)
-			return toFloat((String)obj);
-		else if (obj instanceof Integer)
-			return toFloat((Integer)obj);
-		else if (obj instanceof Long)
-			return toFloat((Long)obj);
-		else if (obj instanceof Number)
-			return toFloat((Number)obj);
+			return Double.valueOf((String)obj);
+		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short)
+			return (double)((Number)obj).intValue();
 		else if (obj instanceof Boolean)
-			return toFloat((Boolean)obj);
+			return ((Boolean)obj).booleanValue() ? 1.0d : 0.0d;
+		else if (obj instanceof Long)
+			return (double)((Long)obj).longValue();
+		else if (obj instanceof BigInteger)
+			return new BigDecimal(((BigInteger)obj).toString());
+		else if (obj instanceof BigDecimal)
+			return obj;
 		throw new UnsupportedOperationException("Can't convert " + objectType(obj) + " to a float!");
 	}
 
