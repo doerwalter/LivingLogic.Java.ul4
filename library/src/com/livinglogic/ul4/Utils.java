@@ -1467,29 +1467,14 @@ public class Utils
 		throw new UnsupportedOperationException("Can't created reversed iterator for " + objectType(obj) + "!");
 	}
 	
-	public static Object length(String obj)
-	{
-		return obj.length();
-	}
-
-	public static Object length(Collection obj)
-	{
-		return obj.size();
-	}
-
-	public static Object length(Map obj)
-	{
-		return obj.size();
-	}
-
 	public static Object length(Object obj)
 	{
 		if (obj instanceof String)
-			return length((String)obj);
+			return ((String)obj).length();
 		else if (obj instanceof Collection)
-			return length((Collection)obj);
+			return ((Collection)obj).size();
 		else if (obj instanceof Map)
-			return length((Map)obj);
+			return ((Map)obj).size();
 		throw new UnsupportedOperationException("Can't determine length for " + objectType(obj) + "!");
 	}
 

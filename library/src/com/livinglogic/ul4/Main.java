@@ -9,7 +9,7 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?print json(now())?>, <?print json(#fff)?>");
+		Template tmpl = Compiler.compile("<?print len('gurk')?>, <?print len([1,2,3])?>, <?print len({1: 'eins', 2: 'zwei', 3: 'drei'})?>");
 		System.out.println(tmpl);
 
 		Map vars = new HashMap<String, Object>();
