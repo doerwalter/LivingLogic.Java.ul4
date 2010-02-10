@@ -1337,12 +1337,15 @@ public class Utils
 			return "None";
 		else if (obj instanceof Boolean)
 			return ((Boolean)obj).booleanValue() ? "True" : "False";
-		else if (obj instanceof Integer)
-			return String.valueOf(((Integer)obj).intValue());
-		else if (obj instanceof Long)
-			return String.valueOf(((Long)obj).longValue());
-		else if (obj instanceof Double)
-			return String.valueOf(((Double)obj).doubleValue());
+		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger || obj instanceof Double || obj instanceof Float)
+			return obj.toString();
+		else if (obj instanceof BigDecimal)
+		{
+			String result = obj.toString();
+			if (result.indexOf('.') < 0 || result.indexOf('E') < 0 || result.indexOf('e') < 0)
+				result += ".0";
+			return result;
+		}
 		else if (obj instanceof String)
 			return new StringBuffer()
 				.append("\"")
