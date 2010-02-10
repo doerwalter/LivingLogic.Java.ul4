@@ -1539,39 +1539,108 @@ public class Utils
 		throw new UnsupportedOperationException("Can't determine unicode code point for " + objectType(obj) + "!");
 	}
 
-	public static Object hex(Integer obj)
-	{
-		return "0x" + Integer.toHexString(obj);
-	}
-
 	public static Object hex(Object obj)
 	{
-		if (obj instanceof Integer)
-			return hex((Integer)obj);
+		if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short)
+		{
+			int value = ((Number)obj).intValue();
+			if (value < 0)
+				return "-0x" + Integer.toHexString(-value);
+			else
+				return "0x" + Integer.toHexString(value);
+		}
+		else if (obj instanceof Boolean)
+		{
+			return ((Boolean)obj).booleanValue() ? "0x1" : "0x0";
+		}
+		else if (obj instanceof Long)
+		{
+			long value = ((Long)obj).longValue();
+			if (value < 0)
+				return "-0x" + Long.toHexString(-value);
+			else
+				return "0x" + Long.toHexString(value);
+		}
+		else if (obj instanceof BigInteger)
+		{
+			BigInteger bi = (BigInteger)obj;
+			if (bi.signum() < 0)
+			{
+				return "-0x" + bi.toString(16).substring(1);
+			}
+			else
+				return "0x" + bi.toString(16);
+		}
 		throw new UnsupportedOperationException(objectType(obj) + " can't be represented as a hexadecimal string!");
-	}
-
-	public static Object oct(Integer obj)
-	{
-		return "0o" + Integer.toOctalString(obj);
 	}
 
 	public static Object oct(Object obj)
 	{
-		if (obj instanceof Integer)
-			return oct((Integer)obj);
+		if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short)
+		{
+			int value = ((Number)obj).intValue();
+			if (value < 0)
+				return "-0o" + Integer.toOctalString(-value);
+			else
+				return "0o" + Integer.toOctalString(value);
+		}
+		else if (obj instanceof Boolean)
+		{
+			return ((Boolean)obj).booleanValue() ? "0o1" : "0o0";
+		}
+		else if (obj instanceof Long)
+		{
+			long value = ((Long)obj).longValue();
+			if (value < 0)
+				return "-0o" + Long.toOctalString(-value);
+			else
+				return "0o" + Long.toOctalString(value);
+		}
+		else if (obj instanceof BigInteger)
+		{
+			BigInteger bi = (BigInteger)obj;
+			if (bi.signum() < 0)
+			{
+				return "-0o" + bi.toString(8).substring(1);
+			}
+			else
+				return "0o" + bi.toString(8);
+		}
 		throw new UnsupportedOperationException(objectType(obj) + " can't be represented as an octal string!");
-	}
-
-	public static Object bin(Integer obj)
-	{
-		return "0b" + Integer.toBinaryString(obj);
 	}
 
 	public static Object bin(Object obj)
 	{
-		if (obj instanceof Integer)
-			return chr((Integer)obj);
+		if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short)
+		{
+			int value = ((Number)obj).intValue();
+			if (value < 0)
+				return "-0b" + Integer.toBinaryString(-value);
+			else
+				return "0b" + Integer.toBinaryString(value);
+		}
+		else if (obj instanceof Boolean)
+		{
+			return ((Boolean)obj).booleanValue() ? "0b1" : "0b0";
+		}
+		else if (obj instanceof Long)
+		{
+			long value = ((Long)obj).longValue();
+			if (value < 0)
+				return "-0b" + Long.toBinaryString(-value);
+			else
+				return "0b" + Long.toBinaryString(value);
+		}
+		else if (obj instanceof BigInteger)
+		{
+			BigInteger bi = (BigInteger)obj;
+			if (bi.signum() < 0)
+			{
+				return "-0b" + bi.toString(2).substring(1);
+			}
+			else
+				return "0b" + bi.toString(2);
+		}
 		throw new UnsupportedOperationException(objectType(obj) + " can't be represented as a binary string!");
 	}
 

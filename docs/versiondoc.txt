@@ -7,6 +7,8 @@ Comments:
 * repr() of BigIntegers now ensures that the result contains a decimal point.
 * Add support for more number types and Color objects to json().
 * Add support for more number types to chr().
+* Add support for more number types to hex()/oct()/bin() and fixed the result
+  for negative values.
 
 
 exp-22:
