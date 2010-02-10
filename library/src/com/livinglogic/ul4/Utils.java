@@ -772,51 +772,6 @@ public class Utils
 		throw new UnsupportedOperationException("Can't divide " + objectType(arg1) + " and " + objectType(arg2) + "!");
 	}
 
-	public static Object floordiv(Boolean arg1, Boolean arg2)
-	{
-		return (arg1.booleanValue() ? 1 : 0) / (arg2.booleanValue() ? 1 : 0);
-	}
-
-	public static Object floordiv(Boolean arg1, Integer arg2)
-	{
-		return (arg1.booleanValue() ? 1 : 0) / arg2.intValue();
-	}
-
-	public static Object floordiv(Boolean arg1, Number arg2)
-	{
-		return (arg1.booleanValue() ? 1 : 0) / arg2.doubleValue();
-	}
-
-	public static Object floordiv(Integer arg1, Boolean arg2)
-	{
-		return arg1.intValue() / (arg2.booleanValue() ? 1 : 0);
-	}
-
-	public static Object floordiv(Integer arg1, Integer arg2)
-	{
-		return arg1.intValue() / arg2.intValue();
-	}
-
-	public static Object floordiv(Integer arg1, Number arg2)
-	{
-		return arg1.intValue() / arg2.doubleValue();
-	}
-
-	public static Object floordiv(Number arg1, Boolean arg2)
-	{
-		return arg1.doubleValue() / (arg2.booleanValue() ? 1 : 0);
-	}
-
-	public static Object floordiv(Number arg1, Integer arg2)
-	{
-		return arg1.doubleValue() / arg2.intValue();
-	}
-
-	public static Object floordiv(Number arg1, Number arg2)
-	{
-		return (double)((int)(arg1.doubleValue() / arg2.doubleValue()));
-	}
-
 	public static Object floordiv(Object arg1, Object arg2)
 	{
 		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
