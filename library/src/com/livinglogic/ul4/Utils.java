@@ -1526,19 +1526,16 @@ public class Utils
 		throw new UnsupportedOperationException(objectType(obj) + " is not a valid unicode codepoint!");
 	}
 
-	public static Object ord(String obj)
-	{
-		if (1 != obj.length())
-		{
-			throw new IllegalArgumentException("String " + obj + " contains more than one unicode character!");
-		}
-		return (int)obj.charAt(0);
-	}
-
 	public static Object ord(Object obj)
 	{
 		if (obj instanceof String)
-			return chr((String)obj);
+		{
+			if (1 != ((String)obj).length())
+			{
+				throw new IllegalArgumentException("String " + obj + " contains more than one unicode character!");
+			}
+			return (int)((String)obj).charAt(0);
+		}
 		throw new UnsupportedOperationException("Can't determine unicode code point for " + objectType(obj) + "!");
 	}
 
