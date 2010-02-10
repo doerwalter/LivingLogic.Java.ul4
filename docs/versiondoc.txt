@@ -6,6 +6,7 @@ Comments:
 * Add support for more number types to repr().
 * repr() of BigIntegers now ensures that the result contains a decimal point.
 * Add support for more number types and Color objects to json().
+* Add support for more number types to chr().
 
 
 exp-22:

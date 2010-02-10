@@ -1496,21 +1496,33 @@ public class Utils
 		return new SequenceEnumerator(iterator(obj));
 	}
 
-	public static Object chr(Integer obj)
-	{
-		int intValue = obj.intValue();
-		char charValue = (char)intValue;
-		if (intValue != (int)charValue)
-		{
-			throw new IndexOutOfBoundsException("Code point " + intValue + " is invalid!");
-		}
-		return String.valueOf(charValue);
-	}
-
 	public static Object chr(Object obj)
 	{
-		if (obj instanceof Integer)
-			return chr((Integer)obj);
+		if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short)
+		{
+			int intValue = ((Number)obj).intValue();
+			char charValue = (char)intValue;
+			if (intValue != (int)charValue)
+			{
+				throw new IndexOutOfBoundsException("Code point " + intValue + " is invalid!");
+			}
+			return String.valueOf(charValue);
+		}
+		else if (obj instanceof Boolean)
+		{
+			return ((Boolean)obj).booleanValue() ? "\x01" : "\x00";
+		}
+		else if (obj instanceof Long)
+		{
+			long longValue = ((Long)obj).longValue();
+			char charValue = (char)longValue;
+			if (longValue != (long)charValue)
+			{
+				throw new IndexOutOfBoundsException("Code point " + longValue + " is invalid!");
+			}
+			return String.valueOf(charValue);
+		}
+		// FIXME: Add support for BigInteger
 		throw new UnsupportedOperationException(objectType(obj) + " is not a valid unicode codepoint!");
 	}
 
