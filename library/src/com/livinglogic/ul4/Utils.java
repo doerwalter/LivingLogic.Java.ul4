@@ -1443,7 +1443,7 @@ public class Utils
 			return ((Map)obj).keySet().iterator();
 		else if (obj instanceof Iterator)
 			return (Iterator)obj;
-		throw new UnsupportedOperationException("Can't iterate over " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + "is not iterable!");
 	}
 
 	public static Object enumerate(Object obj)
