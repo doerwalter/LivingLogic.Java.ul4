@@ -1247,7 +1247,7 @@ public class Utils
 	public static Object toInteger(Object obj)
 	{
 		if (obj instanceof String)
-			return toInteger((String)obj);
+			return Integer.valueOf((String)obj);
 		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger)
 			return obj;
 		else if (obj instanceof Boolean)
