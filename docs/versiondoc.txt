@@ -9,6 +9,7 @@ Comments:
 * Add support for more number types to chr().
 * Add support for more number types to hex()/oct()/bin() and fixed the result
   for negative values.
+* Added Utils.utcnow().
 
 
 exp-22:

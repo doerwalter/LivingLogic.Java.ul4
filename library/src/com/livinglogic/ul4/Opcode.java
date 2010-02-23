@@ -72,7 +72,8 @@ public class Opcode
 	public static final int OC_ENDDEF = 67;
 
 	public static final int CF0_NOW = 0;
-	public static final int CF0_VARS = 1;
+	public static final int CF0_UTCNOW = 1;
+	public static final int CF0_VARS = 2;
 
 	public static final int CF1_XMLESCAPE = 0;
 	public static final int CF1_STR = 1;
@@ -316,6 +317,8 @@ public class Opcode
 	{
 		if (name.equals("now"))
 			return CF0_NOW;
+		else if (name.equals("utcnow"))
+			return CF0_UTCNOW;
 		else if (name.equals("vars"))
 			return CF0_VARS;
 		else

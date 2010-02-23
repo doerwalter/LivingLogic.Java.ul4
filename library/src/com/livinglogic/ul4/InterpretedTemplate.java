@@ -1180,6 +1180,9 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF0_NOW:
 									reg[code.r1] = new Date();
 									break;
+								case Opcode.CF0_UTCNOW:
+									reg[code.r1] = Utils.utcnow();
+									break;
 								case Opcode.CF0_VARS:
 									reg[code.r1] = variables;
 									break;
@@ -2039,6 +2042,9 @@ public class InterpretedTemplate implements Template
 					{
 						case Opcode.CF0_NOW:
 							code(buffer, indent, "reg" + opcode.r1 + " = datetime.datetime.now()");
+							break;
+						case Opcode.CF0_UTCNOW:
+							code(buffer, indent, "reg" + opcode.r1 + " = datetime.datetime.utcnow()");
 							break;
 					}
 					break;

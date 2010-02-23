@@ -12,7 +12,10 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.Set;
 import java.util.Date;
+import java.util.TimeZone;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -1235,6 +1238,23 @@ public class Utils
 		return sb.toString();
 	}
 
+	public static Date utcnow()
+	{
+		DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		String formatted = df.format(new Date());
+		df.setTimeZone(TimeZone.getDefault());
+		try
+		{
+			return df.parse(formatted);
+		}
+		catch (ParseException ex)
+		{
+			// Can't happen
+			return null;
+		}
+	}
+
 	public static String csv(Object obj)
 	{
 		if (obj == null)
@@ -1637,40 +1657,19 @@ public class Utils
 		throw new RuntimeException("Can't sort " + objectType(obj) + "!");
 	}
 
-	public static Object range(Integer obj)
-	{
-		return new Range(0, obj, 1);
-	}
-
 	public static Object range(Object obj)
 	{
-		if (obj instanceof Integer)
-			return range((Integer)obj);
-		throw new UnsupportedOperationException("Can't build a range from " + objectType(obj) + "!");
-	}
-
-	public static Object range(Integer obj1, Integer obj2)
-	{
-		return new Range(obj1, obj2, 1);
+		return new Range(0, _toInt(obj), 1);
 	}
 
 	public static Object range(Object obj1, Object obj2)
 	{
-		if (obj1 instanceof Integer && obj2 instanceof Integer)
-			return range((Integer)obj1, (Integer)obj2);
-		throw new UnsupportedOperationException("Can't build a range from " + objectType(obj1) + " and " + objectType(obj2) + "!");
-	}
-
-	public static Object range(Integer obj1, Integer obj2, Integer obj3)
-	{
-		return new Range(obj1, obj2, obj3);
+		return new Range(_toInt(obj1), _toInt(obj2), 1);
 	}
 
 	public static Object range(Object obj1, Object obj2, Object obj3)
 	{
-		if (obj1 instanceof Integer && obj2 instanceof Integer && obj3 instanceof Integer)
-			return range((Integer)obj1, (Integer)obj2, (Integer)obj3);
-		throw new UnsupportedOperationException("Can't build a range from " + objectType(obj1) + " and " + objectType(obj2) + " and " + objectType(obj3) + "!");
+		return new Range(_toInt(obj1), _toInt(obj2), _toInt(obj3));
 	}
 
 	public static Object zip(Object obj1, Object obj2)
