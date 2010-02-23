@@ -131,11 +131,12 @@ public class Opcode
 	public static final int CM0_CAPITALIZE = 6;
 	public static final int CM0_ITEMS = 7;
 	public static final int CM0_ISOFORMAT = 8;
-	public static final int CM0_HLS = 9;
-	public static final int CM0_HLSA = 10;
-	public static final int CM0_HSV = 11;
-	public static final int CM0_HSVA = 12;
-	public static final int CM0_LUM = 13;
+	public static final int CM0_MIMEFORMAT = 9;
+	public static final int CM0_HLS = 10;
+	public static final int CM0_HLSA = 11;
+	public static final int CM0_HSV = 12;
+	public static final int CM0_HSVA = 13;
+	public static final int CM0_LUM = 14;
 
 	public static final int CM1_SPLIT = 0;
 	public static final int CM1_RSPLIT = 1;
@@ -457,6 +458,8 @@ public class Opcode
 			return CM0_ITEMS;
 		else if (name.equals("isoformat"))
 			return CM0_ISOFORMAT;
+		else if (name.equals("mimeformat"))
+			return CM0_MIMEFORMAT;
 		else if (name.equals("hls"))
 			return CM0_HLS;
 		else if (name.equals("hlsa"))

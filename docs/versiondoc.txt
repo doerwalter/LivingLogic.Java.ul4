@@ -9,7 +9,8 @@ Comments:
 * Add support for more number types to chr().
 * Add support for more number types to hex()/oct()/bin() and fixed the result
   for negative values.
-* Added Utils.utcnow().
+* Added the UL4 function utcnow() and the support method Utils.utcnow().
+* Added the UL4 method mimeformat() and the support method Utils.mimeformat().
 
 
 exp-22:

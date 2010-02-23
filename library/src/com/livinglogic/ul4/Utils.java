@@ -1803,6 +1803,20 @@ public class Utils
 		throw new UnsupportedOperationException("Can't call isoformat on " + objectType(obj) + "!");
 	}
 
+	public static SimpleDateFormat mimeDateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", new Locale("en"));
+
+	public static String mimeformat(Date obj)
+	{
+		return mimeDateFormatter.format(obj);
+	}
+
+	public static String mimeformat(Object obj)
+	{
+		if (obj instanceof Date)
+			return mimeformat((Date)obj);
+		throw new UnsupportedOperationException("Can't call mimeformat on " + objectType(obj) + "!");
+	}
+
 	public static Object format(Date obj, String formatString, Locale locale)
 	{
 		StringBuffer javaFormatString = new StringBuffer();

@@ -1367,6 +1367,9 @@ public class InterpretedTemplate implements Template
 								case Opcode.CM0_ISOFORMAT:
 									reg[code.r1] = Utils.isoformat(reg[code.r2]);
 									break;
+								case Opcode.CM0_MIMEFORMAT:
+									reg[code.r1] = Utils.mimeformat(reg[code.r2]);
+									break;
 								case Opcode.CM0_HLS:
 									reg[code.r1] = ((Color)reg[code.r2]).hls();
 									break;
@@ -2197,6 +2200,9 @@ public class InterpretedTemplate implements Template
 							break;
 						case Opcode.CM0_ISOFORMAT:
 							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".isoformat()");
+							break;
+						case Opcode.CM0_MIMEFORMAT:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".mimeformat()");
 							break;
 						case Opcode.CM0_ITEMS:
 							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".iteritems()");
