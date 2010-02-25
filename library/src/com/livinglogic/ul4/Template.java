@@ -1,9 +1,8 @@
 package com.livinglogic.ul4;
 
 import java.util.Map;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
+import java.io.Writer;
+import java.io.IOException;
 
 /**
  * Copyright 2009 by LivingLogic AG, Bayreuth/Germany
@@ -22,5 +21,5 @@ public interface Template
 {
 	public String renders(Map<String, Object> variables);
 
-	public void renderjsp(JspWriter out, Map<String, Object> variables) throws java.io.IOException;
+	public void renderjsp(Writer out, Map<String, Object> variables) throws java.io.IOException;
 }

@@ -16,9 +16,6 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
 import org.apache.commons.lang.ObjectUtils;
 
 public class InterpretedTemplate implements Template
@@ -857,7 +854,7 @@ public class InterpretedTemplate implements Template
 	 *                  available to the template code.
 	 * @return An iterator that returns the string output piece by piece.
 	 */
-	public Iterator<String> render(Map variables)
+	public Iterator<String> render(Map<String, Object> variables)
 	{
 		return new Renderer(variables);
 	}
@@ -2334,7 +2331,7 @@ public class InterpretedTemplate implements Template
 		return buffer.toString();
 	}
 
-	public void renderjsp(JspWriter out, Map variables) throws java.io.IOException
+	public void renderjsp(Writer out, Map<String, Object> variables) throws java.io.IOException
 	{
 		for (Iterator<String> iterator = render(variables); iterator.hasNext();)
 		{

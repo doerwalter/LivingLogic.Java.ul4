@@ -4,9 +4,6 @@ import java.util.Map;
 import java.io.Writer;
 import java.io.StringWriter;
 import java.io.IOException;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
 
 /**
  * Copyright 2009 by LivingLogic AG, Bayreuth/Germany
@@ -39,7 +36,7 @@ public abstract class JSPTemplate implements Template
 		return result;
 	}
 
-	public void renderjsp(JspWriter out, Map<String, Object> variables) throws java.io.IOException
+	public void renderjsp(Writer out, Map<String, Object> variables) throws java.io.IOException
 	{
 		execute(out, variables);
 	}

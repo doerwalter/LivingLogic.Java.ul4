@@ -1,5 +1,5 @@
-HEAD:
------
+exp-23:
+------
 Comments:
 * Add support for more number types in the 1 and 2 arg version of toInteger().
 * Add support for more number types to toFloat().
@@ -11,6 +11,7 @@ Comments:
   for negative values.
 * Added the UL4 function utcnow() and the support method Utils.utcnow().
 * Added the UL4 method mimeformat() and the support method Utils.mimeformat().
+* The JSP render method have have a Writer as argument instead of a JSPWriter.
 
 
 exp-22:
