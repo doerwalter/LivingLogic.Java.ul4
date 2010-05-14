@@ -9,7 +9,7 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?print utcnow().mimeformat()?>");
+		Template tmpl = Compiler.compile("<?code t = now()?><?print t.weekday()?>");
 		System.out.println(tmpl);
 
 		Map vars = new HashMap<String, Object>();

@@ -1382,6 +1382,30 @@ public class InterpretedTemplate implements Template
 								case Opcode.CM0_LUM:
 									reg[code.r1] = new Double(((Color)reg[code.r2]).lum());
 									break;
+								case Opcode.CM0_DAY:
+									reg[code.r1] = Utils.day(reg[code.r2]);
+									break;
+								case Opcode.CM0_MONTH:
+									reg[code.r1] = Utils.month(reg[code.r2]);
+									break;
+								case Opcode.CM0_YEAR:
+									reg[code.r1] = Utils.year(reg[code.r2]);
+									break;
+								case Opcode.CM0_HOUR:
+									reg[code.r1] = Utils.hour(reg[code.r2]);
+									break;
+								case Opcode.CM0_MINUTE:
+									reg[code.r1] = Utils.minute(reg[code.r2]);
+									break;
+								case Opcode.CM0_SECOND:
+									reg[code.r1] = Utils.second(reg[code.r2]);
+									break;
+								case Opcode.CM0_MICROSECOND:
+									reg[code.r1] = Utils.microsecond(reg[code.r2]);
+									break;
+								case Opcode.CM0_WEEKDAY:
+									reg[code.r1] = Utils.weekday(reg[code.r2]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLMETH1:
@@ -2218,6 +2242,30 @@ public class InterpretedTemplate implements Template
 							break;
 						case Opcode.CM0_LUM:
 							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".lum()");
+							break;
+						case Opcode.CM0_DAY:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".day");
+							break;
+						case Opcode.CM0_MONTH:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".month");
+							break;
+						case Opcode.CM0_YEAR:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".year");
+							break;
+						case Opcode.CM0_HOUR:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hour");
+							break;
+						case Opcode.CM0_MINUTE:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".minute");
+							break;
+						case Opcode.CM0_SECOND:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".second");
+							break;
+						case Opcode.CM0_MICROSECOND:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".microsecond");
+							break;
+						case Opcode.CM0_WEEKDAY:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".weekday()");
 							break;
 					}
 					break;

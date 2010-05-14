@@ -137,6 +137,14 @@ public class Opcode
 	public static final int CM0_HSV = 12;
 	public static final int CM0_HSVA = 13;
 	public static final int CM0_LUM = 14;
+	public static final int CM0_DAY = 15;
+	public static final int CM0_MONTH = 16;
+	public static final int CM0_YEAR = 17;
+	public static final int CM0_HOUR = 18;
+	public static final int CM0_MINUTE = 19;
+	public static final int CM0_SECOND = 20;
+	public static final int CM0_MICROSECOND = 21;
+	public static final int CM0_WEEKDAY = 22;
 
 	public static final int CM1_SPLIT = 0;
 	public static final int CM1_RSPLIT = 1;
@@ -470,6 +478,22 @@ public class Opcode
 			return CM0_HSVA;
 		else if (name.equals("lum"))
 			return CM0_LUM;
+		else if (name.equals("day"))
+			return CM0_DAY;
+		else if (name.equals("month"))
+			return CM0_MONTH;
+		else if (name.equals("year"))
+			return CM0_YEAR;
+		else if (name.equals("hour"))
+			return CM0_HOUR;
+		else if (name.equals("minute"))
+			return CM0_MINUTE;
+		else if (name.equals("second"))
+			return CM0_SECOND;
+		else if (name.equals("microsecond"))
+			return CM0_MICROSECOND;
+		else if (name.equals("weekday"))
+			return CM0_WEEKDAY;
 		else
 			throw new UnknownMethodException(name);
 	}

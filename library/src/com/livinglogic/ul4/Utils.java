@@ -9,10 +9,13 @@ import java.util.NoSuchElementException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Vector;
 import java.util.Set;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -2072,5 +2075,107 @@ public class Utils
 		}
 		else
 			throw new UnsupportedOperationException("can't call join on " + objectType(arg1) + "!");
+	}
+
+	public static int day(Object obj)
+	{
+		if (obj instanceof Date)
+		{
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime((Date)obj);
+			return calendar.get(Calendar.DAY_OF_MONTH);
+		}
+		throw new UnsupportedOperationException("Can't call day on " + objectType(obj) + "!");
+	}
+
+	public static int month(Object obj)
+	{
+		if (obj instanceof Date)
+		{
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime((Date)obj);
+			return calendar.get(Calendar.MONTH)+1;
+		}
+		throw new UnsupportedOperationException("Can't call month on " + objectType(obj) + "!");
+	}
+
+	public static int year(Object obj)
+	{
+		if (obj instanceof Date)
+		{
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime((Date)obj);
+			return calendar.get(Calendar.YEAR);
+		}
+		throw new UnsupportedOperationException("Can't call year on " + objectType(obj) + "!");
+	}
+
+	public static int hour(Object obj)
+	{
+		if (obj instanceof Date)
+		{
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime((Date)obj);
+			return calendar.get(Calendar.HOUR_OF_DAY);
+		}
+		throw new UnsupportedOperationException("Can't call hour on " + objectType(obj) + "!");
+	}
+
+	public static int minute(Object obj)
+	{
+		if (obj instanceof Date)
+		{
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime((Date)obj);
+			return calendar.get(Calendar.MINUTE);
+		}
+		throw new UnsupportedOperationException("Can't call minute on " + objectType(obj) + "!");
+	}
+
+	public static int second(Object obj)
+	{
+		if (obj instanceof Date)
+		{
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime((Date)obj);
+			return calendar.get(Calendar.SECOND);
+		}
+		throw new UnsupportedOperationException("Can't call second on " + objectType(obj) + "!");
+	}
+
+	public static int microsecond(Object obj)
+	{
+		if (obj instanceof Date)
+		{
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime((Date)obj);
+			return calendar.get(Calendar.MILLISECOND)*1000;
+		}
+		throw new UnsupportedOperationException("Can't call microsecond on " + objectType(obj) + "!");
+	}
+
+	private static HashMap<Integer, Integer> weekdays;
+
+	static
+	{
+		weekdays = new HashMap<Integer, Integer>();
+		weekdays.put(Calendar.MONDAY, 0);
+		weekdays.put(Calendar.TUESDAY, 1);
+		weekdays.put(Calendar.WEDNESDAY, 2);
+		weekdays.put(Calendar.THURSDAY, 3);
+		weekdays.put(Calendar.FRIDAY, 4);
+		weekdays.put(Calendar.SATURDAY, 5);
+		weekdays.put(Calendar.SUNDAY, 6);
+	}
+
+	public static int weekday(Object obj)
+	{
+		if (obj instanceof Date)
+		{
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime((Date)obj);
+			return weekdays.get(calendar.get(Calendar.DAY_OF_WEEK));
+		}
+		throw new UnsupportedOperationException("Can't call weekday on " + objectType(obj) + "!");
 	}
 }
