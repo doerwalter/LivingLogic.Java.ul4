@@ -3,6 +3,7 @@ HEAD:
 Comments:
 * Support for the following new date methods has been added: day, month, year,
   hour, minute, second, microsecond, weekday and yearday.
+* Date parsing has been enhanced (microseconds are still not supported).
 
 
 exp-23:
