@@ -1005,7 +1005,7 @@ public class InterpretedTemplate implements Template
 							reg[code.r1] = Double.parseDouble(code.arg);
 							break;
 						case Opcode.OC_LOADDATE:
-							reg[code.r1] = Utils.isoDateFormatter.parse(code.arg);
+							reg[code.r1] = Utils.isoparse(code.arg);
 							break;
 						case Opcode.OC_LOADCOLOR:
 							reg[code.r1] = Color.fromdump(code.arg);
@@ -1406,6 +1406,9 @@ public class InterpretedTemplate implements Template
 								case Opcode.CM0_WEEKDAY:
 									reg[code.r1] = Utils.weekday(reg[code.r2]);
 									break;
+								case Opcode.CM0_YEARDAY:
+									reg[code.r1] = Utils.yearday(reg[code.r2]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLMETH1:
@@ -1621,7 +1624,7 @@ public class InterpretedTemplate implements Template
 				else if (stringMode==0 && dateMatcher.lookingAt())
 				{
 					len = dateMatcher.end();
-					tokens.add(new LoadDate(pos, pos+len, Utils.isoDateFormatter.parse(dateMatcher.group())));
+					tokens.add(new LoadDate(pos, pos+len, Utils.isoparse(dateMatcher.group())));
 				}
 				else if (stringMode==0 && color8Matcher.lookingAt())
 				{
@@ -2266,6 +2269,9 @@ public class InterpretedTemplate implements Template
 							break;
 						case Opcode.CM0_WEEKDAY:
 							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".weekday()");
+							break;
+						case Opcode.CM0_YEARDAY:
+							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".yearday()");
 							break;
 					}
 					break;

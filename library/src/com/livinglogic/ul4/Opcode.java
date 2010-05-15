@@ -145,6 +145,7 @@ public class Opcode
 	public static final int CM0_SECOND = 20;
 	public static final int CM0_MICROSECOND = 21;
 	public static final int CM0_WEEKDAY = 22;
+	public static final int CM0_YEARDAY = 23;
 
 	public static final int CM1_SPLIT = 0;
 	public static final int CM1_RSPLIT = 1;
@@ -494,6 +495,8 @@ public class Opcode
 			return CM0_MICROSECOND;
 		else if (name.equals("weekday"))
 			return CM0_WEEKDAY;
+		else if (name.equals("yearday"))
+			return CM0_YEARDAY;
 		else
 			throw new UnknownMethodException(name);
 	}

@@ -1792,11 +1792,21 @@ public class Utils
 		throw new UnsupportedOperationException("Can't convert " + objectType(obj) + " to capital case!");
 	}
 
-	public static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy.MM.dd'T'HH:mm:ss.SSS'000'");
+	public static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'");
+	public static SimpleDateFormat isoDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	public static SimpleDateFormat isoTimestampFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'000'");
 
 	public static String isoformat(Date obj)
 	{
-		return isoDateFormatter.format(obj);
+		if (microsecond(obj) != 0)
+			return isoTimestampFormatter.format(obj);
+		else
+		{
+			if (hour(obj) != 0 || minute(obj) != 0 || second(obj) != 0)
+				return isoDateTimeFormatter.format(obj);
+			else
+				return isoDateFormatter.format(obj);
+		}
 	}
 
 	public static String isoformat(Object obj)
@@ -1804,6 +1814,17 @@ public class Utils
 		if (obj instanceof Date)
 			return isoformat((Date)obj);
 		throw new UnsupportedOperationException("Can't call isoformat on " + objectType(obj) + "!");
+	}
+
+	public static Date isoparse(String format) throws java.text.ParseException
+	{
+		int length = format.length();
+		if (length == 11)
+			return isoDateFormatter.parse(format);
+		else if (length == 19)
+			return isoDateTimeFormatter.parse(format);
+		else // if (len == 26) // FIXME: last 3 digits must be 0
+			return isoTimestampFormatter.parse(format);
 	}
 
 	public static SimpleDateFormat mimeDateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", new Locale("en"));
@@ -2177,5 +2198,16 @@ public class Utils
 			return weekdays.get(calendar.get(Calendar.DAY_OF_WEEK));
 		}
 		throw new UnsupportedOperationException("Can't call weekday on " + objectType(obj) + "!");
+	}
+
+	public static int yearday(Object obj)
+	{
+		if (obj instanceof Date)
+		{
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime((Date)obj);
+			return calendar.get(Calendar.DAY_OF_YEAR);
+		}
+		throw new UnsupportedOperationException("Can't call yearday on " + objectType(obj) + "!");
 	}
 }
