@@ -1183,6 +1183,9 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF0_VARS:
 									reg[code.r1] = variables;
 									break;
+								case Opcode.CF0_RANDOM:
+									reg[code.r1] = Utils.random();
+									break;
 							}
 							break;
 						case Opcode.OC_CALLFUNC1:
@@ -1281,6 +1284,9 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF1_REVERSED:
 									reg[code.r1] = Utils.reversed(reg[code.r2]);
 									break;
+								case Opcode.CF1_RANDRANGE:
+									reg[code.r1] = Utils.randrange(reg[code.r2]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLFUNC2:
@@ -1297,6 +1303,9 @@ public class InterpretedTemplate implements Template
 									break;
 								case Opcode.CF2_INT:
 									reg[code.r1] = Utils.toInteger(reg[code.r2], reg[code.r3]);
+									break;
+								case Opcode.CF2_RANDRANGE:
+									reg[code.r1] = Utils.randrange(reg[code.r2], reg[code.r3]);
 									break;
 							}
 							break;
@@ -1317,6 +1326,9 @@ public class InterpretedTemplate implements Template
 									break;
 								case Opcode.CF3_HSV:
 									reg[code.r1] = Utils.hsv(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+								case Opcode.CF3_RANDRANGE:
+									reg[code.r1] = Utils.randrange(reg[code.r2], reg[code.r3], reg[code.r4]);
 									break;
 							}
 							break;
@@ -2073,6 +2085,9 @@ public class InterpretedTemplate implements Template
 						case Opcode.CF0_UTCNOW:
 							code(buffer, indent, "reg" + opcode.r1 + " = datetime.datetime.utcnow()");
 							break;
+						case Opcode.CF0_RANDOM:
+							code(buffer, indent, "reg" + opcode.r1 + " = random.random()");
+							break;
 					}
 					break;
 				case Opcode.OC_CALLFUNC1:
@@ -2168,6 +2183,9 @@ public class InterpretedTemplate implements Template
 						case Opcode.CF1_RANGE:
 							code(buffer, indent, "reg" + opcode.r1 + " = xrange(reg" + opcode.r2 + ")");
 							break;
+						case Opcode.CF1_RANDRANGE:
+							code(buffer, indent, "reg" + opcode.r1 + " = random.randrange(reg" + opcode.r2 + ")");
+							break;
 					}
 					break;
 				case Opcode.OC_CALLFUNC2:
@@ -2185,6 +2203,9 @@ public class InterpretedTemplate implements Template
 						case Opcode.CF2_INT:
 							code(buffer, indent, "reg" + opcode.r1 + " = int(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
 							break;
+						case Opcode.CF2_RANDRANGE:
+							code(buffer, indent, "reg" + opcode.r1 + " = random.randrange(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
+							break;
 					}
 					break;
 				case Opcode.OC_CALLFUNC3:
@@ -2195,6 +2216,9 @@ public class InterpretedTemplate implements Template
 							break;
 						case Opcode.CF3_ZIP:
 							code(buffer, indent, "reg" + opcode.r1 + " = itertools.izip(reg" + opcode.r2 + ", reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							break;
+						case Opcode.CF3_RANDRANGE:
+							code(buffer, indent, "reg" + opcode.r1 + " = random.randrange(reg" + opcode.r2 + ", reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
 							break;
 					}
 					break;

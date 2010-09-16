@@ -74,6 +74,7 @@ public class Opcode
 	public static final int CF0_NOW = 0;
 	public static final int CF0_UTCNOW = 1;
 	public static final int CF0_VARS = 2;
+	public static final int CF0_RANDOM = 3;
 
 	public static final int CF1_XMLESCAPE = 0;
 	public static final int CF1_STR = 1;
@@ -106,17 +107,20 @@ public class Opcode
 	public static final int CF1_GET = 28;
 	public static final int CF1_JSON = 29;
 	public static final int CF1_REVERSED = 30;
+	public static final int CF1_RANDRANGE = 31;
 
 	public static final int CF2_RANGE = 0;
 	public static final int CF2_GET = 1;
 	public static final int CF2_ZIP = 2;
 	public static final int CF2_INT = 3;
+	public static final int CF2_RANDRANGE = 4;
 
 	public static final int CF3_RANGE = 0;
 	public static final int CF3_ZIP = 1;
 	public static final int CF3_RGB = 2;
 	public static final int CF3_HLS = 3;
 	public static final int CF3_HSV = 4;
+	public static final int CF3_RANDRANGE = 5;
 
 	public static final int CF4_RGB = 0;
 	public static final int CF4_HLS = 1;
@@ -331,6 +335,8 @@ public class Opcode
 			return CF0_UTCNOW;
 		else if (name.equals("vars"))
 			return CF0_VARS;
+		else if (name.equals("random"))
+			return CF0_RANDOM;
 		else
 			throw new UnknownFunctionException(name);
 	}
@@ -399,6 +405,8 @@ public class Opcode
 			return CF1_JSON;
 		else if (name.equals("reversed"))
 			return CF1_REVERSED;
+		else if (name.equals("randrange"))
+			return CF1_RANDRANGE;
 		else
 			throw new UnknownFunctionException(name);
 	}
@@ -413,6 +421,8 @@ public class Opcode
 			return CF2_ZIP;
 		else if (name.equals("int"))
 			return CF2_INT;
+		else if (name.equals("randrange"))
+			return CF2_RANDRANGE;
 		else
 			throw new UnknownFunctionException(name);
 	}
@@ -429,6 +439,8 @@ public class Opcode
 			return CF3_HLS;
 		else if (name.equals("hsv"))
 			return CF3_HSV;
+		else if (name.equals("randrange"))
+			return CF3_RANDRANGE;
 		else
 			throw new UnknownFunctionException(name);
 	}

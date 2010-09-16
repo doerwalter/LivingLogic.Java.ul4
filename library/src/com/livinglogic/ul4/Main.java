@@ -10,7 +10,7 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?code t = 2010-01-01T12:34:56?><?print t.microsecond()?> --> <?print t.isoformat()?>");
+		Template tmpl = Compiler.compile("<?for i in range(20)?><?print randrange(100, 200, 10)?>\n<?end for?>");
 		System.out.println(tmpl);
 
 		Map vars = new HashMap<String, Object>();

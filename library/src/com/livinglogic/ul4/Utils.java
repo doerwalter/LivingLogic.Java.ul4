@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Random;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -2209,5 +2210,46 @@ public class Utils
 			return calendar.get(Calendar.DAY_OF_YEAR);
 		}
 		throw new UnsupportedOperationException("Can't call yearday on " + objectType(obj) + "!");
+	}
+
+	private static Random rng = new Random();
+
+	public static double random()
+	{
+		return rng.nextDouble();
+	}
+
+	public static long randrange(Object startObj, Object stopObj, Object stepObj)
+	{
+		long start = _toLong(startObj);
+		long stop = _toLong(stopObj);
+		long step = _toLong(stepObj);
+		long width = stop-start;
+		double value = rng.nextDouble();
+
+		long n;
+		if (step > 0)
+			n = (width + step - 1) / step;
+		else if (step < 0)
+			n = (width + step + 1) / step;
+		else
+			throw new UnsupportedOperationException("step can't be 0 in randrange()");
+		return start + step*((long)(rng.nextDouble() * n));
+	}
+
+	public static long randrange(Object startObj, Object stopObj)
+	{
+		long start = _toLong(startObj);
+		long stop = _toLong(stopObj);
+		long width = stop-start;
+		double value = rng.nextDouble();
+		return start + ((long)(value*width));
+	}
+
+	public static long randrange(Object stopObj)
+	{
+		long stop = _toLong(stopObj);
+		double value = rng.nextDouble();
+		return (long)(value*stop);
 	}
 }
