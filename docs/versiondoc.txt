@@ -20,7 +20,7 @@ Comments:
   for negative values.
 * Added the UL4 function utcnow() and the support method Utils.utcnow().
 * Added the UL4 method mimeformat() and the support method Utils.mimeformat().
-* The JSP render method have have a Writer as argument instead of a JSPWriter.
+* The JSP render method has a Writer as argument instead of a JSPWriter.
 
 
 exp-22:
