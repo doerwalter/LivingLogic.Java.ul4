@@ -10,7 +10,7 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?for i in range(20)?><?print randrange(100, 200, 10)?>\n<?end for?>");
+		Template tmpl = Compiler.compile("<?code x = #12345678?><?for i in range(20)?><?print randchoice(x)?>\n<?end for?>");
 		System.out.println(tmpl);
 
 		Map vars = new HashMap<String, Object>();

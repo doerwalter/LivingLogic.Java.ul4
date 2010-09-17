@@ -1,3 +1,9 @@
+exp-25:
+-------
+Comments:
+* Support for the UL4 function randchoice has been added.
+
+
 exp-24:
 -------
 Comments:

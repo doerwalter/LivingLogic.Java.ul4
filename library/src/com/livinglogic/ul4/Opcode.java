@@ -108,6 +108,7 @@ public class Opcode
 	public static final int CF1_JSON = 29;
 	public static final int CF1_REVERSED = 30;
 	public static final int CF1_RANDRANGE = 31;
+	public static final int CF1_RANDCHOICE = 32;
 
 	public static final int CF2_RANGE = 0;
 	public static final int CF2_GET = 1;
@@ -407,6 +408,8 @@ public class Opcode
 			return CF1_REVERSED;
 		else if (name.equals("randrange"))
 			return CF1_RANDRANGE;
+		else if (name.equals("randchoice"))
+			return CF1_RANDCHOICE;
 		else
 			throw new UnknownFunctionException(name);
 	}

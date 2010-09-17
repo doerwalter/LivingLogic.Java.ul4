@@ -1287,6 +1287,9 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF1_RANDRANGE:
 									reg[code.r1] = Utils.randrange(reg[code.r2]);
 									break;
+								case Opcode.CF1_RANDCHOICE:
+									reg[code.r1] = Utils.randchoice(reg[code.r2]);
+									break;
 							}
 							break;
 						case Opcode.OC_CALLFUNC2:
@@ -2185,6 +2188,9 @@ public class InterpretedTemplate implements Template
 							break;
 						case Opcode.CF1_RANDRANGE:
 							code(buffer, indent, "reg" + opcode.r1 + " = random.randrange(reg" + opcode.r2 + ")");
+							break;
+						case Opcode.CF1_RANDCHOICE:
+							code(buffer, indent, "reg" + opcode.r1 + " = random.choice(reg" + opcode.r2 + ")");
 							break;
 					}
 					break;

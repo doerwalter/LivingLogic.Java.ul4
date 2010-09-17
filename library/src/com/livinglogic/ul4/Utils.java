@@ -2252,4 +2252,37 @@ public class Utils
 		double value = rng.nextDouble();
 		return (long)(value*stop);
 	}
+
+	public static Object randchoice(Object obj)
+	{
+		if (obj instanceof String)
+		{
+			String str = (String)obj;
+			int index = (int)(str.length() * rng.nextDouble());
+			return str.substring(index, index + 1);
+		}
+		else if (obj instanceof List)
+		{
+			List lst = (List)obj;
+			int index = (int)(lst.size() * rng.nextDouble());
+			return lst.get(index);
+		}
+		else if (obj instanceof Color)
+		{
+			Color col = (Color)obj;
+			int index = (int)(4 * rng.nextDouble());
+			switch (index)
+			{
+				case 0:
+					return col.getR();
+				case 1:
+					return col.getG();
+				case 2:
+					return col.getB();
+				case 3:
+					return col.getA();
+			}
+		}
+		throw new UnsupportedOperationException("Can't call randchoice on " + objectType(obj) + "!");
+	}
 }
