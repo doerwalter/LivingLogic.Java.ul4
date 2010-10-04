@@ -2285,4 +2285,18 @@ public class Utils
 		}
 		throw new UnsupportedOperationException("Can't call randchoice on " + objectType(obj) + "!");
 	}
+
+	public static Object startswith(Object obj, Object arg1)
+	{
+		if (obj instanceof String && arg1 instanceof String)
+			return ((String)obj).startsWith((String)arg1);
+		throw new UnsupportedOperationException("Can't call startswith on " + objectType(obj) + "!");
+	}
+
+	public static Object endswith(Object obj, Object arg1)
+	{
+		if (obj instanceof String && arg1 instanceof String)
+			return ((String)obj).endsWith((String)arg1);
+		throw new UnsupportedOperationException("Can't call endswith on " + objectType(obj) + "!");
+	}
 }

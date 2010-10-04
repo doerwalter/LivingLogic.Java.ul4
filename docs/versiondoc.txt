@@ -1,3 +1,9 @@
+exp-26:
+-------
+Comments:
+* Support for the UL4 methods startswith and endswith has been added.
+
+
 exp-25:
 -------
 Comments:
