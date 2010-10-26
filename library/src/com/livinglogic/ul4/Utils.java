@@ -2234,7 +2234,7 @@ public class Utils
 			n = (width + step + 1) / step;
 		else
 			throw new UnsupportedOperationException("step can't be 0 in randrange()");
-		return start + step*((long)(rng.nextDouble() * n));
+		return start + step*((long)(value * n));
 	}
 
 	public static long randrange(Object startObj, Object stopObj)
