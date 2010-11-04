@@ -49,7 +49,7 @@ public class InterpretedTemplate implements Template
 		octintPattern = Pattern.compile("0[oO][0-7]+");
 		binintPattern = Pattern.compile("0[bB][01]+");
 		intPattern = Pattern.compile("\\d+");
-		datePattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}T(\\d{2}:\\d{2}(:\\d{2}(.\\d{6})?)?)?");
+		datePattern = Pattern.compile("@\\d{4}-\\d{2}-\\d{2}T(\\d{2}:\\d{2}(:\\d{2}(.\\d{6})?)?)?");
 		color3Pattern = Pattern.compile("[#][0-9a-zA-Z]{3}");
 		color4Pattern = Pattern.compile("[#][0-9a-zA-Z]{4}");
 		color6Pattern = Pattern.compile("[#][0-9a-zA-Z]{6}");
@@ -108,7 +108,7 @@ public class InterpretedTemplate implements Template
 	/**
 	 * The version number used in the compiled format of the template.
 	 */
-	public static final String VERSION = "12";
+	public static final String VERSION = "13";
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
@@ -1382,6 +1382,18 @@ public class InterpretedTemplate implements Template
 								case Opcode.CM0_MIMEFORMAT:
 									reg[code.r1] = Utils.mimeformat(reg[code.r2]);
 									break;
+								case Opcode.CM0_R:
+									reg[code.r1] = ((Color)reg[code.r2]).getR();
+									break;
+								case Opcode.CM0_G:
+									reg[code.r1] = ((Color)reg[code.r2]).getG();
+									break;
+								case Opcode.CM0_B:
+									reg[code.r1] = ((Color)reg[code.r2]).getB();
+									break;
+								case Opcode.CM0_A:
+									reg[code.r1] = ((Color)reg[code.r2]).getA();
+									break;
 								case Opcode.CM0_HLS:
 									reg[code.r1] = ((Color)reg[code.r2]).hls();
 									break;
@@ -1639,7 +1651,7 @@ public class InterpretedTemplate implements Template
 				else if (stringMode==0 && dateMatcher.lookingAt())
 				{
 					len = dateMatcher.end();
-					tokens.add(new LoadDate(pos, pos+len, Utils.isoparse(dateMatcher.group())));
+					tokens.add(new LoadDate(pos, pos+len, Utils.isoparse(dateMatcher.group().substring(1))));
 				}
 				else if (stringMode==0 && color8Matcher.lookingAt())
 				{
@@ -1863,67 +1875,18 @@ public class InterpretedTemplate implements Template
 		buffer.append("\n");
 	}
 
-	public String pythonSource(String function)
+	public String javascriptSource()
 	{
 		StringBuffer buffer = new StringBuffer();
 		int indent = 0;
+		int varcounter = 0;
 
-		if (function != null)
-		{
-			code(buffer, indent, "def " + function + "(**variables):");
-			indent += 1;
-		}
-		code(buffer, indent, "import sys, marshal, datetime, itertools");
-		code(buffer, indent, "from ll.misc import xmlescape");
-		code(buffer, indent, "from ll import ul4c");
-		code(buffer, indent, "source = u" + Utils.repr(source));
-		code(buffer, indent, "variables = dict((key.decode('utf-8'), value) for (key, value) in variables.iteritems())");
+		code(buffer, indent, "ul4.Template.create(function(vars){");
+		indent += 1;
+		code(buffer, indent, "var out = [], r0 = null, r1 = null, r2 = null, r3 = null, r4 = null, r5 = null, r6 = null, r7 = null, r8 = null, r9 = null;");
 
 		int size = opcodes.size();
 
-		StringBuffer locations = new StringBuffer();
-		StringBuffer lines2locs = new StringBuffer();
-		int index = -1;
-		Location lastLocation = null;
-
-		for (int i = 0; i < size; ++i)
-		{
-			Opcode opcode = opcodes.get(i);
-			
-			if (lastLocation != opcode.location)
-			{
-				if (locations.length()>0)
-					locations.append(", ");
-
-				lastLocation = opcode.location;
-
-				locations.append("(")
-				         .append(Utils.repr(lastLocation.type))
-				         .append(", ")
-				         .append(lastLocation.starttag)
-				         .append(", ")
-				         .append(lastLocation.endtag)
-				         .append(", ")
-				         .append(lastLocation.startcode)
-				         .append(", ")
-				         .append(lastLocation.endcode)
-				         .append(")");
-				++index;
-			}
-			if (lines2locs.length()>0)
-				lines2locs.append(", ");
-			lines2locs.append(index);
-		}
-		code(buffer, indent, "locations = (" + locations + ")");
-		code(buffer, indent, "lines2locs = (" + lines2locs + ")");
-
-		code(buffer, indent, "reg0 = reg1 = reg2 = reg3 = reg4 = reg5 = reg6 = reg7 = reg8 = reg9 = None");
-
-		code(buffer, indent, "try:");
-		indent += 1;
-		code(buffer, indent, "startline = sys._getframe().f_lineno+1"); // The source line of the first opcode
-
-		int lastOpcode = -1;
 		for (int i = 0; i < size; ++i)
 		{
 			Opcode opcode = opcodes.get(i);
@@ -1931,165 +1894,192 @@ public class InterpretedTemplate implements Template
 			switch (opcode.name)
 			{
 				case Opcode.OC_TEXT:
-					code(buffer, indent, "yield u" + Utils.repr(opcode.location.getCode()));
+					code(buffer, indent, "out.push(" + Utils.json(opcode.location.getCode()) + ");");
 					break;
 				case Opcode.OC_LOADSTR:
-					code(buffer, indent, "reg" + opcode.r1 + " = u" + Utils.repr(opcode.arg));
+					code(buffer, indent, "r" + opcode.r1 + " = " + Utils.json(opcode.arg) + ";");
 					break;
 				case Opcode.OC_LOADINT:
-					code(buffer, indent, "reg" + opcode.r1 + " = " + opcode.arg);
+					code(buffer, indent, "r" + opcode.r1 + " = " + opcode.arg + ";");
 					break;
 				case Opcode.OC_LOADFLOAT:
-					code(buffer, indent, "reg" + opcode.r1 + " = " + opcode.arg);
+					code(buffer, indent, "r" + opcode.r1 + " = " + opcode.arg + ";");
 					break;
 				case Opcode.OC_LOADNONE:
-					code(buffer, indent, "reg" + opcode.r1 + " = None");
+					code(buffer, indent, "r" + opcode.r1 + " = null;");
 					break;
 				case Opcode.OC_LOADFALSE:
-					code(buffer, indent, "reg" + opcode.r1 + " = False");
+					code(buffer, indent, "r" + opcode.r1 + " = false;");
 					break;
 				case Opcode.OC_LOADTRUE:
-					code(buffer, indent, "reg" + opcode.r1 + " = True");
+					code(buffer, indent, "r" + opcode.r1 + " = true;");
 					break;
 				case Opcode.OC_LOADDATE:
-					code(buffer, indent, "reg" + opcode.r1 + " = !!!");
+					code(buffer, indent, "r" + opcode.r1 + " = " + Utils.json(Utils.isoparse(opcode.arg)) + ";");
+					break;
+				case Opcode.OC_LOADCOLOR:
+					code(buffer, indent, "r" + opcode.r1 + " = " + Utils.json(Color.fromdump(opcode.arg)) + ";");
 					break;
 				case Opcode.OC_BUILDLIST:
-					code(buffer, indent, "reg" + opcode.r1 + " = []");
+					code(buffer, indent, "r" + opcode.r1 + " = [];");
 					break;
 				case Opcode.OC_BUILDDICT:
-					code(buffer, indent, "reg" + opcode.r1 + " = {}");
+					code(buffer, indent, "r" + opcode.r1 + " = {};");
 					break;
 				case Opcode.OC_ADDLIST:
-					code(buffer, indent, "reg" + opcode.r1 + ".append(reg" + opcode.r2 + ")");
+					code(buffer, indent, "r" + opcode.r1 + ".push(r" + opcode.r2 + ");");
 					break;
 				case Opcode.OC_ADDDICT:
-					code(buffer, indent, "reg" + opcode.r1 + "[reg" + opcode.r2 + "] = reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + "[r" + opcode.r2 + "] = r" + opcode.r3 + ";");
 					break;
 				case Opcode.OC_LOADVAR:
-					code(buffer, indent, "reg" + opcode.r1 + " = variables[u" + Utils.repr(opcode.arg) + "]");
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_getitem(vars, " + Utils.repr(opcode.arg) + ");");
 					break;
 				case Opcode.OC_STOREVAR:
-					code(buffer, indent, "variables[u" + Utils.repr(opcode.arg) + "] = reg" + opcode.r1);
+					code(buffer, indent, "vars[u" + Utils.repr(opcode.arg) + "] = r" + opcode.r1 + ";");
 					break;
 				case Opcode.OC_ADDVAR:
-					code(buffer, indent, "variables[u" + Utils.repr(opcode.arg) + "] += reg" + opcode.r1);
+					code(buffer, indent, "vars[" + Utils.repr(opcode.arg) + "] = ul4._op_add(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
 					break;
 				case Opcode.OC_SUBVAR:
-					code(buffer, indent, "variables[u" + Utils.repr(opcode.arg) + "] -= reg" + opcode.r1);
+					code(buffer, indent, "vars[" + Utils.repr(opcode.arg) + "] = ul4._op_sub(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
 					break;
 				case Opcode.OC_MULVAR:
-					code(buffer, indent, "variables[u" + Utils.repr(opcode.arg) + "] *= reg" + opcode.r1);
+					code(buffer, indent, "vars[" + Utils.repr(opcode.arg) + "] = ul4._op_mul(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
 					break;
 				case Opcode.OC_TRUEDIVVAR:
-					code(buffer, indent, "variables[u" + Utils.repr(opcode.arg) + "] /= reg" + opcode.r1);
+					code(buffer, indent, "vars[" + Utils.repr(opcode.arg) + "] = ul4._op_truediv(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
 					break;
 				case Opcode.OC_FLOORDIVVAR:
-					code(buffer, indent, "variables[u" + Utils.repr(opcode.arg) + "] //= reg" + opcode.r1);
+					code(buffer, indent, "vars[" + Utils.repr(opcode.arg) + "] = ul4._op_floordiv(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
+					break;
+				case Opcode.OC_MODVAR:
+					code(buffer, indent, "vars[" + Utils.repr(opcode.arg) + "] = ul4._op_mod(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
 					break;
 				case Opcode.OC_DELVAR:
-					code(buffer, indent, "del variables[u" + Utils.repr(opcode.arg) + "]");
+					code(buffer, indent, "vars[" + Utils.repr(opcode.arg) + "] = undefined;");
 					break;
 				case Opcode.OC_GETATTR:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + "[u" + Utils.repr(opcode.arg) + "]");
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_getitem(r" + opcode.r2 + ", " + Utils.repr(opcode.arg) + ");");
 					break;
 				case Opcode.OC_GETITEM:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + "[reg" + opcode.r3 + "]");
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_getitem(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_GETSLICE12:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + "[reg" + opcode.r3 + ":reg" + opcode.r4 + "]");
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_getslice(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 					break;
 				case Opcode.OC_GETSLICE1:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + "[reg" + opcode.r3 + ":]");
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_getslice(r" + opcode.r2 + ", r" + opcode.r3 + ", null);");
 					break;
 				case Opcode.OC_GETSLICE2:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + "[:reg" + opcode.r3 + "]");
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_getslice(r" + opcode.r2 + ", null, r" + opcode.r4 + ");");
 					break;
 				case Opcode.OC_PRINT:
-					code(buffer, indent, "if reg" + opcode.r1 + " is not None: yield unicode(reg" + opcode.r1 + ")");
+					code(buffer, indent, "out.push(ul4._fu_str(r" + opcode.r1 + "));");
 					break;
 				case Opcode.OC_PRINTX:
-					code(buffer, indent, "if reg" + opcode.r1 + " is not None: yield xmlescape(unicode(reg" + opcode.r1 + "))");
+					code(buffer, indent, "out.push(ul4._fu_xmlescape(r" + opcode.r1 + "));");
 					break;
 				case Opcode.OC_FOR:
-					code(buffer, indent, "for reg" + opcode.r1 + " in reg" + opcode.r2 + ":");
-					indent += 1;
+					varcounter++;
+					code(buffer, indent, "for (var iter" + varcounter + " = ul4._iter(r" + opcode.r2 + ");;)");
+					code(buffer, indent, "{");
+					indent++;
+					code(buffer, indent, "r" + opcode.r1 + " = iter" + varcounter + "();");
+					code(buffer, indent, "if (r" + opcode.r1 + " === null)");
+					indent++;
+					code(buffer, indent, "break;");
+					indent--;
+					code(buffer, indent, "r" + opcode.r1 + " = r" + opcode.r1 + "[0];");
 					break;
 				case Opcode.OC_ENDFOR:
-					indent -= 1;
-					code(buffer, indent, "# end for");
+					indent--;
+					code(buffer, indent, "}");
+					break;
+				case Opcode.OC_DEF:
+					code(buffer, indent, "vars[" + Utils.json(opcode.arg) + "] = ul4.Template.create(function(vars){");
+					indent++;
+					code(buffer, indent, "var out = [], r0 = null, r1 = null, r2 = null, r3 = null, r4 = null, r5 = null, r6 = null, r7 = null, r8 = null, r9 = null;");
+					break;
+				case Opcode.OC_ENDDEF:
+					code(buffer, indent, "return out;");
+					indent--;
+					code(buffer, indent, "});");
 					break;
 				case Opcode.OC_BREAK:
-					code(buffer, indent, "break");
+					code(buffer, indent, "break;");
 					break;
 				case Opcode.OC_CONTINUE:
-					code(buffer, indent, "continue");
+					code(buffer, indent, "continue;");
 					break;
 				case Opcode.OC_NOT:
-					code(buffer, indent, "reg" + opcode.r1 + " = not reg" + opcode.r2);
+					code(buffer, indent, "r" + opcode.r1 + " = !ul4._fu_bool(r" + opcode.r2 + ");");
 					break;
 				case Opcode.OC_NEG:
-					code(buffer, indent, "reg" + opcode.r1 + " = -reg" + opcode.r2);
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_neg(r" + opcode.r2 + ");");
 					break;
 				case Opcode.OC_CONTAINS:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " in reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_contains(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_NOTCONTAINS:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " not in reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = !ul4._op_contains(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_EQ:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " == reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_equals(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_NE:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " != reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = !ul4._op_equals(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_LT:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " < reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_lt(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_LE:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " <= reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_le(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_GT:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " > reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = !ul4._op_le(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_GE:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " >= reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = !ul4._op_lt(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_ADD:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " + reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_add(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_SUB:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " - reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_sub(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_MUL:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " * reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_mul(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_FLOORDIV:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " // reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_floordiv(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_TRUEDIV:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " / reg" + opcode.r3);
-					break;
-				case Opcode.OC_AND:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " and reg" + opcode.r3);
-					break;
-				case Opcode.OC_OR:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " or reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_truediv(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_MOD:
-					code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " % reg" + opcode.r3);
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_mod(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+					break;
+				case Opcode.OC_AND:
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_and(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+					break;
+				case Opcode.OC_OR:
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_or(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_CALLFUNC0:
 					switch (opcode.argcode)
 					{
 						case Opcode.CF0_NOW:
-							code(buffer, indent, "reg" + opcode.r1 + " = datetime.datetime.now()");
+							code(buffer, indent, "r" + opcode.r1 + " = new Date();");
 							break;
 						case Opcode.CF0_UTCNOW:
-							code(buffer, indent, "reg" + opcode.r1 + " = datetime.datetime.utcnow()");
+							code(buffer, indent, "r" + opcode.r1 + " = ul._fu_utcnow();");
 							break;
 						case Opcode.CF0_RANDOM:
-							code(buffer, indent, "reg" + opcode.r1 + " = random.random()");
+							code(buffer, indent, "r" + opcode.r1 + " = Math.random();");
+							break;
+						case Opcode.CF0_VARS:
+							code(buffer, indent, "r" + opcode.r1 + " = vars;");
 							break;
 					}
 					break;
@@ -2097,120 +2087,123 @@ public class InterpretedTemplate implements Template
 					switch (opcode.argcode)
 					{
 						case Opcode.CF1_XMLESCAPE:
-							code(buffer, indent, "reg" + opcode.r1 + " = xmlescape(unicode(reg" + opcode.r2 + ")) if reg" + opcode.r2 + " is not None else u''");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_xmlescape(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_CSV:
-							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._csv(reg" + opcode.r2 + ")");
-							break;
-						case Opcode.CF1_STR:
-							code(buffer, indent, "reg" + opcode.r1 + " = unicode(reg" + opcode.r2 + ") if reg" + opcode.r2 + " is not None else u''");
-							break;
-						case Opcode.CF1_INT:
-							code(buffer, indent, "reg" + opcode.r1 + " = int(reg" + opcode.r2 + ")");
-							break;
-						case Opcode.CF1_FLOAT:
-							code(buffer, indent, "reg" + opcode.r1 + " = float(reg" + opcode.r2 + ")");
-							break;
-						case Opcode.CF1_BOOL:
-							code(buffer, indent, "reg" + opcode.r1 + " = bool(reg" + opcode.r2 + ")");
-							break;
-						case Opcode.CF1_LEN:
-							code(buffer, indent, "reg" + opcode.r1 + " = len(reg" + opcode.r2 + ")");
-							break;
-						case Opcode.CF1_ENUMERATE:
-							code(buffer, indent, "reg" + opcode.r1 + " = enumerate(reg" + opcode.r2 + ")");
-							break;
-						case Opcode.CF1_ISNONE:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + " is not None");
-							break;
-						case Opcode.CF1_ISSTR:
-							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", basestring)");
-							break;
-						case Opcode.CF1_ISINT:
-							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", (int, long)) and not isinstance(reg" + opcode.r2 + ", bool)");
-							break;
-						case Opcode.CF1_ISFLOAT:
-							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", float)");
-							break;
-						case Opcode.CF1_ISBOOL:
-							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", bool)");
-							break;
-						case Opcode.CF1_ISDATE:
-							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", datetime.datetime)");
-							break;
-						case Opcode.CF1_ISLIST:
-							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", (list, tuple))");
-							break;
-						case Opcode.CF1_ISDICT:
-							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", dict)");
-							break;
-						case Opcode.CF1_ISTEMPLATE:
-							code(buffer, indent, "reg" + opcode.r1 + " = hasattr(reg" + opcode.r2 + ", '__call__')");
-							break;
-						case Opcode.CF1_ISCOLOR:
-							code(buffer, indent, "reg" + opcode.r1 + " = isinstance(reg" + opcode.r2 + ", color.Color)");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_csv(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_REPR:
-							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._repr(reg" + opcode.r2 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_repr(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CF1_GET:
-							code(buffer, indent, "reg" + opcode.r1 + " = variables.get(reg" + opcode.r2 + ")");
-							break;
-						case Opcode.CF1_JSON:
-							code(buffer, indent, "reg" + opcode.r1 + " = json(reg" + opcode.r2 + ")");
-							break;
-						case Opcode.CF1_REVERSED:
-							code(buffer, indent, "reg" + opcode.r1 + " = reversed(reg" + opcode.r2 + ")");
+						case Opcode.CF1_ENUMERATE:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_enumerate(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_CHR:
-							code(buffer, indent, "reg" + opcode.r1 + " = unichr(reg" + opcode.r2 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_chr(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_ORD:
-							code(buffer, indent, "reg" + opcode.r1 + " = ord(reg" + opcode.r2 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_ord(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_HEX:
-							code(buffer, indent, "reg" + opcode.r1 + " = hex(reg" + opcode.r2 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hex(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_OCT:
-							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._oct(reg" + opcode.r2 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_oct(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_BIN:
-							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._bin(reg" + opcode.r2 + ")");
-							break;
-						case Opcode.CF1_ABS:
-							code(buffer, indent, "reg" + opcode.r1 + " = abs(reg" + opcode.r2 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_bin(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_SORTED:
-							code(buffer, indent, "reg" + opcode.r1 + " = sorted(reg" + opcode.r2 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_sorted(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CF1_RANGE:
-							code(buffer, indent, "reg" + opcode.r1 + " = xrange(reg" + opcode.r2 + ")");
+						case Opcode.CF1_TYPE:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_type(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CF1_RANDRANGE:
-							code(buffer, indent, "reg" + opcode.r1 + " = random.randrange(reg" + opcode.r2 + ")");
+						case Opcode.CF1_JSON:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_json(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_REVERSED:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_reversed(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_RANDCHOICE:
-							code(buffer, indent, "reg" + opcode.r1 + " = random.choice(reg" + opcode.r2 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_randchoice(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_STR:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_str(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_INT:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_int(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_FLOAT:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_float(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_BOOL:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_bool(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_LEN:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_len(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_ISSTR:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_isstr(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_ISINT:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_isint(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_ISFLOAT:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_isfloat(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_ISBOOL:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_isbool(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_ISDATE:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_isdate(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_ISLIST:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_islist(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_ISDICT:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_isdict(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_ISTEMPLATE:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_istemplate(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_ISCOLOR:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_iscolor(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_ABS:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_abs(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_RANGE:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_range(0, r" + opcode.r2 + ", 1);");
+							break;
+						case Opcode.CF1_RANDRANGE:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_randrange(0, r" + opcode.r2 + ", 1);");
+							break;
+						case Opcode.CF1_ISNONE:
+							code(buffer, indent, "r" + opcode.r1 + " = (r" + opcode.r2 + " === null);");
+							break;
+						case Opcode.CF1_GET:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_get(vars, r" + opcode.r2 + ");");
 							break;
 					}
 					break;
 				case Opcode.OC_CALLFUNC2:
 					switch (opcode.argcode)
 					{
-						case Opcode.CF2_RANGE:
-							code(buffer, indent, "reg" + opcode.r1 + " = xrange(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
-							break;
-						case Opcode.CF2_GET:
-							code(buffer, indent, "reg" + opcode.r1 + " = variables.get(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
-							break;
 						case Opcode.CF2_ZIP:
-							code(buffer, indent, "reg" + opcode.r1 + " = itertools.izip(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_zip(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CF2_INT:
-							code(buffer, indent, "reg" + opcode.r1 + " = int(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_int(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							break;
+						case Opcode.CF2_RANGE:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_range(r" + opcode.r2 + ", r" + opcode.r3 + ", 1);");
 							break;
 						case Opcode.CF2_RANDRANGE:
-							code(buffer, indent, "reg" + opcode.r1 + " = random.randrange(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_randrange(r" + opcode.r2 + ", r" + opcode.r3 + ", 1);");
+							break;
+						case Opcode.CF2_GET:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_get(vars, r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 					}
 					break;
@@ -2218,134 +2211,178 @@ public class InterpretedTemplate implements Template
 					switch (opcode.argcode)
 					{
 						case Opcode.CF3_RANGE:
-							code(buffer, indent, "reg" + opcode.r1 + " = xrange(reg" + opcode.r2 + ", reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
-							break;
-						case Opcode.CF3_ZIP:
-							code(buffer, indent, "reg" + opcode.r1 + " = itertools.izip(reg" + opcode.r2 + ", reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_range(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 						case Opcode.CF3_RANDRANGE:
-							code(buffer, indent, "reg" + opcode.r1 + " = random.randrange(reg" + opcode.r2 + ", reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_randrange(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+							break;
+						case Opcode.CF3_ZIP:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_zip(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+							break;
+						case Opcode.CF3_HLS:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hls(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+							break;
+						case Opcode.CF3_HSV:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hsv(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+							break;
+						case Opcode.CF3_RGB:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_rgb(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", 0xff);");
+							break;
+					}
+					break;
+				case Opcode.OC_CALLFUNC4:
+					switch (opcode.argcode)
+					{
+						case Opcode.CF3_RGB:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_rgb(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", r" + opcode.r5 + ");");
+							break;
+						case Opcode.CF3_HLS:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hls(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+							break;
+						case Opcode.CF3_HSV:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hsv(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 					}
 					break;
 				case Opcode.OC_CALLMETH0:
 					switch (opcode.argcode)
 					{
-						case Opcode.CM0_SPLIT:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".split()");
-							break;
 						case Opcode.CM0_STRIP:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".strip()");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_strip(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_LSTRIP:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".lstrip()");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_lstrip(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_RSTRIP:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".rstrip()");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_rstrip(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_UPPER:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".upper()");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_upper(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_LOWER:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".lower()");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_lower(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_CAPITALIZE:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".capitalize()");
-							break;
-						case Opcode.CM0_ISOFORMAT:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".isoformat()");
-							break;
-						case Opcode.CM0_MIMEFORMAT:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".mimeformat()");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_capitalize(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_ITEMS:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".iteritems()");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_items(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CM0_HLS:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hls()");
+						case Opcode.CM0_ISOFORMAT:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_isoformat(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CM0_HLSA:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hlsa()");
-							break;
-						case Opcode.CM0_HSV:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hsv()");
-							break;
-						case Opcode.CM0_HSVA:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hsva()");
-							break;
-						case Opcode.CM0_LUM:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".lum()");
+						case Opcode.CM0_MIMEFORMAT:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_mimeformat(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_DAY:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".day");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_day(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_MONTH:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".month");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_month(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_YEAR:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".year");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_year(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_HOUR:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".hour");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_hour(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_MINUTE:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".minute");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_minute(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_SECOND:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".second");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_second(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_MICROSECOND:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".microsecond");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_microsecond(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_WEEKDAY:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".weekday()");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_weekday(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_YEARDAY:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".yearday()");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_yearday(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CM0_R:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_r(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CM0_G:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_g(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CM0_B:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_b(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CM0_A:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_a(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CM0_LUM:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_lum(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CM0_HLS:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_hls(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CM0_HLSA:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_hlsa(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CM0_HSV:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_hsv(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CM0_HSVA:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_hsva(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CM0_SPLIT:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_split(r" + opcode.r2 + ", null, null);");
+							break;
+						case Opcode.CM0_RSPLIT:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_rsplit(r" + opcode.r2 + ", null, null);");
+							break;
+						case Opcode.CM0_RENDER:
+							code(buffer, indent, "r" + opcode.r1 + " = r" + opcode.r2 + ".renders({});");
 							break;
 					}
 					break;
 				case Opcode.OC_CALLMETH1:
 					switch (opcode.argcode)
 					{
-						case Opcode.CM1_SPLIT:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".split(reg" + opcode.r3 + ")");
-							break;
-						case Opcode.CM1_RSPLIT:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".rsplit(reg" + opcode.r3 + ")");
+						case Opcode.CM1_JOIN:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_join(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_STRIP:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".strip(reg" + opcode.r3 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_strip(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_LSTRIP:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".lstrip(reg" + opcode.r3 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_lstrip(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_RSTRIP:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".rstrip(reg" + opcode.r3 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_rstrip(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_STARTSWITH:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".startswith(reg" + opcode.r3 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_startswith(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_ENDSWITH:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".endswith(reg" + opcode.r3 + ")");
-							break;
-						case Opcode.CM1_FIND:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".find(reg" + opcode.r3 + ")");
-							break;
-						case Opcode.CM1_GET:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".get(reg" + opcode.r3 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_endswith(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_FORMAT:
-							code(buffer, indent, "reg" + opcode.r1 + " = ul4c._format(reg" + opcode.r2 + ", reg" + opcode.r3 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_format(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_WITHLUM:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".withlum(reg" + opcode.r3 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_withlum(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_WITHA:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".witha(reg" + opcode.r3 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_witha(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
-						case Opcode.CM1_JOIN:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".join(unicode(x) for x in reg" + opcode.r3 + ")");
+						case Opcode.CM1_SPLIT:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_split(r" + opcode.r2 + ", r" + opcode.r3 + ", null);");
+							break;
+						case Opcode.CM1_RSPLIT:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_rsplit(r" + opcode.r2 + ", r" + opcode.r3 + ", null);");
+							break;
+						case Opcode.CM1_GET:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_get(r" + opcode.r2 + ", r" + opcode.r3 + ", null);");
+							break;
+						case Opcode.CM1_FIND:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_find(r" + opcode.r2 + ", r" + opcode.r3 + ", null, null);");
+							break;
+						case Opcode.CM1_RFIND:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_rfind(r" + opcode.r2 + ", r" + opcode.r3 + ", null, null);");
 							break;
 					}
 					break;
@@ -2353,19 +2390,22 @@ public class InterpretedTemplate implements Template
 					switch (opcode.argcode)
 					{
 						case Opcode.CM2_SPLIT:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".split(reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_split(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 						case Opcode.CM2_RSPLIT:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".rsplit(reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
-							break;
-						case Opcode.CM2_FIND:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".find(reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_rsplit(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 						case Opcode.CM2_REPLACE:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".replace(reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_replace(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 						case Opcode.CM2_GET:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".get(reg" + opcode.r3 + ", reg" + opcode.r4 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_get(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+							break;
+						case Opcode.CM2_FIND:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_find(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", null);");
+							break;
+						case Opcode.CM2_RFIND:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_rfind(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", null);");
 							break;
 					}
 					break;
@@ -2373,7 +2413,10 @@ public class InterpretedTemplate implements Template
 					switch (opcode.argcode)
 					{
 						case Opcode.CM3_FIND:
-							code(buffer, indent, "reg" + opcode.r1 + " = reg" + opcode.r2 + ".find(reg" + opcode.r3 + ", reg" + opcode.r4 + ", reg" + opcode.r5 + ")");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_find(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", r" + opcode.r5 + ");");
+							break;
+						case Opcode.CM3_RFIND:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._me_rfind(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", r" + opcode.r5 + ");");
 							break;
 					}
 					break;
@@ -2381,37 +2424,33 @@ public class InterpretedTemplate implements Template
 					switch (opcode.argcode)
 					{
 						case Opcode.CMKW_RENDER:
-							code(buffer, indent, "reg" + opcode.r1 + " = ''.join(reg" + opcode.r2 + "(**dict((key.encode(\"utf-8\"), value) for (key, value) in reg" + opcode.r3 + ".iteritems())))");
+							code(buffer, indent, "r" + opcode.r1 + " = r" + opcode.r2 + ".renders(r" + opcode.r3 + ");");
 							break;
 					}
 					break;
 				case Opcode.OC_IF:
-					code(buffer, indent, "if reg" + opcode.r1 + ":");
-					indent += 1;
+					code(buffer, indent, "if (ul4._fu_bool(" + opcode.r1 + ")");
+					code(buffer, indent, "{");
+					indent++;
 					break;
 				case Opcode.OC_ELSE:
-					if (lastOpcode == Opcode.OC_IF)
-						buffer.insert(buffer.length()-1, " pass");
-					indent -= 1;
-					code(buffer, indent, "else:");
-					indent += 1;
+					indent--;
+					code(buffer, indent, "}");
+					code(buffer, indent, "else");
+					code(buffer, indent, "{");
+					indent++;
 					break;
 				case Opcode.OC_ENDIF:
-					if (lastOpcode == Opcode.OC_IF || lastOpcode == Opcode.OC_ELSE)
-						buffer.insert(buffer.length()-1, " pass");
-					indent -= 1;
-					code(buffer, indent, "# end if");
+					indent--;
+					code(buffer, indent, "}");
 					break;
 				case Opcode.OC_RENDER:
-					code(buffer, indent, "for chunk in reg" + opcode.r1 + "(**dict((key.encode('utf-8'), value) for (key, value) in reg" + opcode.r2 + ".iteritems())): yield chunk");
+					code(buffer, indent, "out = out.concat(r" + opcode.r1 + ".render(r" + opcode.r2 + "));");
 					break;
 			}
-			lastOpcode = opcode.name;
 		}
-		indent -= 1;
-		code(buffer, indent, "except Exception, exc:");
-		indent += 1;
-		code(buffer, indent, "raise ul4c.Error(ul4c.Location(source, *locations[lines2locs[sys.exc_info()[2].tb_lineno-startline]]), exc)");
+		indent--;
+		code(buffer, indent, "})");
 		return buffer.toString();
 	}
 

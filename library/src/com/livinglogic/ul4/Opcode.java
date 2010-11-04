@@ -128,29 +128,35 @@ public class Opcode
 	public static final int CF4_HSV = 2;
 
 	public static final int CM0_SPLIT = 0;
-	public static final int CM0_STRIP = 1;
-	public static final int CM0_LSTRIP = 2;
-	public static final int CM0_RSTRIP = 3;
-	public static final int CM0_LOWER = 4;
-	public static final int CM0_UPPER = 5;
-	public static final int CM0_CAPITALIZE = 6;
-	public static final int CM0_ITEMS = 7;
-	public static final int CM0_ISOFORMAT = 8;
-	public static final int CM0_MIMEFORMAT = 9;
-	public static final int CM0_HLS = 10;
-	public static final int CM0_HLSA = 11;
-	public static final int CM0_HSV = 12;
-	public static final int CM0_HSVA = 13;
-	public static final int CM0_LUM = 14;
-	public static final int CM0_DAY = 15;
-	public static final int CM0_MONTH = 16;
-	public static final int CM0_YEAR = 17;
-	public static final int CM0_HOUR = 18;
-	public static final int CM0_MINUTE = 19;
-	public static final int CM0_SECOND = 20;
-	public static final int CM0_MICROSECOND = 21;
-	public static final int CM0_WEEKDAY = 22;
-	public static final int CM0_YEARDAY = 23;
+	public static final int CM0_RSPLIT = 1;
+	public static final int CM0_STRIP = 2;
+	public static final int CM0_LSTRIP = 3;
+	public static final int CM0_RSTRIP = 4;
+	public static final int CM0_LOWER = 5;
+	public static final int CM0_UPPER = 6;
+	public static final int CM0_CAPITALIZE = 7;
+	public static final int CM0_ITEMS = 8;
+	public static final int CM0_ISOFORMAT = 9;
+	public static final int CM0_MIMEFORMAT = 10;
+	public static final int CM0_R = 11;
+	public static final int CM0_G = 12;
+	public static final int CM0_B = 13;
+	public static final int CM0_A = 14;
+	public static final int CM0_HLS = 15;
+	public static final int CM0_HLSA = 16;
+	public static final int CM0_HSV = 17;
+	public static final int CM0_HSVA = 18;
+	public static final int CM0_LUM = 19;
+	public static final int CM0_DAY = 20;
+	public static final int CM0_MONTH = 21;
+	public static final int CM0_YEAR = 22;
+	public static final int CM0_HOUR = 23;
+	public static final int CM0_MINUTE = 24;
+	public static final int CM0_SECOND = 25;
+	public static final int CM0_MICROSECOND = 26;
+	public static final int CM0_WEEKDAY = 27;
+	public static final int CM0_YEARDAY = 28;
+	public static final int CM0_RENDER = 29;
 
 	public static final int CM1_SPLIT = 0;
 	public static final int CM1_RSPLIT = 1;
@@ -170,10 +176,12 @@ public class Opcode
 	public static final int CM2_SPLIT = 0;
 	public static final int CM2_RSPLIT = 1;
 	public static final int CM2_FIND = 2;
-	public static final int CM2_REPLACE = 3;
-	public static final int CM2_GET = 4;
+	public static final int CM2_RFIND = 3;
+	public static final int CM2_REPLACE = 4;
+	public static final int CM2_GET = 5;
 
 	public static final int CM3_FIND = 0;
+	public static final int CM3_RFIND = 1;
 
 	public static final int CMKW_RENDER = 0;
 
@@ -465,7 +473,7 @@ public class Opcode
 		if (name.equals("split"))
 			return CM0_SPLIT;
 		else if (name.equals("rsplit"))
-			return CM0_SPLIT;
+			return CM0_RSPLIT;
 		else if (name.equals("strip"))
 			return CM0_STRIP;
 		else if (name.equals("lstrip"))
@@ -484,6 +492,14 @@ public class Opcode
 			return CM0_ISOFORMAT;
 		else if (name.equals("mimeformat"))
 			return CM0_MIMEFORMAT;
+		else if (name.equals("r"))
+			return CM0_R;
+		else if (name.equals("g"))
+			return CM0_G;
+		else if (name.equals("b"))
+			return CM0_B;
+		else if (name.equals("a"))
+			return CM0_A;
 		else if (name.equals("hls"))
 			return CM0_HLS;
 		else if (name.equals("hlsa"))
@@ -512,6 +528,8 @@ public class Opcode
 			return CM0_WEEKDAY;
 		else if (name.equals("yearday"))
 			return CM0_YEARDAY;
+		else if (name.equals("render"))
+			return CM0_RENDER;
 		else
 			throw new UnknownMethodException(name);
 	}
@@ -552,7 +570,15 @@ public class Opcode
 
 	public static int callmeth2name2code(String name)
 	{
-		if (name.equals("replace"))
+		if (name.equals("split"))
+			return CM2_SPLIT;
+		else if (name.equals("rsplit"))
+			return CM2_RSPLIT;
+		else if (name.equals("find"))
+			return CM2_FIND;
+		else if (name.equals("rfind"))
+			return CM2_RFIND;
+		else if (name.equals("replace"))
 			return CM2_REPLACE;
 		else if (name.equals("get"))
 			return CM2_GET;
@@ -562,7 +588,12 @@ public class Opcode
 
 	public static int callmeth3name2code(String name)
 	{
-		throw new UnknownMethodException(name);
+		if (name.equals("find"))
+			return CM2_FIND;
+		else if (name.equals("rfind"))
+			return CM2_RFIND;
+		else
+			throw new UnknownMethodException(name);
 	}
 
 	public static int callmethkwname2code(String name)

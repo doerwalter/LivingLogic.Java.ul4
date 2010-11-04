@@ -10,11 +10,11 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?code x = #12345678?><?for i in range(20)?><?print randchoice(x)?>\n<?end for?>");
+		Template tmpl = Compiler.compile("<?print json(t)?>");
 		System.out.println(tmpl);
 
 		Map vars = new HashMap<String, Object>();
-		vars.put("t", new Date());
+		vars.put("t", tmpl);
 		long start = System.currentTimeMillis();
 		String output = tmpl.renders(vars);
 		System.out.println("rendered " + (System.currentTimeMillis()-start));

@@ -1396,9 +1396,42 @@ public class Utils
 				.append("\"")
 				.toString();
 		else if (obj instanceof Date)
-			return json(isoformat((Date)obj));
+		{
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime((Date)obj);
+			return new StringBuffer()
+				.append("new Date(")
+				.append(calendar.get(Calendar.YEAR))
+				.append(", ")
+				.append(calendar.get(Calendar.MONTH))
+				.append(", ")
+				.append(calendar.get(Calendar.DAY_OF_MONTH))
+				.append(", ")
+				.append(calendar.get(Calendar.HOUR_OF_DAY))
+				.append(", ")
+				.append(calendar.get(Calendar.MINUTE))
+				.append(", ")
+				.append(calendar.get(Calendar.SECOND))
+				.append(", ")
+				.append(calendar.get(Calendar.MILLISECOND))
+				.append(")")
+				.toString();
+		}
 		else if (obj instanceof Color)
-			return json(((Color)obj).repr());
+		{
+			Color c = (Color)obj;
+			return new StringBuffer()
+				.append("ul4._fu_rgb(")
+				.append(c.getR())
+				.append(", ")
+				.append(c.getG())
+				.append(", ")
+				.append(c.getB())
+				.append(", ")
+				.append(c.getA())
+				.append(")")
+				.toString();
+		}
 		else if (obj instanceof Collection)
 		{
 			StringBuffer sb = new StringBuffer();
@@ -1433,6 +1466,10 @@ public class Utils
 			}
 			sb.append("}");
 			return sb.toString();
+		}
+		else if (obj instanceof InterpretedTemplate)
+		{
+			return ((InterpretedTemplate)obj).javascriptSource();
 		}
 		return null;
 	}
@@ -1817,15 +1854,22 @@ public class Utils
 		throw new UnsupportedOperationException("Can't call isoformat on " + objectType(obj) + "!");
 	}
 
-	public static Date isoparse(String format) throws java.text.ParseException
+	public static Date isoparse(String format)
 	{
-		int length = format.length();
-		if (length == 11)
-			return isoDateFormatter.parse(format);
-		else if (length == 19)
-			return isoDateTimeFormatter.parse(format);
-		else // if (len == 26) // FIXME: last 3 digits must be 0
-			return isoTimestampFormatter.parse(format);
+		try
+		{
+			int length = format.length();
+			if (length == 11)
+				return isoDateFormatter.parse(format);
+			else if (length == 19)
+				return isoDateTimeFormatter.parse(format);
+			else // if (len == 26) // FIXME: last 3 digits must be 0
+				return isoTimestampFormatter.parse(format);
+		}
+		catch (java.text.ParseException ex) // can not happen when reading from the binary format
+		{
+			throw new RuntimeException("can't parse " + repr(format));
+		}
 	}
 
 	public static SimpleDateFormat mimeDateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", new Locale("en"));

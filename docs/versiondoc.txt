@@ -1,3 +1,10 @@
+HEAD:
+-----
+Comments:
+* Added a new method InterpretedTemplate.javascriptSource() that generates
+  Javascript source from the template.
+
+
 exp-26:
 -------
 Comments:
