@@ -589,9 +589,9 @@ public class Opcode
 	public static int callmeth3name2code(String name)
 	{
 		if (name.equals("find"))
-			return CM2_FIND;
+			return CM3_FIND;
 		else if (name.equals("rfind"))
-			return CM2_RFIND;
+			return CM3_RFIND;
 		else
 			throw new UnknownMethodException(name);
 	}
