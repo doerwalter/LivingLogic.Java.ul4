@@ -29,18 +29,20 @@ public class Dict extends AST
 		for (int i = 0; i < itemCount; ++i)
 		{
 			DictEntry item = (DictEntry)items.get(i);
-			int rv = item.value.compile(template, registers, location);
 			if (item.isdict)
 			{
+				int rv = item.value.compile(template, registers, location);
 				template.opcode(Opcode.OC_UPDATEDICT, r, rv, location);
+				registers.free(rv);
 			}
 			else
 			{
 				int rk = item.key.compile(template, registers, location);
+				int rv = item.value.compile(template, registers, location);
 				template.opcode(Opcode.OC_ADDDICT, r, rk, rv, location);
+				registers.free(rv);
 				registers.free(rk);
 			}
-			registers.free(rv);
 		}
 		return r;
 	}
