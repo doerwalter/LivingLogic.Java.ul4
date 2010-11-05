@@ -8,6 +8,8 @@
 ## See ll/__init__.py for the license
 
 
+from __future__ import division
+
 import sys, re, StringIO
 
 import spark
@@ -331,7 +333,7 @@ class ExprParser(spark.GenericParser):
 
 	def expr_getslice12(self, (expr, _0, index1, _1, index2, _2)):
 		if isinstance(expr, ul4.LoadConst) and isinstance(index1, ul4.LoadConst) and isinstance(index2, ul4.LoadConst): # Constant folding
-			return self.makeconst(expr.start, _2.end, expr.value[index1.value:index1.value])
+			return self.makeconst(expr.start, _2.end, expr.value[index1.value:index2.value])
 		return ul4.GetSlice12(expr.start, _2.end, expr, index1, index2)
 	expr_getslice12.spark = ['expr8 ::= expr8 [ expr0 : expr0 ]']
 
