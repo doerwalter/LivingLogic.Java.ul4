@@ -1399,7 +1399,8 @@ public class Utils
 		{
 			Calendar calendar = new GregorianCalendar();
 			calendar.setTime((Date)obj);
-			return new StringBuffer()
+			StringBuffer buffer = new StringBuffer();
+			buffer
 				.append("new Date(")
 				.append(calendar.get(Calendar.YEAR))
 				.append(", ")
@@ -1411,17 +1412,20 @@ public class Utils
 				.append(", ")
 				.append(calendar.get(Calendar.MINUTE))
 				.append(", ")
-				.append(calendar.get(Calendar.SECOND))
-				.append(", ")
-				.append(calendar.get(Calendar.MILLISECOND))
-				.append(")")
-				.toString();
+				.append(calendar.get(Calendar.SECOND));
+			int milliSeconds = calendar.get(Calendar.MILLISECOND);
+			if (milliSeconds != 0)
+			{
+				buffer.append(", ").append(milliSeconds);
+			}
+			buffer.append(")");
+			return buffer.toString();
 		}
 		else if (obj instanceof Color)
 		{
 			Color c = (Color)obj;
 			return new StringBuffer()
-				.append("ul4._fu_rgb(")
+				.append("ul4.Color.create(")
 				.append(c.getR())
 				.append(", ")
 				.append(c.getG())
