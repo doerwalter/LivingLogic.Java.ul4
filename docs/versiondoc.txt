@@ -1,3 +1,10 @@
+exp-28:
+-----
+Comments:
+* Fixed problems with linefeeds in comments for tag code in
+  Template.javascriptSource().
+
+
 exp-27:
 -----
 file format: 13
@@ -7,7 +14,6 @@ Comments:
   Javascript source from the template.
 * Updated date literals to used a "@" suffix.
 * Fixed various bugs.
-
 
 
 exp-26:

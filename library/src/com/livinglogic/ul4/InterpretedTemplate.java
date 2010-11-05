@@ -1896,7 +1896,9 @@ public class InterpretedTemplate implements Template
 			if (opcode.location != lastLocation && opcode.name != Opcode.OC_TEXT)
 			{
 				lastLocation = opcode.location;
-				code(buffer, indent, "// " + lastLocation + ": " + lastLocation.getTag());
+				String code = Utils.repr(lastLocation.getTag());
+				code = code.substring(1, code.length()-1);
+				code(buffer, indent, "// " + lastLocation + ": " + code);
 			}
 		
 			switch (opcode.name)
