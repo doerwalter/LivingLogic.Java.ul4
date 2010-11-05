@@ -1880,9 +1880,12 @@ public class InterpretedTemplate implements Template
 		StringBuffer buffer = new StringBuffer();
 		int indent = 0;
 		int varcounter = 0;
+		Location lastLocation = null;
 
 		code(buffer, indent, "ul4.Template.create(function(vars){");
 		indent += 1;
+		code(buffer, indent, "//@@@ BEGIN template source");
+		code(buffer, indent, "//@@@ BEGIN template code");
 		code(buffer, indent, "var out = [], r0 = null, r1 = null, r2 = null, r3 = null, r4 = null, r5 = null, r6 = null, r7 = null, r8 = null, r9 = null;");
 
 		int size = opcodes.size();
@@ -1890,6 +1893,11 @@ public class InterpretedTemplate implements Template
 		for (int i = 0; i < size; ++i)
 		{
 			Opcode opcode = opcodes.get(i);
+			if (opcode.location != lastLocation && opcode.name != Opcode.OC_TEXT)
+			{
+				lastLocation = opcode.location;
+				code(buffer, indent, "// " + lastLocation + ": " + lastLocation.getTag());
+			}
 		
 			switch (opcode.name)
 			{
@@ -1932,11 +1940,17 @@ public class InterpretedTemplate implements Template
 				case Opcode.OC_ADDDICT:
 					code(buffer, indent, "r" + opcode.r1 + "[r" + opcode.r2 + "] = r" + opcode.r3 + ";");
 					break;
+				case Opcode.OC_UPDATEDICT:
+					code(buffer, indent, "for (var key in r" + opcode.r2 + ")");
+					indent++;
+					code(buffer, indent, "r" + opcode.r1 + "[key] = r" + opcode.r2 + "[key];");
+					indent--;
+					break;
 				case Opcode.OC_LOADVAR:
 					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_getitem(vars, " + Utils.repr(opcode.arg) + ");");
 					break;
 				case Opcode.OC_STOREVAR:
-					code(buffer, indent, "vars[u" + Utils.repr(opcode.arg) + "] = r" + opcode.r1 + ";");
+					code(buffer, indent, "vars[" + Utils.repr(opcode.arg) + "] = r" + opcode.r1 + ";");
 					break;
 				case Opcode.OC_ADDVAR:
 					code(buffer, indent, "vars[" + Utils.repr(opcode.arg) + "] = ul4._op_add(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
@@ -1972,7 +1986,7 @@ public class InterpretedTemplate implements Template
 					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_getslice(r" + opcode.r2 + ", r" + opcode.r3 + ", null);");
 					break;
 				case Opcode.OC_GETSLICE2:
-					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_getslice(r" + opcode.r2 + ", null, r" + opcode.r4 + ");");
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_getslice(r" + opcode.r2 + ", null, r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_PRINT:
 					code(buffer, indent, "out.push(ul4._fu_str(r" + opcode.r1 + "));");
@@ -2025,10 +2039,10 @@ public class InterpretedTemplate implements Template
 					code(buffer, indent, "r" + opcode.r1 + " = !ul4._op_contains(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_EQ:
-					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_equals(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_eq(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_NE:
-					code(buffer, indent, "r" + opcode.r1 + " = !ul4._op_equals(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+					code(buffer, indent, "r" + opcode.r1 + " = !ul4._op_eq(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_LT:
 					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_lt(r" + opcode.r2 + ", r" + opcode.r3 + ");");
@@ -2061,10 +2075,10 @@ public class InterpretedTemplate implements Template
 					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_mod(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_AND:
-					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_and(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_bool(r" + opcode.r3 + ") ? r" + opcode.r2 + " : r" + opcode.r3 + ";");
 					break;
 				case Opcode.OC_OR:
-					code(buffer, indent, "r" + opcode.r1 + " = ul4._op_or(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+					code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_bool(r" + opcode.r2 + ") ? r" + opcode.r2 + " : r" + opcode.r3 + ";");
 					break;
 				case Opcode.OC_CALLFUNC0:
 					switch (opcode.argcode)
@@ -2073,7 +2087,7 @@ public class InterpretedTemplate implements Template
 							code(buffer, indent, "r" + opcode.r1 + " = new Date();");
 							break;
 						case Opcode.CF0_UTCNOW:
-							code(buffer, indent, "r" + opcode.r1 + " = ul._fu_utcnow();");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_utcnow();");
 							break;
 						case Opcode.CF0_RANDOM:
 							code(buffer, indent, "r" + opcode.r1 + " = Math.random();");
@@ -2220,27 +2234,27 @@ public class InterpretedTemplate implements Template
 							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_zip(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 						case Opcode.CF3_HLS:
-							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hls(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hls(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", 1.0);");
 							break;
 						case Opcode.CF3_HSV:
-							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hsv(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hsv(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", 1.0);");
 							break;
 						case Opcode.CF3_RGB:
-							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_rgb(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", 0xff);");
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_rgb(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", 1.0);");
 							break;
 					}
 					break;
 				case Opcode.OC_CALLFUNC4:
 					switch (opcode.argcode)
 					{
-						case Opcode.CF3_RGB:
+						case Opcode.CF4_RGB:
 							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_rgb(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", r" + opcode.r5 + ");");
 							break;
-						case Opcode.CF3_HLS:
-							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hls(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+						case Opcode.CF4_HLS:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hls(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", r" + opcode.r5 + ");");
 							break;
-						case Opcode.CF3_HSV:
-							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hsv(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+						case Opcode.CF4_HSV:
+							code(buffer, indent, "r" + opcode.r1 + " = ul4._fu_hsv(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", r" + opcode.r5 + ");");
 							break;
 					}
 					break;
@@ -2429,7 +2443,7 @@ public class InterpretedTemplate implements Template
 					}
 					break;
 				case Opcode.OC_IF:
-					code(buffer, indent, "if (ul4._fu_bool(" + opcode.r1 + ")");
+					code(buffer, indent, "if (ul4._fu_bool(r" + opcode.r1 + "))");
 					code(buffer, indent, "{");
 					indent++;
 					break;
@@ -2449,6 +2463,8 @@ public class InterpretedTemplate implements Template
 					break;
 			}
 		}
+		code(buffer, indent, "return out;");
+		code(buffer, indent, "//@@@ END template code");
 		indent--;
 		code(buffer, indent, "})");
 		return buffer.toString();
