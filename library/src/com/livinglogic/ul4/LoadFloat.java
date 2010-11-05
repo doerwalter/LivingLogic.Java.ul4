@@ -1,6 +1,6 @@
 package com.livinglogic.ul4;
 
-public class LoadFloat extends AST
+public class LoadFloat extends LoadConst
 {
 	protected double value;
 
@@ -8,6 +8,11 @@ public class LoadFloat extends AST
 	{
 		super(start, end);
 		this.value = value;
+	}
+
+	public int getType()
+	{
+		return Opcode.OC_LOADFLOAT;
 	}
 
 	public String getTokenType()

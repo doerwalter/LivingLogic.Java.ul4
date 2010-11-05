@@ -9,8 +9,6 @@ public abstract class LoadConst extends AST
 
 	abstract public int getType();
 
-	abstract public Object getValue();
-
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r = registers.alloc();

@@ -1,6 +1,6 @@
 package com.livinglogic.ul4;
 
-public class LoadDate extends AST
+public class LoadDate extends LoadConst
 {
 	protected java.util.Date value;
 
@@ -10,9 +10,19 @@ public class LoadDate extends AST
 		this.value = value;
 	}
 
+	public int getType()
+	{
+		return Opcode.OC_LOADDATE;
+	}
+
 	public String getTokenType()
 	{
 		return "date";
+	}
+
+	public Object getValue()
+	{
+		return value;
 	}
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)

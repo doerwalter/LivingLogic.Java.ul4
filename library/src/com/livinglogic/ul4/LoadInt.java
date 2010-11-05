@@ -1,6 +1,6 @@
 package com.livinglogic.ul4;
 
-public class LoadInt extends AST
+public class LoadInt extends LoadConst
 {
 	protected int value;
 
@@ -8,6 +8,11 @@ public class LoadInt extends AST
 	{
 		super(start, end);
 		this.value = value;
+	}
+
+	public int getType()
+	{
+		return Opcode.OC_LOADINT;
 	}
 
 	public String getTokenType()

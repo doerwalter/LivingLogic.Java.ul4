@@ -1,6 +1,6 @@
 package com.livinglogic.ul4;
 
-public class LoadColor extends AST
+public class LoadColor extends LoadConst
 {
 	protected Color value;
 
@@ -10,9 +10,19 @@ public class LoadColor extends AST
 		this.value = value;
 	}
 
+	public int getType()
+	{
+		return Opcode.OC_LOADCOLOR;
+	}
+
 	public String getTokenType()
 	{
 		return "color";
+	}
+
+	public Object getValue()
+	{
+		return value;
 	}
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
