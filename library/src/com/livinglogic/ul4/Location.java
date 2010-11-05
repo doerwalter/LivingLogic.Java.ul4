@@ -57,7 +57,7 @@ public class Location
 				++col;
 			}
 		}
-		return getTag() + " at " + (starttag+1) + " (line " + line + ", col " + col + ")";
+		return type + " tag at " + (starttag+1) + " (line " + line + ", col " + col + ")";
 
 	}
 }
