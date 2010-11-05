@@ -1,8 +1,13 @@
-HEAD:
+exp-27:
 -----
+file format: 13
+
 Comments:
 * Added a new method InterpretedTemplate.javascriptSource() that generates
   Javascript source from the template.
+* Updated date literals to used a "@" suffix.
+* Fixed various bugs.
+
 
 
 exp-26:
