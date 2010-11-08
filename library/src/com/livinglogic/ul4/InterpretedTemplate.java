@@ -838,11 +838,6 @@ public class InterpretedTemplate implements Template
 		throw new BlockException("unclosed loop");
 	}
 
-	public Iterator<String> render()
-	{
-		return new Renderer(null);
-	}
-
 	/**
 	 * Renders the template.
 	 * @param variables a map containing the top level variables that should be
@@ -855,12 +850,14 @@ public class InterpretedTemplate implements Template
 	}
 
 	/**
-	 * Renders the template to a java.io.Writer object.
-	 * @param writer    the java.io.Writer object to which the output is written.
+	 * Renders the template.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the template code.
+	 * @return A java.io.Reader object from which the template output can be read.
 	 */
-	public void render(java.io.Writer writer) throws java.io.IOException
+	public Reader reader(Map<String, Object> variables)
 	{
-		render(writer, null);
+		return new IteratorReader(new Renderer(variables));
 	}
 
 	/**
@@ -875,11 +872,6 @@ public class InterpretedTemplate implements Template
 		{
 			writer.write(iterator.next());
 		}
-	}
-
-	public String renders()
-	{
-		return renders(null);
 	}
 
 	/**
@@ -936,7 +928,7 @@ public class InterpretedTemplate implements Template
 		 * of the two methods can directly execute the opcodes to get the next
 		 * output chunk. Instead of that we have a method {@link getNextChunk}
 		 * that executes the opcodes until the next output chunk is produced and
-		 * stores it in <code>nextChunk</code>, when both <code>next</code> and
+		 * stores it in <code>nextChunk</code>, where both <code>next</code> and
 		 * <code>hasNext</code> can refer to it.
 		 */
 		private String nextChunk = null;
@@ -1566,6 +1558,41 @@ public class InterpretedTemplate implements Template
 			}
 			// finished => no next chunk available
 			nextChunk = null;
+		}
+	}
+
+	class IteratorReader extends Reader
+	{
+		private Iterator<String> iterator;
+		private StringBuffer buffered;
+
+		public IteratorReader(Iterator<String> iterator)
+		{
+			this.iterator = iterator;
+			this.buffered = new StringBuffer();
+		}
+
+		public int read(char[] cbuf, int off, int len)
+		{
+			if (iterator == null)
+				return -1;
+			while (buffered.length() < len)
+			{
+				if (!iterator.hasNext())
+					break;
+				buffered.append(iterator.next());
+			}
+			int resultlen = buffered.length();
+			if (resultlen > len) // don't return more than we have to.
+				resultlen = len;
+			buffered.getChars(0, resultlen, cbuf, off); // copy the chars
+			buffered.delete(0, resultlen); // remove output from buffer
+			return resultlen>0 ? resultlen : -1;
+		}
+
+		public void close()
+		{
+			this.iterator = null;
 		}
 	}
 
