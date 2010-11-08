@@ -467,11 +467,6 @@ public class InterpretedTemplate implements Template
 		{
 			throw new RuntimeException("Invalid version, expected " + VERSION + ", got " + version);
 		}
-		String type = bufferedReader.readLine();
-		if (!"template".equals(type))
-		{
-			throw new RuntimeException("Invalid type, expected template, got " + type);
-		}
 		retVal.startdelim = readstr(bufferedReader, '<');
 		readcr(bufferedReader);
 		retVal.enddelim = readstr(bufferedReader, '>');

@@ -1,3 +1,10 @@
+exp-29:
+-----
+Comments:
+* Fixed InterpretedTemplate.load() to conform to the format produced by Pythons
+  version.
+
+
 exp-28:
 -----
 Comments:
