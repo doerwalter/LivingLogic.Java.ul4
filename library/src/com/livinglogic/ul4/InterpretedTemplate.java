@@ -1162,8 +1162,11 @@ public class InterpretedTemplate implements Template
 						case Opcode.OC_GE:
 							reg[code.r1] = Utils.lt(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
 							break;
+						case Opcode.OC_CONTAINS:
+							reg[code.r1] = Utils.contains(reg[code.r2], reg[code.r3]);
+							break;
 						case Opcode.OC_NOTCONTAINS:
-							reg[code.r1] = Utils.contains(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
+							reg[code.r1] = !Utils.contains(reg[code.r2], reg[code.r3]);
 							break;
 						case Opcode.OC_OR:
 							reg[code.r1] = Utils.getBool(reg[code.r2]) ? reg[code.r2] : reg[code.r3];

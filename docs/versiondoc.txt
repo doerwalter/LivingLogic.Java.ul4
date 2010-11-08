@@ -1,3 +1,10 @@
+exp-31:
+-----
+Comments:
+* Added missing implementation for the "contains" opcode in
+  InterpretedTemplate.Renderer().
+
+
 exp-30:
 -----
 Comments:
