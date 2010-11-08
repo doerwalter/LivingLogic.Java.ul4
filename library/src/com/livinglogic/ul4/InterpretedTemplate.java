@@ -976,7 +976,8 @@ public class InterpretedTemplate implements Template
 					subTemplateIterator = null;
 				}
 			}
-			while (pc < opcodes.size())
+			int opcodecount = opcodes.size();
+			while (pc < opcodecount)
 			{
 				Opcode code = opcodes.get(pc);
 
