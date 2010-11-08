@@ -858,7 +858,7 @@ public class InterpretedTemplate implements Template
 	 * Renders the template to a java.io.Writer object.
 	 * @param writer    the java.io.Writer object to which the output is written.
 	 */
-	public void render(java.io.Writer writer)
+	public void render(java.io.Writer writer) throws java.io.IOException
 	{
 		render(writer, null);
 	}
@@ -869,7 +869,7 @@ public class InterpretedTemplate implements Template
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the template code.
 	 */
-	public void render(java.io.Writer writer, Map<String, Object> variables)
+	public void render(java.io.Writer writer, Map<String, Object> variables) throws java.io.IOException
 	{
 		for (Iterator<String> iterator = render(variables); iterator.hasNext();)
 		{
