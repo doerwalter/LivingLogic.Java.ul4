@@ -854,6 +854,29 @@ public class InterpretedTemplate implements Template
 		return new Renderer(variables);
 	}
 
+	/**
+	 * Renders the template to a java.io.Writer object.
+	 * @param writer    the java.io.Writer object to which the output is written.
+	 */
+	public void render(java.io.Writer writer)
+	{
+		render(writer, null);
+	}
+
+	/**
+	 * Renders the template to a java.io.Writer object.
+	 * @param writer    the java.io.Writer object to which the output is written.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the template code.
+	 */
+	public void render(java.io.Writer writer, Map<String, Object> variables)
+	{
+		for (Iterator<String> iterator = render(variables); iterator.hasNext();)
+		{
+			writer.write(iterator.next());
+		}
+	}
+
 	public String renders()
 	{
 		return renders(null);

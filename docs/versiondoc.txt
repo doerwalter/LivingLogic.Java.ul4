@@ -1,3 +1,10 @@
+exp-30:
+-----
+Comments:
+* Added two methods InterpretedTemplate.render() that render the template output
+  to a java.io.Writer.
+
+
 exp-29:
 -----
 Comments:
