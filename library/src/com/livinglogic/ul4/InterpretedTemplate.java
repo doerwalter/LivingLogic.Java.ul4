@@ -108,7 +108,7 @@ public class InterpretedTemplate implements Template
 	/**
 	 * The version number used in the compiled format of the template.
 	 */
-	public static final String VERSION = "13";
+	public static final String VERSION = "14";
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
@@ -270,53 +270,82 @@ public class InterpretedTemplate implements Template
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, r5, arg, location));
 	}
 
-	protected static int readintInternal(Reader reader, char terminator) throws IOException
+	protected static String read(Reader reader, int length) throws IOException
+	{
+		char[] chars = new char[length];
+		int readlength = reader.read(chars);
+		return new String(chars);
+	}
+
+	/**
+	 * Reads a character from a stream.
+	 * @param reader the reader from which the linefeed is read.
+	 * @throws IOException if reading from the stream fails
+	 * @throws RuntimeException if the character read from the stream is not a
+	 *                          linefeed
+	 */
+	protected static void readchar(Reader reader, char expected) throws IOException
+	{
+		int readInt = reader.read();
+		if (-1 < readInt)
+		{
+			char charValue = (char)readInt;
+			if (expected != charValue)
+			{
+				throw new RuntimeException("Invalid character, expected '" + expected + "', got '" + charValue + "'");
+			}
+		}
+		else
+		{
+			throw new RuntimeException("Short read!");
+		}
+	}
+
+	protected static int readintInternal(Reader reader, String prefix) throws IOException
 	{
 		int retVal = 0;
 		boolean digitFound = false;
-		boolean terminatorFound = false;
-		int readInt = reader.read();
-		char charValue;
-		int intValue;
-		while ((-1 < readInt) && !terminatorFound)
+		if (prefix != null)
 		{
-			charValue = (char)readInt;
-			intValue = Character.digit(charValue, 10);
+			String prefixread = read(reader, prefix.length());
+			if (!prefixread.equals(prefix))
+				throw new RuntimeException("Invalid prefix, expected '" + prefix + "', got '" + prefixread + "'");
+		}
+		while (true)
+		{
+			int readInt = reader.read();
+			char charValue = (char)readInt;
+			int intValue = Character.digit(charValue, 10);
 			if (-1 < intValue)
 			{
 				retVal = retVal * 10 + intValue;
 				digitFound = true;
 			}
-			else if (charValue == terminator)
+			else if (charValue == '|')
 			{
-				terminatorFound = true;
 				if (!digitFound)
 					retVal = -1;
+				return retVal;
 			}
 			else
 			{
-				throw new RuntimeException("Invalid terminator, expected " + terminator + ", got " + charValue);
-			}
-			if (!terminatorFound)
-			{
-				readInt = reader.read();
+				throw new RuntimeException("Invalid terminator, expected '|', got '" + charValue + "'");
 			}
 		}
-		return retVal;
 	}
 
 	/**
 	 * Reads a (non-negative) integer value from a stream.
 	 * @param reader the reader from which the value is read.
-	 * @param terminator The character after the digits of the integer value
+	 * @param prefix The string before the digits of the integer value
 	 * @return The integer value
 	 * @throws IOException if reading from the stream fails
 	 * @throws RuntimeException if the integer value is malformed (i.e. the
 	 *                          terminator is missing)
 	 */
-	protected static int readint(Reader reader, char terminator) throws IOException
+	protected static int readint(Reader reader, String prefix) throws IOException
 	{
-		int retVal = readintInternal(reader, terminator);
+		int retVal = readintInternal(reader, prefix);
 		if (0 > retVal)
 		{
 			throw new RuntimeException("Invalid integer read!");
@@ -328,86 +357,22 @@ public class InterpretedTemplate implements Template
 	 * Reads a string value (or <code>null</code>) from a stream.
 	 * <code>readstr</code> is the inverse operation of {@link writestr}.
 	 * @param reader the reader from which the string is read.
-	 * @param terminator The terminator character that was used in {@link writestr}.
+	 * @param prefix The string that was used in {@link writestr}.
 	 * @return The string or <code>null</code>
 	 * @throws IOException if reading from the stream fails
 	 * @throws RuntimeException if the integer value is malformed
 	 */
-	protected static String readstr(Reader reader, char terminator) throws IOException
+	protected static String readstr(Reader reader, String prefix) throws IOException
 	{
-		String retVal = null;
-		int stringLength = readintInternal(reader, terminator);
-		if (-1 < stringLength)
-		{
-			char[] retValChars = new char[stringLength];
-			int readCharSize = reader.read(retValChars);
-			if (readCharSize != stringLength)
-			{
-				throw new RuntimeException("Short read!");
-			}
-			retVal = new String(retValChars);
-		}
-		return retVal;
-	}
+		int stringLength = readintInternal(reader, prefix);
+		if (-1 == stringLength)
+			return null;
 
-	/**
-	 * Reads a register specification from a stream. A register specification is
-	 * either a digit or the character '-'.
-	 * @param reader the reader from which the specification is read.
-	 * @return The register number or -1.
-	 * @throws IOException if reading from the stream fails
-	 * @throws RuntimeException if the register specification is malformed
-	 */
-	protected static int readspec(Reader reader) throws IOException
-	{
-		int retVal;
-		int readInt = reader.read();
-		char charValue;
-		if (-1 < readInt)
-		{
-			charValue = (char)readInt;
-			if ('-' == charValue)
-			{
-				retVal = -1;
-			}
-			else
-			{
-				retVal = Character.digit(charValue, 10);
-				if (0 > retVal)
-				{
-					throw new RuntimeException("Invalid register spec " + charValue);
-				}
-			}
-		}
-		else
-		{
+		String retVal = read(reader, stringLength);
+		if (retVal.length() != stringLength)
 			throw new RuntimeException("Short read!");
-		}
+		readchar(reader, '|');
 		return retVal;
-	}
-
-	/**
-	 * Reads a linefeed from a stream.
-	 * @param reader the reader from which the linefeed is read.
-	 * @throws IOException if reading from the stream fails
-	 * @throws RuntimeException if the character read from the stream is not a
-	 *                          linefeed
-	 */
-	protected static void readcr(Reader reader) throws IOException
-	{
-		int readInt = reader.read();
-		if (-1 < readInt)
-		{
-			char charValue = (char)readInt;
-			if ('\n' != charValue)
-			{
-				throw new RuntimeException("Invalid linefeed " + charValue);
-			}
-		}
-		else
-		{
-			throw new RuntimeException("Short read!");
-		}
 	}
 
 	/**
@@ -422,11 +387,11 @@ public class InterpretedTemplate implements Template
 		BufferedReader bufferedReader = new BufferedReader(reader);
 		bufferedReader.readLine(); // skip header (without checking)
 		bufferedReader.readLine(); // skip version number (with checking)
-		readstr(bufferedReader, '<'); // skip start delimiter
-		readcr(bufferedReader);
-		readstr(bufferedReader, '>'); // skip end delimiter
-		readcr(bufferedReader);
-		return readstr(bufferedReader, '"');
+		readstr(bufferedReader, "SD"); // skip start delimiter
+		readchar(bufferedReader, '\n');
+		readstr(bufferedReader, "ED"); // skip end delimiter
+		readchar(bufferedReader, '\n');
+		return readstr(bufferedReader, "SRC");
 	}
 
 	/**
@@ -467,24 +432,24 @@ public class InterpretedTemplate implements Template
 		{
 			throw new RuntimeException("Invalid version, expected " + VERSION + ", got " + version);
 		}
-		retVal.startdelim = readstr(bufferedReader, '<');
-		readcr(bufferedReader);
-		retVal.enddelim = readstr(bufferedReader, '>');
-		readcr(bufferedReader);
-		retVal.source = readstr(bufferedReader, '"');
-		readcr(bufferedReader);
-		int count = readint(bufferedReader, '#');
-		readcr(bufferedReader);
+		retVal.startdelim = readstr(bufferedReader, "SD");
+		readchar(bufferedReader, '\n');
+		retVal.enddelim = readstr(bufferedReader, "ED");
+		readchar(bufferedReader, '\n');
+		retVal.source = readstr(bufferedReader, "SRC");
+		readchar(bufferedReader, '\n');
+		int count = readint(bufferedReader, "n");
+		readchar(bufferedReader, '\n');
 		Location location = null;
 		for (int i = 0; i < count; i++)
 		{
-			int r1 = readspec(bufferedReader);
-			int r2 = readspec(bufferedReader);
-			int r3 = readspec(bufferedReader);
-			int r4 = readspec(bufferedReader);
-			int r5 = readspec(bufferedReader);
-			String code = readstr(bufferedReader, ':');
-			String arg = readstr(bufferedReader, '.');
+			int r1 = readintInternal(bufferedReader, null);
+			int r2 = readintInternal(bufferedReader, null);
+			int r3 = readintInternal(bufferedReader, null);
+			int r4 = readintInternal(bufferedReader, null);
+			int r5 = readintInternal(bufferedReader, null);
+			String code = readstr(bufferedReader, "C");
+			String arg = readstr(bufferedReader, "A");
 			int readInt = bufferedReader.read();
 			if (-1 < readInt)
 			{
@@ -498,9 +463,15 @@ public class InterpretedTemplate implements Template
 				}
 				else if ('*' == charValue)
 				{
-					location = new Location(retVal.source, readstr(bufferedReader, '='),
-						readint(bufferedReader, '('), readint(bufferedReader, ')'),
-						readint(bufferedReader, '{'), readint(bufferedReader, '}'));
+					int readInt2 = bufferedReader.read();
+					char charValue2 = (char)readInt2;
+					if ('|' != charValue2)
+					{
+						throw new RuntimeException("Invalid location spec " + charValue + charValue2);
+					}
+					location = new Location(retVal.source, readstr(bufferedReader, "T"),
+						readint(bufferedReader, "st"), readint(bufferedReader, "et"),
+						readint(bufferedReader, "sc"), readint(bufferedReader, "ec"));
 				}
 				else
 				{
@@ -512,7 +483,7 @@ public class InterpretedTemplate implements Template
 				throw new RuntimeException("Short read!");
 			}
 			retVal.opcodes.add(new Opcode(code, r1, r2, r3, r4, r5, arg, location));
-			readcr(bufferedReader);
+			readchar(bufferedReader, '\n');
 		}
 		return retVal;
 	}
@@ -544,10 +515,11 @@ public class InterpretedTemplate implements Template
 	 * @param terminator a terminating character written after the value.
 	 * @throws IOException if writing to the stream fails
 	 */
-	protected static void writeint(Writer writer, int value, char terminator) throws IOException
+	protected static void writeint(Writer writer, String prefix, int value) throws IOException
 	{
+		writer.write(prefix);
 		writer.write(String.valueOf(value));
-		writer.write(terminator);
+		writer.write("|");
 	}
 
 	/**
@@ -557,18 +529,16 @@ public class InterpretedTemplate implements Template
 	 * @param terminator a terminating character written after the string length.
 	 * @throws IOException if writing to the stream fails
 	 */
-	protected static void writestr(Writer writer, String value, char terminator) throws IOException
+	protected static void writestr(Writer writer, String prefix, String value) throws IOException
 	{
-		if (value == null)
-		{
-			writer.write(terminator);
-		}
-		else
+		writer.write(prefix);
+		if (value != null)
 		{
 			writer.write(String.valueOf(value.length()));
-			writer.write(terminator);
+			writer.write("|");
 			writer.write(value);
 		}
+		writer.write("|");
 	}
 
 	/**
@@ -579,10 +549,9 @@ public class InterpretedTemplate implements Template
 	 */
 	protected static void writespec(Writer writer, int spec) throws IOException
 	{
-		if (spec == -1)
-			writer.write("-");
-		else
+		if (spec != -1)
 			writer.write(String.valueOf(spec));
+		writer.write("|");
 	}
 
 	/**
@@ -596,15 +565,13 @@ public class InterpretedTemplate implements Template
 		writer.write("\n");
 		writer.write(VERSION);
 		writer.write("\n");
-		writer.write("template");
+		writestr(writer, "SD", startdelim);
 		writer.write("\n");
-		writestr(writer, startdelim, '<');
+		writestr(writer, "ED", enddelim);
 		writer.write("\n");
-		writestr(writer, enddelim, '>');
+		writestr(writer, "SRC", source);
 		writer.write("\n");
-		writestr(writer, source, '"');
-		writer.write("\n");
-		writeint(writer, opcodes.size(), '#');
+		writeint(writer, "n", opcodes.size());
 		writer.write("\n");
 		Location lastLocation = null;
 		int size = opcodes.size();
@@ -616,16 +583,16 @@ public class InterpretedTemplate implements Template
 			writespec(writer, opcode.r3);
 			writespec(writer, opcode.r4);
 			writespec(writer, opcode.r5);
-			writestr(writer, Opcode.code2name(opcode.name), ':');
-			writestr(writer, opcode.arg, '.');
+			writestr(writer, "C", Opcode.code2name(opcode.name));
+			writestr(writer, "A", opcode.arg);
 			if (opcode.location != lastLocation)
 			{
-				writer.write("*");
-				writestr(writer, opcode.location.type, '=');
-				writeint(writer, opcode.location.starttag, '(');
-				writeint(writer, opcode.location.endtag, ')');
-				writeint(writer, opcode.location.startcode, '{');
-				writeint(writer, opcode.location.endcode, '}');
+				writer.write("*|");
+				writestr(writer, "T", opcode.location.type);
+				writeint(writer, "st", opcode.location.starttag);
+				writeint(writer, "et", opcode.location.endtag);
+				writeint(writer, "sc", opcode.location.startcode);
+				writeint(writer, "ec", opcode.location.endcode);
 				lastLocation = opcode.location;
 			}
 			else
@@ -2519,13 +2486,5 @@ public class InterpretedTemplate implements Template
 		indent--;
 		code(buffer, indent, "})");
 		return buffer.toString();
-	}
-
-	public void renderjsp(Writer out, Map<String, Object> variables) throws java.io.IOException
-	{
-		for (Iterator<String> iterator = render(variables); iterator.hasNext();)
-		{
-			out.write(iterator.next());
-		}
 	}
 }

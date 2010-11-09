@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.io.IOException;
 
 /**
- * Copyright 2009 by LivingLogic AG, Bayreuth/Germany
+ * Copyright 2009-2010 by LivingLogic AG, Bayreuth/Germany
  *
  * All Rights Reserved
  *
@@ -21,5 +21,5 @@ public interface Template
 {
 	public String renders(Map<String, Object> variables);
 
-	public void renderjsp(Writer out, Map<String, Object> variables) throws java.io.IOException;
+	public void render(Writer out, Map<String, Object> variables) throws java.io.IOException;
 }

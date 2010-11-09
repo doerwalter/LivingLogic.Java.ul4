@@ -6,7 +6,7 @@ import java.io.StringWriter;
 import java.io.IOException;
 
 /**
- * Copyright 2009 by LivingLogic AG, Bayreuth/Germany
+ * Copyright 2009-2010 by LivingLogic AG, Bayreuth/Germany
  *
  * All Rights Reserved
  *
@@ -26,20 +26,14 @@ public abstract class JSPTemplate implements Template
 
 		try
 		{
-			execute(out, variables);
+			render(out, variables);
 		}
 		catch (IOException ex)
 		{
 			// does not happen!
 		}
-		String result = out.toString();
-		return result;
+		return out.toString();
 	}
 
-	public void renderjsp(Writer out, Map<String, Object> variables) throws java.io.IOException
-	{
-		execute(out, variables);
-	}
-
-	public abstract void execute(Writer out, Map<String, Object> variables) throws java.io.IOException;
+	public abstract void render(Writer out, Map<String, Object> variables) throws java.io.IOException;
 }
