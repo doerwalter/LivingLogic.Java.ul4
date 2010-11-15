@@ -112,27 +112,27 @@ public class InterpretedTemplate implements Template
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
-	 */ 
+	 */
 	public String startdelim;
 
 	/**
 	 * The end delimiter for tags (defaults to <code>?&gt;</code>)
-	 */ 
+	 */
 	public String enddelim;
 
 	/**
 	 * The template source.
-	 */ 
+	 */
 	public String source;
 
 	/**
 	 * The list of opcodes.
-	 */ 
+	 */
 	public List<Opcode> opcodes;
-	
+
 	/**
 	 * The locale to be used when formatting int, float or date objects.
-	 */ 
+	 */
 	public Locale defaultLocale;
 
 	/**
@@ -1916,7 +1916,7 @@ public class InterpretedTemplate implements Template
 				code = code.substring(1, code.length()-1);
 				code(buffer, indent, "// " + lastLocation + ": " + code);
 			}
-		
+
 			switch (opcode.name)
 			{
 				case Opcode.OC_TEXT:

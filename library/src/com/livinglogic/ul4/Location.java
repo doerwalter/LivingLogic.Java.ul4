@@ -39,7 +39,7 @@ public class Location
 		int line = 1;
 		int col;
 		int lastLineFeed = source.lastIndexOf("\n", starttag);
-		
+
 		if (lastLineFeed == -1)
 		{
 			col = starttag+1;

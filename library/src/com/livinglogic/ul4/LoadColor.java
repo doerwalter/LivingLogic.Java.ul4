@@ -28,7 +28,7 @@ public class LoadColor extends LoadConst
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
-		
+
 		template.opcode(Opcode.OC_LOADCOLOR, r, value.dump(), location);
 		return r;
 	}

@@ -78,7 +78,7 @@ public class Color implements Collection
 		int rg = 0;
 		int rb = 0;
 		int ra = (int)(255.*a);
-		
+
 		if (s == 0.0)
  			rr = rg = rb = (int)(255.*v);
 		else
@@ -370,10 +370,10 @@ public class Color implements Collection
 	{
 		int maxc = NumberUtils.max((int)r, (int)g, (int)b);
 		int minc = NumberUtils.min((int)r, (int)g, (int)b);
-	
+
 		double dmaxc = maxc/255.;
 		double dminc = minc/255.;
-	
+
 		double v = dmaxc;
 		if (minc == maxc)
 		{
@@ -384,7 +384,7 @@ public class Color implements Collection
 			return retVal;
 		}
 		double s = (dmaxc-dminc) / dmaxc;
-	
+
 		double rc = (dmaxc-r/255.) / (dmaxc-dminc);
 		double gc = (dmaxc-g/255.) / (dmaxc-dminc);
 		double bc = (dmaxc-b/255.) / (dmaxc-dminc);
@@ -465,12 +465,12 @@ public class Color implements Collection
 		throw new UnsupportedOperationException();
 	}
 
-	public boolean addAll(Collection c) 
+	public boolean addAll(Collection c)
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	public void clear() 
+	public void clear()
 	{
 		throw new UnsupportedOperationException();
 	}

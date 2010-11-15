@@ -14,5 +14,5 @@ public abstract class LoadConst extends AST
 		int r = registers.alloc();
 		template.opcode(getType(), r, location);
 		return r;
-	}	
+	}
 }

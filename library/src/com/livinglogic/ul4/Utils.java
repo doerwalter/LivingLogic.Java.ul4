@@ -1373,7 +1373,7 @@ public class Utils
 		}
 		return null;
 	}
-	
+
 	public static String json(Object obj)
 	{
 		if (obj == null)
@@ -1477,7 +1477,7 @@ public class Utils
 		}
 		return null;
 	}
-	
+
 	public static Iterator reversed(Object obj)
 	{
 		if (obj instanceof String)
@@ -1486,7 +1486,7 @@ public class Utils
 			return new ListReversedIterator((List)obj);
 		throw new UnsupportedOperationException("Can't created reversed iterator for " + objectType(obj) + "!");
 	}
-	
+
 	public static Object length(Object obj)
 	{
 		if (obj instanceof String)
