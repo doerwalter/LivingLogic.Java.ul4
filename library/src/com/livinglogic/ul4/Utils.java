@@ -1691,6 +1691,15 @@ public class Utils
 		return retVal;
 	}
 
+	public static Object sorted(Iterator obj)
+	{
+		Vector retVal = new Vector();
+		while (obj.hasNext())
+			retVal.add(obj.next());
+		Collections.sort(retVal);
+		return retVal;
+	}
+
 	public static Object sorted(Object obj)
 	{
 		if (obj instanceof String)
@@ -1699,6 +1708,8 @@ public class Utils
 			return sorted((Collection)obj);
 		else if (obj instanceof Map)
 			return sorted((Map)obj);
+		else if (obj instanceof Iterator)
+			return sorted((Iterator)obj);
 		throw new RuntimeException("Can't sort " + objectType(obj) + "!");
 	}
 
