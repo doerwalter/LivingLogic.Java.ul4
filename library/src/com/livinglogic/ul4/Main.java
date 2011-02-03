@@ -10,7 +10,7 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Template tmpl = Compiler.compile("<?print json(t)?>");
+		InterpretedTemplate tmpl = Compiler.compile("<?print json(t)?>");
 		System.out.println(tmpl);
 
 		Map vars = new HashMap<String, Object>();
@@ -19,5 +19,6 @@ public class Main
 		String output = tmpl.renders(vars);
 		System.out.println("rendered " + (System.currentTimeMillis()-start));
 		System.out.println(output);
+		System.out.println(new JavascriptSource4Template(tmpl));
 	}
 }

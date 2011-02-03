@@ -1,3 +1,10 @@
+HEAD:
+-------
+Comments:
+* The functionality for generating Javscript source from a template has been
+  moved to a separate class JavascriptSource4Template.
+
+
 exp-35:
 -------
 Comments:
