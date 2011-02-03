@@ -43,7 +43,7 @@ public class InterpretedTemplate implements Template
 		// Initializes regular expressions
 		tokenPattern = Pattern.compile("\\(|\\)|\\[|\\]|\\{|\\}|\\.|,|==|\\!=|<=|<|>=|>|=|\\+=|\\-=|\\*=|/=|//=|%=|%|:|\\+|-|\\*\\*|\\*|//|/");
 		namePattern = Pattern.compile("[a-zA-Z_][\\w]*");
-		// We don't have negatve numbers, this is handled by constant folding in the AST for unary minus
+		// We don't have negative numbers, this is handled by constant folding in the AST for unary minus
 		floatPattern = Pattern.compile("(\\d+(\\.\\d*)?[eE][+-]?\\d+|\\d+\\.\\d*([eE][+-]?\\d+)?)");
 		hexintPattern = Pattern.compile("0[xX][\\da-fA-F]+");
 		octintPattern = Pattern.compile("0[oO][0-7]+");
