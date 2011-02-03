@@ -583,6 +583,7 @@ public class Color implements Collection
 	{
 		throw new UnsupportedOperationException();
 	}
+
 	public int size()
 	{
 		return 4;
