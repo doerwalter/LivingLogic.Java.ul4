@@ -24,7 +24,7 @@
 		<!-- copy versiondoc.txt -->
 		<copy file="${docs}/versiondoc.txt" todir="${build}" />
 		<!-- Compile the java code from ${src} into ${build} -->
-		<javac srcdir="${src}" destdir="${build}" debug="on" source="1.5" target="1.5">
+		<javac srcdir="${src}" destdir="${build}" debug="on" source="1.5" target="1.5" includeantruntime="true">
 			<classpath>
 				<pathelement path="jython.jar" />
 				<pathelement path="commons-lang-2.4.jar" />
