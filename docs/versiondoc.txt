@@ -3,6 +3,8 @@ HEAD:
 Comments:
 * The functionality for generating Javscript source from a template has been
   moved to a separate class JavascriptSource4Template.
+* Fixed many bugs that were detected by running the XIST test suite with
+  templates converted to Java.
 
 
 exp-35:

@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.HashMap;
@@ -298,10 +300,7 @@ public class Utils
 
 	private static String objectType(Object obj)
 	{
-		if (obj == null)
-			return "null";
-		else
-			return "instance of " + obj.getClass();
+		return (obj != null) ? obj.getClass().toString().substring(6) : "null";
 	}
 
 	public static Object neg(Object arg)
@@ -334,7 +333,7 @@ public class Utils
 			return ((BigInteger)arg).negate();
 		else if (arg instanceof BigDecimal)
 			return ((BigDecimal)arg).negate();
-		throw new UnsupportedOperationException("Can't negate " + objectType(arg) + "!");
+		throw new UnsupportedOperationException("-" + objectType(arg) + " not supported!");
 	}
 
 	private static BigInteger _toBigInteger(int arg)
@@ -505,7 +504,7 @@ public class Utils
 		}
 		else if (arg1 instanceof String && arg2 instanceof String)
 			return add((String)arg1, (String)arg2);
-		throw new UnsupportedOperationException("Can't add " + objectType(arg1) + " and " + objectType(arg2) + "!");
+		throw new UnsupportedOperationException(objectType(arg1) + " + " + objectType(arg2) + " not supported!");
 	}
 
 	public static Object sub(int arg1, int arg2)
@@ -614,7 +613,7 @@ public class Utils
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg1).subtract((BigDecimal)arg2);
 		}
-		throw new UnsupportedOperationException("Can't subtract " + objectType(arg1) + " and " + objectType(arg2) + "!");
+		throw new UnsupportedOperationException(objectType(arg1) + " - " + objectType(arg2) + " not supported!");
 	}
 
 	public static Object mul(int arg1, String arg2)
@@ -625,8 +624,26 @@ public class Utils
 	public static Object mul(long arg1, String arg2)
 	{
 		if (((int)arg1) != arg1)
-			throw new UnsupportedOperationException("Can't multiply " + objectType(arg1) + " and " + objectType(arg2) + "!");
+			throw new UnsupportedOperationException(objectType(arg1) + " * " + objectType(arg2) + " not supported!");
 		return StringUtils.repeat(arg2, (int)arg1);
+	}
+
+	public static Object mul(int arg1, List arg2)
+	{
+		ArrayList result = new ArrayList();
+
+		for (;arg1>0;--arg1)
+			result.addAll(arg2);
+		return result;
+	}
+
+	public static Object mul(long arg1, List arg2)
+	{
+		ArrayList result = new ArrayList();
+
+		for (;arg1>0;--arg1)
+			result.addAll(arg2);
+		return result;
 	}
 
 	public static Object mul(int arg1, int arg2)
@@ -677,6 +694,8 @@ public class Utils
 				return ((BigInteger)arg2).multiply(_toBigInteger(_toInt(arg1)));
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg2).multiply(new BigDecimal(_toDouble(arg1)));
+			else if (arg2 instanceof List)
+				return mul(_toInt(arg1), (List)arg2);
 		}
 		else if (arg1 instanceof Long)
 		{
@@ -692,6 +711,8 @@ public class Utils
 				return ((BigInteger)arg2).multiply(_toBigInteger(_toLong(arg1)));
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg2).multiply(new BigDecimal(_toDouble(arg1)));
+			else if (arg2 instanceof List)
+				return mul(_toLong(arg1), (List)arg2);
 		}
 		else if (arg1 instanceof Float)
 		{
@@ -744,7 +765,14 @@ public class Utils
 			else if (arg2 instanceof Long)
 				return mul(_toLong(arg2), (String)arg1);
 		}
-		throw new UnsupportedOperationException("Can't multiply " + objectType(arg1) + " and " + objectType(arg2) + "!");
+		else if (arg1 instanceof List)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return mul(_toInt(arg2), (List)arg1);
+			else if (arg2 instanceof Long)
+				return mul(_toLong(arg2), (List)arg1);
+		}
+		throw new UnsupportedOperationException(objectType(arg1) + " * " + objectType(arg2) + " not supported!");
 	}
 
 	public static Object truediv(Object arg1, Object arg2)
@@ -776,7 +804,7 @@ public class Utils
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg1).divide((BigDecimal)arg2, MathContext.DECIMAL128);
 		}
-		throw new UnsupportedOperationException("Can't divide " + objectType(arg1) + " and " + objectType(arg2) + "!");
+		throw new UnsupportedOperationException(objectType(arg1) + " / " + objectType(arg2) + " not supported!");
 	}
 
 	public static Object floordiv(Object arg1, Object arg2)
@@ -784,7 +812,10 @@ public class Utils
 		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+			{
+				// FIXME: Negative arguments don't work properly
 				return _toInt(arg1) / _toInt(arg2);
+			}
 			else if (arg2 instanceof Long)
 				return _toInt(arg1) / _toLong(arg2);
 			else if (arg2 instanceof Float)
@@ -862,21 +893,125 @@ public class Utils
 			else if (arg2 instanceof BigDecimal)
 				return value1.divideToIntegralValue((BigDecimal)arg2);
 		}
-		throw new UnsupportedOperationException("Can't divide " + objectType(arg1) + " and " + objectType(arg2) + "!");
+		throw new UnsupportedOperationException(objectType(arg1) + " // " + objectType(arg2) + " not supported!");
 	}
 
-	public static Object mod(Integer arg1, Integer arg2)
+	public static int mod(int arg1, int arg2)
 	{
-		return arg1.intValue() % arg2.intValue();
+		return arg1 % arg2;
+	}
+
+	public static long mod(long arg1, long arg2)
+	{
+		return arg1 % arg2;
+	}
+
+	public static float mod(float arg1, float arg2)
+	{
+		return arg1 % arg2;
+	}
+
+	public static double mod(double arg1, double arg2)
+	{
+		return arg1 % arg2;
+	}
+
+	public static BigInteger mod(BigInteger arg1, BigInteger arg2)
+	{
+		return arg1.mod(arg2); // FIXME: negative numbers?
+	}
+
+	public static BigDecimal mod(BigDecimal arg1, BigDecimal arg2)
+	{
+		return arg1.remainder(arg2); // FIXME: negative numbers?
 	}
 
 	public static Object mod(Object arg1, Object arg2)
 	{
-		if (arg1 instanceof Integer && arg2 instanceof Integer)
-			return mod((Integer)arg1, (Integer)arg2);
+		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return mod(_toInt(arg1), _toInt(arg2));
+			else if (arg2 instanceof Long)
+				return mod(_toLong(arg1), _toLong(arg2));
+			else if (arg2 instanceof Float)
+				return mod(_toFloat(arg1), _toFloat(arg2));
+			else if (arg2 instanceof Double)
+				return mod(_toDouble(arg1), _toDouble(arg2));
+			else if (arg2 instanceof BigInteger)
+				return mod(_toBigInteger(_toInt(arg1)), (BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return mod(new BigDecimal(_toDouble(arg1)), (BigDecimal)arg2);
+		}
+		else if (arg1 instanceof Long)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return mod(_toLong(arg1), _toLong(arg2));
+			else if (arg2 instanceof Float)
+				return mod(_toFloat(arg1), _toFloat(arg2));
+			else if (arg2 instanceof Double)
+				return mod(_toDouble(arg1), _toDouble(arg2));
+			else if (arg2 instanceof BigInteger)
+				return mod(_toBigInteger(_toLong(arg1)), (BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return mod(new BigDecimal(_toDouble(arg1)), (BigDecimal)arg2);
+		}
+		else if (arg1 instanceof Float)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float)
+				return mod(_toFloat(arg1), _toFloat(arg2));
+			else if (arg2 instanceof Double)
+				return mod(_toDouble(arg1), (((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return mod(new BigDecimal(_toDouble(arg1)), new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return mod(new BigDecimal(_toDouble(arg1)), (BigDecimal)arg2);
+		}
+		else if (arg1 instanceof Double)
+		{
+			double value1 = (((Double)arg1).doubleValue());
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
+				return mod(value1, _toDouble(arg2));
+			else if (arg2 instanceof BigInteger)
+				return mod(new BigDecimal(value1), new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return mod(new BigDecimal(value1), ((BigDecimal)arg2));
+		}
+		else if (arg1 instanceof BigInteger)
+		{
+			BigInteger value1 = (BigInteger)arg1;
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return mod(value1, _toBigInteger(_toInt(arg2)));
+			else if (arg2 instanceof Long)
+				return mod(value1, _toBigInteger(_toLong(arg2)));
+			else if (arg2 instanceof Float)
+				return mod(new BigDecimal(value1), new BigDecimal(((Float)arg2).doubleValue()));
+			else if (arg2 instanceof Double)
+				return mod(new BigDecimal(value1), new BigDecimal(((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return mod(value1, (BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return mod(new BigDecimal(value1), (BigDecimal)arg2);
+		}
+		else if (arg1 instanceof BigDecimal)
+		{
+			BigDecimal value1 = (BigDecimal)arg1;
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return mod(value1, new BigDecimal(Integer.toString(_toInt(arg2))));
+			else if (arg2 instanceof Long)
+				return mod(value1, new BigDecimal(Long.toString(_toLong(arg2))));
+			else if (arg2 instanceof Float)
+				return mod(value1, new BigDecimal(((Float)arg2).doubleValue()));
+			else if (arg2 instanceof Double)
+				return mod(value1, new BigDecimal(((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return mod(value1, new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return mod(value1, (BigDecimal)arg2);
+		}
 		else if (arg1 instanceof Color && arg2 instanceof Color)
 			return ((Color)arg1).blend((Color)arg2);
-		throw new UnsupportedOperationException("Can't apply the modulo operator to " + objectType(arg1) + " and " + objectType(arg2) + "!");
+		throw new UnsupportedOperationException(objectType(arg1) + " % " + objectType(arg2) + " not supported!");
 	}
 
 	public static Object getItem(String arg1, Integer arg2)
@@ -939,62 +1074,46 @@ public class Utils
 			else if (arg1 instanceof Color)
 				return getItem((Color)arg1, (Integer)arg2);
 		}
-		throw new UnsupportedOperationException(objectType(arg1) + " don't not support getitem with " + objectType(arg2) + " as index!");
+		throw new UnsupportedOperationException(objectType(arg1) + "[" + objectType(arg2) + "] not supported!");
 	}
 
-	private static int getSliceStartPos(int sequenceSize, Integer virtualPos)
+	private static int getSliceStartPos(int sequenceSize, int virtualPos)
 	{
-		int retVal;
-		if (null == virtualPos)
+		int retVal = virtualPos;
+		if (0 > retVal)
+		{
+			retVal += sequenceSize;
+		}
+		if (0 > retVal)
 		{
 			retVal = 0;
 		}
-		else
-		{
-			retVal = virtualPos.intValue();
-			if (0 > retVal)
-			{
-				retVal += sequenceSize;
-			}
-			if (0 > retVal)
-			{
-				retVal = 0;
-			}
-			else if (sequenceSize < retVal)
-			{
-				retVal = sequenceSize;
-			}
-		}
-		return retVal;
-	}
-
-	private static int getSliceEndPos(int sequenceSize, Integer virtualPos)
-	{
-		int retVal;
-		if (null == virtualPos)
+		else if (sequenceSize < retVal)
 		{
 			retVal = sequenceSize;
 		}
-		else
+		return retVal;
+	}
+
+	private static int getSliceEndPos(int sequenceSize, int virtualPos)
+	{
+		int retVal = virtualPos;
+		if (0 > retVal)
 		{
-			retVal = virtualPos;
-			if (0 > retVal)
-			{
-				retVal += sequenceSize;
-			}
-			if (0 > retVal)
-			{
-				retVal = 0;
-			}
-			else if (sequenceSize < retVal)
-			{
-				retVal = sequenceSize;
-			}
+			retVal += sequenceSize;
+		}
+		if (0 > retVal)
+		{
+			retVal = 0;
+		}
+		else if (sequenceSize < retVal)
+		{
+			retVal = sequenceSize;
 		}
 		return retVal;
 	}
 
-	public static Object getSlice(List arg1, Integer arg2, Integer arg3)
+	public static Object getSlice(List arg1, int arg2, int arg3)
 	{
 		int size = arg1.size();
 		int start = getSliceStartPos(size, arg2);
@@ -1004,7 +1123,7 @@ public class Utils
 		return arg1.subList(start, end);
 	}
 
-	public static Object getSlice(String arg1, Integer arg2, Integer arg3)
+	public static Object getSlice(String arg1, int arg2, int arg3)
 	{
 		int size = arg1.length();
 		int start = getSliceStartPos(size, arg2);
@@ -1017,10 +1136,18 @@ public class Utils
 	public static Object getSlice(Object arg1, Object arg2, Object arg3)
 	{
 		if (arg1 instanceof List)
-			return getSlice((List)arg1, (Integer)arg2, (Integer)arg3);
+		{
+			int start = arg2 != null ? _toInt(arg2) : 0;
+			int end = arg3 != null ? _toInt(arg3) : ((List)arg1).size();
+			return getSlice((List)arg1, start, end);
+		}
 		else if (arg1 instanceof String)
-			return getSlice((String)arg1, (Integer)arg2, (Integer)arg3);
-		throw new UnsupportedOperationException(objectType(arg1) + " don't support getslice with " + objectType(arg2) + " and " + objectType(arg3) + " as indices!");
+		{
+			int start = arg2 != null ? _toInt(arg2) : 0;
+			int end = arg3 != null ? _toInt(arg3) : ((String)arg1).length();
+			return getSlice((String)arg1, start, end);
+		}
+		throw new UnsupportedOperationException(objectType(arg1) + "[" + objectType(arg2) + ":" + objectType(arg3) + "] not supported!");
 	}
 
 	public static boolean getBool(Boolean obj)
@@ -1086,28 +1213,159 @@ public class Utils
 		return true;
 	}
 
+	public static int cmp(int arg1, int arg2)
+	{
+		return ((arg1 > arg2) ? 1 : 0) - ((arg1 < arg2) ? 1 : 0);
+	}
+
+	public static int cmp(long arg1, long arg2)
+	{
+		return ((arg1 > arg2) ? 1 : 0) - ((arg1 < arg2) ? 1 : 0);
+	}
+
+	public static int cmp(float arg1, float arg2)
+	{
+		return ((arg1 > arg2) ? 1 : 0) - ((arg1 < arg2) ? 1 : 0);
+	}
+
+	public static int cmp(double arg1, double arg2)
+	{
+		return ((arg1 > arg2) ? 1 : 0) - ((arg1 < arg2) ? 1 : 0);
+	}
+
+	public static int cmp(Comparable arg1, Comparable arg2)
+	{
+		return arg1.compareTo(arg2);
+	}
+
+	public static int cmp(Object arg1, Object arg2, String op)
+	{
+		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return cmp(_toInt(arg1), _toInt(arg2));
+			else if (arg2 instanceof Long)
+				return cmp(_toLong(arg1), _toLong(arg2));
+			else if (arg2 instanceof Float)
+				return cmp(_toFloat(arg1), _toFloat(arg2));
+			else if (arg2 instanceof Double)
+				return cmp(_toDouble(arg1), _toDouble(arg2));
+			else if (arg2 instanceof BigInteger)
+				return cmp(_toBigInteger(_toInt(arg1)), (BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return cmp(new BigDecimal(_toDouble(arg1)), (BigDecimal)arg2);
+		}
+		else if (arg1 instanceof Long)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return cmp(_toLong(arg1), _toLong(arg2));
+			else if (arg2 instanceof Float)
+				return cmp(_toFloat(arg1), _toFloat(arg2));
+			else if (arg2 instanceof Double)
+				return cmp(_toDouble(arg1), _toDouble(arg2));
+			else if (arg2 instanceof BigInteger)
+				return cmp(_toBigInteger(_toLong(arg1)), (BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return cmp(new BigDecimal(_toDouble(arg1)), (BigDecimal)arg2);
+		}
+		else if (arg1 instanceof Float)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float)
+				return cmp(_toFloat(arg1), _toFloat(arg2));
+			else if (arg2 instanceof Double)
+				return cmp(_toDouble(arg1), (((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return cmp(new BigDecimal(_toDouble(arg1)), new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return cmp(new BigDecimal(_toDouble(arg1)), (BigDecimal)arg2);
+		}
+		else if (arg1 instanceof Double)
+		{
+			double value1 = (((Double)arg1).doubleValue());
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
+				return cmp(value1, _toDouble(arg2));
+			else if (arg2 instanceof BigInteger)
+				return cmp(new BigDecimal(value1), new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return cmp(new BigDecimal(value1), (BigDecimal)arg2);
+		}
+		else if (arg1 instanceof BigInteger)
+		{
+			BigInteger value1 = (BigInteger)arg1;
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return cmp(value1, _toBigInteger(_toInt(arg2)));
+			else if (arg2 instanceof Long)
+				return cmp(value1, _toBigInteger(_toLong(arg2)));
+			else if (arg2 instanceof Float)
+				return cmp(new BigDecimal(value1), new BigDecimal(((Float)arg2).doubleValue()));
+			else if (arg2 instanceof Double)
+				return cmp(new BigDecimal(value1), new BigDecimal(((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return cmp(value1, (BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return cmp(new BigDecimal(value1), (BigDecimal)arg2);
+		}
+		else if (arg1 instanceof BigDecimal)
+		{
+			BigDecimal value1 = (BigDecimal)arg1;
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return cmp(value1, new BigDecimal(Integer.toString(_toInt(arg2))));
+			else if (arg2 instanceof Long)
+				return cmp(value1, new BigDecimal(Long.toString(_toLong(arg2))));
+			else if (arg2 instanceof Float)
+				return cmp(value1, new BigDecimal(((Float)arg2).doubleValue()));
+			else if (arg2 instanceof Double)
+				return cmp(value1, new BigDecimal(((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return cmp(value1, new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return cmp(value1, (BigDecimal)arg2);
+		}
+		else if (arg1 instanceof String && arg2 instanceof String)
+			return cmp((String)arg1, (String)arg2);
+		throw new UnsupportedOperationException(objectType(arg1) + " " + op + " " + objectType(arg2) + " not supported!");
+	}
+
+	public static boolean eq(Object obj1, Object obj2)
+	{
+		if (null != obj1 && null != obj2)
+			return cmp(obj1, obj2, "==") == 0;
+		return true;
+	}
+
+	public static boolean ne(Object obj1, Object obj2)
+	{
+		if (null != obj1 && null != obj2)
+			return cmp(obj1, obj2, "!=") == 0;
+		return false;
+	}
+
 	public static boolean lt(Object obj1, Object obj2)
 	{
-		if (null != obj1)
-		{
-			if (null != obj2)
-				return ((Comparable)obj1).compareTo(obj2) < 0;
-		}
-		else if (null == obj2)
-			return false;
-		throw new RuntimeException("Can't compare object to null!");
+		if (null != obj1 && null != obj2)
+			return cmp(obj1, obj2, "<") < 0;
+		return false;
 	}
 
 	public static boolean le(Object obj1, Object obj2)
 	{
-		if (null != obj1)
-		{
-			if (null != obj2)
-				return ((Comparable)obj1).compareTo(obj2) <= 0;
-		}
-		else if (null == obj2)
-			return true;
-		throw new RuntimeException("Can't compare object to null!");
+		if (null != obj1 && null != obj2)
+			return cmp(obj1, obj2, "<=") <= 0;
+		return true;
+	}
+
+	public static boolean gt(Object obj1, Object obj2)
+	{
+		if (null != obj1 && null != obj2)
+			return cmp(obj1, obj2, ">") > 0;
+		return false;
+	}
+
+	public static boolean ge(Object obj1, Object obj2)
+	{
+		if (null != obj1 && null != obj2)
+			return cmp(obj1, obj2, ">=") >= 0;
+		return true;
 	}
 
 	public static boolean contains(String obj, String container)
@@ -1128,12 +1386,15 @@ public class Utils
 	public static boolean contains(Object obj, Object container)
 	{
 		if (container instanceof String)
-			return contains(obj, (String)container);
+		{
+			if (obj instanceof String)
+			return contains((String)obj, (String)container);
+		}
 		else if (container instanceof Collection)
 			return contains(obj, (Collection)container);
 		else if (container instanceof Map)
 			return contains(obj, (Map)container);
-		throw new RuntimeException("Can't determine presence for " + objectType(obj) + " in " + objectType(container) + " container!");
+		throw new RuntimeException(objectType(obj) + " in " + objectType(container) + " not supported!");
 	}
 
 	public static Object abs(Object arg)
@@ -1188,7 +1449,7 @@ public class Utils
 			return ((BigInteger)arg).abs();
 		else if (arg instanceof BigDecimal)
 			return ((BigDecimal)arg).abs();
-		throw new UnsupportedOperationException("Can't take absolute value of " + objectType(arg) + "!");
+		throw new UnsupportedOperationException("abs(" + objectType(arg) + ") not supported!");
 	}
 
 	public static String xmlescape(Object obj)
@@ -1196,7 +1457,7 @@ public class Utils
 		if (obj == null)
 			return "";
 
-		String str = ObjectUtils.toString(obj);
+		String str = str(obj);
 		int length = str.length();
 		StringBuffer sb = new StringBuffer((int)(1.2 * length));
 		for (int offset = 0; offset < length; offset++)
@@ -1280,7 +1541,7 @@ public class Utils
 			return ((Number)obj).intValue();
 		else if (obj instanceof BigDecimal)
 			return ((BigDecimal)obj).toBigInteger();
-		throw new UnsupportedOperationException("Can't convert " + objectType(obj) + " to an integer!");
+		throw new UnsupportedOperationException("int(" + objectType(obj) + ") not supported!");
 	}
 
 	public static Object toInteger(Object obj1, Object obj2)
@@ -1290,7 +1551,7 @@ public class Utils
 			if (obj2 instanceof Integer || obj2 instanceof Byte || obj2 instanceof Short || obj2 instanceof Long || obj2 instanceof BigInteger)
 				return Integer.valueOf((String)obj1, ((Number)obj2).intValue());
 		}
-		throw new UnsupportedOperationException("Can't convert " + objectType(obj1) + " to an integer using " + objectType(obj2) + " as base!");
+		throw new UnsupportedOperationException("int(" + objectType(obj1) + ", " + objectType(obj2) + ") not supported!");
 	}
 
 	public static Object toFloat(Object obj)
@@ -1305,10 +1566,14 @@ public class Utils
 			return (double)((Long)obj).longValue();
 		else if (obj instanceof BigInteger)
 			return new BigDecimal(((BigInteger)obj).toString());
-		else if (obj instanceof BigDecimal)
+		else if (obj instanceof BigDecimal || obj instanceof Float || obj instanceof Double)
 			return obj;
-		throw new UnsupportedOperationException("Can't convert " + objectType(obj) + " to a float!");
+		throw new UnsupportedOperationException("float(" + objectType(obj) + ") not supported!");
 	}
+
+	public static SimpleDateFormat isoReprDateFormatter = new SimpleDateFormat("@yyyy-MM-dd'T'");
+	public static SimpleDateFormat isoReprDateTimeFormatter = new SimpleDateFormat("@yyyy-MM-dd'T'HH:mm:ss");
+	public static SimpleDateFormat isoReprTimestampMicroFormatter = new SimpleDateFormat("@yyyy-MM-dd'T'HH:mm:ss.SSS'000'");
 
 	public static String repr(Object obj)
 	{
@@ -1332,7 +1597,18 @@ public class Utils
 				.append("\"")
 				.toString();
 		else if (obj instanceof Date)
-			return isoformat((Date)obj);
+		{
+			if (microsecond(obj) != 0)
+				return isoReprTimestampMicroFormatter.format(obj);
+			else
+			{
+				if (hour(obj) != 0 || minute(obj) != 0 || second(obj) != 0)
+					return isoReprDateTimeFormatter.format(obj);
+				else
+					return isoReprDateFormatter.format(obj);
+			}
+			
+		}
 		else if (obj instanceof Color)
 			return ((Color)obj).repr();
 		else if (obj instanceof Collection)
@@ -1372,6 +1648,31 @@ public class Utils
 			return sb.toString();
 		}
 		return null;
+	}
+
+	public static String str(Object obj)
+	{
+		if (obj == null)
+			return "";
+		else if (obj instanceof Boolean)
+			return ((Boolean)obj).booleanValue() ? "True" : "False";
+		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger || obj instanceof Double || obj instanceof Float)
+			return obj.toString();
+		else if (obj instanceof BigDecimal)
+		{
+			String result = obj.toString();
+			if (result.indexOf('.') < 0 || result.indexOf('E') < 0 || result.indexOf('e') < 0)
+				result += ".0";
+			return result;
+		}
+		else if (obj instanceof String)
+			return (String)obj;
+		else if (obj instanceof Date)
+			return isoTimestampMicroStringFormatter.format((Date)obj);
+		else if (obj instanceof Color)
+			return ((Color)obj).toString();
+		else
+			return repr(obj);
 	}
 
 	public static String json(Object obj)
@@ -1484,7 +1785,7 @@ public class Utils
 			return new StringReversedIterator((String)obj);
 		else if (obj instanceof List)
 			return new ListReversedIterator((List)obj);
-		throw new UnsupportedOperationException("Can't created reversed iterator for " + objectType(obj) + "!");
+		throw new UnsupportedOperationException("reversed(" + objectType(obj) + ") not supported!");
 	}
 
 	public static Object length(Object obj)
@@ -1495,7 +1796,7 @@ public class Utils
 			return ((Collection)obj).size();
 		else if (obj instanceof Map)
 			return ((Map)obj).size();
-		throw new UnsupportedOperationException("Can't determine length for " + objectType(obj) + "!");
+		throw new UnsupportedOperationException("len(" + objectType(obj) + ") not supported!");
 	}
 
 	public static Iterator iterator(Object obj)
@@ -1508,7 +1809,7 @@ public class Utils
 			return ((Map)obj).keySet().iterator();
 		else if (obj instanceof Iterator)
 			return (Iterator)obj;
-		throw new UnsupportedOperationException(objectType(obj) + " is not iterable!");
+		throw new UnsupportedOperationException("iter(" + objectType(obj) + ") not supported!");
 	}
 
 	public static Object enumerate(Object obj)
@@ -1543,7 +1844,7 @@ public class Utils
 			return String.valueOf(charValue);
 		}
 		// FIXME: Add support for BigInteger
-		throw new UnsupportedOperationException(objectType(obj) + " is not a valid unicode codepoint!");
+		throw new UnsupportedOperationException("chr(" + objectType(obj) + ") not supported!");
 	}
 
 	public static Object ord(Object obj)
@@ -1556,7 +1857,7 @@ public class Utils
 			}
 			return (int)((String)obj).charAt(0);
 		}
-		throw new UnsupportedOperationException("Can't determine unicode code point for " + objectType(obj) + "!");
+		throw new UnsupportedOperationException("ord(" + objectType(obj) + ") not supported!");
 	}
 
 	public static Object hex(Object obj)
@@ -1591,7 +1892,7 @@ public class Utils
 			else
 				return "0x" + bi.toString(16);
 		}
-		throw new UnsupportedOperationException(objectType(obj) + " can't be represented as a hexadecimal string!");
+		throw new UnsupportedOperationException("hex(" + objectType(obj) + ") not supported!");
 	}
 
 	public static Object oct(Object obj)
@@ -1626,7 +1927,7 @@ public class Utils
 			else
 				return "0o" + bi.toString(8);
 		}
-		throw new UnsupportedOperationException(objectType(obj) + " can't be represented as an octal string!");
+		throw new UnsupportedOperationException("oct(" + objectType(obj) + ") not supported!");
 	}
 
 	public static Object bin(Object obj)
@@ -1661,7 +1962,7 @@ public class Utils
 			else
 				return "0b" + bi.toString(2);
 		}
-		throw new UnsupportedOperationException(objectType(obj) + " can't be represented as a binary string!");
+		throw new UnsupportedOperationException("bin(" + objectType(obj) + ") not supported!");
 	}
 
 	public static Object sorted(String obj)
@@ -1719,7 +2020,7 @@ public class Utils
 			return sorted((Set)obj);
 		else if (obj instanceof Iterator)
 			return sorted((Iterator)obj);
-		throw new RuntimeException("Can't sort " + objectType(obj) + "!");
+		throw new RuntimeException("sorted(" + objectType(obj) + ") not supported!");
 	}
 
 	public static Object range(Object obj)
@@ -1747,16 +2048,52 @@ public class Utils
 		return new ZipIterator(iterator(obj1), iterator(obj2), iterator(obj3));
 	}
 
-	public static Object split(String obj1, String obj2)
+	public static Object split(Object obj)
+	{
+		if (obj instanceof String)
+			return Arrays.asList(StringUtils.split((String)obj));
+		throw new UnsupportedOperationException(objectType(obj) + ".split() not supported!");
+	}
+
+	public static Object split(Object obj, Object arg)
+	{
+		if (obj instanceof String)
+		{
+			if (arg == null)
+				return Arrays.asList(StringUtils.split((String)obj));
+			else if (arg instanceof String)
+				return StringUtils.splitByWholeSeparatorPreserveAllTokens((String)obj, (String)arg);
+		}
+		throw new UnsupportedOperationException(objectType(obj) + ".split(" + objectType(arg) + ") not supported!");
+	}
+
+	public static Object split(Object obj, Object arg1, Object arg2)
+	{
+		if (obj instanceof String)
+		{
+			if (arg1 == null)
+				return Arrays.asList(StringUtils.splitByWholeSeparator((String)obj, null, _toInt(arg2)+1));
+			else if (arg1 instanceof String)
+				return StringUtils.splitByWholeSeparatorPreserveAllTokens((String)obj, (String)arg1, _toInt(arg2)+1);
+		}
+		throw new UnsupportedOperationException(objectType(obj) + ".split(" + objectType(arg1) + ", " + objectType(arg2) + ") not supported!");
+	}
+
+	public static Object rsplit(String obj, int maxsplit)
+	{
+		return null; // FIXME:
+	}
+
+	public static Object rsplit(String obj, String separator)
 	{
 		LinkedList<String> retVal = new LinkedList<String>();
-		int length = obj1.length();
-		int delimLength = obj2.length();
+		int length = obj.length();
+		int delimLength = separator.length();
 		int pos1 = 0;
 		int pos2;
 		while (pos1 < length)
 		{
-			while ((pos1 < length) && obj1.startsWith(obj2, pos1))
+			while ((pos1 < length) && obj.startsWith(separator, pos1))
 			{
 				if (0 == pos1)
 				{
@@ -1772,50 +2109,74 @@ public class Utils
 				{
 					retVal.removeLast();
 				}
-				while ((pos2 < length) && !obj1.startsWith(obj2, pos2))
+				while ((pos2 < length) && !obj.startsWith(separator, pos2))
 				{
 					pos2++;
 				}
-				retVal.add(obj1.substring(pos1, pos2));
+				retVal.add(obj.substring(pos1, pos2));
 				pos1 = pos2;
 			}
 		}
-		return retVal;
+		return null; // FIXME
 	}
 
-	public static Object split(Object obj)
+	public static Object rsplit(Object obj)
 	{
 		if (obj instanceof String)
-			return StringUtils.split((String)obj);
-		throw new UnsupportedOperationException("Can't split " + objectType(obj) + "!");
+			return Arrays.asList(StringUtils.split((String)obj));
+		throw new UnsupportedOperationException(objectType(obj) + ".rsplit() not supported!");
 	}
 
-	public static Object split(Object obj1, Object obj2)
+	public static Object rsplit(Object obj, Object arg)
 	{
-		if ((obj1 instanceof String) && (obj2 instanceof String))
-			return split((String)obj1, (String)obj2);
-		throw new UnsupportedOperationException("Can't split " + objectType(obj1) + " with delimiter " + objectType(obj2) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".rsplit(" + objectType(arg) + ") not supported!");
+	}
+
+	public static Object rsplit(Object obj, Object arg1, Object arg2)
+	{
+		throw new UnsupportedOperationException(objectType(obj) + ".rsplit(" + objectType(arg1) + ", " + objectType(arg2) + ") not supported!");
 	}
 
 	public static Object strip(Object obj)
 	{
 		if (obj instanceof String)
 			return StringUtils.strip((String)obj);
-		throw new UnsupportedOperationException("Can't strip " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".strip() not supported!");
+	}
+
+	public static Object strip(Object obj, Object stripChars)
+	{
+		if (obj instanceof String && stripChars instanceof String)
+			return StringUtils.strip((String)obj, (String)stripChars);
+		throw new UnsupportedOperationException(objectType(obj) + ".strip(" + objectType(stripChars) + ") not supported!");
 	}
 
 	public static Object lstrip(Object obj)
 	{
 		if (obj instanceof String)
 			return StringUtils.stripStart((String)obj, null);
-		throw new UnsupportedOperationException("Can't lstrip " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".lstrip() not supported!");
+	}
+
+	public static Object lstrip(Object obj, Object stripChars)
+	{
+		if (obj instanceof String && stripChars instanceof String)
+			return StringUtils.stripStart((String)obj, (String)stripChars);
+		throw new UnsupportedOperationException(objectType(obj) + ".lstrip(" + objectType(stripChars) + ") not supported!");
 	}
 
 	public static Object rstrip(Object obj)
 	{
 		if (obj instanceof String)
 			return StringUtils.stripEnd((String)obj, null);
-		throw new UnsupportedOperationException("Can't rstrip " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".rstrip() not supported!");
+	}
+
+	public static Object rstrip(Object obj, Object stripChars)
+	{
+		if (obj instanceof String && stripChars instanceof String)
+			return StringUtils.stripEnd((String)obj, (String)stripChars);
+		throw new UnsupportedOperationException(objectType(obj) + ".rstrip(" + objectType(stripChars) + ") not supported!");
 	}
 
 	public static Object upper(String obj)
@@ -1827,7 +2188,7 @@ public class Utils
 	{
 		if (obj instanceof String)
 			return upper((String)obj);
-		throw new UnsupportedOperationException("Can't convert " + objectType(obj) + " to upper case!");
+		throw new UnsupportedOperationException(objectType(obj) + ".upper() not supported!");
 	}
 
 	public static Object lower(String obj)
@@ -1839,7 +2200,7 @@ public class Utils
 	{
 		if (obj instanceof String)
 			return lower((String)obj);
-		throw new UnsupportedOperationException("Can't convert " + objectType(obj) + " to lower case!");
+		throw new UnsupportedOperationException(objectType(obj) + ".lower() not supported!");
 	}
 
 	public static Object capitalize(String obj)
@@ -1851,17 +2212,37 @@ public class Utils
 	{
 		if (obj instanceof String)
 			return capitalize((String)obj);
-		throw new UnsupportedOperationException("Can't convert " + objectType(obj) + " to capital case!");
+		throw new UnsupportedOperationException(objectType(obj) + ".capitalize() not supported!");
 	}
 
-	public static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'");
+	public static Date makeDate(int year, int month, int day, int hour, int minute, int second, int microsecond)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.set(year, month-1, day, hour, minute, second);
+		calendar.set(Calendar.MILLISECOND, microsecond/1000);
+		return calendar.getTime();
+	}
+
+	public static Date makeDate(int year, int month, int day, int hour, int minute, int second)
+	{
+		return makeDate(year, month, day, hour, minute, second, 0);
+	}
+
+	public static Date makeDate(int year, int month, int day)
+	{
+		return makeDate(year, month, day, 0, 0, 0, 0);
+	}
+
+	public static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 	public static SimpleDateFormat isoDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-	public static SimpleDateFormat isoTimestampFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'000'");
+	public static SimpleDateFormat isoTimestampFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+	public static SimpleDateFormat isoTimestampMicroFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'000'");
+	public static SimpleDateFormat isoTimestampMicroStringFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'000'");
 
 	public static String isoformat(Date obj)
 	{
 		if (microsecond(obj) != 0)
-			return isoTimestampFormatter.format(obj);
+			return isoTimestampMicroFormatter.format(obj);
 		else
 		{
 			if (hour(obj) != 0 || minute(obj) != 0 || second(obj) != 0)
@@ -1875,7 +2256,7 @@ public class Utils
 	{
 		if (obj instanceof Date)
 			return isoformat((Date)obj);
-		throw new UnsupportedOperationException("Can't call isoformat on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".isoformat() not supported!");
 	}
 
 	public static Date isoparse(String format)
@@ -1887,8 +2268,11 @@ public class Utils
 				return isoDateFormatter.parse(format);
 			else if (length == 19)
 				return isoDateTimeFormatter.parse(format);
-			else // if (len == 26) // FIXME: last 3 digits must be 0
-				return isoTimestampFormatter.parse(format);
+			else // if (len == 26)
+			{
+				// ignore last three digits
+				return isoTimestampFormatter.parse(format.substring(0, 23));
+			}
 		}
 		catch (java.text.ParseException ex) // can not happen when reading from the binary format
 		{
@@ -1907,7 +2291,7 @@ public class Utils
 	{
 		if (obj instanceof Date)
 			return mimeformat((Date)obj);
-		throw new UnsupportedOperationException("Can't call mimeformat on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".mimeformat() not supported!");
 	}
 
 	public static Object format(Date obj, String formatString, Locale locale)
@@ -2040,7 +2424,7 @@ public class Utils
 				return format((Date)obj, (String)formatString, locale);
 			}
 		}
-		throw new UnsupportedOperationException("Can't call format on " + objectType(obj) + " with " + objectType(formatString) + " as format string!");
+		throw new UnsupportedOperationException(objectType(obj) + ".format(" + objectType(formatString) + ") not supported!");
 	}
 
 	public static Object format(Object obj, Object formatString)
@@ -2052,21 +2436,69 @@ public class Utils
 	{
 		if (obj instanceof String && arg1 instanceof String && arg2 instanceof String)
 			return StringUtils.replace((String)obj, (String)arg1, (String)arg2);
-		throw new UnsupportedOperationException("Can't call replace on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".replace(" + objectType(arg1) + ", " + objectType(arg2) + ") not supported!");
 	}
 
 	public static Object find(Object obj, Object arg1)
 	{
 		if (obj instanceof String && arg1 instanceof String)
 			return ((String)obj).indexOf((String)arg1);
-		throw new UnsupportedOperationException("Can't call find on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".find(" + objectType(arg1) + ") not supported!");
+	}
+
+	public static Object find(Object obj, Object arg1, Object arg2)
+	{
+		if (obj instanceof String && arg1 instanceof String)
+			return ((String)obj).indexOf((String)arg1, _toInt(arg2));
+		throw new UnsupportedOperationException(objectType(obj) + ".find(" + objectType(arg1) + ", " + objectType(arg2) + ") not supported!");
+	}
+
+	public static Object find(Object obj, Object arg1, Object arg2, Object arg3)
+	{
+		if (obj instanceof String && arg1 instanceof String)
+		{
+			int startIndex = _toInt(arg2);
+			int endIndex = _toInt(arg3);
+			int result = ((String)obj).indexOf((String)arg1, _toInt(arg2));
+			if (result + ((String)arg1).length() > endIndex)
+				return -1;
+			return result;
+		}
+		throw new UnsupportedOperationException(objectType(obj) + ".find(" + objectType(arg1) + ", " + objectType(arg2) + ", " + objectType(arg3) + ") not supported!");
 	}
 
 	public static Object rfind(Object obj, Object arg1)
 	{
 		if (obj instanceof String && arg1 instanceof String)
 			return ((String)obj).lastIndexOf((String)arg1);
-		throw new UnsupportedOperationException("Can't call rfind on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".rfind(" + objectType(arg1) + ") not supported!");
+	}
+
+	public static Object rfind(Object obj, Object arg1, Object arg2)
+	{
+		if (obj instanceof String && arg1 instanceof String)
+		{
+			int startIndex = _toInt(arg2);
+			int result = ((String)obj).lastIndexOf((String)arg1);
+			if (result < startIndex)
+				return -1;
+			return result;
+		}
+		throw new UnsupportedOperationException(objectType(obj) + ".rfind(" + objectType(arg1) + ", " + objectType(arg2) + ") not supported!");
+	}
+
+	public static Object rfind(Object obj, Object arg1, Object arg2, Object arg3)
+	{
+		if (obj instanceof String && arg1 instanceof String)
+		{
+			int startIndex = _toInt(arg2);
+			int endIndex = _toInt(arg3);
+			int result = ((String)obj).lastIndexOf((String)arg1, _toInt(arg3));
+			if (result < startIndex)
+				return -1;
+			return result;
+		}
+		throw new UnsupportedOperationException(objectType(obj) + ".rfind(" + objectType(arg1) + ", " + objectType(arg2) + ", " + objectType(arg3) + ") not supported!");
 	}
 
 	public static Object items(Map obj)
@@ -2078,7 +2510,7 @@ public class Utils
 	{
 		if (obj instanceof Map)
 			return items((Map)obj);
-		throw new UnsupportedOperationException(objectType(obj) + " can't be iterated as a map!");
+		throw new UnsupportedOperationException(objectType(obj) + ".items() not supported!");
 	}
 
 	public static String type(Object obj)
@@ -2147,24 +2579,17 @@ public class Utils
 		return ((Color)arg1).witha(_toInt(arg2));
 	}
 
-	public static String join(Object arg1, Object arg2)
+	public static String join(Object obj, Object arg)
 	{
-		if (arg1 instanceof String)
+		if (obj instanceof String)
 		{
-			StringBuffer buffer = new StringBuffer();
-
-			for (Iterator iter = iterator(arg2); iter.hasNext();)
-			{
-				Object item = iter.next();
-				if (buffer.length() != 0)
-					buffer.append(arg1);
-				if (item != null)
-					buffer.append(item);
-			}
-			return buffer.toString();
+			if (arg instanceof Collection)
+				return StringUtils.join((Collection)arg, (String)obj);
+			else
+				return StringUtils.join(iterator(arg), (String)obj);
 		}
 		else
-			throw new UnsupportedOperationException("can't call join on " + objectType(arg1) + "!");
+			throw new UnsupportedOperationException(objectType(obj) + ".join(" + objectType(arg) + ") not supported!");
 	}
 
 	public static int day(Object obj)
@@ -2175,7 +2600,7 @@ public class Utils
 			calendar.setTime((Date)obj);
 			return calendar.get(Calendar.DAY_OF_MONTH);
 		}
-		throw new UnsupportedOperationException("Can't call day on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".day() not supported!");
 	}
 
 	public static int month(Object obj)
@@ -2186,7 +2611,7 @@ public class Utils
 			calendar.setTime((Date)obj);
 			return calendar.get(Calendar.MONTH)+1;
 		}
-		throw new UnsupportedOperationException("Can't call month on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".month() not supported!");
 	}
 
 	public static int year(Object obj)
@@ -2197,7 +2622,7 @@ public class Utils
 			calendar.setTime((Date)obj);
 			return calendar.get(Calendar.YEAR);
 		}
-		throw new UnsupportedOperationException("Can't call year on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".year() not supported!");
 	}
 
 	public static int hour(Object obj)
@@ -2208,7 +2633,7 @@ public class Utils
 			calendar.setTime((Date)obj);
 			return calendar.get(Calendar.HOUR_OF_DAY);
 		}
-		throw new UnsupportedOperationException("Can't call hour on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".hour() not supported!");
 	}
 
 	public static int minute(Object obj)
@@ -2219,7 +2644,7 @@ public class Utils
 			calendar.setTime((Date)obj);
 			return calendar.get(Calendar.MINUTE);
 		}
-		throw new UnsupportedOperationException("Can't call minute on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".minute() not supported!");
 	}
 
 	public static int second(Object obj)
@@ -2230,7 +2655,7 @@ public class Utils
 			calendar.setTime((Date)obj);
 			return calendar.get(Calendar.SECOND);
 		}
-		throw new UnsupportedOperationException("Can't call second on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".second() not supported!");
 	}
 
 	public static int microsecond(Object obj)
@@ -2241,7 +2666,7 @@ public class Utils
 			calendar.setTime((Date)obj);
 			return calendar.get(Calendar.MILLISECOND)*1000;
 		}
-		throw new UnsupportedOperationException("Can't call microsecond on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".microsecond() not supported!");
 	}
 
 	private static HashMap<Integer, Integer> weekdays;
@@ -2266,7 +2691,7 @@ public class Utils
 			calendar.setTime((Date)obj);
 			return weekdays.get(calendar.get(Calendar.DAY_OF_WEEK));
 		}
-		throw new UnsupportedOperationException("Can't call weekday on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".weekday() not supported!");
 	}
 
 	public static int yearday(Object obj)
@@ -2277,7 +2702,7 @@ public class Utils
 			calendar.setTime((Date)obj);
 			return calendar.get(Calendar.DAY_OF_YEAR);
 		}
-		throw new UnsupportedOperationException("Can't call yearday on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException(objectType(obj) + ".yearday() not supported!");
 	}
 
 	private static Random rng = new Random();
@@ -2351,20 +2776,42 @@ public class Utils
 					return col.getA();
 			}
 		}
-		throw new UnsupportedOperationException("Can't call randchoice on " + objectType(obj) + "!");
+		throw new UnsupportedOperationException("randchoice(" + objectType(obj) + ") not supported!");
 	}
 
-	public static Object startswith(Object obj, Object arg1)
+	public static Object startswith(Object obj, Object arg)
 	{
-		if (obj instanceof String && arg1 instanceof String)
-			return ((String)obj).startsWith((String)arg1);
-		throw new UnsupportedOperationException("Can't call startswith on " + objectType(obj) + "!");
+		if (obj instanceof String && arg instanceof String)
+			return ((String)obj).startsWith((String)arg);
+		throw new UnsupportedOperationException(objectType(obj) + ".startswith(" + objectType(arg) + ") not supported!");
 	}
 
-	public static Object endswith(Object obj, Object arg1)
+	public static Object endswith(Object obj, Object arg)
 	{
-		if (obj instanceof String && arg1 instanceof String)
-			return ((String)obj).endsWith((String)arg1);
-		throw new UnsupportedOperationException("Can't call endswith on " + objectType(obj) + "!");
+		if (obj instanceof String && arg instanceof String)
+			return ((String)obj).endsWith((String)arg);
+		throw new UnsupportedOperationException(objectType(obj) + ".endswith(" + objectType(arg) + ") not supported!");
+	}
+
+	/**
+	 * Create a Map from key, value arguments.
+	 * @param args An even number of objects. The objects at index 0, 2, 4, ...
+	 *             are the keys, the objects at index 1, 3, 5 are the values.
+	 * @return A Map containing the variables
+	 */
+	public static Map makeMap(Object... args)
+	{
+		int pos = 0;
+		Object key = null;
+		HashMap map = new HashMap();
+		for (Object arg : args)
+		{
+			if ((pos & 1) != 0)
+				map.put(key, arg);
+			else
+				key = arg;
+			++pos;
+		}
+		return map;
 	}
 }

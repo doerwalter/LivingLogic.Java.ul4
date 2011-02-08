@@ -10,7 +10,7 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		InterpretedTemplate tmpl = Compiler.compile("<?print json(t)?>");
+		InterpretedTemplate tmpl = Compiler.compile("<?print @2010-05-12T.month()?>");
 		System.out.println(tmpl);
 
 		Map vars = new HashMap<String, Object>();
@@ -18,7 +18,7 @@ public class Main
 		long start = System.currentTimeMillis();
 		String output = tmpl.renders(vars);
 		System.out.println("rendered " + (System.currentTimeMillis()-start));
-		System.out.println(output);
-		System.out.println(new JavascriptSource4Template(tmpl));
+		System.out.println("output " + output);
+		System.out.println(new JavaSource4Template(tmpl));
 	}
 }

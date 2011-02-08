@@ -1883,6 +1883,11 @@ public class InterpretedTemplate implements Template
 		return buffer.toString();
 	}
 
+	public String javaSource()
+	{
+		return new JavaSource4Template(this).toString();
+	}
+
 	public String javascriptSource()
 	{
 		return new JavascriptSource4Template(this).toString();
