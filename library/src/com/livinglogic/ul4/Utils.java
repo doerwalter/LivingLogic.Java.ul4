@@ -2062,7 +2062,7 @@ public class Utils
 			if (arg == null)
 				return Arrays.asList(StringUtils.split((String)obj));
 			else if (arg instanceof String)
-				return StringUtils.splitByWholeSeparatorPreserveAllTokens((String)obj, (String)arg);
+				return Arrays.asList(StringUtils.splitByWholeSeparatorPreserveAllTokens((String)obj, (String)arg));
 		}
 		throw new UnsupportedOperationException(objectType(obj) + ".split(" + objectType(arg) + ") not supported!");
 	}
@@ -2074,7 +2074,7 @@ public class Utils
 			if (arg1 == null)
 				return Arrays.asList(StringUtils.splitByWholeSeparator((String)obj, null, _toInt(arg2)+1));
 			else if (arg1 instanceof String)
-				return StringUtils.splitByWholeSeparatorPreserveAllTokens((String)obj, (String)arg1, _toInt(arg2)+1);
+				return Arrays.asList(StringUtils.splitByWholeSeparatorPreserveAllTokens((String)obj, (String)arg1, _toInt(arg2)+1));
 		}
 		throw new UnsupportedOperationException(objectType(obj) + ".split(" + objectType(arg1) + ", " + objectType(arg2) + ") not supported!");
 	}
