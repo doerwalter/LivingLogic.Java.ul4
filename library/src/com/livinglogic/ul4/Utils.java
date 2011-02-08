@@ -2492,8 +2492,10 @@ public class Utils
 		if (obj instanceof String && arg1 instanceof String)
 		{
 			int startIndex = _toInt(arg2);
-			int endIndex = _toInt(arg3);
-			int result = ((String)obj).lastIndexOf((String)arg1, _toInt(arg3));
+			int endIndex = _toInt(arg3) - ((String)arg1).length();
+			if (endIndex < 0)
+				return -1;
+			int result = ((String)obj).lastIndexOf((String)arg1, endIndex);
 			if (result < startIndex)
 				return -1;
 			return result;
