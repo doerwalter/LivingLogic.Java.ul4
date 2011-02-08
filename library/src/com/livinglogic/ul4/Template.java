@@ -13,7 +13,7 @@ import java.io.IOException;
  *
  * Interface for various methods for generating template output.
  *
- * @author W. Dörwald
+ * @author W. Doerwald
  * @version $Revision$ $Date$
  */
 

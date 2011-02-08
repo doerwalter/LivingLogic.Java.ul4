@@ -14,7 +14,7 @@ import java.io.IOException;
  *
  * Base class for template code that has been converted to JSP.
  *
- * @author W. Dörwald
+ * @author W. Doerwald
  * @version $Revision$ $Date$
  */
 
