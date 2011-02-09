@@ -574,10 +574,10 @@ public class JavaSource4Template
 							code("r" + opcode.r1 + " = ul4._me_witha(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_SPLIT:
-							code("r" + opcode.r1 + " = ul4._me_split(r" + opcode.r2 + ", r" + opcode.r3 + ", null);");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.split(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_RSPLIT:
-							code("r" + opcode.r1 + " = ul4._me_rsplit(r" + opcode.r2 + ", r" + opcode.r3 + ", null);");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.rsplit(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_GET:
 							code("r" + opcode.r1 + " = ul4._me_get(r" + opcode.r2 + ", r" + opcode.r3 + ", null);");
@@ -594,10 +594,10 @@ public class JavaSource4Template
 					switch (opcode.argcode)
 					{
 						case Opcode.CM2_SPLIT:
-							code("r" + opcode.r1 + " = ul4._me_split(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.split(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 						case Opcode.CM2_RSPLIT:
-							code("r" + opcode.r1 + " = ul4._me_rsplit(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.rsplit(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 						case Opcode.CM2_REPLACE:
 							code("r" + opcode.r1 + " = ul4._me_replace(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
