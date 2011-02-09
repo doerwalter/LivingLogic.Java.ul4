@@ -1668,7 +1668,17 @@ public class Utils
 		else if (obj instanceof String)
 			return (String)obj;
 		else if (obj instanceof Date)
-			return isoTimestampMicroStringFormatter.format((Date)obj);
+		{
+			if (microsecond(obj) != 0)
+				return strTimestampMicroFormatter.format(obj);
+			else
+			{
+				if (hour(obj) != 0 || minute(obj) != 0 || second(obj) != 0)
+					return strDateTimeFormatter.format(obj);
+				else
+					return isoDateFormatter.format(obj);
+			}
+		}
 		else if (obj instanceof Color)
 			return ((Color)obj).toString();
 		else
@@ -2237,7 +2247,8 @@ public class Utils
 	public static SimpleDateFormat isoDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	public static SimpleDateFormat isoTimestampFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 	public static SimpleDateFormat isoTimestampMicroFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'000'");
-	public static SimpleDateFormat isoTimestampMicroStringFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'000'");
+	public static SimpleDateFormat strDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss'");
+	public static SimpleDateFormat strTimestampMicroFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'000'");
 
 	public static String isoformat(Date obj)
 	{
