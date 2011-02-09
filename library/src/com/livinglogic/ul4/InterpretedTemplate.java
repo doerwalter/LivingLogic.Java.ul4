@@ -957,11 +957,11 @@ public class InterpretedTemplate implements Template
 							++pc;
 							return;
 						case Opcode.OC_PRINT:
-							nextChunk = ObjectUtils.toString(reg[code.r1]);
+							nextChunk = Utils.str(reg[code.r1]);
 							++pc;
 							return;
 						case Opcode.OC_PRINTX:
-							nextChunk = Utils.xmlescape(ObjectUtils.toString(reg[code.r1]));
+							nextChunk = Utils.xmlescape(reg[code.r1]);
 							++pc;
 							return;
 						case Opcode.OC_LOADNONE:
@@ -1179,7 +1179,7 @@ public class InterpretedTemplate implements Template
 									reg[code.r1] = Utils.csv(reg[code.r2]);
 									break;
 								case Opcode.CF1_STR:
-									reg[code.r1] = ObjectUtils.toString(reg[code.r2]);
+									reg[code.r1] = Utils.str(reg[code.r2]);
 									break;
 								case Opcode.CF1_REPR:
 									reg[code.r1] = Utils.repr(reg[code.r2]);
@@ -1425,7 +1425,7 @@ public class InterpretedTemplate implements Template
 								case Opcode.CM1_SPLIT:
 									reg[code.r1] = Utils.split(reg[code.r2], reg[code.r3]);
 									break;
-/*								case Opcode.CM1_RSPLIT:
+								case Opcode.CM1_RSPLIT:
 									reg[code.r1] = Utils.rsplit(reg[code.r2], reg[code.r3]);
 									break;
 								case Opcode.CM1_STRIP:
@@ -1442,7 +1442,7 @@ public class InterpretedTemplate implements Template
 									break;
 								case Opcode.CM1_ENDSWITH:
 									reg[code.r1] = Utils.endswith(reg[code.r2], reg[code.r3]);
-									break;*/
+									break;
 								case Opcode.CM1_FIND:
 									reg[code.r1] = Utils.find(reg[code.r2], reg[code.r3]);
 									break;
@@ -1469,6 +1469,12 @@ public class InterpretedTemplate implements Template
 						case Opcode.OC_CALLMETH2:
 							switch (code.argcode)
 							{
+								case Opcode.CM2_SPLIT:
+									reg[code.r1] = Utils.split(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+								case Opcode.CM2_RSPLIT:
+									reg[code.r1] = Utils.rsplit(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
 								case Opcode.CM2_REPLACE:
 									reg[code.r1] = Utils.replace(reg[code.r2], reg[code.r3], reg[code.r4]);
 									break;
