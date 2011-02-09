@@ -1505,7 +1505,7 @@ public class Utils
 
 	public static Date utcnow()
 	{
-		DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+		DateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		String formatted = df.format(new Date());
 		df.setTimeZone(TimeZone.getDefault());

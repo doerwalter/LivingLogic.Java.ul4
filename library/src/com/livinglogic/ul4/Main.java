@@ -10,7 +10,7 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		InterpretedTemplate tmpl = Compiler.compile("<?print @2010-05-12T.month()?>");
+		InterpretedTemplate tmpl = Compiler.compile("<?print utcnow().isoformat()?>");
 		System.out.println(tmpl);
 
 		Map vars = new HashMap<String, Object>();
