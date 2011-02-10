@@ -2354,7 +2354,7 @@ public class Utils
 						javaFormatSequence = "MMMM";
 						break;
 					case 'c':
-						throw new UnsupportedOperationException("Unimplemented escape sequence %c");
+						throw new UnsupportedOperationException("escape sequence %c not supported");
 					case 'd':
 						javaFormatSequence = "dd";
 						break;
@@ -2386,14 +2386,14 @@ public class Utils
 						javaFormatSequence = "ww";
 						break;
 					case 'w':
-						throw new UnsupportedOperationException("Unimplemented escape sequence %w");
+						throw new UnsupportedOperationException("escape sequence %w not supported");
 					case 'W':
 						javaFormatSequence = "ww";
 						break;
 					case 'x':
-						throw new UnsupportedOperationException("Unimplemented escape sequence %x");
+						throw new UnsupportedOperationException("escape sequence %x not supported");
 					case 'X':
-						throw new UnsupportedOperationException("Unimplemented escape sequence %X");
+						throw new UnsupportedOperationException("escape sequence %X not supported");
 					case 'y':
 						javaFormatSequence = "yy";
 						break;
