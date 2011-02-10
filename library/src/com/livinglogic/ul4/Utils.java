@@ -2126,8 +2126,7 @@ public class Utils
 			throw new UnsupportedOperationException("empty separator not supported");
 
 		ArrayList<String> result = new ArrayList<String>();
-		int start, end, seplen = separator.length();
-		start = end = obj.length();
+		int start = obj.length(), end = start, seplen = separator.length();
 		while (maxsplit-- > 0)
 		{
 			start = obj.lastIndexOf(separator, end-seplen);
@@ -2165,7 +2164,7 @@ public class Utils
 		{
 			if (arg1 == null)
 				return rsplit((String)obj, _toInt(arg2));
-			else
+			else if (arg1 instanceof String)
 				return rsplit((String)obj, (String)arg1, _toInt(arg2));
 		}
 		throw new UnsupportedOperationException(objectType(obj) + ".rsplit(" + objectType(arg1) + ", " + objectType(arg2) + ") not supported!");
