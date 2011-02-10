@@ -21,6 +21,7 @@ import java.util.GregorianCalendar;
 import java.util.Random;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.math.BigInteger;
 import java.math.BigDecimal;
@@ -2326,125 +2327,138 @@ public class Utils
 		throw new UnsupportedOperationException(objectType(obj) + ".mimeformat() not supported!");
 	}
 
+	private static DecimalFormat twodigits = new DecimalFormat("00");
+	private static DecimalFormat threedigits = new DecimalFormat("000");
+	private static DecimalFormat fourdigits = new DecimalFormat("0000");
+	private static DecimalFormat sixdigits = new DecimalFormat("000000");
+
 	public static Object format(Date obj, String formatString, Locale locale)
 	{
-		StringBuffer javaFormatString = new StringBuffer();
-		int formatStringLength = formatString.length();
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime((Date)obj);
+		StringBuffer output = new StringBuffer();
 		boolean escapeCharacterFound = false;
-		boolean inLiteral = false;
-		char formatChar;
-		String javaFormatSequence;
+		int formatStringLength = formatString.length();
 		for (int i = 0; i < formatStringLength; i++)
 		{
-			formatChar = formatString.charAt(i);
+			char c = formatString.charAt(i);
 			if (escapeCharacterFound)
 			{
-				switch (formatChar)
+				switch (c)
 				{
 					case 'a':
-						javaFormatSequence = "EE";
+						output.append(new SimpleDateFormat("EE", locale).format(obj));
 						break;
 					case 'A':
-						javaFormatSequence = "EEEE";
+						output.append(new SimpleDateFormat("EEEE", locale).format(obj));
 						break;
 					case 'b':
-						javaFormatSequence = "MMM";
+						output.append(new SimpleDateFormat("MMM", locale).format(obj));
 						break;
 					case 'B':
-						javaFormatSequence = "MMMM";
+						output.append(new SimpleDateFormat("MMMM", locale).format(obj));
 						break;
 					case 'c':
-						throw new UnsupportedOperationException("escape sequence %c not supported");
+					{
+						int day = calendar.get(Calendar.DAY_OF_MONTH);
+						output.append(new SimpleDateFormat("EEE MMM", locale).format(obj));
+						output.append(' ');
+						if (day < 10)
+							output.append(' ');
+						output.append(day);
+						output.append(' ');
+						output.append(twodigits.format(calendar.get(Calendar.HOUR_OF_DAY)));
+						output.append(':');
+						output.append(twodigits.format(calendar.get(Calendar.MINUTE)));
+						output.append(':');
+						output.append(twodigits.format(calendar.get(Calendar.SECOND)));
+						output.append(' ');
+						output.append(fourdigits.format(calendar.get(Calendar.YEAR)));
+						break;
+					}
 					case 'd':
-						javaFormatSequence = "dd";
+						output.append(twodigits.format(calendar.get(Calendar.DAY_OF_MONTH)));
 						break;
 					case 'f':
-						javaFormatSequence = "SSS'000";
+						output.append(sixdigits.format(calendar.get(Calendar.MILLISECOND)*1000));
 						break;
 					case 'H':
-						javaFormatSequence = "HH";
+						output.append(twodigits.format(calendar.get(Calendar.HOUR_OF_DAY)));
 						break;
 					case 'I':
-						javaFormatSequence = "hh";
+						output.append(twodigits.format(((calendar.get(Calendar.HOUR_OF_DAY) - 1) % 12) + 1));
 						break;
 					case 'j':
-						javaFormatSequence = "DDD";
+						output.append(threedigits.format(calendar.get(Calendar.DAY_OF_YEAR)));
 						break;
 					case 'm':
-						javaFormatSequence = "MM";
+						output.append(twodigits.format(calendar.get(Calendar.MONTH)+1));
 						break;
 					case 'M':
-						javaFormatSequence = "mm";
+						output.append(twodigits.format(calendar.get(Calendar.MINUTE)));
 						break;
 					case 'p':
-						javaFormatSequence = "aa";
+						output.append(new SimpleDateFormat("aa", locale).format(obj));
 						break;
 					case 'S':
-						javaFormatSequence = "ss";
+						output.append(twodigits.format(calendar.get(Calendar.SECOND)));
 						break;
 					case 'U':
-						javaFormatSequence = "ww";
+					{
+						int firstday = weekday(makeDate(year(obj), 1, 1));
+						int value = (yearday(obj) + firstday - 1) / 7;
+						output.append(twodigits.format(value));
 						break;
+					}
 					case 'w':
-						throw new UnsupportedOperationException("escape sequence %w not supported");
-					case 'W':
-						javaFormatSequence = "ww";
+						output.append(weekdayFormats.get(calendar.get(Calendar.DAY_OF_WEEK)));
 						break;
+					case 'W':
+					{
+						int firstday = weekday(makeDate(year(obj), 1, 1));
+						firstday = firstday != 0 ? firstday-1 : 6;
+						int value = (yearday(obj) + firstday - 1) / 7;
+						output.append(twodigits.format(value));
+						break;
+					}
 					case 'x':
-						throw new UnsupportedOperationException("escape sequence %x not supported");
+						output.append(twodigits.format(calendar.get(Calendar.MONTH)+1));
+						output.append('/');
+						output.append(twodigits.format(calendar.get(Calendar.DAY_OF_MONTH)));
+						output.append('/');
+						output.append(twodigits.format(calendar.get(Calendar.YEAR) % 100));
+						break;
 					case 'X':
-						throw new UnsupportedOperationException("escape sequence %X not supported");
+						output.append(twodigits.format(calendar.get(Calendar.HOUR_OF_DAY)));
+						output.append(':');
+						output.append(twodigits.format(calendar.get(Calendar.MINUTE)));
+						output.append(':');
+						output.append(twodigits.format(calendar.get(Calendar.SECOND)));
+						break;
 					case 'y':
-						javaFormatSequence = "yy";
+						output.append(twodigits.format(calendar.get(Calendar.YEAR) % 100));
 						break;
 					case 'Y':
-						javaFormatSequence = "yyyy";
+						output.append(fourdigits.format(calendar.get(Calendar.YEAR)));
 						break;
 					default:
-						javaFormatSequence = null;
+						output.append(c);
 						break;
-				}
-				if (inLiteral != (null == javaFormatSequence))
-				{
-					javaFormatString.append('\'');
-					inLiteral = !inLiteral;
-				}
-				if (null != javaFormatSequence)
-				{
-					javaFormatString.append(javaFormatSequence);
-					if ('f' == formatChar)
-					{
-						inLiteral = true;
-					}
-				}
-				else
-				{
-					javaFormatString.append(formatChar);
 				}
 				escapeCharacterFound = false;
 			}
 			else
 			{
-				escapeCharacterFound = ('%' == formatChar);
-				if (!escapeCharacterFound)
-				{
-					if (inLiteral = !inLiteral)
-					{
-						javaFormatString.append('\'');
-					}
-					javaFormatString.append(formatChar);
-					if ('\'' == formatChar)
-					{
-						javaFormatString.append(formatChar);
-					}
-				}
+				if (c == '%')
+					escapeCharacterFound = true;
+				else
+					output.append(c);
+				
 			}
 		}
-		if (inLiteral)
-		{
-			javaFormatString.append('\'');
-		}
-		return new SimpleDateFormat(javaFormatString.toString(), locale).format(obj);
+		if (escapeCharacterFound)
+			output.append('%');
+		return output.toString();
 	}
 
 	public static Object format(Object obj, Object formatString, Locale locale)
@@ -2704,6 +2718,7 @@ public class Utils
 	}
 
 	private static HashMap<Integer, Integer> weekdays;
+	private static HashMap<Integer, String> weekdayFormats;
 
 	static
 	{
@@ -2715,6 +2730,15 @@ public class Utils
 		weekdays.put(Calendar.FRIDAY, 4);
 		weekdays.put(Calendar.SATURDAY, 5);
 		weekdays.put(Calendar.SUNDAY, 6);
+
+		weekdayFormats = new HashMap<Integer, String>();
+		weekdayFormats.put(Calendar.SUNDAY, "0");
+		weekdayFormats.put(Calendar.MONDAY, "1");
+		weekdayFormats.put(Calendar.TUESDAY, "2");
+		weekdayFormats.put(Calendar.WEDNESDAY, "3");
+		weekdayFormats.put(Calendar.THURSDAY, "4");
+		weekdayFormats.put(Calendar.FRIDAY, "5");
+		weekdayFormats.put(Calendar.SATURDAY, "6");
 	}
 
 	public static int weekday(Object obj)
