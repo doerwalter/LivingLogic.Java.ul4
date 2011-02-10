@@ -1650,6 +1650,9 @@ public class Utils
 		return null;
 	}
 
+	public static SimpleDateFormat strDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public static SimpleDateFormat strTimestampMicroFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'000'");
+
 	public static String str(Object obj)
 	{
 		if (obj == null)
@@ -2091,43 +2094,49 @@ public class Utils
 
 	public static Object rsplit(String obj, int maxsplit)
 	{
-		return null; // FIXME:
+		ArrayList<String> result = new ArrayList<String>();
+		int start, end;
+		start = end = obj.length() - 1;
+		while (maxsplit-- > 0)
+		{
+			while (start >= 0 && Character.isWhitespace(obj.charAt(start)))
+				--start;
+			if (start < 0)
+				break;
+			end = start--;
+			while (start >= 0 && !Character.isWhitespace(obj.charAt(start)))
+				--start;
+			if (start != end)
+				result.add(0, obj.substring(start+1, end+1));
+		}
+		if (start >= 0)
+		{
+			while (start >= 0 && Character.isWhitespace(obj.charAt(start)))
+				--start;
+			if (start >= 0)
+				result.add(0, obj.substring(0, start+1));
+		}
+		return result;
 	}
 
-	public static Object rsplit(String obj, String separator)
+	public static Object rsplit(String obj, String separator, int maxsplit)
 	{
-		LinkedList<String> retVal = new LinkedList<String>();
-		int length = obj.length();
-		int delimLength = separator.length();
-		int pos1 = 0;
-		int pos2;
-		while (pos1 < length)
+		if (separator.length() == 0)
+			throw new UnsupportedOperationException("empty separator not supported");
+
+		ArrayList<String> result = new ArrayList<String>();
+		int start, end, seplen = separator.length();
+		start = end = obj.length();
+		while (maxsplit-- > 0)
 		{
-			while ((pos1 < length) && obj.startsWith(separator, pos1))
-			{
-				if (0 == pos1)
-				{
-					retVal.add("");
-				}
-				pos1 += delimLength;
-				retVal.add("");
-			}
-			if (pos1 < length)
-			{
-				pos2 = pos1 + 1;
-				if (!retVal.isEmpty())
-				{
-					retVal.removeLast();
-				}
-				while ((pos2 < length) && !obj.startsWith(separator, pos2))
-				{
-					pos2++;
-				}
-				retVal.add(obj.substring(pos1, pos2));
-				pos1 = pos2;
-			}
+			start = obj.lastIndexOf(separator, end-seplen);
+			if (start < 0)
+				break;
+			result.add(0, obj.substring(start+seplen, end));
+			end = start;
 		}
-		return null; // FIXME
+		result.add(0, obj.substring(0, end));
+		return result;
 	}
 
 	public static Object rsplit(Object obj)
@@ -2139,11 +2148,25 @@ public class Utils
 
 	public static Object rsplit(Object obj, Object arg)
 	{
+		if (obj instanceof String)
+		{
+			if (arg == null)
+				return Arrays.asList(StringUtils.split((String)obj));
+			else if (arg instanceof String)
+				return rsplit((String)obj, (String)arg, 0xffffffff);
+		}
 		throw new UnsupportedOperationException(objectType(obj) + ".rsplit(" + objectType(arg) + ") not supported!");
 	}
 
 	public static Object rsplit(Object obj, Object arg1, Object arg2)
 	{
+		if (obj instanceof String)
+		{
+			if (arg1 == null)
+				return rsplit((String)obj, _toInt(arg2));
+			else
+				return rsplit((String)obj, (String)arg1, _toInt(arg2));
+		}
 		throw new UnsupportedOperationException(objectType(obj) + ".rsplit(" + objectType(arg1) + ", " + objectType(arg2) + ") not supported!");
 	}
 
@@ -2247,8 +2270,6 @@ public class Utils
 	public static SimpleDateFormat isoDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	public static SimpleDateFormat isoTimestampFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 	public static SimpleDateFormat isoTimestampMicroFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'000'");
-	public static SimpleDateFormat strDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss'");
-	public static SimpleDateFormat strTimestampMicroFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'000'");
 
 	public static String isoformat(Date obj)
 	{

@@ -10,14 +10,14 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		InterpretedTemplate tmpl = Compiler.compile("<?print utcnow().isoformat()?>");
+		InterpretedTemplate tmpl = Compiler.compile("<?print 'a<=><=>b<=>c'.rsplit('<=>', 10)?>");
 		System.out.println(tmpl);
 
 		Map vars = new HashMap<String, Object>();
 		vars.put("t", tmpl);
-		long start = System.currentTimeMillis();
+		long start = System.nanoTime();
 		String output = tmpl.renders(vars);
-		System.out.println("rendered " + (System.currentTimeMillis()-start));
+		System.out.println("rendered " + ((System.nanoTime()-start)/1000) + "us");
 		System.out.println("output " + output);
 		System.out.println(new JavaSource4Template(tmpl));
 	}
