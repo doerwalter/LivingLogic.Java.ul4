@@ -2153,7 +2153,7 @@ public class Utils
 			if (arg == null)
 				return Arrays.asList(StringUtils.split((String)obj));
 			else if (arg instanceof String)
-				return rsplit((String)obj, (String)arg, 0xffffffff);
+				return rsplit((String)obj, (String)arg, 0x7fffffff);
 		}
 		throw new UnsupportedOperationException(objectType(obj) + ".rsplit(" + objectType(arg) + ") not supported!");
 	}
