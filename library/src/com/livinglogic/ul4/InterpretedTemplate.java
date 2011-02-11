@@ -1168,7 +1168,7 @@ public class InterpretedTemplate implements Template
 									reg[code.r1] = Utils.random();
 									break;
 								default:
-									throw new UnknownMethodException(code.arg);
+									throw new UnknownFunctionException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLFUNC1:
@@ -1274,7 +1274,7 @@ public class InterpretedTemplate implements Template
 									reg[code.r1] = Utils.randchoice(reg[code.r2]);
 									break;
 								default:
-									throw new UnknownMethodException(code.arg);
+									throw new UnknownFunctionException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLFUNC2:
@@ -1296,7 +1296,7 @@ public class InterpretedTemplate implements Template
 									reg[code.r1] = Utils.randrange(reg[code.r2], reg[code.r3]);
 									break;
 								default:
-									throw new UnknownMethodException(code.arg);
+									throw new UnknownFunctionException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLFUNC3:
@@ -1321,7 +1321,7 @@ public class InterpretedTemplate implements Template
 									reg[code.r1] = Utils.randrange(reg[code.r2], reg[code.r3], reg[code.r4]);
 									break;
 								default:
-									throw new UnknownMethodException(code.arg);
+									throw new UnknownFunctionException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLFUNC4:
@@ -1337,7 +1337,7 @@ public class InterpretedTemplate implements Template
 									reg[code.r1] = Utils.hsv(reg[code.r2], reg[code.r3], reg[code.r4], reg[code.r5]);
 									break;
 								default:
-									throw new UnknownMethodException(code.arg);
+									throw new UnknownFunctionException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLMETH0:
