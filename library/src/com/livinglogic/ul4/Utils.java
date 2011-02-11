@@ -810,15 +810,48 @@ public class Utils
 
 	public static Object floordiv(Object arg1, Object arg2)
 	{
+		// integer division in UL4 is defined is rounding towords -infinity (as Python does)
+		// since Java rounds towards 0, the following code compensates for that
 		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
 			{
-				// FIXME: Negative arguments don't work properly
-				return _toInt(arg1) / _toInt(arg2);
+				int int1 = _toInt(arg1);
+				int int2 = _toInt(arg2);
+				if (int1 < 0)
+				{
+					if (int2 < 0)
+						return  int1 / int2;
+					else
+						return  (int1 - int2 + 1) / int2;
+				}
+				else
+				{
+					if (int2 < 0)
+						return  (int1 - int2 - 1) / int2;
+					else
+						return  int1 / int2;
+				}
 			}
 			else if (arg2 instanceof Long)
-				return _toInt(arg1) / _toLong(arg2);
+			{
+				int int1 = _toInt(arg1);
+				int long2 = _toLong(arg2);
+				if (int1 < 0)
+				{
+					if (long2 < 0)
+						return  int1 / long2;
+					else
+						return  (int1 - long2 + 1) / long2;
+				}
+				else
+				{
+					if (long2 < 0)
+						return  (int1 - long2 - 1) / long2;
+					else
+						return  int1 / long2;
+				}
+			}
 			else if (arg2 instanceof Float)
 				return Math.floor(_toInt(arg1) / _toFloat(arg2));
 			else if (arg2 instanceof Double)
