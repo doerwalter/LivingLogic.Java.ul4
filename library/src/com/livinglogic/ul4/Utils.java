@@ -649,6 +649,8 @@ public class Utils
 
 	public static Object mul(int arg1, int arg2)
 	{
+		if (arg1 == 0 || arg2 == 0)
+			return 0;
 		int result = arg1 * arg2;
 		if (result/arg1 == arg2) // result doesn't seem to have overflowed
 			return result;
@@ -658,6 +660,8 @@ public class Utils
 
 	public static Object mul(long arg1, long arg2)
 	{
+		if (arg1 == 0 || arg2 == 0)
+			return 0;
 		long result = arg1 * arg2;
 		if (result/arg1 == arg2) // result doesn't seem to have overflowed
 			return result;
@@ -836,7 +840,7 @@ public class Utils
 			else if (arg2 instanceof Long)
 			{
 				int int1 = _toInt(arg1);
-				int long2 = _toLong(arg2);
+				long long2 = _toLong(arg2);
 				if (int1 < 0)
 				{
 					if (long2 < 0)
