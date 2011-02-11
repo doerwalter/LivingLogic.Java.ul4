@@ -214,6 +214,8 @@ public class Opcode
 			return OC_LOADSTR;
 		else if (name.equals("loaddate"))
 			return OC_LOADDATE;
+		else if (name.equals("loadcolor"))
+			return OC_LOADCOLOR;
 		else if (name.equals("buildlist"))
 			return OC_BUILDLIST;
 		else if (name.equals("builddict"))
