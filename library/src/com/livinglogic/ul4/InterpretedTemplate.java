@@ -1167,6 +1167,8 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF0_RANDOM:
 									reg[code.r1] = Utils.random();
 									break;
+								default:
+									throw new UnknownMethodException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLFUNC1:
@@ -1271,6 +1273,8 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF1_RANDCHOICE:
 									reg[code.r1] = Utils.randchoice(reg[code.r2]);
 									break;
+								default:
+									throw new UnknownMethodException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLFUNC2:
@@ -1291,6 +1295,8 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF2_RANDRANGE:
 									reg[code.r1] = Utils.randrange(reg[code.r2], reg[code.r3]);
 									break;
+								default:
+									throw new UnknownMethodException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLFUNC3:
@@ -1314,6 +1320,8 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF3_RANDRANGE:
 									reg[code.r1] = Utils.randrange(reg[code.r2], reg[code.r3], reg[code.r4]);
 									break;
+								default:
+									throw new UnknownMethodException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLFUNC4:
@@ -1328,6 +1336,8 @@ public class InterpretedTemplate implements Template
 								case Opcode.CF4_HSV:
 									reg[code.r1] = Utils.hsv(reg[code.r2], reg[code.r3], reg[code.r4], reg[code.r5]);
 									break;
+								default:
+									throw new UnknownMethodException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLMETH0:
@@ -1417,6 +1427,8 @@ public class InterpretedTemplate implements Template
 								case Opcode.CM0_YEARDAY:
 									reg[code.r1] = Utils.yearday(reg[code.r2]);
 									break;
+								default:
+									throw new UnknownMethodException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLMETH1:
@@ -1464,6 +1476,8 @@ public class InterpretedTemplate implements Template
 								case Opcode.CM1_JOIN:
 									reg[code.r1] = Utils.join(reg[code.r2], reg[code.r3]);
 									break;
+								default:
+									throw new UnknownMethodException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLMETH2:
@@ -1475,16 +1489,34 @@ public class InterpretedTemplate implements Template
 								case Opcode.CM2_RSPLIT:
 									reg[code.r1] = Utils.rsplit(reg[code.r2], reg[code.r3], reg[code.r4]);
 									break;
+								case Opcode.CM2_FIND:
+									reg[code.r1] = Utils.find(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
+								case Opcode.CM2_RFIND:
+									reg[code.r1] = Utils.rfind(reg[code.r2], reg[code.r3], reg[code.r4]);
+									break;
 								case Opcode.CM2_REPLACE:
 									reg[code.r1] = Utils.replace(reg[code.r2], reg[code.r3], reg[code.r4]);
 									break;
 								case Opcode.CM2_GET:
 									reg[code.r1] = ((Map)reg[code.r2]).containsKey(reg[code.r3]) ? ((Map)reg[code.r2]).get(reg[code.r3]) : reg[code.r4];
 									break;
+								default:
+									throw new UnknownMethodException(code.arg);
 							}
 							break;
 						case Opcode.OC_CALLMETH3:
-							throw new UnknownMethodException(code.arg);
+							switch (code.argcode)
+							{
+								case Opcode.CM2_FIND:
+									reg[code.r1] = Utils.find(reg[code.r2], reg[code.r3], reg[code.r4], reg[code.r5]);
+									break;
+								case Opcode.CM2_RFIND:
+									reg[code.r1] = Utils.rfind(reg[code.r2], reg[code.r3], reg[code.r4], reg[code.r5]);
+									break;
+								default:
+									throw new UnknownMethodException(code.arg);
+							}
 						case Opcode.OC_CALLMETHKW:
 							switch (code.argcode)
 							{
