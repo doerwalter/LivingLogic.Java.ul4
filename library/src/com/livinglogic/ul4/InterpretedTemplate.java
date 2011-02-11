@@ -1508,10 +1508,10 @@ public class InterpretedTemplate implements Template
 						case Opcode.OC_CALLMETH3:
 							switch (code.argcode)
 							{
-								case Opcode.CM2_FIND:
+								case Opcode.CM3_FIND:
 									reg[code.r1] = Utils.find(reg[code.r2], reg[code.r3], reg[code.r4], reg[code.r5]);
 									break;
-								case Opcode.CM2_RFIND:
+								case Opcode.CM3_RFIND:
 									reg[code.r1] = Utils.rfind(reg[code.r2], reg[code.r3], reg[code.r4], reg[code.r5]);
 									break;
 								default:
