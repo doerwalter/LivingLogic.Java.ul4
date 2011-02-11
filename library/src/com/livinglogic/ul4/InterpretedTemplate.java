@@ -1427,6 +1427,9 @@ public class InterpretedTemplate implements Template
 								case Opcode.CM0_YEARDAY:
 									reg[code.r1] = Utils.yearday(reg[code.r2]);
 									break;
+								case Opcode.CM0_RENDER:
+									reg[code.r1] = ((Template)reg[code.r2]).renders(null);
+									break;
 								default:
 									throw new UnknownMethodException(code.arg);
 							}
