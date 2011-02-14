@@ -1905,20 +1905,22 @@ public class InterpretedTemplate implements Template
 		{
 			Opcode code = opcodes.get(i);
 
-			if (code.name == Opcode.OC_ELSE || code.name == Opcode.OC_ENDIF || code.name == Opcode.OC_ENDFOR)
+			if (code.name == Opcode.OC_ELSE || code.name == Opcode.OC_ENDIF || code.name == Opcode.OC_ENDFOR || code.name == Opcode.OC_ENDDEF)
 				--indent;
 			for (int j = 0; j < indent; ++j)
 				buffer.append("\t");
 			if (code.name == Opcode.OC_ENDIF || code.name == Opcode.OC_ENDFOR)
 				buffer.append("}");
-			else if (code.name == Opcode.OC_FOR || code.name == Opcode.OC_IF)
+			else if (code.name == Opcode.OC_FOR || code.name == Opcode.OC_IF || code.name == Opcode.OC_DEF)
 				buffer.append(code + " {");
 			else if (code.name == Opcode.OC_ELSE)
 				buffer.append("} else {");
+			else if (code.name == Opcode.OC_ENDDEF)
+				buffer.append("}");
 			else
 				buffer.append(code);
 			buffer.append("\n");
-			if (code.name == Opcode.OC_FOR || code.name == Opcode.OC_IF || code.name == Opcode.OC_ELSE)
+			if (code.name == Opcode.OC_FOR || code.name == Opcode.OC_IF || code.name == Opcode.OC_ELSE || code.name == Opcode.OC_DEF)
 				++indent;
 		}
 		return buffer.toString();
