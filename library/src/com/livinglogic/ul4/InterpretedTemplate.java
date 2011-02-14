@@ -1547,8 +1547,16 @@ public class InterpretedTemplate implements Template
 								break;
 							}
 							else
-								nextChunk = ((Template)reg[code.r1]).renders((Map)reg[code.r2]);
-							break;
+							{
+								String output = ((Template)reg[code.r1]).renders((Map)reg[code.r2]);
+								if (output.length() != 0)
+								{
+									nextChunk = output;
+									++pc;
+									return;
+								}
+								break;
+							}
 						case Opcode.OC_DEF:
 							variables.put(code.arg, new InterpretedTemplate(source.substring(code.location.endtag, opcodes.get(code.jump).location.starttag), opcodes, startdelim, enddelim, pc+1, code.jump));
 							pc = code.jump+1;
