@@ -1346,6 +1346,9 @@ public class InterpretedTemplate implements Template
 								case Opcode.CM0_SPLIT:
 									reg[code.r1] = Utils.split(reg[code.r2]);
 									break;
+								case Opcode.CM0_RSPLIT:
+									reg[code.r1] = Utils.rsplit(reg[code.r2]);
+									break;
 								case Opcode.CM0_STRIP:
 									reg[code.r1] = Utils.strip(reg[code.r2]);
 									break;
