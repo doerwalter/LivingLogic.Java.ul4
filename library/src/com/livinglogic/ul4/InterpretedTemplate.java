@@ -1520,6 +1520,7 @@ public class InterpretedTemplate implements Template
 								default:
 									throw new UnknownMethodException(code.arg);
 							}
+							break;
 						case Opcode.OC_CALLMETHKW:
 							switch (code.argcode)
 							{
