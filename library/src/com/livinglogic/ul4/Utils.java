@@ -814,7 +814,7 @@ public class Utils
 
 	public static Object floordiv(Object arg1, Object arg2)
 	{
-		// integer division in UL4 is defined is rounding towords -infinity (as Python does)
+		// integer division in UL4 is defined is rounding towards -infinity (as Python does)
 		// since Java rounds towards 0, the following code compensates for that
 		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
 		{
