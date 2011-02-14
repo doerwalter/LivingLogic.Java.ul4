@@ -1398,7 +1398,7 @@ public class InterpretedTemplate implements Template
 									reg[code.r1] = ((Color)reg[code.r2]).hsva();
 									break;
 								case Opcode.CM0_LUM:
-									reg[code.r1] = new Double(((Color)reg[code.r2]).lum());
+									reg[code.r1] = ((Color)reg[code.r2]).lum();
 									break;
 								case Opcode.CM0_DAY:
 									reg[code.r1] = Utils.day(reg[code.r2]);
