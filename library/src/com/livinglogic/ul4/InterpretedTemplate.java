@@ -1004,7 +1004,7 @@ public class InterpretedTemplate implements Template
 							((Map)reg[code.r1]).putAll((Map)reg[code.r2]);
 							break;
 						case Opcode.OC_LOADVAR:
-							reg[code.r1] = variables.get(code.arg);
+							reg[code.r1] = Utils.getItem(variables, code.arg);
 							break;
 						case Opcode.OC_STOREVAR:
 							variables.put(code.arg, reg[code.r1]);
