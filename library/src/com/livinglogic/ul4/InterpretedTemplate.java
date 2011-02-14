@@ -1099,28 +1099,28 @@ public class InterpretedTemplate implements Template
 							reg[code.r1] = Utils.getSlice(reg[code.r2], null, reg[code.r3]);
 							break;
 						case Opcode.OC_NOT:
-							reg[code.r1] = Utils.getBool(reg[code.r2]) ? Boolean.FALSE : Boolean.TRUE;
+							reg[code.r1] = !Utils.getBool(reg[code.r2]);
 							break;
 						case Opcode.OC_NEG:
 							reg[code.r1] = Utils.neg(reg[code.r2]);
 							break;
 						case Opcode.OC_EQ:
-							reg[code.r1] = ObjectUtils.equals(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
+							reg[code.r1] = Utils.eq(reg[code.r2], reg[code.r3]);
 							break;
 						case Opcode.OC_NE:
-							reg[code.r1] = ObjectUtils.equals(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
+							reg[code.r1] = Utils.ne(reg[code.r2], reg[code.r3]);
 							break;
 						case Opcode.OC_LT:
-							reg[code.r1] = Utils.lt(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
+							reg[code.r1] = Utils.lt(reg[code.r2], reg[code.r3]);
 							break;
 						case Opcode.OC_LE:
-							reg[code.r1] = Utils.le(reg[code.r2], reg[code.r3]) ? Boolean.TRUE : Boolean.FALSE;
+							reg[code.r1] = Utils.le(reg[code.r2], reg[code.r3]);
 							break;
 						case Opcode.OC_GT:
-							reg[code.r1] = Utils.le(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
+							reg[code.r1] = Utils.gt(reg[code.r2], reg[code.r3]);
 							break;
 						case Opcode.OC_GE:
-							reg[code.r1] = Utils.lt(reg[code.r2], reg[code.r3]) ? Boolean.FALSE : Boolean.TRUE;
+							reg[code.r1] = Utils.ge(reg[code.r2], reg[code.r3]);
 							break;
 						case Opcode.OC_CONTAINS:
 							reg[code.r1] = Utils.contains(reg[code.r2], reg[code.r3]);
