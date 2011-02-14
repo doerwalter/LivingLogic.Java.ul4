@@ -4,6 +4,6 @@ public class UnknownFunctionException extends RuntimeException
 {
 	public UnknownFunctionException(String functionName)
 	{
-		super("No function '" + functionName + "' defined!");
+		super("Function '" + functionName + "' unknown!");
 	}
 }
