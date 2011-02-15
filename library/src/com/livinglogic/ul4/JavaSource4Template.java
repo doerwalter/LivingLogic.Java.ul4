@@ -101,12 +101,12 @@ public class JavaSource4Template
 					String day = StringUtils.stripStart(opcode.arg.substring(8, 10), "0");
 					if (opcode.arg.length() > 11)
 					{
-						String hour = StringUtils.stripStart(opcode.arg.substring(8, 10), "0");
-						String minute = StringUtils.stripStart(opcode.arg.substring(11, 13), "0");
-						String second = StringUtils.stripStart(opcode.arg.substring(14, 16), "0");
-						if (opcode.arg.length() > 17)
+						String hour = StringUtils.stripStart(opcode.arg.substring(11, 13), "0");
+						String minute = StringUtils.stripStart(opcode.arg.substring(14, 16), "0");
+						String second = StringUtils.stripStart(opcode.arg.substring(17, 19), "0");
+						if (opcode.arg.length() > 20)
 						{
-							String microsecond = opcode.arg.substring(17);
+							String microsecond = opcode.arg.substring(20);
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.makeDate(" + year + ", " + month + ", " + day + ", " + hour + ", " + minute + ", " + second + ", " + microsecond + ");");
 						}
 						else
@@ -132,7 +132,7 @@ public class JavaSource4Template
 					code("((java.util.Map)r" + opcode.r1 + ").put(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 					break;
 				case Opcode.OC_UPDATEDICT:
-					code("((java.util.Map)r" + opcode.r1 + ").putAll(r" + opcode.r2 + ");");
+					code("((java.util.Map)r" + opcode.r1 + ").putAll((java.util.Map)r" + opcode.r2 + ");");
 					break;
 				case Opcode.OC_LOADVAR:
 					code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.getItem(" + variables + ", \"" + StringEscapeUtils.escapeJava(opcode.arg) + "\");");
@@ -205,9 +205,9 @@ public class JavaSource4Template
 					break;
 				case Opcode.OC_ENDDEF:
 					indent--;
-					code("};");
+					code("}");
 					indent--;
-					code(");");
+					code("});");
 					break;
 				case Opcode.OC_BREAK:
 					code("break;");
@@ -538,7 +538,7 @@ public class JavaSource4Template
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.rsplit(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_RENDER:
-							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Template)r" + opcode.r2 + ").renders(new HashMap<String, Object>());");
+							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Template)r" + opcode.r2 + ").renders(null);");
 							break;
 					}
 					break;
@@ -546,31 +546,31 @@ public class JavaSource4Template
 					switch (opcode.argcode)
 					{
 						case Opcode.CM1_JOIN:
-							code("r" + opcode.r1 + " = ul4._me_join(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.join(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_STRIP:
-							code("r" + opcode.r1 + " = ul4._me_strip(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.strip(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_LSTRIP:
-							code("r" + opcode.r1 + " = ul4._me_lstrip(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.lstrip(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_RSTRIP:
-							code("r" + opcode.r1 + " = ul4._me_rstrip(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.rstrip(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_STARTSWITH:
-							code("r" + opcode.r1 + " = ul4._me_startswith(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.startswith(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_ENDSWITH:
-							code("r" + opcode.r1 + " = ul4._me_endswith(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.endswith(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_FORMAT:
-							code("r" + opcode.r1 + " = ul4._me_format(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.format(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_WITHLUM:
-							code("r" + opcode.r1 + " = ul4._me_withlum(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.withlum(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_WITHA:
-							code("r" + opcode.r1 + " = ul4._me_witha(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.witha(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_SPLIT:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.split(r" + opcode.r2 + ", r" + opcode.r3 + ");");
@@ -579,13 +579,13 @@ public class JavaSource4Template
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.rsplit(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_GET:
-							code("r" + opcode.r1 + " = ul4._me_get(r" + opcode.r2 + ", r" + opcode.r3 + ", null);");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.get(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_FIND:
-							code("r" + opcode.r1 + " = ul4._me_find(r" + opcode.r2 + ", r" + opcode.r3 + ", null, null);");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.find(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_RFIND:
-							code("r" + opcode.r1 + " = ul4._me_rfind(r" + opcode.r2 + ", r" + opcode.r3 + ", null, null);");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.rfind(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 					}
 					break;
@@ -599,16 +599,16 @@ public class JavaSource4Template
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.rsplit(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 						case Opcode.CM2_REPLACE:
-							code("r" + opcode.r1 + " = ul4._me_replace(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.replace(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 						case Opcode.CM2_GET:
-							code("r" + opcode.r1 + " = ul4._me_get(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.get(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 						case Opcode.CM2_FIND:
-							code("r" + opcode.r1 + " = ul4._me_find(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", null);");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.find(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 						case Opcode.CM2_RFIND:
-							code("r" + opcode.r1 + " = ul4._me_rfind(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", null);");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.rfind(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ");");
 							break;
 					}
 					break;
@@ -616,10 +616,10 @@ public class JavaSource4Template
 					switch (opcode.argcode)
 					{
 						case Opcode.CM3_FIND:
-							code("r" + opcode.r1 + " = ul4._me_find(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", r" + opcode.r5 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.find(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", r" + opcode.r5 + ");");
 							break;
 						case Opcode.CM3_RFIND:
-							code("r" + opcode.r1 + " = ul4._me_rfind(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", r" + opcode.r5 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.rfind(r" + opcode.r2 + ", r" + opcode.r3 + ", r" + opcode.r4 + ", r" + opcode.r5 + ");");
 							break;
 					}
 					break;
@@ -627,7 +627,7 @@ public class JavaSource4Template
 					switch (opcode.argcode)
 					{
 						case Opcode.CMKW_RENDER:
-							code("r" + opcode.r1 + " = r" + opcode.r2 + ".renders(r" + opcode.r3 + ");");
+							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Template)r" + opcode.r2 + ").renders((java.util.Map<String, Object>)r" + opcode.r3 + ");");
 							break;
 					}
 					break;
@@ -648,7 +648,7 @@ public class JavaSource4Template
 					code("}");
 					break;
 				case Opcode.OC_RENDER:
-					code("((com.livinglogic.ul4.Template)r" + opcode.r2 + ").render(out, (java.util.Map)r" + opcode.r2 + ");");
+					code("((com.livinglogic.ul4.Template)r" + opcode.r1 + ").render(out, (java.util.Map<String, Object>)r" + opcode.r2 + ");");
 					break;
 			}
 		}
