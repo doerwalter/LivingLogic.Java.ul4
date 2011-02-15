@@ -7,6 +7,9 @@ Comments:
   templates converted to Java.
 * Updated commons-lang.jar to version 2.6 (StringEscapeUtils.escapeJava()
   was escaping '/' in version 2.4)
+* InterpretedTemplate now has a new method compileToJava() that can be used to
+  compile the template into native Java code. (This generated Java source
+  code for the template and compiles this with the help of the Java compiler).
 
 
 exp-35:

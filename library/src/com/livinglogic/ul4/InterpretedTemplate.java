@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.io.File;
 import java.io.StringWriter;
 import java.io.StringReader;
+import java.io.PrintWriter;
+import java.io.FileOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
@@ -1906,6 +1909,81 @@ public class InterpretedTemplate implements Template
 			throw new LocationException(ex, location);
 		}
 		return tokens;
+	}
+
+	public JSPTemplate compileToJava() throws java.io.IOException, java.io.FileNotFoundException
+	{
+		File file = File.createTempFile("jav", ".java", new File(System.getProperty("user.dir")));
+		file.deleteOnExit(); // Set the file to delete on exit
+		// Get the file name and extract a class name from it
+		String filename = file.getName();
+		String classname = filename.substring(0, filename.length()-5);
+
+		PrintWriter out = new PrintWriter(new FileOutputStream(file));
+		out.println("/* Created on " + new Date() + " */");
+		out.println();
+		out.println("public class " + classname + " extends com.livinglogic.ul4.JSPTemplate");
+		out.println("{");
+		// Get rid of "Note: Some input files use unchecked or unsafe operations." warnings from the Java compiler
+		// Using the compiler option -Xlint:-unchecked doesn't seem to work
+		out.println("\t@SuppressWarnings(\"unchecked\")");
+		out.println("\tpublic void render(java.io.Writer out, java.util.Map<String, Object> variables) throws java.io.IOException");
+		out.println("\t{");
+		out.println(javaSource());
+		out.println("\t}");
+		out.println("}");
+		// Flush and close the stream
+		out.flush();
+		out.close();
+
+		// This requires $JAVA_HOME/lib/tools.jar in the CLASSPATH
+		com.sun.tools.javac.Main javac = new com.sun.tools.javac.Main();
+
+		String[] args = new String[] {
+			"-d", System.getProperty("user.dir"),
+			filename
+		};
+
+		int status = javac.compile(args);
+
+		switch (status)
+		{
+			case 0:  // OK
+				// Make the class file temporary as well
+				new File(file.getParent(), classname + ".class").deleteOnExit();
+
+				// Create an instance and return it
+				try
+				{
+					Class clazz = Class.forName(classname);
+					return (JSPTemplate)clazz.newInstance();
+				}
+				catch (ClassNotFoundException ex)
+				{
+					// Can't happen
+					return null;
+				}
+				catch (InstantiationException ex)
+				{
+					// Can't happen
+					return null;
+				}
+				catch (IllegalAccessException ex)
+				{
+					// Can't happen
+					return null;
+				}
+			case 1:
+				throw new RuntimeException("Compile status: ERROR");
+			case 2:
+				throw new RuntimeException("Compile status: CMDERR");
+			case 3:
+				throw new RuntimeException("Compile status: SYSERR");
+			case 4:
+				throw new RuntimeException("Compile status: ABNORMAL");
+			default:
+				throw new RuntimeException("Compile status: Unknown exit status");
+		}
 	}
 
 	public String toString()
