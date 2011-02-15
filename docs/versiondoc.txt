@@ -5,6 +5,8 @@ Comments:
   moved to a separate class JavascriptSource4Template.
 * Fixed many bugs that were detected by running the XIST test suite with
   templates converted to Java.
+* Updated commons-lang.jar to version 2.6 (StringEscapeUtils.escapeJava()
+  was escaping '/' in version 2.4)
 
 
 exp-35:
