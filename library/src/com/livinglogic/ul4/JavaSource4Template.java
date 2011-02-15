@@ -53,9 +53,8 @@ public class JavaSource4Template
 		int varcounter = 0;
 		Location lastLocation = null;
 
-		code("ul4.Template.create(function(vars){");
-		indent += 1;
 		code("//@@@ BEGIN template source");
+		// FIXME: Implement this
 		code("//@@@ BEGIN template code");
 		for (int i = 0; i < 10; ++i)
 			code("Object r" + i + " = null;");
@@ -654,8 +653,6 @@ public class JavaSource4Template
 			}
 		}
 		code("//@@@ END template code");
-		indent--;
-		code("})");
 		String result = buffer.toString();
 		buffer = null;
 		return result;
