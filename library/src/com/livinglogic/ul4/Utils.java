@@ -2893,7 +2893,7 @@ public class Utils
 	 *             are the keys, the objects at index 1, 3, 5 are the values.
 	 * @return A Map containing the variables
 	 */
-	public static Map makeMap(Object... args)
+	public static Map<Object, Object> makeMap(Object... args)
 	{
 		int pos = 0;
 		Object key = null;
