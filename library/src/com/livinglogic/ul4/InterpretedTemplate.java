@@ -1912,7 +1912,7 @@ public class InterpretedTemplate implements Template
 		return tokens;
 	}
 
-	public JSPTemplate compileToJava() throws java.io.IOException, java.io.FileNotFoundException
+	public JSPTemplate compileToJava() throws java.io.IOException
 	{
 		File file = File.createTempFile("jav", ".java", new File(System.getProperty("user.dir")));
 		file.deleteOnExit(); // Set the file to delete on exit
