@@ -29,6 +29,7 @@ import java.math.MathContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.math.NumberUtils;
 
 class Range extends AbstractList
 {
@@ -295,10 +296,6 @@ class SequenceEnumerator implements Iterator<Vector>
 
 public class Utils
 {
-	protected static final Integer INTEGER_TRUE = new Integer(1);
-
-	protected static final Integer INTEGER_FALSE = new Integer(0);
-
 	private static String objectType(Object obj)
 	{
 		return (obj != null) ? obj.getClass().toString().substring(6) : "null";
@@ -1574,7 +1571,7 @@ public class Utils
 		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger)
 			return obj;
 		else if (obj instanceof Boolean)
-			return ((Boolean)obj).booleanValue() ? INTEGER_TRUE : INTEGER_FALSE;
+			return ((Boolean)obj).booleanValue() ? NumberUtils.INTEGER_ONE : NumberUtils.INTEGER_ZERO;
 		else if (obj instanceof Float || obj instanceof Double)
 			return ((Number)obj).intValue();
 		else if (obj instanceof BigDecimal)
@@ -2893,7 +2890,7 @@ public class Utils
 	 *             are the keys, the objects at index 1, 3, 5 are the values.
 	 * @return A Map containing the variables
 	 */
-	public static Map<Object, Object> makeMap(Object... args)
+	public static Map makeMap(Object... args)
 	{
 		int pos = 0;
 		Object key = null;
