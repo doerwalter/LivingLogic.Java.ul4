@@ -531,7 +531,7 @@ public class JavaSource4Template
 							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ").hsv();");
 							break;
 						case Opcode.CM0_HSVA:
-							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ").hlsa();");
+							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ").hsva();");
 							break;
 						case Opcode.CM0_SPLIT:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.split(r" + opcode.r2 + ");");
