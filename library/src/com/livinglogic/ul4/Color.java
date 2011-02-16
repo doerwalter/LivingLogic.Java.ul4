@@ -378,9 +378,9 @@ public class Color implements Collection
 		if (minc == maxc)
 		{
 			Vector retVal = new Vector(3);
-			retVal.add(new Double(0.0));
-			retVal.add(new Double(0.0));
-			retVal.add(new Double(v));
+			retVal.add(0.0d);
+			retVal.add(0.0d);
+			retVal.add(v);
 			return retVal;
 		}
 		double s = (dmaxc-dminc) / dmaxc;
@@ -399,9 +399,9 @@ public class Color implements Collection
 		h = (h/6.0) % 1.0;
 
 		Vector retVal = new Vector(3);
-		retVal.add(new Double(h));
-		retVal.add(new Double(s));
-		retVal.add(new Double(v));
+		retVal.add(h);
+		retVal.add(s);
+		retVal.add(v);
 		return retVal;
 	}
 
