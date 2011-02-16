@@ -581,7 +581,7 @@ public class JavaSource4Template
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.rsplit(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_GET:
-							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.get(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							code("r" + opcode.r1 + " = ((java.util.Map)r" + opcode.r2 + ").get(r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_FIND:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.find(r" + opcode.r2 + ", r" + opcode.r3 + ");");
