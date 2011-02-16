@@ -116,9 +116,11 @@ public class JavaSource4Template
 						code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.makeDate(" + year + ", " + month + ", " + day + ");");
 					break;
 				case Opcode.OC_LOADCOLOR:
-					// FIXME:
-					code("r" + opcode.r1 + " = " + Utils.json(Color.fromdump(opcode.arg)) + ";");
+				{
+					Color color = Color.fromdump(opcode.arg);
+					code("r" + opcode.r1 + " = new com.livinglogic.ul4.Color(" + color.getR() + ", " + color.getG() + ", " + color.getB() + ", " + color.getA() + ");");
 					break;
+				}
 				case Opcode.OC_BUILDLIST:
 					code("r" + opcode.r1 + " = new java.util.ArrayList();");
 					break;
@@ -505,31 +507,31 @@ public class JavaSource4Template
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.yearday(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_R:
-							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ")).getr();");
+							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ").getr();");
 							break;
 						case Opcode.CM0_G:
-							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ")).getg();");
+							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ").getg();");
 							break;
 						case Opcode.CM0_B:
-							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ")).getb();");
+							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ").getb();");
 							break;
 						case Opcode.CM0_A:
-							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ")).geta();");
+							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ").geta();");
 							break;
 						case Opcode.CM0_LUM:
-							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ")).lum();");
+							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ").lum();");
 							break;
 						case Opcode.CM0_HLS:
-							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ")).hls();");
+							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ").hls();");
 							break;
 						case Opcode.CM0_HLSA:
-							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ")).hlsa();");
+							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ").hlsa();");
 							break;
 						case Opcode.CM0_HSV:
-							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ")).hsv();");
+							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ").hsv();");
 							break;
 						case Opcode.CM0_HSVA:
-							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ")).hlsa();");
+							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Color)r" + opcode.r2 + ").hlsa();");
 							break;
 						case Opcode.CM0_SPLIT:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.split(r" + opcode.r2 + ");");
