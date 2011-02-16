@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.io.StringReader;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
@@ -1924,9 +1925,6 @@ public class InterpretedTemplate implements Template
 		out.println();
 		out.println("public class " + classname + " extends com.livinglogic.ul4.JSPTemplate");
 		out.println("{");
-		// Get rid of "Note: Some input files use unchecked or unsafe operations." warnings from the Java compiler
-		// Using the compiler option -Xlint:-unchecked doesn't seem to work
-		out.println("\t@SuppressWarnings(\"unchecked\")");
 		out.println("\tpublic void render(java.io.Writer out, java.util.Map<String, Object> variables) throws java.io.IOException");
 		out.println("\t{");
 		out.println(javaSource());
@@ -1944,7 +1942,13 @@ public class InterpretedTemplate implements Template
 			filename
 		};
 
-		int status = javac.compile(args);
+		OutputStream nulloutput = new OutputStream() {
+			public void write(int i) throws IOException {
+				//do nothing
+			}
+		};
+
+		int status = javac.compile(args, new PrintWriter(nulloutput));
 
 		switch (status)
 		{
