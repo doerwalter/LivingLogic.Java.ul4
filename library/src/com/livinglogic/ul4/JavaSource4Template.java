@@ -358,7 +358,7 @@ public class JavaSource4Template
 							code("r" + opcode.r1 + " = (r" + opcode.r2 + " != null) && (r" + opcode.r2 + " instanceof Double);");
 							break;
 						case Opcode.CF1_ISBOOL:
-							code("r" + opcode.r1 + " = (r" + opcode.r2 + " != null) && (r" + opcode.r2 + " instanceof Boolan);");
+							code("r" + opcode.r1 + " = (r" + opcode.r2 + " != null) && (r" + opcode.r2 + " instanceof Boolean);");
 							break;
 						case Opcode.CF1_ISDATE:
 							code("r" + opcode.r1 + " = (r" + opcode.r2 + " != null) && (r" + opcode.r2 + " instanceof java.util.Date);");
