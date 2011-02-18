@@ -4,18 +4,51 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Date;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 
 
 public class Main
 {
-	private static String pretty(long duration)
+	private static class Timer
 	{
-		return (duration/1000) + "micros";
+		private long startTime;
+
+		public Timer()
+		{
+		}
+
+		public void start()
+		{
+			startTime = System.nanoTime();
+		}
+
+		public long stop(String message)
+		{
+			long duration = System.nanoTime() - startTime;
+			String pretty;
+			if (duration >= 1000000000)
+				pretty = new DecimalFormat("##0.0##").format(duration/1000000000.) + " s";
+			else if (duration >= 1000000)
+				pretty = new DecimalFormat("##0.0##").format(duration/1000000.) + " milli-s";
+			else if (duration >= 1000)
+				pretty = new DecimalFormat("##0.0##").format(duration/1000.) + " micro-s";
+			else
+				pretty = new DecimalFormat("##0.0##").format(duration) + "nano-s";
+			System.out.println(message + " (" + pretty + ")");
+			return duration;
+		}
 	}
 
 	public static void main(String[] args) throws java.io.IOException
 	{
+		Timer timer = new Timer();
+		timer.start();
 		InterpretedTemplate tmpl = Compiler.compile("<?code langs = ['Python', 'Java', 'C']?><ul><?for l in langs?><li><?printx l?></li><?end for?></ul>");
+		timer.stop("Compiled template to UL4 bytecode once");
+		timer.start();
+		tmpl = Compiler.compile("<?code langs = ['Python', 'Java', 'C']?><ul><?for l in langs?><li><?printx l?></li><?end for?></ul>");
+		timer.stop("Compiled template to UL4 bytecode twice");
+
 		System.out.println("Testing template:");
 		System.out.println(tmpl.source);
 		System.out.println();
@@ -28,25 +61,29 @@ public class Main
 		vars.put("t", tmpl);
 
 		System.out.println("Interpreted run:");
-		long interpretedstart = System.nanoTime();
+		timer.start();
 		String interpretedoutput = tmpl.renders(vars);
-		long interpretedend = System.nanoTime();
-		long interpretedrendertime = interpretedend - interpretedstart;
-		System.out.println("rendered in " + pretty(interpretedrendertime));
+		long interpretedrendertime = timer.stop("Rendered template via InterpretedTemplate.renders() once");
+		timer.start();
+		interpretedoutput = tmpl.renders(vars);
+		interpretedrendertime = timer.stop("Rendered template via InterpretedTemplate.renders() twice");
 		System.out.println("output " + interpretedoutput);
 		System.out.println();
 
 		System.out.println("Compiled run:");
-		long compiledcompilestart = System.nanoTime();
+		timer.start();
 		JSPTemplate compiledTmpl = tmpl.compileToJava();
-		long compiledcompileend = System.nanoTime();
-		long compiledcompiletime = compiledcompileend - compiledcompilestart;
-		long compiledrenderstart = System.nanoTime();
+		long compiledcompiletime = timer.stop("Compiled template to Java code once");
+		timer.start();
+		compiledTmpl = tmpl.compileToJava();
+		compiledcompiletime = timer.stop("Compiled template to Java code twice");
+
+		timer.start();
 		String compiledoutput = compiledTmpl.renders(vars);
-		long compiledrenderend = System.nanoTime();
-		long compiledrendertime = compiledrenderend - compiledrenderstart;
-		System.out.println("compiled in " + pretty(compiledcompiletime));
-		System.out.println("rendered in " + pretty(compiledrendertime));
+		long compiledrendertime = timer.stop("Rendered compiled template once");
+		timer.start();
+		compiledoutput = compiledTmpl.renders(vars);
+		compiledrendertime = timer.stop("Rendered compiled template twice");
 		System.out.println("output " + compiledoutput);
 		System.out.println();
 
