@@ -161,7 +161,7 @@ public class JavaSource4Template
 					code(variables + ".put(\"" + StringEscapeUtils.escapeJava(opcode.arg) + "\", com.livinglogic.ul4.Utils.mod(" + variables + ".get(\"" + StringEscapeUtils.escapeJava(opcode.arg) + "\"), r" + opcode.r1 + "));");
 					break;
 				case Opcode.OC_DELVAR:
-					code(variables +".remove(r" + opcode.r1 + ");");
+					code(variables +".remove(\"" + StringEscapeUtils.escapeJava(opcode.arg) + "\");");
 					break;
 				case Opcode.OC_GETATTR:
 					code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.getItem(r" + opcode.r2 + ", \"" + StringEscapeUtils.escapeJava(opcode.arg) + "\");");

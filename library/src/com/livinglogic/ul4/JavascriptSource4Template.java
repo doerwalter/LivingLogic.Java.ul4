@@ -111,34 +111,34 @@ public class JavascriptSource4Template
 					indent--;
 					break;
 				case Opcode.OC_LOADVAR:
-					code("r" + opcode.r1 + " = ul4._op_getitem(vars, " + Utils.repr(opcode.arg) + ");");
+					code("r" + opcode.r1 + " = ul4._op_getitem(vars, " + Utils.json(opcode.arg) + ");");
 					break;
 				case Opcode.OC_STOREVAR:
-					code("vars[" + Utils.repr(opcode.arg) + "] = r" + opcode.r1 + ";");
+					code("vars[" + Utils.json(opcode.arg) + "] = r" + opcode.r1 + ";");
 					break;
 				case Opcode.OC_ADDVAR:
-					code("vars[" + Utils.repr(opcode.arg) + "] = ul4._op_add(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
+					code("vars[" + Utils.json(opcode.arg) + "] = ul4._op_add(vars[" + Utils.json(opcode.arg) + "], r" + opcode.r1 + ");");
 					break;
 				case Opcode.OC_SUBVAR:
-					code("vars[" + Utils.repr(opcode.arg) + "] = ul4._op_sub(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
+					code("vars[" + Utils.json(opcode.arg) + "] = ul4._op_sub(vars[" + Utils.json(opcode.arg) + "], r" + opcode.r1 + ");");
 					break;
 				case Opcode.OC_MULVAR:
-					code("vars[" + Utils.repr(opcode.arg) + "] = ul4._op_mul(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
+					code("vars[" + Utils.json(opcode.arg) + "] = ul4._op_mul(vars[" + Utils.json(opcode.arg) + "], r" + opcode.r1 + ");");
 					break;
 				case Opcode.OC_TRUEDIVVAR:
-					code("vars[" + Utils.repr(opcode.arg) + "] = ul4._op_truediv(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
+					code("vars[" + Utils.json(opcode.arg) + "] = ul4._op_truediv(vars[" + Utils.json(opcode.arg) + "], r" + opcode.r1 + ");");
 					break;
 				case Opcode.OC_FLOORDIVVAR:
-					code("vars[" + Utils.repr(opcode.arg) + "] = ul4._op_floordiv(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
+					code("vars[" + Utils.json(opcode.arg) + "] = ul4._op_floordiv(vars[" + Utils.json(opcode.arg) + "], r" + opcode.r1 + ");");
 					break;
 				case Opcode.OC_MODVAR:
-					code("vars[" + Utils.repr(opcode.arg) + "] = ul4._op_mod(vars[" + Utils.repr(opcode.arg) + "], r" + opcode.r1 + ");");
+					code("vars[" + Utils.json(opcode.arg) + "] = ul4._op_mod(vars[" + Utils.json(opcode.arg) + "], r" + opcode.r1 + ");");
 					break;
 				case Opcode.OC_DELVAR:
-					code("vars[" + Utils.repr(opcode.arg) + "] = undefined;");
+					code("vars[" + Utils.json(opcode.arg) + "] = undefined;");
 					break;
 				case Opcode.OC_GETATTR:
-					code("r" + opcode.r1 + " = ul4._op_getitem(r" + opcode.r2 + ", " + Utils.repr(opcode.arg) + ");");
+					code("r" + opcode.r1 + " = ul4._op_getitem(r" + opcode.r2 + ", " + Utils.json(opcode.arg) + ");");
 					break;
 				case Opcode.OC_GETITEM:
 					code("r" + opcode.r1 + " = ul4._op_getitem(r" + opcode.r2 + ", r" + opcode.r3 + ");");
