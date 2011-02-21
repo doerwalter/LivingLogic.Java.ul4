@@ -1668,7 +1668,7 @@ public class Utils
 				else
 					return isoReprDateFormatter.format(obj);
 			}
-			
+
 		}
 		else if (obj instanceof Color)
 			return ((Color)obj).repr();
@@ -2517,7 +2517,7 @@ public class Utils
 					escapeCharacterFound = true;
 				else
 					output.append(c);
-				
+
 			}
 		}
 		if (escapeCharacterFound)
