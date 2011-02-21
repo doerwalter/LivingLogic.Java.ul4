@@ -97,16 +97,16 @@ public class JavaSource4Template
 					break;
 				case Opcode.OC_LOADDATE:
 					String year = opcode.arg.substring(0, 4);
-					String month = StringUtils.stripStart(opcode.arg.substring(5, 7), "0");
-					String day = StringUtils.stripStart(opcode.arg.substring(8, 10), "0");
+					int month = Integer.parseInt(opcode.arg.substring(5, 7));
+					int day = Integer.parseInt(opcode.arg.substring(8, 10));
 					if (opcode.arg.length() > 11)
 					{
-						String hour = StringUtils.stripStart(opcode.arg.substring(11, 13), "0");
-						String minute = StringUtils.stripStart(opcode.arg.substring(14, 16), "0");
-						String second = StringUtils.stripStart(opcode.arg.substring(17, 19), "0");
+						int hour = Integer.parseInt(opcode.arg.substring(11, 13));
+						int minute = Integer.parseInt(opcode.arg.substring(14, 16));
+						int second = Integer.parseInt(opcode.arg.substring(17, 19));
 						if (opcode.arg.length() > 20)
 						{
-							String microsecond = opcode.arg.substring(20);
+							int microsecond = Integer.parseInt(opcode.arg.substring(20));
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.makeDate(" + year + ", " + month + ", " + day + ", " + hour + ", " + minute + ", " + second + ", " + microsecond + ");");
 						}
 						else
