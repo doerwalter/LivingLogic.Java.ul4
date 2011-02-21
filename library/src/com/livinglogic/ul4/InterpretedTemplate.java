@@ -1,15 +1,11 @@
 package com.livinglogic.ul4;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.io.File;
 import java.io.StringWriter;
 import java.io.StringReader;
-import java.io.PrintWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
@@ -1914,80 +1910,13 @@ public class InterpretedTemplate implements Template
 
 	public JSPTemplate compileToJava() throws java.io.IOException
 	{
-		File file = File.createTempFile("jav", ".java", new File(System.getProperty("user.dir")));
-		file.deleteOnExit(); // Set the file to delete on exit
-		// Get the file name and extract a class name from it
-		String filename = file.getName();
-		String classname = filename.substring(0, filename.length()-5);
+		StringBuffer source = new StringBuffer();
+		source.append("\tpublic void render(java.io.Writer out, java.util.Map<String, Object> variables) throws java.io.IOException");
+		source.append("\t{");
+		source.append(javaSource());
+		source.append("\t}");
 
-		PrintWriter out = new PrintWriter(new FileOutputStream(file));
-		out.println("/* Created on " + new Date() + " */");
-		out.println();
-		out.println("public class " + classname + " extends com.livinglogic.ul4.JSPTemplate");
-		out.println("{");
-		out.println("\tpublic void render(java.io.Writer out, java.util.Map<String, Object> variables) throws java.io.IOException");
-		out.println("\t{");
-		out.println(javaSource());
-		out.println("\t}");
-		out.println("}");
-		// Flush and close the stream
-		out.flush();
-		out.close();
-
-		// This requires $JAVA_HOME/lib/tools.jar in the CLASSPATH
-		com.sun.tools.javac.Main javac = new com.sun.tools.javac.Main();
-
-		String[] args = new String[] {
-			"-d", System.getProperty("user.dir"),
-			filename
-		};
-
-		OutputStream nulloutput = new OutputStream() {
-			public void write(int i) throws IOException {
-				//do nothing
-			}
-		};
-
-		int status = javac.compile(args, new PrintWriter(nulloutput));
-
-		switch (status)
-		{
-			case 0:  // OK
-				// Make the class file temporary as well
-				new File(file.getParent(), classname + ".class").deleteOnExit();
-
-				// Create an instance and return it
-				try
-				{
-					Class clazz = Class.forName(classname);
-					return (JSPTemplate)clazz.newInstance();
-				}
-				catch (ClassNotFoundException ex)
-				{
-					// Can't happen
-					return null;
-				}
-				catch (InstantiationException ex)
-				{
-					// Can't happen
-					return null;
-				}
-				catch (IllegalAccessException ex)
-				{
-					// Can't happen
-					return null;
-				}
-			case 1:
-				throw new RuntimeException("Compile status: ERROR");
-			case 2:
-				throw new RuntimeException("Compile status: CMDERR");
-			case 3:
-				throw new RuntimeException("Compile status: SYSERR");
-			case 4:
-				throw new RuntimeException("Compile status: ABNORMAL");
-			default:
-				throw new RuntimeException("Compile status: Unknown exit status");
-		}
+		return (JSPTemplate)Utils.compileToJava(source.toString(), "com.livinglogic.ul4.JSPTemplate", null);
 	}
 
 	public String toString()

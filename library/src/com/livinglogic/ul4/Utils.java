@@ -26,6 +26,11 @@ import java.text.ParseException;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.IOException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.ObjectUtils;
@@ -933,22 +938,43 @@ public class Utils
 
 	public static int mod(int arg1, int arg2)
 	{
-		return arg1 % arg2;
+		int div = arg1 / arg2;
+		int mod = arg1 - div * arg2;
+
+		if (mod != 0 && ((arg2 < 0 && mod > 0) || (arg2 > 0 && mod < 0)))
+		{
+			mod += arg2;
+			--div;
+		}
+		return arg1 - div * arg2;
 	}
 
 	public static long mod(long arg1, long arg2)
 	{
-		return arg1 % arg2;
+		long div = arg1 / arg2;
+		long mod = arg1 - div * arg2;
+
+		if (mod != 0 && ((arg2 < 0 && mod > 0) || (arg2 > 0 && mod < 0)))
+		{
+			mod += arg2;
+			--div;
+		}
+		return arg1 - div * arg2;
 	}
 
-	public static float mod(float arg1, float arg2)
-	{
-		return arg1 % arg2;
-	}
+	// No version public static float mod(float arg1, float arg2)
 
 	public static double mod(double arg1, double arg2)
 	{
-		return arg1 % arg2;
+		double div = Math.floor(arg1 / arg2);
+		double mod = arg1 - div * arg2;
+
+		if (mod != 0 && ((arg2 < 0 && mod > 0) || (arg2 > 0 && mod < 0)))
+		{
+			mod += arg2;
+			--div;
+		}
+		return arg1 - div * arg2;
 	}
 
 	public static BigInteger mod(BigInteger arg1, BigInteger arg2)
@@ -970,7 +996,7 @@ public class Utils
 			else if (arg2 instanceof Long)
 				return mod(_toLong(arg1), _toLong(arg2));
 			else if (arg2 instanceof Float)
-				return mod(_toFloat(arg1), _toFloat(arg2));
+				return mod(_toDouble(arg1), _toDouble(arg2));
 			else if (arg2 instanceof Double)
 				return mod(_toDouble(arg1), _toDouble(arg2));
 			else if (arg2 instanceof BigInteger)
@@ -983,7 +1009,7 @@ public class Utils
 			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
 				return mod(_toLong(arg1), _toLong(arg2));
 			else if (arg2 instanceof Float)
-				return mod(_toFloat(arg1), _toFloat(arg2));
+				return mod(_toDouble(arg1), _toDouble(arg2));
 			else if (arg2 instanceof Double)
 				return mod(_toDouble(arg1), _toDouble(arg2));
 			else if (arg2 instanceof BigInteger)
@@ -994,7 +1020,7 @@ public class Utils
 		else if (arg1 instanceof Float)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float)
-				return mod(_toFloat(arg1), _toFloat(arg2));
+				return mod(_toDouble(arg1), _toDouble(arg2));
 			else if (arg2 instanceof Double)
 				return mod(_toDouble(arg1), (((Double)arg2).doubleValue()));
 			else if (arg2 instanceof BigInteger)
@@ -2334,10 +2360,11 @@ public class Utils
 				return isoDateFormatter.parse(format);
 			else if (length == 19)
 				return isoDateTimeFormatter.parse(format);
-			else // if (len == 26)
+			else // if (length == 26)
 			{
-				// ignore last three digits
-				return isoTimestampFormatter.parse(format.substring(0, 23));
+				if (length > 23)
+					format = format.substring(0, 23); // ignore last three digits
+				return isoTimestampFormatter.parse(format);
 			}
 		}
 		catch (java.text.ParseException ex) // can not happen when reading from the binary format
@@ -2438,7 +2465,10 @@ public class Utils
 						break;
 					case 'U':
 					{
-						int firstday = weekday(makeDate(year(obj), 1, 1));
+						Calendar calendarFirstday = new GregorianCalendar();
+						calendarFirstday.setTime(makeDate(year(obj), 1, 1));
+						int firstday = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+						firstday = firstday != 0 ? firstday-1 : 6;
 						int value = (yearday(obj) + firstday - 1) / 7;
 						output.append(twodigits.format(value));
 						break;
@@ -2448,8 +2478,9 @@ public class Utils
 						break;
 					case 'W':
 					{
-						int firstday = weekday(makeDate(year(obj), 1, 1));
-						firstday = firstday != 0 ? firstday-1 : 6;
+						Calendar calendarFirstday = new GregorianCalendar();
+						calendarFirstday.setTime(makeDate(year(obj), 1, 1));
+						int firstday = calendar.get(Calendar.DAY_OF_WEEK) - 1;
 						int value = (yearday(obj) + firstday - 1) / 7;
 						output.append(twodigits.format(value));
 						break;
@@ -2904,5 +2935,100 @@ public class Utils
 			++pos;
 		}
 		return map;
+	}
+
+	/**
+	 * Compile Java source code of a Java class and return a new instance of it
+	 * @param source The source of the body of the class
+	 * @param extendsSpec Name of base class (or null)
+	 * @param implementsSpec Comma serated list of implemented interfaces (or null)
+	 * @return A Map containing the variables
+	 */
+	public static Object compileToJava(String source, String extendsSpec, String implementsSpec) throws java.io.IOException
+	{
+		File file = File.createTempFile("jav", ".java", new File(System.getProperty("user.dir")));
+		file.deleteOnExit(); // Set the file to delete on exit
+		// Get the file name and extract a class name from it
+		String filename = file.getName();
+		String classname = filename.substring(0, filename.length()-5);
+
+		PrintWriter out = new PrintWriter(new FileOutputStream(file));
+
+		out.println("/* Created on " + new Date() + " */");
+		out.println();
+		out.print("public class " + classname);
+		String header = "public class " + classname;
+		if (extendsSpec != null)
+		{
+			out.print(" extends ");
+			out.print(extendsSpec);
+		}
+		if (implementsSpec != null)
+		{
+			out.print(" implements ");
+			out.print(implementsSpec);
+		}
+		out.println();
+		out.println("{");
+		out.println(source);
+		out.println("}");
+		// Flush and close the stream
+		out.flush();
+		out.close();
+
+		// This requires $JAVA_HOME/lib/tools.jar in the CLASSPATH
+		com.sun.tools.javac.Main javac = new com.sun.tools.javac.Main();
+
+		String[] args = new String[] {
+			"-d", System.getProperty("user.dir"),
+			filename
+		};
+
+		OutputStream nulloutput = new OutputStream() {
+			public void write(int i) throws IOException {
+				//do nothing
+			}
+		};
+
+		int status = javac.compile(args, new PrintWriter(nulloutput));
+
+		switch (status)
+		{
+			case 0:  // OK
+				// Make the class file temporary as well
+				new File(file.getParent(), classname + ".class").deleteOnExit();
+
+				// Create an instance and return it
+				try
+				{
+					Class clazz = Class.forName(classname);
+					return clazz.newInstance();
+				}
+				catch (ClassNotFoundException ex)
+				{
+					// Can't happen
+					return null;
+				}
+				catch (InstantiationException ex)
+				{
+					// Can't happen
+					return null;
+				}
+				catch (IllegalAccessException ex)
+				{
+					// Can't happen
+					return null;
+				}
+			case 1:
+				throw new RuntimeException("Compile status: ERROR");
+			case 2:
+				throw new RuntimeException("Compile status: CMDERR");
+			case 3:
+				throw new RuntimeException("Compile status: SYSERR");
+			case 4:
+				throw new RuntimeException("Compile status: ABNORMAL");
+			default:
+				throw new RuntimeException("Compile status: Unknown exit status");
+		}
 	}
 }
