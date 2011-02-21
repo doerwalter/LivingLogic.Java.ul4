@@ -1668,7 +1668,7 @@ public class Utils
 				else
 					return isoReprDateFormatter.format(obj);
 			}
-
+			
 		}
 		else if (obj instanceof Color)
 			return ((Color)obj).repr();
@@ -2327,7 +2327,8 @@ public class Utils
 	}
 
 	public static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-	public static SimpleDateFormat isoDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	public static SimpleDateFormat isoDateTime1Formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+	public static SimpleDateFormat isoDateTime2Formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	public static SimpleDateFormat isoTimestampFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 	public static SimpleDateFormat isoTimestampMicroFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'000'");
 
@@ -2338,7 +2339,7 @@ public class Utils
 		else
 		{
 			if (hour(obj) != 0 || minute(obj) != 0 || second(obj) != 0)
-				return isoDateTimeFormatter.format(obj);
+				return isoDateTime2Formatter.format(obj);
 			else
 				return isoDateFormatter.format(obj);
 		}
@@ -2358,9 +2359,11 @@ public class Utils
 			int length = format.length();
 			if (length == 11)
 				return isoDateFormatter.parse(format);
+			else if (length == 16)
+				return isoDateTime1Formatter.parse(format);
 			else if (length == 19)
-				return isoDateTimeFormatter.parse(format);
-			else // if (length == 26)
+				return isoDateTime2Formatter.parse(format);
+			else
 			{
 				if (length > 23)
 					format = format.substring(0, 23); // ignore last three digits
@@ -2517,7 +2520,7 @@ public class Utils
 					escapeCharacterFound = true;
 				else
 					output.append(c);
-
+				
 			}
 		}
 		if (escapeCharacterFound)
