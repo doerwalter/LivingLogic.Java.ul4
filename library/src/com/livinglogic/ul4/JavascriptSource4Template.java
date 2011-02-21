@@ -368,6 +368,9 @@ public class JavascriptSource4Template
 				case Opcode.OC_CALLFUNC2:
 					switch (opcode.argcode)
 					{
+						case Opcode.CF2_FORMAT:
+							code("r" + opcode.r1 + " = ul4._fu_format(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							break;
 						case Opcode.CF2_ZIP:
 							code("r" + opcode.r1 + " = ul4._fu_zip(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
@@ -537,9 +540,6 @@ public class JavascriptSource4Template
 							break;
 						case Opcode.CM1_ENDSWITH:
 							code("r" + opcode.r1 + " = ul4._me_endswith(r" + opcode.r2 + ", r" + opcode.r3 + ");");
-							break;
-						case Opcode.CM1_FORMAT:
-							code("r" + opcode.r1 + " = ul4._me_format(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_WITHLUM:
 							code("r" + opcode.r1 + " = ul4._me_withlum(r" + opcode.r2 + ", r" + opcode.r3 + ");");

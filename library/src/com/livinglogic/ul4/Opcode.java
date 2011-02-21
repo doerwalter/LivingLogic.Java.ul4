@@ -110,11 +110,12 @@ public class Opcode
 	public static final int CF1_RANDRANGE = 31;
 	public static final int CF1_RANDCHOICE = 32;
 
-	public static final int CF2_RANGE = 0;
-	public static final int CF2_GET = 1;
-	public static final int CF2_ZIP = 2;
-	public static final int CF2_INT = 3;
-	public static final int CF2_RANDRANGE = 4;
+	public static final int CF2_FORMAT = 0;
+	public static final int CF2_RANGE = 1;
+	public static final int CF2_GET = 2;
+	public static final int CF2_ZIP = 3;
+	public static final int CF2_INT = 4;
+	public static final int CF2_RANDRANGE = 5;
 
 	public static final int CF3_RANGE = 0;
 	public static final int CF3_ZIP = 1;
@@ -167,11 +168,10 @@ public class Opcode
 	public static final int CM1_ENDSWITH = 6;
 	public static final int CM1_FIND = 7;
 	public static final int CM1_RFIND = 8;
-	public static final int CM1_FORMAT = 9;
-	public static final int CM1_GET = 10;
-	public static final int CM1_WITHLUM = 11;
-	public static final int CM1_WITHA = 12;
-	public static final int CM1_JOIN = 13;
+	public static final int CM1_GET = 9;
+	public static final int CM1_WITHLUM = 10;
+	public static final int CM1_WITHA = 11;
+	public static final int CM1_JOIN = 12;
 
 	public static final int CM2_SPLIT = 0;
 	public static final int CM2_RSPLIT = 1;
@@ -426,7 +426,9 @@ public class Opcode
 
 	public static int callfunc2name2code(String name)
 	{
-		if (name.equals("range"))
+		if (name.equals("format"))
+			return CF2_FORMAT;
+		else if (name.equals("range"))
 			return CF2_RANGE;
 		else if (name.equals("get"))
 			return CF2_GET;
@@ -556,8 +558,6 @@ public class Opcode
 			return CM1_FIND;
 		else if (name.equals("rfind"))
 			return CM1_RFIND;
-		else if (name.equals("format"))
-			return CM1_FORMAT;
 		else if (name.equals("get"))
 			return CM1_GET;
 		else if (name.equals("withlum"))

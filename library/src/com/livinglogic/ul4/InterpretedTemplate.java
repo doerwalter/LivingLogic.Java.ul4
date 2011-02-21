@@ -108,7 +108,7 @@ public class InterpretedTemplate implements Template
 	/**
 	 * The version number used in the compiled format of the template.
 	 */
-	public static final String VERSION = "14";
+	public static final String VERSION = "15";
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
@@ -1280,6 +1280,9 @@ public class InterpretedTemplate implements Template
 						case Opcode.OC_CALLFUNC2:
 							switch (code.argcode)
 							{
+								case Opcode.CF2_FORMAT:
+									reg[code.r1] = Utils.format(reg[code.r2], reg[code.r3], defaultLocale);
+									break;
 								case Opcode.CF2_RANGE:
 									reg[code.r1] = Utils.range(reg[code.r2], reg[code.r3]);
 									break;
@@ -1466,9 +1469,6 @@ public class InterpretedTemplate implements Template
 									break;
 								case Opcode.CM1_RFIND:
 									reg[code.r1] = Utils.rfind(reg[code.r2], reg[code.r3]);
-									break;
-								case Opcode.CM1_FORMAT:
-									reg[code.r1] = Utils.format(reg[code.r2], reg[code.r3], defaultLocale);
 									break;
 								case Opcode.CM1_GET:
 									reg[code.r1] = ((Map)reg[code.r2]).get(reg[code.r3]);

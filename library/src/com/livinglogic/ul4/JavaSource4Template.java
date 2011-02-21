@@ -395,6 +395,9 @@ public class JavaSource4Template
 				case Opcode.OC_CALLFUNC2:
 					switch (opcode.argcode)
 					{
+						case Opcode.CF2_FORMAT:
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.format(r" + opcode.r2 + ", r" + opcode.r3 + ");");
+							break;
 						case Opcode.CF2_ZIP:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.zip(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
@@ -564,9 +567,6 @@ public class JavaSource4Template
 							break;
 						case Opcode.CM1_ENDSWITH:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.endswith(r" + opcode.r2 + ", r" + opcode.r3 + ");");
-							break;
-						case Opcode.CM1_FORMAT:
-							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.format(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 							break;
 						case Opcode.CM1_WITHLUM:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.withlum(r" + opcode.r2 + ", r" + opcode.r3 + ");");
