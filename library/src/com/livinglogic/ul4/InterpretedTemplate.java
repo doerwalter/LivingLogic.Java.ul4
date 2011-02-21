@@ -147,7 +147,7 @@ public class InterpretedTemplate implements Template
 	{
 		this.source = null;
 		this.opcodes = new LinkedList<Opcode>();
-		this.defaultLocale = Locale.GERMANY;
+		this.defaultLocale = Locale.ENGLISH;
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class InterpretedTemplate implements Template
 		this.startdelim = startdelim;
 		this.enddelim = enddelim;
 		this.opcodes = opcodes.subList(startindex, endindex);
-		this.defaultLocale = Locale.GERMANY;
+		this.defaultLocale = Locale.ENGLISH;
 	}
 
 	/**
@@ -1620,7 +1620,7 @@ public class InterpretedTemplate implements Template
 
 	public static List<Location> tokenizeTags(String source, String startdelim, String enddelim)
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|render|def|note)(\\s*((.|\\n)*?)\\s*)?" + escapeREchars(enddelim));
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|render|def|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Location> tags = new LinkedList<Location>();
 		if (source != null)
 		{
