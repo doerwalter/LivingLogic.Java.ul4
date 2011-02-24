@@ -1,3 +1,9 @@
+exp-37:
+-------
+Comments:
+* Fixed comparison operator when only one of the arguments is null.
+
+
 exp-36:
 -------
 Comments:

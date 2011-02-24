@@ -1391,20 +1391,22 @@ public class Utils
 	{
 		if (null != obj1 && null != obj2)
 			return cmp(obj1, obj2, "==") == 0;
-		return true;
+		return (null == obj1) == (null == obj2);
 	}
 
 	public static boolean ne(Object obj1, Object obj2)
 	{
 		if (null != obj1 && null != obj2)
 			return cmp(obj1, obj2, "!=") != 0;
-		return false;
+		return (null == obj1) != (null == obj2);
 	}
 
 	public static boolean lt(Object obj1, Object obj2)
 	{
 		if (null != obj1 && null != obj2)
 			return cmp(obj1, obj2, "<") < 0;
+		if ((null == obj1) != (null == obj2))
+			throw new UnsupportedOperationException(objectType(arg1) + " < " + objectType(arg2) + " not supported!");
 		return false;
 	}
 
@@ -1412,6 +1414,8 @@ public class Utils
 	{
 		if (null != obj1 && null != obj2)
 			return cmp(obj1, obj2, "<=") <= 0;
+		if ((null == obj1) != (null == obj2))
+			throw new UnsupportedOperationException(objectType(arg1) + " <= " + objectType(arg2) + " not supported!");
 		return true;
 	}
 
@@ -1419,6 +1423,8 @@ public class Utils
 	{
 		if (null != obj1 && null != obj2)
 			return cmp(obj1, obj2, ">") > 0;
+		if ((null == obj1) != (null == obj2))
+			throw new UnsupportedOperationException(objectType(arg1) + " > " + objectType(arg2) + " not supported!");
 		return false;
 	}
 
@@ -1426,6 +1432,8 @@ public class Utils
 	{
 		if (null != obj1 && null != obj2)
 			return cmp(obj1, obj2, ">=") >= 0;
+		if ((null == obj1) != (null == obj2))
+			throw new UnsupportedOperationException(objectType(arg1) + " >= " + objectType(arg2) + " not supported!");
 		return true;
 	}
 
