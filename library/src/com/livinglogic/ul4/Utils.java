@@ -2968,7 +2968,6 @@ public class Utils
 		out.println("/* Created on " + new Date() + " */");
 		out.println();
 		out.print("public class " + classname);
-		String header = "public class " + classname;
 		if (extendsSpec != null)
 		{
 			out.print(" extends ");
