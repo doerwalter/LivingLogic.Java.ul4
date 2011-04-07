@@ -1,3 +1,9 @@
+exp-39:
+-------
+Comments:
+* Fixed offsets into the source and the opcodes list for subtemplates.
+
+
 exp-38:
 -------
 Comments:

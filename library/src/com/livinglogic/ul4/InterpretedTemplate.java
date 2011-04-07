@@ -131,9 +131,20 @@ public class InterpretedTemplate implements Template
 	public List<Opcode> opcodes;
 
 	/**
+	 * Offsets into <code>source</code>, where the real source code starts and ends (used for subtemplates)
+	 */
+	private int sourceStartIndex;
+	private int sourceEndIndex;
+	/**
+	 * Offsets into <code>opcodes</code>, where the real opcodes start and end (used for subtemplates)
+	 */
+	private int opcodeStartIndex;
+	private int opcodeEndIndex;
+
+	/**
 	 * The locale to be used when formatting int, float or date objects.
 	 */
-	public Locale defaultLocale;
+	private Locale defaultLocale;
 
 	/**
 	 * Has {@link annotate} been called for this template?
@@ -153,25 +164,33 @@ public class InterpretedTemplate implements Template
 	/**
 	 * Creates an template object for a source string and a list of opcodes.
 	 */
-	public InterpretedTemplate(String source, List<Opcode> opcodes, String startdelim, String enddelim, int startindex, int endindex)
-	{
-		this.source = source;
-		this.startdelim = startdelim;
-		this.enddelim = enddelim;
-		this.opcodes = opcodes.subList(startindex, endindex);
-		this.defaultLocale = Locale.ENGLISH;
-	}
-
-	/**
-	 * Creates an template object for a source string and a list of opcodes.
-	 */
 	public InterpretedTemplate(String source, List<Opcode> opcodes, String startdelim, String enddelim)
 	{
 		this.source = source;
 		this.startdelim = startdelim;
 		this.enddelim = enddelim;
-		this.opcodes = opcodes.subList(0, opcodes.size());
-		this.defaultLocale = Locale.GERMANY;
+		this.opcodes = opcodes;
+		this.sourceStartIndex = 0;
+		this.sourceEndIndex = source.length();
+		this.opcodeStartIndex = 0;
+		this.opcodeEndIndex = opcodes.size();
+		this.defaultLocale = Locale.ENGLISH;
+	}
+
+	/**
+	 * Creates an template object as a subtemplate of another template.
+	 */
+	public InterpretedTemplate(InterpretedTemplate parent, int sourceStartIndex, int sourceEndIndex, int opcodeStartIndex, int opcodeEndIndex)
+	{
+		this.source = parent.source;
+		this.startdelim = parent.startdelim;
+		this.enddelim = parent.enddelim;
+		this.opcodes = parent.opcodes;
+		this.sourceStartIndex = sourceStartIndex;
+		this.sourceEndIndex = sourceEndIndex;
+		this.opcodeStartIndex = opcodeStartIndex;
+		this.opcodeEndIndex = opcodeEndIndex;
+		this.defaultLocale = Locale.ENGLISH;
 	}
 
 	/**
@@ -180,6 +199,7 @@ public class InterpretedTemplate implements Template
 	public void opcode(int name, Location location)
 	{
 		opcodes.add(new Opcode(name, -1, -1, -1, -1, -1, null, location));
+		++opcodeEndIndex;
 	}
 
 	/**
@@ -188,6 +208,7 @@ public class InterpretedTemplate implements Template
 	public void opcode(int name, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, -1, -1, -1, -1, -1, arg, location));
+		++opcodeEndIndex;
 	}
 
 	/**
@@ -196,6 +217,7 @@ public class InterpretedTemplate implements Template
 	public void opcode(int name, int r1, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, -1, -1, -1, -1, null, location));
+		++opcodeEndIndex;
 	}
 
 	/**
@@ -204,6 +226,7 @@ public class InterpretedTemplate implements Template
 	public void opcode(int name, int r1, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, -1, -1, -1, -1, arg, location));
+		++opcodeEndIndex;
 	}
 
 	/**
@@ -212,6 +235,7 @@ public class InterpretedTemplate implements Template
 	public void opcode(int name, int r1, int r2, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, -1, -1, -1, null, location));
+		++opcodeEndIndex;
 	}
 
 	/**
@@ -220,6 +244,7 @@ public class InterpretedTemplate implements Template
 	public void opcode(int name, int r1, int r2, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, -1, -1, -1, arg, location));
+		++opcodeEndIndex;
 	}
 
 	/**
@@ -228,6 +253,7 @@ public class InterpretedTemplate implements Template
 	public void opcode(int name, int r1, int r2, int r3, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, -1, -1, null, location));
+		++opcodeEndIndex;
 	}
 
 	/**
@@ -236,6 +262,7 @@ public class InterpretedTemplate implements Template
 	public void opcode(int name, int r1, int r2, int r3, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, -1, -1, arg, location));
+		++opcodeEndIndex;
 	}
 
 	/**
@@ -244,6 +271,7 @@ public class InterpretedTemplate implements Template
 	public void opcode(int name, int r1, int r2, int r3, int r4, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, -1, null, location));
+		++opcodeEndIndex;
 	}
 
 	/**
@@ -252,6 +280,7 @@ public class InterpretedTemplate implements Template
 	public void opcode(int name, int r1, int r2, int r3, int r4, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, -1, arg, location));
+		++opcodeEndIndex;
 	}
 
 	/**
@@ -260,6 +289,7 @@ public class InterpretedTemplate implements Template
 	public void opcode(int name, int r1, int r2, int r3, int r4, int r5, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, r5, null, location));
+		++opcodeEndIndex;
 	}
 
 	/**
@@ -268,6 +298,16 @@ public class InterpretedTemplate implements Template
 	public void opcode(int name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
 	{
 		opcodes.add(new Opcode(name, r1, r2, r3, r4, r5, arg, location));
+		++opcodeEndIndex;
+	}
+
+	/**
+	 * Appends a new opcode to {@link opcodes}.
+	 */
+	public void opcode(String name, int r1, int r2, int r3, int r4, int r5, String arg, Location location)
+	{
+		opcodes.add(new Opcode(name, r1, r2, r3, r4, r5, arg, location));
+		++opcodeEndIndex;
 	}
 
 	protected static String read(Reader reader, int length) throws IOException
@@ -437,6 +477,7 @@ public class InterpretedTemplate implements Template
 		retVal.enddelim = readstr(bufferedReader, "ED");
 		readchar(bufferedReader, '\n');
 		retVal.source = readstr(bufferedReader, "SRC");
+		retVal.sourceEndIndex = retVal.source.length();
 		readchar(bufferedReader, '\n');
 		int count = readint(bufferedReader, "n");
 		readchar(bufferedReader, '\n');
@@ -482,7 +523,7 @@ public class InterpretedTemplate implements Template
 			{
 				throw new RuntimeException("Short read!");
 			}
-			retVal.opcodes.add(new Opcode(code, r1, r2, r3, r4, r5, arg, location));
+			retVal.opcode(code, r1, r2, r3, r4, r5, arg, location);
 			readchar(bufferedReader, '\n');
 		}
 		return retVal;
@@ -863,7 +904,7 @@ public class InterpretedTemplate implements Template
 		/**
 		 * The current program counter
 		 */
-		private int pc = 0;
+		private int pc;
 
 		/**
 		 * The ten registers of our CPU
@@ -906,6 +947,7 @@ public class InterpretedTemplate implements Template
 			if (variables == null)
 				variables = new HashMap<String, Object>();
 			this.variables = variables;
+			pc = opcodeStartIndex;
 			getNextChunk();
 		}
 
@@ -943,8 +985,8 @@ public class InterpretedTemplate implements Template
 					subTemplateIterator = null;
 				}
 			}
-			int opcodecount = opcodes.size();
-			while (pc < opcodecount)
+			int lastOpcode = opcodeEndIndex;
+			while (pc < lastOpcode)
 			{
 				Opcode code = opcodes.get(pc);
 
@@ -1562,7 +1604,7 @@ public class InterpretedTemplate implements Template
 								break;
 							}
 						case Opcode.OC_DEF:
-							variables.put(code.arg, new InterpretedTemplate(source.substring(code.location.endtag, opcodes.get(code.jump).location.starttag), opcodes, startdelim, enddelim, pc+1, code.jump));
+							variables.put(code.arg, new InterpretedTemplate(InterpretedTemplate.this, code.location.endtag, opcodes.get(code.jump).location.starttag, pc+1, code.jump));
 							pc = code.jump+1;
 							continue;
 						case Opcode.OC_ENDDEF:
