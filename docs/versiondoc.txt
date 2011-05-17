@@ -1,3 +1,9 @@
+exp-40:
+-------
+Comments:
+* Added a new method Color.fromrepr().
+
+
 exp-39:
 -------
 Comments:

@@ -308,6 +308,34 @@ public class Color implements Collection
 		return new Color(r, g, b, a);
 	}
 
+	public static Color fromrepr(String value)
+	{
+		if (value == null)
+			return null;
+		int len = value.length();
+		int r;
+		int g;
+		int b;
+		int a;
+		if (len == 4 || len == 5)
+		{
+			r = Integer.valueOf(value.substring(1, 2), 16) * 0x11;
+			g = Integer.valueOf(value.substring(2, 3), 16) * 0x11;
+			b = Integer.valueOf(value.substring(3, 4), 16) * 0x11;
+			a = (len == 4) ? 0xff : (Integer.valueOf(value.substring(4, 5), 16) * 0x11);
+		}
+		else if (len == 7 || len == 9)
+		{
+			r = Integer.valueOf(value.substring(1, 3), 16);
+			g = Integer.valueOf(value.substring(3, 5), 16);
+			b = Integer.valueOf(value.substring(5, 7), 16);
+			a = (len == 7) ? 0xff : Integer.valueOf(value.substring(7, 9), 16);
+		}
+		else
+			throw new RuntimeException("Invalid color repr '" + value + "'");
+		return new Color(r, g, b, a);
+	}
+
 	public Color blend(Color color)
 	{
 		double sa = a/255.;
