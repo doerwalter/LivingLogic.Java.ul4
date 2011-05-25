@@ -1,7 +1,4 @@
 syntax: glob
 
-build
-dist
-javadoc
-library/cachedir
+target
 *$py.class
