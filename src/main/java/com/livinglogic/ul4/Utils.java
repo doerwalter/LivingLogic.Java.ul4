@@ -3000,7 +3000,7 @@ public class Utils
 			}
 		};
 
-		int status = javac.compile(args, new PrintWriter(nulloutput));
+		int status = javac.compile(args, new PrintWriter(System.out));
 
 		switch (status)
 		{
