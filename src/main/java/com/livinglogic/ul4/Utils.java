@@ -3000,6 +3000,8 @@ public class Utils
 			}
 		};
 
+		// TODO add ul4.jar to java.class.path in a more generic way
+		System.setProperty("java.class.path", "/home/andreas/LivingLogic/cms/install/xist4c/WEB-INF/lib/ul4.jar:" + System.getProperty("java.class.path"));
 		int status = javac.compile(args, new PrintWriter(System.out));
 
 		switch (status)
