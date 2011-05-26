@@ -1,10 +1,8 @@
 package com.livinglogic.ul4;
 
-import java.util.Properties;
 import java.util.List;
 
 import org.python.core.PyObject;
-import org.python.core.PyString;
 import org.python.util.PythonInterpreter;
 
 public class Compiler

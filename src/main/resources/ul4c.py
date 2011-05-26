@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-## Copyright 2008-2010 by LivingLogic AG, Bayreuth/Germany
-## Copyright 2008-2010 by Walter Dörwald
+## Copyright 2008-2011 by LivingLogic AG, Bayreuth/Germany
+## Copyright 2008-2011 by Walter Dörwald
 ##
 ## All Rights Reserved
 ##
 ## See ll/__init__.py for the license
 
-
-from __future__ import division
 
 import sys, re, StringIO
 
@@ -369,7 +367,7 @@ class ExprParser(spark.GenericParser):
 
 	def expr_truediv(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
-			return self.makeconst(obj1.start, obj2.end, obj1.value / obj2.value)
+			return self.makeconst(obj1.start, obj2.end, ul4.Utils.truediv(obj1.value, obj2.value))
 		return ul4.TrueDiv(obj1.start, obj2.end, obj1, obj2)
 	expr_truediv.spark = ['expr6 ::= expr6 / expr6']
 
