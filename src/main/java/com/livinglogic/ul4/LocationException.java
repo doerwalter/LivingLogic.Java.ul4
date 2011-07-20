@@ -12,6 +12,6 @@ public class LocationException extends RuntimeException
 
 	public String toString()
 	{
-		return "in " + location + ": " + super.toString();
+		return "com.livinglogic.ul4.LocationException: in " + location;
 	}
 }

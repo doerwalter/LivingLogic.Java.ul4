@@ -3,15 +3,17 @@ package com.livinglogic.ul4;
 public class Location
 {
 	public String source;
+	public String name;
 	protected String type;
 	public int starttag;
 	public int endtag;
 	public int startcode;
 	public int endcode;
 
-	public Location(String source, String type, int starttag, int endtag, int startcode, int endcode)
+	public Location(String source, String name, String type, int starttag, int endtag, int startcode, int endcode)
 	{
 		this.source = source;
+		this.name = name;
 		this.type = type;
 		this.starttag = starttag;
 		this.endtag = endtag;
@@ -57,7 +59,11 @@ public class Location
 				++col;
 			}
 		}
-		return "<?" + type + "?> tag at " + (starttag+1) + " (line " + line + ", col " + col + ")";
+		return "<?" + type + "?> tag at position " + (starttag+1) + " (line " + line + ", col " + col + ", template " + name + ")";
+	}
 
+	public void fixName(String name)
+	{
+		this.name = name;
 	}
 }

@@ -6,13 +6,13 @@ import java.io.StringWriter;
 import java.io.IOException;
 
 /**
- * Copyright 2009-2010 by LivingLogic AG, Bayreuth/Germany
+ * Copyright 2009-2011 by LivingLogic AG, Bayreuth/Germany
  *
  * All Rights Reserved
  *
  * See LICENSE for the license
  *
- * Base class for template code that has been converted to JSP.
+ * Base class for template code that has been converted to Java source code.
  *
  * @author W. Doerwald
  * @version $Revision$ $Date$
@@ -20,6 +20,11 @@ import java.io.IOException;
 
 public abstract class JSPTemplate implements Template
 {
+	public String getName()
+	{
+		return "unnamed";
+	}
+
 	public String renders(Map<String, Object> variables)
 	{
 		StringWriter out = new StringWriter();
@@ -30,7 +35,7 @@ public abstract class JSPTemplate implements Template
 		}
 		catch (IOException ex)
 		{
-			// does not happen!
+			// Can't happen with a StringWriter!
 		}
 		return out.toString();
 	}

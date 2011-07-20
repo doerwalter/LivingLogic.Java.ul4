@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.io.IOException;
 
 /**
- * Copyright 2009-2010 by LivingLogic AG, Bayreuth/Germany
+ * Copyright 2009-2011 by LivingLogic AG, Bayreuth/Germany
  *
  * All Rights Reserved
  *

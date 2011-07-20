@@ -589,8 +589,9 @@ class RenderParser(ExprParser):
 
 
 class Compiler(ul4.CompilerType):
-	def compile(self, source, tags, startdelim, enddelim):
+	def compile(self, source, name, tags, startdelim, enddelim):
 		template = ul4.InterpretedTemplate()
+		template.name = name
 		template.startdelim = startdelim
 		template.enddelim = enddelim
 		template.source = source

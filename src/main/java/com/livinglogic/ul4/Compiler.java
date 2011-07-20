@@ -20,12 +20,22 @@ public class Compiler
 
 	public static InterpretedTemplate compile(String source)
 	{
-		return compile(source, "<?", "?>");
+		return compile(source, "unnamed", "<?", "?>");
+	}
+
+	public static InterpretedTemplate compile(String source, String name)
+	{
+		return compile(source, name, "<?", "?>");
 	}
 
 	public static InterpretedTemplate compile(String source, String startdelim, String enddelim)
 	{
-		List<Location> tags = InterpretedTemplate.tokenizeTags(source, startdelim, enddelim);
-		return compiler.compile(source, tags, startdelim, enddelim);
+		return compile(source, "unnamed", startdelim, enddelim);
+	}
+
+	public static InterpretedTemplate compile(String source, String name, String startdelim, String enddelim)
+	{
+		List<Location> tags = InterpretedTemplate.tokenizeTags(source, name, startdelim, enddelim);
+		return compiler.compile(source, name, tags, startdelim, enddelim);
 	}
 }

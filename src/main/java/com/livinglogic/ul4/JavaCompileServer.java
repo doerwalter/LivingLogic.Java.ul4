@@ -56,7 +56,7 @@ class JavaCompileHandler extends Thread
 			}
 			inputBuffer.append("\t}\n");
 			System.out.println("INPUT: " + Utils.repr(inputBuffer.toString()));
-			Executor executor = (Executor)Utils.compileToJava(inputBuffer.toString(), null, "com.livinglogic.ul4.Executor");
+			Executor executor = (Executor)Utils.compileToJava(inputBuffer.toString(), null, "com.livinglogic.ul4.Executor").newInstance();
 			String output;
 			String status;
 			try

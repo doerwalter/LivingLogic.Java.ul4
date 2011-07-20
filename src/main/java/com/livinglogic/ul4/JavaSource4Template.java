@@ -199,6 +199,13 @@ public class JavaSource4Template
 					code(variables +".put(\"" + StringEscapeUtils.escapeJava(opcode.arg) + "\", new com.livinglogic.ul4.JSPTemplate()");
 					code("{");
 					indent++;
+					code("public String getName()");
+					code("{");
+					indent++;
+					code("return \"" + StringEscapeUtils.escapeJava(opcode.arg) + "\";");
+					indent--;
+					code("}");
+					code("{");
 					code("public void render(java.io.Writer out, java.util.Map<String, Object> variables) throws java.io.IOException");
 					code("{");
 					indent++;

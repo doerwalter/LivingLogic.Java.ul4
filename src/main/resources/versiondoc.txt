@@ -1,7 +1,8 @@
-HEAD:
+exp-42:
 -------
 Comments:
-* Moved to maven for building.
+* Updated to match the implementation in XIST 3.23 (i.e. names for templates).
+
 
 exp-40:
 -------

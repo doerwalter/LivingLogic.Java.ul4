@@ -43,10 +43,12 @@ public class Main
 	{
 		Timer timer = new Timer();
 		timer.start();
-		InterpretedTemplate tmpl = Compiler.compile("<?code langs = ['Python', 'Java', 'C']?><ul><?for l in langs?><li><?printx l?></li><?end for?></ul>");
+		InterpretedTemplate tmpl = Compiler.compile("<?def x?><?def y?><?print z2?><?end def?><?render y(z=z)?><?end def?><?render x(z=2)?>");
+		// InterpretedTemplate tmpl = Compiler.compile("<?code langs = ['Python', 'Java', 'C']?><ul><?for l in langs?><li><?printx l?></li><?end for?></ul>");
 		timer.stop("Compiled template to UL4 bytecode once");
 		timer.start();
-		tmpl = Compiler.compile("<?code langs = ['Python', 'Java', 'C']?><ul><?for l in langs?><li><?printx l?></li><?end for?></ul>");
+		// tmpl = Compiler.compile("<?code langs = ['Python', 'Java', 'C']?><ul><?for l in langs?><li><?printx l?></li><?end for?></ul>");
+		tmpl = Compiler.compile("<?def x?><?def y?><?print z2?><?end def?><?render y(z=z)?><?end def?><?render x(z=2)?>", "recursionTest");
 		timer.stop("Compiled template to UL4 bytecode twice");
 
 		System.out.println("Testing template:");

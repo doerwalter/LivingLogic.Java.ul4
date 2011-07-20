@@ -2949,15 +2949,16 @@ public class Utils
 	}
 
 	/**
-	 * Compile Java source code of a Java class and return a new instance of it
+	 * Compile Java source code of a Java class and return the class object
 	 * @param source The source of the body of the class
 	 * @param extendsSpec Name of base class (or null)
 	 * @param implementsSpec Comma serated list of implemented interfaces (or null)
-	 * @return A Map containing the variables
+	 * @return The Class object that contains the compiled Java code
 	 */
-	public static Object compileToJava(String source, String extendsSpec, String implementsSpec) throws java.io.IOException
+	public static Class compileToJava(String source, String extendsSpec, String implementsSpec) throws java.io.IOException
 	{
-		File file = File.createTempFile("jav", ".java", new File(System.getProperty("user.dir")));
+		String dirname = System.getProperty("user.dir");
+		File file = File.createTempFile("jav", ".java", new File(dirname));
 		file.deleteOnExit(); // Set the file to delete on exit
 		// Get the file name and extract a class name from it
 		String filename = file.getName();
@@ -3001,9 +3002,9 @@ public class Utils
 		};
 
 		// TODO add ul4.jar to java.class.path in a more generic way
-		System.setProperty("java.class.path", "/home/andreas/LivingLogic/cms/install/xist4c/WEB-INF/lib/ul4.jar:" + System.getProperty("java.class.path"));
-		int status = javac.compile(args, new PrintWriter(System.out));
-
+		System.setProperty("java.class.path", "/Users/walter/.m2/repository/com/livinglogic/ul4/0.42/ul4-0.42.jar:/home/andreas/LivingLogic/cms/install/xist4c/WEB-INF/lib/ul4.jar:" + System.getProperty("user.dir") + ":" + System.getProperty("java.class.path") + ":/Users/walter/apache-tomcat-6.0.18/lib/naming-resources.jar:/Users/walter/apache-tomcat-6.0.18/lib/servlet-api.jar:/Users/walter/apache-tomcat-6.0.18/lib/jsp-api.jar:/Users/walter/.m2/repository/commons-lang/commons-lang/2.6/commons-lang-2.6.jar:/Users/walter/checkouts/LivingLogic.Java.ul4/ul4jython.jar:.");
+		int status = javac.compile(args, new PrintWriter(System.err));
+		System.err.flush();
 		switch (status)
 		{
 			case 0:  // OK
@@ -3013,23 +3014,12 @@ public class Utils
 				// Create an instance and return it
 				try
 				{
-					Class clazz = Class.forName(classname);
-					return clazz.newInstance();
+					return Class.forName(classname);
 				}
 				catch (ClassNotFoundException ex)
 				{
 					// Can't happen
-					return null;
-				}
-				catch (InstantiationException ex)
-				{
-					// Can't happen
-					return null;
-				}
-				catch (IllegalAccessException ex)
-				{
-					// Can't happen
-					return null;
+					throw new RuntimeException(ex);
 				}
 			case 1:
 				throw new RuntimeException("Compile status: ERROR");

@@ -16,7 +16,9 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 
 public class InterpretedTemplate implements Template
 {
@@ -108,7 +110,12 @@ public class InterpretedTemplate implements Template
 	/**
 	 * The version number used in the compiled format of the template.
 	 */
-	public static final String VERSION = "15";
+	public static final String VERSION = "16";
+
+	/**
+	 * The name of the template (defaults to <code>unnamed</code>)
+	 */
+	public String name;
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
@@ -157,6 +164,7 @@ public class InterpretedTemplate implements Template
 	public InterpretedTemplate()
 	{
 		this.source = null;
+		this.name = null;
 		this.opcodes = new LinkedList<Opcode>();
 		this.defaultLocale = Locale.ENGLISH;
 	}
@@ -164,9 +172,10 @@ public class InterpretedTemplate implements Template
 	/**
 	 * Creates an template object for a source string and a list of opcodes.
 	 */
-	public InterpretedTemplate(String source, List<Opcode> opcodes, String startdelim, String enddelim)
+	public InterpretedTemplate(String source, String name, List<Opcode> opcodes, String startdelim, String enddelim)
 	{
 		this.source = source;
+		this.name = name;
 		this.startdelim = startdelim;
 		this.enddelim = enddelim;
 		this.opcodes = opcodes;
@@ -180,9 +189,10 @@ public class InterpretedTemplate implements Template
 	/**
 	 * Creates an template object as a subtemplate of another template.
 	 */
-	public InterpretedTemplate(InterpretedTemplate parent, int sourceStartIndex, int sourceEndIndex, int opcodeStartIndex, int opcodeEndIndex)
+	public InterpretedTemplate(InterpretedTemplate parent, String name, int sourceStartIndex, int sourceEndIndex, int opcodeStartIndex, int opcodeEndIndex)
 	{
 		this.source = parent.source;
+		this.name = name;
 		this.startdelim = parent.startdelim;
 		this.enddelim = parent.enddelim;
 		this.opcodes = parent.opcodes;
@@ -191,6 +201,16 @@ public class InterpretedTemplate implements Template
 		this.opcodeStartIndex = opcodeStartIndex;
 		this.opcodeEndIndex = opcodeEndIndex;
 		this.defaultLocale = Locale.ENGLISH;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
 	/**
@@ -427,6 +447,8 @@ public class InterpretedTemplate implements Template
 		BufferedReader bufferedReader = new BufferedReader(reader);
 		bufferedReader.readLine(); // skip header (without checking)
 		bufferedReader.readLine(); // skip version number (with checking)
+		readstr(bufferedReader, "N"); // skip name
+		readchar(bufferedReader, '\n');
 		readstr(bufferedReader, "SD"); // skip start delimiter
 		readchar(bufferedReader, '\n');
 		readstr(bufferedReader, "ED"); // skip end delimiter
@@ -472,6 +494,8 @@ public class InterpretedTemplate implements Template
 		{
 			throw new RuntimeException("Invalid version, expected " + VERSION + ", got " + version);
 		}
+		retVal.name = readstr(bufferedReader, "N");
+		readchar(bufferedReader, '\n');
 		retVal.startdelim = readstr(bufferedReader, "SD");
 		readchar(bufferedReader, '\n');
 		retVal.enddelim = readstr(bufferedReader, "ED");
@@ -510,7 +534,9 @@ public class InterpretedTemplate implements Template
 					{
 						throw new RuntimeException("Invalid location spec " + charValue + charValue2);
 					}
-					location = new Location(retVal.source, readstr(bufferedReader, "T"),
+					// Use null for the name, this will be fixed by annotate()
+					location = new Location(retVal.source, null,
+						readstr(bufferedReader, "T"),
 						readint(bufferedReader, "st"), readint(bufferedReader, "et"),
 						readint(bufferedReader, "sc"), readint(bufferedReader, "ec"));
 				}
@@ -606,6 +632,8 @@ public class InterpretedTemplate implements Template
 		writer.write("\n");
 		writer.write(VERSION);
 		writer.write("\n");
+		writestr(writer, "N", name);
+		writer.write("\n");
 		writestr(writer, "SD", startdelim);
 		writer.write("\n");
 		writestr(writer, "ED", enddelim);
@@ -662,7 +690,8 @@ public class InterpretedTemplate implements Template
 	}
 
 	/**
-	 * Annotates all control flow opcodes in the template with a jump location.
+	 * Annotates all control flow opcodes in the template with a jump location and
+	 * fixes the template name in the location objects.
 	 * <ul>
 	 * <li>(a <code>for</code> opcode gets annotated with the location of the
 	 * associated <code>endfor</code> opcode;</li>
@@ -675,7 +704,7 @@ public class InterpretedTemplate implements Template
 	 * <li>a <code>break</code> opcode gets annotated with the location of next
 	 * opcode after the associated <code>endfor</code> opcode.</li>
 	 * <li>a <code>continue</code> opcode gets annotated with the location of next
-	 * opcode after the associated ENDFOR opcode.</li>
+	 * opcode after the associated <code>endfor</code> opcode.</li>
 	 * </ul>
 	 */
 	protected void annotate()
@@ -686,16 +715,17 @@ public class InterpretedTemplate implements Template
 			for (int i = 0; i < size; ++i)
 			{
 				Opcode opcode = opcodes.get(i);
+				opcode.location.fixName(name);
 				switch (opcode.name)
 				{
 					case Opcode.OC_IF:
-						i = annotateIf(i, 0);
+						i = annotateIf(i, 0, name);
 						break;
 					case Opcode.OC_FOR:
-						i = annotateFor(i, 0);
+						i = annotateFor(i, 0, name);
 						break;
 					case Opcode.OC_DEF:
-						i = annotateDef(i, 0);
+						i = annotateDef(i, 0, name);
 						break;
 					case Opcode.OC_ELSE:
 						throw new BlockException("else outside if block");
@@ -715,23 +745,24 @@ public class InterpretedTemplate implements Template
 		}
 	}
 
-	protected int annotateIf(int ifStart, int forDepth)
+	protected int annotateIf(int ifStart, int forDepth, String name)
 	{
 		int jump = ifStart;
 		int size = opcodes.size();
 		for (int i = ifStart+1; i < size; ++i)
 		{
 			Opcode opcode = opcodes.get(i);
+			opcode.location.fixName(name);
 			switch (opcode.name)
 			{
 				case Opcode.OC_IF:
-					i = annotateIf(i, forDepth);
+					i = annotateIf(i, forDepth, name);
 					break;
 				case Opcode.OC_FOR:
-					i = annotateFor(i, forDepth);
+					i = annotateFor(i, forDepth, name);
 					break;
 				case Opcode.OC_DEF:
-					i = annotateDef(i, forDepth);
+					i = annotateDef(i, forDepth, name);
 					break;
 				case Opcode.OC_ELSE:
 					opcodes.get(jump).jump = i;
@@ -757,23 +788,25 @@ public class InterpretedTemplate implements Template
 		throw new BlockException("unclosed if block");
 	}
 
-	protected int annotateDef(int defStart, int forDepth)
+	protected int annotateDef(int defStart, int forDepth, String name)
 	{
 		int jump = defStart;
 		int size = opcodes.size();
+		String defName = opcodes.get(defStart).arg;
 		for (int i = defStart+1; i < size; ++i)
 		{
 			Opcode opcode = opcodes.get(i);
+			opcode.location.fixName(opcode.name == Opcode.OC_ENDDEF ? name : defName);
 			switch (opcode.name)
 			{
 				case Opcode.OC_IF:
-					i = annotateIf(i, forDepth);
+					i = annotateIf(i, forDepth, defName);
 					break;
 				case Opcode.OC_FOR:
-					i = annotateFor(i, forDepth);
+					i = annotateFor(i, forDepth, defName);
 					break;
 				case Opcode.OC_DEF:
-					i = annotateDef(i, forDepth);
+					i = annotateDef(i, forDepth, defName);
 					break;
 				case Opcode.OC_ELSE:
 					throw new BlockException("else in def");
@@ -793,7 +826,7 @@ public class InterpretedTemplate implements Template
 		throw new BlockException("unclosed def block");
 	}
 
-	protected int annotateFor(int loopStart, int forDepth)
+	protected int annotateFor(int loopStart, int forDepth, String name)
 	{
 		++forDepth;
 		LinkedList<Integer> breaks = new LinkedList<Integer>();
@@ -803,16 +836,17 @@ public class InterpretedTemplate implements Template
 		for (int i = loopStart+1; i < size; ++i)
 		{
 			Opcode opcode = opcodes.get(i);
+			opcode.location.fixName(name);
 			switch (opcode.name)
 			{
 				case Opcode.OC_IF:
-					i = annotateIf(i, forDepth);
+					i = annotateIf(i, forDepth, name);
 					break;
 				case Opcode.OC_FOR:
-					i = annotateFor(i, forDepth);
+					i = annotateFor(i, forDepth, name);
 					break;
 				case Opcode.OC_DEF:
-					i = annotateDef(i, forDepth);
+					i = annotateDef(i, forDepth, name);
 					break;
 				case Opcode.OC_ELSE:
 					throw new BlockException("else in for loop");
@@ -975,14 +1009,21 @@ public class InterpretedTemplate implements Template
 		{
 			if (subTemplateIterator != null)
 			{
-				if (subTemplateIterator.hasNext())
+				try
 				{
-					nextChunk = subTemplateIterator.next();
-					return;
+					if (subTemplateIterator.hasNext())
+					{
+						nextChunk = subTemplateIterator.next();
+						return;
+					}
+					else
+					{
+						subTemplateIterator = null;
+					}
 				}
-				else
+				catch (Exception ex)
 				{
-					subTemplateIterator = null;
+					throw new LocationException(ex, opcodes.get(pc).location);
 				}
 			}
 			int lastOpcode = opcodeEndIndex;
@@ -1604,7 +1645,7 @@ public class InterpretedTemplate implements Template
 								break;
 							}
 						case Opcode.OC_DEF:
-							variables.put(code.arg, new InterpretedTemplate(InterpretedTemplate.this, code.location.endtag, opcodes.get(code.jump).location.starttag, pc+1, code.jump));
+							variables.put(code.arg, new InterpretedTemplate(InterpretedTemplate.this, code.arg, code.location.endtag, opcodes.get(code.jump).location.starttag, pc+1, code.jump));
 							pc = code.jump+1;
 							continue;
 						case Opcode.OC_ENDDEF:
@@ -1660,7 +1701,7 @@ public class InterpretedTemplate implements Template
 		}
 	}
 
-	public static List<Location> tokenizeTags(String source, String startdelim, String enddelim)
+	public static List<Location> tokenizeTags(String source, String name, String startdelim, String enddelim)
 	{
 		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|render|def|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Location> tags = new LinkedList<Location>();
@@ -1676,17 +1717,17 @@ public class InterpretedTemplate implements Template
 				start = matcher.start();
 				end = start + matcher.group().length();
 				if (pos != start)
-					tags.add(new Location(source, null, pos, start, pos, start));
+					tags.add(new Location(source, name, null, pos, start, pos, start));
 				int codestart = matcher.start(3);
 				int codeend = codestart + matcher.group(3).length();
 				String type = matcher.group(1);
 				if (!type.equals("note"))
-					tags.add(new Location(source, matcher.group(1), start, end, codestart, codeend));
+					tags.add(new Location(source, name, matcher.group(1), start, end, codestart, codeend));
 				pos = end;
 			}
 			end = source.length();
 			if (pos != end)
-				tags.add(new Location(source, null, pos, end, pos, end));
+				tags.add(new Location(source, name, null, pos, end, pos, end));
 		}
 		return tags;
 	}
@@ -1953,19 +1994,39 @@ public class InterpretedTemplate implements Template
 	public JSPTemplate compileToJava() throws java.io.IOException
 	{
 		StringBuffer source = new StringBuffer();
-		source.append("\tpublic void render(java.io.Writer out, java.util.Map<String, Object> variables) throws java.io.IOException");
-		source.append("\t{");
+		source.append("\tpublic String getName()\n");
+		source.append("\t{\n");
+		source.append("\t\treturn \"" + StringEscapeUtils.escapeJava(name) + "\";\n");
+		source.append("\t}\n");
+		source.append("\n");
+		source.append("\tpublic void render(java.io.Writer out, java.util.Map<String, Object> variables) throws java.io.IOException\n");
+		source.append("\t{\n");
 		source.append(javaSource());
-		source.append("\t}");
+		source.append("\t}\n");
 
-		return (JSPTemplate)Utils.compileToJava(source.toString(), "com.livinglogic.ul4.JSPTemplate", null);
+		Class clazz = Utils.compileToJava(source.toString(), "com.livinglogic.ul4.JSPTemplate", null);
+		try
+		{
+			return (JSPTemplate)clazz.newInstance();
+		}
+		catch (InstantiationException ex)
+		{
+			// Can't happen
+			throw new RuntimeException(ex);
+		}
+		catch (IllegalAccessException ex)
+		{
+			// Can't happen
+			throw new RuntimeException(ex);
+		}
 	}
 
 	public String toString()
 	{
 		StringBuffer buffer = new StringBuffer();
-		int indent = 0;
+		int indent = 1;
 
+		buffer.append("def " + name + " {\n");
 		int size = opcodes.size();
 		for (int i = 0; i < size; ++i)
 		{
@@ -1989,6 +2050,7 @@ public class InterpretedTemplate implements Template
 			if (code.name == Opcode.OC_FOR || code.name == Opcode.OC_IF || code.name == Opcode.OC_ELSE || code.name == Opcode.OC_DEF)
 				++indent;
 		}
+		buffer.append("}\n");
 		return buffer.toString();
 	}
 
