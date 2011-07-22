@@ -1,3 +1,10 @@
+exp-43:
+-------
+Comments:
+* Fixed location handling bugs with subtemplates.
+* Sub templates are now created by annotate().
+
+
 exp-42:
 -------
 Comments:

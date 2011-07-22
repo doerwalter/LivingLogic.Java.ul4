@@ -194,7 +194,8 @@ public class Opcode
 	public String arg;
 	public int argcode;
 	public Location location;
-	public int jump;
+	public int jump; // store the index of the "corresponding" opcode, e.g. the "endfor" opcode for a "for" opcode (set by InterpretedTemplate.annotate())
+	public InterpretedTemplate template; // if the opcode if a "def" opcode, store the subtemplate here (set by InterpretedTemplate.annotate())
 
 	public static int name2code(String name)
 	{
@@ -795,6 +796,7 @@ public class Opcode
 		}
 		this.location = location;
 		this.jump = -1;
+		this.template = null;
 	}
 
 	public String toString()

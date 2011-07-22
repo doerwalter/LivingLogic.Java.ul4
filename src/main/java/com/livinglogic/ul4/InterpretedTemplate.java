@@ -128,7 +128,7 @@ public class InterpretedTemplate implements Template
 	public String enddelim;
 
 	/**
-	 * The template source.
+	 * The template source (of the top-level template, i.e. subtemplates always get the full source).
 	 */
 	public String source;
 
@@ -201,6 +201,12 @@ public class InterpretedTemplate implements Template
 		this.opcodeStartIndex = opcodeStartIndex;
 		this.opcodeEndIndex = opcodeEndIndex;
 		this.defaultLocale = Locale.ENGLISH;
+		// The subtemplate must always be annotated, because if it isn't it would
+		// annotate all opcodes/locations even those of the parent and would
+		// store its name in the parents location. As subtemplates are created
+		// during the annotate() call of the parent, we can savely set our own
+		// annotate flag to true to prevent reannotation.
+		this.annotated = true;
 	}
 
 	public String getName()
@@ -792,21 +798,22 @@ public class InterpretedTemplate implements Template
 	{
 		int jump = defStart;
 		int size = opcodes.size();
-		String defName = opcodes.get(defStart).arg;
+		Opcode defOpcode = opcodes.get(defStart);
+		String defName = defOpcode.arg;
 		for (int i = defStart+1; i < size; ++i)
 		{
 			Opcode opcode = opcodes.get(i);
-			opcode.location.fixName(opcode.name == Opcode.OC_ENDDEF ? name : defName);
+			opcode.location.fixName(opcode.name != Opcode.OC_ENDDEF ? defName : name);
 			switch (opcode.name)
 			{
 				case Opcode.OC_IF:
-					i = annotateIf(i, forDepth, defName);
+					i = annotateIf(i, 0, defName);
 					break;
 				case Opcode.OC_FOR:
-					i = annotateFor(i, forDepth, defName);
+					i = annotateFor(i, 0, defName);
 					break;
 				case Opcode.OC_DEF:
-					i = annotateDef(i, forDepth, defName);
+					i = annotateDef(i, 0, defName);
 					break;
 				case Opcode.OC_ELSE:
 					throw new BlockException("else in def");
@@ -819,7 +826,15 @@ public class InterpretedTemplate implements Template
 				case Opcode.OC_ENDFOR:
 					throw new BlockException("endfor in def");
 				case Opcode.OC_ENDDEF:
-					opcodes.get(defStart).jump = i;
+					defOpcode.jump = i;
+					defOpcode.template = new InterpretedTemplate(
+						this,
+						defOpcode.arg,
+						defOpcode.location.endtag, // end of the <?def?> tag
+						opcode.location.starttag, // start of the <?end def?> tag
+						defStart+1, // first opcode after the def
+						i // the enddef opcode, i.e. one after the <?def?> content
+					);
 					return i;
 			}
 		}
@@ -1023,7 +1038,8 @@ public class InterpretedTemplate implements Template
 				}
 				catch (Exception ex)
 				{
-					throw new LocationException(ex, opcodes.get(pc).location);
+					Opcode code = opcodes.get(pc-1);
+					throw new LocationException(ex, code, pc-1);
 				}
 			}
 			int lastOpcode = opcodeEndIndex;
@@ -1645,7 +1661,7 @@ public class InterpretedTemplate implements Template
 								break;
 							}
 						case Opcode.OC_DEF:
-							variables.put(code.arg, new InterpretedTemplate(InterpretedTemplate.this, code.arg, code.location.endtag, opcodes.get(code.jump).location.starttag, pc+1, code.jump));
+							variables.put(code.arg, code.template);
 							pc = code.jump+1;
 							continue;
 						case Opcode.OC_ENDDEF:
@@ -1657,7 +1673,7 @@ public class InterpretedTemplate implements Template
 				}
 				catch (Exception ex)
 				{
-					throw new LocationException(ex, code.location);
+					throw new LocationException(ex, code, pc);
 				}
 				++pc;
 			}
@@ -2026,7 +2042,7 @@ public class InterpretedTemplate implements Template
 		StringBuffer buffer = new StringBuffer();
 		int indent = 1;
 
-		buffer.append("def " + name + " {\n");
+		buffer.append("def " + name + "(**vars) {\n");
 		int size = opcodes.size();
 		for (int i = 0; i < size; ++i)
 		{
