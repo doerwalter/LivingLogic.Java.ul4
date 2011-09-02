@@ -1,7 +1,8 @@
 exp-44:
 -------
 Comments:
-* Enhanced Location.toString().
+* Enhanced Location.toString() for literal.
+* Fixed LocationException.toString() for parsing errors.
 
 exp-43:
 -------

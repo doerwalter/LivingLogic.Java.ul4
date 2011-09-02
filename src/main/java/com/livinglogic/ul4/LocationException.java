@@ -24,7 +24,7 @@ public class LocationException extends RuntimeException
 
 	public String toString()
 	{
-		String msg = "com.livinglogic.ul4.LocationException: in " + opcode.location;
+		String msg = "com.livinglogic.ul4.LocationException: in " + location;
 		if (opcode != null)
 			msg += " opcode #" + opcodeIndex + ": " + opcode;
 		return msg;
