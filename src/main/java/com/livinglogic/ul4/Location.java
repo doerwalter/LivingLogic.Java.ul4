@@ -59,7 +59,9 @@ public class Location
 				++col;
 			}
 		}
-		return "<?" + type + "?> tag at position " + (starttag+1) + " (line " + line + ", col " + col + ", template " + name + ")";
+		String tagType = (type != null) ? "<?" + type + "?> tag" : "literal";
+		
+		return tagType + " at position " + (starttag+1) + " (line " + line + ", col " + col + ", template " + name + ")";
 	}
 
 	public void fixName(String name)
