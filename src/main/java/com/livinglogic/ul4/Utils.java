@@ -1,3 +1,9 @@
+/*
+** Copyright 2009-2011 by LivingLogic AG, Bayreuth/Germany
+** All Rights Reserved
+** See LICENSE for the license
+*/
+
 package com.livinglogic.ul4;
 
 import java.util.AbstractList;
@@ -2927,32 +2933,10 @@ public class Utils
 	}
 
 	/**
-	 * Create a Map from key, value arguments.
-	 * @param args An even number of objects. The objects at index 0, 2, 4, ...
-	 *             are the keys, the objects at index 1, 3, 5 are the values.
-	 * @return A Map containing the variables
-	 */
-	public static Map makeMap(Object... args)
-	{
-		int pos = 0;
-		Object key = null;
-		HashMap map = new HashMap();
-		for (Object arg : args)
-		{
-			if ((pos & 1) != 0)
-				map.put(key, arg);
-			else
-				key = arg;
-			++pos;
-		}
-		return map;
-	}
-
-	/**
 	 * Compile Java source code of a Java class and return the class object
 	 * @param source The source of the body of the class
 	 * @param extendsSpec Name of base class (or null)
-	 * @param implementsSpec Comma serated list of implemented interfaces (or null)
+	 * @param implementsSpec Comma separated list of implemented interfaces (or null)
 	 * @return The Class object that contains the compiled Java code
 	 */
 	public static Class compileToJava(String source, String extendsSpec, String implementsSpec) throws java.io.IOException

@@ -1,6 +1,16 @@
+/*
+** Copyright 2009-2011 by LivingLogic AG, Bayreuth/Germany
+** All Rights Reserved
+** See LICENSE for the license
+*/
+
 package com.livinglogic.ul4;
 
-public class Opcode
+import java.util.Map;
+import java.util.HashMap;
+import com.livinglogic.utils.ObjectAsMap;
+
+public class Opcode extends ObjectAsMap
 {
 	public static final int OC_TEXT = 0;
 	public static final int OC_LOADNONE = 1;
@@ -940,5 +950,25 @@ public class Opcode
 			default:
 				throw new IllegalArgumentException("Opcode code " + name + " unknown!");
 		}
+	}
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
+			v.put("code", new ValueMaker(){public Object getValue(Object object){return ((Opcode)object).code2name(((Opcode)object).name);}});
+			v.put("r1", new ValueMaker(){public Object getValue(Object object){return ((Opcode)object).r1 != -1 ? ((Opcode)object).r1 : null;}});
+			v.put("r2", new ValueMaker(){public Object getValue(Object object){return ((Opcode)object).r2 != -1 ? ((Opcode)object).r2 : null;}});
+			v.put("r3", new ValueMaker(){public Object getValue(Object object){return ((Opcode)object).r3 != -1 ? ((Opcode)object).r3 : null;}});
+			v.put("r4", new ValueMaker(){public Object getValue(Object object){return ((Opcode)object).r4 != -1 ? ((Opcode)object).r4 : null;}});
+			v.put("r5", new ValueMaker(){public Object getValue(Object object){return ((Opcode)object).r5 != -1 ? ((Opcode)object).r5 : null;}});
+			v.put("arg", new ValueMaker(){public Object getValue(Object object){return ((Opcode)object).arg;}});
+			v.put("location", new ValueMaker(){public Object getValue(Object object){return ((Opcode)object).location;}});
+			valueMakers = v;
+		}
+		return valueMakers;
 	}
 }

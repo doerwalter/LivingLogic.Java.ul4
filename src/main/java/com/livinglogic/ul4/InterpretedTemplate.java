@@ -1,3 +1,9 @@
+/*
+** Copyright 2009-2011 by LivingLogic AG, Bayreuth/Germany
+** All Rights Reserved
+** See LICENSE for the license
+*/
+
 package com.livinglogic.ul4;
 
 import java.io.BufferedReader;
@@ -8,6 +14,7 @@ import java.io.StringReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -19,8 +26,9 @@ import java.util.regex.Matcher;
 import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import com.livinglogic.utils.ObjectAsMap;
 
-public class InterpretedTemplate implements Template
+public class InterpretedTemplate extends ObjectAsMap implements Template
 {
 	// used by the code tokenizer
 	private static Pattern tokenPattern;
@@ -2078,5 +2086,22 @@ public class InterpretedTemplate implements Template
 	public String javascriptSource()
 	{
 		return new JavascriptSource4Template(this).toString();
+	}
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
+			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).name;}});
+			v.put("startdelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).startdelim;}});
+			v.put("enddelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).enddelim;}});
+			v.put("source", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).source;}});
+			v.put("opcodes", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).opcodes;}});
+			valueMakers = v;
+		}
+		return valueMakers;
 	}
 }

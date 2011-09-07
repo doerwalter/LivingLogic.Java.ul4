@@ -1,3 +1,9 @@
+/*
+** Copyright 2009-2011 by LivingLogic AG, Bayreuth/Germany
+** All Rights Reserved
+** See LICENSE for the license
+*/
+
 package com.livinglogic.ul4;
 
 import java.util.Map;
@@ -5,12 +11,6 @@ import java.io.Writer;
 import java.io.IOException;
 
 /**
- * Copyright 2009-2011 by LivingLogic AG, Bayreuth/Germany
- *
- * All Rights Reserved
- *
- * See LICENSE for the license
- *
  * Interface for various methods for generating template output.
  *
  * @author W. Doerwald

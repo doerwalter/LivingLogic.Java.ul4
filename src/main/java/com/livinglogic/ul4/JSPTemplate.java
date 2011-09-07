@@ -1,3 +1,9 @@
+/*
+** Copyright 2009-2011 by LivingLogic AG, Bayreuth/Germany
+** All Rights Reserved
+** See LICENSE for the license
+*/
+
 package com.livinglogic.ul4;
 
 import java.util.Map;
@@ -6,12 +12,6 @@ import java.io.StringWriter;
 import java.io.IOException;
 
 /**
- * Copyright 2009-2011 by LivingLogic AG, Bayreuth/Germany
- *
- * All Rights Reserved
- *
- * See LICENSE for the license
- *
  * Base class for template code that has been converted to Java source code.
  *
  * @author W. Doerwald

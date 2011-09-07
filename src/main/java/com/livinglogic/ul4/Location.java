@@ -1,6 +1,16 @@
+/*
+** Copyright 2009-2011 by LivingLogic AG, Bayreuth/Germany
+** All Rights Reserved
+** See LICENSE for the license
+*/
+
 package com.livinglogic.ul4;
 
-public class Location
+import java.util.Map;
+import java.util.HashMap;
+import com.livinglogic.utils.ObjectAsMap;
+
+public class Location extends ObjectAsMap
 {
 	public String source;
 	public String name;
@@ -19,6 +29,11 @@ public class Location
 		this.endtag = endtag;
 		this.startcode = startcode;
 		this.endcode = endcode;
+	}
+
+	public String getName()
+	{
+		return name;
 	}
 
 	public String getType()
@@ -67,5 +82,23 @@ public class Location
 	public void fixName(String name)
 	{
 		this.name = name;
+	}
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
+			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getName();}});
+			v.put("type", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getType();}});
+			v.put("starttag", new ValueMaker(){public Object getValue(Object object){return ((Location)object).starttag;}});
+			v.put("endtag", new ValueMaker(){public Object getValue(Object object){return ((Location)object).endtag;}});
+			v.put("startcode", new ValueMaker(){public Object getValue(Object object){return ((Location)object).startcode;}});
+			v.put("endcode", new ValueMaker(){public Object getValue(Object object){return ((Location)object).endcode;}});
+			valueMakers = v;
+		}
+		return valueMakers;
 	}
 }

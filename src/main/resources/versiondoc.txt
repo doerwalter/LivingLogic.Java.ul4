@@ -1,8 +1,16 @@
+exp-45:
+-------
+Comments:
+* Added new utility classes MapUtils, ChainedHashMap and ObjectAsMap.
+* Template, Opcode and Location now expose their attributes via a Map interface.
+
+
 exp-44:
 -------
 Comments:
-* Enhanced Location.toString() for literal.
+* Enhanced Location.toString() for literals.
 * Fixed LocationException.toString() for parsing errors.
+
 
 exp-43:
 -------
