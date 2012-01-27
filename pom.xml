@@ -38,12 +38,6 @@
 			</dependencies>
 		</profile>
 	</profiles>
-	<repositories>
-		<repository>
-			<id>jcl-sourceforge</id>
-			<url>http://jcloader.sourceforge.net/mvn-repo</url>
-		</repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.ant</groupId>
