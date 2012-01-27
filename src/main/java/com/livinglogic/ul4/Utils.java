@@ -275,13 +275,13 @@ class ZipIterator implements Iterator<Vector>
 	}
 }
 
-class SequenceEnumerator implements Iterator<Vector>
+class SequenceEnum implements Iterator<Vector>
 {
 	Iterator sequenceIterator;
 
 	int index = 0;
 
-	public SequenceEnumerator(Iterator sequenceIterator)
+	public SequenceEnum(Iterator sequenceIterator)
 	{
 		this.sequenceIterator = sequenceIterator;
 	}
@@ -296,6 +296,132 @@ class SequenceEnumerator implements Iterator<Vector>
 		Vector retVal = new Vector(2);
 		retVal.add(new Integer(index++));
 		retVal.add(sequenceIterator.next());
+		return retVal;
+	}
+
+	public void remove()
+	{
+		sequenceIterator.remove();
+	}
+}
+
+class SequenceEnumFL implements Iterator<Vector>
+{
+	Iterator sequenceIterator;
+
+	int index = 0;
+
+	public SequenceEnumFL(Iterator sequenceIterator)
+	{
+		this.sequenceIterator = sequenceIterator;
+	}
+
+	public boolean hasNext()
+	{
+		return sequenceIterator.hasNext();
+	}
+
+	public Vector next()
+	{
+		Object next = sequenceIterator.next();
+		Vector retVal = new Vector(4);
+		retVal.add(new Integer(index++));
+		retVal.add(index == 1);
+		retVal.add(!sequenceIterator.hasNext());
+		retVal.add(next);
+		return retVal;
+	}
+
+	public void remove()
+	{
+		sequenceIterator.remove();
+	}
+}
+
+class SequenceFirstLast implements Iterator<Vector>
+{
+	Iterator sequenceIterator;
+
+	boolean first = true;
+
+	public SequenceFirstLast(Iterator sequenceIterator)
+	{
+		this.sequenceIterator = sequenceIterator;
+	}
+
+	public boolean hasNext()
+	{
+		return sequenceIterator.hasNext();
+	}
+
+	public Vector next()
+	{
+		Object next = sequenceIterator.next();
+		Vector retVal = new Vector(3);
+		retVal.add(first);
+		retVal.add(!sequenceIterator.hasNext());
+		retVal.add(next);
+		first = false;
+		return retVal;
+	}
+
+	public void remove()
+	{
+		sequenceIterator.remove();
+	}
+}
+
+class SequenceFirst implements Iterator<Vector>
+{
+	Iterator sequenceIterator;
+
+	boolean first = true;
+
+	public SequenceFirst(Iterator sequenceIterator)
+	{
+		this.sequenceIterator = sequenceIterator;
+	}
+
+	public boolean hasNext()
+	{
+		return sequenceIterator.hasNext();
+	}
+
+	public Vector next()
+	{
+		Vector retVal = new Vector(2);
+		retVal.add(first);
+		retVal.add(sequenceIterator.next());
+		first = false;
+		return retVal;
+	}
+
+	public void remove()
+	{
+		sequenceIterator.remove();
+	}
+}
+
+class SequenceLast implements Iterator<Vector>
+{
+	Iterator sequenceIterator;
+
+	public SequenceLast(Iterator sequenceIterator)
+	{
+		this.sequenceIterator = sequenceIterator;
+	}
+
+	public boolean hasNext()
+	{
+		return sequenceIterator.hasNext();
+	}
+
+	public Vector next()
+	{
+		Object next = sequenceIterator.next();
+		Vector retVal = new Vector(2);
+		retVal.add(!sequenceIterator.hasNext());
+		retVal.add(next);
 		return retVal;
 	}
 
@@ -1463,7 +1589,7 @@ public class Utils
 		if (container instanceof String)
 		{
 			if (obj instanceof String)
-			return contains((String)obj, (String)container);
+				return contains((String)obj, (String)container);
 		}
 		else if (container instanceof Collection)
 			return contains(obj, (Collection)container);
@@ -1902,7 +2028,27 @@ public class Utils
 
 	public static Object enumerate(Object obj)
 	{
-		return new SequenceEnumerator(iterator(obj));
+		return new SequenceEnum(iterator(obj));
+	}
+
+	public static Object enumeratefl(Object obj)
+	{
+		return new SequenceEnumFL(iterator(obj));
+	}
+
+	public static Object firstlast(Object obj)
+	{
+		return new SequenceFirstLast(iterator(obj));
+	}
+
+	public static Object first(Object obj)
+	{
+		return new SequenceFirst(iterator(obj));
+	}
+
+	public static Object last(Object obj)
+	{
+		return new SequenceLast(iterator(obj));
 	}
 
 	public static Object chr(Object obj)
