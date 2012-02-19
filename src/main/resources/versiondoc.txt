@@ -1,3 +1,10 @@
+exp-46:
+-------
+Comments:
+* Added support for the new UL4 functions first(), last(), firstlast() and
+  enumfl().
+
+
 exp-45:
 -------
 Comments:
