@@ -27,13 +27,23 @@ import com.livinglogic.ul4.Color;
 
 /**
  * Utility class for reading and writing the UL4ON object serialization format.
- * @author W. Dörwald, A. Gaßner
  *
+ * The UL4ON object serialization format is a simple (text-based) serialization format
+ * the supports all objects supported by UL4 (except for template), i.e. it supports
+ * the same type of objects as JSON does (plus colors and dates)
+ *
+ * @author W. Dörwald, A. Gaßner
  */
 public class Utils
 {
 	private final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
+	/**
+	 * Writes the object <code>data</code> to the writer <code>writer</code> in the UL4ON object serialization format.
+	 * @param data the object to be dumped.
+	 * @param writer The writer where the output should be written
+	 * @throws IOException if writing to the stream fails
+	 */
 	public static void dump(Object data, Writer writer) throws IOException
 	{
 		if (data == null)
@@ -78,6 +88,11 @@ public class Utils
 		}
 	}
 	
+	/**
+	 * Return the serialized output of the object <code>data</code>.
+	 * @param data the object to be dumped.
+	 * @return the serialized object
+	 */
 	public static String dumps(Object data)
 	{
 		StringWriter writer = new StringWriter();
@@ -197,11 +212,22 @@ public class Utils
 			throw new RuntimeException("broken stream: unknown typecode '\\u" + Integer.toHexString(typecode) + "'");
 	}
 	
+	/**
+	 * Load an object by reading in the UL4ON object serialization format from the reader <code>reader</code>.
+	 * @param reader The reader from the serialization format is read
+	 * @throws IOException if reading the stream fails
+	 * @return the deserialized object
+	 */
 	public static Object load(Reader reader) throws IOException
 	{
 		return load(reader, -2, new HashMap());
 	}
 	
+	/**
+	 * Load an object by reading in the UL4ON object serialization format from the string <code>s</code>.
+	 * @param s The object in serialized form
+	 * @return the deserialized object
+	 */
 	public static Object load(String s)
 	{
 		try
@@ -210,13 +236,16 @@ public class Utils
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 			// can't happen
-			// keeps the compiler happy
-			return null;
+			return null; // keeps the compiler happy
 		}
 	}
 	
+	/**
+	 * Load an object by reading in the UL4ON object serialization format from the CLOB <code>clob</code>.
+	 * @param clob The CLOB that contains the object in serialized form
+	 * @return the deserialized object
+	 */
 	public static Object load(Clob clob) throws IOException, SQLException
 	{
 		return load(clob.getCharacterStream());
