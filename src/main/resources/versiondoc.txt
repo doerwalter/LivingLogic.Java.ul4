@@ -1,3 +1,10 @@
+exp-47:
+-------
+Comments:
+* Added support for the new UL4ON object serialization format (via the
+  class com.livinglogic.ul4on.Utils).
+
+
 exp-46:
 -------
 Comments:
