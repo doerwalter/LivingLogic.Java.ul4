@@ -5,3 +5,9 @@ target
 
 syntax: glob
 .project
+syntax: glob
+.classpath
+syntax: glob
+.settings
+syntax: glob
+.pydevproject
