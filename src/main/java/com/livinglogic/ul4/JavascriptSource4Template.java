@@ -280,7 +280,7 @@ public class JavascriptSource4Template
 							code("r" + opcode.r1 + " = ul4._fu_repr(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_ENUM:
-							code("r" + opcode.r1 + " = ul4._fu_enum(r" + opcode.r2 + ");");
+							code("r" + opcode.r1 + " = ul4._fu_enumerate(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_ENUMFL:
 							code("r" + opcode.r1 + " = ul4._fu_enumfl(r" + opcode.r2 + ");");
