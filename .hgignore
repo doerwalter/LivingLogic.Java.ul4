@@ -2,3 +2,6 @@ syntax: glob
 
 target
 *$py.class
+
+syntax: glob
+.project
