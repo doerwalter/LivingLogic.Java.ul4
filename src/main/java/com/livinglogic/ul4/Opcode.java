@@ -93,32 +93,36 @@ public class Opcode extends ObjectAsMap
 	public static final int CF1_FLOAT = 4;
 	public static final int CF1_BOOL = 5;
 	public static final int CF1_LEN = 6;
-	public static final int CF1_ENUMERATE = 7;
-	public static final int CF1_ISNONE = 8;
-	public static final int CF1_ISSTR = 9;
-	public static final int CF1_ISINT = 10;
-	public static final int CF1_ISFLOAT = 11;
-	public static final int CF1_ISBOOL = 12;
-	public static final int CF1_ISDATE = 13;
-	public static final int CF1_ISLIST = 14;
-	public static final int CF1_ISDICT = 15;
-	public static final int CF1_ISTEMPLATE = 16;
-	public static final int CF1_ISCOLOR = 17;
-	public static final int CF1_CHR = 18;
-	public static final int CF1_ORD = 19;
-	public static final int CF1_HEX = 20;
-	public static final int CF1_OCT = 21;
-	public static final int CF1_BIN = 22;
-	public static final int CF1_ABS = 23;
-	public static final int CF1_SORTED = 24;
-	public static final int CF1_RANGE = 25;
-	public static final int CF1_TYPE = 26;
-	public static final int CF1_CSV = 27;
-	public static final int CF1_GET = 28;
-	public static final int CF1_JSON = 29;
-	public static final int CF1_REVERSED = 30;
-	public static final int CF1_RANDRANGE = 31;
-	public static final int CF1_RANDCHOICE = 32;
+	public static final int CF1_ENUM = 7;
+	public static final int CF1_ENUMFL = 8;
+	public static final int CF1_FIRSTLAST = 9;
+	public static final int CF1_FIRST = 10;
+	public static final int CF1_LAST = 11;
+	public static final int CF1_ISNONE = 12;
+	public static final int CF1_ISSTR = 13;
+	public static final int CF1_ISINT = 14;
+	public static final int CF1_ISFLOAT = 15;
+	public static final int CF1_ISBOOL = 16;
+	public static final int CF1_ISDATE = 17;
+	public static final int CF1_ISLIST = 18;
+	public static final int CF1_ISDICT = 19;
+	public static final int CF1_ISTEMPLATE = 20;
+	public static final int CF1_ISCOLOR = 21;
+	public static final int CF1_CHR = 22;
+	public static final int CF1_ORD = 23;
+	public static final int CF1_HEX = 24;
+	public static final int CF1_OCT = 25;
+	public static final int CF1_BIN = 26;
+	public static final int CF1_ABS = 27;
+	public static final int CF1_SORTED = 28;
+	public static final int CF1_RANGE = 29;
+	public static final int CF1_TYPE = 30;
+	public static final int CF1_CSV = 31;
+	public static final int CF1_GET = 32;
+	public static final int CF1_JSON = 33;
+	public static final int CF1_REVERSED = 34;
+	public static final int CF1_RANDRANGE = 35;
+	public static final int CF1_RANDCHOICE = 36;
 
 	public static final int CF2_FORMAT = 0;
 	public static final int CF2_RANGE = 1;
@@ -379,8 +383,16 @@ public class Opcode extends ObjectAsMap
 			return CF1_BOOL;
 		else if (name.equals("len"))
 			return CF1_LEN;
-		else if (name.equals("enumerate"))
-			return CF1_ENUMERATE;
+		else if (name.equals("enum"))
+			return CF1_ENUM;
+		else if (name.equals("enumfl"))
+			return CF1_ENUMFL;
+		else if (name.equals("firstlast"))
+			return CF1_FIRSTLAST;
+		else if (name.equals("first"))
+			return CF1_FIRST;
+		else if (name.equals("last"))
+			return CF1_LAST;
 		else if (name.equals("isnone"))
 			return CF1_ISNONE;
 		else if (name.equals("isstr"))

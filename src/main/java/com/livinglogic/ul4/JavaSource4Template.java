@@ -313,8 +313,20 @@ public class JavaSource4Template
 						case Opcode.CF1_REPR:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.repr(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CF1_ENUMERATE:
+						case Opcode.CF1_ENUM:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.enumerate(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_ENUMFL:
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.enumeratefl(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_FIRSTLAST:
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.firstlast(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_FIRST:
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.first(r" + opcode.r2 + ");");
+							break;
+						case Opcode.CF1_LAST:
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.last(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_CHR:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.chr(r" + opcode.r2 + ");");

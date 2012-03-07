@@ -503,6 +503,14 @@ class ForParser(ExprParser):
 		return ul4.For3(_0.start, cont.end, iter1, iter2, iter3, cont)
 	for3b.spark = ['for ::= ( name , name , name , ) in expr0']
 
+	def for4a(self, (_0, iter1, _1, iter2, _2, iter3, _3, iter4, _4, _5, cont)):
+		return ul4.For4(_0.start, cont.end, iter1, iter2, iter3, iter4, cont)
+	for4a.spark = ['for ::= ( name , name , name , name ) in expr0']
+
+	def for4b(self, (_0, iter1, _1, iter2, _2, iter3, _3, iter4, _4, _5, _6, cont)):
+		return ul4.For4(_0.start, cont.end, iter1, iter2, iter3, iter4, cont)
+	for4b.spark = ['for ::= ( name , name , name , name , ) in expr0']
+
 
 class StmtParser(ExprParser):
 	emptyerror = "statement required"
