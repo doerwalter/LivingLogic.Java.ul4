@@ -1,3 +1,9 @@
+/*
+** Copyright 2012 by LivingLogic AG, Bayreuth/Germany
+** All Rights Reserved
+** See LICENSE for the license
+*/
+
 package com.livinglogic.ul4on;
 
 import java.io.IOException;
@@ -20,7 +26,7 @@ import java.util.Map;
 import com.livinglogic.ul4.Color;
 
 /**
- * Yet another utils class.
+ * Utility class for reading and writing the UL4ON object serialization format.
  * @author W. Dörwald, A. Gaßner
  *
  */
