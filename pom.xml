@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.livinglogic</groupId>
 	<artifactId>ul4</artifactId>
-	<version>0.47</version>
+	<version>0.48</version>
 	<name>UL4</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -1309,7 +1309,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 									reg[code.r1] = Utils.enumerate(reg[code.r2]);
 									break;
 								case Opcode.CF1_ENUMFL:
-									reg[code.r1] = Utils.enumeratefl(reg[code.r2]);
+									reg[code.r1] = Utils.enumfl(reg[code.r2]);
 									break;
 								case Opcode.CF1_FIRSTLAST:
 									reg[code.r1] = Utils.firstlast(reg[code.r2]);

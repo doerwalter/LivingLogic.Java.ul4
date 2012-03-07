@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+
 import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Collections;
@@ -2031,7 +2032,7 @@ public class Utils
 		return new SequenceEnum(iterator(obj));
 	}
 
-	public static Object enumeratefl(Object obj)
+	public static Object enumfl(Object obj)
 	{
 		return new SequenceEnumFL(iterator(obj));
 	}

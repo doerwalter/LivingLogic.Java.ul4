@@ -317,7 +317,7 @@ public class JavaSource4Template
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.enumerate(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_ENUMFL:
-							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.enumeratefl(r" + opcode.r2 + ");");
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.enumfl(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_FIRSTLAST:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.firstlast(r" + opcode.r2 + ");");
