@@ -339,13 +339,13 @@ class SequenceEnumFL implements Iterator<Vector>
 	}
 }
 
-class SequenceFirstLast implements Iterator<Vector>
+class SequenceIsFirstLast implements Iterator<Vector>
 {
 	Iterator sequenceIterator;
 
 	boolean first = true;
 
-	public SequenceFirstLast(Iterator sequenceIterator)
+	public SequenceIsFirstLast(Iterator sequenceIterator)
 	{
 		this.sequenceIterator = sequenceIterator;
 	}
@@ -372,13 +372,13 @@ class SequenceFirstLast implements Iterator<Vector>
 	}
 }
 
-class SequenceFirst implements Iterator<Vector>
+class SequenceIsFirst implements Iterator<Vector>
 {
 	Iterator sequenceIterator;
 
 	boolean first = true;
 
-	public SequenceFirst(Iterator sequenceIterator)
+	public SequenceIsFirst(Iterator sequenceIterator)
 	{
 		this.sequenceIterator = sequenceIterator;
 	}
@@ -403,11 +403,11 @@ class SequenceFirst implements Iterator<Vector>
 	}
 }
 
-class SequenceLast implements Iterator<Vector>
+class SequenceIsLast implements Iterator<Vector>
 {
 	Iterator sequenceIterator;
 
-	public SequenceLast(Iterator sequenceIterator)
+	public SequenceIsLast(Iterator sequenceIterator)
 	{
 		this.sequenceIterator = sequenceIterator;
 	}
@@ -2037,19 +2037,19 @@ public class Utils
 		return new SequenceEnumFL(iterator(obj));
 	}
 
-	public static Object firstlast(Object obj)
+	public static Object isfirstlast(Object obj)
 	{
-		return new SequenceFirstLast(iterator(obj));
+		return new SequenceIsFirstLast(iterator(obj));
 	}
 
-	public static Object first(Object obj)
+	public static Object isfirst(Object obj)
 	{
-		return new SequenceFirst(iterator(obj));
+		return new SequenceIsFirst(iterator(obj));
 	}
 
-	public static Object last(Object obj)
+	public static Object islast(Object obj)
 	{
-		return new SequenceLast(iterator(obj));
+		return new SequenceIsLast(iterator(obj));
 	}
 
 	public static Object chr(Object obj)
@@ -3133,7 +3133,7 @@ public class Utils
 		};
 
 		// TODO add ul4.jar to java.class.path in a more generic way
-		System.setProperty("java.class.path", "/Users/walter/.m2/repository/com/livinglogic/ul4/0.42/ul4-0.42.jar:/home/andreas/LivingLogic/cms/install/xist4c/WEB-INF/lib/ul4.jar:" + System.getProperty("user.dir") + ":" + System.getProperty("java.class.path") + ":/Users/walter/apache-tomcat-6.0.18/lib/naming-resources.jar:/Users/walter/apache-tomcat-6.0.18/lib/servlet-api.jar:/Users/walter/apache-tomcat-6.0.18/lib/jsp-api.jar:/Users/walter/.m2/repository/commons-lang/commons-lang/2.6/commons-lang-2.6.jar:/Users/walter/checkouts/LivingLogic.Java.ul4/ul4jython.jar:.");
+		System.setProperty("java.class.path", "/Users/walter/.m2/repository/com/livinglogic/ul4/0.48/ul4-0.48.jar:/home/andreas/LivingLogic/cms/install/xist4c/WEB-INF/lib/ul4.jar:" + System.getProperty("user.dir") + ":" + System.getProperty("java.class.path") + ":/Users/walter/apache-tomcat-6.0.18/lib/naming-resources.jar:/Users/walter/apache-tomcat-6.0.18/lib/servlet-api.jar:/Users/walter/apache-tomcat-6.0.18/lib/jsp-api.jar:/Users/walter/.m2/repository/commons-lang/commons-lang/2.6/commons-lang-2.6.jar:/Users/walter/checkouts/LivingLogic.Java.ul4/ul4jython.jar:.");
 		int status = javac.compile(args, new PrintWriter(System.err));
 		System.err.flush();
 		switch (status)

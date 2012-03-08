@@ -1311,14 +1311,14 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 								case Opcode.CF1_ENUMFL:
 									reg[code.r1] = Utils.enumfl(reg[code.r2]);
 									break;
-								case Opcode.CF1_FIRSTLAST:
-									reg[code.r1] = Utils.firstlast(reg[code.r2]);
+								case Opcode.CF1_ISFIRSTLAST:
+									reg[code.r1] = Utils.isfirstlast(reg[code.r2]);
 									break;
-								case Opcode.CF1_FIRST:
-									reg[code.r1] = Utils.first(reg[code.r2]);
+								case Opcode.CF1_ISFIRST:
+									reg[code.r1] = Utils.isfirst(reg[code.r2]);
 									break;
-								case Opcode.CF1_LAST:
-									reg[code.r1] = Utils.last(reg[code.r2]);
+								case Opcode.CF1_ISLAST:
+									reg[code.r1] = Utils.islast(reg[code.r2]);
 									break;
 								case Opcode.CF1_ISNONE:
 									reg[code.r1] = (null == reg[code.r2]) ? Boolean.TRUE : Boolean.FALSE;

@@ -319,14 +319,14 @@ public class JavaSource4Template
 						case Opcode.CF1_ENUMFL:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.enumfl(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CF1_FIRSTLAST:
-							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.firstlast(r" + opcode.r2 + ");");
+						case Opcode.CF1_ISFIRSTLAST:
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.isfirstlast(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CF1_FIRST:
-							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.first(r" + opcode.r2 + ");");
+						case Opcode.CF1_ISFIRST:
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.isfirst(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CF1_LAST:
-							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.last(r" + opcode.r2 + ");");
+						case Opcode.CF1_ISLAST:
+							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.islast(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_CHR:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.chr(r" + opcode.r2 + ");");

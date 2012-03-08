@@ -95,9 +95,9 @@ public class Opcode extends ObjectAsMap
 	public static final int CF1_LEN = 6;
 	public static final int CF1_ENUM = 7;
 	public static final int CF1_ENUMFL = 8;
-	public static final int CF1_FIRSTLAST = 9;
-	public static final int CF1_FIRST = 10;
-	public static final int CF1_LAST = 11;
+	public static final int CF1_ISFIRSTLAST = 9;
+	public static final int CF1_ISFIRST = 10;
+	public static final int CF1_ISLAST = 11;
 	public static final int CF1_ISNONE = 12;
 	public static final int CF1_ISSTR = 13;
 	public static final int CF1_ISINT = 14;
@@ -387,12 +387,12 @@ public class Opcode extends ObjectAsMap
 			return CF1_ENUM;
 		else if (name.equals("enumfl"))
 			return CF1_ENUMFL;
-		else if (name.equals("firstlast"))
-			return CF1_FIRSTLAST;
-		else if (name.equals("first"))
-			return CF1_FIRST;
-		else if (name.equals("last"))
-			return CF1_LAST;
+		else if (name.equals("isfirstlast"))
+			return CF1_ISFIRSTLAST;
+		else if (name.equals("isfirst"))
+			return CF1_ISFIRST;
+		else if (name.equals("islast"))
+			return CF1_ISLAST;
 		else if (name.equals("isnone"))
 			return CF1_ISNONE;
 		else if (name.equals("isstr"))

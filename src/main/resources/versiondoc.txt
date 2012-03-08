@@ -1,3 +1,10 @@
+exp-48:
+-------
+Comments:
+* Renamed the function first, last and firstlast to isfirst, islast and
+  isfirstlast.
+
+
 exp-47:
 -------
 Comments:

@@ -43,7 +43,7 @@ public class Main
 	{
 		Timer timer = new Timer();
 		timer.start();
-		InterpretedTemplate tmpl = Compiler.compile("<?for (f, l, value) in firstlast('foo')?><?if f?>[<?end if?>(<?print value?>)<?if l?>]<?end if?><?end for?>");
+		InterpretedTemplate tmpl = Compiler.compile("<?for (f, l, value) in isfirstlast('foo')?><?if f?>[<?end if?>(<?print value?>)<?if l?>]<?end if?><?end for?>");
 		// InterpretedTemplate tmpl = Compiler.compile("<?code langs = ['Python', 'Java', 'C']?><ul><?for l in langs?><li><?printx l?></li><?end for?></ul>");
 		timer.stop("Compiled template to UL4 bytecode once");
 		timer.start();

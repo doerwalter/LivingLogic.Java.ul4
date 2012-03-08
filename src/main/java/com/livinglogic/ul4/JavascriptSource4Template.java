@@ -285,14 +285,14 @@ public class JavascriptSource4Template
 						case Opcode.CF1_ENUMFL:
 							code("r" + opcode.r1 + " = ul4._fu_enumfl(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CF1_FIRSTLAST:
-							code("r" + opcode.r1 + " = ul4._fu_firstlast(r" + opcode.r2 + ");");
+						case Opcode.CF1_ISFIRSTLAST:
+							code("r" + opcode.r1 + " = ul4._fu_isfirstlast(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CF1_FIRST:
-							code("r" + opcode.r1 + " = ul4._fu_first(r" + opcode.r2 + ");");
+						case Opcode.CF1_ISFIRST:
+							code("r" + opcode.r1 + " = ul4._fu_isfirst(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CF1_LAST:
-							code("r" + opcode.r1 + " = ul4._fu_last(r" + opcode.r2 + ");");
+						case Opcode.CF1_ISLAST:
+							code("r" + opcode.r1 + " = ul4._fu_islast(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_CHR:
 							code("r" + opcode.r1 + " = ul4._fu_chr(r" + opcode.r2 + ");");
