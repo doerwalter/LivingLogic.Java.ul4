@@ -66,7 +66,11 @@ public class Utils
 		else if (data instanceof Color)
 			writer.write("c" + ((Color)data).dump());
 		else if (data instanceof InterpretedTemplate)
-			writer.write("t" + ((InterpretedTemplate)data).dumps());
+		{
+			String output = ((InterpretedTemplate)data).dumps();
+			writer.write("t" + output.length());
+			writer.write(output);
+		}
 		else if (data instanceof Collection)
 		{
 			writer.write("[");
