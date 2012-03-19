@@ -1861,8 +1861,10 @@ public class Utils
 			return "";
 		else if (obj instanceof Boolean)
 			return ((Boolean)obj).booleanValue() ? "True" : "False";
-		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger || obj instanceof Double || obj instanceof Float)
+		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger)
 			return obj.toString();
+		else if (obj instanceof Double || obj instanceof Float)
+			return StringUtils.replace(obj.toString(), ".0E", "E").toLowerCase();
 		else if (obj instanceof BigDecimal)
 		{
 			String result = obj.toString();
