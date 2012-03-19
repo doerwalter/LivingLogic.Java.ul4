@@ -2520,8 +2520,10 @@ public class Utils
 		try
 		{
 			int length = format.length();
-			if (length == 11)
+			if (length == 10)
 				return isoDateFormatter.parse(format);
+			else if (length == 11)
+				return isoDateFormatter.parse(format.substring(0, 10)); // ignore the trailing 'T'
 			else if (length == 16)
 				return isoDateTime1Formatter.parse(format);
 			else if (length == 19)
