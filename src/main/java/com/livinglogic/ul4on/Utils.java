@@ -68,7 +68,7 @@ public class Utils
 		else if (data instanceof InterpretedTemplate)
 		{
 			String output = ((InterpretedTemplate)data).dumps();
-			writer.write("t" + output.length());
+			writer.write("t" + output.length() + "|");
 			writer.write(output);
 		}
 		else if (data instanceof Collection)
