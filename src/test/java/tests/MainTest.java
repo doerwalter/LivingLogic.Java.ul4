@@ -1,10 +1,8 @@
 package tests;
 
-
 import java.io.IOException;
 import org.junit.Test;
 import com.livinglogic.ul4.Main;
-
 
 public class MainTest
 {
