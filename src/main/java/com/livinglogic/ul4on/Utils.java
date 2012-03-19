@@ -12,6 +12,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -24,13 +25,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.livinglogic.ul4.Color;
+import com.livinglogic.ul4.InterpretedTemplate;
 
 /**
  * Utility class for reading and writing the UL4ON object serialization format.
  *
  * The UL4ON object serialization format is a simple (text-based) serialization format
- * the supports all objects supported by UL4 (except for template), i.e. it supports
- * the same type of objects as JSON does (plus colors and dates)
+ * the supports all objects supported by UL4, i.e. it supports the same type of objects
+ * as JSON does (plus colors, dates and templates)
  *
  * @author W. Dörwald, A. Gaßner
  */
@@ -52,6 +54,8 @@ public class Utils
 			writer.write(((Boolean)data).booleanValue() ? "bT" : "bF");
 		else if (data instanceof Integer || data instanceof Byte || data instanceof Short || data instanceof BigInteger)
 			writer.write("i" + data.toString() + "|");
+		else if (data instanceof Float || data instanceof Double || data instanceof BigDecimal)
+			writer.write("f" + data.toString() + "|");
 		else if (data instanceof String)
 		{
 			writer.write("s" + ((String)data).length() + "|");
@@ -61,6 +65,8 @@ public class Utils
 			writer.write("d" + dateFormat.format((Date)data) + "000");
 		else if (data instanceof Color)
 			writer.write("c" + ((Color)data).dump());
+		else if (data instanceof InterpretedTemplate)
+			writer.write("t" + ((InterpretedTemplate)data).dumps());
 		else if (data instanceof Collection)
 		{
 			writer.write("[");
@@ -125,6 +131,19 @@ public class Utils
 		}
 	}
 	
+	private static double readFloat(Reader reader) throws IOException
+	{
+		StringBuffer buffer = new StringBuffer();
+		
+		while (true)
+		{
+			int c = reader.read();
+			if (c == '|')
+				return Double.valueOf(buffer.toString());
+			buffer.append((char)c);
+		}
+	}
+	
 	private static Object load(Reader reader, int typecode, Map keys) throws IOException
 	{
 		if (typecode == -2)
@@ -144,6 +163,8 @@ public class Utils
 		}
 		else if (typecode == 'i')
 			return readInt(reader);
+		else if (typecode == 'f')
+			return readFloat(reader);
 		else if (typecode == 's')
 		{
 			int count = readInt(reader);
@@ -170,6 +191,13 @@ public class Utils
 				// can happen with broken data
 				throw new RuntimeException(e);
 			}
+		}
+		else if (typecode == 't')
+		{
+			int count = readInt(reader);
+			char[] chars = new char[count];
+			reader.read(chars);
+			return InterpretedTemplate.load(new String(chars));
 		}
 		else if (typecode == '[')
 		{
