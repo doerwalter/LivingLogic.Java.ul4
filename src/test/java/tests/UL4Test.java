@@ -214,7 +214,7 @@ public class UL4Test
 	}
 
 	@Test
-	public void floorvar()
+	public void floordivvar()
 	{
 		String source = "<?code x //= y?><?print x?>";
 		checkTemplateOutput("2", source, "x", 5, "y", 2);
@@ -227,5 +227,38 @@ public class UL4Test
 		checkTemplateOutput("2.0", source, "x", -5., "y", -2.);
 		checkTemplateOutput("1", source, "x", true, "y", 1);
 		checkTemplateOutput("0", source, "x", false, "y", 1);
+	}
+
+	@Test
+	public void truedivvar()
+	{
+		String source = "<?code x /= y?><?print x?>";
+		checkTemplateOutput("2.5", source, "x", 5, "y", 2);
+		checkTemplateOutput("-2.5", source, "x", 5, "y", -2);
+		checkTemplateOutput("-2.5", source, "x", -5, "y", 2);
+		checkTemplateOutput("2.5", source, "x", -5, "y", -2);
+		checkTemplateOutput("2.5", source, "x", 5., "y", 2.);
+		checkTemplateOutput("-2.5", source, "x", 5., "y", -2.);
+		checkTemplateOutput("-2.5", source, "x", -5., "y", 2.);
+		checkTemplateOutput("2.5", source, "x", -5., "y", -2.);
+		checkTemplateOutput("1.0", source, "x", true, "y", 1);
+		checkTemplateOutput("0.0", source, "x", false, "y", 1);
+	}
+
+
+	@Test
+	public void modvar()
+	{
+		String source = "<?code x %= y?><?print x?>";
+		checkTemplateOutput("4", source, "x", 1729, "y", 23);
+		checkTemplateOutput("19", source, "x", -1729, "y", 23);
+		checkTemplateOutput("19", source, "x", -1729, "y", 23);
+		checkTemplateOutput("-4", source, "x", -1729, "y", -23);
+		checkTemplateOutput("1.5", source, "x", 6.5, "y", 2.5);
+		checkTemplateOutput("1.0", source, "x", -6.5, "y", 2.5);
+		checkTemplateOutput("-1.0", source, "x", 6.5, "y", -2.5);
+		checkTemplateOutput("-1.5", source, "x", -6.5, "y", -2.5);
+		checkTemplateOutput("1", source, "x", true, "y", 23);
+		checkTemplateOutput("0", source, "x", false, "y", 23);
 	}
 }
