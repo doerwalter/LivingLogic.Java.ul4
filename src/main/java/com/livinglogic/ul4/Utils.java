@@ -1599,6 +1599,11 @@ public class Utils
 		throw new RuntimeException(objectType(obj) + " in " + objectType(container) + " not supported!");
 	}
 
+	public static boolean notcontains(Object obj, Object container)
+	{
+		return !contains(obj, container);
+	}
+
 	public static Object abs(Object arg)
 	{
 		if (arg instanceof Integer)
