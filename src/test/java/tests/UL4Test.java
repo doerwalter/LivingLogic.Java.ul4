@@ -15,14 +15,21 @@ import static com.livinglogic.utils.MapUtils.*;
 import static com.livinglogic.ul4on.Utils.*;
 import com.livinglogic.ul4.KeyException;
 import com.livinglogic.ul4.BlockException;
+import com.livinglogic.ul4.UnknownFunctionException;
+
 
 @RunWith(CauseTestRunner.class)
 public class UL4Test
 {
-	private static void checkTemplateOutput(String expected, String source, Object... args)
+	private static String getTemplateOutput(String source, Object... args)
 	{
 		InterpretedTemplate template = Compiler.compile(source);
-		String output = template.renders(makeMap(args));
+		return template.renders(makeMap(args));
+	}
+
+	private static void checkTemplateOutput(String expected, String source, Object... args)
+	{
+		String output = getTemplateOutput(source, args);
 		assertEquals(expected, output);
 	}
 
@@ -700,5 +707,175 @@ public class UL4Test
 	public void getitem4()
 	{
 		checkTemplateOutput("u", "<?print x[-5]?>", "x", "gurk");
+	}
+
+	@Test
+	public void getslice()
+	{
+		checkTemplateOutput("ur", "<?print 'gurk'[1:3]?>");
+		checkTemplateOutput("ur", "<?print x[1:3]?>", "x", "gurk");
+		checkTemplateOutput("ur", "<?print 'gurk'[-3:-1]?>");
+		checkTemplateOutput("ur", "<?print x[-3:-1]?>", "x", "gurk");
+		checkTemplateOutput("", "<?print 'gurk'[4:10]?>");
+		checkTemplateOutput("", "<?print x[4:10]?>", "x", "gurk");
+		checkTemplateOutput("", "<?print 'gurk'[-10:-5]?>");
+		checkTemplateOutput("", "<?print x[-10:-5]?>", "x", "gurk");
+		checkTemplateOutput("urk", "<?print 'gurk'[1:]?>");
+		checkTemplateOutput("urk", "<?print x[1:]?>", "x", "gurk");
+		checkTemplateOutput("urk", "<?print 'gurk'[-3:]?>");
+		checkTemplateOutput("urk", "<?print x[-3:]?>", "x", "gurk");
+		checkTemplateOutput("", "<?print 'gurk'[4:]?>");
+		checkTemplateOutput("", "<?print x[4:]?>", "x", "gurk");
+		checkTemplateOutput("gurk", "<?print 'gurk'[-10:]?>");
+		checkTemplateOutput("gurk", "<?print x[-10:]?>", "x", "gurk");
+		checkTemplateOutput("gur", "<?print 'gurk'[:3]?>");
+		checkTemplateOutput("gur", "<?print x[:3]?>", "x", "gurk");
+		checkTemplateOutput("gur", "<?print 'gurk'[:-1]?>");
+		checkTemplateOutput("gur", "<?print x[:-1]?>", "x", "gurk");
+		checkTemplateOutput("gurk", "<?print 'gurk'[:10]?>");
+		checkTemplateOutput("gurk", "<?print x[:10]?>", "x", "gurk");
+		checkTemplateOutput("", "<?print 'gurk'[:-5]?>");
+		checkTemplateOutput("", "<?print x[:-5]?>", "x", "gurk");
+	}
+
+	@Test
+	public void nested()
+	{
+		String sc = "4";
+		String sv = "x";
+		int n = 4;
+		// when using 10 compiling the variable will run out of registers
+		int depth = 9;
+		for (int i = 0; i < depth; ++i)
+		{
+			sc = "(" + sc + ")+(" + sc + ")";
+			sv = "(" + sv + ")+(" + sv + ")";
+			n = n + n;
+		}
+		String expected = Integer.toString(n);
+		checkTemplateOutput(expected, "<?print " + sc + "?>");
+		checkTemplateOutput(expected, "<?print " + sv + "?>", "x", 4);
+	}
+
+	@Test
+	public void precedence()
+	{
+		checkTemplateOutput("14", "<?print 2+3*4?>");
+		checkTemplateOutput("20", "<?print (2+3)*4?>");
+		checkTemplateOutput("10", "<?print -2+-3*-4?>");
+		checkTemplateOutput("14", "<?print --2+--3*--4?>");
+		checkTemplateOutput("14", "<?print (-(-2))+(-((-3)*-(-4)))?>");
+		checkTemplateOutput("42", "<?print 2*data.value?>", "data", makeMap("value", 21));
+		checkTemplateOutput("42", "<?print data.value[0]?>", "data", makeMap("value", java.util.Arrays.asList(42)));
+		checkTemplateOutput("42", "<?print data[0].value?>", "data", java.util.Arrays.asList(makeMap("value", 42)));
+		checkTemplateOutput("42", "<?print data[0][0][0]?>", "data", java.util.Arrays.asList(java.util.Arrays.asList(java.util.Arrays.asList(42))));
+		checkTemplateOutput("42", "<?print data.value.value[0]?>", "data", makeMap("value", makeMap("value", java.util.Arrays.asList(42))));
+		checkTemplateOutput("42", "<?print data.value.value[0].value.value[0]?>", "data", makeMap("value", makeMap("value", java.util.Arrays.asList(makeMap("value", makeMap("value", java.util.Arrays.asList(42)))))));
+	}
+
+	@Test
+	public void bracket()
+	{
+		String sc = "42";
+		String sv = "x";
+		for (int i = 0; i < 10; ++i)
+		{
+			sc = "(" + sc + ")";
+			sv = "(" + sv + ")";
+		}
+
+		checkTemplateOutput("42", "<?print " + sc + "?>");
+		checkTemplateOutput("42", "<?print " + sv + "?>", "x", 42);
+	}
+
+	@Test
+	public void now()
+	{
+		String output = getTemplateOutput("<?print now()?>");
+		assertTrue(output.compareTo("2012-03-28") > 0);
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void now1()
+	{
+		checkTemplateOutput("", "<?print now(1)?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void now2()
+	{
+		checkTemplateOutput("", "<?print now(1, 2)?>");
+	}
+
+	@Test
+	public void utcnow()
+	{
+		String output = getTemplateOutput("<?print utcnow()?>");
+		assertTrue(output.compareTo("2012-03-28") > 0);
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void utcnow1()
+	{
+		checkTemplateOutput("", "<?print utcnow(1)?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void utcnow2()
+	{
+		checkTemplateOutput("", "<?print utcnow(1, 2)?>");
+	}
+
+	@Test
+	public void vars()
+	{
+		String source = "<?if var in vars()?>yes<?else?>no<?end if?>";
+
+		checkTemplateOutput("yes", source, "var", "spam", "spam", "eggs");
+		checkTemplateOutput("no", source, "var", "nospam", "spam", "eggs");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void vars1()
+	{
+		checkTemplateOutput("", "<?print vars(1)?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void vars2()
+	{
+		checkTemplateOutput("", "<?print vars(1, 2)?>");
+	}
+
+	@Test
+	public void random()
+	{
+		checkTemplateOutput("ok", "<?code r = random()?><?if r>=0 and r<1?>ok<?else?>fail<?end if?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void random1()
+	{
+		checkTemplateOutput("", "<?print random(1)?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void random2()
+	{
+		checkTemplateOutput("", "<?print random(1, 2)?>");
+	}
+
+	@Test
+	public void randrange()
+	{
+		checkTemplateOutput("ok", "<?code r = randrange(4)?><?if r>=0 and r<4?>ok<?else?>fail<?end if?>");
+		checkTemplateOutput("ok", "<?code r = randrange(17, 23)?><?if r>=17 and r<23?>ok<?else?>fail<?end if?>");
+		checkTemplateOutput("ok", "<?code r = randrange(17, 23, 2)?><?if r>=17 and r<23 and r%2?>ok<?else?>fail<?end if?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void randrange1()
+	{
+		checkTemplateOutput("", "<?print randrange()?>");
 	}
 }
