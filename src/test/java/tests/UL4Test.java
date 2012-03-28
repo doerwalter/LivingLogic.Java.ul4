@@ -3,8 +3,10 @@ package tests;
 import java.util.Date;
 import java.util.List;
 import static java.util.Arrays.*;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
 
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.InterpretedTemplate;
@@ -14,6 +16,7 @@ import static com.livinglogic.ul4on.Utils.*;
 import com.livinglogic.ul4.KeyException;
 import com.livinglogic.ul4.BlockException;
 
+@RunWith(CauseTestRunner.class)
 public class UL4Test
 {
 	private static void checkTemplateOutput(String expected, String source, Object... args)
@@ -265,12 +268,11 @@ public class UL4Test
 		checkTemplateOutput("0", source, "x", false, "y", 23);
 	}
 
-	// FIXME: Doesn't work, because of chained exceptions
-	// @Test(expected=KeyException)
-	// public void delvar()
-	// {
-	// 	checkTemplateOutput("", "<?code x = 1729?><?code del x?><?print x?>");
-	// }
+	@CauseTest(expectedCause=KeyException.class)
+	public void delvar()
+	{
+		checkTemplateOutput("", "<?code x = 1729?><?code del x?><?print x?>");
+	}
 
 	@Test
 	public void for_string()
@@ -509,6 +511,194 @@ public class UL4Test
 		checkTemplateOutput("True", source, "x", 17, "y", 17);
 		checkTemplateOutput("True", source, "x", 17, "y", 17.0);
 		// This checks constant folding
-		checkTemplateOutput("False", "<?print 16 == 23?>");
+		checkTemplateOutput("False", "<?print 17 == 23?>");
+		checkTemplateOutput("True", "<?print 17 == 17.?>");
+	}
+
+	@Test
+	public void ne()
+	{
+		String source = "<?print x != y?>";
+
+		checkTemplateOutput("True", source, "x", false, "y", true);
+		checkTemplateOutput("False", source, "x", true, "y", true);
+		checkTemplateOutput("False", source, "x", 1, "y", true);
+		checkTemplateOutput("True", source, "x", 1, "y", false);
+		checkTemplateOutput("True", source, "x", 17, "y", 23);
+		checkTemplateOutput("False", source, "x", 17, "y", 17);
+		checkTemplateOutput("False", source, "x", 17, "y", 17.0);
+		// This checks constant folding
+		checkTemplateOutput("True", "<?print 17 != 23?>");
+		checkTemplateOutput("False", "<?print 17 != 17.?>");
+	}
+
+	@Test
+	public void lt()
+	{
+		String source = "<?print x < y?>";
+
+		checkTemplateOutput("True", source, "x", false, "y", true);
+		checkTemplateOutput("False", source, "x", true, "y", true);
+		checkTemplateOutput("False", source, "x", 1, "y", true);
+		checkTemplateOutput("True", source, "x", true, "y", 2);
+		checkTemplateOutput("True", source, "x", 17, "y", 23);
+		checkTemplateOutput("False", source, "x", 23, "y", 17);
+		checkTemplateOutput("False", source, "x", 17, "y", 17.0);
+		checkTemplateOutput("True", source, "x", 17, "y", 23.0);
+		// This checks constant folding
+		checkTemplateOutput("True", "<?print 17 < 23?>");
+		checkTemplateOutput("False", "<?print 17 < 17.?>");
+	}
+
+	@Test
+	public void le()
+	{
+		String source = "<?print x <= y?>";
+
+		checkTemplateOutput("True", source, "x", false, "y", true);
+		checkTemplateOutput("True", source, "x", true, "y", true);
+		checkTemplateOutput("True", source, "x", 1, "y", true);
+		checkTemplateOutput("True", source, "x", true, "y", 2);
+		checkTemplateOutput("True", source, "x", 17, "y", 23);
+		checkTemplateOutput("False", source, "x", 23, "y", 17);
+		checkTemplateOutput("True", source, "x", 17, "y", 17);
+		checkTemplateOutput("True", source, "x", 17, "y", 17.0);
+		// This checks constant folding
+		checkTemplateOutput("True", "<?print 17 <= 23?>");
+		checkTemplateOutput("True", "<?print 17 <= 17.?>");
+		checkTemplateOutput("True", "<?print 17 <= 23.?>");
+		checkTemplateOutput("False", "<?print 18 <= 17.?>");
+	}
+
+	@Test
+	public void gt()
+	{
+		String source = "<?print x > y?>";
+
+		checkTemplateOutput("False", source, "x", false, "y", true);
+		checkTemplateOutput("False", source, "x", true, "y", true);
+		checkTemplateOutput("False", source, "x", 1, "y", true);
+		checkTemplateOutput("True", source, "x", 2, "y", true);
+		checkTemplateOutput("False", source, "x", 17, "y", 23);
+		checkTemplateOutput("True", source, "x", 23, "y", 17);
+		checkTemplateOutput("False", source, "x", 17, "y", 17.0);
+		checkTemplateOutput("True", source, "x", 23.0, "y", 17);
+		// This checks constant folding
+		checkTemplateOutput("False", "<?print 17 > 23?>");
+		checkTemplateOutput("False", "<?print 17 > 17.?>");
+		checkTemplateOutput("False", "<?print 17 > 23.?>");
+		checkTemplateOutput("True", "<?print 18 > 17.?>");
+	}
+
+	@Test
+	public void ge()
+	{
+		String source = "<?print x >= y?>";
+
+		checkTemplateOutput("False", source, "x", false, "y", true);
+		checkTemplateOutput("True", source, "x", true, "y", true);
+		checkTemplateOutput("True", source, "x", 1, "y", true);
+		checkTemplateOutput("False", source, "x", true, "y", 2);
+		checkTemplateOutput("False", source, "x", 17, "y", 23);
+		checkTemplateOutput("True", source, "x", 23, "y", 17);
+		checkTemplateOutput("True", source, "x", 17, "y", 17);
+		checkTemplateOutput("True", source, "x", 17, "y", 17.0);
+		// This checks constant folding
+		checkTemplateOutput("False", "<?print 17 >= 23?>");
+		checkTemplateOutput("True", "<?print 17 >= 17.?>");
+		checkTemplateOutput("False", "<?print 17 >= 23.?>");
+		checkTemplateOutput("True", "<?print 18 >= 17.?>");
+	}
+
+	@Test
+	public void contains()
+	{
+		String source = "<?print x in y?>";
+
+		checkTemplateOutput("True", source, "x", 2, "y", java.util.Arrays.asList(1, 2, 3));
+		checkTemplateOutput("False", source, "x", 4, "y", java.util.Arrays.asList(1, 2, 3));
+		checkTemplateOutput("True", source, "x", "ur", "y", "gurk");
+		checkTemplateOutput("False", source, "x", "un", "y", "gurk");
+		checkTemplateOutput("True", source, "x", "a", "y", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("False", source, "x", "c", "y", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("True", source, "x", 0xff, "y", new Color(0x00, 0x80, 0xff, 0x42));
+		checkTemplateOutput("False", source, "x", 0x23, "y", new Color(0x00, 0x80, 0xff, 0x42));
+	}
+
+	@Test
+	public void notcontains()
+	{
+		String source = "<?print x not in y?>";
+
+		checkTemplateOutput("False", source, "x", 2, "y", java.util.Arrays.asList(1, 2, 3));
+		checkTemplateOutput("True", source, "x", 4, "y", java.util.Arrays.asList(1, 2, 3));
+		checkTemplateOutput("False", source, "x", "ur", "y", "gurk");
+		checkTemplateOutput("True", source, "x", "un", "y", "gurk");
+		checkTemplateOutput("False", source, "x", "a", "y", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("True", source, "x", "c", "y", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("False", source, "x", 0xff, "y", new Color(0x00, 0x80, 0xff, 0x42));
+		checkTemplateOutput("True", source, "x", 0x23, "y", new Color(0x00, 0x80, 0xff, 0x42));
+	}
+
+	@Test
+	public void and()
+	{
+		String source = "<?print x and y?>";
+
+		checkTemplateOutput("False", source, "x", false, "y", false);
+		checkTemplateOutput("False", source, "x", false, "y", true);
+		checkTemplateOutput("0", source, "x", 0, "y", true);
+	}
+
+	@Test
+	public void or()
+	{
+		String source = "<?print x or y?>";
+
+		checkTemplateOutput("False", source, "x", false, "y", false);
+		checkTemplateOutput("True", source, "x", false, "y", true);
+		checkTemplateOutput("42", source, "x", 42, "y", true);
+	}
+
+	@Test
+	public void not()
+	{
+		String source = "<?print not x?>";
+
+		checkTemplateOutput("True", source, "x", false);
+		checkTemplateOutput("False", source, "x", 42);
+	}
+
+	@Test
+	public void getitem()
+	{
+		checkTemplateOutput("u", "<?print 'gurk'[1]?>");
+		checkTemplateOutput("u", "<?print x[1]?>", "x", "gurk");
+		checkTemplateOutput("u", "<?print 'gurk'[-3]?>");
+		checkTemplateOutput("u", "<?print x[-3]?>", "x", "gurk");
+	}
+
+	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
+	public void getitem1()
+	{
+		checkTemplateOutput("u", "<?print 'gurk'[4]?>");
+	}
+
+	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
+	public void getitem2()
+	{
+		checkTemplateOutput("u", "<?print x[4]?>", "x", "gurk");
+	}
+
+	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
+	public void getitem3()
+	{
+		checkTemplateOutput("u", "<?print 'gurk'[-5]?>");
+	}
+
+	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
+	public void getitem4()
+	{
+		checkTemplateOutput("u", "<?print x[-5]?>", "x", "gurk");
 	}
 }
