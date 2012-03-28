@@ -1,6 +1,7 @@
 package tests;
 
 import java.util.Date;
+import java.util.List;
 import static java.util.Arrays.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -10,6 +11,8 @@ import com.livinglogic.ul4.InterpretedTemplate;
 import com.livinglogic.ul4.Compiler;
 import static com.livinglogic.utils.MapUtils.*;
 import static com.livinglogic.ul4on.Utils.*;
+import com.livinglogic.ul4.KeyException;
+import com.livinglogic.ul4.BlockException;
 
 public class UL4Test
 {
@@ -260,5 +263,252 @@ public class UL4Test
 		checkTemplateOutput("-1.5", source, "x", -6.5, "y", -2.5);
 		checkTemplateOutput("1", source, "x", true, "y", 23);
 		checkTemplateOutput("0", source, "x", false, "y", 23);
+	}
+
+	// FIXME: Doesn't work, because of chained exceptions
+	// @Test(expected=KeyException)
+	// public void delvar()
+	// {
+	// 	checkTemplateOutput("", "<?code x = 1729?><?code del x?><?print x?>");
+	// }
+
+	@Test
+	public void for_string()
+	{
+		String source = "<?for c in data?>(<?print c?>)<?end for?>";
+		checkTemplateOutput("", source, "data", "");
+		checkTemplateOutput("(g)(u)(r)(k)", source, "data", "gurk");
+	}
+
+	@Test
+	public void for_list()
+	{
+		String source = "<?for c in data?>(<?print c?>)<?end for?>";
+		checkTemplateOutput("", source, "data", java.util.Arrays.asList());
+		checkTemplateOutput("(g)(u)(r)(k)", source, "data", java.util.Arrays.asList("g", "u", "r", "k"));
+	}
+
+	@Test
+	public void for_dict()
+	{
+		String source = "<?for c in sorted(data)?>(<?print c?>)<?end for?>";
+		checkTemplateOutput("", source, "data", makeMap());
+		checkTemplateOutput("(a)(b)(c)", source, "data", makeMap("a", 1, "b", 2, "c", 3));
+	}
+
+	@Test
+	public void for_nested()
+	{
+		String source = "<?for list in data?>[<?for n in list?>(<?print n?>)<?end for?>]<?end for?>";
+		checkTemplateOutput("[(1)(2)][(3)(4)]", source, "data", java.util.Arrays.asList(java.util.Arrays.asList(1, 2), java.util.Arrays.asList(3, 4)));
+	}
+
+	@Test
+	public void for_unpacking()
+	{
+		Object data = java.util.Arrays.asList(
+			java.util.Arrays.asList("spam", "eggs", 17),
+			java.util.Arrays.asList("gurk", "hurz", 23),
+			java.util.Arrays.asList("hinz", "kunz", 42)
+		);
+
+		checkTemplateOutput("(spam)(gurk)(hinz)", "<?for (a,) in data?>(<?print a?>)<?end for?>", "data", data);
+		checkTemplateOutput("(spam,eggs)(gurk,hurz)(hinz,kunz)", "<?for (a, b) in data?>(<?print a?>,<?print b?>)<?end for?>", "data", data);
+		checkTemplateOutput("(spam,eggs,17)(gurk,hurz,23)(hinz,kunz,42)", "<?for (a, b, c) in data?>(<?print a?>,<?print b?>,<?print c?>)<?end for?>", "data", data);
+	}
+
+	@Test
+	public void break_()
+	{
+		checkTemplateOutput("1, 2, ", "<?for i in [1,2,3]?><?print i?>, <?if i==2?><?break?><?end if?><?end for?>");
+	}
+
+	@Test
+	public void break_nested()
+	{
+		checkTemplateOutput("1, 1, 2, 1, 2, 3, ", "<?for i in [1,2,3,4]?><?for j in [1,2,3,4]?><?print j?>, <?if j>=i?><?break?><?end if?><?end for?><?if i>=3?><?break?><?end if?><?end for?>");
+	}
+
+	@Test
+	public void continue_()
+	{
+		checkTemplateOutput("1, 3, ", "<?for i in [1,2,3]?><?if i==2?><?continue?><?end if?><?print i?>, <?end for?>");
+	}
+
+	@Test
+	public void continue_nested()
+	{
+		checkTemplateOutput("1, 3, \n1, 3, \n", "<?for i in [1,2,3]?><?if i==2?><?continue?><?end if?><?for j in [1,2,3]?><?if j==2?><?continue?><?end if?><?print j?>, <?end for?>\n<?end for?>");
+	}
+
+	@Test
+	public void if_()
+	{
+		checkTemplateOutput("42", "<?if data?><?print data?><?end if?>", "data", 42);
+	}
+
+	@Test
+	public void else_()
+	{
+		String source = "<?if data?><?print data?><?else?>no<?end if?>";
+		checkTemplateOutput("42", source, "data", 42);
+		checkTemplateOutput("no", source, "data", 0);
+	}
+
+	// FIXME: Doesn't work, because of chained exceptions, needs to be split into n tests
+	// @Test(expected=BlockException)
+	// public void block_errors()
+	// {
+	// 	checkTemplateOutput("", "<?for x in data?>"); // "BlockError: block unclosed"
+	// 	checkTemplateOutput("", "<?for x in data?><?end if?>"); // "BlockError: endif doesn't match any if"
+	// 	checkTemplateOutput("", "<?end?>"); // "BlockError: not in any block"
+	// 	checkTemplateOutput("", "<?end for?>"); // "BlockError: not in any block"
+	// 	checkTemplateOutput("", "<?end if?>"); // "BlockError: not in any block"
+	// 	checkTemplateOutput("", "<?else?>"); // "BlockError: else doesn't match any if"
+	// 	checkTemplateOutput("", "<?if data?>"); // "BlockError: block unclosed"
+	// 	checkTemplateOutput("", "<?if data?><?else?>"); // "BlockError: block unclosed"
+	// 	checkTemplateOutput("", "<?if data?><?else?><?else?>"); // "BlockError: duplicate else"
+	// 	checkTemplateOutput("", "<?if data?><?else?><?elif data?>"); // "BlockError: else already seen in elif"
+	// 	checkTemplateOutput("", "<?if data?><?elif data?><?elif data?><?else?><?elif data?>"); // "BlockError: else already seen in elif"
+	// }
+
+
+	// FIXME: Doesn't work, because of chained exceptions, needs to be split into n tests
+	// @Test(expected=BlockException)
+	// public void empty()
+	// {
+	// 	checkTemplateOutput("", "<?print?>"); // "expression required"
+	// 	checkTemplateOutput("", "<?if?>"); // "expression required"
+	// 	checkTemplateOutput("", "<?if x?><?elif?><?end if?>"); // "expression required"
+	// 	checkTemplateOutput("", "<?for?>"); // "loop expression required"
+	// 	checkTemplateOutput("", "<?code?>"); // "statement required"
+	// 	checkTemplateOutput("", "<?render?>"); // "render statement required"
+	// }
+
+	@Test
+	public void add()
+	{
+		String source = "<?print x + y?>";
+
+		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("1", source, "x", false, "y", true);
+		checkTemplateOutput("1", source, "x", true, "y", false);
+		checkTemplateOutput("2", source, "x", true, "y", true);
+		checkTemplateOutput("18", source, "x", 17, "y", true);
+		checkTemplateOutput("40", source, "x", 17, "y", 23);
+		checkTemplateOutput("18.0", source, "x", 17, "y", 1.0);
+		checkTemplateOutput("24", source, "x", true, "y", 23);
+		checkTemplateOutput("22.0", source, "x", -1.0, "y", 23);
+		checkTemplateOutput("foobar", source, "x", "foo", "y", "bar");
+		checkTemplateOutput("(f)(o)(o)(b)(a)(r)", "<?for i in data.foo+data.bar?>(<?print i?>)<?end for?>", "data", makeMap("foo", "foo", "bar", "bar"));
+		// This checks constant folding
+		checkTemplateOutput("3", "<?print 1+2?>");
+		checkTemplateOutput("2", "<?print 1+True?>");
+		checkTemplateOutput("3.0", "<?print 1+2.0?>");
+	}
+
+	@Test
+	public void sub()
+	{
+		String source = "<?print x - y?>";
+
+		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("-1", source, "x", false, "y", true);
+		checkTemplateOutput("1", source, "x", true, "y", false);
+		checkTemplateOutput("0", source, "x", true, "y", true);
+		checkTemplateOutput("16", source, "x", 17, "y", true);
+		checkTemplateOutput("-6", source, "x", 17, "y", 23);
+		checkTemplateOutput("16.0", source, "x", 17, "y", 1.0);
+		checkTemplateOutput("-22", source, "x", true, "y", 23);
+		checkTemplateOutput("-24.0", source, "x", -1.0, "y", 23);
+		// This checks constant folding
+		checkTemplateOutput("-1", "<?print 1-2?>");
+		checkTemplateOutput("1", "<?print 2-True?>");
+		checkTemplateOutput("-1.0", "<?print 1-2.0?>");
+	}
+
+	@Test
+	public void mul()
+	{
+		String source = "<?print x * y?>";
+
+		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("0", source, "x", false, "y", true);
+		checkTemplateOutput("0", source, "x", true, "y", false);
+		checkTemplateOutput("1", source, "x", true, "y", true);
+		checkTemplateOutput("17", source, "x", 17, "y", true);
+		checkTemplateOutput("391", source, "x", 17, "y", 23);
+		checkTemplateOutput("17.0", source, "x", 17, "y", 1.0);
+		checkTemplateOutput("23", source, "x", true, "y", 23);
+		checkTemplateOutput("-23.0", source, "x", -1.0, "y", 23);
+		checkTemplateOutput("foofoofoo", source, "x", 3, "y", "foo");
+		checkTemplateOutput("foofoofoo", source, "x", "foo", "y", 3);
+		checkTemplateOutput("(foo)(bar)(foo)(bar)(foo)(bar)", "<?for i in 3*data?>(<?print i?>)<?end for?>", "data", java.util.Arrays.asList("foo", "bar"));
+		// This checks constant folding
+		checkTemplateOutput("391", "<?print 17*23?>");
+		checkTemplateOutput("17", "<?print 17*True?>");
+		checkTemplateOutput("391.0", "<?print 17.0*23.0?>");
+	}
+
+	@Test
+	public void truediv()
+	{
+		String source = "<?print x / y?>";
+
+		checkTemplateOutput("0.0", source, "x", false, "y", true);
+		checkTemplateOutput("1.0", source, "x", true, "y", true);
+		checkTemplateOutput("17.0", source, "x", 17, "y", true);
+		checkTemplateOutput("17.0", source, "x", 391, "y", 23);
+		checkTemplateOutput("17.0", source, "x", 17, "y", 1.0);
+		checkTemplateOutput("0.5", source, "x", 1, "y", 2);
+		// This checks constant folding
+		checkTemplateOutput("0.5", "<?print 1/2?>");
+		checkTemplateOutput("2.0", "<?print 2.0/True?>");
+	}
+
+	@Test
+	public void floordiv()
+	{
+		String source = "<?print x // y?>";
+
+		checkTemplateOutput("0", source, "x", false, "y", true);
+		checkTemplateOutput("1", source, "x", true, "y", true);
+		checkTemplateOutput("17", source, "x", 17, "y", true);
+		checkTemplateOutput("17", source, "x", 392, "y", 23);
+		checkTemplateOutput("17.0", source, "x", 17, "y", 1.0);
+		checkTemplateOutput("0", source, "x", 1, "y", 2);
+		// This checks constant folding
+		checkTemplateOutput("0.5", "<?print 1/2?>");
+		checkTemplateOutput("2.0", "<?print 2.0/True?>");
+	}
+
+	@Test
+	public void mod()
+	{
+		String source = "<?print x % y?>";
+
+		checkTemplateOutput("0", source, "x", false, "y", true);
+		checkTemplateOutput("0", source, "x", true, "y", true);
+		checkTemplateOutput("0", source, "x", 17, "y", true);
+		checkTemplateOutput("6", source, "x", 23, "y", 17);
+		checkTemplateOutput("0.5", source, "x", 5.5, "y", 2.5);
+		// This checks constant folding
+		checkTemplateOutput("6", "<?print 23 % 17?>");
+	}
+
+	@Test
+	public void eq()
+	{
+		String source = "<?print x == y?>";
+
+		checkTemplateOutput("False", source, "x", false, "y", true);
+		checkTemplateOutput("True", source, "x", true, "y", true);
+		checkTemplateOutput("True", source, "x", 1, "y", true);
+		checkTemplateOutput("False", source, "x", 1, "y", false);
+		checkTemplateOutput("False", source, "x", 17, "y", 23);
+		checkTemplateOutput("True", source, "x", 17, "y", 17);
+		checkTemplateOutput("True", source, "x", 17, "y", 17.0);
+		// This checks constant folding
+		checkTemplateOutput("False", "<?print 16 == 23?>");
 	}
 }
