@@ -9,111 +9,128 @@ options
 
 @header
 {
-package com.livinglogic.ul4;
+	package com.livinglogic.ul4;
 }
 
-NONE	:	'None';
+NONE
+	: 'None'
+	;
 
-TRUE	:	'True';
+TRUE
+	: 'True'
+	;
 
-FALSE	:	'False';
+FALSE
+	: 'False'
+	;
 
-NAME  :	('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*
-    ;
+NAME
+	: ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*
+	;
 
 fragment
-DIGIT	:	'0'..'9'
+DIGIT
+	: '0'..'9'
 	;
 
 fragment
 BIN_DIGIT
-	:	('0'|'1')
+	: ('0'|'1')
 	;
+
 fragment
 OCT_DIGIT
-	:	'0'..'7'
+	: '0'..'7'
 	;
 
 fragment
-HEX_DIGIT : ('0'..'9'|'a'..'f'|'A'..'F')
-;
+HEX_DIGIT
+	: ('0'..'9'|'a'..'f'|'A'..'F')
+	;
 
-INT :	DIGIT+
+INT
+	: DIGIT+
 	| '0' ('b'|'B') BIN_DIGIT+
 	| '0' ('o'|'O') OCT_DIGIT+
 	| '0' ('x'|'X') HEX_DIGIT+
-    ;
-
-FLOAT
-    :   DIGIT+ '.' DIGIT* EXPONENT?
-    |   '.' DIGIT+ EXPONENT?
-    |   DIGIT+ EXPONENT
-    ;
-
-fragment
-TIME	:	DIGIT DIGIT ':' DIGIT DIGIT (':' DIGIT DIGIT('.' DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT)?)?;
-
-DATE	:	'@' DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' TIME?;
-
-COLOR	:	'#' HEX_DIGIT HEX_DIGIT HEX_DIGIT
-	|	'#' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
-	|	'#' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
-	|	'#' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
 	;
 
-WS  :   ( ' '
-        | '\t'
-        | '\r'
-        | '\n'
-        ) {$channel=HIDDEN;}
-    ;
-
-STRING
-    :  '"' ( ESC_SEQ | ~('\\'|'"') )* '"'
-    |  '\'' ( ESC_SEQ | ~('\\'|'\'') )* '\''
-    ;
+FLOAT
+	: DIGIT+ '.' DIGIT* EXPONENT?
+	| '.' DIGIT+ EXPONENT?
+	| DIGIT+ EXPONENT
+	;
 
 fragment
-EXPONENT : ('e'|'E') ('+'|'-')? DIGIT+ ;
+TIME
+	: DIGIT DIGIT ':' DIGIT DIGIT (':' DIGIT DIGIT('.' DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT)?)?;
+
+DATE
+	: '@' DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' TIME?;
+
+COLOR
+	: '#' HEX_DIGIT HEX_DIGIT HEX_DIGIT
+	| '#' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
+	| '#' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
+	| '#' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
+	;
+
+WS
+	: (' '|'\t'|'\r'|'\n') { $channel=HIDDEN; }
+	;
+
+STRING
+	: '"' ( ESC_SEQ | ~('\\'|'"') )* '"'
+	| '\'' ( ESC_SEQ | ~('\\'|'\'') )* '\''
+	;
+
+fragment
+EXPONENT
+	: ('e'|'E') ('+'|'-')? DIGIT+
+	;
 
 fragment
 ESC_SEQ
-    :   '\\' ('a'|'b'|'e'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
-    |   UNICODE1_ESC
-    |   UNICODE2_ESC
-    |   UNICODE4_ESC
-    ;
+	: '\\' ('a'|'b'|'e'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
+	| UNICODE1_ESC
+	| UNICODE2_ESC
+	| UNICODE4_ESC
+	;
 
 fragment
 UNICODE1_ESC
-    :   '\\' 'x' HEX_DIGIT HEX_DIGIT
-    ;
+	: '\\' 'x' HEX_DIGIT HEX_DIGIT
+	;
 
 fragment
 UNICODE2_ESC
-    :   '\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
-    ;
+	: '\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
+	;
 
 fragment
 UNICODE4_ESC
-    :   '\\' 'U' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
-    ;
+	: '\\' 'U' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
+	;
 
-parse	:	atom;
+parse
+	: atom;
 
 atom
-  :  NONE
-  |  FALSE
-  |  TRUE
-  |  NAME
-  |  INT
-  |  STRING
-  |  DATE
-  |  COLOR
-  ;
+	: NONE
+	| FALSE
+	| TRUE
+	| NAME
+	| INT
+	| STRING
+	| DATE
+	| COLOR
+	;
 
-expr	:	atom | list;
+expr
+	: atom
+	| list;
 
-list	:	'[' (expr ',')* ']'
-	|	'[' (expr ',')* expr ']'
+list
+	: '[' WS* ']'
+	| '[' expr (',' expr)* ']'
 	;
