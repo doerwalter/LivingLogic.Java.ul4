@@ -11,3 +11,5 @@ syntax: glob
 .settings
 syntax: glob
 .pydevproject
+syntax: glob
+ul4jython.jar
