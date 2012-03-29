@@ -13,3 +13,5 @@ syntax: glob
 .pydevproject
 syntax: glob
 ul4jython.jar
+syntax: regexp
+^src/main/antlr3/com/livinglogic/ul4/output$
