@@ -115,15 +115,47 @@ UNICODE4_ESC
 
 /* Rules common to all tags */
 
-atom
+none
 	: NONE
-	| FALSE
-	| TRUE
-	| NAME
-	| INT
-	| STRING
-	| DATE
-	| COLOR
+	;
+
+true
+	: TRUE
+	;
+
+false
+	: FALSE
+	;
+
+name
+	: NAME
+	;
+
+int
+	: INT
+	;
+
+string
+	: STRING
+	;
+
+date
+	: DATE
+	;
+
+color
+	: COLOR
+	;
+
+atom
+	: none
+	| false
+	| true
+	| name
+	| int
+	| string
+	| date
+	| color
 	;
 
 list
@@ -247,12 +279,12 @@ expr2
 
 expr1
 	: expr1 'and' expr1
-	| expr1 'or' expr
 	| expr2
 	;
 
 expr0
-	: exrp1;
+	: expr0 'or' expr0
+	| expr1;
 
 
 /* Additional rules for "for" tag */
