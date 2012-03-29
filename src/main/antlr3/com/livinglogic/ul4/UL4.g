@@ -119,11 +119,11 @@ none
 	: NONE
 	;
 
-true
+true_
 	: TRUE
 	;
 
-false
+false_
 	: FALSE
 	;
 
@@ -131,8 +131,12 @@ name
 	: NAME
 	;
 
-int
+int_
 	: INT
+	;
+
+float_
+	: FLOAT
 	;
 
 string
@@ -149,10 +153,11 @@ color
 
 atom
 	: none
-	| false
-	| true
+	| false_
+	| true_
 	| name
-	| int
+	| int_
+	| float_
 	| string
 	| date
 	| color
@@ -284,12 +289,13 @@ expr1
 
 expr0
 	: expr0 'or' expr0
-	| expr1;
+	| expr1
+	;
 
 
 /* Additional rules for "for" tag */
 
-for
+for_
 	: name 'in' expr0
 	| '(' name ',' ')' 'in' expr0
 	| '(' name ',' name ','? ')' 'in' expr0
