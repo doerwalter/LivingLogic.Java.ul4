@@ -112,8 +112,8 @@ UNICODE4_ESC
 	: '\\' 'U' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
 	;
 
-parse
-	: atom;
+
+/* Rules common to all tags */
 
 atom
 	: NONE
@@ -126,11 +126,168 @@ atom
 	| COLOR
 	;
 
-expr
-	: atom
-	| list;
-
 list
 	: '[' WS* ']'
-	| '[' expr (',' expr)* ','? ']'
+	| '[' expr0 (',' expr0)* ','? ']'
+	;
+
+fragment
+dictitem
+	: expr0 ':' expr0
+	| '**' expr0
+	;
+
+dict
+	: '{' '}'
+	| '{' dictitem (',' dictitem)* ','? '}'
+	;
+
+expr11
+	: atom
+	| list
+	| dict
+	| '(' expr0 ')'
+	;
+
+callfunc
+	: name '(' ')'
+	| name '(' expr0 ')'
+	| name '(' expr0 ',' expr0 ')'
+	| name '(' expr0 ',' expr0 ',' expr0 ')'
+	| name '(' expr0 ',' expr0 ',' expr0 ',' expr0 ')'
+	;
+
+getattr
+	: expr9 '.' name
+	;
+
+callmeth
+	: expr9 '.' name '(' expr0 ')'
+	| expr9 '.' name '(' expr0 ',' expr0 ')'
+	| expr9 '.' name '(' expr0 ',' expr0 ',' expr0 ')'
+	;
+
+fragment
+namedarg
+	: name '=' expr0
+	| '**' expr0
+	;
+
+callmethkw
+	: expr9 '.' name '(' namedarg (',' namedarg)* ','? ')'
+	;
+
+expr10
+	: callfunc
+	| expr11
+	;
+
+expr9
+	: getattr
+	| callmeth
+	| callmethkw
+	| expr10
+	;
+
+getitem
+	: expr9 '[' expr0 ']'
+	;
+
+getslice
+	: expr9 '[' expr0 ':' expr0 ']'
+	| expr9 '[' ':' expr0 ']'
+	| expr9 '[' expr0 ':' ']'
+	;
+
+expr8
+	: getitem
+	| getslice
+	| expr9
+	;
+
+expr7
+	: '-' expr7
+	| expr8
+	;
+
+expr6
+	: expr6 '*' expr6
+	| expr6 '/' expr6
+	| expr6 '//' expr6
+	| expr6 '%' expr6
+	| expr7
+	;
+
+expr5
+	: expr5 '+' expr5
+	| expr5 '-' expr5
+	| expr6
+	;
+
+expr4
+	: expr4 '==' expr4
+	| expr4 '!=' expr4
+	| expr4 '<' expr4
+	| expr4 '<=' expr4
+	| expr4 '>' expr4
+	| expr4 '>=' expr4
+	| expr5
+	;
+
+expr3
+	: expr3 'in' expr3
+	| expr3 'not' 'in' expr3
+	| expr4
+	;
+
+expr2
+	: 'not' expr2
+	| expr3
+	;
+
+expr1
+	: expr1 'and' expr1
+	| expr1 'or' expr
+	| expr2
+	;
+
+expr0
+	: exrp1;
+
+
+/* Additional rules for "for" tag */
+
+for
+	: name 'in' expr0
+	| '(' name ',' ')' 'in' expr0
+	| '(' name ',' name ','? ')' 'in' expr0
+	| '(' name ',' name ',' name ','? ')' 'in' expr0
+	| '(' name ',' name ',' name ',' name ','? ')' 'in' expr0
+	;
+
+
+/* Additional rules for "code" tag */
+
+stmt
+	: name '=' expr0
+	| name '+=' expr0
+	| name '-=' expr0
+	| name '*=' expr0
+	| name '/=' expr0
+	| name '//=' expr0
+	| name '%=' expr0
+	| 'del' name
+	;
+
+
+/* Additional rules for "render" tag */
+
+fragment
+renderarg
+	: name '=' expr0
+	| '**' expr0
+	;
+
+render
+	: name '(' renderarg (',' renderarg)* ','? ')'
 	;
