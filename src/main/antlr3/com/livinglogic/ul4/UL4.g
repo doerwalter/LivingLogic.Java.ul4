@@ -132,5 +132,5 @@ expr
 
 list
 	: '[' WS* ']'
-	| '[' expr (',' expr)* ']'
+	| '[' expr (',' expr)* ','? ']'
 	;
