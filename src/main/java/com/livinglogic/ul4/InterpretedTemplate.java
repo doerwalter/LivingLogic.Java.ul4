@@ -1820,14 +1820,14 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				if (stringMode==0 && tokenMatcher.lookingAt())
 				{
 					len = tokenMatcher.end();
-					tokens.add(new Token(pos, pos+len, tokenMatcher.group()));
+					tokens.add(new UL4Token(pos, pos+len, tokenMatcher.group()));
 				}
 				else if (stringMode==0 && nameMatcher.lookingAt())
 				{
 					len = nameMatcher.end();
 					String name = nameMatcher.group();
 					if (name.equals("in") || name.equals("not") || name.equals("or") || name.equals("and") || name.equals("del"))
-						tokens.add(new Token(pos, pos+len, name));
+						tokens.add(new UL4Token(pos, pos+len, name));
 					else if (name.equals("None"))
 						tokens.add(new LoadNone(pos, pos+len));
 					else if (name.equals("True"))

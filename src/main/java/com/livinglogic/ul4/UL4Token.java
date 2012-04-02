@@ -6,13 +6,13 @@
 
 package com.livinglogic.ul4;
 
-public class Token
+public class UL4Token
 {
 	protected int start;
 	protected int end;
 	protected String type;
 
-	public Token(int start, int end, String type)
+	public UL4Token(int start, int end, String type)
 	{
 		this.start = start;
 		this.end = end;
