@@ -16,4 +16,10 @@ public class KeywordArg
 		this.name = name;
 		this.value = value;
 	}
+
+	public KeywordArg(AST value)
+	{
+		this.name = null;
+		this.value = value;
+	}
 }

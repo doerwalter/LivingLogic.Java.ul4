@@ -27,7 +27,7 @@ def _compile(template, tags):
 	parsefor = ForParser().compile
 	parserender = RenderParser().compile
 
-	# This stack stores for each nested for/foritem/if/elif/else the following information:
+	# This stack stores for each nested for/if/elif/else the following information:
 	# 1) Which construct we're in (i.e. "if" or "for")
 	# 2) The start location of the construct
 	# For ifs:

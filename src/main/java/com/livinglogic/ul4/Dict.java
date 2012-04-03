@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 public class Dict extends AST
 {
-	protected LinkedList items = new LinkedList();
+	protected LinkedList<DictItem> items = new LinkedList<DictItem>();
 
 	public Dict(int start, int end)
 	{
@@ -19,22 +19,25 @@ public class Dict extends AST
 
 	public void append(AST key, AST value)
 	{
-		items.add(new DictEntry(key, value));
+		items.add(new DictItem(key, value));
 	}
 
 	public void append(AST value)
 	{
-		items.add(new DictEntry(value));
+		items.add(new DictItem(value));
+	}
+
+	public void append(DictItem item)
+	{
+		items.add(item);
 	}
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
 		template.opcode(Opcode.OC_BUILDDICT, r, location);
-		int itemCount = items.size();
-		for (int i = 0; i < itemCount; ++i)
+		for (DictItem item : items)
 		{
-			DictEntry item = (DictEntry)items.get(i);
 			if (item.isdict)
 			{
 				int rv = item.value.compile(template, registers, location);

@@ -12,7 +12,7 @@ public class CallMethKeywords extends AST
 {
 	protected Name name;
 	protected AST template;
-	protected LinkedList args = new LinkedList();
+	protected LinkedList<KeywordArg> args = new LinkedList<KeywordArg>();
 
 	public CallMethKeywords(int start, int end, Name name, AST template)
 	{
@@ -35,10 +35,8 @@ public class CallMethKeywords extends AST
 	{
 		int ra = registers.alloc();
 		template.opcode(Opcode.OC_BUILDDICT, ra, location);
-		int argCount = args.size();
-		for (int i = 0; i < argCount; ++i)
+		for (KeywordArg arg : args)
 		{
-			KeywordArg arg = (KeywordArg)args.get(i);
 			int rv = arg.value.compile(template, registers, location);
 			if (arg.name == null)
 			{

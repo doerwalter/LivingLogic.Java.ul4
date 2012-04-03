@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import org.antlr.runtime.*;
 import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -175,6 +176,275 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 		this.name = null;
 		this.opcodes = new LinkedList<Opcode>();
 		this.defaultLocale = Locale.ENGLISH;
+	}
+
+	public InterpretedTemplate(String source) throws RecognitionException
+	{
+		this(source, "unnamed", "<?", "?>");
+	}
+
+	public InterpretedTemplate(String source, String name) throws RecognitionException
+	{
+		this(source, name, "<?", "?>");
+	}
+
+	public InterpretedTemplate(String source, String startdelim, String enddelim) throws RecognitionException
+	{
+		this(source, "unnamed", startdelim, enddelim);
+	}
+
+	private abstract static class StackItem
+	{
+		public Location location;
+
+		public StackItem(Location location)
+		{
+			this.location = location;
+		}
+
+		abstract public String getCode();
+
+		abstract public void finish(InterpretedTemplate template, Location location);
+	}
+
+	private static class DefStackItem extends StackItem
+	{
+		public DefStackItem(Location location)
+		{
+			super(location);
+		}
+
+		public String getCode()
+		{
+			return "def";
+		}
+
+		public void finish(InterpretedTemplate template, Location location)
+		{
+			template.opcode(Opcode.OC_ENDDEF, location);
+		}
+	}
+
+	private static class ForStackItem extends StackItem
+	{
+		public ForStackItem(Location location)
+		{
+			super(location);
+		}
+
+		public String getCode()
+		{
+			return "for";
+		}
+
+		public void finish(InterpretedTemplate template, Location location)
+		{
+			template.opcode(Opcode.OC_ENDFOR, location);
+		}
+	}
+
+	private static class IfStackItem extends StackItem
+	{
+		public int count;
+		public boolean elseseen;
+
+		public IfStackItem(Location location)
+		{
+			super(location);
+			count = 1;
+			elseseen = false;
+		}
+
+		public String getCode()
+		{
+			return "if";
+		}
+
+		public void finish(InterpretedTemplate template, Location location)
+		{
+			for (int i = 0; i < count; ++i)
+				template.opcode(Opcode.OC_ENDIF, location);
+		}
+	}
+
+	public InterpretedTemplate(String source, String name, String startdelim, String enddelim) throws RecognitionException
+	{
+		this.source = source;
+		this.name = name;
+		this.startdelim = startdelim;
+		this.enddelim = enddelim;
+		this.opcodes = new LinkedList<Opcode>();
+		this.sourceStartIndex = 0;
+		this.sourceEndIndex = source.length();
+		this.opcodeStartIndex = 0;
+		this.opcodeEndIndex = 0; // none yet
+		this.defaultLocale = Locale.ENGLISH;
+
+		List<Location> tags = InterpretedTemplate.tokenizeTags(source, name, startdelim, enddelim);
+
+		/*
+			This stack stores for each nested def/for/if/elif/else the following information:
+			1) Which construct we're in (i.e. "def", "for" or "if")
+			2) The start location of the construct
+			For ifs:
+			3) How many if's or elif's we have seen (this is used for simulating elif's via nested if's, for each additional elif, we have one more endif to add)
+			4) Whether we've already seen the else
+		*/
+		List<StackItem> stack = new LinkedList<StackItem>();
+
+		for (Location loc: tags)
+		{
+			try
+			{
+				String type = loc.getType();
+				if (type == null)
+					opcode(Opcode.OC_TEXT, loc);
+				else if (type.equals("print"))
+				{
+					UL4Parser parser = getParser(loc.getCode());
+					AST node = parser.expr0().node;
+					int r = node.compile(this, new Registers(), loc);
+					opcode(Opcode.OC_PRINT, r, loc);
+				}
+				else if (type.equals("printx"))
+				{
+					UL4Parser parser = getParser(loc.getCode());
+					AST node = parser.expr0().node;
+					int r = node.compile(this, new Registers(), loc);
+					opcode(Opcode.OC_PRINTX, r, loc);
+				}
+				else if (type.equals("code"))
+				{
+					UL4Parser parser = getParser(loc.getCode());
+					AST node = parser.stmt().node;
+					int r = node.compile(this, new Registers(), loc);
+				}
+				else if (type.equals("if"))
+				{
+					UL4Parser parser = getParser(loc.getCode());
+					AST node = parser.expr0().node;
+					int r = node.compile(this, new Registers(), loc);
+					opcode(Opcode.OC_IF, r, loc);
+					stack.add(new IfStackItem(loc));
+				}
+				else if (type.equals("elif"))
+				{
+					if ((stack.size() == 0) || !(stack.get(stack.size()-1) instanceof IfStackItem))
+						throw new BlockException("elif doesn't match any if");
+					IfStackItem ifStackItem = (IfStackItem)stack.get(stack.size()-1);
+					if (ifStackItem.elseseen)
+						throw new BlockException("else already seen in elif");
+					opcode(Opcode.OC_ELSE, loc);
+					UL4Parser parser = getParser(loc.getCode());
+					AST node = parser.expr0().node;
+					int r = node.compile(this, new Registers(), loc);
+					opcode(Opcode.OC_IF, r, loc);
+					ifStackItem.count++;
+				}
+				else if (type.equals("else"))
+				{
+					if ((stack.size() == 0) || !(stack.get(stack.size()-1) instanceof IfStackItem))
+						throw new BlockException("else doesn't match any if");
+					IfStackItem ifStackItem = (IfStackItem)stack.get(stack.size()-1);
+					if (ifStackItem.elseseen)
+						throw new BlockException("duplicate else");
+					opcode(Opcode.OC_ELSE, loc);
+					ifStackItem.elseseen = true;
+				}
+				else if (type.equals("end"))
+				{
+					if (stack.size() == 0)
+						throw new BlockException("not in any block");
+					String code = loc.getCode().trim();
+					StackItem stackItem = stack.get(stack.size()-1);
+					if (code.length() != 0)
+					{
+						String haveCode = stackItem.getCode();
+						if (!haveCode.equals(code))
+							throw new BlockException("end" + code + " doesn't match any " + code);
+					}
+					stackItem.finish(this, loc);
+					stack.remove(stack.size()-1);
+				}
+				else if (type.equals("for"))
+				{
+					UL4Parser parser = getParser(loc.getCode());
+					AST node = parser.for_().node;
+					int r = node.compile(this, new Registers(), loc);
+					stack.add(new ForStackItem(loc));
+				}
+				else if (type.equals("break"))
+				{
+					boolean forFound = false;
+					for (int i = stack.size()-1; i >=0; --i)
+					{
+						StackItem item = stack.get(i);
+						if (item instanceof ForStackItem)
+						{
+							forFound = true;
+							break;
+						}
+						else if (item instanceof DefStackItem)
+							break;
+					}
+					if (!forFound)
+						throw new BlockException("break outside of for loop");
+					opcode(Opcode.OC_BREAK, loc);
+				}
+				else if (type.equals("continue"))
+				{
+					boolean forFound = false;
+					for (int i = stack.size()-1; i >= 0; --i)
+					{
+						StackItem item = stack.get(i);
+						if (item instanceof ForStackItem)
+						{
+							forFound = true;
+							break;
+						}
+						else if (item instanceof DefStackItem)
+							break;
+					}
+					if (!forFound)
+						throw new BlockException("continue outside of for loop");
+					opcode(Opcode.OC_CONTINUE, loc);
+				}
+				else if (type.equals("render"))
+				{
+					UL4Parser parser = getParser(loc.getCode());
+					AST node = parser.render().node;
+					int r = node.compile(this, new Registers(), loc);
+				}
+				else if (type.equals("def"))
+				{
+					opcode(Opcode.OC_DEF, loc.getCode(), loc);
+				}
+				else
+				{
+					// Can't happen
+					throw new RuntimeException("unknown tag " + type);
+				}
+			}
+			catch (LocationException ex)
+			{
+				throw ex; // we have no info to add
+			}
+			catch (Exception ex)
+			{
+				throw new LocationException(ex, loc);
+			}
+		}
+		if (stack.size() != 0)
+			throw new LocationException(new BlockException("block unclosed"), stack.get(stack.size()-1).location);
+	}
+
+	private UL4Parser getParser(String source)
+	{
+		ANTLRStringStream input = new ANTLRStringStream(source);
+		UL4Lexer lexer = new UL4Lexer(input);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		UL4Parser parser = new UL4Parser(tokens);
+		return parser;
 	}
 
 	/**
@@ -657,10 +927,9 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 		writeint(writer, "n", opcodes.size());
 		writer.write("\n");
 		Location lastLocation = null;
-		int size = opcodes.size();
-		for (int i = 0; i < size; ++i)
+
+		for (Opcode opcode : opcodes)
 		{
-			Opcode opcode = opcodes.get(i);
 			writespec(writer, opcode.r1);
 			writespec(writer, opcode.r2);
 			writespec(writer, opcode.r3);

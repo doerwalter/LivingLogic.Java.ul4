@@ -6,20 +6,20 @@
 
 package com.livinglogic.ul4;
 
-public class DictEntry
+public class DictItem
 {
 	protected AST key;
 	protected AST value;
-	protected boolean isdict;
+	protected boolean isdict; // is this a real (key, value) paar or a **dict argument?
 
-	public DictEntry(AST key, AST value)
+	public DictItem(AST key, AST value)
 	{
 		this.key = key;
 		this.value = value;
 		isdict = false;
 	}
 
-	public DictEntry(AST value)
+	public DictItem(AST value)
 	{
 		this.key = null;
 		this.value = value;

@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-
 import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,6 +41,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.math.NumberUtils;
+
 
 class Range extends AbstractList
 {
@@ -3086,6 +3086,100 @@ public class Utils
 		if (obj instanceof String && arg instanceof String)
 			return ((String)obj).endsWith((String)arg);
 		throw new UnsupportedOperationException(objectType(obj) + ".endswith(" + objectType(arg) + ") not supported!");
+	}
+
+	public static String unescapeUL4String(String string)
+	{
+		if (string == null)
+			return null;
+		StringBuffer output = new StringBuffer(string.length());
+		for (int i = 0; i < string.length(); ++i)
+		{
+			char c = string.charAt(i);
+			if (c != '\\' || i == string.length()-1)
+				output.append(c);
+			else
+			{
+				char c2 = string.charAt(++i);
+				switch (c2)
+				{
+					case '\\':
+						output.append('\\');
+						break;
+					case 'n':
+						output.append('\n');
+						break;
+					case 'r':
+						output.append('\r');
+						break;
+					case 't':
+						output.append('\t');
+						break;
+					case 'f':
+						output.append('\f');
+						break;
+					case 'b':
+						output.append('\b');
+						break;
+					case 'a':
+						output.append('\u0007');
+						break;
+					case 'e':
+						output.append('\u001b');
+						break;
+					case '"':
+						output.append('"');
+						break;
+					case '\'':
+						output.append('\'');
+						break;
+					case 'x':
+						output.append((char)Integer.parseInt(string.substring(i+1, i+3), 16));
+						i += 3;
+						break;
+					case 'u':
+						output.append((char)Integer.parseInt(string.substring(i+1, i+5), 16));
+						i += 5;
+						break;
+					case 'U':
+						throw new RuntimeException("\\U escapes are not supported");
+					default:
+						output.append(c);
+						output.append(c2);
+				}
+			}
+		}
+		return output.toString();
+	}
+
+	public static int parseUL4Int(String string)
+	{
+		boolean neg = false;
+		if (string.charAt(0) == '-')
+		{
+			neg = true;
+			string = string.substring(1);
+		}
+		if (string.startsWith("0x") || string.startsWith("0X"))
+		{
+			int value = Integer.parseInt(string.substring(2), 16);
+			return neg ? -value : value;
+		}
+		else if (string.startsWith("0o") || string.startsWith("0O"))
+		{
+			int value = Integer.parseInt(string.substring(2), 8);
+			return neg ? -value : value;
+		}
+		else if (string.startsWith("0b") || string.startsWith("0B"))
+		{
+			int value = Integer.parseInt(string.substring(2), 2);
+			return neg ? -value : value;
+		}
+		else
+		{
+			int value = Integer.parseInt(string);
+			return neg ? -value : value;
+		}
 	}
 
 	/**
