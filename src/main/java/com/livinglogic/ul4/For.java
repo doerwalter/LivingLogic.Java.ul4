@@ -28,6 +28,13 @@ public class For extends AST
 		this.container = container;
 	}
 
+	public For()
+	{
+		this.itername = null;
+		this.unpackediternames = null;
+		this.container = null;
+	}
+
 	public void append(String unpackeditername)
 	{
 		if (itername != null)
@@ -35,6 +42,11 @@ public class For extends AST
 		if (unpackediternames == null)
 			unpackediternames = new LinkedList<String>();
 		unpackediternames.add(unpackeditername);
+	}
+
+	public void setContainer(AST container)
+	{
+		this.container = container;
 	}
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)

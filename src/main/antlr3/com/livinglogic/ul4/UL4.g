@@ -313,9 +313,7 @@ expr0 returns [AST node]
 for_ returns [For node]
 	: n=name 'in' e=expr0 { $node = new For($n.text, $e.node); }
 	| '(' n1=name ',' ')' 'in' e=expr0 { $node = new For($e.node); $node.append($n1.text); }
-	| '(' n1=name ',' n2=name ','? ')' 'in' e=expr0 { $node = new For($e.node); $node.append($n1.text); $node.append($n2.text); }
-	| '(' n1=name ',' n2=name ',' n3=name ','? ')' 'in' e=expr0 { $node = new For($e.node); $node.append($n1.text); $node.append($n2.text); $node.append($n3.text); }
-	| '(' n1=name ',' n2=name ',' n3=name ',' n4=name ','? ')' 'in' e=expr0 { $node = new For($e.node); $node.append($n1.text); $node.append($n2.text); $node.append($n3.text); $node.append($n4.text); }
+	| '(' { $node = new For(); } n1=name { $node.append($n1.text); } (',' n2=name { $node.append($n2.text); } )+ ','? ')' 'in' e=expr0 { $node.setContainer($e.node); }
 	;
 
 
