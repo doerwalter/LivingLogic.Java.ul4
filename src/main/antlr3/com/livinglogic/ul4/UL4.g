@@ -4,7 +4,6 @@ options
 {
 	output=AST;
 	language=Java;
-	ASTLabelType=CommonTree;
 }
 
 @header
