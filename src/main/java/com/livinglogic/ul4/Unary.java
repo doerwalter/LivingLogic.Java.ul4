@@ -11,8 +11,9 @@ class Unary extends AST
 	protected int type;
 	protected AST obj;
 
-	public Unary(AST obj)
+	public Unary(int type, AST obj)
 	{
+		this.type = type;
 		this.obj = obj;
 	}
 
