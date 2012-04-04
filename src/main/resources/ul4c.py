@@ -354,109 +354,109 @@ class ExprParser(spark.GenericParser):
 	def expr_neg(self, (_0, expr)):
 		if isinstance(expr, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.neg(expr.value))
-		return ul4.Neg(expr)
+		return ul4.Unary(ul4.Opcode.OC_NEG, expr)
 	expr_neg.spark = ['expr7 ::= - expr7']
 
 	def expr_mul(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.mul(obj1.value, obj2.value))
-		return ul4.Mul(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_MUL, obj1, obj2)
 	expr_mul.spark = ['expr6 ::= expr6 * expr6']
 
 	def expr_floordiv(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.floordiv(obj1.value, obj2.value))
-		return ul4.FloorDiv(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_FLOORDIV, obj1, obj2)
 	expr_floordiv.spark = ['expr6 ::= expr6 // expr6']
 
 	def expr_truediv(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.truediv(obj1.value, obj2.value))
-		return ul4.TrueDiv(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_TRUEDIV, obj1, obj2)
 	expr_truediv.spark = ['expr6 ::= expr6 / expr6']
 
 	def expr_mod(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.mod(obj1.value, obj2.value))
-		return ul4.Mod(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_MOD, obj1, obj2)
 	expr_mod.spark = ['expr6 ::= expr6 % expr6']
 
 	def expr_add(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.add(obj1.value, obj2.value))
-		return ul4.Add(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_ADD, obj1, obj2)
 	expr_add.spark = ['expr5 ::= expr5 + expr5']
 
 	def expr_sub(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.sub(obj1.value, obj2.value))
-		return ul4.Sub(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_SUB, obj1, obj2)
 	expr_sub.spark = ['expr5 ::= expr5 - expr5']
 
 	def expr_eq(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.eq(obj1.value, obj2.value))
-		return ul4.EQ(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_EQ, obj1, obj2)
 	expr_eq.spark = ['expr4 ::= expr4 == expr4']
 
 	def expr_ne(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.ne(obj1.value, obj2.value))
-		return ul4.NE(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_NE, obj1, obj2)
 	expr_ne.spark = ['expr4 ::= expr4 != expr4']
 
 	def expr_lt(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.lt(obj1.value, obj2.value))
-		return ul4.LT(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_LT, obj1, obj2)
 	expr_lt.spark = ['expr4 ::= expr4 < expr4']
 
 	def expr_le(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.le(obj1.value, obj2.value))
-		return ul4.LE(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_LE, obj1, obj2)
 	expr_le.spark = ['expr4 ::= expr4 <= expr4']
 
 	def expr_gt(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.gt(obj1.value, obj2.value))
-		return ul4.GT(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_GT, obj1, obj2)
 	expr_gt.spark = ['expr4 ::= expr4 > expr4']
 
 	def expr_ge(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.ge(obj1.value, obj2.value))
-		return ul4.GE(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_GE, obj1, obj2)
 	expr_ge.spark = ['expr4 ::= expr4 >= expr4']
 
 	def expr_contains(self, (obj, _0, container)):
 		if isinstance(obj, ul4.LoadConst) and isinstance(container, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.contains(obj.value, container.value))
-		return ul4.Contains(obj, container)
+		return ul4.Binary(ul4.Opcode.OC_CONTAINS, obj, container)
 	expr_contains.spark = ['expr3 ::= expr3 in expr3']
 
 	def expr_notcontains(self, (obj, _0, _1, container)):
 		if isinstance(obj, ul4.LoadConst) and isinstance(container, ul4.LoadConst): # Constant folding
 			return self.makeconst(ul4.Utils.notcontains(obj.value, container.value))
-		return ul4.NotContains(obj, container)
+		return ul4.Binary(ul4.Opcode.OC_NOTCONTAINS, obj, container)
 	expr_notcontains.spark = ['expr3 ::= expr3 not in expr3']
 
 	def expr_not(self, (_0, expr)):
 		if isinstance(expr, ul4.LoadConst): # Constant folding
 			return self.makeconst(not expr.value)
-		return ul4.Not(expr)
+		return ul4.Unary(ul4.Opcode.OC_NOT, expr)
 	expr_not.spark = ['expr2 ::= not expr2']
 
 	def expr_and(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.value and obj2.value)
-		return ul4.And(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_AND, obj1, obj2)
 	expr_and.spark = ['expr1 ::= expr1 and expr1']
 
 	def expr_or(self, (obj1, _0, obj2)):
 		if isinstance(obj1, ul4.LoadConst) and isinstance(obj2, ul4.LoadConst): # Constant folding
 			return self.makeconst(obj1.value or obj2.value)
-		return ul4.Or(obj1, obj2)
+		return ul4.Binary(ul4.Opcode.OC_OR, obj1, obj2)
 	expr_or.spark = ['expr0 ::= expr0 or expr0']
 
 	# These rules make operators of different precedences interoperable, by allowing an expression to "drop" its precedence.
@@ -523,31 +523,31 @@ class StmtParser(ExprParser):
 		ExprParser.__init__(self, start)
 
 	def stmt_assign(self, (name, _0, value)):
-		return ul4.StoreVar(name, value)
+		return ul4.ChangeVar(ul4.Opcode.OC_STOREVAR, opcode.name, value)
 	stmt_assign.spark = ['stmt ::= name = expr0']
 
 	def stmt_iadd(self, (name, _0, value)):
-		return ul4.AddVar(name, value)
+		return ul4.ChangeVar(ul4.Opcode.OC_ADDVAR, name, value)
 	stmt_iadd.spark = ['stmt ::= name += expr0']
 
 	def stmt_isub(self, (name, _0, value)):
-		return ul4.SubVar(name, value)
+		return ul4.ChangeVar(ul4.Opcode.OC_SUBVAR, name, value)
 	stmt_isub.spark = ['stmt ::= name -= expr0']
 
 	def stmt_imul(self, (name, _0, value)):
-		return ul4.MulVar(name, value)
+		return ul4.ChangeVar(ul4.Opcode.OC_MULVAR, name, value)
 	stmt_imul.spark = ['stmt ::= name *= expr0']
 
 	def stmt_itruediv(self, (name, _0, value)):
-		return ul4.TrueDivVar(name, value)
+		return ul4.ChangeVar(ul4.Opcode.OC_TRUEDIVVAR, name, value)
 	stmt_itruediv.spark = ['stmt ::= name /= expr0']
 
 	def stmt_ifloordiv(self, (name, _0, value)):
-		return ul4.FloorDivVar(name, value)
+		return ul4.ChangeVar(ul4.Opcode.OC_FLOORDIVVAR, name, value)
 	stmt_ifloordiv.spark = ['stmt ::= name //= expr0']
 
 	def stmt_imod(self, (name, _0, value)):
-		return ul4.ModVar(name, value)
+		return ul4.ChangeVar(ul4.Opcode.OC_MODVAR, name, value)
 	stmt_imod.spark = ['stmt ::= name %= expr0']
 
 	def stmt_del(self, (_0, name)):

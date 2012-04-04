@@ -322,13 +322,13 @@ for_ returns [AST node]
 /* Additional rules for "code" tag */
 
 stmt returns [AST node]
-	: name '=' expr0 { $node = new StoreVar($name.node, $expr0.node); }
-	| name '+=' expr0 { $node = new AddVar($name.node, $expr0.node); }
-	| name '-=' expr0 { $node = new SubVar($name.node, $expr0.node); }
-	| name '*=' expr0 { $node = new MulVar($name.node, $expr0.node); }
-	| name '/=' expr0 { $node = new TrueDivVar($name.node, $expr0.node); }
-	| name '//=' expr0 { $node = new FloorDivVar($name.node, $expr0.node); }
-	| name '%=' expr0 { $node = new ModVar($name.node, $expr0.node); }
+	: name '=' expr0 { $node = new ChangeVar(Opcode.OC_STOREVAR, $name.node, $expr0.node); }
+	| name '+=' expr0 { $node = new ChangeVar(Opcode.OC_ADDVAR, $name.node, $expr0.node); }
+	| name '-=' expr0 { $node = new ChangeVar(Opcode.OC_SUBVAR, $name.node, $expr0.node); }
+	| name '*=' expr0 { $node = new ChangeVar(Opcode.OC_MULVAR, $name.node, $expr0.node); }
+	| name '/=' expr0 { $node = new ChangeVar(Opcode.OC_TRUEDIVVAR, $name.node, $expr0.node); }
+	| name '//=' expr0 { $node = new ChangeVar(Opcode.OC_FLOORDIVVAR, $name.node, $expr0.node); }
+	| name '%=' expr0 { $node = new ChangeVar(Opcode.OC_MODVAR, $name.node, $expr0.node); }
 	| 'del' name { $node = new DelVar($name.node); }
 	;
 
