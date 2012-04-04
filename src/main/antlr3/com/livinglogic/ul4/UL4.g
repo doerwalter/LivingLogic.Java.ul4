@@ -203,6 +203,11 @@ callfunc returns [CallFunc node]
 	| name { $node = new CallFunc($name.text); } '(' a1=expr0 { $node.append($a1.node); } (',' a2=expr0 { $node.append($a2.node); } )* ','? ')'
 	;
 
+expr10 returns [AST node]
+	: e1=callfunc { $node = $e1.node; }
+	| e2=expr11 { $node = $e2.node; }
+	;
+
 /*
 getattr
 	: expr9 '.' name
@@ -222,11 +227,6 @@ namedarg
 
 callmethkw
 	: expr9 '.' name '(' namedarg (',' namedarg)* ','? ')'
-	;
-
-expr10
-	: callfunc
-	| expr11
 	;
 
 expr9
@@ -304,7 +304,7 @@ expr0
 */
 
 expr0 returns [AST node]
-	: expr11 {$node = $expr11.node; }
+	: e=expr10 {$node = $e.node; }
 	;
 
 

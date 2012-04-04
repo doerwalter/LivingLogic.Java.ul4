@@ -30,6 +30,8 @@ public class CallFunc extends AST
 	{
 		int argcount = args.size();
 
+		if (argcount > 4)
+			throw new RuntimeException(argcount + " arguments not supported by CallFunc");
 		int r1 = argcount>0 ? args.get(0).compile(template, registers, location) : -1;
 		int r2 = argcount>1 ? args.get(1).compile(template, registers, location) : -1;
 		int r3 = argcount>2 ? args.get(2).compile(template, registers, location) : -1;

@@ -790,43 +790,43 @@ public class UL4Test
 		checkTemplateOutput("42", "<?print " + sv + "?>", "x", 42);
 	}
 
-	// @Test
-	// public void now() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String output = getTemplateOutput("<?print now()?>");
-	// 	assertTrue(output.compareTo("2012-03-28") > 0);
-	// }
+	@Test
+	public void now() throws org.antlr.runtime.RecognitionException
+	{
+		String output = getTemplateOutput("<?print now()?>");
+		assertTrue(output.compareTo("2012-03-28") > 0);
+	}
 
-	// @CauseTest(expectedCause=UnknownFunctionException.class)
-	// public void now1() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("", "<?print now(1)?>");
-	// }
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void now1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print now(1)?>");
+	}
 
-	// @CauseTest(expectedCause=UnknownFunctionException.class)
-	// public void now2() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("", "<?print now(1, 2)?>");
-	// }
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void now2() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print now(1, 2)?>");
+	}
 
-	// @Test
-	// public void utcnow() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String output = getTemplateOutput("<?print utcnow()?>");
-	// 	assertTrue(output.compareTo("2012-03-28") > 0);
-	// }
+	@Test
+	public void utcnow() throws org.antlr.runtime.RecognitionException
+	{
+		String output = getTemplateOutput("<?print utcnow()?>");
+		assertTrue(output.compareTo("2012-03-28") > 0);
+	}
 
-	// @CauseTest(expectedCause=UnknownFunctionException.class)
-	// public void utcnow1() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("", "<?print utcnow(1)?>");
-	// }
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void utcnow1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print utcnow(1)?>");
+	}
 
-	// @CauseTest(expectedCause=UnknownFunctionException.class)
-	// public void utcnow2() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("", "<?print utcnow(1, 2)?>");
-	// }
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void utcnow2() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print utcnow(1, 2)?>");
+	}
 
 	// @Test
 	// public void vars() throws org.antlr.runtime.RecognitionException
@@ -837,17 +837,17 @@ public class UL4Test
 	// 	checkTemplateOutput("no", source, "var", "nospam", "spam", "eggs");
 	// }
 
-	// @CauseTest(expectedCause=UnknownFunctionException.class)
-	// public void vars1() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("", "<?print vars(1)?>");
-	// }
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void vars1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print vars(1)?>");
+	}
 
-	// @CauseTest(expectedCause=UnknownFunctionException.class)
-	// public void vars2() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("", "<?print vars(1, 2)?>");
-	// }
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void vars2() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print vars(1, 2)?>");
+	}
 
 	// @Test
 	// public void random() throws org.antlr.runtime.RecognitionException
@@ -855,17 +855,17 @@ public class UL4Test
 	// 	checkTemplateOutput("ok", "<?code r = random()?><?if r>=0 and r<1?>ok<?else?>fail<?end if?>");
 	// }
 
-	// @CauseTest(expectedCause=UnknownFunctionException.class)
-	// public void random1() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("", "<?print random(1)?>");
-	// }
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void random1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print random(1)?>");
+	}
 
-	// @CauseTest(expectedCause=UnknownFunctionException.class)
-	// public void random2() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("", "<?print random(1, 2)?>");
-	// }
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void random2() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print random(1, 2)?>");
+	}
 
 	// @Test
 	// public void randrange() throws org.antlr.runtime.RecognitionException
@@ -875,9 +875,9 @@ public class UL4Test
 	// 	checkTemplateOutput("ok", "<?code r = randrange(17, 23, 2)?><?if r>=17 and r<23 and r%2?>ok<?else?>fail<?end if?>");
 	// }
 
-	// @CauseTest(expectedCause=UnknownFunctionException.class)
-	// public void randrange1() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("", "<?print randrange()?>");
-	// }
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	public void randrange1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print randrange()?>");
+	}
 }
