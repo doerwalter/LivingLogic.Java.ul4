@@ -310,12 +310,12 @@ expr0 returns [AST node]
 
 /* Additional rules for "for" tag */
 
-for_ returns [AST node]
-	: n=name 'in' e=expr0 { $node = new For($n.node, $e.node); }
-	| '(' n1=name ',' ')' 'in' e=expr0 { $node = new For1($n1.node, $e.node); }
-	| '(' n1=name ',' n2=name ','? ')' 'in' e=expr0 { $node = new For2($n1.node, $n2.node, $e.node); }
-	| '(' n1=name ',' n2=name ',' n3=name ','? ')' 'in' e=expr0 { $node = new For3($n1.node, $n2.node, $n3.node, $e.node); }
-	| '(' n1=name ',' n2=name ',' n3=name ',' n4=name ','? ')' 'in' e=expr0 { $node = new For4($n1.node, $n2.node, $n3.node, $n4.node, $e.node); }
+for_ returns [For node]
+	: n=name 'in' e=expr0 { $node = new For($n.text, $e.node); }
+	| '(' n1=name ',' ')' 'in' e=expr0 { $node = new For($e.node); $node.append($n1.text); }
+	| '(' n1=name ',' n2=name ','? ')' 'in' e=expr0 { $node = new For($e.node); $node.append($n1.text); $node.append($n2.text); }
+	| '(' n1=name ',' n2=name ',' n3=name ','? ')' 'in' e=expr0 { $node = new For($e.node); $node.append($n1.text); $node.append($n2.text); $node.append($n3.text); }
+	| '(' n1=name ',' n2=name ',' n3=name ',' n4=name ','? ')' 'in' e=expr0 { $node = new For($e.node); $node.append($n1.text); $node.append($n2.text); $node.append($n3.text); $node.append($n4.text); }
 	;
 
 

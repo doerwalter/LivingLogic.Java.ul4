@@ -484,35 +484,61 @@ class ForParser(ExprParser):
 		ExprParser.__init__(self, start)
 
 	def for0(self, (iter, _0, cont)):
-		return ul4.For(iter, cont)
+		return ul4.For(iter.value, cont)
 	for0.spark = ['for ::= name in expr0']
 
 	def for1(self, (_0, iter, _1, _2, _3, cont)):
-		return ul4.For1(iter, cont)
+		node = ul4.For(cont)
+		node.append(iter.value)
+		return node
 	for1.spark = ['for ::= ( name , ) in expr0']
 
 	def for2a(self, (_0, iter1, _1, iter2, _2, _3, cont)):
-		return ul4.For2(iter1, iter2, cont)
+		node = ul4.For(cont)
+		node.append(iter1.value)
+		node.append(iter2.value)
+		return node
 	for2a.spark = ['for ::= ( name , name ) in expr0']
 
 	def for2b(self, (_0, iter1, _1, iter2, _2, _3, _4, cont)):
-		return ul4.For2(iter1, iter2, cont)
+		node = ul4.For(cont)
+		node.append(iter1.value)
+		node.append(iter2.value)
+		return node
 	for2b.spark = ['for ::= ( name , name , ) in expr0']
 
 	def for3a(self, (_0, iter1, _1, iter2, _2, iter3, _3, _4, cont)):
-		return ul4.For3(iter1, iter2, iter3, cont)
+		node = ul4.For(cont)
+		node.append(iter1.value)
+		node.append(iter2.value)
+		node.append(iter3.value)
+		return node
 	for3a.spark = ['for ::= ( name , name , name ) in expr0']
 
 	def for3b(self, (_0, iter1, _1, iter2, _2, iter3, _3, _4, _5, cont)):
-		return ul4.For3(iter1, iter2, iter3, cont)
+		node = ul4.For(cont)
+		node.append(iter1.value)
+		node.append(iter2.value)
+		node.append(iter3.value)
+		return node
 	for3b.spark = ['for ::= ( name , name , name , ) in expr0']
 
 	def for4a(self, (_0, iter1, _1, iter2, _2, iter3, _3, iter4, _4, _5, cont)):
-		return ul4.For4(iter1, iter2, iter3, iter4, cont)
+		node = ul4.For(cont)
+		node.append(iter1.value)
+		node.append(iter2.value)
+		node.append(iter3.value)
+		node.append(iter4.value)
+		return node
 	for4a.spark = ['for ::= ( name , name , name , name ) in expr0']
 
 	def for4b(self, (_0, iter1, _1, iter2, _2, iter3, _3, iter4, _4, _5, _6, cont)):
-		return ul4.For4(iter1, iter2, iter3, iter4, cont)
+		node = ul4.For(cont)
+		node.append(iter1.value)
+		node.append(iter2.value)
+		node.append(iter3.value)
+		node.append(iter4.value)
+		return node
 	for4b.spark = ['for ::= ( name , name , name , name , ) in expr0']
 
 
