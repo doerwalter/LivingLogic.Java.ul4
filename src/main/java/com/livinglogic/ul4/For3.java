@@ -13,9 +13,8 @@ public class For3 extends AST
 	protected Name iter3;
 	protected AST container;
 
-	public For3(int start, int end, Name iter1, Name iter2, Name iter3, AST container)
+	public For3(Name iter1, Name iter2, Name iter3, AST container)
 	{
-		super(start, end);
 		this.iter1 = iter1;
 		this.iter2 = iter2;
 		this.iter3 = iter3;

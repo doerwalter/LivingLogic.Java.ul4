@@ -10,9 +10,8 @@ public class LoadStr extends LoadConst
 {
 	protected String value;
 
-	public LoadStr(int start, int end, String value)
+	public LoadStr(String value)
 	{
-		super(start, end);
 		this.value = value;
 	}
 

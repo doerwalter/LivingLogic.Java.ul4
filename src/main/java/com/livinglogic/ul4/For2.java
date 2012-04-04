@@ -12,9 +12,8 @@ public class For2 extends AST
 	protected Name iter2;
 	protected AST container;
 
-	public For2(int start, int end, Name iter1, Name iter2, AST container)
+	public For2(Name iter1, Name iter2, AST container)
 	{
-		super(start, end);
 		this.iter1 = iter1;
 		this.iter2 = iter2;
 		this.container = container;

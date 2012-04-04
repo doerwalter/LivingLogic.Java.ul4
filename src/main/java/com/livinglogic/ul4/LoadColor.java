@@ -10,9 +10,8 @@ public class LoadColor extends LoadConst
 {
 	protected Color value;
 
-	public LoadColor(int start, int end, Color value)
+	public LoadColor(Color value)
 	{
-		super(start, end);
 		this.value = value;
 	}
 

@@ -13,9 +13,8 @@ public class Render extends AST
 	protected AST template;
 	protected LinkedList<KeywordArg> args = new LinkedList<KeywordArg>();
 
-	public Render(int start, int end, AST template)
+	public Render(AST template)
 	{
-		super(start, end);
 		this.template = template;
 	}
 

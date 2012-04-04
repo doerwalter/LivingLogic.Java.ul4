@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class TrueDiv extends Binary
 {
-	public TrueDiv(int start, int end, AST obj1, AST obj2)
+	public TrueDiv(AST obj1, AST obj2)
 	{
-		super(start, end, obj1, obj2);
+		super(obj1, obj2);
 	}
 
 	public int getType()

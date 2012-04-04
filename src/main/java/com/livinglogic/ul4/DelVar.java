@@ -11,9 +11,8 @@ public class DelVar extends AST
 	protected Name name;
 	protected AST value;
 
-	public DelVar(int start, int end, Name name)
+	public DelVar(Name name)
 	{
-		super(start, end);
 		this.name = name;
 	}
 

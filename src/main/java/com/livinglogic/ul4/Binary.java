@@ -11,9 +11,8 @@ abstract class Binary extends AST
 	protected AST obj1;
 	protected AST obj2;
 
-	public Binary(int start, int end, AST obj1, AST obj2)
+	public Binary(AST obj1, AST obj2)
 	{
-		super(start, end);
 		this.obj1 = obj1;
 		this.obj2 = obj2;
 	}

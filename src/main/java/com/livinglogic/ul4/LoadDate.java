@@ -10,9 +10,8 @@ public class LoadDate extends LoadConst
 {
 	protected java.util.Date value;
 
-	public LoadDate(int start, int end, java.util.Date value)
+	public LoadDate(java.util.Date value)
 	{
-		super(start, end);
 		this.value = value;
 	}
 

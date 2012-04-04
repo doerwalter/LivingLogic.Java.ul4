@@ -15,9 +15,8 @@ public class CallMeth extends AST
 	protected AST arg3;
 	protected int argcount;
 
-	public CallMeth(int start, int end, AST obj, Name name, AST arg1, AST arg2, AST arg3)
+	public CallMeth(AST obj, Name name, AST arg1, AST arg2, AST arg3)
 	{
-		super(start, end);
 		this.obj = obj;
 		this.name = name;
 		this.arg1 = arg1;
@@ -26,9 +25,8 @@ public class CallMeth extends AST
 		this.argcount = 3;
 	}
 
-	public CallMeth(int start, int end, AST obj, Name name, AST arg1, AST arg2)
+	public CallMeth(AST obj, Name name, AST arg1, AST arg2)
 	{
-		super(start, end);
 		this.obj = obj;
 		this.name = name;
 		this.arg1 = arg1;
@@ -37,9 +35,8 @@ public class CallMeth extends AST
 		this.argcount = 2;
 	}
 
-	public CallMeth(int start, int end, AST obj, Name name, AST arg1)
+	public CallMeth(AST obj, Name name, AST arg1)
 	{
-		super(start, end);
 		this.obj = obj;
 		this.name = name;
 		this.arg1 = arg1;
@@ -48,9 +45,8 @@ public class CallMeth extends AST
 		this.argcount = 1;
 	}
 
-	public CallMeth(int start, int end, AST obj, Name name)
+	public CallMeth(AST obj, Name name)
 	{
-		super(start, end);
 		this.obj = obj;
 		this.name = name;
 		this.arg1 = null;

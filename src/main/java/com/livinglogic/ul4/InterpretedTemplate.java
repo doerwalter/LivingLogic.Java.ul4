@@ -2098,18 +2098,18 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 					if (name.equals("in") || name.equals("not") || name.equals("or") || name.equals("and") || name.equals("del"))
 						tokens.add(new UL4Token(pos, pos+len, name));
 					else if (name.equals("None"))
-						tokens.add(new LoadNone(pos, pos+len));
+						tokens.add(new LoadNone());
 					else if (name.equals("True"))
-						tokens.add(new LoadTrue(pos, pos+len));
+						tokens.add(new LoadTrue());
 					else if (name.equals("False"))
-						tokens.add(new LoadFalse(pos, pos+len));
+						tokens.add(new LoadFalse());
 					else
-						tokens.add(new Name(pos, pos+len, name));
+						tokens.add(new Name(name));
 				}
 				else if (stringMode==0 && dateMatcher.lookingAt())
 				{
 					len = dateMatcher.end();
-					tokens.add(new LoadDate(pos, pos+len, Utils.isoparse(dateMatcher.group().substring(1))));
+					tokens.add(new LoadDate(Utils.isoparse(dateMatcher.group().substring(1))));
 				}
 				else if (stringMode==0 && color8Matcher.lookingAt())
 				{
@@ -2119,7 +2119,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 					int g = Integer.valueOf(value.substring(3, 5), 16);
 					int b = Integer.valueOf(value.substring(5, 7), 16);
 					int a = Integer.valueOf(value.substring(7, 9), 16);
-					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b, a)));
+					tokens.add(new LoadColor(new Color(r, g, b, a)));
 				}
 				else if (stringMode==0 && color6Matcher.lookingAt())
 				{
@@ -2128,7 +2128,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 					int r = Integer.valueOf(value.substring(1, 3), 16);
 					int g = Integer.valueOf(value.substring(3, 5), 16);
 					int b = Integer.valueOf(value.substring(5, 7), 16);
-					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b)));
+					tokens.add(new LoadColor(new Color(r, g, b)));
 				}
 				else if (stringMode==0 && color4Matcher.lookingAt())
 				{
@@ -2138,7 +2138,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 					int g = 17*Integer.valueOf(value.substring(2, 3), 16);
 					int b = 17*Integer.valueOf(value.substring(3, 4), 16);
 					int a = 17*Integer.valueOf(value.substring(4, 5), 16);
-					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b, a)));
+					tokens.add(new LoadColor(new Color(r, g, b, a)));
 				}
 				else if (stringMode==0 && color3Matcher.lookingAt())
 				{
@@ -2147,32 +2147,32 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 					int r = 17*Integer.valueOf(value.substring(1, 2), 16);
 					int g = 17*Integer.valueOf(value.substring(2, 3), 16);
 					int b = 17*Integer.valueOf(value.substring(3, 4), 16);
-					tokens.add(new LoadColor(pos, pos+len, new Color(r, g, b)));
+					tokens.add(new LoadColor(new Color(r, g, b)));
 				}
 				else if (stringMode==0 && floatMatcher.lookingAt())
 				{
 					len = floatMatcher.end();
-					tokens.add(new LoadFloat(pos, pos+len, Double.parseDouble(floatMatcher.group())));
+					tokens.add(new LoadFloat(Double.parseDouble(floatMatcher.group())));
 				}
 				else if (stringMode==0 && hexintMatcher.lookingAt())
 				{
 					len = hexintMatcher.end();
-					tokens.add(new LoadInt(pos, pos+len, Integer.parseInt(hexintMatcher.group().substring(2), 16)));
+					tokens.add(new LoadInt(Integer.parseInt(hexintMatcher.group().substring(2), 16)));
 				}
 				else if (stringMode==0 && octintMatcher.lookingAt())
 				{
 					len = octintMatcher.end();
-					tokens.add(new LoadInt(pos, pos+len, Integer.parseInt(octintMatcher.group().substring(2), 8)));
+					tokens.add(new LoadInt(Integer.parseInt(octintMatcher.group().substring(2), 8)));
 				}
 				else if (stringMode==0 && binintMatcher.lookingAt())
 				{
 					len = binintMatcher.end();
-					tokens.add(new LoadInt(pos, pos+len, Integer.parseInt(binintMatcher.group().substring(2), 2)));
+					tokens.add(new LoadInt(Integer.parseInt(binintMatcher.group().substring(2), 2)));
 				}
 				else if (stringMode==0 && intMatcher.lookingAt())
 				{
 					len = intMatcher.end();
-					tokens.add(new LoadInt(pos, pos+len, Integer.parseInt(intMatcher.group())));
+					tokens.add(new LoadInt(Integer.parseInt(intMatcher.group())));
 				}
 				else if (stringMode==0 && source.startsWith("'"))
 				{
@@ -2192,7 +2192,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				{
 					len = 1;
 					stringMode = 0;
-					tokens.add(new LoadStr(stringStartPos, pos+len, collectString.toString()));
+					tokens.add(new LoadStr(collectString.toString()));
 					collectString = null;
 				}
 				else if (stringMode==0 && whitespaceMatcher.lookingAt())
@@ -2276,7 +2276,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				}
 				else
 				{
-					throw new LexicalException(pos, pos+1, source.substring(0, 1));
+					throw new LexicalException(source.substring(0, 1));
 				}
 				pos += len;
 				source = source.substring(len);

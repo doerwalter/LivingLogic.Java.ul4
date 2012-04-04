@@ -128,39 +128,39 @@ UNICODE4_ESC
 /* Rules common to all tags */
 
 none returns [AST node]
-	: NONE { $node = new LoadNone(0, 0); }
+	: NONE { $node = new LoadNone(); }
 	;
 
 true_ returns [AST node]
-	: TRUE { $node = new LoadTrue(0, 0); }
+	: TRUE { $node = new LoadTrue(); }
 	;
 
 false_ returns [AST node]
-	: FALSE { $node = new LoadFalse(0, 0); }
+	: FALSE { $node = new LoadFalse(); }
 	;
 
 name returns [Name node]
-	: NAME { $node = new Name(0, 0, $NAME.text); }
+	: NAME { $node = new Name($NAME.text); }
 	;
 
 int_ returns [AST node]
-	: INT { $node = new LoadInt(0, 0, Utils.parseUL4Int($INT.text)); }
+	: INT { $node = new LoadInt(Utils.parseUL4Int($INT.text)); }
 	;
 
 float_ returns [AST node]
-	: FLOAT { $node = new LoadFloat(0, 0, Double.parseDouble($FLOAT.text)); }
+	: FLOAT { $node = new LoadFloat(Double.parseDouble($FLOAT.text)); }
 	;
 
 string returns [AST node]
-	: STRING { $node = new LoadStr(0, 0, Utils.unescapeUL4String($STRING.text.substring(1, $STRING.text.length()-1))); }
+	: STRING { $node = new LoadStr(Utils.unescapeUL4String($STRING.text.substring(1, $STRING.text.length()-1))); }
 	;
 
 date returns [AST node]
-	: DATE { $node = new LoadDate(0, 0, Utils.isoparse($DATE.text.substring(1))); }
+	: DATE { $node = new LoadDate(Utils.isoparse($DATE.text.substring(1))); }
 	;
 
 color returns [AST node]
-	: COLOR { $node = new LoadColor(0, 0, Color.fromrepr($COLOR.text)); }
+	: COLOR { $node = new LoadColor(Color.fromrepr($COLOR.text)); }
 	;
 
 atom returns [AST node]
@@ -176,8 +176,8 @@ atom returns [AST node]
 	;
 
 list returns [com.livinglogic.ul4.List node]
-	: '[' ']' { $node = new com.livinglogic.ul4.List(0, 0); }
-	| '[' {$node = new com.livinglogic.ul4.List(0, 0); } e1=expr0 { $node.append($e1.node); } (',' e2=expr0 { $node.append($e2.node); } )* ','? ']'
+	: '[' ']' { $node = new com.livinglogic.ul4.List(); }
+	| '[' {$node = new com.livinglogic.ul4.List(); } e1=expr0 { $node.append($e1.node); } (',' e2=expr0 { $node.append($e2.node); } )* ','? ']'
 	;
 
 fragment
@@ -187,8 +187,8 @@ dictitem returns [DictItem node]
 	;
 
 dict returns [Dict node]
-	: '{' '}' { $node = new Dict(0, 0); }
-	| '{' { $node = new Dict(0, 0); } i1=dictitem { $node.append($i1.node); } (',' i2=dictitem { $node.append($i2.node); } )* ','? '}'
+	: '{' '}' { $node = new Dict(); }
+	| '{' { $node = new Dict(); } i1=dictitem { $node.append($i1.node); } (',' i2=dictitem { $node.append($i2.node); } )* ','? '}'
 	;
 
 expr11 returns [AST node]
@@ -311,25 +311,25 @@ expr0 returns [AST node]
 /* Additional rules for "for" tag */
 
 for_ returns [AST node]
-	: n=name 'in' e=expr0 { $node = new For(0, 0, $n.node, $e.node); }
-	| '(' n1=name ',' ')' 'in' e=expr0 { $node = new For1(0, 0, $n1.node, $e.node); }
-	| '(' n1=name ',' n2=name ','? ')' 'in' e=expr0 { $node = new For2(0, 0, $n1.node, $n2.node, $e.node); }
-	| '(' n1=name ',' n2=name ',' n3=name ','? ')' 'in' e=expr0 { $node = new For3(0, 0, $n1.node, $n2.node, $n3.node, $e.node); }
-	| '(' n1=name ',' n2=name ',' n3=name ',' n4=name ','? ')' 'in' e=expr0 { $node = new For4(0, 0, $n1.node, $n2.node, $n3.node, $n4.node, $e.node); }
+	: n=name 'in' e=expr0 { $node = new For($n.node, $e.node); }
+	| '(' n1=name ',' ')' 'in' e=expr0 { $node = new For1($n1.node, $e.node); }
+	| '(' n1=name ',' n2=name ','? ')' 'in' e=expr0 { $node = new For2($n1.node, $n2.node, $e.node); }
+	| '(' n1=name ',' n2=name ',' n3=name ','? ')' 'in' e=expr0 { $node = new For3($n1.node, $n2.node, $n3.node, $e.node); }
+	| '(' n1=name ',' n2=name ',' n3=name ',' n4=name ','? ')' 'in' e=expr0 { $node = new For4($n1.node, $n2.node, $n3.node, $n4.node, $e.node); }
 	;
 
 
 /* Additional rules for "code" tag */
 
 stmt returns [AST node]
-	: name '=' expr0 { $node = new StoreVar(0, 0, $name.node, $expr0.node); }
-	| name '+=' expr0 { $node = new AddVar(0, 0, $name.node, $expr0.node); }
-	| name '-=' expr0 { $node = new SubVar(0, 0, $name.node, $expr0.node); }
-	| name '*=' expr0 { $node = new MulVar(0, 0, $name.node, $expr0.node); }
-	| name '/=' expr0 { $node = new TrueDivVar(0, 0, $name.node, $expr0.node); }
-	| name '//=' expr0 { $node = new FloorDivVar(0, 0, $name.node, $expr0.node); }
-	| name '%=' expr0 { $node = new ModVar(0, 0, $name.node, $expr0.node); }
-	| 'del' name { $node = new DelVar(0, 0, $name.node); }
+	: name '=' expr0 { $node = new StoreVar($name.node, $expr0.node); }
+	| name '+=' expr0 { $node = new AddVar($name.node, $expr0.node); }
+	| name '-=' expr0 { $node = new SubVar($name.node, $expr0.node); }
+	| name '*=' expr0 { $node = new MulVar($name.node, $expr0.node); }
+	| name '/=' expr0 { $node = new TrueDivVar($name.node, $expr0.node); }
+	| name '//=' expr0 { $node = new FloorDivVar($name.node, $expr0.node); }
+	| name '%=' expr0 { $node = new ModVar($name.node, $expr0.node); }
+	| 'del' name { $node = new DelVar($name.node); }
 	;
 
 
@@ -342,5 +342,5 @@ renderarg returns [KeywordArg node]
 	;
 
 render returns [Render node]
-	: name { $node = new Render(0, 0, $name.node); } '(' a1=renderarg { $node.append($a1.node); } (',' a2=renderarg { $node.append($a2.node); } )* ','? ')'
+	: t=expr0 { $node = new Render($t.node); } '(' a1=renderarg { $node.append($a1.node); } (',' a2=renderarg { $node.append($a2.node); } )* ','? ')'
 	;

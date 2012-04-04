@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class FloorDivVar extends ChangeVar
 {
-	public FloorDivVar(int start, int end, Name name, AST value)
+	public FloorDivVar(Name name, AST value)
 	{
-		super(start, end, name, value);
+		super(name, value);
 	}
 
 	public int getType()

@@ -11,9 +11,8 @@ public class GetAttr extends AST
 	protected AST obj;
 	protected Name attr;
 
-	public GetAttr(int start, int end, AST obj, Name attr)
+	public GetAttr(AST obj, Name attr)
 	{
-		super(start, end);
 		this.obj = obj;
 		this.attr = attr;
 	}

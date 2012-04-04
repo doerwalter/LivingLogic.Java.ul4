@@ -12,9 +12,8 @@ public class GetSlice12 extends AST
 	protected AST index1;
 	protected AST index2;
 
-	public GetSlice12(int start, int end, AST obj, AST index1, AST index2)
+	public GetSlice12(AST obj, AST index1, AST index2)
 	{
-		super(start, end);
 		this.obj = obj;
 		this.index1 = index1;
 		this.index2 = index2;

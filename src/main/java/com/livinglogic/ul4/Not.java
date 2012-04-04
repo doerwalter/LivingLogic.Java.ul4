@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class Not extends Unary
 {
-	public Not(int start, int end, AST obj)
+	public Not(AST obj)
 	{
-		super(start, end, obj);
+		super(obj);
 	}
 
 	public int getType()

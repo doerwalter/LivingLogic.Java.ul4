@@ -10,9 +10,8 @@ public class LoadInt extends LoadConst
 {
 	protected int value;
 
-	public LoadInt(int start, int end, int value)
+	public LoadInt(int value)
 	{
-		super(start, end);
 		this.value = value;
 	}
 

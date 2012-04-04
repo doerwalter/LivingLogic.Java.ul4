@@ -11,9 +11,8 @@ abstract class ChangeVar extends AST
 	protected Name name;
 	protected AST value;
 
-	public ChangeVar(int start, int end, Name name, AST value)
+	public ChangeVar(Name name, AST value)
 	{
-		super(start, end);
 		this.name = name;
 		this.value = value;
 	}

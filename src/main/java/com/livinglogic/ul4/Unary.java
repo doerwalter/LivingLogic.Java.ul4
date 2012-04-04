@@ -10,9 +10,8 @@ abstract class Unary extends AST
 {
 	protected AST obj;
 
-	public Unary(int start, int end, AST obj)
+	public Unary(AST obj)
 	{
-		super(start, end);
 		this.obj = obj;
 	}
 

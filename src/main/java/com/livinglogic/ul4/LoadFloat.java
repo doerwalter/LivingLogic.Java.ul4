@@ -10,9 +10,8 @@ public class LoadFloat extends LoadConst
 {
 	protected double value;
 
-	public LoadFloat(int start, int end, double value)
+	public LoadFloat(double value)
 	{
-		super(start, end);
 		this.value = value;
 	}
 

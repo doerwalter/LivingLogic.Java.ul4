@@ -10,9 +10,8 @@ public class Name extends AST
 {
 	protected String value;
 
-	public Name(int start, int end, String value)
+	public Name(String value)
 	{
-		super(start, end);
 		this.value = value;
 	}
 

@@ -14,9 +14,8 @@ public class CallMethKeywords extends AST
 	protected AST template;
 	protected LinkedList<KeywordArg> args = new LinkedList<KeywordArg>();
 
-	public CallMethKeywords(int start, int end, Name name, AST template)
+	public CallMethKeywords(Name name, AST template)
 	{
-		super(start, end);
 		this.name = name;
 		this.template = template;
 	}

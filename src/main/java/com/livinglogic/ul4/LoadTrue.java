@@ -8,9 +8,8 @@ package com.livinglogic.ul4;
 
 public class LoadTrue extends LoadConst
 {
-	public LoadTrue(int start, int end)
+	public LoadTrue()
 	{
-		super(start, end);
 	}
 
 	public int getType()

@@ -15,9 +15,8 @@ public class CallFunc extends AST
 	protected AST arg4;
 	protected int argcount;
 
-	public CallFunc(int start, int end, Name name, AST arg1, AST arg2, AST arg3, AST arg4)
+	public CallFunc(Name name, AST arg1, AST arg2, AST arg3, AST arg4)
 	{
-		super(start, end);
 		this.name = name;
 		this.arg1 = arg1;
 		this.arg2 = arg2;
@@ -26,9 +25,8 @@ public class CallFunc extends AST
 		this.argcount = 4;
 	}
 
-	public CallFunc(int start, int end, Name name, AST arg1, AST arg2, AST arg3)
+	public CallFunc(Name name, AST arg1, AST arg2, AST arg3)
 	{
-		super(start, end);
 		this.name = name;
 		this.arg1 = arg1;
 		this.arg2 = arg2;
@@ -37,9 +35,8 @@ public class CallFunc extends AST
 		this.argcount = 3;
 	}
 
-	public CallFunc(int start, int end, Name name, AST arg1, AST arg2)
+	public CallFunc(Name name, AST arg1, AST arg2)
 	{
-		super(start, end);
 		this.name = name;
 		this.arg1 = arg1;
 		this.arg2 = arg2;
@@ -48,9 +45,8 @@ public class CallFunc extends AST
 		this.argcount = 2;
 	}
 
-	public CallFunc(int start, int end, Name name, AST arg1)
+	public CallFunc(Name name, AST arg1)
 	{
-		super(start, end);
 		this.name = name;
 		this.arg1 = arg1;
 		this.arg2 = null;
@@ -59,9 +55,8 @@ public class CallFunc extends AST
 		this.argcount = 1;
 	}
 
-	public CallFunc(int start, int end, Name name)
+	public CallFunc(Name name)
 	{
-		super(start, end);
 		this.name = name;
 		this.arg1 = null;
 		this.arg2 = null;

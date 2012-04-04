@@ -8,9 +8,8 @@ package com.livinglogic.ul4;
 
 public class LoadNone extends LoadConst
 {
-	public LoadNone(int start, int end)
+	public LoadNone()
 	{
-		super(start, end);
 	}
 
 	public int getType()

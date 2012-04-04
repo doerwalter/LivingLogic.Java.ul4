@@ -12,9 +12,8 @@ public class List extends AST
 {
 	protected LinkedList<AST> items = new LinkedList<AST>();
 
-	public List(int start, int end)
+	public List()
 	{
-		super(start, end);
 	}
 
 	public void append(AST item)

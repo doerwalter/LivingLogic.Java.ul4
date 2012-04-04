@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class AddVar extends ChangeVar
 {
-	public AddVar(int start, int end, Name name, AST value)
+	public AddVar(Name name, AST value)
 	{
-		super(start, end, name, value);
+		super(name, value);
 	}
 
 	public int getType()
