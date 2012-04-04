@@ -10,11 +10,11 @@ import java.util.LinkedList;
 
 public class CallMethKeywords extends AST
 {
-	protected Name name;
+	protected String name;
 	protected AST template;
 	protected LinkedList<KeywordArg> args = new LinkedList<KeywordArg>();
 
-	public CallMethKeywords(Name name, AST template)
+	public CallMethKeywords(String name, AST template)
 	{
 		this.name = name;
 		this.template = template;
@@ -51,7 +51,7 @@ public class CallMethKeywords extends AST
 			registers.free(rv);
 		}
 		int rt = this.template.compile(template, registers, location);
-		template.opcode(Opcode.OC_CALLMETHKW, rt, rt, ra, name.value, location);
+		template.opcode(Opcode.OC_CALLMETHKW, rt, rt, ra, name, location);
 		registers.free(ra);
 		return rt;
 	}

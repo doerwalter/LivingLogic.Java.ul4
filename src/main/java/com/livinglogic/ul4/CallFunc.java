@@ -6,75 +6,36 @@
 
 package com.livinglogic.ul4;
 
+import java.util.LinkedList;
+
 public class CallFunc extends AST
 {
-	protected Name name;
-	protected AST arg1;
-	protected AST arg2;
-	protected AST arg3;
-	protected AST arg4;
-	protected int argcount;
+	protected String name;
+	protected LinkedList<AST> args;
 
-	public CallFunc(Name name, AST arg1, AST arg2, AST arg3, AST arg4)
+	public CallFunc(String name)
 	{
 		this.name = name;
-		this.arg1 = arg1;
-		this.arg2 = arg2;
-		this.arg3 = arg3;
-		this.arg4 = arg4;
-		this.argcount = 4;
+		this.args = new LinkedList<AST>();
 	}
 
-	public CallFunc(Name name, AST arg1, AST arg2, AST arg3)
+	public void append(AST arg)
 	{
-		this.name = name;
-		this.arg1 = arg1;
-		this.arg2 = arg2;
-		this.arg3 = arg3;
-		this.arg4 = null;
-		this.argcount = 3;
-	}
-
-	public CallFunc(Name name, AST arg1, AST arg2)
-	{
-		this.name = name;
-		this.arg1 = arg1;
-		this.arg2 = arg2;
-		this.arg3 = null;
-		this.arg4 = null;
-		this.argcount = 2;
-	}
-
-	public CallFunc(Name name, AST arg1)
-	{
-		this.name = name;
-		this.arg1 = arg1;
-		this.arg2 = null;
-		this.arg3 = null;
-		this.arg4 = null;
-		this.argcount = 1;
-	}
-
-	public CallFunc(Name name)
-	{
-		this.name = name;
-		this.arg1 = null;
-		this.arg2 = null;
-		this.arg3 = null;
-		this.arg4 = null;
-		this.argcount = 0;
+		args.add(arg);
 	}
 
 	private static final int[] opcodes = {Opcode.OC_CALLFUNC0, Opcode.OC_CALLFUNC1, Opcode.OC_CALLFUNC2, Opcode.OC_CALLFUNC3, Opcode.OC_CALLFUNC4};
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
-		int r1 = arg1 != null ? arg1.compile(template, registers, location) : -1;
-		int r2 = arg2 != null ? arg2.compile(template, registers, location) : -1;
-		int r3 = arg3 != null ? arg3.compile(template, registers, location) : -1;
-		int r4 = arg4 != null ? arg4.compile(template, registers, location) : -1;
+		int argcount = args.size();
+
+		int r1 = argcount>0 ? args.get(0).compile(template, registers, location) : -1;
+		int r2 = argcount>1 ? args.get(1).compile(template, registers, location) : -1;
+		int r3 = argcount>2 ? args.get(2).compile(template, registers, location) : -1;
+		int r4 = argcount>3 ? args.get(3).compile(template, registers, location) : -1;
 		int rr = argcount > 0 ? r1 : registers.alloc();
-		template.opcode(opcodes[argcount], rr, r1, r2, r3, r4, name.value, location);
+		template.opcode(opcodes[argcount], rr, r1, r2, r3, r4, name, location);
 		if (r2 != -1)
 			registers.free(r2);
 		if (r3 != -1)

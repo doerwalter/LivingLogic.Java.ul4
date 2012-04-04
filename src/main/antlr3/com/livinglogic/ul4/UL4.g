@@ -198,9 +198,9 @@ expr11 returns [AST node]
 	| '(' expr0 ')' { $node = $expr0.node; }
 	;
 
-callfunc
-	: name '(' ')'
-	| name '(' expr0 (',' expr0)* ','? ')'
+callfunc returns [CallFunc node]
+	: name '(' ')' { $node = new CallFunc($name.text); }
+	| name { $node = new CallFunc($name.text); } '(' a1=expr0 { $node.append($a1.node); } (',' a2=expr0 { $node.append($a2.node); } )* ','? ')'
 	;
 
 /*

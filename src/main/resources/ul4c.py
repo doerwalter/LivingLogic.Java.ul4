@@ -248,23 +248,37 @@ class ExprParser(spark.GenericParser):
 	expr_bracket.spark = ['expr11 ::= ( expr0 )']
 
 	def expr_callfunc0(self, (name, _0, _1)):
-		return ul4.CallFunc(name)
+		return ul4.CallFunc(name.value)
 	expr_callfunc0.spark = ['expr10 ::= name ( )']
 
 	def expr_callfunc1(self, (name, _0, arg0, _1)):
-		return ul4.CallFunc(name, arg0)
+		func = ul4.CallFunc(name.value)
+		func.append(arg0)
+		return func
 	expr_callfunc1.spark = ['expr10 ::= name ( expr0 )']
 
 	def expr_callfunc2(self, (name, _0, arg0, _1, arg1, _2)):
-		return ul4.CallFunc(name, arg0, arg1)
+		func = ul4.CallFunc(name.value)
+		func.append(arg0)
+		func.append(arg1)
+		return func
 	expr_callfunc2.spark = ['expr10 ::= name ( expr0 , expr0 )']
 
 	def expr_callfunc3(self, (name, _0, arg0, _1, arg1, _2, arg2, _3)):
-		return ul4.CallFunc(name, arg0, arg1, arg2)
+		func = ul4.CallFunc(name.value)
+		func.append(arg0)
+		func.append(arg1)
+		func.append(arg2)
+		return func
 	expr_callfunc3.spark = ['expr10 ::= name ( expr0 , expr0 , expr0 )']
 
 	def expr_callfunc4(self, (name, _0, arg0, _1, arg1, _2, arg2, _3, arg3, _4)):
-		return ul4.CallFunc(name, arg0, arg1, arg2, arg3)
+		func = ul4.CallFunc(name.value)
+		func.append(arg0)
+		func.append(arg1)
+		func.append(arg2)
+		func.append(arg3)
+		return func
 	expr_callfunc4.spark = ['expr10 ::= name ( expr0 , expr0 , expr0 , expr0 )']
 
 	def expr_getattr(self, (expr, _0, name)):
