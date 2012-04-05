@@ -290,15 +290,24 @@ class ExprParser(spark.GenericParser):
 	expr_callmeth0.spark = ['expr9 ::= expr9 . name ( )']
 
 	def expr_callmeth1(self, (expr, _0, name, _1, arg1, _2)):
-		return ul4.CallMeth(expr, name, arg1)
+		callmeth = ul4.CallMeth(expr, name)
+		callmeth.append(arg1)
+		return callmeth
 	expr_callmeth1.spark = ['expr9 ::= expr9 . name ( expr0 )']
 
 	def expr_callmeth2(self, (expr, _0, name, _1, arg1, _2, arg2, _3)):
-		return ul4.CallMeth(expr, name, arg1, arg2)
+		callmeth = ul4.CallMeth(expr, name)
+		callmeth.append(arg1)
+		callmeth.append(arg2)
+		return callmeth
 	expr_callmeth2.spark = ['expr9 ::= expr9 . name ( expr0 , expr0 )']
 
 	def expr_callmeth3(self, (expr, _0, name, _1, arg1, _2, arg2, _3, arg3, _4)):
-		return ul4.CallMeth(expr, name, arg1, arg2, arg3)
+		callmeth = ul4.CallMeth(expr, name)
+		callmeth.append(arg1)
+		callmeth.append(arg2)
+		callmeth.append(arg3)
+		return callmeth
 	expr_callmeth3.spark = ['expr9 ::= expr9 . name ( expr0 , expr0 , expr0 )']
 
 	def methkw_startname(self, (expr, _0, methname, _1, argname, _2, argvalue)):

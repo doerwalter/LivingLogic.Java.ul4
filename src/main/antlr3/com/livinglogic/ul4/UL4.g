@@ -237,22 +237,6 @@ expr9
 	| expr10
 	;
 
-getitem
-	: expr9 '[' expr9 ']'
-	;
-
-getslice
-	: expr9 '[' expr9 ':' expr9 ']'
-	| expr9 '[' ':' expr9 ']'
-	| expr9 '[' expr9 ':' ']'
-	;
-
-expr9
-	: getitem
-	| getslice
-	| expr9
-	;
-
 */
 
 expr9 returns [AST node]
