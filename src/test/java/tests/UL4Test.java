@@ -396,287 +396,287 @@ public class UL4Test
 	// // 	checkTemplateOutput("", "<?render?>"); // "render statement required"
 	// // }
 
-	// @Test
-	// public void add() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x + y?>";
+	@Test
+	public void add() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x + y?>";
 
-	// 	checkTemplateOutput("0", source, "x", false, "y", false);
-	// 	checkTemplateOutput("1", source, "x", false, "y", true);
-	// 	checkTemplateOutput("1", source, "x", true, "y", false);
-	// 	checkTemplateOutput("2", source, "x", true, "y", true);
-	// 	checkTemplateOutput("18", source, "x", 17, "y", true);
-	// 	checkTemplateOutput("40", source, "x", 17, "y", 23);
-	// 	checkTemplateOutput("18.0", source, "x", 17, "y", 1.0);
-	// 	checkTemplateOutput("24", source, "x", true, "y", 23);
-	// 	checkTemplateOutput("22.0", source, "x", -1.0, "y", 23);
-	// 	checkTemplateOutput("foobar", source, "x", "foo", "y", "bar");
-	// 	checkTemplateOutput("(f)(o)(o)(b)(a)(r)", "<?for i in data.foo+data.bar?>(<?print i?>)<?end for?>", "data", makeMap("foo", "foo", "bar", "bar"));
-	// 	// This checks constant folding
-	// 	checkTemplateOutput("3", "<?print 1+2?>");
-	// 	checkTemplateOutput("2", "<?print 1+True?>");
-	// 	checkTemplateOutput("3.0", "<?print 1+2.0?>");
-	// }
+		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("1", source, "x", false, "y", true);
+		checkTemplateOutput("1", source, "x", true, "y", false);
+		checkTemplateOutput("2", source, "x", true, "y", true);
+		checkTemplateOutput("18", source, "x", 17, "y", true);
+		checkTemplateOutput("40", source, "x", 17, "y", 23);
+		checkTemplateOutput("18.0", source, "x", 17, "y", 1.0);
+		checkTemplateOutput("24", source, "x", true, "y", 23);
+		checkTemplateOutput("22.0", source, "x", -1.0, "y", 23);
+		checkTemplateOutput("foobar", source, "x", "foo", "y", "bar");
+		// List addition is not implemented: checkTemplateOutput("(foo)(bar)(gurk)(hurz)", "<?for i in a+b?>(<?print i?>)<?end for?>", "a", java.util.Arrays.asList("foo", "bar"), "b", java.util.Arrays.asList("gurk", "hurz"));
+		// This checks constant folding
+		checkTemplateOutput("3", "<?print 1+2?>");
+		checkTemplateOutput("2", "<?print 1+True?>");
+		checkTemplateOutput("3.0", "<?print 1+2.0?>");
+	}
 
-	// @Test
-	// public void sub() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x - y?>";
+	@Test
+	public void sub() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x - y?>";
 
-	// 	checkTemplateOutput("0", source, "x", false, "y", false);
-	// 	checkTemplateOutput("-1", source, "x", false, "y", true);
-	// 	checkTemplateOutput("1", source, "x", true, "y", false);
-	// 	checkTemplateOutput("0", source, "x", true, "y", true);
-	// 	checkTemplateOutput("16", source, "x", 17, "y", true);
-	// 	checkTemplateOutput("-6", source, "x", 17, "y", 23);
-	// 	checkTemplateOutput("16.0", source, "x", 17, "y", 1.0);
-	// 	checkTemplateOutput("-22", source, "x", true, "y", 23);
-	// 	checkTemplateOutput("-24.0", source, "x", -1.0, "y", 23);
-	// 	// This checks constant folding
-	// 	checkTemplateOutput("-1", "<?print 1-2?>");
-	// 	checkTemplateOutput("1", "<?print 2-True?>");
-	// 	checkTemplateOutput("-1.0", "<?print 1-2.0?>");
-	// }
+		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("-1", source, "x", false, "y", true);
+		checkTemplateOutput("1", source, "x", true, "y", false);
+		checkTemplateOutput("0", source, "x", true, "y", true);
+		checkTemplateOutput("16", source, "x", 17, "y", true);
+		checkTemplateOutput("-6", source, "x", 17, "y", 23);
+		checkTemplateOutput("16.0", source, "x", 17, "y", 1.0);
+		checkTemplateOutput("-22", source, "x", true, "y", 23);
+		checkTemplateOutput("-24.0", source, "x", -1.0, "y", 23);
+		// This checks constant folding
+		checkTemplateOutput("-1", "<?print 1-2?>");
+		checkTemplateOutput("1", "<?print 2-True?>");
+		checkTemplateOutput("-1.0", "<?print 1-2.0?>");
+	}
 
-	// @Test
-	// public void mul() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x * y?>";
+	@Test
+	public void mul() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x * y?>";
 
-	// 	checkTemplateOutput("0", source, "x", false, "y", false);
-	// 	checkTemplateOutput("0", source, "x", false, "y", true);
-	// 	checkTemplateOutput("0", source, "x", true, "y", false);
-	// 	checkTemplateOutput("1", source, "x", true, "y", true);
-	// 	checkTemplateOutput("17", source, "x", 17, "y", true);
-	// 	checkTemplateOutput("391", source, "x", 17, "y", 23);
-	// 	checkTemplateOutput("17.0", source, "x", 17, "y", 1.0);
-	// 	checkTemplateOutput("23", source, "x", true, "y", 23);
-	// 	checkTemplateOutput("-23.0", source, "x", -1.0, "y", 23);
-	// 	checkTemplateOutput("foofoofoo", source, "x", 3, "y", "foo");
-	// 	checkTemplateOutput("foofoofoo", source, "x", "foo", "y", 3);
-	// 	checkTemplateOutput("(foo)(bar)(foo)(bar)(foo)(bar)", "<?for i in 3*data?>(<?print i?>)<?end for?>", "data", java.util.Arrays.asList("foo", "bar"));
-	// 	// This checks constant folding
-	// 	checkTemplateOutput("391", "<?print 17*23?>");
-	// 	checkTemplateOutput("17", "<?print 17*True?>");
-	// 	checkTemplateOutput("391.0", "<?print 17.0*23.0?>");
-	// }
+		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("0", source, "x", false, "y", true);
+		checkTemplateOutput("0", source, "x", true, "y", false);
+		checkTemplateOutput("1", source, "x", true, "y", true);
+		checkTemplateOutput("17", source, "x", 17, "y", true);
+		checkTemplateOutput("391", source, "x", 17, "y", 23);
+		checkTemplateOutput("17.0", source, "x", 17, "y", 1.0);
+		checkTemplateOutput("23", source, "x", true, "y", 23);
+		checkTemplateOutput("-23.0", source, "x", -1.0, "y", 23);
+		checkTemplateOutput("foofoofoo", source, "x", 3, "y", "foo");
+		checkTemplateOutput("foofoofoo", source, "x", "foo", "y", 3);
+		checkTemplateOutput("(foo)(bar)(foo)(bar)(foo)(bar)", "<?for i in 3*data?>(<?print i?>)<?end for?>", "data", java.util.Arrays.asList("foo", "bar"));
+		// This checks constant folding
+		checkTemplateOutput("391", "<?print 17*23?>");
+		checkTemplateOutput("17", "<?print 17*True?>");
+		checkTemplateOutput("391.0", "<?print 17.0*23.0?>");
+	}
 
-	// @Test
-	// public void truediv() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x / y?>";
+	@Test
+	public void truediv() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x / y?>";
 
-	// 	checkTemplateOutput("0.0", source, "x", false, "y", true);
-	// 	checkTemplateOutput("1.0", source, "x", true, "y", true);
-	// 	checkTemplateOutput("17.0", source, "x", 17, "y", true);
-	// 	checkTemplateOutput("17.0", source, "x", 391, "y", 23);
-	// 	checkTemplateOutput("17.0", source, "x", 17, "y", 1.0);
-	// 	checkTemplateOutput("0.5", source, "x", 1, "y", 2);
-	// 	// This checks constant folding
-	// 	checkTemplateOutput("0.5", "<?print 1/2?>");
-	// 	checkTemplateOutput("2.0", "<?print 2.0/True?>");
-	// }
+		checkTemplateOutput("0.0", source, "x", false, "y", true);
+		checkTemplateOutput("1.0", source, "x", true, "y", true);
+		checkTemplateOutput("17.0", source, "x", 17, "y", true);
+		checkTemplateOutput("17.0", source, "x", 391, "y", 23);
+		checkTemplateOutput("17.0", source, "x", 17, "y", 1.0);
+		checkTemplateOutput("0.5", source, "x", 1, "y", 2);
+		// This checks constant folding
+		checkTemplateOutput("0.5", "<?print 1/2?>");
+		checkTemplateOutput("2.0", "<?print 2.0/True?>");
+	}
 
-	// @Test
-	// public void floordiv() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x // y?>";
+	@Test
+	public void floordiv() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x // y?>";
 
-	// 	checkTemplateOutput("0", source, "x", false, "y", true);
-	// 	checkTemplateOutput("1", source, "x", true, "y", true);
-	// 	checkTemplateOutput("17", source, "x", 17, "y", true);
-	// 	checkTemplateOutput("17", source, "x", 392, "y", 23);
-	// 	checkTemplateOutput("17.0", source, "x", 17, "y", 1.0);
-	// 	checkTemplateOutput("0", source, "x", 1, "y", 2);
-	// 	// This checks constant folding
-	// 	checkTemplateOutput("0.5", "<?print 1/2?>");
-	// 	checkTemplateOutput("2.0", "<?print 2.0/True?>");
-	// }
+		checkTemplateOutput("0", source, "x", false, "y", true);
+		checkTemplateOutput("1", source, "x", true, "y", true);
+		checkTemplateOutput("17", source, "x", 17, "y", true);
+		checkTemplateOutput("17", source, "x", 392, "y", 23);
+		checkTemplateOutput("17.0", source, "x", 17, "y", 1.0);
+		checkTemplateOutput("0", source, "x", 1, "y", 2);
+		// This checks constant folding
+		checkTemplateOutput("0.5", "<?print 1/2?>");
+		checkTemplateOutput("2.0", "<?print 2.0/True?>");
+	}
 
-	// @Test
-	// public void mod() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x % y?>";
+	@Test
+	public void mod() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x % y?>";
 
-	// 	checkTemplateOutput("0", source, "x", false, "y", true);
-	// 	checkTemplateOutput("0", source, "x", true, "y", true);
-	// 	checkTemplateOutput("0", source, "x", 17, "y", true);
-	// 	checkTemplateOutput("6", source, "x", 23, "y", 17);
-	// 	checkTemplateOutput("0.5", source, "x", 5.5, "y", 2.5);
-	// 	// This checks constant folding
-	// 	checkTemplateOutput("6", "<?print 23 % 17?>");
-	// }
+		checkTemplateOutput("0", source, "x", false, "y", true);
+		checkTemplateOutput("0", source, "x", true, "y", true);
+		checkTemplateOutput("0", source, "x", 17, "y", true);
+		checkTemplateOutput("6", source, "x", 23, "y", 17);
+		checkTemplateOutput("0.5", source, "x", 5.5, "y", 2.5);
+		// This checks constant folding
+		checkTemplateOutput("6", "<?print 23 % 17?>");
+	}
 
-	// @Test
-	// public void eq() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x == y?>";
+	@Test
+	public void eq() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x == y?>";
 
-	// 	checkTemplateOutput("False", source, "x", false, "y", true);
-	// 	checkTemplateOutput("True", source, "x", true, "y", true);
-	// 	checkTemplateOutput("True", source, "x", 1, "y", true);
-	// 	checkTemplateOutput("False", source, "x", 1, "y", false);
-	// 	checkTemplateOutput("False", source, "x", 17, "y", 23);
-	// 	checkTemplateOutput("True", source, "x", 17, "y", 17);
-	// 	checkTemplateOutput("True", source, "x", 17, "y", 17.0);
-	// 	// This checks constant folding
-	// 	checkTemplateOutput("False", "<?print 17 == 23?>");
-	// 	checkTemplateOutput("True", "<?print 17 == 17.?>");
-	// }
+		checkTemplateOutput("False", source, "x", false, "y", true);
+		checkTemplateOutput("True", source, "x", true, "y", true);
+		checkTemplateOutput("True", source, "x", 1, "y", true);
+		checkTemplateOutput("False", source, "x", 1, "y", false);
+		checkTemplateOutput("False", source, "x", 17, "y", 23);
+		checkTemplateOutput("True", source, "x", 17, "y", 17);
+		checkTemplateOutput("True", source, "x", 17, "y", 17.0);
+		// This checks constant folding
+		checkTemplateOutput("False", "<?print 17 == 23?>");
+		checkTemplateOutput("True", "<?print 17 == 17.?>");
+	}
 
-	// @Test
-	// public void ne() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x != y?>";
+	@Test
+	public void ne() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x != y?>";
 
-	// 	checkTemplateOutput("True", source, "x", false, "y", true);
-	// 	checkTemplateOutput("False", source, "x", true, "y", true);
-	// 	checkTemplateOutput("False", source, "x", 1, "y", true);
-	// 	checkTemplateOutput("True", source, "x", 1, "y", false);
-	// 	checkTemplateOutput("True", source, "x", 17, "y", 23);
-	// 	checkTemplateOutput("False", source, "x", 17, "y", 17);
-	// 	checkTemplateOutput("False", source, "x", 17, "y", 17.0);
-	// 	// This checks constant folding
-	// 	checkTemplateOutput("True", "<?print 17 != 23?>");
-	// 	checkTemplateOutput("False", "<?print 17 != 17.?>");
-	// }
+		checkTemplateOutput("True", source, "x", false, "y", true);
+		checkTemplateOutput("False", source, "x", true, "y", true);
+		checkTemplateOutput("False", source, "x", 1, "y", true);
+		checkTemplateOutput("True", source, "x", 1, "y", false);
+		checkTemplateOutput("True", source, "x", 17, "y", 23);
+		checkTemplateOutput("False", source, "x", 17, "y", 17);
+		checkTemplateOutput("False", source, "x", 17, "y", 17.0);
+		// This checks constant folding
+		checkTemplateOutput("True", "<?print 17 != 23?>");
+		checkTemplateOutput("False", "<?print 17 != 17.?>");
+	}
 
-	// @Test
-	// public void lt() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x < y?>";
+	@Test
+	public void lt() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x < y?>";
 
-	// 	checkTemplateOutput("True", source, "x", false, "y", true);
-	// 	checkTemplateOutput("False", source, "x", true, "y", true);
-	// 	checkTemplateOutput("False", source, "x", 1, "y", true);
-	// 	checkTemplateOutput("True", source, "x", true, "y", 2);
-	// 	checkTemplateOutput("True", source, "x", 17, "y", 23);
-	// 	checkTemplateOutput("False", source, "x", 23, "y", 17);
-	// 	checkTemplateOutput("False", source, "x", 17, "y", 17.0);
-	// 	checkTemplateOutput("True", source, "x", 17, "y", 23.0);
-	// 	// This checks constant folding
-	// 	checkTemplateOutput("True", "<?print 17 < 23?>");
-	// 	checkTemplateOutput("False", "<?print 17 < 17.?>");
-	// }
+		checkTemplateOutput("True", source, "x", false, "y", true);
+		checkTemplateOutput("False", source, "x", true, "y", true);
+		checkTemplateOutput("False", source, "x", 1, "y", true);
+		checkTemplateOutput("True", source, "x", true, "y", 2);
+		checkTemplateOutput("True", source, "x", 17, "y", 23);
+		checkTemplateOutput("False", source, "x", 23, "y", 17);
+		checkTemplateOutput("False", source, "x", 17, "y", 17.0);
+		checkTemplateOutput("True", source, "x", 17, "y", 23.0);
+		// This checks constant folding
+		checkTemplateOutput("True", "<?print 17 < 23?>");
+		checkTemplateOutput("False", "<?print 17 < 17.?>");
+	}
 
-	// @Test
-	// public void le() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x <= y?>";
+	@Test
+	public void le() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x <= y?>";
 
-	// 	checkTemplateOutput("True", source, "x", false, "y", true);
-	// 	checkTemplateOutput("True", source, "x", true, "y", true);
-	// 	checkTemplateOutput("True", source, "x", 1, "y", true);
-	// 	checkTemplateOutput("True", source, "x", true, "y", 2);
-	// 	checkTemplateOutput("True", source, "x", 17, "y", 23);
-	// 	checkTemplateOutput("False", source, "x", 23, "y", 17);
-	// 	checkTemplateOutput("True", source, "x", 17, "y", 17);
-	// 	checkTemplateOutput("True", source, "x", 17, "y", 17.0);
-	// 	// This checks constant folding
-	// 	checkTemplateOutput("True", "<?print 17 <= 23?>");
-	// 	checkTemplateOutput("True", "<?print 17 <= 17.?>");
-	// 	checkTemplateOutput("True", "<?print 17 <= 23.?>");
-	// 	checkTemplateOutput("False", "<?print 18 <= 17.?>");
-	// }
+		checkTemplateOutput("True", source, "x", false, "y", true);
+		checkTemplateOutput("True", source, "x", true, "y", true);
+		checkTemplateOutput("True", source, "x", 1, "y", true);
+		checkTemplateOutput("True", source, "x", true, "y", 2);
+		checkTemplateOutput("True", source, "x", 17, "y", 23);
+		checkTemplateOutput("False", source, "x", 23, "y", 17);
+		checkTemplateOutput("True", source, "x", 17, "y", 17);
+		checkTemplateOutput("True", source, "x", 17, "y", 17.0);
+		// This checks constant folding
+		checkTemplateOutput("True", "<?print 17 <= 23?>");
+		checkTemplateOutput("True", "<?print 17 <= 17.?>");
+		checkTemplateOutput("True", "<?print 17 <= 23.?>");
+		checkTemplateOutput("False", "<?print 18 <= 17.?>");
+	}
 
-	// @Test
-	// public void gt() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x > y?>";
+	@Test
+	public void gt() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x > y?>";
 
-	// 	checkTemplateOutput("False", source, "x", false, "y", true);
-	// 	checkTemplateOutput("False", source, "x", true, "y", true);
-	// 	checkTemplateOutput("False", source, "x", 1, "y", true);
-	// 	checkTemplateOutput("True", source, "x", 2, "y", true);
-	// 	checkTemplateOutput("False", source, "x", 17, "y", 23);
-	// 	checkTemplateOutput("True", source, "x", 23, "y", 17);
-	// 	checkTemplateOutput("False", source, "x", 17, "y", 17.0);
-	// 	checkTemplateOutput("True", source, "x", 23.0, "y", 17);
-	// 	// This checks constant folding
-	// 	checkTemplateOutput("False", "<?print 17 > 23?>");
-	// 	checkTemplateOutput("False", "<?print 17 > 17.?>");
-	// 	checkTemplateOutput("False", "<?print 17 > 23.?>");
-	// 	checkTemplateOutput("True", "<?print 18 > 17.?>");
-	// }
+		checkTemplateOutput("False", source, "x", false, "y", true);
+		checkTemplateOutput("False", source, "x", true, "y", true);
+		checkTemplateOutput("False", source, "x", 1, "y", true);
+		checkTemplateOutput("True", source, "x", 2, "y", true);
+		checkTemplateOutput("False", source, "x", 17, "y", 23);
+		checkTemplateOutput("True", source, "x", 23, "y", 17);
+		checkTemplateOutput("False", source, "x", 17, "y", 17.0);
+		checkTemplateOutput("True", source, "x", 23.0, "y", 17);
+		// This checks constant folding
+		checkTemplateOutput("False", "<?print 17 > 23?>");
+		checkTemplateOutput("False", "<?print 17 > 17.?>");
+		checkTemplateOutput("False", "<?print 17 > 23.?>");
+		checkTemplateOutput("True", "<?print 18 > 17.?>");
+	}
 
-	// @Test
-	// public void ge() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x >= y?>";
+	@Test
+	public void ge() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x >= y?>";
 
-	// 	checkTemplateOutput("False", source, "x", false, "y", true);
-	// 	checkTemplateOutput("True", source, "x", true, "y", true);
-	// 	checkTemplateOutput("True", source, "x", 1, "y", true);
-	// 	checkTemplateOutput("False", source, "x", true, "y", 2);
-	// 	checkTemplateOutput("False", source, "x", 17, "y", 23);
-	// 	checkTemplateOutput("True", source, "x", 23, "y", 17);
-	// 	checkTemplateOutput("True", source, "x", 17, "y", 17);
-	// 	checkTemplateOutput("True", source, "x", 17, "y", 17.0);
-	// 	// This checks constant folding
-	// 	checkTemplateOutput("False", "<?print 17 >= 23?>");
-	// 	checkTemplateOutput("True", "<?print 17 >= 17.?>");
-	// 	checkTemplateOutput("False", "<?print 17 >= 23.?>");
-	// 	checkTemplateOutput("True", "<?print 18 >= 17.?>");
-	// }
+		checkTemplateOutput("False", source, "x", false, "y", true);
+		checkTemplateOutput("True", source, "x", true, "y", true);
+		checkTemplateOutput("True", source, "x", 1, "y", true);
+		checkTemplateOutput("False", source, "x", true, "y", 2);
+		checkTemplateOutput("False", source, "x", 17, "y", 23);
+		checkTemplateOutput("True", source, "x", 23, "y", 17);
+		checkTemplateOutput("True", source, "x", 17, "y", 17);
+		checkTemplateOutput("True", source, "x", 17, "y", 17.0);
+		// This checks constant folding
+		checkTemplateOutput("False", "<?print 17 >= 23?>");
+		checkTemplateOutput("True", "<?print 17 >= 17.?>");
+		checkTemplateOutput("False", "<?print 17 >= 23.?>");
+		checkTemplateOutput("True", "<?print 18 >= 17.?>");
+	}
 
-	// @Test
-	// public void contains() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x in y?>";
+	@Test
+	public void contains() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x in y?>";
 
-	// 	checkTemplateOutput("True", source, "x", 2, "y", java.util.Arrays.asList(1, 2, 3));
-	// 	checkTemplateOutput("False", source, "x", 4, "y", java.util.Arrays.asList(1, 2, 3));
-	// 	checkTemplateOutput("True", source, "x", "ur", "y", "gurk");
-	// 	checkTemplateOutput("False", source, "x", "un", "y", "gurk");
-	// 	checkTemplateOutput("True", source, "x", "a", "y", makeMap("a", 1, "b", 2));
-	// 	checkTemplateOutput("False", source, "x", "c", "y", makeMap("a", 1, "b", 2));
-	// 	checkTemplateOutput("True", source, "x", 0xff, "y", new Color(0x00, 0x80, 0xff, 0x42));
-	// 	checkTemplateOutput("False", source, "x", 0x23, "y", new Color(0x00, 0x80, 0xff, 0x42));
-	// }
+		checkTemplateOutput("True", source, "x", 2, "y", java.util.Arrays.asList(1, 2, 3));
+		checkTemplateOutput("False", source, "x", 4, "y", java.util.Arrays.asList(1, 2, 3));
+		checkTemplateOutput("True", source, "x", "ur", "y", "gurk");
+		checkTemplateOutput("False", source, "x", "un", "y", "gurk");
+		checkTemplateOutput("True", source, "x", "a", "y", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("False", source, "x", "c", "y", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("True", source, "x", 0xff, "y", new Color(0x00, 0x80, 0xff, 0x42));
+		checkTemplateOutput("False", source, "x", 0x23, "y", new Color(0x00, 0x80, 0xff, 0x42));
+	}
 
-	// @Test
-	// public void notcontains() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x not in y?>";
+	@Test
+	public void notcontains() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x not in y?>";
 
-	// 	checkTemplateOutput("False", source, "x", 2, "y", java.util.Arrays.asList(1, 2, 3));
-	// 	checkTemplateOutput("True", source, "x", 4, "y", java.util.Arrays.asList(1, 2, 3));
-	// 	checkTemplateOutput("False", source, "x", "ur", "y", "gurk");
-	// 	checkTemplateOutput("True", source, "x", "un", "y", "gurk");
-	// 	checkTemplateOutput("False", source, "x", "a", "y", makeMap("a", 1, "b", 2));
-	// 	checkTemplateOutput("True", source, "x", "c", "y", makeMap("a", 1, "b", 2));
-	// 	checkTemplateOutput("False", source, "x", 0xff, "y", new Color(0x00, 0x80, 0xff, 0x42));
-	// 	checkTemplateOutput("True", source, "x", 0x23, "y", new Color(0x00, 0x80, 0xff, 0x42));
-	// }
+		checkTemplateOutput("False", source, "x", 2, "y", java.util.Arrays.asList(1, 2, 3));
+		checkTemplateOutput("True", source, "x", 4, "y", java.util.Arrays.asList(1, 2, 3));
+		checkTemplateOutput("False", source, "x", "ur", "y", "gurk");
+		checkTemplateOutput("True", source, "x", "un", "y", "gurk");
+		checkTemplateOutput("False", source, "x", "a", "y", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("True", source, "x", "c", "y", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("False", source, "x", 0xff, "y", new Color(0x00, 0x80, 0xff, 0x42));
+		checkTemplateOutput("True", source, "x", 0x23, "y", new Color(0x00, 0x80, 0xff, 0x42));
+	}
 
-	// @Test
-	// public void and() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x and y?>";
+	@Test
+	public void and() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x and y?>";
 
-	// 	checkTemplateOutput("False", source, "x", false, "y", false);
-	// 	checkTemplateOutput("False", source, "x", false, "y", true);
-	// 	checkTemplateOutput("0", source, "x", 0, "y", true);
-	// }
+		checkTemplateOutput("False", source, "x", false, "y", false);
+		checkTemplateOutput("False", source, "x", false, "y", true);
+		checkTemplateOutput("0", source, "x", 0, "y", true);
+	}
 
-	// @Test
-	// public void or() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print x or y?>";
+	@Test
+	public void or() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print x or y?>";
 
-	// 	checkTemplateOutput("False", source, "x", false, "y", false);
-	// 	checkTemplateOutput("True", source, "x", false, "y", true);
-	// 	checkTemplateOutput("42", source, "x", 42, "y", true);
-	// }
+		checkTemplateOutput("False", source, "x", false, "y", false);
+		checkTemplateOutput("True", source, "x", false, "y", true);
+		checkTemplateOutput("42", source, "x", 42, "y", true);
+	}
 
-	// @Test
-	// public void not() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?print not x?>";
+	@Test
+	public void not() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print not x?>";
 
-	// 	checkTemplateOutput("True", source, "x", false);
-	// 	checkTemplateOutput("False", source, "x", 42);
-	// }
+		checkTemplateOutput("True", source, "x", false);
+		checkTemplateOutput("False", source, "x", 42);
+	}
 
 	// @Test
 	// public void getitem() throws org.antlr.runtime.RecognitionException
