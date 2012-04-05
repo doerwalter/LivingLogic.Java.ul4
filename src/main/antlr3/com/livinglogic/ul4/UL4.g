@@ -178,13 +178,13 @@ literal returns [AST node]
 
 list returns [com.livinglogic.ul4.List node]
 	: '[' ']' { $node = new com.livinglogic.ul4.List(); }
-	| '[' {$node = new com.livinglogic.ul4.List(); } e1=expr8 { $node.append($e1.node); } (',' e2=expr8 { $node.append($e2.node); } )* ','? ']'
+	| '[' {$node = new com.livinglogic.ul4.List(); } e1=expr9 { $node.append($e1.node); } (',' e2=expr9 { $node.append($e2.node); } )* ','? ']'
 	;
 
 fragment
 dictitem returns [DictItem node]
-	: k=expr8 ':' v=expr8 { $node = new DictItem($k.node, $v.node); }
-	| '**' d=expr8 { $node = new DictItem($d.node); }
+	: k=expr9 ':' v=expr9 { $node = new DictItem($k.node, $v.node); }
+	| '**' d=expr9 { $node = new DictItem($d.node); }
 	;
 
 dict returns [Dict node]
@@ -196,13 +196,13 @@ atom returns [AST node]
 	: e_literal=literal { $node = $e_literal.node; }
 	| e_list=list { $node = $e_list.node; }
 	| e_dict=dict { $node = $e_dict.node; }
-	| '(' e_bracket=expr8 ')' { $node = $e_bracket.node; }
+	| '(' e_bracket=expr9 ')' { $node = $e_bracket.node; }
 	;
 
 /*
 callfunc returns [CallFunc node]
 	: name '(' ')' { $node = new CallFunc($name.text); }
-	| name { $node = new CallFunc($name.text); } '(' a1=expr8 { $node.append($a1.node); } (',' a2=expr8 { $node.append($a2.node); } )* ','? ')'
+	| name { $node = new CallFunc($name.text); } '(' a1=expr9 { $node.append($a1.node); } (',' a2=expr9 { $node.append($a2.node); } )* ','? ')'
 	;
 
 expr10 returns [AST node]
@@ -215,15 +215,15 @@ getattr
 	;
 
 callmeth
-	: expr9 '.' name '(' expr8 ')'
-	| expr9 '.' name '(' expr8 ',' expr8 ')'
-	| expr9 '.' name '(' expr8 ',' expr8 ',' expr8 ')'
+	: expr9 '.' name '(' expr9 ')'
+	| expr9 '.' name '(' expr9 ',' expr9 ')'
+	| expr9 '.' name '(' expr9 ',' expr9 ',' expr9 ')'
 	;
 
 fragment
 namedarg
-	: name '=' expr8
-	| '**' expr8
+	: name '=' expr9
+	| '**' expr9
 	;
 
 callmethkw
@@ -238,16 +238,16 @@ expr9
 	;
 
 getitem
-	: expr9 '[' expr8 ']'
+	: expr9 '[' expr9 ']'
 	;
 
 getslice
-	: expr9 '[' expr8 ':' expr8 ']'
-	| expr9 '[' ':' expr8 ']'
-	| expr9 '[' expr8 ':' ']'
+	: expr9 '[' expr9 ':' expr9 ']'
+	| expr9 '[' ':' expr9 ']'
+	| expr9 '[' expr9 ':' ']'
 	;
 
-expr8
+expr9
 	: getitem
 	| getslice
 	| expr9
@@ -255,11 +255,9 @@ expr8
 
 */
 
-/*
 expr9 returns [AST node]
-	: e1=expr8 { $node = $e1.node; } ('[' ( ':' (e2=expr9)? | e2=expr9 ( ':' ( e3=expr9 )? )?) ']')*
+	: e1=expr8 { $node = $e1.node; } ('[' ( ':' { AST index2 = null; } ( e2=expr9 { index2 = $e2.node; })? { $node = new GetSlice($node, null, index2); } | { boolean slice = false; } e2=expr9 { AST index1 = $e2.node; AST index2 = null; } ( ':' { slice = true; } ( e3=expr9 { index2 = $e3.node; } )? )? { $node = slice ? new GetSlice($node, index1, index2) : new Binary(Opcode.OC_GETITEM, $node, index1); } ) ']')*
 	;
-*/
 
 expr8 returns [AST node]
 	: '-' e=expr7 { $node = new Unary(Opcode.OC_NEG, $e.node); }
@@ -299,22 +297,22 @@ expr1 returns [AST node]
 /* Additional rules for "for" tag */
 
 for_ returns [For node]
-	: n=name 'in' e=expr8 { $node = new For($n.text, $e.node); }
-	| '(' n1=name ',' ')' 'in' e=expr8 { $node = new For($e.node); $node.append($n1.text); }
-	| '(' { $node = new For(); } n1=name { $node.append($n1.text); } (',' n2=name { $node.append($n2.text); } )+ ','? ')' 'in' e=expr8 { $node.setContainer($e.node); }
+	: n=name 'in' e=expr9 { $node = new For($n.text, $e.node); }
+	| '(' n1=name ',' ')' 'in' e=expr9 { $node = new For($e.node); $node.append($n1.text); }
+	| '(' { $node = new For(); } n1=name { $node.append($n1.text); } (',' n2=name { $node.append($n2.text); } )+ ','? ')' 'in' e=expr9 { $node.setContainer($e.node); }
 	;
 
 
 /* Additional rules for "code" tag */
 
 stmt returns [AST node]
-	: n=name '=' e=expr8 { $node = new ChangeVar(Opcode.OC_STOREVAR, $n.node, $e.node); }
-	| n=name '+=' e=expr8 { $node = new ChangeVar(Opcode.OC_ADDVAR, $n.node, $e.node); }
-	| n=name '-=' e=expr8 { $node = new ChangeVar(Opcode.OC_SUBVAR, $n.node, $e.node); }
-	| n=name '*=' e=expr8 { $node = new ChangeVar(Opcode.OC_MULVAR, $n.node, $e.node); }
-	| n=name '/=' e=expr8 { $node = new ChangeVar(Opcode.OC_TRUEDIVVAR, $n.node, $e.node); }
-	| n=name '//=' e=expr8 { $node = new ChangeVar(Opcode.OC_FLOORDIVVAR, $n.node, $e.node); }
-	| n=name '%=' e=expr8 { $node = new ChangeVar(Opcode.OC_MODVAR, $n.node, $e.node); }
+	: n=name '=' e=expr9 { $node = new ChangeVar(Opcode.OC_STOREVAR, $n.node, $e.node); }
+	| n=name '+=' e=expr9 { $node = new ChangeVar(Opcode.OC_ADDVAR, $n.node, $e.node); }
+	| n=name '-=' e=expr9 { $node = new ChangeVar(Opcode.OC_SUBVAR, $n.node, $e.node); }
+	| n=name '*=' e=expr9 { $node = new ChangeVar(Opcode.OC_MULVAR, $n.node, $e.node); }
+	| n=name '/=' e=expr9 { $node = new ChangeVar(Opcode.OC_TRUEDIVVAR, $n.node, $e.node); }
+	| n=name '//=' e=expr9 { $node = new ChangeVar(Opcode.OC_FLOORDIVVAR, $n.node, $e.node); }
+	| n=name '%=' e=expr9 { $node = new ChangeVar(Opcode.OC_MODVAR, $n.node, $e.node); }
 	| 'del' n=name { $node = new DelVar($n.node); }
 	;
 
@@ -323,10 +321,10 @@ stmt returns [AST node]
 
 fragment
 renderarg returns [KeywordArg node]
-	: n=name '=' e=expr8 { $node = new KeywordArg($n.text, $e.node); }
-	| '**' e=expr8 { $node = new KeywordArg($e.node); }
+	: n=name '=' e=expr9 { $node = new KeywordArg($n.text, $e.node); }
+	| '**' e=expr9 { $node = new KeywordArg($e.node); }
 	;
 
 render returns [Render node]
-	: t=expr8 { $node = new Render($t.node); } '(' a1=renderarg { $node.append($a1.node); } (',' a2=renderarg { $node.append($a2.node); } )* ','? ')'
+	: t=expr9 { $node = new Render($t.node); } '(' a1=renderarg { $node.append($a1.node); } (',' a2=renderarg { $node.append($a2.node); } )* ','? ')'
 	;

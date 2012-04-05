@@ -134,16 +134,23 @@ public class UL4Test
 	// 	checkTemplateOutput("yes", "<?if @2000-02-29T12:34:56.987654?>yes<?else?>no<?end if?>");
 	// }
 
-	// @Test
-	// public void color() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("255,255,255,255", "<?code c = #fff?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
-	// 	checkTemplateOutput("255,255,255,255", "<?code c = #ffffff?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
-	// 	checkTemplateOutput("18,52,86,255", "<?code c = #123456?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
-	// 	checkTemplateOutput("17,34,51,68", "<?code c = #1234?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
-	// 	checkTemplateOutput("18,52,86,120", "<?code c = #12345678?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
-	// 	checkTemplateOutput("yes", "<?if #fff?>yes<?else?>no<?end if?>");
-	// }
+	@Test
+	public void gurk() throws org.antlr.runtime.RecognitionException
+	{
+		InterpretedTemplate t = new InterpretedTemplate("<?code c = #fff?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
+		System.out.println(t);
+	}
+
+	@Test
+	public void color() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("255,255,255,255", "<?code c = #fff?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
+		checkTemplateOutput("255,255,255,255", "<?code c = #ffffff?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
+		checkTemplateOutput("18,52,86,255", "<?code c = #123456?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
+		checkTemplateOutput("17,34,51,68", "<?code c = #1234?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
+		checkTemplateOutput("18,52,86,120", "<?code c = #12345678?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
+		checkTemplateOutput("yes", "<?if #fff?>yes<?else?>no<?end if?>");
+	}
 
 	@Test
 	public void list() throws org.antlr.runtime.RecognitionException
