@@ -678,86 +678,86 @@ public class UL4Test
 		checkTemplateOutput("False", source, "x", 42);
 	}
 
-	// @Test
-	// public void getitem() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("u", "<?print 'gurk'[1]?>");
-	// 	checkTemplateOutput("u", "<?print x[1]?>", "x", "gurk");
-	// 	checkTemplateOutput("u", "<?print 'gurk'[-3]?>");
-	// 	checkTemplateOutput("u", "<?print x[-3]?>", "x", "gurk");
-	// }
+	@Test
+	public void getitem() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("u", "<?print 'gurk'[1]?>");
+		checkTemplateOutput("u", "<?print x[1]?>", "x", "gurk");
+		checkTemplateOutput("u", "<?print 'gurk'[-3]?>");
+		checkTemplateOutput("u", "<?print x[-3]?>", "x", "gurk");
+	}
 
-	// @CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
-	// public void getitem1() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("u", "<?print 'gurk'[4]?>");
-	// }
+	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
+	public void getitem1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("u", "<?print 'gurk'[4]?>");
+	}
 
-	// @CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
-	// public void getitem2() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("u", "<?print x[4]?>", "x", "gurk");
-	// }
+	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
+	public void getitem2() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("u", "<?print x[4]?>", "x", "gurk");
+	}
 
-	// @CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
-	// public void getitem3() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("u", "<?print 'gurk'[-5]?>");
-	// }
+	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
+	public void getitem3() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("u", "<?print 'gurk'[-5]?>");
+	}
 
-	// @CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
-	// public void getitem4() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("u", "<?print x[-5]?>", "x", "gurk");
-	// }
+	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
+	public void getitem4() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("u", "<?print x[-5]?>", "x", "gurk");
+	}
 
-	// @Test
-	// public void getslice() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("ur", "<?print 'gurk'[1:3]?>");
-	// 	checkTemplateOutput("ur", "<?print x[1:3]?>", "x", "gurk");
-	// 	checkTemplateOutput("ur", "<?print 'gurk'[-3:-1]?>");
-	// 	checkTemplateOutput("ur", "<?print x[-3:-1]?>", "x", "gurk");
-	// 	checkTemplateOutput("", "<?print 'gurk'[4:10]?>");
-	// 	checkTemplateOutput("", "<?print x[4:10]?>", "x", "gurk");
-	// 	checkTemplateOutput("", "<?print 'gurk'[-10:-5]?>");
-	// 	checkTemplateOutput("", "<?print x[-10:-5]?>", "x", "gurk");
-	// 	checkTemplateOutput("urk", "<?print 'gurk'[1:]?>");
-	// 	checkTemplateOutput("urk", "<?print x[1:]?>", "x", "gurk");
-	// 	checkTemplateOutput("urk", "<?print 'gurk'[-3:]?>");
-	// 	checkTemplateOutput("urk", "<?print x[-3:]?>", "x", "gurk");
-	// 	checkTemplateOutput("", "<?print 'gurk'[4:]?>");
-	// 	checkTemplateOutput("", "<?print x[4:]?>", "x", "gurk");
-	// 	checkTemplateOutput("gurk", "<?print 'gurk'[-10:]?>");
-	// 	checkTemplateOutput("gurk", "<?print x[-10:]?>", "x", "gurk");
-	// 	checkTemplateOutput("gur", "<?print 'gurk'[:3]?>");
-	// 	checkTemplateOutput("gur", "<?print x[:3]?>", "x", "gurk");
-	// 	checkTemplateOutput("gur", "<?print 'gurk'[:-1]?>");
-	// 	checkTemplateOutput("gur", "<?print x[:-1]?>", "x", "gurk");
-	// 	checkTemplateOutput("gurk", "<?print 'gurk'[:10]?>");
-	// 	checkTemplateOutput("gurk", "<?print x[:10]?>", "x", "gurk");
-	// 	checkTemplateOutput("", "<?print 'gurk'[:-5]?>");
-	// 	checkTemplateOutput("", "<?print x[:-5]?>", "x", "gurk");
-	// }
+	@Test
+	public void getslice() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("ur", "<?print 'gurk'[1:3]?>");
+		checkTemplateOutput("ur", "<?print x[1:3]?>", "x", "gurk");
+		checkTemplateOutput("ur", "<?print 'gurk'[-3:-1]?>");
+		checkTemplateOutput("ur", "<?print x[-3:-1]?>", "x", "gurk");
+		checkTemplateOutput("", "<?print 'gurk'[4:10]?>");
+		checkTemplateOutput("", "<?print x[4:10]?>", "x", "gurk");
+		checkTemplateOutput("", "<?print 'gurk'[-10:-5]?>");
+		checkTemplateOutput("", "<?print x[-10:-5]?>", "x", "gurk");
+		checkTemplateOutput("urk", "<?print 'gurk'[1:]?>");
+		checkTemplateOutput("urk", "<?print x[1:]?>", "x", "gurk");
+		checkTemplateOutput("urk", "<?print 'gurk'[-3:]?>");
+		checkTemplateOutput("urk", "<?print x[-3:]?>", "x", "gurk");
+		checkTemplateOutput("", "<?print 'gurk'[4:]?>");
+		checkTemplateOutput("", "<?print x[4:]?>", "x", "gurk");
+		checkTemplateOutput("gurk", "<?print 'gurk'[-10:]?>");
+		checkTemplateOutput("gurk", "<?print x[-10:]?>", "x", "gurk");
+		checkTemplateOutput("gur", "<?print 'gurk'[:3]?>");
+		checkTemplateOutput("gur", "<?print x[:3]?>", "x", "gurk");
+		checkTemplateOutput("gur", "<?print 'gurk'[:-1]?>");
+		checkTemplateOutput("gur", "<?print x[:-1]?>", "x", "gurk");
+		checkTemplateOutput("gurk", "<?print 'gurk'[:10]?>");
+		checkTemplateOutput("gurk", "<?print x[:10]?>", "x", "gurk");
+		checkTemplateOutput("", "<?print 'gurk'[:-5]?>");
+		checkTemplateOutput("", "<?print x[:-5]?>", "x", "gurk");
+	}
 
-	// @Test
-	// public void nested() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String sc = "4";
-	// 	String sv = "x";
-	// 	int n = 4;
-	// 	// when using 10 compiling the variable will run out of registers
-	// 	int depth = 9;
-	// 	for (int i = 0; i < depth; ++i)
-	// 	{
-	// 		sc = "(" + sc + ")+(" + sc + ")";
-	// 		sv = "(" + sv + ")+(" + sv + ")";
-	// 		n = n + n;
-	// 	}
-	// 	String expected = Integer.toString(n);
-	// 	checkTemplateOutput(expected, "<?print " + sc + "?>");
-	// 	checkTemplateOutput(expected, "<?print " + sv + "?>", "x", 4);
-	// }
+	@Test
+	public void nested() throws org.antlr.runtime.RecognitionException
+	{
+		String sc = "4";
+		String sv = "x";
+		int n = 4;
+		// when using 10 compiling the variable will run out of registers
+		int depth = 9;
+		for (int i = 0; i < depth; ++i)
+		{
+			sc = "(" + sc + ")+(" + sc + ")";
+			sv = "(" + sv + ")+(" + sv + ")";
+			n = n + n;
+		}
+		String expected = Integer.toString(n);
+		checkTemplateOutput(expected, "<?print " + sc + "?>");
+		checkTemplateOutput(expected, "<?print " + sv + "?>", "x", 4);
+	}
 
 	// @Test
 	// public void precedence() throws org.antlr.runtime.RecognitionException
