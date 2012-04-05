@@ -135,13 +135,6 @@ public class UL4Test
 	// }
 
 	@Test
-	public void gurk() throws org.antlr.runtime.RecognitionException
-	{
-		InterpretedTemplate t = new InterpretedTemplate("<?code c = #fff?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
-		System.out.println(t);
-	}
-
-	@Test
 	public void color() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("255,255,255,255", "<?code c = #fff?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
