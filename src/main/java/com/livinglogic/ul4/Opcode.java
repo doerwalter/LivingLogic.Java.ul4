@@ -40,46 +40,47 @@ public class Opcode extends ObjectAsMap
 	public static final int OC_GETSLICE12 = 25;
 	public static final int OC_GETSLICE1 = 26;
 	public static final int OC_GETSLICE2 = 27;
-	public static final int OC_PRINT = 28;
-	public static final int OC_PRINTX = 29;
-	public static final int OC_NOT = 30;
-	public static final int OC_NEG = 31;
-	public static final int OC_CONTAINS = 32;
-	public static final int OC_NOTCONTAINS = 33;
-	public static final int OC_EQ = 34;
-	public static final int OC_NE = 35;
-	public static final int OC_LT = 36;
-	public static final int OC_LE = 37;
-	public static final int OC_GT = 38;
-	public static final int OC_GE = 39;
-	public static final int OC_ADD = 40;
-	public static final int OC_SUB = 41;
-	public static final int OC_MUL = 42;
-	public static final int OC_FLOORDIV = 43;
-	public static final int OC_TRUEDIV = 44;
-	public static final int OC_AND = 45;
-	public static final int OC_OR = 46;
-	public static final int OC_MOD = 47;
-	public static final int OC_CALLFUNC0 = 48;
-	public static final int OC_CALLFUNC1 = 49;
-	public static final int OC_CALLFUNC2 = 50;
-	public static final int OC_CALLFUNC3 = 51;
-	public static final int OC_CALLFUNC4 = 52;
-	public static final int OC_CALLMETH0 = 53;
-	public static final int OC_CALLMETH1 = 54;
-	public static final int OC_CALLMETH2 = 55;
-	public static final int OC_CALLMETH3 = 56;
-	public static final int OC_CALLMETHKW = 57;
-	public static final int OC_IF = 58;
-	public static final int OC_ELSE = 59;
-	public static final int OC_ENDIF = 60;
-	public static final int OC_FOR = 61;
-	public static final int OC_ENDFOR = 62;
-	public static final int OC_BREAK = 63;
-	public static final int OC_CONTINUE = 64;
-	public static final int OC_RENDER = 65;
-	public static final int OC_DEF = 66;
-	public static final int OC_ENDDEF = 67;
+	public static final int OC_GETSLICE = 28;
+	public static final int OC_PRINT = 29;
+	public static final int OC_PRINTX = 30;
+	public static final int OC_NOT = 31;
+	public static final int OC_NEG = 32;
+	public static final int OC_CONTAINS = 33;
+	public static final int OC_NOTCONTAINS = 34;
+	public static final int OC_EQ = 35;
+	public static final int OC_NE = 36;
+	public static final int OC_LT = 37;
+	public static final int OC_LE = 38;
+	public static final int OC_GT = 39;
+	public static final int OC_GE = 40;
+	public static final int OC_ADD = 41;
+	public static final int OC_SUB = 42;
+	public static final int OC_MUL = 43;
+	public static final int OC_FLOORDIV = 44;
+	public static final int OC_TRUEDIV = 45;
+	public static final int OC_AND = 46;
+	public static final int OC_OR = 47;
+	public static final int OC_MOD = 48;
+	public static final int OC_CALLFUNC0 = 49;
+	public static final int OC_CALLFUNC1 = 50;
+	public static final int OC_CALLFUNC2 = 51;
+	public static final int OC_CALLFUNC3 = 52;
+	public static final int OC_CALLFUNC4 = 53;
+	public static final int OC_CALLMETH0 = 54;
+	public static final int OC_CALLMETH1 = 55;
+	public static final int OC_CALLMETH2 = 56;
+	public static final int OC_CALLMETH3 = 57;
+	public static final int OC_CALLMETHKW = 58;
+	public static final int OC_IF = 59;
+	public static final int OC_ELSE = 60;
+	public static final int OC_ENDIF = 61;
+	public static final int OC_FOR = 62;
+	public static final int OC_ENDFOR = 63;
+	public static final int OC_BREAK = 64;
+	public static final int OC_CONTINUE = 65;
+	public static final int OC_RENDER = 66;
+	public static final int OC_DEF = 67;
+	public static final int OC_ENDDEF = 68;
 
 	public static final int CF0_NOW = 0;
 	public static final int CF0_UTCNOW = 1;
@@ -269,6 +270,8 @@ public class Opcode extends ObjectAsMap
 			return OC_GETSLICE1;
 		else if (name.equals("getslice2"))
 			return OC_GETSLICE2;
+		else if (name.equals("getslice"))
+			return OC_GETSLICE;
 		else if (name.equals("print"))
 			return OC_PRINT;
 		else if (name.equals("printx"))
@@ -685,6 +688,8 @@ public class Opcode extends ObjectAsMap
 			return "getslice1";
 		else if (code == OC_GETSLICE2)
 			return "getslice2";
+		else if (code == OC_GETSLICE)
+			return "getslice";
 		else if (code == OC_PRINT)
 			return "print";
 		else if (code == OC_PRINTX)
@@ -881,6 +886,8 @@ public class Opcode extends ObjectAsMap
 				return "r" + r1 + " = r" + r2 + "[r" + r3 + ":]";
 			case OC_GETSLICE2:
 				return "r" + r1 + " = r" + r2 + "[:r" + r4 + "]";
+			case OC_GETSLICE:
+				return "r" + r1 + " = r" + r2 + "[:]";
 			case OC_PRINT:
 				return "print r" + r1;
 			case OC_PRINTX:

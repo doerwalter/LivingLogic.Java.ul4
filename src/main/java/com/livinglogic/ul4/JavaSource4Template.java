@@ -184,6 +184,9 @@ public class JavaSource4Template
 				case Opcode.OC_GETSLICE2:
 					code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.getSlice(r" + opcode.r2 + ", null, r" + opcode.r3 + ");");
 					break;
+				case Opcode.OC_GETSLICE:
+					code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.getSlice(r" + opcode.r2 + ", null, null);");
+					break;
 				case Opcode.OC_PRINT:
 					code(output("com.livinglogic.ul4.Utils.str(r" + opcode.r1 + ")"));
 					break;
