@@ -39,6 +39,6 @@ public class LoadFloat extends LoadConst
 
 	public String toString()
 	{
-		return "constant " + value;
+		return Utils.repr(value);
 	}
 }

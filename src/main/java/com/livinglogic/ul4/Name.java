@@ -34,6 +34,6 @@ public class Name extends AST
 
 	public String toString()
 	{
-		return "name \"" + value.replaceAll("\"", "\\\\\"") + "\"";
+		return value;
 	}
 }

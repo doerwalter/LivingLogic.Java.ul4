@@ -39,6 +39,6 @@ public class LoadInt extends LoadConst
 
 	public String toString()
 	{
-		return "constant " + value;
+		return Integer.toString(value);
 	}
 }

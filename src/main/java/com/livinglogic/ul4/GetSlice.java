@@ -54,4 +54,9 @@ public class GetSlice extends AST
 		}
 		return r;
 	}
+
+	public String toString()
+	{
+		return "getslice(" + obj + ", " + index1 + ", " + index2 + ")";
+	}
 }

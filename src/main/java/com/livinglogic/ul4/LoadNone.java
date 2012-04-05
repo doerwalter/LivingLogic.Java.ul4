@@ -29,6 +29,6 @@ public class LoadNone extends LoadConst
 
 	public String toString()
 	{
-		return "constant None";
+		return "None";
 	}
 }

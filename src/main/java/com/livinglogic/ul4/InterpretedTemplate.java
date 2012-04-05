@@ -302,14 +302,14 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				else if (type.equals("print"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expr8().node;
+					AST node = parser.expr9().node;
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_PRINT, r, loc);
 				}
 				else if (type.equals("printx"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expr8().node;
+					AST node = parser.expr9().node;
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_PRINTX, r, loc);
 				}
@@ -322,7 +322,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				else if (type.equals("if"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expr8().node;
+					AST node = parser.expr9().node;
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_IF, r, loc);
 					stack.add(new IfStackItem(loc));
@@ -336,7 +336,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 						throw new BlockException("else already seen in elif");
 					opcode(Opcode.OC_ELSE, loc);
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expr8().node;
+					AST node = parser.expr9().node;
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_IF, r, loc);
 					ifStackItem.count++;

@@ -27,4 +27,9 @@ class Binary extends AST
 		registers.free(r2);
 		return r1;
 	}
+
+	public String toString()
+	{
+		return Opcode.code2name(type) + "(" + obj1 + ", " + obj2 + ")";
+	}
 }

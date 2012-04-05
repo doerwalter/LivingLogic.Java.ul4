@@ -29,6 +29,6 @@ public class LoadFalse extends LoadConst
 
 	public String toString()
 	{
-		return "constant False";
+		return "False";
 	}
 }

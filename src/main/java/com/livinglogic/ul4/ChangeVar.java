@@ -26,4 +26,9 @@ class ChangeVar extends AST
 		registers.free(r);
 		return -1;
 	}
+
+	public String toString()
+	{
+		return Opcode.code2name(type) + "(" + name + ", " + value + ")";
+	}
 }

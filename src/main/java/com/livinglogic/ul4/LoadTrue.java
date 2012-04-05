@@ -29,6 +29,6 @@ public class LoadTrue extends LoadConst
 
 	public String toString()
 	{
-		return "constant True";
+		return "True";
 	}
 }

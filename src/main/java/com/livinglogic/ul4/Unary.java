@@ -23,4 +23,9 @@ class Unary extends AST
 		template.opcode(type, r, r, location);
 		return r;
 	}
+
+	public String toString()
+	{
+		return Opcode.code2name(type) + "(" + obj + ")";
+	}
 }

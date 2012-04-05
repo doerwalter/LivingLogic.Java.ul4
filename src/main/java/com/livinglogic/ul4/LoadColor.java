@@ -40,6 +40,6 @@ public class LoadColor extends LoadConst
 
 	public String toString()
 	{
-		return "constant " + value;
+		return Utils.repr(value);
 	}
 }

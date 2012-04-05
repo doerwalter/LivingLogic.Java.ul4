@@ -39,6 +39,6 @@ public class LoadStr extends LoadConst
 
 	public String toString()
 	{
-		return "string \"" + value.replaceAll("\"", "\\\\\"") + "\"";
+		return Utils.repr(value);
 	}
 }
