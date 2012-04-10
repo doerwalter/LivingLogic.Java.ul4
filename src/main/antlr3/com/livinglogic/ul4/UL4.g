@@ -280,10 +280,10 @@ expr1 returns [AST node]
 
 /* Additional rules for "for" tag */
 
-for_ returns [For node]
+for_ returns [AST node]
 	: n=name 'in' e=expr9 { $node = new For($n.text, $e.node); }
-	| '(' n1=name ',' ')' 'in' e=expr9 { $node = new For($e.node); $node.append($n1.text); }
-	| '(' { $node = new For(); } n1=name { $node.append($n1.text); } (',' n2=name { $node.append($n2.text); } )+ ','? ')' 'in' e=expr9 { $node.setContainer($e.node); }
+	| '(' n1=name ',' ')' 'in' e=expr9 { $node = new ForUnpack($e.node); ((ForUnpack)$node).append($n1.text); }
+	| '(' { $node = new ForUnpack(); } n1=name { ((ForUnpack)$node).append($n1.text); } (',' n2=name { ((ForUnpack)$node).append($n2.text); } )+ ','? ')' 'in' e=expr9 { ((ForUnpack)$node).setContainer($e.node); }
 	;
 
 
