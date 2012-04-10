@@ -31,4 +31,9 @@ public class LoadFalse extends LoadConst
 	{
 		return "False";
 	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		return false;
+	}
 }

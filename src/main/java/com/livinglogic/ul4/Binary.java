@@ -6,15 +6,13 @@
 
 package com.livinglogic.ul4;
 
-class Binary extends AST
+abstract class Binary extends AST
 {
-	protected int type;
 	protected AST obj1;
 	protected AST obj2;
 
-	public Binary(int type, AST obj1, AST obj2)
+	public Binary(AST obj1, AST obj2)
 	{
-		this.type = type;
 		this.obj1 = obj1;
 		this.obj2 = obj2;
 	}
@@ -23,13 +21,15 @@ class Binary extends AST
 	{
 		int r1 = obj1.compile(template, registers, location);
 		int r2 = obj2.compile(template, registers, location);
-		template.opcode(type, r1, r1, r2, location);
+		template.opcode(getType(), r1, r1, r2, location);
 		registers.free(r2);
 		return r1;
 	}
 
+	public abstract int getType();
+
 	public String toString()
 	{
-		return Opcode.code2name(type) + "(" + obj1 + ", " + obj2 + ")";
+		return Opcode.code2name(getType()) + "(" + obj1 + ", " + obj2 + ")";
 	}
 }

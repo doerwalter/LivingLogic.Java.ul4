@@ -42,4 +42,9 @@ public class LoadColor extends LoadConst
 	{
 		return Utils.repr(value);
 	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		return value;
+	}
 }

@@ -59,4 +59,9 @@ public class GetSlice extends AST
 	{
 		return "getslice(" + obj + ", " + index1 + ", " + index2 + ")";
 	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		return Utils.getSlice(obj.evaluate(context), index1.evaluate(context), index2.evaluate(context));
+	}
 }

@@ -6,12 +6,20 @@
 
 package com.livinglogic.ul4;
 
-public abstract class AST
+class EQ extends Binary
 {
-	abstract public int compile(InterpretedTemplate template, Registers registers, Location location);
+	public EQ(AST obj1, AST obj2)
+	{
+		super(obj1, obj2);
+	}
+
+	public int getType()
+	{
+		return Opcode.OC_EQ;
+	}
 
 	public Object evaluate(EvaluationContext context)
 	{
-		return null;
+		return Utils.eq(obj1.evaluate(context), obj2.evaluate(context));
 	}
 }

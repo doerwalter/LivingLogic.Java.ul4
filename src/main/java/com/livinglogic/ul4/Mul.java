@@ -6,12 +6,20 @@
 
 package com.livinglogic.ul4;
 
-public abstract class AST
+class Mul extends Binary
 {
-	abstract public int compile(InterpretedTemplate template, Registers registers, Location location);
+	public Mul(AST obj1, AST obj2)
+	{
+		super(obj1, obj2);
+	}
+
+	public int getType()
+	{
+		return Opcode.OC_MUL;
+	}
 
 	public Object evaluate(EvaluationContext context)
 	{
-		return null;
+		return Utils.mul(obj1.evaluate(context), obj2.evaluate(context));
 	}
 }

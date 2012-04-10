@@ -6,12 +6,20 @@
 
 package com.livinglogic.ul4;
 
-public abstract class AST
+class Sub extends Binary
 {
-	abstract public int compile(InterpretedTemplate template, Registers registers, Location location);
+	public Sub(AST obj1, AST obj2)
+	{
+		super(obj1, obj2);
+	}
+
+	public int getType()
+	{
+		return Opcode.OC_SUB;
+	}
 
 	public Object evaluate(EvaluationContext context)
 	{
-		return null;
+		return Utils.sub(obj1.evaluate(context), obj2.evaluate(context));
 	}
 }

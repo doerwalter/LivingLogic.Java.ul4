@@ -41,4 +41,9 @@ public class LoadInt extends LoadConst
 	{
 		return Integer.toString(value);
 	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		return value;
+	}
 }

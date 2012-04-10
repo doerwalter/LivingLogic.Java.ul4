@@ -7,6 +7,8 @@
 package com.livinglogic.ul4;
 
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Dict extends AST
 {
@@ -18,12 +20,12 @@ public class Dict extends AST
 
 	public void append(AST key, AST value)
 	{
-		items.add(new DictItem(key, value));
+		items.add(new DictItemKeyValue(key, value));
 	}
 
-	public void append(AST value)
+	public void append(AST dict)
 	{
-		items.add(new DictItem(value));
+		items.add(new DictItemDict(dict));
 	}
 
 	public void append(DictItem item)
@@ -37,21 +39,30 @@ public class Dict extends AST
 		template.opcode(Opcode.OC_BUILDDICT, r, location);
 		for (DictItem item : items)
 		{
-			if (item.isdict)
+			if (item instanceof DictItemDict)
 			{
-				int rv = item.value.compile(template, registers, location);
+				int rv = ((DictItemDict)item).dict.compile(template, registers, location);
 				template.opcode(Opcode.OC_UPDATEDICT, r, rv, location);
 				registers.free(rv);
 			}
 			else
 			{
-				int rk = item.key.compile(template, registers, location);
-				int rv = item.value.compile(template, registers, location);
+				int rk = ((DictItemKeyValue)item).key.compile(template, registers, location);
+				int rv = ((DictItemKeyValue)item).value.compile(template, registers, location);
 				template.opcode(Opcode.OC_ADDDICT, r, rk, rv, location);
 				registers.free(rv);
 				registers.free(rk);
 			}
 		}
 		return r;
+	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		Map result = new HashMap(items.size());
+
+		for (DictItem item : items)
+			item.addTo(context, result);
+		return result;
 	}
 }

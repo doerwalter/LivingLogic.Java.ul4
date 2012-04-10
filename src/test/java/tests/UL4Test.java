@@ -759,21 +759,22 @@ public class UL4Test
 		checkTemplateOutput(expected, "<?print " + sv + "?>", "x", 4);
 	}
 
-	// @Test
-	// public void precedence() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("14", "<?print 2+3*4?>");
-	// 	checkTemplateOutput("20", "<?print (2+3)*4?>");
-	// 	checkTemplateOutput("10", "<?print -2+-3*-4?>");
-	// 	checkTemplateOutput("14", "<?print --2+--3*--4?>");
-	// 	checkTemplateOutput("14", "<?print (-(-2))+(-((-3)*-(-4)))?>");
-	// 	checkTemplateOutput("42", "<?print 2*data.value?>", "data", makeMap("value", 21));
-	// 	checkTemplateOutput("42", "<?print data.value[0]?>", "data", makeMap("value", java.util.Arrays.asList(42)));
-	// 	checkTemplateOutput("42", "<?print data[0].value?>", "data", java.util.Arrays.asList(makeMap("value", 42)));
-	// 	checkTemplateOutput("42", "<?print data[0][0][0]?>", "data", java.util.Arrays.asList(java.util.Arrays.asList(java.util.Arrays.asList(42))));
-	// 	checkTemplateOutput("42", "<?print data.value.value[0]?>", "data", makeMap("value", makeMap("value", java.util.Arrays.asList(42))));
-	// 	checkTemplateOutput("42", "<?print data.value.value[0].value.value[0]?>", "data", makeMap("value", makeMap("value", java.util.Arrays.asList(makeMap("value", makeMap("value", java.util.Arrays.asList(42)))))));
-	// }
+	@Test
+	public void precedence() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("10", "<?print 2*3+4?>");
+		checkTemplateOutput("14", "<?print 2+3*4?>");
+		checkTemplateOutput("20", "<?print (2+3)*4?>");
+		checkTemplateOutput("10", "<?print -2+-3*-4?>");
+		checkTemplateOutput("14", "<?print --2+--3*--4?>");
+		checkTemplateOutput("14", "<?print (-(-2))+(-((-3)*-(-4)))?>");
+		checkTemplateOutput("42", "<?print 2*data.value?>", "data", makeMap("value", 21));
+		checkTemplateOutput("42", "<?print data.value[0]?>", "data", makeMap("value", java.util.Arrays.asList(42)));
+		checkTemplateOutput("42", "<?print data[0].value?>", "data", java.util.Arrays.asList(makeMap("value", 42)));
+		checkTemplateOutput("42", "<?print data[0][0][0]?>", "data", java.util.Arrays.asList(java.util.Arrays.asList(java.util.Arrays.asList(42))));
+		checkTemplateOutput("42", "<?print data.value.value[0]?>", "data", makeMap("value", makeMap("value", java.util.Arrays.asList(42))));
+		checkTemplateOutput("42", "<?print data.value.value[0].value.value[0]?>", "data", makeMap("value", makeMap("value", java.util.Arrays.asList(makeMap("value", makeMap("value", java.util.Arrays.asList(42)))))));
+	}
 
 	@Test
 	public void bracket() throws org.antlr.runtime.RecognitionException

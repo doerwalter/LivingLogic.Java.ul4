@@ -6,26 +6,21 @@
 
 package com.livinglogic.ul4;
 
-class Unary extends AST
+abstract class Unary extends AST
 {
-	protected int type;
 	protected AST obj;
 
-	public Unary(int type, AST obj)
+	public Unary(AST obj)
 	{
-		this.type = type;
 		this.obj = obj;
 	}
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r = obj.compile(template, registers, location);
-		template.opcode(type, r, r, location);
+		template.opcode(getType(), r, r, location);
 		return r;
 	}
 
-	public String toString()
-	{
-		return Opcode.code2name(type) + "(" + obj + ")";
-	}
+	public abstract int getType();
 }

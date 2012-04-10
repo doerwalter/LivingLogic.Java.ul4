@@ -302,14 +302,14 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				else if (type.equals("print"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expr9().node;
+					AST node = parser.expr10().node;
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_PRINT, r, loc);
 				}
 				else if (type.equals("printx"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expr9().node;
+					AST node = parser.expr10().node;
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_PRINTX, r, loc);
 				}
@@ -322,7 +322,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				else if (type.equals("if"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expr9().node;
+					AST node = parser.expr10().node;
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_IF, r, loc);
 					stack.add(new IfStackItem(loc));
@@ -336,7 +336,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 						throw new BlockException("else already seen in elif");
 					opcode(Opcode.OC_ELSE, loc);
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expr9().node;
+					AST node = parser.expr10().node;
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_IF, r, loc);
 					ifStackItem.count++;
@@ -1222,6 +1222,36 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 		{
 			output.append(iterator.next());
 		}
+		return output.toString();
+	}
+
+	/**
+	 * Renders the template to a java.io.Writer object.
+	 * @param writer    the java.io.Writer object to which the output is written.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the template code.
+	 */
+	public void evaluate(java.io.Writer writer, Map<String, Object> variables) throws java.io.IOException
+	{
+		if (variables == null)
+			variables = new HashMap<String, Object>();
+		EvaluationContext context = new EvaluationContext(writer, variables);
+		// root.evaluate(context);
+	}
+
+	/**
+	 * Renders the template and returns the resulting string.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the template code.
+	 * @return The render output as a string.
+	 */
+	public String evaluate(Map<String, Object> variables)
+	{
+		StringWriter output = new StringWriter();
+		if (variables == null)
+			variables = new HashMap<String, Object>();
+		EvaluationContext context = new EvaluationContext(output, variables);
+		// root.evaluate(context);
 		return output.toString();
 	}
 

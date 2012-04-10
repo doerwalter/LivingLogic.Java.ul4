@@ -9,18 +9,23 @@ package com.livinglogic.ul4;
 public class GetAttr extends AST
 {
 	protected AST obj;
-	protected Name attr;
+	protected String attrname;
 
-	public GetAttr(AST obj, Name attr)
+	public GetAttr(AST obj, String attrname)
 	{
 		this.obj = obj;
-		this.attr = attr;
+		this.attrname = attrname;
 	}
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r = obj.compile(template, registers, location);
-		template.opcode(Opcode.OC_GETATTR, r, r, attr.value, location);
+		template.opcode(Opcode.OC_GETATTR, r, r, attrname, location);
 		return r;
+	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		return Utils.getItem(obj.evaluate(context), attrname);
 	}
 }

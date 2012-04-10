@@ -7,6 +7,7 @@
 package com.livinglogic.ul4;
 
 import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class List extends AST
 {
@@ -33,5 +34,14 @@ public class List extends AST
 			registers.free(ri);
 		}
 		return r;
+	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		ArrayList result = new ArrayList(items.size());
+
+		for (AST item : items)
+			result.add(item.evaluate(context));
+		return result;
 	}
 }

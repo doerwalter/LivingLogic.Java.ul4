@@ -6,34 +6,25 @@
 
 package com.livinglogic.ul4;
 
-public class LoadTrue extends LoadConst
+class Not extends Unary
 {
-	public LoadTrue()
+	public Not(AST obj)
 	{
+		super(obj);
 	}
 
 	public int getType()
 	{
-		return Opcode.OC_LOADTRUE;
-	}
-
-	public String getTokenType()
-	{
-		return "true";
-	}
-
-	public Object getValue()
-	{
-		return Boolean.TRUE;
+		return Opcode.OC_NOT;
 	}
 
 	public String toString()
 	{
-		return "True";
+		return "not(" + obj + ")";
 	}
 
 	public Object evaluate(EvaluationContext context)
 	{
-		return true;
+		return !Utils.getBool(obj.evaluate(context));
 	}
 }

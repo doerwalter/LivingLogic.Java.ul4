@@ -6,9 +6,15 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
-
-public abstract class DictItem
+class Contains extends Binary
 {
-	public abstract void addTo(EvaluationContext context, Map dict);
+	public Contains(AST obj1, AST obj2)
+	{
+		super(obj1, obj2);
+	}
+
+	public int getType()
+	{
+		return Opcode.OC_CONTAINS;
+	}
 }

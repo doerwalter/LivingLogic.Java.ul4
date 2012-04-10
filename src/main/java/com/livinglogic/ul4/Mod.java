@@ -6,12 +6,20 @@
 
 package com.livinglogic.ul4;
 
-public abstract class AST
+class Mod extends Binary
 {
-	abstract public int compile(InterpretedTemplate template, Registers registers, Location location);
+	public Mod(AST obj1, AST obj2)
+	{
+		super(obj1, obj2);
+	}
+
+	public int getType()
+	{
+		return Opcode.OC_MOD;
+	}
 
 	public Object evaluate(EvaluationContext context)
 	{
-		return null;
+		return Utils.mod(obj1.evaluate(context), obj2.evaluate(context));
 	}
 }
