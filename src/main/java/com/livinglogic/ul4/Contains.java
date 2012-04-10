@@ -17,4 +17,9 @@ class Contains extends Binary
 	{
 		return Opcode.OC_CONTAINS;
 	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		return Utils.contains(obj1.evaluate(context), obj2.evaluate(context));
+	}
 }

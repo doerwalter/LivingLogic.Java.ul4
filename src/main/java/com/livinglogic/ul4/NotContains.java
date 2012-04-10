@@ -17,4 +17,9 @@ class NotContains extends Binary
 	{
 		return Opcode.OC_NOTCONTAINS;
 	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		return Utils.notcontains(obj1.evaluate(context), obj2.evaluate(context));
+	}
 }
