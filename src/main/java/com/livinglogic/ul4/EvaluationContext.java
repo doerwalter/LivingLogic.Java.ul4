@@ -25,4 +25,19 @@ public class EvaluationContext
 	{
 		writer.write(string);
 	}
+
+	public void put(String key, Object value)
+	{
+		variables.put(key, value);
+	}
+
+	public Object get(String key)
+	{
+		return Utils.getItem(variables, key);
+	}
+
+	public void remove(String key)
+	{
+		variables.remove(key);
+	}
 }

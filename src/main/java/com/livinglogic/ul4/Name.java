@@ -36,4 +36,9 @@ public class Name extends AST
 	{
 		return value;
 	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		return context.get(value);
+	}
 }

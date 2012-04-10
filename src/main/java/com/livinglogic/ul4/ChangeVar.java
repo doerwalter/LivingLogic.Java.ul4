@@ -6,29 +6,29 @@
 
 package com.livinglogic.ul4;
 
-class ChangeVar extends AST
+abstract class ChangeVar extends AST
 {
-	protected int type;
-	protected Name name;
+	protected String varname;
 	protected AST value;
 
-	public ChangeVar(int type, Name name, AST value)
+	public ChangeVar(String varname, AST value)
 	{
-		this.type = type;
-		this.name = name;
+		this.varname = varname;
 		this.value = value;
 	}
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r = value.compile(template, registers, location);
-		template.opcode(type, r, name.value, location);
+		template.opcode(getType(), r, varname, location);
 		registers.free(r);
 		return -1;
 	}
 
+	abstract int getType();
+
 	public String toString()
 	{
-		return Opcode.code2name(type) + "(" + name + ", " + value + ")";
+		return Opcode.code2name(getType()) + "(" + varname + ", " + value + ")";
 	}
 }

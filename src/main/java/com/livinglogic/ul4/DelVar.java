@@ -8,17 +8,22 @@ package com.livinglogic.ul4;
 
 public class DelVar extends AST
 {
-	protected Name name;
-	protected AST value;
+	protected String varname;
 
-	public DelVar(Name name)
+	public DelVar(String varname)
 	{
-		this.name = name;
+		this.varname = varname;
 	}
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
-		template.opcode(Opcode.OC_DELVAR, name.value, location);
+		template.opcode(Opcode.OC_DELVAR, varname, location);
 		return -1;
+	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		context.remove(varname);
+		return null;
 	}
 }

@@ -294,14 +294,14 @@ for_ returns [AST node]
 /* Additional rules for "code" tag */
 
 stmt returns [AST node]
-	: n=name '=' e=expr10 { $node = new ChangeVar(Opcode.OC_STOREVAR, $n.node, $e.node); }
-	| n=name '+=' e=expr10 { $node = new ChangeVar(Opcode.OC_ADDVAR, $n.node, $e.node); }
-	| n=name '-=' e=expr10 { $node = new ChangeVar(Opcode.OC_SUBVAR, $n.node, $e.node); }
-	| n=name '*=' e=expr10 { $node = new ChangeVar(Opcode.OC_MULVAR, $n.node, $e.node); }
-	| n=name '/=' e=expr10 { $node = new ChangeVar(Opcode.OC_TRUEDIVVAR, $n.node, $e.node); }
-	| n=name '//=' e=expr10 { $node = new ChangeVar(Opcode.OC_FLOORDIVVAR, $n.node, $e.node); }
-	| n=name '%=' e=expr10 { $node = new ChangeVar(Opcode.OC_MODVAR, $n.node, $e.node); }
-	| 'del' n=name { $node = new DelVar($n.node); }
+	: n=name '=' e=expr10 { $node = new StoreVar($n.node.getValue(), $e.node); }
+	| n=name '+=' e=expr10 { $node = new AddVar($n.node.getValue(), $e.node); }
+	| n=name '-=' e=expr10 { $node = new SubVar($n.node.getValue(), $e.node); }
+	| n=name '*=' e=expr10 { $node = new MulVar($n.node.getValue(), $e.node); }
+	| n=name '/=' e=expr10 { $node = new TrueDivVar($n.node.getValue(), $e.node); }
+	| n=name '//=' e=expr10 { $node = new FloorDivVar($n.node.getValue(), $e.node); }
+	| n=name '%=' e=expr10 { $node = new ModVar($n.node.getValue(), $e.node); }
+	| 'del' n=name { $node = new DelVar($n.node.getValue()); }
 	;
 
 
