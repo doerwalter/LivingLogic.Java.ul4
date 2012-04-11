@@ -28,4 +28,9 @@ public class GetAttr extends AST
 	{
 		return Utils.getItem(obj.evaluate(context), attrname);
 	}
+
+	public String toString()
+	{
+		return "getattr(" + obj + ", " + Utils.repr(attrname) + ")";
+	}
 }
