@@ -26,6 +26,23 @@ public class CallMeth extends AST
 		args.add(arg);
 	}
 
+	public String toString()
+	{
+		StringBuffer buffer = new StringBuffer();
+
+		buffer.append("callmeth(");
+		buffer.append(obj);
+		buffer.append(", ");
+		buffer.append(Utils.repr(name));
+		for (AST arg : args)
+		{
+			buffer.append(", ");
+			buffer.append(arg);
+		}
+		buffer.append(")");
+		return buffer.toString();
+	}
+
 	private static final int[] opcodes = {Opcode.OC_CALLMETH0, Opcode.OC_CALLMETH1, Opcode.OC_CALLMETH2, Opcode.OC_CALLMETH3};
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
