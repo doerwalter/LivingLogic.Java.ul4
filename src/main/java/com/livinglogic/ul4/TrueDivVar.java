@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class TrueDivVar extends ChangeVar
 {
 	public TrueDivVar(String varname, AST value)
@@ -18,7 +20,7 @@ class TrueDivVar extends ChangeVar
 		return Opcode.OC_TRUEDIVVAR;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		context.put(varname, Utils.truediv(context.get(varname), value.evaluate(context)));
 		return null;

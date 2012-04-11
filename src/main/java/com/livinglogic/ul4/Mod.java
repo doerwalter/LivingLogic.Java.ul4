@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class Mod extends Binary
 {
 	public Mod(AST obj1, AST obj2)
@@ -18,7 +20,7 @@ class Mod extends Binary
 		return Opcode.OC_MOD;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.mod(obj1.evaluate(context), obj2.evaluate(context));
 	}

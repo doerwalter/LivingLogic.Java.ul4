@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class LT extends Binary
 {
 	public LT(AST obj1, AST obj2)
@@ -18,7 +20,7 @@ class LT extends Binary
 		return Opcode.OC_LT;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.lt(obj1.evaluate(context), obj2.evaluate(context));
 	}

@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class NE extends Binary
 {
 	public NE(AST obj1, AST obj2)
@@ -18,7 +20,7 @@ class NE extends Binary
 		return Opcode.OC_NE;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.ne(obj1.evaluate(context), obj2.evaluate(context));
 	}

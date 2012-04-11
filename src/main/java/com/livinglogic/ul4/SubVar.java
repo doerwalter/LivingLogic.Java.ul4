@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class SubVar extends ChangeVar
 {
 	public SubVar(String varname, AST value)
@@ -18,7 +20,7 @@ class SubVar extends ChangeVar
 		return Opcode.OC_SUBVAR;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		context.put(varname, Utils.sub(context.get(varname), value.evaluate(context)));
 		return null;

@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class Contains extends Binary
 {
 	public Contains(AST obj1, AST obj2)
@@ -18,7 +20,7 @@ class Contains extends Binary
 		return Opcode.OC_CONTAINS;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.contains(obj1.evaluate(context), obj2.evaluate(context));
 	}

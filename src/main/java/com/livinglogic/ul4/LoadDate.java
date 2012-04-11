@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 public class LoadDate extends LoadConst
 {
 	protected java.util.Date value;
@@ -42,7 +44,7 @@ public class LoadDate extends LoadConst
 		return Utils.repr(value);
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return value;
 	}

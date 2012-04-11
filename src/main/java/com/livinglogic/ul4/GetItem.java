@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class GetItem extends Binary
 {
 	public GetItem(AST obj1, AST obj2)
@@ -18,7 +20,7 @@ class GetItem extends Binary
 		return Opcode.OC_GETITEM;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.getItem(obj1.evaluate(context), obj2.evaluate(context));
 	}

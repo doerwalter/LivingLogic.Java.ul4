@@ -8,6 +8,7 @@ package com.livinglogic.ul4;
 
 import java.util.LinkedList;
 import java.util.ArrayList;
+import java.io.IOException;
 
 public class List extends AST
 {
@@ -36,7 +37,7 @@ public class List extends AST
 		return r;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		ArrayList result = new ArrayList(items.size());
 

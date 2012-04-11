@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class Add extends Binary
 {
 	public Add(AST obj1, AST obj2)
@@ -18,7 +20,7 @@ class Add extends Binary
 		return Opcode.OC_ADD;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.add(obj1.evaluate(context), obj2.evaluate(context));
 	}

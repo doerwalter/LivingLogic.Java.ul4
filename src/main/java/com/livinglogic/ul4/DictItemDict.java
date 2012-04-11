@@ -7,6 +7,7 @@
 package com.livinglogic.ul4;
 
 import java.util.Map;
+import java.io.IOException;
 
 public class DictItemDict extends DictItem
 {
@@ -17,7 +18,7 @@ public class DictItemDict extends DictItem
 		this.dict = dict;
 	}
 
-	public void addTo(EvaluationContext context, Map dict)
+	public void addTo(EvaluationContext context, Map dict) throws IOException
 	{
 		dict.putAll((Map)this.dict.evaluate(context));
 	}

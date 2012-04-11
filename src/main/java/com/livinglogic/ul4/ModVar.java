@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class ModVar extends ChangeVar
 {
 	public ModVar(String varname, AST value)
@@ -18,7 +20,7 @@ class ModVar extends ChangeVar
 		return Opcode.OC_MODVAR;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		context.put(varname, Utils.mod(context.get(varname), value.evaluate(context)));
 		return null;

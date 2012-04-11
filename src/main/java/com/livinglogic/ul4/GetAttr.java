@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 public class GetAttr extends AST
 {
 	protected AST obj;
@@ -24,7 +26,7 @@ public class GetAttr extends AST
 		return r;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.getItem(obj.evaluate(context), attrname);
 	}

@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class Neg extends Unary
 {
 	public Neg(AST obj)
@@ -23,7 +25,7 @@ class Neg extends Unary
 		return "neg(" + obj + ")";
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.neg(obj.evaluate(context));
 	}

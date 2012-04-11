@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 public class LoadInt extends LoadConst
 {
 	protected int value;
@@ -42,7 +44,7 @@ public class LoadInt extends LoadConst
 		return Integer.toString(value);
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return value;
 	}

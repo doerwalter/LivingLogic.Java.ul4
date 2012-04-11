@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class GE extends Binary
 {
 	public GE(AST obj1, AST obj2)
@@ -18,7 +20,7 @@ class GE extends Binary
 		return Opcode.OC_GE;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.ge(obj1.evaluate(context), obj2.evaluate(context));
 	}

@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class And extends Binary
 {
 	public And(AST obj1, AST obj2)
@@ -18,7 +20,7 @@ class And extends Binary
 		return Opcode.OC_AND;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		Object obj2ev = obj2.evaluate(context);
 		if (Utils.getBool(obj2ev))

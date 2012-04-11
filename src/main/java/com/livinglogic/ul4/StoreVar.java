@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class StoreVar extends ChangeVar
 {
 	public StoreVar(String varname, AST value)
@@ -18,7 +20,7 @@ class StoreVar extends ChangeVar
 		return Opcode.OC_STOREVAR;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		context.put(varname, value.evaluate(context));
 		return null;

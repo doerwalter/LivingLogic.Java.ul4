@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class FloorDiv extends Binary
 {
 	public FloorDiv(AST obj1, AST obj2)
@@ -18,7 +20,7 @@ class FloorDiv extends Binary
 		return Opcode.OC_FLOORDIV;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.floordiv(obj1.evaluate(context), obj2.evaluate(context));
 	}

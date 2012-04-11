@@ -7,8 +7,9 @@
 package com.livinglogic.ul4;
 
 import java.util.Map;
+import java.io.IOException;
 
 public abstract class DictItem
 {
-	public abstract void addTo(EvaluationContext context, Map dict);
+	public abstract void addTo(EvaluationContext context, Map dict) throws IOException;
 }

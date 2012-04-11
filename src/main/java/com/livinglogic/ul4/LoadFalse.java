@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 public class LoadFalse extends LoadConst
 {
 	public LoadFalse()
@@ -32,7 +34,7 @@ public class LoadFalse extends LoadConst
 		return "False";
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return false;
 	}

@@ -1231,7 +1231,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the template code.
 	 */
-	public void evaluate(java.io.Writer writer, Map<String, Object> variables) throws java.io.IOException
+	public void evaluate(java.io.Writer writer, Map<String, Object> variables) throws IOException
 	{
 		if (variables == null)
 			variables = new HashMap<String, Object>();

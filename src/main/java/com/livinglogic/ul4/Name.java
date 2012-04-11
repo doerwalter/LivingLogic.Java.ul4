@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 public class Name extends AST
 {
 	protected String value;
@@ -37,7 +39,7 @@ public class Name extends AST
 		return value;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return context.get(value);
 	}

@@ -8,24 +8,28 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-public class DelVar extends AST
+class Print extends AST
 {
-	protected String varname;
+	protected AST value;
 
-	public DelVar(String varname)
+	public Print(AST value)
 	{
-		this.varname = varname;
+		this.value = value;
+	}
+
+	public String toString()
+	{
+		return "Print(" + value + ")";
 	}
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
-		template.opcode(Opcode.OC_DELVAR, varname, location);
 		return -1;
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.remove(varname);
+		context.write(Utils.str(value.evaluate(context)));
 		return null;
 	}
 }

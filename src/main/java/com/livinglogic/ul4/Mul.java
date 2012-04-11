@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class Mul extends Binary
 {
 	public Mul(AST obj1, AST obj2)
@@ -18,7 +20,7 @@ class Mul extends Binary
 		return Opcode.OC_MUL;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.mul(obj1.evaluate(context), obj2.evaluate(context));
 	}

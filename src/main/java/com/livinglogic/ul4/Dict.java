@@ -9,6 +9,7 @@ package com.livinglogic.ul4;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
+import java.io.IOException;
 
 public class Dict extends AST
 {
@@ -57,7 +58,7 @@ public class Dict extends AST
 		return r;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		Map result = new HashMap(items.size());
 

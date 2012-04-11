@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 class Or extends Binary
 {
 	public Or(AST obj1, AST obj2)
@@ -18,7 +20,7 @@ class Or extends Binary
 		return Opcode.OC_OR;
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		Object obj1ev = obj1.evaluate(context);
 		if (Utils.getBool(obj1ev))

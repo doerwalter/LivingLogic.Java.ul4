@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 public class LoadStr extends LoadConst
 {
 	protected String value;
@@ -42,7 +44,7 @@ public class LoadStr extends LoadConst
 		return Utils.repr(value);
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return value;
 	}

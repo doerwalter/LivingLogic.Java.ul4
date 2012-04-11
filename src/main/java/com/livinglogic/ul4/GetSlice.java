@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
+
 public class GetSlice extends AST
 {
 	protected AST obj;
@@ -60,7 +62,7 @@ public class GetSlice extends AST
 		return "getslice(" + obj + ", " + index1 + ", " + index2 + ")";
 	}
 
-	public Object evaluate(EvaluationContext context)
+	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.getSlice(obj.evaluate(context), index1.evaluate(context), index2.evaluate(context));
 	}
