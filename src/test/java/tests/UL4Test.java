@@ -2223,10 +2223,12 @@ public class UL4Test
 	@Test
 	public void tag_render() throws org.antlr.runtime.RecognitionException
 	{
-		InterpretedTemplate t = new InterpretedTemplate("<?print prefix?><?print data?><?print suffix?>");
+		InterpretedTemplate t1 = new InterpretedTemplate("<?print prefix?><?print data?><?print suffix?>");
+		InterpretedTemplate t2 = new InterpretedTemplate("<?print 'foo'?>");
 
-		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t(data=c, prefix='(', suffix=')')?><?end for?>", "t", t, "data", "foo");
-		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t(data=c, **{'prefix': '(', 'suffix': ')'})?><?end for?>", "t", t, "data", "foo");
+		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
+		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t(data=c, **{'prefix': '(', 'suffix': ')'})?><?end for?>", "t", t1, "data", "foo");
+		checkTemplateOutput("foo", "<?render t()?>", "t", t2);
 	}
 
 	@Test
