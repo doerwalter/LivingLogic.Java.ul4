@@ -388,8 +388,11 @@ expr4 returns [AST node]
 
 /* Not operator */
 expr3 returns [AST node]
-	: 'not' e=expr4 { $node = new Not($e.node); }
-	| e=expr4 { $node = $e.node; }
+	:
+		'not'
+		e=expr4 { $node = new Not($e.node); }
+	|
+		e=expr4 { $node = $e.node; }
 	;
 
 
