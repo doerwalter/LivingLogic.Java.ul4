@@ -94,7 +94,7 @@ public class Opcode extends ObjectAsMap
 	public static final int CF1_FLOAT = 4;
 	public static final int CF1_BOOL = 5;
 	public static final int CF1_LEN = 6;
-	public static final int CF1_ENUM = 7;
+	public static final int CF1_ENUMERATE = 7;
 	public static final int CF1_ENUMFL = 8;
 	public static final int CF1_ISFIRSTLAST = 9;
 	public static final int CF1_ISFIRST = 10;
@@ -331,8 +331,8 @@ public class Opcode extends ObjectAsMap
 			return CF1_BOOL;
 		else if (name.equals("len"))
 			return CF1_LEN;
-		else if (name.equals("enum"))
-			return CF1_ENUM;
+		else if (name.equals("enumerate"))
+			return CF1_ENUMERATE;
 		else if (name.equals("enumfl"))
 			return CF1_ENUMFL;
 		else if (name.equals("isfirstlast"))

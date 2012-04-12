@@ -316,7 +316,7 @@ public class JavaSource4Template
 						case Opcode.CF1_REPR:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.repr(r" + opcode.r2 + ");");
 							break;
-						case Opcode.CF1_ENUM:
+						case Opcode.CF1_ENUMERATE:
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.enumerate(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CF1_ENUMFL:

@@ -1607,7 +1607,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 								case Opcode.CF1_LEN:
 									reg[code.r1] = Utils.length(reg[code.r2]);
 									break;
-								case Opcode.CF1_ENUM:
+								case Opcode.CF1_ENUMERATE:
 									reg[code.r1] = Utils.enumerate(reg[code.r2]);
 									break;
 								case Opcode.CF1_ENUMFL:
