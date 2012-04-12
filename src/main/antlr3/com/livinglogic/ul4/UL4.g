@@ -81,10 +81,10 @@ FLOAT
 
 fragment
 TIME
-	: DIGIT DIGIT ':' DIGIT DIGIT (':' DIGIT DIGIT('.' DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT)?)?;
+	: DIGIT DIGIT ':' DIGIT DIGIT ( ':' DIGIT DIGIT ( '.' DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT)?)?;
 
 DATE
-	: '@' DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' TIME?;
+	: '@' '(' DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT ('T' TIME?)? ')';
 
 COLOR
 	: '#' HEX_DIGIT HEX_DIGIT HEX_DIGIT
@@ -157,7 +157,7 @@ string returns [AST node]
 	;
 
 date returns [AST node]
-	: DATE { $node = new LoadDate(Utils.isoparse($DATE.text.substring(1))); }
+	: DATE { $node = new LoadDate(Utils.isoparse($DATE.text.substring(2, $DATE.text.length()-1))); }
 	;
 
 color returns [AST node]
@@ -240,7 +240,7 @@ expr9
 */
 
 expr9 returns [AST node]
-	: e1=atom { $node = $e1.node; } ( '.' n=name { $node = new GetAttr($node, $n.node.getValue()); } | '[' ( ':' { AST index2 = null; } ( e2=expr1 { index2 = $e2.node; })? { $node = new GetSlice($node, null, index2); } | { boolean slice = false; } e2=expr1 { AST index1 = $e2.node; AST index2 = null; } ( ':' { slice = true; } ( e3=expr1 { index2 = $e3.node; } )? )? { $node = slice ? new GetSlice($node, index1, index2) : new GetItem($node, index1); } ) ']')*
+	: e1=atom { $node = $e1.node; } ( '.' n=name { boolean callmeth = false; } ( '(' { callmeth = true; $node = new CallMeth($node, $n.node.getValue()); } ( a1=expr1 { ((CallMeth)$node).append($a1.node); } ( ',' a2=expr1 { ((CallMeth)$node).append($a2.node); })* ','? )? ')' )? { if (!callmeth) $node = new GetAttr($node, $n.node.getValue()); } | '[' ( ':' { AST index2 = null; } ( e2=expr1 { index2 = $e2.node; })? { $node = new GetSlice($node, null, index2); } | { boolean slice = false; } e2=expr1 { AST index1 = $e2.node; AST index2 = null; } ( ':' { slice = true; } ( e3=expr1 { index2 = $e3.node; } )? )? { $node = slice ? new GetSlice($node, index1, index2) : new GetItem($node, index1); } ) ']')*
 	;
 
 expr8 returns [AST node]

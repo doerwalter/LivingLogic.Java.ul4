@@ -13,6 +13,7 @@ import com.livinglogic.ul4.InterpretedTemplate;
 import com.livinglogic.ul4.Compiler;
 import static com.livinglogic.utils.MapUtils.*;
 import static com.livinglogic.ul4on.Utils.*;
+import static com.livinglogic.ul4.Utils.*;
 import com.livinglogic.ul4.KeyException;
 import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.UnknownFunctionException;
@@ -41,28 +42,23 @@ public class UL4Test
 	}
 
 	@Test
-	public void none() throws org.antlr.runtime.RecognitionException
+	public void type_none() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print None?>");
 		checkTemplateOutput("no", "<?if None?>yes<?else?>no<?end if?>");
 	}
 
 	@Test
-	public void false_() throws org.antlr.runtime.RecognitionException
+	public void type_bool() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("False", "<?print False?>");
 		checkTemplateOutput("no", "<?if False?>yes<?else?>no<?end if?>");
-	}
-
-	@Test
-	public void true_() throws org.antlr.runtime.RecognitionException
-	{
 		checkTemplateOutput("True", "<?print True?>");
 		checkTemplateOutput("yes", "<?if True?>yes<?else?>no<?end if?>");
 	}
 
 	@Test
-	public void int_() throws org.antlr.runtime.RecognitionException
+	public void type_int() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("0", "<?print 0?>");
 		checkTemplateOutput("42", "<?print 42?>");
@@ -85,7 +81,7 @@ public class UL4Test
 	}
 
 	@Test
-	public void float_() throws org.antlr.runtime.RecognitionException
+	public void type_float() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("0.0", "<?print 0.?>");
 		checkTemplateOutput("42.0", "<?print 42.?>");
@@ -101,7 +97,7 @@ public class UL4Test
 	}
 
 	@Test
-	public void str() throws org.antlr.runtime.RecognitionException
+	public void type_string() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("foo", "<?print \"foo\"?>");
 		checkTemplateOutput("\n", "<?print \"\\n\"?>");
@@ -124,18 +120,19 @@ public class UL4Test
 		checkTemplateOutput("yes", "<?if 'foo'?>yes<?else?>no<?end if?>");
 	}
 
-	// @Test
-	// public void date() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("2000-02-29", "<?print @2000-02-29T.isoformat()?>");
-	// 	checkTemplateOutput("2000-02-29T12:34:00", "<?print @2000-02-29T12:34.isoformat()?>");
-	// 	checkTemplateOutput("2000-02-29T12:34:56", "<?print @2000-02-29T12:34:56.isoformat()?>");
-	// 	checkTemplateOutput("2000-02-29T12:34:56.987000", "<?print @2000-02-29T12:34:56.987000.isoformat()?>");
-	// 	checkTemplateOutput("yes", "<?if @2000-02-29T12:34:56.987654?>yes<?else?>no<?end if?>");
-	// }
+	@Test
+	public void type_date() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("2000-02-29", "<?print @(2000-02-29).isoformat()?>");
+		checkTemplateOutput("2000-02-29", "<?print @(2000-02-29T).isoformat()?>");
+		checkTemplateOutput("2000-02-29T12:34:00", "<?print @(2000-02-29T12:34).isoformat()?>");
+		checkTemplateOutput("2000-02-29T12:34:56", "<?print @(2000-02-29T12:34:56).isoformat()?>");
+		checkTemplateOutput("2000-02-29T12:34:56.987000", "<?print @(2000-02-29T12:34:56.987000).isoformat()?>");
+		checkTemplateOutput("yes", "<?if @(2000-02-29T12:34:56.987654)?>yes<?else?>no<?end if?>");
+	}
 
 	@Test
-	public void color() throws org.antlr.runtime.RecognitionException
+	public void type_color() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("255,255,255,255", "<?code c = #fff?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
 		checkTemplateOutput("255,255,255,255", "<?code c = #ffffff?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
@@ -146,7 +143,7 @@ public class UL4Test
 	}
 
 	@Test
-	public void list() throws org.antlr.runtime.RecognitionException
+	public void type_list() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?for item in []?><?print item?>;<?end for?>");
 		checkTemplateOutput("1;", "<?for item in [1]?><?print item?>;<?end for?>");
@@ -158,16 +155,16 @@ public class UL4Test
 	}
 
 	@Test
-	public void dict() throws org.antlr.runtime.RecognitionException
+	public void type_dict() throws org.antlr.runtime.RecognitionException
 	{
-		// checkTemplateOutput("", "<?for (key, value) in {}.items()?><?print key?>:<?print value?>\n<?end for?>");
-		// checkTemplateOutput("1:2\n", "<?for (key, value) in {1:2}.items()?><?print key?>:<?print value?>\n<?end for?>");
-		// checkTemplateOutput("1:2\n", "<?for (key, value) in {1:2,}.items()?><?print key?>:<?print value?>\n<?end for?>");
-		// // With duplicate keys, later ones simply overwrite earlier ones
-		// checkTemplateOutput("1:3\n", "<?for (key, value) in {1:2, 1: 3}.items()?><?print key?>:<?print value?>\n<?end for?>");
-		// // Test **
-		// checkTemplateOutput("1:2\n", "<?for (key, value) in {**{1:2}}.items()?><?print key?>:<?print value?>\n<?end for?>");
-		// checkTemplateOutput("1:4\n", "<?for (key, value) in {1:1, **{1:2}, 1:3, **{1:4}}.items()?><?print key?>:<?print value?>\n<?end for?>");
+		checkTemplateOutput("", "<?for (key, value) in {}.items()?><?print key?>:<?print value?>\n<?end for?>");
+		checkTemplateOutput("1:2\n", "<?for (key, value) in {1:2}.items()?><?print key?>:<?print value?>\n<?end for?>");
+		checkTemplateOutput("1:2\n", "<?for (key, value) in {1:2,}.items()?><?print key?>:<?print value?>\n<?end for?>");
+		// With duplicate keys, later ones simply overwrite earlier ones
+		checkTemplateOutput("1:3\n", "<?for (key, value) in {1:2, 1: 3}.items()?><?print key?>:<?print value?>\n<?end for?>");
+		// Test **
+		checkTemplateOutput("1:2\n", "<?for (key, value) in {**{1:2}}.items()?><?print key?>:<?print value?>\n<?end for?>");
+		checkTemplateOutput("1:4\n", "<?for (key, value) in {1:1, **{1:2}, 1:3, **{1:4}}.items()?><?print key?>:<?print value?>\n<?end for?>");
 		checkTemplateOutput("no", "<?if {}?>yes<?else?>no<?end if?>");
 		checkTemplateOutput("yes", "<?if {1:2}?>yes<?else?>no<?end if?>");
 	}
@@ -294,32 +291,32 @@ public class UL4Test
 	public void for_list() throws org.antlr.runtime.RecognitionException
 	{
 		String source = "<?for c in data?>(<?print c?>)<?end for?>";
-		checkTemplateOutput("", source, "data", java.util.Arrays.asList());
-		checkTemplateOutput("(g)(u)(r)(k)", source, "data", java.util.Arrays.asList("g", "u", "r", "k"));
+		checkTemplateOutput("", source, "data", asList());
+		checkTemplateOutput("(g)(u)(r)(k)", source, "data", asList("g", "u", "r", "k"));
 	}
 
-	// @Test
-	// public void for_dict() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?for c in sorted(data)?>(<?print c?>)<?end for?>";
-	// 	checkTemplateOutput("", source, "data", makeMap());
-	// 	checkTemplateOutput("(a)(b)(c)", source, "data", makeMap("a", 1, "b", 2, "c", 3));
-	// }
+	@Test
+	public void for_dict() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?for c in sorted(data)?>(<?print c?>)<?end for?>";
+		checkTemplateOutput("", source, "data", makeMap());
+		checkTemplateOutput("(a)(b)(c)", source, "data", makeMap("a", 1, "b", 2, "c", 3));
+	}
 
 	@Test
 	public void for_nested() throws org.antlr.runtime.RecognitionException
 	{
 		String source = "<?for list in data?>[<?for n in list?>(<?print n?>)<?end for?>]<?end for?>";
-		checkTemplateOutput("[(1)(2)][(3)(4)]", source, "data", java.util.Arrays.asList(java.util.Arrays.asList(1, 2), java.util.Arrays.asList(3, 4)));
+		checkTemplateOutput("[(1)(2)][(3)(4)]", source, "data", asList(asList(1, 2), asList(3, 4)));
 	}
 
 	@Test
 	public void for_unpacking() throws org.antlr.runtime.RecognitionException
 	{
-		Object data = java.util.Arrays.asList(
-			java.util.Arrays.asList("spam", "eggs", 17, null),
-			java.util.Arrays.asList("gurk", "hurz", 23, false),
-			java.util.Arrays.asList("hinz", "kunz", 42, true)
+		Object data = asList(
+			asList("spam", "eggs", 17, null),
+			asList("gurk", "hurz", 23, false),
+			asList("hinz", "kunz", 42, true)
 		);
 
 		checkTemplateOutput("(spam)(gurk)(hinz)", "<?for (a,) in data?>(<?print a?>)<?end for?>", "data", data);
@@ -328,29 +325,29 @@ public class UL4Test
 		checkTemplateOutput("(spam,eggs,17,)(gurk,hurz,23,False)(hinz,kunz,42,True)", "<?for (a, b, c, d) in data?>(<?print a?>,<?print b?>,<?print c?>,<?print d?>)<?end for?>", "data", data);
 	}
 
-	// @Test
-	// public void break_() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("1, 2, ", "<?for i in [1,2,3]?><?print i?>, <?if i==2?><?break?><?end if?><?end for?>");
-	// }
+	@Test
+	public void break_() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("1, 2, ", "<?for i in [1,2,3]?><?print i?>, <?if i==2?><?break?><?end if?><?end for?>");
+	}
 
-	// @Test
-	// public void break_nested() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("1, 1, 2, 1, 2, 3, ", "<?for i in [1,2,3,4]?><?for j in [1,2,3,4]?><?print j?>, <?if j>=i?><?break?><?end if?><?end for?><?if i>=3?><?break?><?end if?><?end for?>");
-	// }
+	@Test
+	public void break_nested() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("1, 1, 2, 1, 2, 3, ", "<?for i in [1,2,3,4]?><?for j in [1,2,3,4]?><?print j?>, <?if j>=i?><?break?><?end if?><?end for?><?if i>=3?><?break?><?end if?><?end for?>");
+	}
 
-	// @Test
-	// public void continue_() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("1, 3, ", "<?for i in [1,2,3]?><?if i==2?><?continue?><?end if?><?print i?>, <?end for?>");
-	// }
+	@Test
+	public void continue_() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("1, 3, ", "<?for i in [1,2,3]?><?if i==2?><?continue?><?end if?><?print i?>, <?end for?>");
+	}
 
-	// @Test
-	// public void continue_nested() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("1, 3, \n1, 3, \n", "<?for i in [1,2,3]?><?if i==2?><?continue?><?end if?><?for j in [1,2,3]?><?if j==2?><?continue?><?end if?><?print j?>, <?end for?>\n<?end for?>");
-	// }
+	@Test
+	public void continue_nested() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("1, 3, \n1, 3, \n", "<?for i in [1,2,3]?><?if i==2?><?continue?><?end if?><?for j in [1,2,3]?><?if j==2?><?continue?><?end if?><?print j?>, <?end for?>\n<?end for?>");
+	}
 
 	@Test
 	public void if_() throws org.antlr.runtime.RecognitionException
@@ -411,7 +408,7 @@ public class UL4Test
 		checkTemplateOutput("24", source, "x", true, "y", 23);
 		checkTemplateOutput("22.0", source, "x", -1.0, "y", 23);
 		checkTemplateOutput("foobar", source, "x", "foo", "y", "bar");
-		// List addition is not implemented: checkTemplateOutput("(foo)(bar)(gurk)(hurz)", "<?for i in a+b?>(<?print i?>)<?end for?>", "a", java.util.Arrays.asList("foo", "bar"), "b", java.util.Arrays.asList("gurk", "hurz"));
+		// List addition is not implemented: checkTemplateOutput("(foo)(bar)(gurk)(hurz)", "<?for i in a+b?>(<?print i?>)<?end for?>", "a", asList("foo", "bar"), "b", asList("gurk", "hurz"));
 		// This checks constant folding
 		checkTemplateOutput("3", "<?print 1+2?>");
 		checkTemplateOutput("2", "<?print 1+True?>");
@@ -454,7 +451,7 @@ public class UL4Test
 		checkTemplateOutput("-23.0", source, "x", -1.0, "y", 23);
 		checkTemplateOutput("foofoofoo", source, "x", 3, "y", "foo");
 		checkTemplateOutput("foofoofoo", source, "x", "foo", "y", 3);
-		checkTemplateOutput("(foo)(bar)(foo)(bar)(foo)(bar)", "<?for i in 3*data?>(<?print i?>)<?end for?>", "data", java.util.Arrays.asList("foo", "bar"));
+		checkTemplateOutput("(foo)(bar)(foo)(bar)(foo)(bar)", "<?for i in 3*data?>(<?print i?>)<?end for?>", "data", asList("foo", "bar"));
 		// This checks constant folding
 		checkTemplateOutput("391", "<?print 17*23?>");
 		checkTemplateOutput("17", "<?print 17*True?>");
@@ -624,8 +621,8 @@ public class UL4Test
 	{
 		String source = "<?print x in y?>";
 
-		checkTemplateOutput("True", source, "x", 2, "y", java.util.Arrays.asList(1, 2, 3));
-		checkTemplateOutput("False", source, "x", 4, "y", java.util.Arrays.asList(1, 2, 3));
+		checkTemplateOutput("True", source, "x", 2, "y", asList(1, 2, 3));
+		checkTemplateOutput("False", source, "x", 4, "y", asList(1, 2, 3));
 		checkTemplateOutput("True", source, "x", "ur", "y", "gurk");
 		checkTemplateOutput("False", source, "x", "un", "y", "gurk");
 		checkTemplateOutput("True", source, "x", "a", "y", makeMap("a", 1, "b", 2));
@@ -639,8 +636,8 @@ public class UL4Test
 	{
 		String source = "<?print x not in y?>";
 
-		checkTemplateOutput("False", source, "x", 2, "y", java.util.Arrays.asList(1, 2, 3));
-		checkTemplateOutput("True", source, "x", 4, "y", java.util.Arrays.asList(1, 2, 3));
+		checkTemplateOutput("False", source, "x", 2, "y", asList(1, 2, 3));
+		checkTemplateOutput("True", source, "x", 4, "y", asList(1, 2, 3));
 		checkTemplateOutput("False", source, "x", "ur", "y", "gurk");
 		checkTemplateOutput("True", source, "x", "un", "y", "gurk");
 		checkTemplateOutput("False", source, "x", "a", "y", makeMap("a", 1, "b", 2));
@@ -769,11 +766,21 @@ public class UL4Test
 		checkTemplateOutput("14", "<?print --2+--3*--4?>");
 		checkTemplateOutput("14", "<?print (-(-2))+(-((-3)*-(-4)))?>");
 		checkTemplateOutput("42", "<?print 2*data.value?>", "data", makeMap("value", 21));
-		checkTemplateOutput("42", "<?print data.value[0]?>", "data", makeMap("value", java.util.Arrays.asList(42)));
-		checkTemplateOutput("42", "<?print data[0].value?>", "data", java.util.Arrays.asList(makeMap("value", 42)));
-		checkTemplateOutput("42", "<?print data[0][0][0]?>", "data", java.util.Arrays.asList(java.util.Arrays.asList(java.util.Arrays.asList(42))));
-		checkTemplateOutput("42", "<?print data.value.value[0]?>", "data", makeMap("value", makeMap("value", java.util.Arrays.asList(42))));
-		checkTemplateOutput("42", "<?print data.value.value[0].value.value[0]?>", "data", makeMap("value", makeMap("value", java.util.Arrays.asList(makeMap("value", makeMap("value", java.util.Arrays.asList(42)))))));
+		checkTemplateOutput("42", "<?print data.value[0]?>", "data", makeMap("value", asList(42)));
+		checkTemplateOutput("42", "<?print data[0].value?>", "data", asList(makeMap("value", 42)));
+		checkTemplateOutput("42", "<?print data[0][0][0]?>", "data", asList(asList(asList(42))));
+		checkTemplateOutput("42", "<?print data.value.value[0]?>", "data", makeMap("value", makeMap("value", asList(42))));
+		checkTemplateOutput("42", "<?print data.value.value[0].value.value[0]?>", "data", makeMap("value", makeMap("value", asList(makeMap("value", makeMap("value", asList(42)))))));
+	}
+
+	@Test
+	public void associativity() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("9", "<?print 2+3+4?>");
+		checkTemplateOutput("-5", "<?print 2-3-4?>");
+		checkTemplateOutput("24", "<?print 2*3*4?>");
+		checkTemplateOutput("2.0", "<?print 24/6/2?>");
+		checkTemplateOutput("2", "<?print 24//6//2?>");
 	}
 
 	@Test
@@ -829,14 +836,14 @@ public class UL4Test
 		checkTemplateOutput("", "<?print utcnow(1, 2)?>");
 	}
 
-	// @Test
-	// public void vars() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	String source = "<?if var in vars()?>yes<?else?>no<?end if?>";
+	@Test
+	public void vars() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?if var in vars()?>yes<?else?>no<?end if?>";
 
-	// 	checkTemplateOutput("yes", source, "var", "spam", "spam", "eggs");
-	// 	checkTemplateOutput("no", source, "var", "nospam", "spam", "eggs");
-	// }
+		checkTemplateOutput("yes", source, "var", "spam", "spam", "eggs");
+		checkTemplateOutput("no", source, "var", "nospam", "spam", "eggs");
+	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	public void vars1() throws org.antlr.runtime.RecognitionException
@@ -850,11 +857,11 @@ public class UL4Test
 		checkTemplateOutput("", "<?print vars(1, 2)?>");
 	}
 
-	// @Test
-	// public void random() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("ok", "<?code r = random()?><?if r>=0 and r<1?>ok<?else?>fail<?end if?>");
-	// }
+	@Test
+	public void random() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("ok", "<?code r = random()?><?if r>=0 and r<1?>ok<?else?>fail<?end if?>");
+	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	public void random1() throws org.antlr.runtime.RecognitionException
@@ -868,17 +875,199 @@ public class UL4Test
 		checkTemplateOutput("", "<?print random(1, 2)?>");
 	}
 
-	// @Test
-	// public void randrange() throws org.antlr.runtime.RecognitionException
-	// {
-	// 	checkTemplateOutput("ok", "<?code r = randrange(4)?><?if r>=0 and r<4?>ok<?else?>fail<?end if?>");
-	// 	checkTemplateOutput("ok", "<?code r = randrange(17, 23)?><?if r>=17 and r<23?>ok<?else?>fail<?end if?>");
-	// 	checkTemplateOutput("ok", "<?code r = randrange(17, 23, 2)?><?if r>=17 and r<23 and r%2?>ok<?else?>fail<?end if?>");
-	// }
+	@Test
+	public void randrange() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("ok", "<?code r = randrange(4)?><?if r>=0 and r<4?>ok<?else?>fail<?end if?>");
+		checkTemplateOutput("ok", "<?code r = randrange(17, 23)?><?if r>=17 and r<23?>ok<?else?>fail<?end if?>");
+		checkTemplateOutput("ok", "<?code r = randrange(17, 23, 2)?><?if r>=17 and r<23 and r%2?>ok<?else?>fail<?end if?>");
+	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	public void randrange1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print randrange()?>");
+	}
+
+	@Test
+	public void randchoice() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("ok", "<?code r = randchoice('abc')?><?if r in 'abc'?>ok<?else?>fail<?end if?>");
+		checkTemplateOutput("ok", "<?code s = [17, 23, 42]?><?code r = randchoice(s)?><?if r in s?>ok<?else?>fail<?end if?>");
+		checkTemplateOutput("ok", "<?code s = #12345678?><?code sl = [0x12, 0x34, 0x56, 0x78]?><?code r = randchoice(s)?><?if r in sl?>ok<?else?>fail<?end if?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void randchoice1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print randchoice()?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void randchoice2() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print randchoice(1, 2)?>");
+	}
+
+	@Test
+	public void xmlescape() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("&lt;&lt;&gt;&gt;&amp;&#39;&quot;gurk", "<?print xmlescape(data)?>", "data", "'<<>>&'\"gurk'");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void xmlescape1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print xmlescape()?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void xmlescape2() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print xmlescape(1, 2)?>");
+	}
+
+	@Test
+	public void csv() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print csv(data)?>", "data", null);
+		checkTemplateOutput("False", "<?print csv(data)?>", "data", false);
+		checkTemplateOutput("True", "<?print csv(data)?>", "data", true);
+		checkTemplateOutput("42", "<?print csv(data)?>", "data", 42);
+		// no check for float
+		checkTemplateOutput("abc", "<?print csv(data)?>", "data", "abc");
+		checkTemplateOutput("\"a,b,c\"", "<?print csv(data)?>", "data", "a,b,c");
+		checkTemplateOutput("\"a\"\"b\"\"c\"", "<?print csv(data)?>", "data", "a\"b\"c");
+		checkTemplateOutput("\"a\nb\nc\"", "<?print csv(data)?>", "data", "a\nb\nc");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void csv1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print csv()?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void csv2() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print csv(1, 2)?>");
+	}
+
+	@Test
+	public void json() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("null", "<?print json(data)?>", "data", null);
+		checkTemplateOutput("false", "<?print json(data)?>", "data", false);
+		checkTemplateOutput("true", "<?print json(data)?>", "data", true);
+		checkTemplateOutput("42", "<?print json(data)?>", "data", 42);
+		// no check for float
+		checkTemplateOutput("\"abc\"", "<?print json(data)?>", "data", "abc");
+		checkTemplateOutput("[1, 2, 3]", "<?print json(data)?>", "data", asList(1, 2, 3));
+		checkTemplateOutput("{\"one\": 1}", "<?print json(data)?>", "data", makeMap("one", 1));
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void json1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print json()?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void json2() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print json(1, 2)?>");
+	}
+
+	@Test
+	public void str() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print str(data)?>";
+
+		checkTemplateOutput("", source, "data", null);
+		checkTemplateOutput("True", source, "data", true);
+		checkTemplateOutput("False", source, "data", false);
+		checkTemplateOutput("42", source, "data", 42);
+		checkTemplateOutput("4.2", source, "data", 4.2);
+		checkTemplateOutput("foo", source, "data", "foo");
+		checkTemplateOutput("2011-02-09", source, "data", makeDate(2011, 2, 9));
+		checkTemplateOutput("2011-02-09 12:34:56", source, "data", makeDate(2011, 2, 9, 12, 34, 56));
+		checkTemplateOutput("2011-02-09 12:34:56.987000", source, "data", makeDate(2011, 2, 9, 12, 34, 56, 987000));
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void str1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print str()?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void str2() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print str(1, 2)?>");
+	}
+
+	@Test
+	public void int_() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print str(data)?>";
+
+		checkTemplateOutput("int\\(\\) argument must be a string or a number|int\\(null\\) not supported", "<?print int(data)?>", "data", null);
+		checkTemplateOutput("invalid literal for int|NumberFormatException", "<?print int(data)?>", "data", "foo");
+		checkTemplateOutput("1", "<?print int(data)?>", "data", true);
+		checkTemplateOutput("0", "<?print int(data)?>", "data", false);
+		checkTemplateOutput("42", "<?print int(data)?>", "data", 42);
+		checkTemplateOutput("4", "<?print int(data)?>", "data", 4.2);
+		checkTemplateOutput("42", "<?print int(data)?>", "data", "42");
+		checkTemplateOutput("66", "<?print int(data, 16)?>", "data", "42");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void int1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print int()?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void int2() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print int(1, 2, 3)?>");
+	}
+
+	@Test
+	public void float_() throws org.antlr.runtime.RecognitionException
+	{
+		String source = "<?print float(data)?>";
+
+		checkTemplateOutput("int\\(\\) argument must be a string or a number|int\\(null\\) not supported", "<?print float(data)?>", "data", null);
+		checkTemplateOutput("1.0", source, "data", true);
+		checkTemplateOutput("0.0", source, "data", false);
+		checkTemplateOutput("42.0", source, "data", 42);
+		checkTemplateOutput("42.0", source, "data", "42");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void float1() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print float()?>");
+	}
+
+	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@Test
+	public void float2() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print float(1, 2)?>");
 	}
 }
