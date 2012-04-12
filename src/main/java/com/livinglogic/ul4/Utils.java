@@ -3155,6 +3155,7 @@ public class Utils
 	public static int parseUL4Int(String string)
 	{
 		boolean neg = false;
+		int base = 10;
 		if (string.charAt(0) == '-')
 		{
 			neg = true;
@@ -3162,24 +3163,21 @@ public class Utils
 		}
 		if (string.startsWith("0x") || string.startsWith("0X"))
 		{
-			int value = Integer.parseInt(string.substring(2), 16);
-			return neg ? -value : value;
+			string = string.substring(2);
+			base = 16;
 		}
 		else if (string.startsWith("0o") || string.startsWith("0O"))
 		{
-			int value = Integer.parseInt(string.substring(2), 8);
-			return neg ? -value : value;
+			string = string.substring(2);
+			base = 8;
 		}
 		else if (string.startsWith("0b") || string.startsWith("0B"))
 		{
-			int value = Integer.parseInt(string.substring(2), 2);
-			return neg ? -value : value;
+			string = string.substring(2);
+			base = 2;
 		}
-		else
-		{
-			int value = Integer.parseInt(string);
-			return neg ? -value : value;
-		}
+		int value = Integer.parseInt(string, base);
+		return neg ? -value : value;
 	}
 
 	/**
