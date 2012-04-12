@@ -1778,9 +1778,9 @@ public class Utils
 		throw new UnsupportedOperationException("float(" + objectType(obj) + ") not supported!");
 	}
 
-	public static SimpleDateFormat isoReprDateFormatter = new SimpleDateFormat("@yyyy-MM-dd'T'");
-	public static SimpleDateFormat isoReprDateTimeFormatter = new SimpleDateFormat("@yyyy-MM-dd'T'HH:mm:ss");
-	public static SimpleDateFormat isoReprTimestampMicroFormatter = new SimpleDateFormat("@yyyy-MM-dd'T'HH:mm:ss.SSS'000'");
+	public static SimpleDateFormat isoReprDateFormatter = new SimpleDateFormat("@'('yyyy-MM-dd')'");
+	public static SimpleDateFormat isoReprDateTimeFormatter = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm:ss')'");
+	public static SimpleDateFormat isoReprTimestampMicroFormatter = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm:ss.SSS'000)'");
 
 	public static String repr(Object obj)
 	{
@@ -2812,14 +2812,14 @@ public class Utils
 			return "float";
 		else if (obj instanceof Date)
 			return "date";
-		else if (obj instanceof Color)
+		else if (obj instanceof Color) // check Color before List
 			return "color";
 		else if (obj instanceof List)
 			return "list";
+		else if (obj instanceof Template) // check Template before Map
+			return "template";
 		else if (obj instanceof Map)
 			return "dict";
-		else if (obj instanceof Template)
-			return "template";
 		else
 			return null;
 	}

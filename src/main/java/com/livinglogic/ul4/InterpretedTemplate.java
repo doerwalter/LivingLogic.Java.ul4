@@ -418,6 +418,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				else if (type.equals("def"))
 				{
 					opcode(Opcode.OC_DEF, loc.getCode(), loc);
+					stack.add(new DefStackItem(loc));
 				}
 				else
 				{
@@ -1644,7 +1645,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof List)) ? Boolean.TRUE : Boolean.FALSE;
 									break;
 								case Opcode.CF1_ISDICT:
-									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Map)) ? Boolean.TRUE : Boolean.FALSE;
+									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Map) && (!(reg[code.r2] instanceof Template))) ? Boolean.TRUE : Boolean.FALSE;
 									break;
 								case Opcode.CF1_ISTEMPLATE:
 									reg[code.r1] = ((null != reg[code.r2]) && (reg[code.r2] instanceof Template)) ? Boolean.TRUE : Boolean.FALSE;
