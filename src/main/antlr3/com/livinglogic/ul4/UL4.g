@@ -463,8 +463,13 @@ stmt returns [AST node]
 
 fragment
 renderarg returns [KeywordArg node]
-	: n=name '=' e=expr1 { $node = new KeywordArg($n.text, $e.node); }
-	| '**' e=expr1 { $node = new KeywordArg($e.node); }
+	:
+		n=name
+		'='
+		e=expr1 { $node = new KeywordArg($n.text, $e.node); }
+	|
+		'**'
+		e=expr1 { $node = new KeywordArg($e.node); }
 	;
 
 render returns [Render node]
