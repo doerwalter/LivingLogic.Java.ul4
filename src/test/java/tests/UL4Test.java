@@ -799,45 +799,45 @@ public class UL4Test
 	}
 
 	@Test
-	public void now() throws org.antlr.runtime.RecognitionException
+	public void function_now() throws org.antlr.runtime.RecognitionException
 	{
 		String output = getTemplateOutput("<?print now()?>");
 		assertTrue(output.compareTo("2012-03-28") > 0);
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
-	public void now1() throws org.antlr.runtime.RecognitionException
+	public void function_now1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print now(1)?>");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
-	public void now2() throws org.antlr.runtime.RecognitionException
+	public void function_now2() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print now(1, 2)?>");
 	}
 
 	@Test
-	public void utcnow() throws org.antlr.runtime.RecognitionException
+	public void function_utcnow() throws org.antlr.runtime.RecognitionException
 	{
 		String output = getTemplateOutput("<?print utcnow()?>");
 		assertTrue(output.compareTo("2012-03-28") > 0);
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
-	public void utcnow1() throws org.antlr.runtime.RecognitionException
+	public void function_utcnow1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print utcnow(1)?>");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
-	public void utcnow2() throws org.antlr.runtime.RecognitionException
+	public void function_utcnow2() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print utcnow(1, 2)?>");
 	}
 
 	@Test
-	public void vars() throws org.antlr.runtime.RecognitionException
+	public void function_vars() throws org.antlr.runtime.RecognitionException
 	{
 		String source = "<?if var in vars()?>yes<?else?>no<?end if?>";
 
@@ -846,37 +846,37 @@ public class UL4Test
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
-	public void vars1() throws org.antlr.runtime.RecognitionException
+	public void function_vars1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print vars(1)?>");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
-	public void vars2() throws org.antlr.runtime.RecognitionException
+	public void function_vars2() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print vars(1, 2)?>");
 	}
 
 	@Test
-	public void random() throws org.antlr.runtime.RecognitionException
+	public void function_random() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("ok", "<?code r = random()?><?if r>=0 and r<1?>ok<?else?>fail<?end if?>");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
-	public void random1() throws org.antlr.runtime.RecognitionException
+	public void function_random1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print random(1)?>");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
-	public void random2() throws org.antlr.runtime.RecognitionException
+	public void function_random2() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print random(1, 2)?>");
 	}
 
 	@Test
-	public void randrange() throws org.antlr.runtime.RecognitionException
+	public void function_randrange() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("ok", "<?code r = randrange(4)?><?if r>=0 and r<4?>ok<?else?>fail<?end if?>");
 		checkTemplateOutput("ok", "<?code r = randrange(17, 23)?><?if r>=17 and r<23?>ok<?else?>fail<?end if?>");
@@ -884,13 +884,13 @@ public class UL4Test
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
-	public void randrange1() throws org.antlr.runtime.RecognitionException
+	public void function_randrange1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print randrange()?>");
 	}
 
 	@Test
-	public void randchoice() throws org.antlr.runtime.RecognitionException
+	public void function_randchoice() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("ok", "<?code r = randchoice('abc')?><?if r in 'abc'?>ok<?else?>fail<?end if?>");
 		checkTemplateOutput("ok", "<?code s = [17, 23, 42]?><?code r = randchoice(s)?><?if r in s?>ok<?else?>fail<?end if?>");
@@ -899,40 +899,40 @@ public class UL4Test
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void randchoice1() throws org.antlr.runtime.RecognitionException
+	public void function_randchoice1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print randchoice()?>");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void randchoice2() throws org.antlr.runtime.RecognitionException
+	public void function_randchoice2() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print randchoice(1, 2)?>");
 	}
 
 	@Test
-	public void xmlescape() throws org.antlr.runtime.RecognitionException
+	public void function_xmlescape() throws org.antlr.runtime.RecognitionException
 	{
-		checkTemplateOutput("&lt;&lt;&gt;&gt;&amp;&#39;&quot;gurk", "<?print xmlescape(data)?>", "data", "'<<>>&'\"gurk'");
+		checkTemplateOutput("&lt;&lt;&gt;&gt;&amp;&#39;&quot;gurk", "<?print xmlescape(data)?>", "data", "<<>>&'\"gurk");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void xmlescape1() throws org.antlr.runtime.RecognitionException
+	public void function_xmlescape1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print xmlescape()?>");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void xmlescape2() throws org.antlr.runtime.RecognitionException
+	public void function_xmlescape2() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print xmlescape(1, 2)?>");
 	}
 
 	@Test
-	public void csv() throws org.antlr.runtime.RecognitionException
+	public void function_csv() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print csv(data)?>", "data", null);
 		checkTemplateOutput("False", "<?print csv(data)?>", "data", false);
@@ -947,20 +947,20 @@ public class UL4Test
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void csv1() throws org.antlr.runtime.RecognitionException
+	public void function_csv1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print csv()?>");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void csv2() throws org.antlr.runtime.RecognitionException
+	public void function_csv2() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print csv(1, 2)?>");
 	}
 
 	@Test
-	public void json() throws org.antlr.runtime.RecognitionException
+	public void function_json() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("null", "<?print json(data)?>", "data", null);
 		checkTemplateOutput("false", "<?print json(data)?>", "data", false);
@@ -974,20 +974,20 @@ public class UL4Test
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void json1() throws org.antlr.runtime.RecognitionException
+	public void function_json1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print json()?>");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void json2() throws org.antlr.runtime.RecognitionException
+	public void function_json2() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print json(1, 2)?>");
 	}
 
 	@Test
-	public void str() throws org.antlr.runtime.RecognitionException
+	public void function_str() throws org.antlr.runtime.RecognitionException
 	{
 		String source = "<?print str(data)?>";
 
@@ -1004,25 +1004,21 @@ public class UL4Test
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void str1() throws org.antlr.runtime.RecognitionException
+	public void function_str1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print str()?>");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void str2() throws org.antlr.runtime.RecognitionException
+	public void function_str2() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print str(1, 2)?>");
 	}
 
 	@Test
-	public void int_() throws org.antlr.runtime.RecognitionException
+	public void function_int() throws org.antlr.runtime.RecognitionException
 	{
-		String source = "<?print str(data)?>";
-
-		checkTemplateOutput("int\\(\\) argument must be a string or a number|int\\(null\\) not supported", "<?print int(data)?>", "data", null);
-		checkTemplateOutput("invalid literal for int|NumberFormatException", "<?print int(data)?>", "data", "foo");
 		checkTemplateOutput("1", "<?print int(data)?>", "data", true);
 		checkTemplateOutput("0", "<?print int(data)?>", "data", false);
 		checkTemplateOutput("42", "<?print int(data)?>", "data", 42);
@@ -1031,42 +1027,65 @@ public class UL4Test
 		checkTemplateOutput("66", "<?print int(data, 16)?>", "data", "42");
 	}
 
+	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	public void function_int_null() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print int(data)?>", "data", null);
+	}
+
+	@CauseTest(expectedCause=NumberFormatException.class)
+	public void function_int_badstring() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print int(data)?>", "data", "foo");
+	}
+
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void int1() throws org.antlr.runtime.RecognitionException
+	public void function_int1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print int()?>");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void int2() throws org.antlr.runtime.RecognitionException
+	public void function_int2() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print int(1, 2, 3)?>");
 	}
 
 	@Test
-	public void float_() throws org.antlr.runtime.RecognitionException
+	public void function_float() throws org.antlr.runtime.RecognitionException
 	{
 		String source = "<?print float(data)?>";
 
-		checkTemplateOutput("int\\(\\) argument must be a string or a number|int\\(null\\) not supported", "<?print float(data)?>", "data", null);
 		checkTemplateOutput("1.0", source, "data", true);
 		checkTemplateOutput("0.0", source, "data", false);
 		checkTemplateOutput("42.0", source, "data", 42);
 		checkTemplateOutput("42.0", source, "data", "42");
 	}
 
+	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	public void function_float_null() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print float(data)?>", "data", null);
+	}
+
+	@CauseTest(expectedCause=NumberFormatException.class)
+	public void function_float_badstring() throws org.antlr.runtime.RecognitionException
+	{
+		checkTemplateOutput("", "<?print float(data)?>", "data", "foo");
+	}
+
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void float1() throws org.antlr.runtime.RecognitionException
+	public void function_float1() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print float()?>");
 	}
 
 	@CauseTest(expectedCause=UnknownFunctionException.class)
 	@Test
-	public void float2() throws org.antlr.runtime.RecognitionException
+	public void function_float2() throws org.antlr.runtime.RecognitionException
 	{
 		checkTemplateOutput("", "<?print float(1, 2)?>");
 	}
