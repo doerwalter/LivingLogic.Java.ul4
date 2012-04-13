@@ -27,9 +27,4 @@ abstract class Binary extends AST
 	}
 
 	public abstract int getType();
-
-	public String toString()
-	{
-		return Opcode.code2name(getType()) + "(" + obj1 + ", " + obj2 + ")";
-	}
 }
