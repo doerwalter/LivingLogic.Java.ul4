@@ -443,7 +443,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 	{
 		String source = location.getCode();
 		ANTLRStringStream input = new ANTLRStringStream(source);
-		UL4Lexer lexer = new UL4Lexer(input);
+		UL4Lexer lexer = new UL4Lexer(location, input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		UL4Parser parser = new UL4Parser(location, tokens);
 		return parser;

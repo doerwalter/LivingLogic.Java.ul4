@@ -22,6 +22,25 @@ options
 	package com.livinglogic.ul4;
 }
 
+
+@lexer::members
+{
+	private Location location;
+
+	public UL4Lexer(Location location, CharStream input)
+	{
+		super(input);
+		this.location = location;
+	}
+
+	@Override
+	public void displayRecognitionError(String[] tokenNames, RecognitionException e)
+	{
+		String message = getErrorMessage(e, tokenNames) + " (at index " + e.index + ")";
+		throw new SyntaxException(message, e);
+	}
+}
+
 @parser::members
 {
 	private Location location;
@@ -32,10 +51,11 @@ options
 		this.location = location;
 	}
 
+	@Override
 	public void displayRecognitionError(String[] tokenNames, RecognitionException e)
 	{
-		String msg = getErrorMessage(e, tokenNames) + " (at index " + e.index + ")";
-		throw new SyntaxException(msg, e);
+		String message = getErrorMessage(e, tokenNames) + " (at index " + e.index + ")";
+		throw new SyntaxException(message, e);
 	}
 }
 
