@@ -265,7 +265,7 @@ expr10 returns [AST node]
 		')'
 	;
 
-/* Attribute access, method call, item acces, slice access */
+/* Attribute access, method call, item access, slice access */
 expr9 returns [AST node]
 	:
 		e1=expr10 { $node = $e1.node; }
