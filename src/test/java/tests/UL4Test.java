@@ -2288,6 +2288,12 @@ public class UL4Test
 		checkTemplateOutput("", "<?print ??>");
 	}
 
+	@CauseTest(expectedCause=SyntaxException.class)
+	public void parser_error()
+	{
+		checkTemplateOutput("", "<?print 1++2?>");
+	}
+
 	@Test
 	public void tag_note()
 	{
