@@ -24,13 +24,20 @@ public class ExpectCauseException extends Statement
 		}
 		catch (Throwable e)
 		{
-			while (e.getCause() != null)
+			boolean found = false;
+			while (e != null)
+			{
+				if (fExpected.isAssignableFrom(e.getClass()))
+				{
+					found = true;
+					break;
+				}
 				e = e.getCause();
-			if (!fExpected.isAssignableFrom(e.getClass()))
+			}
+			if (!found)
 			{
 				String message = "Unexpected exception cause, expected<"
-				                 + fExpected.getName() + "> but was<"
-				                 + e.getClass().getName() + ">";
+				                 + fExpected.getName() + "> but not found in cause chain";
 				throw new Exception(message, e);
 			}
 		}
