@@ -3152,10 +3152,11 @@ public class Utils
 		return output.toString();
 	}
 
-	public static int parseUL4Int(String string)
+	public static Object parseUL4Int(String string)
 	{
 		boolean neg = false;
 		int base = 10;
+		Object value;
 		if (string.charAt(0) == '-')
 		{
 			neg = true;
@@ -3176,8 +3177,23 @@ public class Utils
 			string = string.substring(2);
 			base = 2;
 		}
-		int value = Integer.parseInt(string, base);
-		return neg ? -value : value;
+		if (neg)
+			string = "-" + string;
+		try
+		{
+			return Integer.parseInt(string, base);
+		}
+		catch (NumberFormatException ex1)
+		{
+			try
+			{
+				return Long.parseLong(string, base);
+			}
+			catch (NumberFormatException ex2)
+			{
+				return new BigInteger(string, base);
+			}
+		}
 	}
 
 	/**

@@ -1384,7 +1384,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 							reg[code.r1] = code.arg;
 							break;
 						case Opcode.OC_LOADINT:
-							reg[code.r1] = Integer.parseInt(code.arg);
+							reg[code.r1] = Utils.parseUL4Int(code.arg);
 							break;
 						case Opcode.OC_LOADFLOAT:
 							reg[code.r1] = Double.parseDouble(code.arg);

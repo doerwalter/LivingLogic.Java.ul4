@@ -10,9 +10,9 @@ import java.io.IOException;
 
 public class LoadInt extends LoadConst
 {
-	protected int value;
+	protected Object value;
 
-	public LoadInt(int value)
+	public LoadInt(Object value)
 	{
 		this.value = value;
 	}
@@ -29,19 +29,19 @@ public class LoadInt extends LoadConst
 
 	public Object getValue()
 	{
-		return new Integer(value);
+		return value;
 	}
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r = registers.alloc();
-		template.opcode(Opcode.OC_LOADINT, r, String.valueOf(value), location);
+		template.opcode(Opcode.OC_LOADINT, r, value.toString(), location);
 		return r;
 	}
 
 	public String toString()
 	{
-		return Integer.toString(value);
+		return value.toString();
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

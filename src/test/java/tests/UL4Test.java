@@ -63,6 +63,18 @@ public class UL4Test
 		checkTemplateOutput("0", "<?print 0?>");
 		checkTemplateOutput("42", "<?print 42?>");
 		checkTemplateOutput("-42", "<?print -42?>");
+		checkTemplateOutput("134217727", "<?print 134217727?>");
+		checkTemplateOutput("134217728", "<?print 134217728?>");
+		checkTemplateOutput("-134217728", "<?print -134217728?>");
+		checkTemplateOutput("-134217729", "<?print -134217729?>");
+		checkTemplateOutput("576460752303423487", "<?print 576460752303423487?>");
+		checkTemplateOutput("576460752303423488", "<?print 576460752303423488?>");
+		checkTemplateOutput("-576460752303423488", "<?print -576460752303423488?>");
+		checkTemplateOutput("-576460752303423489", "<?print -576460752303423489?>");
+		checkTemplateOutput("9999999999", "<?print 9999999999?>");
+		checkTemplateOutput("-9999999999", "<?print -9999999999?>");
+		checkTemplateOutput("99999999999999999999", "<?print 99999999999999999999?>");
+		checkTemplateOutput("-99999999999999999999", "<?print -99999999999999999999?>");
 		checkTemplateOutput("255", "<?print 0xff?>");
 		checkTemplateOutput("255", "<?print 0Xff?>");
 		checkTemplateOutput("-255", "<?print -0xff?>");
