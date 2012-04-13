@@ -452,7 +452,7 @@ expr1 returns [AST node]
 	;
 
 expression returns [AST node]
-	: e=expr1 { $node = $e.node; }
+	: e=expr1 EOF { $node = $e.node; }
 	;
 
 
@@ -463,6 +463,7 @@ for_ returns [AST node]
 		n=name
 		'in'
 		e=expr1 { $node = new For($n.text, $e.node); }
+		EOF
 	|
 		'('
 		n1=name
@@ -470,6 +471,7 @@ for_ returns [AST node]
 		')'
 		'in'
 		e=expr1 { $node = new ForUnpack($e.node); ((ForUnpack)$node).append($n1.text); }
+		EOF
 	|
 		'(' { $node = new ForUnpack(); }
 		n1=name { ((ForUnpack)$node).append($n1.text); }
@@ -481,20 +483,21 @@ for_ returns [AST node]
 		')'
 		'in'
 		e=expr1 { ((ForUnpack)$node).setContainer($e.node); }
+		EOF
 	;
 
 
 /* Additional rules for "code" tag */
 
 stmt returns [AST node]
-	: n=name '=' e=expr1 { $node = new StoreVar($n.node.getValue(), $e.node); }
-	| n=name '+=' e=expr1 { $node = new AddVar($n.node.getValue(), $e.node); }
-	| n=name '-=' e=expr1 { $node = new SubVar($n.node.getValue(), $e.node); }
-	| n=name '*=' e=expr1 { $node = new MulVar($n.node.getValue(), $e.node); }
-	| n=name '/=' e=expr1 { $node = new TrueDivVar($n.node.getValue(), $e.node); }
-	| n=name '//=' e=expr1 { $node = new FloorDivVar($n.node.getValue(), $e.node); }
-	| n=name '%=' e=expr1 { $node = new ModVar($n.node.getValue(), $e.node); }
-	| 'del' n=name { $node = new DelVar($n.node.getValue()); }
+	: n=name '=' e=expr1 EOF { $node = new StoreVar($n.node.getValue(), $e.node); }
+	| n=name '+=' e=expr1 EOF { $node = new AddVar($n.node.getValue(), $e.node); }
+	| n=name '-=' e=expr1 EOF { $node = new SubVar($n.node.getValue(), $e.node); }
+	| n=name '*=' e=expr1 EOF { $node = new MulVar($n.node.getValue(), $e.node); }
+	| n=name '/=' e=expr1 EOF { $node = new TrueDivVar($n.node.getValue(), $e.node); }
+	| n=name '//=' e=expr1 EOF { $node = new FloorDivVar($n.node.getValue(), $e.node); }
+	| n=name '%=' e=expr1 EOF { $node = new ModVar($n.node.getValue(), $e.node); }
+	| 'del' n=name EOF { $node = new DelVar($n.node.getValue()); }
 	;
 
 
@@ -522,4 +525,5 @@ render returns [Render node]
 		)*
 		','?
 		')'
+		EOF
 	;
