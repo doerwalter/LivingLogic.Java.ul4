@@ -465,7 +465,7 @@ stmt returns [AST node]
 /* Additional rules for "render" tag */
 
 fragment
-renderarg returns [CallArg node]
+callarg returns [CallArg node]
 	:
 		n=name
 		'='
@@ -479,10 +479,10 @@ render returns [Render node]
 	:
 		t=expr1 { $node = new Render($t.node); }
 		'('
-		a1=renderarg { $node.append($a1.node); }
+		a1=callarg { $node.append($a1.node); }
 		(
 			','
-			a2=renderarg { $node.append($a2.node); }
+			a2=callarg { $node.append($a2.node); }
 		)*
 		','?
 		')'
