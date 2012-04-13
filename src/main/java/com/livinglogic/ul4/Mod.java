@@ -15,6 +15,11 @@ class Mod extends Binary
 		super(obj1, obj2);
 	}
 
+	public String toString()
+	{
+		return "mod(" + obj1 + ", " + obj2 + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_MOD;

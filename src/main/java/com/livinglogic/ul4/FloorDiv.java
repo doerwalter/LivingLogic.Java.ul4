@@ -15,6 +15,11 @@ class FloorDiv extends Binary
 		super(obj1, obj2);
 	}
 
+	public String toString()
+	{
+		return "floordiv(" + obj1 + ", " + obj2 + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_FLOORDIV;

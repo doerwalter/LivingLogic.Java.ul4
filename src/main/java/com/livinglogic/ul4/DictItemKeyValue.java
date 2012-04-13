@@ -20,6 +20,11 @@ public class DictItemKeyValue extends DictItem
 		this.value = value;
 	}
 
+	public String toString()
+	{
+		return key.toString() + ": " + value.toString();
+	}
+
 	public void addTo(EvaluationContext context, Map dict) throws IOException
 	{
 		dict.put(key.evaluate(context), value.evaluate(context));

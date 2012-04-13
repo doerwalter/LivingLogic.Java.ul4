@@ -15,6 +15,11 @@ class NotContains extends Binary
 		super(obj1, obj2);
 	}
 
+	public String toString()
+	{
+		return "notcontains(" + obj1 + ", " + obj2 + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_NOTCONTAINS;

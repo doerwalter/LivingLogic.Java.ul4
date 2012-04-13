@@ -15,6 +15,11 @@ class And extends Binary
 		super(obj1, obj2);
 	}
 
+	public String toString()
+	{
+		return "and(" + obj1 + ", " + obj2 + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_AND;

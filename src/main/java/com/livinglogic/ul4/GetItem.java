@@ -15,6 +15,11 @@ class GetItem extends Binary
 		super(obj1, obj2);
 	}
 
+	public String toString()
+	{
+		return "getitem(" + obj1 + ", " + obj2 + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_GETITEM;

@@ -26,9 +26,4 @@ abstract class ChangeVar extends AST
 	}
 
 	abstract int getType();
-
-	public String toString()
-	{
-		return Opcode.code2name(getType()) + "(" + varname + ", " + value + ")";
-	}
 }

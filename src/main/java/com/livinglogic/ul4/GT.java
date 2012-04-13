@@ -15,6 +15,11 @@ class GT extends Binary
 		super(obj1, obj2);
 	}
 
+	public String toString()
+	{
+		return "gt(" + obj1 + ", " + obj2 + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_GT;

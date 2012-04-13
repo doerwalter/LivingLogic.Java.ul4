@@ -15,6 +15,11 @@ class LT extends Binary
 		super(obj1, obj2);
 	}
 
+	public String toString()
+	{
+		return "lt(" + obj1 + ", " + obj2 + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_LT;

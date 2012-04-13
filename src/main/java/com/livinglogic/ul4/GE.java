@@ -15,6 +15,11 @@ class GE extends Binary
 		super(obj1, obj2);
 	}
 
+	public String toString()
+	{
+		return "ge(" + obj1 + ", " + obj2 + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_GE;

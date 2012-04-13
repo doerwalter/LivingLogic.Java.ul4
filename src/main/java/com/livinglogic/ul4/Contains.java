@@ -15,6 +15,11 @@ class Contains extends Binary
 		super(obj1, obj2);
 	}
 
+	public String toString()
+	{
+		return "contains(" + obj1 + ", " + obj2 + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_CONTAINS;

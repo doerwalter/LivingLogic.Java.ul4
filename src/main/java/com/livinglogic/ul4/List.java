@@ -23,6 +23,24 @@ public class List extends AST
 		items.add(item);
 	}
 
+	public String toString()
+	{
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("[");
+
+		boolean first = true;
+		for (AST item : items)
+		{
+			if (first)
+				first = false;
+			else
+				buffer.append(", ");
+			buffer.append(item.toString());
+		}
+		buffer.append("]");
+		return buffer.toString();
+	}
+
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int r = registers.alloc();

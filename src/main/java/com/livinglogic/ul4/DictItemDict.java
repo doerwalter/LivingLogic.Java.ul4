@@ -18,6 +18,11 @@ public class DictItemDict extends DictItem
 		this.dict = dict;
 	}
 
+	public String toString()
+	{
+		return "**" + dict.toString();
+	}
+
 	public void addTo(EvaluationContext context, Map dict) throws IOException
 	{
 		dict.putAll((Map)this.dict.evaluate(context));

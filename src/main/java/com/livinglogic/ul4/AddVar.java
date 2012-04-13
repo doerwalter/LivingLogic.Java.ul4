@@ -15,6 +15,11 @@ class AddVar extends ChangeVar
 		super(varname, value);
 	}
 
+	public String toString()
+	{
+		return "addvar(" + Utils.repr(varname) + ", " + value + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_ADDVAR;

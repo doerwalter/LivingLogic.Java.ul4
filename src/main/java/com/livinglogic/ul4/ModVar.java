@@ -15,6 +15,11 @@ class ModVar extends ChangeVar
 		super(varname, value);
 	}
 
+	public String toString()
+	{
+		return "modvar(" + Utils.repr(varname) + ", " + value + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_MODVAR;

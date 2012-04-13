@@ -15,6 +15,11 @@ class Mul extends Binary
 		super(obj1, obj2);
 	}
 
+	public String toString()
+	{
+		return "mul(" + obj1 + ", " + obj2 + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_MUL;

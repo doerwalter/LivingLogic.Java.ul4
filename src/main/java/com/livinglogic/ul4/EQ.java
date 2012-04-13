@@ -15,6 +15,11 @@ class EQ extends Binary
 		super(obj1, obj2);
 	}
 
+	public String toString()
+	{
+		return "eq(" + obj1 + ", " + obj2 + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_EQ;

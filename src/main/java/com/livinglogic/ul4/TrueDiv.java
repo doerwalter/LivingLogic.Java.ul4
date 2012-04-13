@@ -15,6 +15,11 @@ class TrueDiv extends Binary
 		super(obj1, obj2);
 	}
 
+	public String toString()
+	{
+		return "truediv(" + obj1 + ", " + obj2 + ")";
+	}
+
 	public int getType()
 	{
 		return Opcode.OC_TRUEDIV;
