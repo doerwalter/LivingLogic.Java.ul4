@@ -301,27 +301,27 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 					opcode(Opcode.OC_TEXT, loc);
 				else if (type.equals("print"))
 				{
-					UL4Parser parser = getParser(loc.getCode());
+					UL4Parser parser = getParser(loc);
 					AST node = parser.expression();
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_PRINT, r, loc);
 				}
 				else if (type.equals("printx"))
 				{
-					UL4Parser parser = getParser(loc.getCode());
+					UL4Parser parser = getParser(loc);
 					AST node = parser.expression();
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_PRINTX, r, loc);
 				}
 				else if (type.equals("code"))
 				{
-					UL4Parser parser = getParser(loc.getCode());
+					UL4Parser parser = getParser(loc);
 					AST node = parser.stmt();
 					int r = node.compile(this, new Registers(), loc);
 				}
 				else if (type.equals("if"))
 				{
-					UL4Parser parser = getParser(loc.getCode());
+					UL4Parser parser = getParser(loc);
 					AST node = parser.expression();
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_IF, r, loc);
@@ -335,7 +335,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 					if (ifStackItem.elseseen)
 						throw new BlockException("else already seen in elif");
 					opcode(Opcode.OC_ELSE, loc);
-					UL4Parser parser = getParser(loc.getCode());
+					UL4Parser parser = getParser(loc);
 					AST node = parser.expression();
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_IF, r, loc);
@@ -368,7 +368,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				}
 				else if (type.equals("for"))
 				{
-					UL4Parser parser = getParser(loc.getCode());
+					UL4Parser parser = getParser(loc);
 					AST node = parser.for_();
 					int r = node.compile(this, new Registers(), loc);
 					stack.add(new ForStackItem(loc));
@@ -411,7 +411,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				}
 				else if (type.equals("render"))
 				{
-					UL4Parser parser = getParser(loc.getCode());
+					UL4Parser parser = getParser(loc);
 					AST node = parser.render();
 					int r = node.compile(this, new Registers(), loc);
 				}
@@ -439,12 +439,13 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 			throw new LocationException(new BlockException("block unclosed"), stack.get(stack.size()-1).location);
 	}
 
-	private UL4Parser getParser(String source)
+	private UL4Parser getParser(Location location)
 	{
+		String source = location.getCode();
 		ANTLRStringStream input = new ANTLRStringStream(source);
 		UL4Lexer lexer = new UL4Lexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		UL4Parser parser = new UL4Parser(tokens);
+		UL4Parser parser = new UL4Parser(location, tokens);
 		return parser;
 	}
 
