@@ -76,13 +76,17 @@ public class Location extends ObjectAsMap
 		}
 		String tagType = (type != null) ? "<?" + type + "?> tag" : "literal";
 
-		String templatename;
-		if (name != null)
-			templatename = "template " + name;
-		else
-			templatename = "unnamed template";
+		String templatename = (name != null) ? "template " + name : "unnamed template";
 
-		return tagType + " at position " + (starttag+1) + " (line " + line + ", col " + col + ", " + templatename + ")";
+		String source = null;
+
+		if (type != null)
+		{
+			String tag = Utils.repr(getTag());
+			source = ": " + tag.substring(1, tag.length()-1);
+		}
+
+		return tagType + " at position " + (starttag+1) + " (line " + line + ", col " + col + ", " + templatename + ")" + source;
 	}
 
 	public void fixName(String name)
