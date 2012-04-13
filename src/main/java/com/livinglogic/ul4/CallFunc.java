@@ -24,6 +24,21 @@ public class CallFunc extends AST
 		args.add(arg);
 	}
 
+	public String toString()
+	{
+		StringBuffer buffer = new StringBuffer();
+
+		buffer.append("callfunc(");
+		buffer.append(Utils.repr(name));
+		for (AST arg : args)
+		{
+			buffer.append(", ");
+			buffer.append(arg);
+		}
+		buffer.append(")");
+		return buffer.toString();
+	}
+
 	private static final int[] opcodes = {Opcode.OC_CALLFUNC0, Opcode.OC_CALLFUNC1, Opcode.OC_CALLFUNC2, Opcode.OC_CALLFUNC3, Opcode.OC_CALLFUNC4};
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)

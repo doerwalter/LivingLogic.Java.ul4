@@ -17,6 +17,11 @@ public class DelVar extends AST
 		this.varname = varname;
 	}
 
+	public String toString()
+	{
+		return ("delvar(" + Utils.repr(varname) + ")");
+	}
+
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		template.opcode(Opcode.OC_DELVAR, varname, location);
