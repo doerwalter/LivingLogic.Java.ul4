@@ -10,8 +10,8 @@ import java.util.LinkedList;
 
 public class CallMeth extends AST
 {
-	protected String name;
 	protected AST obj;
+	protected String name;
 	protected LinkedList<AST> args;
 
 	public CallMeth(AST obj, String name)
