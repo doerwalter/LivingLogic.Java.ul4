@@ -10,14 +10,14 @@ import java.util.LinkedList;
 
 public class CallMethKeywords extends AST
 {
+	protected AST obj;
 	protected String name;
-	protected AST template;
 	protected LinkedList<CallArg> args = new LinkedList<CallArg>();
 
-	public CallMethKeywords(String name, AST template)
+	public CallMethKeywords(AST obj, String name)
 	{
+		this.obj = obj;
 		this.name = name;
-		this.template = template;
 	}
 
 	public void append(String name, AST value)
@@ -28,6 +28,11 @@ public class CallMethKeywords extends AST
 	public void append(AST value)
 	{
 		args.add(new CallArgDict(value));
+	}
+
+	public void append(CallArg arg)
+	{
+		args.add(arg);
 	}
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
@@ -52,7 +57,7 @@ public class CallMethKeywords extends AST
 				registers.free(rk);
 			}
 		}
-		int rt = this.template.compile(template, registers, location);
+		int rt = obj.compile(template, registers, location);
 		template.opcode(Opcode.OC_CALLMETHKW, rt, rt, ra, name, location);
 		registers.free(ra);
 		return rt;

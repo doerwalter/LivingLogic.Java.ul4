@@ -3,6 +3,7 @@ grammar UL4;
 options
 {
 	language=Java;
+	backtrack=true;
 }
 
 @header
@@ -261,30 +262,6 @@ atom returns [AST node]
 	| '(' e_bracket=expr1 ')' { $node = $e_bracket.node; }
 	;
 
-/*
-expr10 returns [AST node]
-	: e1=callfunc { $node = $e1.node; }
-	| e2=expr11 { $node = $e2.node; }
-	;
-
-callmeth
-	: expr9 '.' name '(' expr9 ')'
-	| expr9 '.' name '(' expr9 ',' expr9 ')'
-	| expr9 '.' name '(' expr9 ',' expr9 ',' expr9 ')'
-	;
-
-fragment
-namedarg
-	: name '=' expr9
-	| '**' expr9
-	;
-
-callmethkw
-	: expr9 '.' name '(' namedarg (',' namedarg)* ','? ')'
-	;
-
-*/
-
 /* Function call */
 expr10 returns [AST node]
 	: a=atom { $node = $a.node; }
@@ -303,32 +280,54 @@ expr10 returns [AST node]
 
 /* Attribute access, method call, item access, slice access */
 expr9 returns [AST node]
+	@init
+	{
+		boolean callmeth = false;
+		AST index1 = null;
+		AST index2 = null;
+		boolean slice = false;
+	}
 	:
 		e1=expr10 { $node = $e1.node; }
 		(
 			'.'
-			n=name { boolean callmeth = false; }
+			n=name
 			(
-				'(' { callmeth = true; $node = new CallMeth($node, $n.node.getValue()); }
 				(
-					a1=expr1 { ((CallMeth)$node).append($a1.node); }
+					/* No arguments */
+					'('
+					')' { callmeth = true; $node = new CallMeth($node, $n.node.getValue()); }
+				|
+					/* Positional argument */
+					'(' { callmeth = true; $node = new CallMeth($node, $n.node.getValue()); }
+					pa1=expr1 { ((CallMeth)$node).append($pa1.node); }
 					(
 						','
-						a2=expr1 { ((CallMeth)$node).append($a2.node); }
+						pa2=expr1 { ((CallMeth)$node).append($pa2.node); }
 					)*
 					','?
-				)?
-				')'
+					')'
+				|
+					/* Keyword arguments */
+					'(' { callmeth = true; $node = new CallMethKeywords($node, $n.node.getValue()); }
+					kwa1=callarg { ((CallMethKeywords)$node).append($kwa1.node); }
+					(
+						','
+						kwa2=callarg { ((CallMethKeywords)$node).append($kwa2.node); }
+					)*
+					','?
+					')'
+				)
 			)? { if (!callmeth) $node = new GetAttr($node, $n.node.getValue()); }
 		|
 			'['
 			(
-				':' { AST index2 = null; }
+				':'
 				(
 					e2=expr1 { index2 = $e2.node; }
 				)? { $node = new GetSlice($node, null, index2); }
-				| { boolean slice = false; }
-				e2=expr1 { AST index1 = $e2.node; AST index2 = null; }
+			|
+				e2=expr1 { index1 = $e2.node; }
 				(
 					':' { slice = true; }
 					(
@@ -342,8 +341,11 @@ expr9 returns [AST node]
 
 /* Negation */
 expr8 returns [AST node]
+	@init
+	{
+		int count = 0;
+	}
 	:
-		{int count = 0; }
 		(
 			'-' { ++count; }
 		)*
@@ -352,10 +354,13 @@ expr8 returns [AST node]
 
 /* Multiplication, division, modulo */
 expr7 returns [AST node]
+	@init
+	{
+		int opcode = -1;
+	}
 	:
 		e1=expr8 { $node = $e1.node; }
 		(
-			{ int opcode = -1; }
 			(
 				'*' { opcode = 0; }
 			|
@@ -371,10 +376,13 @@ expr7 returns [AST node]
 
 /* Addition, substraction */
 expr6 returns [AST node]
+	@init
+	{
+		boolean add = false;
+	}
 	:
 		e1=expr7 { $node = $e1.node; }
 		(
-			{ boolean add = false; }
 			(
 				'+' { add = true; }
 			|
@@ -386,10 +394,13 @@ expr6 returns [AST node]
 
 /* Comparisons */
 expr5 returns [AST node]
+	@init
+	{
+		int opcode = -1;
+	}
 	:
 		e1=expr6 { $node = $e1.node; }
 		(
-			{ int opcode = -1; }
 			(
 				'==' { opcode = 0; }
 			|
@@ -409,10 +420,14 @@ expr5 returns [AST node]
 
 /* "in"/"not in" operator */
 expr4 returns [AST node]
+	@init
+	{
+		boolean not = false;
+	}
 	:
 		e1=expr5 { $node = $e1.node; }
 		(
-			{ boolean not = false; }
+			
 			(
 				'not' { not = true; }
 			)?
