@@ -3,7 +3,6 @@ grammar UL4;
 options
 {
 	k=4;
-	output=AST;
 	language=Java;
 }
 
@@ -165,15 +164,15 @@ color returns [AST node]
 	;
 
 literal returns [AST node]
-	: e_none=none { $node = e_none.node; }
-	| e_false=false_ { $node = e_false.node; }
-	| e_true=true_ { $node = e_true.node; }
-	| e_name=name { $node = e_name.node; }
-	| e_int=int_ { $node = e_int.node; }
-	| e_float=float_ { $node = e_float.node; }
-	| e_string=string { $node = e_string.node; }
-	| e_date=date { $node = e_date.node; }
-	| e_color=color { $node = e_color.node; }
+	: e_none=none { $node = $e_none.node; }
+	| e_false=false_ { $node = $e_false.node; }
+	| e_true=true_ { $node = $e_true.node; }
+	| e_name=name { $node = $e_name.node; }
+	| e_int=int_ { $node = $e_int.node; }
+	| e_float=float_ { $node = $e_float.node; }
+	| e_string=string { $node = $e_string.node; }
+	| e_date=date { $node = $e_date.node; }
+	| e_color=color { $node = $e_color.node; }
 	;
 
 /* List literals */
@@ -252,7 +251,7 @@ callmethkw
 
 /* Function call */
 expr10 returns [AST node]
-	: a=atom { $node = a.node; }
+	: a=atom { $node = $a.node; }
 	| n=name '(' ')' { $node = new CallFunc($n.text); }
 	|
 		n=name { $node = new CallFunc($n.text); }
@@ -312,7 +311,7 @@ expr8 returns [AST node]
 		(
 			'-' { ++count; }
 		)*
-		e=expr9 { $node = e.node; while (count-- != 0) { $node = new Neg($node); } }
+		e=expr9 { $node = $e.node; while (count-- != 0) { $node = new Neg($node); } }
 	;
 
 /* Multiplication, division, modulo */

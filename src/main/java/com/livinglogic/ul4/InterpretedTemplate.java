@@ -302,27 +302,27 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				else if (type.equals("print"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expression().node;
+					AST node = parser.expression();
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_PRINT, r, loc);
 				}
 				else if (type.equals("printx"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expression().node;
+					AST node = parser.expression();
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_PRINTX, r, loc);
 				}
 				else if (type.equals("code"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.stmt().node;
+					AST node = parser.stmt();
 					int r = node.compile(this, new Registers(), loc);
 				}
 				else if (type.equals("if"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expression().node;
+					AST node = parser.expression();
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_IF, r, loc);
 					stack.add(new IfStackItem(loc));
@@ -336,7 +336,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 						throw new BlockException("else already seen in elif");
 					opcode(Opcode.OC_ELSE, loc);
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expression().node;
+					AST node = parser.expression();
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_IF, r, loc);
 					ifStackItem.count++;
@@ -369,7 +369,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				else if (type.equals("for"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.for_().node;
+					AST node = parser.for_();
 					int r = node.compile(this, new Registers(), loc);
 					stack.add(new ForStackItem(loc));
 				}
@@ -412,7 +412,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				else if (type.equals("render"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.render().node;
+					AST node = parser.render();
 					int r = node.compile(this, new Registers(), loc);
 				}
 				else if (type.equals("def"))
