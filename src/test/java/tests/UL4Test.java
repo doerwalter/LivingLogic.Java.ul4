@@ -17,6 +17,7 @@ import static com.livinglogic.ul4.Utils.*;
 import com.livinglogic.ul4.KeyException;
 import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.UnknownFunctionException;
+import com.livinglogic.ul4.SyntaxException;
 import org.antlr.runtime.RecognitionException;
 
 @RunWith(CauseTestRunner.class)
@@ -2279,6 +2280,12 @@ public class UL4Test
 	public void parse()
 	{
 		checkTemplateOutput("42", "<?print data.Noner?>", "data", makeMap("Noner", 42));
+	}
+
+	@CauseTest(expectedCause=SyntaxException.class)
+	public void lexer_error()
+	{
+		checkTemplateOutput("", "<?print ??>");
 	}
 
 	@Test
