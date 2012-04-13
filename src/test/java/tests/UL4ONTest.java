@@ -4,15 +4,34 @@ import java.util.Date;
 import static java.util.Arrays.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import  org.antlr.runtime.RecognitionException;
 
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.InterpretedTemplate;
-import com.livinglogic.ul4.Compiler;
 import static com.livinglogic.utils.MapUtils.*;
 import static com.livinglogic.ul4on.Utils.*;
 
 public class UL4ONTest
 {
+	private static InterpretedTemplate getTemplate(String source, String name)
+	{
+		try
+		{
+			InterpretedTemplate template = new InterpretedTemplate(source, name);
+			// System.out.println(template);
+			return template;
+		}
+		catch (RecognitionException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+	}
+
+	private static InterpretedTemplate getTemplate(String source)
+	{
+		return getTemplate(source, null);
+	}
+
 	private static void checkRoundtrip(Object object)
 	{
 		String output = dumps(object);
@@ -30,7 +49,7 @@ public class UL4ONTest
 	@Test
 	public void roundtrip()
 	{
-		InterpretedTemplate template = Compiler.compile("<?for i in range(10)?>[<?print i?>]<?end for?>");
+		InterpretedTemplate template = getTemplate("<?for i in range(10)?>[<?print i?>]<?end for?>");
 
 		checkRoundtrip(null);
 		checkRoundtrip(true);
