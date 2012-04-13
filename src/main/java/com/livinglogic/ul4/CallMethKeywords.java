@@ -12,7 +12,7 @@ public class CallMethKeywords extends AST
 {
 	protected String name;
 	protected AST template;
-	protected LinkedList<KeywordArg> args = new LinkedList<KeywordArg>();
+	protected LinkedList<CallArg> args = new LinkedList<CallArg>();
 
 	public CallMethKeywords(String name, AST template)
 	{
@@ -22,33 +22,35 @@ public class CallMethKeywords extends AST
 
 	public void append(String name, AST value)
 	{
-		args.add(new KeywordArg(name, value));
+		args.add(new CallArgNamed(name, value));
 	}
 
 	public void append(AST value)
 	{
-		args.add(new KeywordArg(null, value));
+		args.add(new CallArgDict(value));
 	}
 
 	public int compile(InterpretedTemplate template, Registers registers, Location location)
 	{
 		int ra = registers.alloc();
 		template.opcode(Opcode.OC_BUILDDICT, ra, location);
-		for (KeywordArg arg : args)
+		for (CallArg arg : args)
 		{
-			int rv = arg.value.compile(template, registers, location);
-			if (arg.name == null)
+			if (arg instanceof CallArgDict)
 			{
+				int rv = ((CallArgDict)arg).dict.compile(template, registers, location);
 				template.opcode(Opcode.OC_UPDATEDICT, ra, rv, location);
+				registers.free(rv);
 			}
 			else
 			{
+				int rv = ((CallArgNamed)arg).value.compile(template, registers, location);
 				int rk = registers.alloc();
-				template.opcode(Opcode.OC_LOADSTR, rk, arg.name, location);
+				template.opcode(Opcode.OC_LOADSTR, rk, ((CallArgNamed)arg).name, location);
 				template.opcode(Opcode.OC_ADDDICT, ra, rk, rv, location);
+				registers.free(rv);
 				registers.free(rk);
 			}
-			registers.free(rv);
 		}
 		int rt = this.template.compile(template, registers, location);
 		template.opcode(Opcode.OC_CALLMETHKW, rt, rt, ra, name, location);
