@@ -35,7 +35,7 @@ options
 	public void displayRecognitionError(String[] tokenNames, RecognitionException e)
 	{
 		String msg = getErrorMessage(e, tokenNames) + " (at index " + e.index + ")";
-		throw new RuntimeException(msg, e);
+		throw new SyntaxException(msg, e);
 	}
 }
 

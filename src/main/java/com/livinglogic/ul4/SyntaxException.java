@@ -6,15 +6,16 @@
 
 package com.livinglogic.ul4;
 
-public class SyntaxException extends Exception
+public class SyntaxException extends RuntimeException
 {
-	public SyntaxException(UL4Token token)
+	public SyntaxException(String message)
 	{
-		super("Lexical error near " + token);
+		super(message);
 	}
 
-	public SyntaxException(Object object)
+	public SyntaxException(String message, Throwable cause)
 	{
-		super("Lexical error near " + object);
+		super(message, cause);
 	}
+
 }
