@@ -75,8 +75,14 @@ public class Location extends ObjectAsMap
 			}
 		}
 		String tagType = (type != null) ? "<?" + type + "?> tag" : "literal";
-		
-		return tagType + " at position " + (starttag+1) + " (line " + line + ", col " + col + ", template " + name + ")";
+
+		String templatename;
+		if (name != null)
+			templatename = "template " + name;
+		else
+			templatename = "unnamed template";
+
+		return tagType + " at position " + (starttag+1) + " (line " + line + ", col " + col + ", " + templatename + ")";
 	}
 
 	public void fixName(String name)
