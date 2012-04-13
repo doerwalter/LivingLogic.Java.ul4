@@ -16,7 +16,7 @@ options
 	import com.livinglogic.ul4.Utils;
 	import com.livinglogic.ul4.Color;
 	import com.livinglogic.ul4.Render;
-	import com.livinglogic.ul4.KeywordArg;
+	import com.livinglogic.ul4.CallArg;
 }
 
 @lexer::header
@@ -416,6 +416,10 @@ expr1 returns [AST node]
 		)*
 	;
 
+expression returns [AST node]
+	: e=expr1 { $node = $e.node; }
+	;
+
 
 /* Additional rules for "for" tag */
 
@@ -462,14 +466,14 @@ stmt returns [AST node]
 /* Additional rules for "render" tag */
 
 fragment
-renderarg returns [KeywordArg node]
+renderarg returns [CallArg node]
 	:
 		n=name
 		'='
-		e=expr1 { $node = new KeywordArg($n.text, $e.node); }
+		e=expr1 { $node = new CallArgNamed($n.text, $e.node); }
 	|
 		'**'
-		e=expr1 { $node = new KeywordArg($e.node); }
+		e=expr1 { $node = new CallArgDict($e.node); }
 	;
 
 render returns [Render node]

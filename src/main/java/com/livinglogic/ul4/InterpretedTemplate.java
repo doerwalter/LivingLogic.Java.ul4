@@ -180,7 +180,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 
 	public InterpretedTemplate(String source) throws RecognitionException
 	{
-		this(source, "unnamed", "<?", "?>");
+		this(source, null, "<?", "?>");
 	}
 
 	public InterpretedTemplate(String source, String name) throws RecognitionException
@@ -190,7 +190,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 
 	public InterpretedTemplate(String source, String startdelim, String enddelim) throws RecognitionException
 	{
-		this(source, "unnamed", startdelim, enddelim);
+		this(source, null, startdelim, enddelim);
 	}
 
 	private abstract static class StackItem
@@ -270,7 +270,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 	public InterpretedTemplate(String source, String name, String startdelim, String enddelim) throws RecognitionException
 	{
 		this.source = source;
-		this.name = name;
+		this.name = name != null ? name : "unnamed";
 		this.startdelim = startdelim;
 		this.enddelim = enddelim;
 		this.opcodes = new LinkedList<Opcode>();
@@ -302,14 +302,14 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				else if (type.equals("print"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expr1().node;
+					AST node = parser.expression().node;
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_PRINT, r, loc);
 				}
 				else if (type.equals("printx"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expr1().node;
+					AST node = parser.expression().node;
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_PRINTX, r, loc);
 				}
@@ -322,7 +322,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				else if (type.equals("if"))
 				{
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expr1().node;
+					AST node = parser.expression().node;
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_IF, r, loc);
 					stack.add(new IfStackItem(loc));
@@ -336,7 +336,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 						throw new BlockException("else already seen in elif");
 					opcode(Opcode.OC_ELSE, loc);
 					UL4Parser parser = getParser(loc.getCode());
-					AST node = parser.expr1().node;
+					AST node = parser.expression().node;
 					int r = node.compile(this, new Registers(), loc);
 					opcode(Opcode.OC_IF, r, loc);
 					ifStackItem.count++;
