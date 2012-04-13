@@ -8,8 +8,6 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-import java.io.IOException;
-
 class FloorDivVar extends ChangeVar
 {
 	public FloorDivVar(String varname, AST value)
