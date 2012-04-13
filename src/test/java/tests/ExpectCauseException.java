@@ -24,6 +24,7 @@ public class ExpectCauseException extends Statement
 		}
 		catch (Throwable e)
 		{
+			Throwable original = e;
 			boolean found = false;
 			while (e != null)
 			{
@@ -37,8 +38,8 @@ public class ExpectCauseException extends Statement
 			if (!found)
 			{
 				String message = "Unexpected exception cause, expected<"
-				                 + fExpected.getName() + "> but not found in cause chain";
-				throw new Exception(message, e);
+				                 + fExpected.getName() + "> but not found in cause chain, got <" + original + ">";
+				throw new Exception(message, original);
 			}
 		}
 		if (complete)
