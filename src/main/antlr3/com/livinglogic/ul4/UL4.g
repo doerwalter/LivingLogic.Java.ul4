@@ -2,7 +2,6 @@ grammar UL4;
 
 options
 {
-	k=4;
 	language=Java;
 }
 
