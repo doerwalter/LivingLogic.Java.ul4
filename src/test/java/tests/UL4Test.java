@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.InterpretedTemplate;
-import com.livinglogic.ul4.Compiler;
 import static com.livinglogic.utils.MapUtils.*;
 import static com.livinglogic.ul4on.Utils.*;
 import static com.livinglogic.ul4.Utils.*;
