@@ -4,8 +4,30 @@
 	<groupId>com.livinglogic</groupId>
 	<artifactId>ul4</artifactId>
 	<version>0.50</version>
-	<name>UL4</name>
 	<packaging>jar</packaging>
+	<name>UL4</name>
+	<description>Java implementation of the UL4 templating language</description>
+	<url>http://www.livinglogic.de/Python/ul4c/</url>
+	<inceptionYear>2008</inceptionYear>
+	<organization>
+		<name>LivingLogic AG</name>
+		<url>http://www.livinglogic.de/</url>
+	</organization>
+	<developers>
+		<developer>
+			<name>Walter Dörwald</name>
+			<email>walter@livinglogic.de</email>
+			<timezone>Europe/Munich</timezone>
+		</developer>
+		<developer>
+			<name>Andreas Gaßner</name>
+			<email>ag@livinglogic.de</email>
+			<timezone>Europe/Munich</timezone>
+		</developer>
+	</developers>
+	<scm>
+		<url>http://hg.livinglogic.de/LivingLogic.Java.ul4/</url>
+	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
