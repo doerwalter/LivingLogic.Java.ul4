@@ -538,7 +538,7 @@ render returns [Render node]
 		(
 			/* No arguments */
 			'('
-			'.' /* This is a hack to get a unambiguous grammar */
+			'.' /* This is a hack to get an unambiguous grammar */
 			')'
 		|
 			/* One or more arguments */
