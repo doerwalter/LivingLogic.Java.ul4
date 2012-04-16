@@ -290,9 +290,11 @@ expr9 returns [AST node]
 	:
 		e1=expr10 { $node = $e1.node; }
 		(
+			/* Attribute access/function call */
 			'.'
 			n=name
 			(
+				/* Function call */
 				(
 					/* No arguments */
 					'('
@@ -320,6 +322,7 @@ expr9 returns [AST node]
 				)
 			)? { if (!callmeth) $node = new GetAttr($node, $n.node.getValue()); }
 		|
+			/* Item/slice access */
 			'['
 			(
 				':'
@@ -532,13 +535,21 @@ callarg returns [CallArg node]
 render returns [Render node]
 	:
 		t=expr1 { $node = new Render($t.node); }
-		'('
-		a1=callarg { $node.append($a1.node); }
 		(
-			','
-			a2=callarg { $node.append($a2.node); }
-		)*
-		','?
-		')'
+			/* No arguments */
+			'('
+			'.' /* This is a hack to get a unambiguous grammar */
+			')'
+		|
+			/* One or more arguments */
+			'('
+			a1=callarg { $node.append($a1.node); }
+			(
+				','
+				a2=callarg { $node.append($a2.node); }
+			)*
+			','?
+			')'
+		)
 		EOF
 	;

@@ -2260,6 +2260,7 @@ public class UL4Test
 		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
 		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t(data=c, **{'prefix': '(', 'suffix': ')'})?><?end for?>", "t", t1, "data", "foo");
 		checkTemplateOutput("foo", "<?render t()?>", "t", t2);
+		checkTemplateOutput("foo", "<?render t \n\t(\n \t)\n\t ?>", "t", t2);
 	}
 
 	@Test

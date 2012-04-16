@@ -411,7 +411,9 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				}
 				else if (type.equals("render"))
 				{
-					UL4Parser parser = getParser(loc);
+					String renderSource = loc.getCode();
+					renderSource = renderSource.replaceAll("\\(\\s*\\)\\s*$", "(.)");
+					UL4Parser parser = getParser(loc, renderSource);
 					AST node = parser.render();
 					int r = node.compile(this, new Registers(), loc);
 				}
@@ -441,7 +443,11 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 
 	private UL4Parser getParser(Location location)
 	{
-		String source = location.getCode();
+		return getParser(location, location.getCode());
+	}
+
+	private UL4Parser getParser(Location location, String source)
+	{
 		ANTLRStringStream input = new ANTLRStringStream(source);
 		UL4Lexer lexer = new UL4Lexer(location, input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
