@@ -15,14 +15,9 @@ class SubVar extends ChangeVar
 		super(varname, value);
 	}
 
-	public String toString()
+	public String name()
 	{
-		return "subvar(" + Utils.repr(varname) + ", " + value + ")";
-	}
-
-	public int getType()
-	{
-		return Opcode.OC_SUBVAR;
+		return "subvar";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

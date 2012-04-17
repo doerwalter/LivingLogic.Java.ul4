@@ -15,14 +15,9 @@ class FloorDivVar extends ChangeVar
 		super(varname, value);
 	}
 
-	public String toString()
+	public String name()
 	{
-		return "floordivvar(" + Utils.repr(varname) + ", " + value + ")";
-	}
-
-	public int getType()
-	{
-		return Opcode.OC_FLOORDIVVAR;
+		return "floordivvar";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

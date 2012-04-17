@@ -15,14 +15,9 @@ class Sub extends Binary
 		super(obj1, obj2);
 	}
 
-	public String toString()
+	public String name()
 	{
-		return "sub(" + obj1 + ", " + obj2 + ")";
-	}
-
-	public int getType()
-	{
-		return Opcode.OC_SUB;
+		return "sub";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

@@ -15,14 +15,9 @@ class NE extends Binary
 		super(obj1, obj2);
 	}
 
-	public String toString()
+	public String name()
 	{
-		return "ne(" + obj1 + ", " + obj2 + ")";
-	}
-
-	public int getType()
-	{
-		return Opcode.OC_NE;
+		return "ne";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

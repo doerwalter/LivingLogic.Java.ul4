@@ -17,26 +17,14 @@ public class LoadDate extends LoadConst
 		this.value = value;
 	}
 
-	public int getType()
+	public String name()
 	{
-		return Opcode.OC_LOADDATE;
-	}
-
-	public String getTokenType()
-	{
-		return "date";
+		return "loaddate";
 	}
 
 	public Object getValue()
 	{
 		return value;
-	}
-
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
-	{
-		int r = registers.alloc();
-		template.opcode(Opcode.OC_LOADDATE, r, (String)Utils.isoformat(value), location);
-		return r;
 	}
 
 	public String toString()

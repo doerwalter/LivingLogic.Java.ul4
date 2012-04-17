@@ -15,14 +15,9 @@ class Not extends Unary
 		super(obj);
 	}
 
-	public int getType()
+	public String name()
 	{
-		return Opcode.OC_NOT;
-	}
-
-	public String toString()
-	{
-		return "not(" + obj + ")";
+		return "not";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

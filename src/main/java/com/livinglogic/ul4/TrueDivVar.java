@@ -15,14 +15,9 @@ class TrueDivVar extends ChangeVar
 		super(varname, value);
 	}
 
-	public String toString()
+	public String name()
 	{
-		return "truedivvar(" + Utils.repr(varname) + ", " + value + ")";
-	}
-
-	public int getType()
-	{
-		return Opcode.OC_TRUEDIVVAR;
+		return "truedivvar";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

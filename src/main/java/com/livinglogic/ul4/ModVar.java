@@ -15,14 +15,9 @@ class ModVar extends ChangeVar
 		super(varname, value);
 	}
 
-	public String toString()
+	public String name()
 	{
-		return "modvar(" + Utils.repr(varname) + ", " + value + ")";
-	}
-
-	public int getType()
-	{
-		return Opcode.OC_MODVAR;
+		return "modvar";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

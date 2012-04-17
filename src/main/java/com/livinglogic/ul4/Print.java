@@ -22,9 +22,9 @@ class Print extends AST
 		return "Print(" + value + ")";
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String name()
 	{
-		return -1;
+		return "print";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

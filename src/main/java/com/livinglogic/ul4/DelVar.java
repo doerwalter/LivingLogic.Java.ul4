@@ -19,13 +19,12 @@ public class DelVar extends AST
 
 	public String toString()
 	{
-		return ("delvar(" + Utils.repr(varname) + ")");
+		return "delvar(" + Utils.repr(varname) + ")";
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String name()
 	{
-		template.opcode(Opcode.OC_DELVAR, varname, location);
-		return -1;
+		return "delvar";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

@@ -14,14 +14,9 @@ public class LoadTrue extends LoadConst
 	{
 	}
 
-	public int getType()
+	public String name()
 	{
-		return Opcode.OC_LOADTRUE;
-	}
-
-	public String getTokenType()
-	{
-		return "true";
+		return "loadtrue";
 	}
 
 	public Object getValue()

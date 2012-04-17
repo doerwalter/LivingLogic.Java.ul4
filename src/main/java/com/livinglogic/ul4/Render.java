@@ -37,43 +37,18 @@ public class Render extends AST
 	{
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("render(");
-		buffer.append(template.toString());
+		buffer.append(template);
 		for (CallArg arg : args)
 		{
 			buffer.append(", ");
-			buffer.append(arg.toString());
+			buffer.append(arg);
 		}
 		buffer.append(")");
 		return buffer.toString();
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String name()
 	{
-		int ra = registers.alloc();
-		template.opcode(Opcode.OC_BUILDDICT, ra, location);
-
-		for (CallArg arg : args)
-		{
-			if (arg instanceof CallArgDict)
-			{
-				int rv = ((CallArgDict)arg).dict.compile(template, registers, location);
-				template.opcode(Opcode.OC_UPDATEDICT, ra, rv, location);
-				registers.free(rv);
-			}
-			else
-			{
-				int rv = ((CallArgNamed)arg).value.compile(template, registers, location);
-				int rk = registers.alloc();
-				template.opcode(Opcode.OC_LOADSTR, rk, ((CallArgNamed)arg).name, location);
-				template.opcode(Opcode.OC_ADDDICT, ra, rk, rv, location);
-				registers.free(rk);
-				registers.free(rv);
-			}
-		}
-		int rt = this.template.compile(template, registers, location);
-		template.opcode(Opcode.OC_RENDER, rt, ra, location);
-		registers.free(rt);
-		registers.free(ra);
-		return -1;
+		return "render";
 	}
 }

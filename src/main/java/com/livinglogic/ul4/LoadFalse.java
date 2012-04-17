@@ -14,14 +14,9 @@ public class LoadFalse extends LoadConst
 	{
 	}
 
-	public int getType()
+	public String name()
 	{
-		return Opcode.OC_LOADFALSE;
-	}
-
-	public String getTokenType()
-	{
-		return "false";
+		return "loadfalse";
 	}
 
 	public Object getValue()

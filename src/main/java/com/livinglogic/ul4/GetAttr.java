@@ -18,21 +18,18 @@ public class GetAttr extends AST
 		this.obj = obj;
 		this.attrname = attrname;
 	}
-
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String toString()
 	{
-		int r = obj.compile(template, registers, location);
-		template.opcode(Opcode.OC_GETATTR, r, r, attrname, location);
-		return r;
+		return "getattr(" + obj + ", " + Utils.repr(attrname) + ")";
+	}
+
+	public String name()
+	{
+		return "getattr";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.getItem(obj.evaluate(context), attrname);
-	}
-
-	public String toString()
-	{
-		return "getattr(" + obj + ", " + Utils.repr(attrname) + ")";
 	}
 }

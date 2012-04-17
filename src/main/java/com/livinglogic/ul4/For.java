@@ -19,15 +19,13 @@ public class For extends AST
 		this.container = container;
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String name()
 	{
-		int rc = container.compile(template, registers, location);
-		int ri = registers.alloc();
-		template.opcode(Opcode.OC_FOR, ri, rc, location);
+		return "for";
+	}
 
-		template.opcode(Opcode.OC_STOREVAR, ri, itername, location);
-		registers.free(ri);
-		registers.free(rc);
-		return -1;
+	public String toString()
+	{
+		return "for(" + Utils.repr(itername) + ", " + container + ")";
 	}
 }

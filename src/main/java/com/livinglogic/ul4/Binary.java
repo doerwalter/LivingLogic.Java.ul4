@@ -17,14 +17,8 @@ abstract class Binary extends AST
 		this.obj2 = obj2;
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String toString()
 	{
-		int r1 = obj1.compile(template, registers, location);
-		int r2 = obj2.compile(template, registers, location);
-		template.opcode(getType(), r1, r1, r2, location);
-		registers.free(r2);
-		return r1;
+		return name() + "(" + obj1 + ", " + obj2 + ")";
 	}
-
-	public abstract int getType();
 }

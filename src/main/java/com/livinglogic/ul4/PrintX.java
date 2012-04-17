@@ -19,12 +19,12 @@ class PrintX extends AST
 
 	public String toString()
 	{
-		return "PrintX(" + value + ")";
+		return "printx(" + value + ")";
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String name()
 	{
-		return -1;
+		return "printx";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

@@ -15,14 +15,9 @@ class Neg extends Unary
 		super(obj);
 	}
 
-	public int getType()
+	public String name()
 	{
-		return Opcode.OC_NEG;
-	}
-
-	public String toString()
-	{
-		return "neg(" + obj + ")";
+		return "neg";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

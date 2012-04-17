@@ -17,13 +17,8 @@ abstract class ChangeVar extends AST
 		this.value = value;
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String toString()
 	{
-		int r = value.compile(template, registers, location);
-		template.opcode(getType(), r, varname, location);
-		registers.free(r);
-		return -1;
+		return name() + "(" + Utils.repr(varname) + ", " + value + ")";
 	}
-
-	abstract int getType();
 }

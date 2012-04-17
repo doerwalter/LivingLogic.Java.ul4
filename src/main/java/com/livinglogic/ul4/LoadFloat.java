@@ -17,26 +17,14 @@ public class LoadFloat extends LoadConst
 		this.value = value;
 	}
 
-	public int getType()
+	public String name()
 	{
-		return Opcode.OC_LOADFLOAT;
-	}
-
-	public String getTokenType()
-	{
-		return "float";
+		return "loadfloat";
 	}
 
 	public Object getValue()
 	{
 		return new Double(value);
-	}
-
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
-	{
-		int r = registers.alloc();
-		template.opcode(Opcode.OC_LOADFLOAT, r, String.valueOf(value), location);
-		return r;
 	}
 
 	public String toString()

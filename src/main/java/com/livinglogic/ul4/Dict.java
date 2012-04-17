@@ -46,34 +46,15 @@ public class Dict extends AST
 				first = false;
 			else
 				buffer.append(", ");
-			buffer.append(item.toString());
+			buffer.append(item);
 		}
 		buffer.append("}");
 		return buffer.toString();
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String name()
 	{
-		int r = registers.alloc();
-		template.opcode(Opcode.OC_BUILDDICT, r, location);
-		for (DictItem item : items)
-		{
-			if (item instanceof DictItemDict)
-			{
-				int rv = ((DictItemDict)item).dict.compile(template, registers, location);
-				template.opcode(Opcode.OC_UPDATEDICT, r, rv, location);
-				registers.free(rv);
-			}
-			else
-			{
-				int rk = ((DictItemKeyValue)item).key.compile(template, registers, location);
-				int rv = ((DictItemKeyValue)item).value.compile(template, registers, location);
-				template.opcode(Opcode.OC_ADDDICT, r, rk, rv, location);
-				registers.free(rv);
-				registers.free(rk);
-			}
-		}
-		return r;
+		return "dict";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

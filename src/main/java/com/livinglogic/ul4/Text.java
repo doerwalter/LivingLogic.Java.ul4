@@ -22,9 +22,9 @@ class Text extends AST
 		return "Text(" + Utils.repr(text) + ")";
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String name()
 	{
-		return -1;
+		return "text";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException
