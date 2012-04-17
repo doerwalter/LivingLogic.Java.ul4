@@ -2063,18 +2063,6 @@ public class UL4Test
 	}
 
 	@Test
-	public void method_render()
-	{
-		InterpretedTemplate t1 = getTemplate("(<?print data?>)", "t1");
-
-		checkTemplateOutput("(GURK)", "<?print t.render(data='gurk').upper()?>", "t", t1);
-		checkTemplateOutput("(GURK)", "<?print t.render(**{'data': 'gurk'}).upper()?>", "t", t1);
-
-		InterpretedTemplate t2 = getTemplate("(gurk)", "t2");
-		checkTemplateOutput("(GURK)", "<?print t.render().upper()?>", "t", t2);
-	}
-
-	@Test
 	public void method_mimeformat()
 	{
 		Date t = makeDate(2010, 2, 22, 12, 34, 56);
@@ -2260,6 +2248,8 @@ public class UL4Test
 		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t(data=c, **{'prefix': '(', 'suffix': ')'})?><?end for?>", "t", t1, "data", "foo");
 		checkTemplateOutput("foo", "<?render t()?>", "t", t2);
 		checkTemplateOutput("foo", "<?render t \n\t(\n \t)\n\t ?>", "t", t2);
+
+		checkTemplateOutput("42", "<?render globals.template(value=42)?>", "globals", makeMap("template", getTemplate("<?print value?>")));
 	}
 
 	@Test
@@ -2268,12 +2258,6 @@ public class UL4Test
 		InterpretedTemplate t = getTemplate("<?code x += 1?><?print x?>");
 
 		checkTemplateOutput("42,43,42", "<?print x?>,<?render t(x=x)?>,<?print x?>", "t", t, "x", 42);
-	}
-
-	@Test
-	public void tag_render_local()
-	{
-		checkTemplateOutput("foo", "<?def lower?><?print x.lower()?><?end def?><?print lower.render(x='FOO')?>");
 	}
 
 	@Test
