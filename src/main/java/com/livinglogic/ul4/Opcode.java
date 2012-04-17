@@ -173,6 +173,7 @@ public class Opcode extends ObjectAsMap
 	public static final int CM0_WEEKDAY = 27;
 	public static final int CM0_YEARDAY = 28;
 	public static final int CM0_RENDER = 29;
+	public static final int CM0_RENDERS = 30;
 
 	public static final int CM1_SPLIT = 0;
 	public static final int CM1_RSPLIT = 1;
@@ -199,6 +200,7 @@ public class Opcode extends ObjectAsMap
 	public static final int CM3_RFIND = 1;
 
 	public static final int CMKW_RENDER = 0;
+	public static final int CMKW_RENDERS = 1;
 
 	public int name;
 	public int r1;
@@ -289,7 +291,6 @@ public class Opcode extends ObjectAsMap
 		_mapName2Code("endfor", OC_ENDFOR);
 		_mapName2Code("break", OC_BREAK);
 		_mapName2Code("continue", OC_CONTINUE);
-		_mapName2Code("render", OC_RENDER);
 		_mapName2Code("def", OC_DEF);
 		_mapName2Code("enddef", OC_ENDDEF);
 	}
@@ -505,6 +506,8 @@ public class Opcode extends ObjectAsMap
 			return CM0_YEARDAY;
 		else if (name.equals("render"))
 			return CM0_RENDER;
+		else if (name.equals("renders"))
+			return CM0_RENDERS;
 		else
 			throw new UnknownMethodException(name);
 	}
@@ -573,6 +576,8 @@ public class Opcode extends ObjectAsMap
 	{
 		if (name.equals("render"))
 			return CMKW_RENDER;
+		else if (name.equals("renders"))
+			return CMKW_RENDERS;
 		else
 			throw new UnknownMethodException(name);
 	}
@@ -770,8 +775,6 @@ public class Opcode extends ObjectAsMap
 				return "break";
 			case OC_CONTINUE:
 				return "continue";
-			case OC_RENDER:
-				return "render r" + r1 + "(r" + r2 + ")";
 			case OC_DEF:
 				return "def " + arg + "(**vars)";
 			case OC_ENDDEF:

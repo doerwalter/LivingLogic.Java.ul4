@@ -571,6 +571,10 @@ public class JavaSource4Template
 							code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.rsplit(r" + opcode.r2 + ");");
 							break;
 						case Opcode.CM0_RENDER:
+							code(output("((com.livinglogic.ul4.Template)r" + opcode.r2 + ").renders(null)"));
+							code("r" + opcode.r1 + " = null;");
+							break;
+						case Opcode.CM0_RENDERS:
 							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Template)r" + opcode.r2 + ").renders(null);");
 							break;
 					}
@@ -657,6 +661,10 @@ public class JavaSource4Template
 					switch (opcode.argcode)
 					{
 						case Opcode.CMKW_RENDER:
+							code(output("((com.livinglogic.ul4.Template)r" + opcode.r2 + ").renders((java.util.Map<String, Object>)r" + opcode.r3 + ")"));
+							code("r" + opcode.r1 + " = null;");
+							break;
+						case Opcode.CMKW_RENDERS:
 							code("r" + opcode.r1 + " = ((com.livinglogic.ul4.Template)r" + opcode.r2 + ").renders((java.util.Map<String, Object>)r" + opcode.r3 + ");");
 							break;
 					}
@@ -676,9 +684,6 @@ public class JavaSource4Template
 				case Opcode.OC_ENDIF:
 					indent--;
 					code("}");
-					break;
-				case Opcode.OC_RENDER:
-					code("((com.livinglogic.ul4.Template)r" + opcode.r1 + ").render(out, (java.util.Map<String, Object>)r" + opcode.r2 + ");");
 					break;
 			}
 		}

@@ -420,7 +420,6 @@ public class UL4Test
 	// // 	checkTemplateOutput("", "<?if x?><?elif?><?end if?>"); // "expression required"
 	// // 	checkTemplateOutput("", "<?for?>"); // "loop expression required"
 	// // 	checkTemplateOutput("", "<?code?>"); // "statement required"
-	// // 	checkTemplateOutput("", "<?render?>"); // "render statement required"
 	// // }
 
 	@Test
@@ -2063,15 +2062,44 @@ public class UL4Test
 	}
 
 	@Test
-	public void method_render()
+	public void method_renders()
 	{
 		InterpretedTemplate t1 = getTemplate("(<?print data?>)", "t1");
 
-		checkTemplateOutput("(GURK)", "<?print t.render(data='gurk').upper()?>", "t", t1);
-		checkTemplateOutput("(GURK)", "<?print t.render(**{'data': 'gurk'}).upper()?>", "t", t1);
+		checkTemplateOutput("(GURK)", "<?print t.renders(data='gurk').upper()?>", "t", t1);
+		checkTemplateOutput("(GURK)", "<?print t.renders(**{'data': 'gurk'}).upper()?>", "t", t1);
 
 		InterpretedTemplate t2 = getTemplate("(gurk)", "t2");
-		checkTemplateOutput("(GURK)", "<?print t.render().upper()?>", "t", t2);
+		checkTemplateOutput("(GURK)", "<?print t.renders().upper()?>", "t", t2);
+	}
+
+	@Test
+	public void method_render()
+	{
+		InterpretedTemplate t1 = getTemplate("<?print prefix?><?print data?><?print suffix?>");
+		InterpretedTemplate t2 = getTemplate("<?print 'foo'?>");
+
+		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?print t.render(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
+		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?print t.render(data=c, **{'prefix': '(', 'suffix': ')'})?><?end for?>", "t", t1, "data", "foo");
+		checkTemplateOutput("foo", "<?print t.render()?>", "t", t2);
+		checkTemplateOutput("foo", "<?print t.render \n\t(\n \t)\n\t ?>", "t", t2);
+
+		checkTemplateOutput("42", "<?print globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("<?print value?>")));
+		checkTemplateOutput("", "<?print globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("")));
+	}
+
+	@Test
+	public void method_render_local_vars()
+	{
+		InterpretedTemplate t = getTemplate("<?code x += 1?><?print x?>");
+
+		checkTemplateOutput("42,43,42", "<?print x?>,<?print t.render(x=x)?>,<?print x?>", "t", t, "x", 42);
+	}
+
+	@Test
+	public void method_render_localtemplate()
+	{
+		checkTemplateOutput("foo", "<?def lower?><?print x.lower()?><?end def?><?print lower.renders(x='FOO')?>");
 	}
 
 	@Test
@@ -2248,32 +2276,6 @@ public class UL4Test
 		checkTemplateOutput("132", "<?print @(2010-05-12T16:47:56).yearday()?>");
 		checkTemplateOutput("132", "<?print d.yearday()?>", "d", makeDate(2010, 5, 12));
 		checkTemplateOutput("132", "<?print d.yearday()?>", "d", makeDate(2010, 5, 12, 16, 47, 56));
-	}
-
-	@Test
-	public void tag_render()
-	{
-		InterpretedTemplate t1 = getTemplate("<?print prefix?><?print data?><?print suffix?>");
-		InterpretedTemplate t2 = getTemplate("<?print 'foo'?>");
-
-		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
-		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t(data=c, **{'prefix': '(', 'suffix': ')'})?><?end for?>", "t", t1, "data", "foo");
-		checkTemplateOutput("foo", "<?render t()?>", "t", t2);
-		checkTemplateOutput("foo", "<?render t \n\t(\n \t)\n\t ?>", "t", t2);
-	}
-
-	@Test
-	public void tag_render_var()
-	{
-		InterpretedTemplate t = getTemplate("<?code x += 1?><?print x?>");
-
-		checkTemplateOutput("42,43,42", "<?print x?>,<?render t(x=x)?>,<?print x?>", "t", t, "x", 42);
-	}
-
-	@Test
-	public void tag_render_local()
-	{
-		checkTemplateOutput("foo", "<?def lower?><?print x.lower()?><?end def?><?print lower.render(x='FOO')?>");
 	}
 
 	@Test

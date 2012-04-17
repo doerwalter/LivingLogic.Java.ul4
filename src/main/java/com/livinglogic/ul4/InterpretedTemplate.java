@@ -369,14 +369,6 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 						throw new BlockException("continue outside of for loop");
 					opcode(Opcode.OC_CONTINUE, loc);
 				}
-				else if (type.equals("render"))
-				{
-					String renderSource = loc.getCode();
-					renderSource = renderSource.replaceAll("\\(\\s*\\)\\s*$", "(.)");
-					UL4Parser parser = getParser(loc, renderSource);
-					AST node = parser.render();
-					int r = node.compile(this, new Registers(), loc);
-				}
 				else if (type.equals("def"))
 				{
 					opcode(Opcode.OC_DEF, loc.getCode(), loc);
@@ -1823,6 +1815,19 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 									reg[code.r1] = Utils.yearday(reg[code.r2]);
 									break;
 								case Opcode.CM0_RENDER:
+								{
+									// This should be done iteratively, but this would lead to really convoluted code
+									String output = ((Template)reg[code.r2]).renders(null);
+									reg[code.r1] = null;
+									if (output.length() != 0)
+									{
+										nextChunk = output;
+										++pc;
+										return;
+									}
+									break;
+								}
+								case Opcode.CM0_RENDERS:
 									reg[code.r1] = ((Template)reg[code.r2]).renders(null);
 									break;
 								default:
@@ -1917,39 +1922,25 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 							switch (code.argcode)
 							{
 								case Opcode.CMKW_RENDER:
+								{
+									// This should be done iteratively, but this would lead to really convoluted code
+									String output = ((Template)reg[code.r2]).renders((Map)reg[code.r3]);
+									reg[code.r1] = null;
+									if (output.length() != 0)
+									{
+										nextChunk = output;
+										++pc;
+										return;
+									}
+									break;
+								}
+								case Opcode.CMKW_RENDERS:
 									reg[code.r1] = ((Template)reg[code.r2]).renders((Map)reg[code.r3]);
 									break;
 								default:
 									throw new UnknownMethodException(code.arg);
 							}
 							break;
-						case Opcode.OC_RENDER:
-							if (reg[code.r1] instanceof InterpretedTemplate)
-							{
-								subTemplateIterator = ((InterpretedTemplate)reg[code.r1]).render((Map)reg[code.r2]);
-								if (subTemplateIterator.hasNext())
-								{
-									nextChunk = (String)subTemplateIterator.next();
-									++pc;
-									return;
-								}
-								else
-								{
-									subTemplateIterator = null;
-								}
-								break;
-							}
-							else
-							{
-								String output = ((Template)reg[code.r1]).renders((Map)reg[code.r2]);
-								if (output.length() != 0)
-								{
-									nextChunk = output;
-									++pc;
-									return;
-								}
-								break;
-							}
 						case Opcode.OC_DEF:
 							variables.put(code.arg, code.template);
 							pc = code.jump+1;
@@ -2009,7 +2000,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 
 	public static List<Location> tokenizeTags(String source, String name, String startdelim, String enddelim)
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|render|def|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|def|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Location> tags = new LinkedList<Location>();
 		if (source != null)
 		{

@@ -3,6 +3,13 @@ exp-50:
 Comments:
 * The UL4 parser has been ported to ANTLR. The final jar doesn't
   contain any Python/Jython any longer.
+
+* Moving to ANTLR made several syntax changes necessary:
+
+    @2012-04-16 -> @(2012-04-16)
+    <?render x()?> -> <?print x.render()?>
+    <?print x.render()?> -> <?print x.renders()?>
+
 * Added support for templates and floats to UL4ON.
 
 

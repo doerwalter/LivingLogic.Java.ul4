@@ -14,7 +14,6 @@ options
 
 	import com.livinglogic.ul4.Utils;
 	import com.livinglogic.ul4.Color;
-	import com.livinglogic.ul4.Render;
 	import com.livinglogic.ul4.CallArg;
 }
 
@@ -279,6 +278,17 @@ expr10 returns [AST node]
 	;
 
 /* Attribute access, method call, item access, slice access */
+fragment
+callarg returns [CallArg node]
+	:
+		n=name
+		'='
+		e=expr1 { $node = new CallArgNamed($n.text, $e.node); }
+	|
+		'**'
+		e=expr1 { $node = new CallArgDict($e.node); }
+	;
+
 expr9 returns [AST node]
 	@init
 	{
@@ -516,40 +526,4 @@ stmt returns [AST node]
 	| n=name '//=' e=expr1 EOF { $node = new FloorDivVar($n.node.getValue(), $e.node); }
 	| n=name '%=' e=expr1 EOF { $node = new ModVar($n.node.getValue(), $e.node); }
 	| 'del' n=name EOF { $node = new DelVar($n.node.getValue()); }
-	;
-
-
-/* Additional rules for "render" tag */
-
-fragment
-callarg returns [CallArg node]
-	:
-		n=name
-		'='
-		e=expr1 { $node = new CallArgNamed($n.text, $e.node); }
-	|
-		'**'
-		e=expr1 { $node = new CallArgDict($e.node); }
-	;
-
-render returns [Render node]
-	:
-		t=expr1 { $node = new Render($t.node); }
-		(
-			/* No arguments */
-			'('
-			'.' /* This is a hack to get an unambiguous grammar */
-			')'
-		|
-			/* One or more arguments */
-			'('
-			a1=callarg { $node.append($a1.node); }
-			(
-				','
-				a2=callarg { $node.append($a2.node); }
-			)*
-			','?
-			')'
-		)
-		EOF
 	;
