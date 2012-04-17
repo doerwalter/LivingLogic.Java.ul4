@@ -300,12 +300,22 @@ expr9 returns [AST node]
 					'('
 					')' { callmeth = true; $node = new CallMeth($node, $n.node.getValue()); }
 				|
-					/* One or more arguments */
+					/* Positional argument */
 					'(' { callmeth = true; $node = new CallMeth($node, $n.node.getValue()); }
 					pa1=expr1 { ((CallMeth)$node).append($pa1.node); }
 					(
 						','
 						pa2=expr1 { ((CallMeth)$node).append($pa2.node); }
+					)*
+					','?
+					')'
+				|
+					/* Keyword arguments */
+					'(' { callmeth = true; $node = new CallMethKeywords($node, $n.node.getValue()); }
+					kwa1=callarg { ((CallMethKeywords)$node).append($kwa1.node); }
+					(
+						','
+						kwa2=callarg { ((CallMethKeywords)$node).append($kwa2.node); }
 					)*
 					','?
 					')'
