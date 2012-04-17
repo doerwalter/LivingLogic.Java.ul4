@@ -21,7 +21,7 @@ public class GetSlice extends AST
 		this.index2 = index2;
 	}
 
-	public String toString()
+	public String toString(int indent)
 	{
 		return "getslice(" + obj + ", " + index1 + ", " + index2 + ")";
 	}

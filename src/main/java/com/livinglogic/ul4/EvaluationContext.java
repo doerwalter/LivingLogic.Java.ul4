@@ -6,19 +6,37 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
 import java.io.Writer;
+import java.util.Map;
+import java.util.Locale;
 import java.io.IOException;
 
 public class EvaluationContext
 {
 	protected Writer writer;
 	protected Map<String, Object> variables;
+	Locale locale;
 
-	public EvaluationContext(Writer writer, Map<String, Object> variables)
+	public EvaluationContext(Writer writer, Map<String, Object> variables, Locale locale)
 	{
 		this.writer = writer;
 		this.variables = variables;
+		this.locale = locale;
+	}
+
+	public Map<String, Object> getVariables()
+	{
+		return variables;
+	}
+
+	public Writer getWriter()
+	{
+		return writer;
+	}
+
+	public Locale getLocale()
+	{
+		return locale;
 	}
 
 	public void write(String string) throws IOException

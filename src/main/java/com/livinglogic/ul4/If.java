@@ -6,17 +6,15 @@
 
 package com.livinglogic.ul4;
 
-abstract class Unary extends AST
+class If extends ConditionalBlockWithCondition
 {
-	protected AST obj;
-
-	public Unary(AST obj)
+	public If(AST condition)
 	{
-		this.obj = obj;
+		super(condition);
 	}
 
-	public String toString(int indent)
+	public String name()
 	{
-		return name() + "(" + obj + ")";
+		return "if";
 	}
 }

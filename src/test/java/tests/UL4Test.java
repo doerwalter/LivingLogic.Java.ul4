@@ -16,6 +16,7 @@ import static com.livinglogic.ul4.Utils.*;
 import com.livinglogic.ul4.KeyException;
 import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.UnknownFunctionException;
+import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.SyntaxException;
 import org.antlr.runtime.RecognitionException;
 
@@ -62,8 +63,9 @@ public class UL4Test
 	@Test
 	public void type_none()
 	{
-		checkTemplateOutput("", "<?print None?>");
 		checkTemplateOutput("no", "<?if None?>yes<?else?>no<?end if?>");
+		checkTemplateOutput("", "<?print None?>");
+
 	}
 
 	@Test
@@ -343,16 +345,34 @@ public class UL4Test
 	@Test
 	public void tag_for_unpacking()
 	{
-		Object data = asList(
+		Object data1 = asList(
+			asList("spam"),
+			asList("gurk"),
+			asList("hinz")
+		);
+
+		Object data2 = asList(
+			asList("spam", "eggs"),
+			asList("gurk", "hurz"),
+			asList("hinz", "kunz")
+		);
+
+		Object data3 = asList(
+			asList("spam", "eggs", 17),
+			asList("gurk", "hurz", 23),
+			asList("hinz", "kunz", 42)
+		);
+
+		Object data4 = asList(
 			asList("spam", "eggs", 17, null),
 			asList("gurk", "hurz", 23, false),
 			asList("hinz", "kunz", 42, true)
 		);
 
-		checkTemplateOutput("(spam)(gurk)(hinz)", "<?for (a,) in data?>(<?print a?>)<?end for?>", "data", data);
-		checkTemplateOutput("(spam,eggs)(gurk,hurz)(hinz,kunz)", "<?for (a, b) in data?>(<?print a?>,<?print b?>)<?end for?>", "data", data);
-		checkTemplateOutput("(spam,eggs,17)(gurk,hurz,23)(hinz,kunz,42)", "<?for (a, b, c) in data?>(<?print a?>,<?print b?>,<?print c?>)<?end for?>", "data", data);
-		checkTemplateOutput("(spam,eggs,17,)(gurk,hurz,23,False)(hinz,kunz,42,True)", "<?for (a, b, c, d) in data?>(<?print a?>,<?print b?>,<?print c?>,<?print d?>)<?end for?>", "data", data);
+		checkTemplateOutput("(spam)(gurk)(hinz)", "<?for (a,) in data?>(<?print a?>)<?end for?>", "data", data1);
+		checkTemplateOutput("(spam,eggs)(gurk,hurz)(hinz,kunz)", "<?for (a, b) in data?>(<?print a?>,<?print b?>)<?end for?>", "data", data2);
+		checkTemplateOutput("(spam,eggs,17)(gurk,hurz,23)(hinz,kunz,42)", "<?for (a, b, c) in data?>(<?print a?>,<?print b?>,<?print c?>)<?end for?>", "data", data3);
+		checkTemplateOutput("(spam,eggs,17,)(gurk,hurz,23,False)(hinz,kunz,42,True)", "<?for (a, b, c, d) in data?>(<?print a?>,<?print b?>,<?print c?>,<?print d?>)<?end for?>", "data", data4);
 	}
 
 	@Test
@@ -833,13 +853,13 @@ public class UL4Test
 		assertTrue(output.compareTo("2012-03-28") > 0);
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_now_1_args()
 	{
 		checkTemplateOutput("", "<?print now(1)?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_now_2_args()
 	{
 		checkTemplateOutput("", "<?print now(1, 2)?>");
@@ -852,13 +872,13 @@ public class UL4Test
 		assertTrue(output.compareTo("2012-03-28") > 0);
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_utcnow_1_args()
 	{
 		checkTemplateOutput("", "<?print utcnow(1)?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_utcnow_2_args()
 	{
 		checkTemplateOutput("", "<?print utcnow(1, 2)?>");
@@ -873,13 +893,13 @@ public class UL4Test
 		checkTemplateOutput("no", source, "var", "nospam", "spam", "eggs");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
-	public void function_vars_0_args()
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_vars_1_args()
 	{
 		checkTemplateOutput("", "<?print vars(1)?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_vars_2_args()
 	{
 		checkTemplateOutput("", "<?print vars(1, 2)?>");
@@ -891,13 +911,13 @@ public class UL4Test
 		checkTemplateOutput("ok", "<?code r = random()?><?if r>=0 and r<1?>ok<?else?>fail<?end if?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_random_0_args()
 	{
 		checkTemplateOutput("", "<?print random(1)?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_random_2_args()
 	{
 		checkTemplateOutput("", "<?print random(1, 2)?>");
@@ -911,13 +931,13 @@ public class UL4Test
 		checkTemplateOutput("ok", "<?code r = randrange(17, 23, 2)?><?if r>=17 and r<23 and r%2?>ok<?else?>fail<?end if?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_randrange_0_args()
 	{
 		checkTemplateOutput("", "<?print randrange()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_randrange_4_args()
 	{
 		checkTemplateOutput("", "<?print randrange(1, 2, 3, 4)?>");
@@ -931,14 +951,14 @@ public class UL4Test
 		checkTemplateOutput("ok", "<?code s = #12345678?><?code sl = [0x12, 0x34, 0x56, 0x78]?><?code r = randchoice(s)?><?if r in sl?>ok<?else?>fail<?end if?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
 	public void function_randchoice_0_args()
 	{
 		checkTemplateOutput("", "<?print randchoice()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
 	public void function_randchoice_2_args()
 	{
@@ -951,14 +971,14 @@ public class UL4Test
 		checkTemplateOutput("&lt;&lt;&gt;&gt;&amp;&#39;&quot;gurk", "<?print xmlescape(data)?>", "data", "<<>>&'\"gurk");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
 	public void function_xmlescape_0_args()
 	{
 		checkTemplateOutput("", "<?print xmlescape()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
 	public void function_xmlescape_2_args()
 	{
@@ -979,14 +999,14 @@ public class UL4Test
 		checkTemplateOutput("\"a\nb\nc\"", "<?print csv(data)?>", "data", "a\nb\nc");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
 	public void function_csv_0_args()
 	{
 		checkTemplateOutput("", "<?print csv()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
 	public void function_csv_2_args()
 	{
@@ -1006,14 +1026,14 @@ public class UL4Test
 		checkTemplateOutput("{\"one\": 1}", "<?print json(data)?>", "data", makeMap("one", 1));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
 	public void function_json_0_args()
 	{
 		checkTemplateOutput("", "<?print json()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
 	public void function_json_2_args()
 	{
@@ -1036,14 +1056,14 @@ public class UL4Test
 		checkTemplateOutput("2011-02-09 12:34:56.987000", source, "data", makeDate(2011, 2, 9, 12, 34, 56, 987000));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
 	public void function_str_0_args()
 	{
 		checkTemplateOutput("", "<?print str()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
 	public void function_str_2_args()
 	{
@@ -1073,14 +1093,14 @@ public class UL4Test
 		checkTemplateOutput("", "<?print int(data)?>", "data", "foo");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
 	public void function_int_0_args()
 	{
 		checkTemplateOutput("", "<?print int()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
 	public void function_int_3_args()
 	{
@@ -1110,13 +1130,13 @@ public class UL4Test
 		checkTemplateOutput("", "<?print float(data)?>", "data", "foo");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_float_0_args()
 	{
 		checkTemplateOutput("", "<?print float()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_float_2_args()
 	{
 		checkTemplateOutput("", "<?print float(1, 2)?>");
@@ -1132,13 +1152,13 @@ public class UL4Test
 		checkTemplateOutput("3", source, "data", makeMap("a", 1, "b", 2, "c", 3));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_len_0_args()
 	{
 		checkTemplateOutput("", "<?print len()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_len_2_args()
 	{
 		checkTemplateOutput("", "<?print len(1, 2)?>");
@@ -1184,13 +1204,13 @@ public class UL4Test
 		checkTemplateOutput("(foo=0)", source, "data", makeMap("foo", true));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_enumerate_0_args()
 	{
 		checkTemplateOutput("", "<?print enumerate()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_enumerate_2_args()
 	{
 		checkTemplateOutput("", "<?print enumerate(1, 2)?>");
@@ -1238,13 +1258,13 @@ public class UL4Test
 		checkTemplateOutput("[(foo=0)]", source, "data", makeMap("foo", true));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_enumfl_0_args()
 	{
 		checkTemplateOutput("", "<?print enumfl()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_enumfl_2_args()
 	{
 		checkTemplateOutput("", "<?print enumfl(1, 2)?>");
@@ -1292,13 +1312,13 @@ public class UL4Test
 		checkTemplateOutput("[(foo)]", source, "data", makeMap("foo", true));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isfirstlast_0_args()
 	{
 		checkTemplateOutput("", "<?print isfirstlast()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isfirstlast_2_args()
 	{
 		checkTemplateOutput("", "<?print isfirstlast(1, 2)?>");
@@ -1346,13 +1366,13 @@ public class UL4Test
 		checkTemplateOutput("[(foo)", source, "data", makeMap("foo", true));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isfirst_0_args()
 	{
 		checkTemplateOutput("", "<?print isfirst()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isfirst_2_args()
 	{
 		checkTemplateOutput("", "<?print isfirst(1, 2)?>");
@@ -1400,13 +1420,13 @@ public class UL4Test
 		checkTemplateOutput("(foo)]", source, "data", makeMap("foo", true));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_islast_0_args()
 	{
 		checkTemplateOutput("", "<?print islast()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_islast_2_args()
 	{
 		checkTemplateOutput("", "<?print islast(1, 2)?>");
@@ -1460,13 +1480,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isnone_0_args()
 	{
 		checkTemplateOutput("", "<?print isnone()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isnone_2_args()
 	{
 		checkTemplateOutput("", "<?print isnone(1, 2)?>");
@@ -1490,13 +1510,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isbool_0_args()
 	{
 		checkTemplateOutput("", "<?print isbool()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isbool_2_args()
 	{
 		checkTemplateOutput("", "<?print isbool(1, 2)?>");
@@ -1520,13 +1540,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isint_0_args()
 	{
 		checkTemplateOutput("", "<?print isint()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isint_2_args()
 	{
 		checkTemplateOutput("", "<?print isint(1, 2)?>");
@@ -1550,13 +1570,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isfloat_0_args()
 	{
 		checkTemplateOutput("", "<?print isfloat()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isfloat_2_args()
 	{
 		checkTemplateOutput("", "<?print isfloat(1, 2)?>");
@@ -1580,13 +1600,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isstr_0_args()
 	{
 		checkTemplateOutput("", "<?print isstr()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isstr_2_args()
 	{
 		checkTemplateOutput("", "<?print isstr(1, 2)?>");
@@ -1610,13 +1630,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isdate_0_args()
 	{
 		checkTemplateOutput("", "<?print isdate()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isdate_2_args()
 	{
 		checkTemplateOutput("", "<?print isdate(1, 2)?>");
@@ -1640,13 +1660,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_islist_0_args()
 	{
 		checkTemplateOutput("", "<?print islist()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_islist_2_args()
 	{
 		checkTemplateOutput("", "<?print islist(1, 2)?>");
@@ -1670,13 +1690,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isdict_0_args()
 	{
 		checkTemplateOutput("", "<?print isdict()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_isdict_2_args()
 	{
 		checkTemplateOutput("", "<?print isdict(1, 2)?>");
@@ -1700,13 +1720,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_istemplate_0_args()
 	{
 		checkTemplateOutput("", "<?print istemplate()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_istemplate_2_args()
 	{
 		checkTemplateOutput("", "<?print istemplate(1, 2)?>");
@@ -1730,13 +1750,13 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_iscolor_0_args()
 	{
 		checkTemplateOutput("", "<?print iscolor()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_iscolor_2_args()
 	{
 		checkTemplateOutput("", "<?print iscolor(1, 2)?>");
@@ -1751,13 +1771,13 @@ public class UL4Test
 		checkTemplateOutput("42", "<?print get('x', 17)?>", "x", 42);
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_get_0_args()
 	{
 		checkTemplateOutput("", "<?print get()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_get_3_args()
 	{
 		checkTemplateOutput("", "<?print get(1, 2, 3)?>");
@@ -1782,13 +1802,13 @@ public class UL4Test
 		checkTemplateOutput("@(2011-02-07)", source, "data", makeDate(2011, 2, 7));
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_repr_0_args()
 	{
 		checkTemplateOutput("", "<?print repr()?>");
 	}
 
-	@CauseTest(expectedCause=UnknownFunctionException.class)
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	public void function_repr_2_args()
 	{
 		checkTemplateOutput("", "<?print repr(1, 2)?>");
@@ -2323,6 +2343,7 @@ public class UL4Test
 	{
 		return getTemplate(
 			"text" +
+			"<?xml version='1.0' encoding='utf-8'?>" + // will not be recognized as a tag
 			"<?code x = 'gurk'?>" +
 			"<?code x = 42?>" +
 			"<?code x = 4.2?>" +
@@ -2381,9 +2402,7 @@ public class UL4Test
 			"<?print x.find(1, 2)?>" +
 			"<?print x.find(1, 2, 3)?>" +
 			"<?if x?>gurk<?elif y?>hurz<?else?>hinz<?end if?>" +
-			"<?render x(a=1, b=2)?>" +
-			"<?def x?>foo<?end def?>" +
-			"<?render x()?>"
+			"<?def x?>foo<?end def?>"
 		);
 	}
 

@@ -17,9 +17,16 @@ class Print extends AST
 		this.value = value;
 	}
 
-	public String toString()
+	public String toString(int indent)
 	{
-		return "Print(" + value + ")";
+		StringBuffer buffer = new StringBuffer();
+
+		for (int i = 0; i < indent; ++i)
+			buffer.append("\t");
+		buffer.append("print(");
+		buffer.append(value.toString(indent));
+		buffer.append(")\n");
+		return buffer.toString();
 	}
 
 	public String name()

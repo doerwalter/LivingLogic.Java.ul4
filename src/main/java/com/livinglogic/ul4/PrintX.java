@@ -17,9 +17,16 @@ class PrintX extends AST
 		this.value = value;
 	}
 
-	public String toString()
+	public String toString(int indent)
 	{
-		return "printx(" + value + ")";
+		StringBuffer buffer = new StringBuffer();
+
+		for (int i = 0; i < indent; ++i)
+			buffer.append("\t");
+		buffer.append("printx(");
+		buffer.append(value.toString(indent));
+		buffer.append(")\n");
+		return buffer.toString();
 	}
 
 	public String name()

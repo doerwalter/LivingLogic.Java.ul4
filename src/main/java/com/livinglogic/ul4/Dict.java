@@ -34,7 +34,7 @@ public class Dict extends AST
 		items.add(item);
 	}
 
-	public String toString()
+	public String toString(int indent)
 	{
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("{");

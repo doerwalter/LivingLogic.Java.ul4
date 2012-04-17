@@ -17,7 +17,7 @@ abstract class Binary extends AST
 		this.obj2 = obj2;
 	}
 
-	public String toString()
+	public String toString(int indent)
 	{
 		return name() + "(" + obj1 + ", " + obj2 + ")";
 	}

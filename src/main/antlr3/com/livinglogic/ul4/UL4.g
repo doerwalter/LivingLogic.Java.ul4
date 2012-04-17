@@ -308,10 +308,10 @@ expr9 returns [AST node]
 				(
 					/* No arguments */
 					'('
-					')' { callmeth = true; $node = new CallMeth($node, $n.node.getValue()); }
+					')' { callmeth = true; $node = new CallMeth($node, $n.text); }
 				|
 					/* Positional argument */
-					'(' { callmeth = true; $node = new CallMeth($node, $n.node.getValue()); }
+					'(' { callmeth = true; $node = new CallMeth($node, $n.text); }
 					pa1=expr1 { ((CallMeth)$node).append($pa1.node); }
 					(
 						','
@@ -321,7 +321,7 @@ expr9 returns [AST node]
 					')'
 				|
 					/* Keyword arguments */
-					'(' { callmeth = true; $node = new CallMethKeywords($node, $n.node.getValue()); }
+					'(' { callmeth = true; $node = new CallMethKeywords($node, $n.text); }
 					kwa1=callarg { ((CallMethKeywords)$node).append($kwa1.node); }
 					(
 						','
@@ -330,7 +330,7 @@ expr9 returns [AST node]
 					','?
 					')'
 				)
-			)? { if (!callmeth) $node = new GetAttr($node, $n.node.getValue()); }
+			)? { if (!callmeth) $node = new GetAttr($node, $n.text); }
 		|
 			/* Item/slice access */
 			'['
@@ -486,7 +486,7 @@ expression returns [AST node]
 
 /* Additional rules for "for" tag */
 
-for_ returns [AST node]
+for_ returns [Block node]
 	:
 		n=name
 		'in'
@@ -498,14 +498,14 @@ for_ returns [AST node]
 		','
 		')'
 		'in'
-		e=expr1 { $node = new ForUnpack($e.node); ((ForUnpack)$node).append($n1.text); }
+		e=expr1 { $node = new ForUnpack($e.node); ((ForUnpack)$node).appendName($n1.text); }
 		EOF
 	|
 		'(' { $node = new ForUnpack(); }
-		n1=name { ((ForUnpack)$node).append($n1.text); }
+		n1=name { ((ForUnpack)$node).appendName($n1.text); }
 		(
 			','
-			n2=name { ((ForUnpack)$node).append($n2.text); }
+			n2=name { ((ForUnpack)$node).appendName($n2.text); }
 		)+
 		','?
 		')'
@@ -518,12 +518,12 @@ for_ returns [AST node]
 /* Additional rules for "code" tag */
 
 stmt returns [AST node]
-	: n=name '=' e=expr1 EOF { $node = new StoreVar($n.node.getValue(), $e.node); }
-	| n=name '+=' e=expr1 EOF { $node = new AddVar($n.node.getValue(), $e.node); }
-	| n=name '-=' e=expr1 EOF { $node = new SubVar($n.node.getValue(), $e.node); }
-	| n=name '*=' e=expr1 EOF { $node = new MulVar($n.node.getValue(), $e.node); }
-	| n=name '/=' e=expr1 EOF { $node = new TrueDivVar($n.node.getValue(), $e.node); }
-	| n=name '//=' e=expr1 EOF { $node = new FloorDivVar($n.node.getValue(), $e.node); }
-	| n=name '%=' e=expr1 EOF { $node = new ModVar($n.node.getValue(), $e.node); }
-	| 'del' n=name EOF { $node = new DelVar($n.node.getValue()); }
+	: n=name '=' e=expr1 EOF { $node = new StoreVar($n.text, $e.node); }
+	| n=name '+=' e=expr1 EOF { $node = new AddVar($n.text, $e.node); }
+	| n=name '-=' e=expr1 EOF { $node = new SubVar($n.text, $e.node); }
+	| n=name '*=' e=expr1 EOF { $node = new MulVar($n.text, $e.node); }
+	| n=name '/=' e=expr1 EOF { $node = new TrueDivVar($n.text, $e.node); }
+	| n=name '//=' e=expr1 EOF { $node = new FloorDivVar($n.text, $e.node); }
+	| n=name '%=' e=expr1 EOF { $node = new ModVar($n.text, $e.node); }
+	| 'del' n=name EOF { $node = new DelVar($n.text); }
 	;

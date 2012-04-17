@@ -23,7 +23,7 @@ public class List extends AST
 		items.add(item);
 	}
 
-	public String toString()
+	public String toString(int indent)
 	{
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("[");
@@ -35,7 +35,7 @@ public class List extends AST
 				first = false;
 			else
 				buffer.append(", ");
-			buffer.append(item);
+			buffer.append(item.toString(indent));
 		}
 		buffer.append("]");
 		return buffer.toString();

@@ -27,7 +27,7 @@ public class LoadDate extends LoadConst
 		return value;
 	}
 
-	public String toString()
+	public String toString(int indent)
 	{
 		return Utils.repr(value);
 	}

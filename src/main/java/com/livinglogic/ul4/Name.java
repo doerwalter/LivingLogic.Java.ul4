@@ -17,7 +17,7 @@ public class Name extends AST
 		this.value = value;
 	}
 
-	public String toString()
+	public String toString(int indent)
 	{
 		return value;
 	}

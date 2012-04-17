@@ -18,7 +18,8 @@ public class GetAttr extends AST
 		this.obj = obj;
 		this.attrname = attrname;
 	}
-	public String toString()
+
+	public String toString(int indent)
 	{
 		return "getattr(" + obj + ", " + Utils.repr(attrname) + ")";
 	}

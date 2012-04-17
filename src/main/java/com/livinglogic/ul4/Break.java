@@ -6,24 +6,24 @@
 
 package com.livinglogic.ul4;
 
-abstract class ChangeVar extends AST
+class Break extends AST
 {
-	protected String varname;
-	protected AST value;
-
-	public ChangeVar(String varname, AST value)
+	public String name()
 	{
-		this.varname = varname;
-		this.value = value;
+		return "break";
+	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		throw new BreakException();
 	}
 
 	public String toString(int indent)
 	{
 		StringBuffer buffer = new StringBuffer();
-
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
-		buffer.append(name() + "(" + Utils.repr(varname) + ", " + value + ")\n");
+		buffer.append("break\n");
 		return buffer.toString();
 	}
 }

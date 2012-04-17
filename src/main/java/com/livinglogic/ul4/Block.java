@@ -6,31 +6,31 @@
 
 package com.livinglogic.ul4;
 
+import java.util.LinkedList;
 import java.io.IOException;
 
-public class LoadNone extends LoadConst
+abstract class Block extends AST
 {
-	public LoadNone()
+	protected LinkedList<AST> content;
+
+	public Block()
 	{
+		content = new LinkedList<AST>();
 	}
 
-	public String name()
+	public void append(AST item)
 	{
-		return "loadnone";
+		content.add(item);
 	}
 
-	public Object getValue()
+	public void finish(String name)
 	{
-		return null;
-	}
-
-	public String toString(int indent)
-	{
-		return "None";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
+		for (AST item : content)
+			item.evaluate(context);
 		return null;
 	}
 }

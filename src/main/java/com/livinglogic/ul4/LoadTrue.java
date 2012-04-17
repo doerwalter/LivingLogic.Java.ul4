@@ -24,7 +24,7 @@ public class LoadTrue extends LoadConst
 		return Boolean.TRUE;
 	}
 
-	public String toString()
+	public String toString(int indent)
 	{
 		return "True";
 	}

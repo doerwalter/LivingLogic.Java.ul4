@@ -17,9 +17,16 @@ class Text extends AST
 		this.text = text;
 	}
 
-	public String toString()
+	public String toString(int indent)
 	{
-		return "Text(" + Utils.repr(text) + ")";
+		StringBuffer buffer = new StringBuffer();
+
+		for (int i = 0; i < indent; ++i)
+			buffer.append("\t");
+		buffer.append("text(");
+		buffer.append(Utils.repr(text));
+		buffer.append(")\n");
+		return buffer.toString();
 	}
 
 	public String name()

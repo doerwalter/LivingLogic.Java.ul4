@@ -13,4 +13,11 @@ public abstract class AST
 	abstract public Object evaluate(EvaluationContext context) throws IOException;
 
 	abstract public String name();
+
+	public String toString()
+	{
+		return toString(0);
+	}
+
+	abstract public String toString(int indent);
 }

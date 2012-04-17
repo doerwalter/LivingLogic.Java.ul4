@@ -17,9 +17,14 @@ public class DelVar extends AST
 		this.varname = varname;
 	}
 
-	public String toString()
+	public String toString(int indent)
 	{
-		return "delvar(" + Utils.repr(varname) + ")";
+		StringBuffer buffer = new StringBuffer();
+
+		for (int i = 0; i < indent; ++i)
+			buffer.append("\t");
+		buffer.append("delvar(" + Utils.repr(varname) + ")\n");
+		return buffer.toString();
 	}
 
 	public String name()
