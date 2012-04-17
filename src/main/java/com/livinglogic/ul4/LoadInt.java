@@ -17,14 +17,9 @@ public class LoadInt extends LoadConst
 		this.value = value;
 	}
 
-	public int getType()
+	public String name()
 	{
-		return Opcode.OC_LOADINT;
-	}
-
-	public String getTokenType()
-	{
-		return "int";
+		return "loadint";
 	}
 
 	public Object getValue()
@@ -32,16 +27,9 @@ public class LoadInt extends LoadConst
 		return value;
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
-	{
-		int r = registers.alloc();
-		template.opcode(Opcode.OC_LOADINT, r, value.toString(), location);
-		return r;
-	}
-
 	public String toString()
 	{
-		return value.toString();
+		return Utils.repr(value);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

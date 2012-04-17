@@ -39,26 +39,8 @@ public class CallFunc extends AST
 		return buffer.toString();
 	}
 
-	private static final int[] opcodes = {Opcode.OC_CALLFUNC0, Opcode.OC_CALLFUNC1, Opcode.OC_CALLFUNC2, Opcode.OC_CALLFUNC3, Opcode.OC_CALLFUNC4};
-
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String name()
 	{
-		int argcount = args.size();
-
-		if (argcount > 4)
-			throw new RuntimeException(argcount + " arguments not supported by CallFunc");
-		int r1 = argcount>0 ? args.get(0).compile(template, registers, location) : -1;
-		int r2 = argcount>1 ? args.get(1).compile(template, registers, location) : -1;
-		int r3 = argcount>2 ? args.get(2).compile(template, registers, location) : -1;
-		int r4 = argcount>3 ? args.get(3).compile(template, registers, location) : -1;
-		int rr = argcount > 0 ? r1 : registers.alloc();
-		template.opcode(opcodes[argcount], rr, r1, r2, r3, r4, name, location);
-		if (r2 != -1)
-			registers.free(r2);
-		if (r3 != -1)
-			registers.free(r3);
-		if (r4 != -1)
-			registers.free(r4);
-		return rr;
+		return "callfunc";
 	}
 }

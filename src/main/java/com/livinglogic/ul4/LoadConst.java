@@ -8,12 +8,5 @@ package com.livinglogic.ul4;
 
 public abstract class LoadConst extends AST
 {
-	abstract public int getType();
-
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
-	{
-		int r = registers.alloc();
-		template.opcode(getType(), r, location);
-		return r;
-	}
+	abstract public Object getValue();
 }

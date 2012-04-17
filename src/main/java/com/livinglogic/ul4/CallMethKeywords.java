@@ -35,31 +35,25 @@ public class CallMethKeywords extends AST
 		args.add(arg);
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String toString()
 	{
-		int ra = registers.alloc();
-		template.opcode(Opcode.OC_BUILDDICT, ra, location);
+		StringBuffer buffer = new StringBuffer();
+
+		buffer.append("callmethkw(");
+		buffer.append(obj);
+		buffer.append(", ");
+		buffer.append(Utils.repr(name));
 		for (CallArg arg : args)
 		{
-			if (arg instanceof CallArgDict)
-			{
-				int rv = ((CallArgDict)arg).dict.compile(template, registers, location);
-				template.opcode(Opcode.OC_UPDATEDICT, ra, rv, location);
-				registers.free(rv);
-			}
-			else
-			{
-				int rv = ((CallArgNamed)arg).value.compile(template, registers, location);
-				int rk = registers.alloc();
-				template.opcode(Opcode.OC_LOADSTR, rk, ((CallArgNamed)arg).name, location);
-				template.opcode(Opcode.OC_ADDDICT, ra, rk, rv, location);
-				registers.free(rv);
-				registers.free(rk);
-			}
+			buffer.append(", ");
+			buffer.append(arg);
 		}
-		int rt = obj.compile(template, registers, location);
-		template.opcode(Opcode.OC_CALLMETHKW, rt, rt, ra, name, location);
-		registers.free(ra);
-		return rt;
+		buffer.append(")");
+		return buffer.toString();
+	}
+
+	public String name()
+	{
+		return "callmethkw";
 	}
 }

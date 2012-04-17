@@ -14,14 +14,9 @@ public class LoadNone extends LoadConst
 	{
 	}
 
-	public int getType()
+	public String name()
 	{
-		return Opcode.OC_LOADNONE;
-	}
-
-	public String getTokenType()
-	{
-		return "none";
+		return "loadnone";
 	}
 
 	public Object getValue()

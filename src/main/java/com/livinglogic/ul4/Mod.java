@@ -15,14 +15,9 @@ class Mod extends Binary
 		super(obj1, obj2);
 	}
 
-	public String toString()
+	public String name()
 	{
-		return "mod(" + obj1 + ", " + obj2 + ")";
-	}
-
-	public int getType()
-	{
-		return Opcode.OC_MOD;
+		return "mod";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

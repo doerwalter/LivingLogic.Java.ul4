@@ -15,14 +15,9 @@ class LE extends Binary
 		super(obj1, obj2);
 	}
 
-	public String toString()
+	public String name()
 	{
-		return "le(" + obj1 + ", " + obj2 + ")";
-	}
-
-	public int getType()
-	{
-		return Opcode.OC_LE;
+		return "le";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

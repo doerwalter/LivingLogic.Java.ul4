@@ -21,45 +21,14 @@ public class GetSlice extends AST
 		this.index2 = index2;
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
-	{
-		int r = obj.compile(template, registers, location);
-		if (index1 != null)
-		{
-			if (index2 != null)
-			{
-				int r1 = index1.compile(template, registers, location);
-				int r2 = index2.compile(template, registers, location);
-				template.opcode(Opcode.OC_GETSLICE12, r, r, r1, r2, location);
-				registers.free(r1);
-				registers.free(r2);
-			}
-			else
-			{
-				int r1 = index1.compile(template, registers, location);
-				template.opcode(Opcode.OC_GETSLICE1, r, r, r1, location);
-				registers.free(r1);
-			}
-		}
-		else
-		{
-			if (index2 != null)
-			{
-				int r1 = index2.compile(template, registers, location);
-				template.opcode(Opcode.OC_GETSLICE2, r, r, r1, location);
-				registers.free(r1);
-			}
-			else
-			{
-				template.opcode(Opcode.OC_GETSLICE, r, r, location);
-			}
-		}
-		return r;
-	}
-
 	public String toString()
 	{
 		return "getslice(" + obj + ", " + index1 + ", " + index2 + ")";
+	}
+
+	public String name()
+	{
+		return "getslice";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

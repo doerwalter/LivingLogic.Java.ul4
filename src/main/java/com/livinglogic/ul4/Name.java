@@ -17,26 +17,14 @@ public class Name extends AST
 		this.value = value;
 	}
 
-	public String getValue()
-	{
-		return value;
-	}
-
-	public String getTokenType()
-	{
-		return "name";
-	}
-
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
-	{
-		int r = registers.alloc();
-		template.opcode(Opcode.OC_LOADVAR, r, value, location);
-		return r;
-	}
-
 	public String toString()
 	{
 		return value;
+	}
+
+	public String name()
+	{
+		return "loadvar";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

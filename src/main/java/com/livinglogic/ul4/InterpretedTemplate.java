@@ -102,9 +102,9 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 	public String source;
 
 	/**
-	 * The list of opcodes.
+	 * top level block of the AST.
 	 */
-	public List<Opcode> opcodes;
+	public TemplateBlock block;
 
 	/**
 	 * Offsets into <code>source</code>, where the real source code starts and ends (used for subtemplates)
@@ -123,18 +123,13 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 	private Locale defaultLocale;
 
 	/**
-	 * Has {@link annotate} been called for this template?
-	 */
-	private boolean annotated = false;
-
-	/**
 	 * Creates an empty template object.
 	 */
 	public InterpretedTemplate()
 	{
 		this.source = null;
 		this.name = null;
-		this.opcodes = new LinkedList<Opcode>();
+		this.block = null;
 		this.defaultLocale = Locale.ENGLISH;
 	}
 
@@ -153,92 +148,22 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 		this(source, null, startdelim, enddelim);
 	}
 
-	private abstract static class StackItem
-	{
-		public Location location;
-
-		public StackItem(Location location)
-		{
-			this.location = location;
-		}
-
-		abstract public String getCode();
-
-		abstract public void finish(InterpretedTemplate template, Location location);
-	}
-
-	private static class DefStackItem extends StackItem
-	{
-		public DefStackItem(Location location)
-		{
-			super(location);
-		}
-
-		public String getCode()
-		{
-			return "def";
-		}
-
-		public void finish(InterpretedTemplate template, Location location)
-		{
-			template.opcode(Opcode.OC_ENDDEF, location);
-		}
-	}
-
-	private static class ForStackItem extends StackItem
-	{
-		public ForStackItem(Location location)
-		{
-			super(location);
-		}
-
-		public String getCode()
-		{
-			return "for";
-		}
-
-		public void finish(InterpretedTemplate template, Location location)
-		{
-			template.opcode(Opcode.OC_ENDFOR, location);
-		}
-	}
-
-	private static class IfStackItem extends StackItem
-	{
-		public int count;
-		public boolean elseseen;
-
-		public IfStackItem(Location location)
-		{
-			super(location);
-			count = 1;
-			elseseen = false;
-		}
-
-		public String getCode()
-		{
-			return "if";
-		}
-
-		public void finish(InterpretedTemplate template, Location location)
-		{
-			for (int i = 0; i < count; ++i)
-				template.opcode(Opcode.OC_ENDIF, location);
-		}
-	}
-
 	public InterpretedTemplate(String source, String name, String startdelim, String enddelim) throws RecognitionException
 	{
 		this.source = source;
 		this.name = name != null ? name : "unnamed";
 		this.startdelim = startdelim;
 		this.enddelim = enddelim;
-		this.opcodes = new LinkedList<Opcode>();
+		this.block = new TemplateBlock();
 		this.sourceStartIndex = 0;
 		this.sourceEndIndex = source.length();
 		this.opcodeStartIndex = 0;
 		this.opcodeEndIndex = 0; // none yet
 		this.defaultLocale = Locale.ENGLISH;
+
+		Stack<Block> stack = new Stack<Block>();
+
+		stack.push(block);
 
 		List<Location> tags = InterpretedTemplate.tokenizeTags(source, name, startdelim, enddelim);
 
@@ -256,123 +181,110 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 		{
 			try
 			{
+				Block innerBlock = stack.peek();
 				String type = loc.getType();
 				if (type == null)
-					opcode(Opcode.OC_TEXT, loc);
+					innerBlock.append(new Text(loc.getCode()));
 				else if (type.equals("print"))
 				{
 					UL4Parser parser = getParser(loc);
 					AST node = parser.expression();
-					int r = node.compile(this, new Registers(), loc);
-					opcode(Opcode.OC_PRINT, r, loc);
+					innerBlock.append(new Print(node));
 				}
 				else if (type.equals("printx"))
 				{
 					UL4Parser parser = getParser(loc);
 					AST node = parser.expression();
-					int r = node.compile(this, new Registers(), loc);
-					opcode(Opcode.OC_PRINTX, r, loc);
+					innerBlock.append(new PrintX(node));
 				}
 				else if (type.equals("code"))
 				{
 					UL4Parser parser = getParser(loc);
 					AST node = parser.stmt();
-					int r = node.compile(this, new Registers(), loc);
+					innerBlock.append(node);
 				}
 				else if (type.equals("if"))
 				{
 					UL4Parser parser = getParser(loc);
 					AST node = parser.expression();
-					int r = node.compile(this, new Registers(), loc);
-					opcode(Opcode.OC_IF, r, loc);
-					stack.add(new IfStackItem(loc));
+					ConditionalBlockBlock blockBlock = new ConditionalBlockBlock();
+					blockBlock.startNewBlock(new If(node));
+					stack.push(blockBlock);
 				}
 				else if (type.equals("elif"))
 				{
-					if ((stack.size() == 0) || !(stack.get(stack.size()-1) instanceof IfStackItem))
+					if (innerBlock instanceof ConditionalBlockBlock)
+					{
+						UL4Parser parser = getParser(loc);
+						AST node = parser.expression();
+						((ConditionalBlockBlock)innerBlock).startNewBlock(new ElIf(node));
+					}
+					else
 						throw new BlockException("elif doesn't match any if");
-					IfStackItem ifStackItem = (IfStackItem)stack.get(stack.size()-1);
-					if (ifStackItem.elseseen)
-						throw new BlockException("else already seen in elif");
-					opcode(Opcode.OC_ELSE, loc);
-					UL4Parser parser = getParser(loc);
-					AST node = parser.expression();
-					int r = node.compile(this, new Registers(), loc);
-					opcode(Opcode.OC_IF, r, loc);
-					ifStackItem.count++;
 				}
 				else if (type.equals("else"))
 				{
-					if ((stack.size() == 0) || !(stack.get(stack.size()-1) instanceof IfStackItem))
+					if (innerBlock instanceof ConditionalBlockBlock)
+					{
+						((ConditionalBlockBlock)innerBlock).startNewBlock(new Else());
+					}
+					else
 						throw new BlockException("else doesn't match any if");
-					IfStackItem ifStackItem = (IfStackItem)stack.get(stack.size()-1);
-					if (ifStackItem.elseseen)
-						throw new BlockException("duplicate else");
-					opcode(Opcode.OC_ELSE, loc);
-					ifStackItem.elseseen = true;
 				}
 				else if (type.equals("end"))
 				{
-					if (stack.size() == 0)
+					if (stack.size() <= 1)
 						throw new BlockException("not in any block");
-					String code = loc.getCode().trim();
-					StackItem stackItem = stack.get(stack.size()-1);
-					if (code.length() != 0)
-					{
-						String haveCode = stackItem.getCode();
-						if (!haveCode.equals(code))
-							throw new BlockException("end" + code + " doesn't match any " + code);
-					}
-					stackItem.finish(this, loc);
-					stack.remove(stack.size()-1);
+					innerBlock().finish(loc.getCode().trim());
+					stack.pop();
 				}
 				else if (type.equals("for"))
 				{
-					UL4Parser parser = getParser(loc);
-					AST node = parser.for_();
-					int r = node.compile(this, new Registers(), loc);
-					stack.add(new ForStackItem(loc));
+					// UL4Parser parser = getParser(loc);
+					// AST node = parser.for_();
+					// int r = node.compile(this, new Registers(), loc);
+					// stack.add(new ForStackItem(loc));
 				}
 				else if (type.equals("break"))
 				{
-					boolean forFound = false;
-					for (int i = stack.size()-1; i >=0; --i)
-					{
-						StackItem item = stack.get(i);
-						if (item instanceof ForStackItem)
-						{
-							forFound = true;
-							break;
-						}
-						else if (item instanceof DefStackItem)
-							break;
-					}
-					if (!forFound)
-						throw new BlockException("break outside of for loop");
-					opcode(Opcode.OC_BREAK, loc);
+					// boolean forFound = false;
+					// for (int i = stack.size()-1; i >=0; --i)
+					// {
+					// 	StackItem item = stack.get(i);
+					// 	if (item instanceof ForStackItem)
+					// 	{
+					// 		forFound = true;
+					// 		break;
+					// 	}
+					// 	else if (item instanceof DefStackItem)
+					// 		break;
+					// }
+					// if (!forFound)
+					// 	throw new BlockException("break outside of for loop");
+					// opcode(Opcode.OC_BREAK, loc);
 				}
 				else if (type.equals("continue"))
 				{
-					boolean forFound = false;
-					for (int i = stack.size()-1; i >= 0; --i)
-					{
-						StackItem item = stack.get(i);
-						if (item instanceof ForStackItem)
-						{
-							forFound = true;
-							break;
-						}
-						else if (item instanceof DefStackItem)
-							break;
-					}
-					if (!forFound)
-						throw new BlockException("continue outside of for loop");
+					// boolean forFound = false;
+					// for (int i = stack.size()-1; i >= 0; --i)
+					// {
+					// 	StackItem item = stack.get(i);
+					// 	if (item instanceof ForStackItem)
+					// 	{
+					// 		forFound = true;
+					// 		break;
+					// 	}
+					// 	else if (item instanceof DefStackItem)
+					// 		break;
+					// }
+					// if (!forFound)
+					// 	throw new BlockException("continue outside of for loop");
 					opcode(Opcode.OC_CONTINUE, loc);
 				}
 				else if (type.equals("def"))
 				{
-					opcode(Opcode.OC_DEF, loc.getCode(), loc);
-					stack.add(new DefStackItem(loc));
+					// innerBlock.opcode(Opcode.OC_DEF, loc.getCode(), loc);
+					// stack.add(new DefStackItem(loc));
 				}
 				else
 				{

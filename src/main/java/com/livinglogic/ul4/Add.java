@@ -15,14 +15,9 @@ class Add extends Binary
 		super(obj1, obj2);
 	}
 
-	public String toString()
+	public String name()
 	{
-		return "add(" + obj1 + ", " + obj2 + ")";
-	}
-
-	public int getType()
-	{
-		return Opcode.OC_ADD;
+		return "add";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

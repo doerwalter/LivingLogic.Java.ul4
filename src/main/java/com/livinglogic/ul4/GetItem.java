@@ -15,14 +15,9 @@ class GetItem extends Binary
 		super(obj1, obj2);
 	}
 
-	public String toString()
+	public String name()
 	{
-		return "getitem(" + obj1 + ", " + obj2 + ")";
-	}
-
-	public int getType()
-	{
-		return Opcode.OC_GETITEM;
+		return "getitem";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

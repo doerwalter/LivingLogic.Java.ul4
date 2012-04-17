@@ -15,14 +15,9 @@ class StoreVar extends ChangeVar
 		super(varname, value);
 	}
 
-	public String toString()
+	public String name()
 	{
-		return "storevar(" + Utils.repr(varname) + ", " + value + ")";
-	}
-
-	public int getType()
-	{
-		return Opcode.OC_STOREVAR;
+		return "storevar";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

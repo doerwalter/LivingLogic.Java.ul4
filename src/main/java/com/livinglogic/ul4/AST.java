@@ -10,10 +10,7 @@ import java.io.IOException;
 
 public abstract class AST
 {
-	abstract public int compile(InterpretedTemplate template, Registers registers, Location location);
+	abstract public Object evaluate(EvaluationContext context) throws IOException;
 
-	public Object evaluate(EvaluationContext context) throws IOException
-	{
-		return null;
-	}
+	abstract public String name();
 }

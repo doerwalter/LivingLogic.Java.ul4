@@ -35,24 +35,15 @@ public class List extends AST
 				first = false;
 			else
 				buffer.append(", ");
-			buffer.append(item.toString());
+			buffer.append(item);
 		}
 		buffer.append("]");
 		return buffer.toString();
 	}
 
-	public int compile(InterpretedTemplate template, Registers registers, Location location)
+	public String name()
 	{
-		int r = registers.alloc();
-		template.opcode(Opcode.OC_BUILDLIST, r, location);
-
-		for (AST item : items)
-		{
-			int ri = item.compile(template, registers, location);
-			template.opcode(Opcode.OC_ADDLIST, r, ri, location);
-			registers.free(ri);
-		}
-		return r;
+		return "list";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

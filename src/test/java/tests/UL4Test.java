@@ -772,8 +772,7 @@ public class UL4Test
 		String sc = "4";
 		String sv = "x";
 		int n = 4;
-		// when using 10 compiling the variable will run out of registers
-		int depth = 9;
+		int depth = 10;
 		for (int i = 0; i < depth; ++i)
 		{
 			sc = "(" + sc + ")+(" + sc + ")";

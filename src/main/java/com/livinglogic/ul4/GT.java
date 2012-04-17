@@ -15,14 +15,9 @@ class GT extends Binary
 		super(obj1, obj2);
 	}
 
-	public String toString()
+	public String name()
 	{
-		return "gt(" + obj1 + ", " + obj2 + ")";
-	}
-
-	public int getType()
-	{
-		return Opcode.OC_GT;
+		return "gt";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException
