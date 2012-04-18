@@ -214,7 +214,7 @@ public class CallFunc extends AST
 			if (argcount == 1)
 			{
 				Object arg0 = args.get(0).evaluate(context);
-				return (null != arg0) && (arg0 instanceof List) && !(arg0 instanceof Color);
+				return (null != arg0) && (arg0 instanceof java.util.List) && !(arg0 instanceof Color);
 			}
 			throw new ArgumentCountMismatchException("function", "islist", argcount, 1);
 		}
