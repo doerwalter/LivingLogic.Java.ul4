@@ -305,7 +305,7 @@ public class CallFunc extends AST
 			}
 			else if (argcount == 3)
 			{
-				return Utils.range(args.get(0).evaluate(context), args.get(1).evaluate(context), args.get(3).evaluate(context));
+				return Utils.range(args.get(0).evaluate(context), args.get(1).evaluate(context), args.get(2).evaluate(context));
 			}
 			throw new ArgumentCountMismatchException("function", "range", argcount, 1, 3);
 		}
