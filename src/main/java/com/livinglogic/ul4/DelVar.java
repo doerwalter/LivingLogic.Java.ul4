@@ -27,7 +27,7 @@ public class DelVar extends AST
 		return buffer.toString();
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "delvar";
 	}

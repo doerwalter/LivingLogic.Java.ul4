@@ -67,7 +67,7 @@ public class ForUnpack extends Block
 		return buffer.toString();
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "foru";
 	}

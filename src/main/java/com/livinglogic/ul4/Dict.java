@@ -52,7 +52,7 @@ public class Dict extends AST
 		return buffer.toString();
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "dict";
 	}

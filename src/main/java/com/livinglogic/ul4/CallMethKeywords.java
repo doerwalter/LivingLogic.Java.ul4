@@ -54,7 +54,7 @@ public class CallMethKeywords extends AST
 		return buffer.toString();
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "callmethkw";
 	}

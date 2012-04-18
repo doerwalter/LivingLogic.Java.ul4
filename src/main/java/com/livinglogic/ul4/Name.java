@@ -22,7 +22,7 @@ public class Name extends AST
 		return value;
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "loadvar";
 	}

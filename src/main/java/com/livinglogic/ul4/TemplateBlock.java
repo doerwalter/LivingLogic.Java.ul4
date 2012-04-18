@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 class TemplateBlock extends Block
 {
-	public String name()
+	public String getType()
 	{
 		return "template";
 	}

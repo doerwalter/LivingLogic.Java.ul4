@@ -17,7 +17,7 @@ public class LoadInt extends LoadConst
 		this.value = value;
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "loadint";
 	}

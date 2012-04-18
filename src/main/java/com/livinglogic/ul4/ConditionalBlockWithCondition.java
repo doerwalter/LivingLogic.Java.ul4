@@ -29,7 +29,7 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
-		buffer.append(name());
+		buffer.append(getType());
 		buffer.append(" (");
 		buffer.append(condition.toString(indent));
 		buffer.append(")\n");

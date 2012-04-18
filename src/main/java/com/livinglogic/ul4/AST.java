@@ -12,7 +12,7 @@ public abstract class AST
 {
 	abstract public Object evaluate(EvaluationContext context) throws IOException;
 
-	abstract public String name();
+	abstract public String getType();
 
 	public String toString()
 	{

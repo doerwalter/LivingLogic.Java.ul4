@@ -13,7 +13,7 @@ class If extends ConditionalBlockWithCondition
 		super(condition);
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "if";
 	}

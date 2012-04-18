@@ -24,7 +24,7 @@ public class GetAttr extends AST
 		return "getattr(" + obj + ", " + Utils.repr(attrname) + ")";
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "getattr";
 	}

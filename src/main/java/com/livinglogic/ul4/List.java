@@ -41,7 +41,7 @@ public class List extends AST
 		return buffer.toString();
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "list";
 	}

@@ -22,7 +22,7 @@ public class For extends Block
 		this.container = container;
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "for";
 	}

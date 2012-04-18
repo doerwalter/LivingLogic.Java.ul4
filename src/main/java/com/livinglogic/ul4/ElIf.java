@@ -13,7 +13,7 @@ class ElIf extends ConditionalBlockWithCondition
 		super(condition);
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "elif";
 	}

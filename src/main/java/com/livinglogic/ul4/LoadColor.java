@@ -17,7 +17,7 @@ public class LoadColor extends LoadConst
 		this.value = value;
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "loadcolor";
 	}

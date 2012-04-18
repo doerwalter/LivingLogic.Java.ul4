@@ -17,6 +17,6 @@ abstract class Unary extends AST
 
 	public String toString(int indent)
 	{
-		return name() + "(" + obj + ")";
+		return getType() + "(" + obj + ")";
 	}
 }

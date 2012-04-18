@@ -29,7 +29,7 @@ class PrintX extends AST
 		return buffer.toString();
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "printx";
 	}

@@ -26,7 +26,7 @@ public class GetSlice extends AST
 		return "getslice(" + obj + ", " + index1 + ", " + index2 + ")";
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "getslice";
 	}

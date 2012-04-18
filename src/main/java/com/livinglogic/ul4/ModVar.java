@@ -15,7 +15,7 @@ class ModVar extends ChangeVar
 		super(varname, value);
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "modvar";
 	}

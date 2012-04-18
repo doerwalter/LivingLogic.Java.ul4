@@ -15,7 +15,7 @@ class Neg extends Unary
 		super(obj);
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "neg";
 	}

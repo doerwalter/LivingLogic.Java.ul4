@@ -45,7 +45,7 @@ public class CallMeth extends AST
 		return buffer.toString();
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "callmeth";
 	}

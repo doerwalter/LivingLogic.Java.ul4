@@ -21,7 +21,7 @@ class ConditionalBlockBlock extends Block
 		startNewBlock(block);
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "if";
 	}

@@ -14,7 +14,7 @@ public class LoadNone extends LoadConst
 	{
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "loadnone";
 	}

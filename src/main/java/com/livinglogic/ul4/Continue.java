@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 class Continue extends AST
 {
-	public String name()
+	public String getType()
 	{
 		return "continue";
 	}

@@ -15,7 +15,7 @@ class MulVar extends ChangeVar
 		super(varname, value);
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "mulvar";
 	}

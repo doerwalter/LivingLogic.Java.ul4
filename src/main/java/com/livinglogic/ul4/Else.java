@@ -10,7 +10,7 @@ import java.io.IOException;
 
 class Else extends ConditionalBlock
 {
-	public String name()
+	public String getType()
 	{
 		return "else";
 	}

@@ -17,7 +17,7 @@ public class LoadStr extends LoadConst
 		this.value = value;
 	}
 
-	public String name()
+	public String getType()
 	{
 		return "loadstr";
 	}
