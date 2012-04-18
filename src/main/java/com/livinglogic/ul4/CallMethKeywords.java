@@ -68,7 +68,6 @@ public class CallMethKeywords extends AST
 
 		for (CallArg arg : this.args)
 			arg.addTo(context, args);
-
 		if (name.equals("render")) // FIXME: Use switch in Java 7
 		{
 			if (null != obj && obj instanceof InterpretedTemplate)

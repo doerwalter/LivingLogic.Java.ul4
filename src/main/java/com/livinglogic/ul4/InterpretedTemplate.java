@@ -30,7 +30,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import com.livinglogic.utils.ObjectAsMap;
 
-public class InterpretedTemplate extends ObjectAsMap implements Template
+public class InterpretedTemplate extends Block implements Template
 {
 	/**
 	 * The header used in the compiled format of the template.
@@ -45,53 +45,38 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 	/**
 	 * The name of the template (defaults to <code>unnamed</code>)
 	 */
-	public String name;
+	public String name = null;
 
 	/**
 	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
 	 */
-	public String startdelim;
+	public String startdelim = "<?";
 
 	/**
 	 * The end delimiter for tags (defaults to <code>?&gt;</code>)
 	 */
-	public String enddelim;
+	public String enddelim = "?>";
 
 	/**
 	 * The template source (of the top-level template, i.e. subtemplates always get the full source).
 	 */
-	public String source;
+	public String source = null;
 
 	/**
-	 * top level block of the AST.
+	 * the compiled content of template
 	 */
-	public TemplateBlock block;
-
-	/**
-	 * Offsets into <code>source</code>, where the real source code starts and ends (used for subtemplates)
-	 */
-	private int sourceStartIndex;
-	private int sourceEndIndex;
-	/**
-	 * Offsets into <code>opcodes</code>, where the real opcodes start and end (used for subtemplates)
-	 */
-	private int opcodeStartIndex;
-	private int opcodeEndIndex;
+	public LinkedList<AST> content = new LinkedList<AST>();
 
 	/**
 	 * The locale to be used when formatting int, float or date objects.
 	 */
-	private Locale defaultLocale;
+	private Locale defaultLocale = Locale.ENGLISH;
 
 	/**
-	 * Creates an empty template object.
+	 * Creates an empty template object. Must be filled in later (use for creating subtemplates)
 	 */
 	public InterpretedTemplate()
 	{
-		this.source = null;
-		this.name = null;
-		this.block = null;
-		this.defaultLocale = Locale.ENGLISH;
 	}
 
 	public InterpretedTemplate(String source) throws RecognitionException
@@ -124,21 +109,15 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 	public InterpretedTemplate(String source, String name, String startdelim, String enddelim) throws RecognitionException
 	{
 		this.source = source;
-		this.name = name != null ? name : "unnamed";
+		this.name = name;
 		this.startdelim = startdelim;
 		this.enddelim = enddelim;
-		this.block = new TemplateBlock();
-		this.sourceStartIndex = 0;
-		this.sourceEndIndex = source.length();
-		this.opcodeStartIndex = 0;
-		this.opcodeEndIndex = 0; // none yet
-		this.defaultLocale = Locale.ENGLISH;
 
 		List<Location> tags = InterpretedTemplate.tokenizeTags(source, name, startdelim, enddelim);
 
 		Stack<StackItem> stack = new Stack<StackItem>();
 
-		stack.push(new StackItem(block, null)); // Stack of currently active blocks
+		stack.push(new StackItem(this, null)); // Stack of currently active blocks
 
 		for (Location loc: tags)
 		{
@@ -231,8 +210,10 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				}
 				else if (type.equals("def"))
 				{
-					// innerBlock.opcode(Opcode.OC_DEF, loc.getCode(), loc);
-					// stack.add(new DefStackItem(loc));
+					InterpretedTemplate subtemplate = new InterpretedTemplate();
+					subtemplate.name = loc.getCode();
+					innerBlock.append(subtemplate);
+					stack.push(new StackItem(subtemplate, loc));
 				}
 				else
 				{
@@ -315,6 +296,25 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public String toString(int indent)
+	{
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < indent; ++i)
+			buffer.append("\t");
+		buffer.append("def " + (name != null ? null : "unnamed") + "(**vars)\n");
+		for (int i = 0; i < indent; ++i)
+			buffer.append("\t");
+		buffer.append("{\n");
+		++indent;
+		for (AST item : content)
+			buffer.append(item.toString(indent));
+		--indent;
+		for (int i = 0; i < indent; ++i)
+			buffer.append("\t");
+		buffer.append("}\n");
+		return buffer.toString();
 	}
 
 	protected static String read(Reader reader, int length) throws IOException
@@ -488,7 +488,6 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 		retVal.enddelim = readstr(bufferedReader, "ED");
 		readchar(bufferedReader, '\n');
 		retVal.source = readstr(bufferedReader, "SRC");
-		retVal.sourceEndIndex = retVal.source.length();
 		readchar(bufferedReader, '\n');
 		int count = readint(bufferedReader, "n");
 		readchar(bufferedReader, '\n');
@@ -663,7 +662,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 		if (variables == null)
 			variables = new HashMap<String, Object>();
 		EvaluationContext context = new EvaluationContext(writer, variables, defaultLocale);
-		block.evaluate(context);
+		evaluate(context);
 	}
 
 	/**
@@ -675,12 +674,9 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 	public String renders(Map<String, Object> variables)
 	{
 		StringWriter output = new StringWriter();
-		if (variables == null)
-			variables = new HashMap<String, Object>();
-		EvaluationContext context = new EvaluationContext(output, variables, defaultLocale);
 		try
 		{
-			block.evaluate(context);
+			render(output, variables);
 		}
 		catch (IOException ex)
 		{
@@ -766,12 +762,20 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 		}
 	}
 
-	public String toString()
+	public String getType()
 	{
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("def " + name + "(**vars)\n");
-		buffer.append(block.toString(0));
-		return buffer.toString();
+		return "template";
+	}
+
+	public void finish(String name)
+	{
+		if (name != null && name.length() != 0 && !name.equals("def"))
+			throw new BlockException("def ended by end" + name);
+	}
+
+	public boolean handleLoopControl(String name)
+	{
+		throw new BlockException(name + " outside of for loop");
 	}
 
 	public String javaSource()
@@ -790,7 +794,7 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 	{
 		if (valueMakers == null)
 		{
-			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
 			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).name;}});
 			v.put("startdelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).startdelim;}});
 			v.put("enddelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).enddelim;}});

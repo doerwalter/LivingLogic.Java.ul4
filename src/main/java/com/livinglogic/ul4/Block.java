@@ -7,6 +7,8 @@
 package com.livinglogic.ul4;
 
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.HashMap;
 import java.io.IOException;
 
 abstract class Block extends AST
@@ -34,5 +36,18 @@ abstract class Block extends AST
 		for (AST item : content)
 			item.evaluate(context);
 		return null;
+	}
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
+			v.put("content", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).content;}});
+			valueMakers = v;
+		}
+		return valueMakers;
 	}
 }
