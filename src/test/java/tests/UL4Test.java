@@ -2352,7 +2352,7 @@ public class UL4Test
 	}
 
 	@Test
-	public void templateattributes()
+	public void templateattributes_1()
 	{
 		String source = "<?print x?>";
 		InterpretedTemplate t = getTemplate(source);
@@ -2364,6 +2364,17 @@ public class UL4Test
 		checkTemplateOutput("print", "<?print template.content[0].type?>", "template", t);
 		checkTemplateOutput("loadvar", "<?print template.content[0].value.type?>", "template", t);
 		checkTemplateOutput("x", "<?print template.content[0].value.name?>", "template", t);
+	}
+
+	@Test
+	public void templateattributes_2()
+	{
+		String source = "<?printx 42?>";
+		InterpretedTemplate t = getTemplate(source);
+
+		checkTemplateOutput("printx", "<?print template.content[0].type?>", "template", t);
+		checkTemplateOutput("loadint", "<?print template.content[0].value.type?>", "template", t);
+		checkTemplateOutput("42", "<?print template.content[0].value.value?>", "template", t);
 	}
 
 	private InterpretedTemplate universaltemplate()
