@@ -299,9 +299,10 @@ public class CallMeth extends AST
 			else if (argcount == 2)
 			{
 				Object arg0 = args.get(0).evaluate(context);
-				if (((Map)obj).containsKey(arg0))
-					return arg0;
-				return args.get(1).evaluate(context);
+				Object result = ((Map)obj).get(arg0);
+				if (result == null && !((Map)obj).containsKey(arg0))
+					result = args.get(1).evaluate(context);
+				return result;
 			}
 			throw new ArgumentCountMismatchException("method", "get", argcount, 1, 2);
 		}

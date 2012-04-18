@@ -334,7 +334,11 @@ public class CallFunc extends AST
 			else if (argcount == 2)
 			{
 				Object arg0 = args.get(0).evaluate(context);
-				return context.getVariables().containsKey(arg0) ? arg0 : args.get(1).evaluate(context);
+				Map<String, Object> variables = context.getVariables();
+				Object result = variables.get(arg0);
+				if (result == null && !variables.containsKey(arg0))
+					result = args.get(1).evaluate(context);
+				return result;
 			}
 			throw new ArgumentCountMismatchException("function", "get", argcount, 1, 2);
 		}
