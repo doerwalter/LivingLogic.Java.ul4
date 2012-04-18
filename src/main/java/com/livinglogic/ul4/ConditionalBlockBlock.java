@@ -34,6 +34,11 @@ class ConditionalBlockBlock extends Block
 		return buffer.toString();
 	}
 
+	public boolean handleLoopControl(String name)
+	{
+		return false;
+	}
+
 	public void append(AST item)
 	{
 		((ConditionalBlock)content.get(content.size()-1)).append(item);

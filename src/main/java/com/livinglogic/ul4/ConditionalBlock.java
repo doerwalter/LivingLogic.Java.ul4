@@ -11,4 +11,9 @@ import java.io.IOException;
 abstract class ConditionalBlock extends Block
 {
 	abstract public boolean hasToBeExecuted(EvaluationContext context) throws IOException;
+
+	public boolean handleLoopControl(String name)
+	{
+		return false;
+	}
 }

@@ -10,15 +10,13 @@ import java.util.LinkedList;
 import java.util.Iterator;
 import java.io.IOException;
 
-public class For extends Block
+public abstract class For extends Block
 {
-	protected String itername;
 	protected AST container;
 
-	public For(String itername, AST container)
+	public For(AST container)
 	{
 		super();
-		this.itername = itername;
 		this.container = container;
 	}
 
@@ -27,27 +25,9 @@ public class For extends Block
 		return "for";
 	}
 
-	public String toString(int indent)
+	public void setContainer(AST container)
 	{
-		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("for ");
-		buffer.append(itername);
-		buffer.append(" in ");
-		buffer.append(container);
-		buffer.append("\n");
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("{\n");
-		++indent;
-		for (AST item : content)
-			buffer.append(item.toString(indent));
-		--indent;
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("}\n");
-		return buffer.toString();
+		this.container = container;
 	}
 
 	public void finish(String name)
@@ -55,6 +35,13 @@ public class For extends Block
 		if (name != null && name.length() != 0 && !name.equals("for"))
 			throw new BlockException("for ended by end" + name);
 	}
+
+	public boolean handleLoopControl(String name)
+	{
+		return true;
+	}
+
+	abstract protected void unpackLoopVariable(EvaluationContext context, Object item);
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
@@ -64,8 +51,7 @@ public class For extends Block
 
 		while (iter.hasNext())
 		{
-			Object item = iter.next();
-			context.put(itername, item);
+			unpackLoopVariable(context, iter.next());
 
 			try
 			{

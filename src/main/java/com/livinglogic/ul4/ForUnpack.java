@@ -10,31 +10,25 @@ import java.util.LinkedList;
 import java.util.Iterator;
 import java.io.IOException;
 
-public class ForUnpack extends Block
+public class ForUnpack extends For
 {
 	protected LinkedList<String> iternames;
-	protected AST container;
 
 	public ForUnpack(AST container)
 	{
+		super(container);
 		this.iternames = new LinkedList<String>();
-		this.container = container;
 	}
 
 	public ForUnpack()
 	{
+		super(null);
 		this.iternames = new LinkedList<String>();
-		this.container = null;
 	}
 
 	public void appendName(String itername)
 	{
 		iternames.add(itername);
-	}
-
-	public void setContainer(AST container)
-	{
-		this.container = container;
 	}
 
 	public String toString(int indent)
@@ -72,13 +66,7 @@ public class ForUnpack extends Block
 		return "foru";
 	}
 
-	public void finish(String name)
-	{
-		if (name != null && name.length() != 0 && !name.equals("for"))
-			throw new BlockException("for ended by end" + name);
-	}
-
-	private void unpackVariable(EvaluationContext context, Object item)
+	protected void unpackLoopVariable(EvaluationContext context, Object item)
 	{
 		Iterator<Object> itemIter = Utils.iterator(item);
 		Iterator<String> nameIter = iternames.iterator();
@@ -111,31 +99,5 @@ public class ForUnpack extends Block
 				}
 			}
 		}
-	}
-
-	public Object evaluate(EvaluationContext context) throws IOException
-	{
-		Object container = this.container.evaluate(context);
-
-		Iterator iterContainer = Utils.iterator(container);
-
-		while (iterContainer.hasNext())
-		{
-			unpackVariable(context, iterContainer.next());
-
-			try
-			{
-				super.evaluate(context);
-			}
-			catch (BreakException ex)
-			{
-				break; // breaking this while loop breaks the evaluated for loop
-			}
-			catch (ContinueException ex)
-			{
-				// doing nothing here does exactly what we need ;)
-			}
-		}
-		return null;
 	}
 }

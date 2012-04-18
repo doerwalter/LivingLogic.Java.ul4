@@ -19,6 +19,11 @@ class TemplateBlock extends Block
 			throw new BlockException("def ended by end" + name);
 	}
 
+	public boolean handleLoopControl(String name)
+	{
+		throw new BlockException(name + " outside of for loop");
+	}
+
 	public String toString(int indent)
 	{
 		StringBuffer buffer = new StringBuffer();

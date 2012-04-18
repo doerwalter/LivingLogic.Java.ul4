@@ -27,6 +27,8 @@ abstract class Block extends AST
 	{
 	}
 
+	abstract public boolean handleLoopControl(String name);
+
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		for (AST item : content)

@@ -486,11 +486,11 @@ expression returns [AST node]
 
 /* Additional rules for "for" tag */
 
-for_ returns [Block node]
+for_ returns [For node]
 	:
 		n=name
 		'in'
-		e=expr1 { $node = new For($n.text, $e.node); }
+		e=expr1 { $node = new ForNormal($e.node, $n.text); }
 		EOF
 	|
 		'('
@@ -510,7 +510,7 @@ for_ returns [Block node]
 		','?
 		')'
 		'in'
-		e=expr1 { ((ForUnpack)$node).setContainer($e.node); }
+		e=expr1 { $node.setContainer($e.node); }
 		EOF
 	;
 

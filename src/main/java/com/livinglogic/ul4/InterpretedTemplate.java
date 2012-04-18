@@ -213,38 +213,20 @@ public class InterpretedTemplate extends ObjectAsMap implements Template
 				}
 				else if (type.equals("break"))
 				{
-					// boolean forFound = false;
-					// for (int i = stack.size()-1; i >= 0; --i)
-					// {
-					// 	StackItem item = stack.get(i);
-					// 	if (item instanceof ForStackItem)
-					// 	{
-					// 		forFound = true;
-					// 		break;
-					// 	}
-					// 	else if (item instanceof DefStackItem)
-					// 		break;
-					// }
-					// if (!forFound)
-					// 	throw new BlockException("continue outside of for loop");
+					for (int i = stack.size()-1; i >= 0; --i)
+					{
+						if (stack.get(i).block.handleLoopControl("break"))
+							break;
+					}
 					innerBlock.append(new Break());
 				}
 				else if (type.equals("continue"))
 				{
-					// boolean forFound = false;
-					// for (int i = stack.size()-1; i >= 0; --i)
-					// {
-					// 	StackItem item = stack.get(i);
-					// 	if (item instanceof ForStackItem)
-					// 	{
-					// 		forFound = true;
-					// 		break;
-					// 	}
-					// 	else if (item instanceof DefStackItem)
-					// 		break;
-					// }
-					// if (!forFound)
-					// 	throw new BlockException("continue outside of for loop");
+					for (int i = stack.size()-1; i >= 0; --i)
+					{
+						if (stack.get(i).block.handleLoopControl("continue"))
+							break;
+					}
 					innerBlock.append(new Continue());
 				}
 				else if (type.equals("def"))

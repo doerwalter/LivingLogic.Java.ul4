@@ -387,6 +387,18 @@ public class UL4Test
 		checkTemplateOutput("1, 1, 2, 1, 2, 3, ", "<?for i in [1,2,3,4]?><?for j in [1,2,3,4]?><?print j?>, <?if j>=i?><?break?><?end if?><?end for?><?if i>=3?><?break?><?end if?><?end for?>");
 	}
 
+	@CauseTest(expectedCause=BlockException.class)
+	public void tag_break_outside_loop()
+	{
+		checkTemplateOutput("", "<?break?>");
+	}
+
+	@CauseTest(expectedCause=BlockException.class)
+	public void tag_break_outside_loop_in_def()
+	{
+		checkTemplateOutput("", "<def gurk?><?break?><?end def?>");
+	}
+
 	@Test
 	public void tag_continue()
 	{
@@ -397,6 +409,18 @@ public class UL4Test
 	public void tag_continue_nested()
 	{
 		checkTemplateOutput("1, 3, \n1, 3, \n", "<?for i in [1,2,3]?><?if i==2?><?continue?><?end if?><?for j in [1,2,3]?><?if j==2?><?continue?><?end if?><?print j?>, <?end for?>\n<?end for?>");
+	}
+
+	@CauseTest(expectedCause=BlockException.class)
+	public void tag_continue_outside_loop()
+	{
+		checkTemplateOutput("", "<?continue?>");
+	}
+
+	@CauseTest(expectedCause=BlockException.class)
+	public void tag_continue_outside_loop_in_def()
+	{
+		checkTemplateOutput("", "<def gurk?><?continue?><?end def?>");
 	}
 
 	@Test
