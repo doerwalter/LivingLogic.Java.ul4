@@ -63,11 +63,6 @@ public class InterpretedTemplate extends Block implements Template
 	public String source = null;
 
 	/**
-	 * the compiled content of template
-	 */
-	public LinkedList<AST> content = new LinkedList<AST>();
-
-	/**
 	 * The locale to be used when formatting int, float or date objects.
 	 */
 	private Locale defaultLocale = Locale.ENGLISH;
