@@ -113,6 +113,9 @@ public class InterpretedTemplate extends Block implements Template
 		this.startdelim = startdelim;
 		this.enddelim = enddelim;
 
+		if (source == null)
+			return;
+
 		List<Location> tags = InterpretedTemplate.tokenizeTags(source, name, startdelim, enddelim);
 
 		Stack<StackItem> stack = new Stack<StackItem>();
@@ -211,11 +214,8 @@ public class InterpretedTemplate extends Block implements Template
 				}
 				else if (type.equals("def"))
 				{
-					InterpretedTemplate subtemplate = new InterpretedTemplate();
 					// Copy over the attributes that we know now, the source is set once the <?end?> tag is encountered
-					subtemplate.name = location.getCode();
-					subtemplate.startdelim = startdelim;
-					subtemplate.enddelim = enddelim;
+					InterpretedTemplate subtemplate = new InterpretedTemplate(null, location.getCode(), startdelim, enddelim);
 					innerBlock.append(subtemplate);
 					stack.push(new StackItem(subtemplate, location));
 				}
