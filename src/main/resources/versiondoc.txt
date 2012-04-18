@@ -10,6 +10,8 @@ Comments:
     <?render x()?> -> <?print x.render()?>
     <?print x.render()?> -> <?print x.renders()?>
 
+* UL4 templates now support the ul4on function.
+
 * Added support for templates and floats to UL4ON.
 
 

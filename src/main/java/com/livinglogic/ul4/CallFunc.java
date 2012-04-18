@@ -341,6 +341,14 @@ public class CallFunc extends AST
 			}
 			throw new ArgumentCountMismatchException("function", "json", argcount, 1);
 		}
+		else if (funcname.equals("ul4on"))
+		{
+			if (argcount == 1)
+			{
+				return com.livinglogic.ul4on.Utils.dumps(args.get(0).evaluate(context));
+			}
+			throw new ArgumentCountMismatchException("function", "ul4on", argcount, 1);
+		}
 		else if (funcname.equals("reversed"))
 		{
 			if (argcount == 1)

@@ -1065,6 +1065,33 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_ul4on()
+	{
+		checkTemplateOutput(dumps(null), "<?print ul4on(data)?>", "data", null);
+		checkTemplateOutput(dumps(false), "<?print ul4on(data)?>", "data", false);
+		checkTemplateOutput(dumps(true), "<?print ul4on(data)?>", "data", true);
+		checkTemplateOutput(dumps(42), "<?print ul4on(data)?>", "data", 42);
+		checkTemplateOutput(dumps(42.5), "<?print ul4on(data)?>", "data", 42.5);
+		checkTemplateOutput(dumps("abc"), "<?print ul4on(data)?>", "data", "abc");
+		checkTemplateOutput(dumps(asList(1, 2, 3)), "<?print ul4on(data)?>", "data", asList(1, 2, 3));
+		checkTemplateOutput(dumps(makeMap("one", 1)), "<?print ul4on(data)?>", "data", makeMap("one", 1));
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@Test
+	public void function_ul4on_0_args()
+	{
+		checkTemplateOutput("", "<?print ul4on()?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@Test
+	public void function_ul4on_2_args()
+	{
+		checkTemplateOutput("", "<?print ul4on(1, 2)?>");
+	}
+
+	@Test
 	public void function_str()
 	{
 		String source = "<?print str(data)?>";
