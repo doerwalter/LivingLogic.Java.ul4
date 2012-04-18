@@ -13,19 +13,14 @@ import java.io.IOException;
 
 abstract class Block extends AST
 {
-	protected LinkedList<AST> content;
-
-	public Block()
-	{
-		content = new LinkedList<AST>();
-	}
+	protected LinkedList<AST> content = new LinkedList<AST>();
 
 	public void append(AST item)
 	{
 		content.add(item);
 	}
 
-	public void finish(String name)
+	public void finish(InterpretedTemplate template, Location startLocation, Location endLocation)
 	{
 	}
 

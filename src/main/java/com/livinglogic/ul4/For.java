@@ -30,10 +30,11 @@ public abstract class For extends Block
 		this.container = container;
 	}
 
-	public void finish(String name)
+	public void finish(InterpretedTemplate template, Location startLocation, Location endLocation)
 	{
-		if (name != null && name.length() != 0 && !name.equals("for"))
-			throw new BlockException("for ended by end" + name);
+		String type = endLocation.getCode().trim();
+		if (type != null && type.length() != 0 && !type.equals("for"))
+			throw new BlockException("for ended by end" + type);
 	}
 
 	public boolean handleLoopControl(String name)

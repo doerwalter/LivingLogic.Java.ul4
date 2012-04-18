@@ -119,45 +119,46 @@ public class InterpretedTemplate extends Block implements Template
 
 		stack.push(new StackItem(this, null)); // Stack of currently active blocks
 
-		for (Location loc: tags)
+		for (Location location : tags)
 		{
 			try
 			{
 				Block innerBlock = stack.peek().block;
-				String type = loc.getType();
+				String type = location.getType();
+				// FIXME: use a switch in Java 7
 				if (type == null)
-					innerBlock.append(new Text(loc.getCode()));
+					innerBlock.append(new Text(location.getCode()));
 				else if (type.equals("print"))
 				{
-					UL4Parser parser = getParser(loc);
+					UL4Parser parser = getParser(location);
 					AST node = parser.expression();
 					innerBlock.append(new Print(node));
 				}
 				else if (type.equals("printx"))
 				{
-					UL4Parser parser = getParser(loc);
+					UL4Parser parser = getParser(location);
 					AST node = parser.expression();
 					innerBlock.append(new PrintX(node));
 				}
 				else if (type.equals("code"))
 				{
-					UL4Parser parser = getParser(loc);
+					UL4Parser parser = getParser(location);
 					AST node = parser.stmt();
 					innerBlock.append(node);
 				}
 				else if (type.equals("if"))
 				{
-					UL4Parser parser = getParser(loc);
+					UL4Parser parser = getParser(location);
 					AST node = parser.expression();
 					ConditionalBlockBlock blockBlock = new ConditionalBlockBlock(new If(node));
 					innerBlock.append(blockBlock);
-					stack.push(new StackItem(blockBlock, loc));
+					stack.push(new StackItem(blockBlock, location));
 				}
 				else if (type.equals("elif"))
 				{
 					if (innerBlock instanceof ConditionalBlockBlock)
 					{
-						UL4Parser parser = getParser(loc);
+						UL4Parser parser = getParser(location);
 						AST node = parser.expression();
 						((ConditionalBlockBlock)innerBlock).startNewBlock(new ElIf(node));
 					}
@@ -177,7 +178,7 @@ public class InterpretedTemplate extends Block implements Template
 				{
 					if (stack.size() > 1)
 					{
-						innerBlock.finish(loc.getCode().trim());
+						innerBlock.finish(this, stack.peek().location, location);
 						stack.pop();
 					}
 					else
@@ -185,10 +186,10 @@ public class InterpretedTemplate extends Block implements Template
 				}
 				else if (type.equals("for"))
 				{
-					UL4Parser parser = getParser(loc);
+					UL4Parser parser = getParser(location);
 					Block node = parser.for_();
 					innerBlock.append(node);
-					stack.push(new StackItem(node, loc));
+					stack.push(new StackItem(node, location));
 				}
 				else if (type.equals("break"))
 				{
@@ -211,9 +212,12 @@ public class InterpretedTemplate extends Block implements Template
 				else if (type.equals("def"))
 				{
 					InterpretedTemplate subtemplate = new InterpretedTemplate();
-					subtemplate.name = loc.getCode();
+					// Copy over the attributes that we know now, the source is set once the <?end?> tag is encountered
+					subtemplate.name = location.getCode();
+					subtemplate.startdelim = startdelim;
+					subtemplate.enddelim = enddelim;
 					innerBlock.append(subtemplate);
-					stack.push(new StackItem(subtemplate, loc));
+					stack.push(new StackItem(subtemplate, location));
 				}
 				else
 				{
@@ -227,11 +231,11 @@ public class InterpretedTemplate extends Block implements Template
 			}
 			catch (Exception ex)
 			{
-				throw new LocationException(ex, loc);
+				throw new LocationException(ex, location);
 			}
 		}
 		if (stack.size() > 1) // the template itself is still on the stack
-			throw new LocationException(new BlockException("block unclosed"), stack.peek().location);
+			throw new LocationException(new BlockException(stack.peek().block.getType() + " block unclosed"), stack.peek().location);
 	}
 
 	private UL4Parser getParser(Location location)
@@ -248,46 +252,6 @@ public class InterpretedTemplate extends Block implements Template
 		return parser;
 	}
 
-	/**
-	 * Creates an template object for a source string and a list of opcodes.
-	 */
-	// public InterpretedTemplate(String source, String name, List<Opcode> opcodes, String startdelim, String enddelim)
-	// {
-	// 	this.source = source;
-	// 	this.name = name;
-	// 	this.startdelim = startdelim;
-	// 	this.enddelim = enddelim;
-	// 	this.opcodes = opcodes;
-	// 	this.sourceStartIndex = 0;
-	// 	this.sourceEndIndex = source.length();
-	// 	this.opcodeStartIndex = 0;
-	// 	this.opcodeEndIndex = opcodes.size();
-	// 	this.defaultLocale = Locale.ENGLISH;
-	// }
-
-	/**
-	 * Creates an template object as a subtemplate of another template.
-	 */
-	// public InterpretedTemplate(InterpretedTemplate parent, String name, int sourceStartIndex, int sourceEndIndex, int opcodeStartIndex, int opcodeEndIndex)
-	// {
-	// 	this.source = parent.source;
-	// 	this.name = name;
-	// 	this.startdelim = parent.startdelim;
-	// 	this.enddelim = parent.enddelim;
-	// 	this.opcodes = parent.opcodes;
-	// 	this.sourceStartIndex = sourceStartIndex;
-	// 	this.sourceEndIndex = sourceEndIndex;
-	// 	this.opcodeStartIndex = opcodeStartIndex;
-	// 	this.opcodeEndIndex = opcodeEndIndex;
-	// 	this.defaultLocale = Locale.ENGLISH;
-	// 	// The subtemplate must always be annotated, because if it isn't it would
-	// 	// annotate all opcodes/locations even those of the parent and would
-	// 	// store its name in the parents location. As subtemplates are created
-	// 	// during the annotate() call of the parent, we can savely set our own
-	// 	// annotate flag to true to prevent reannotation.
-	// 	this.annotated = true;
-	// }
-
 	public String getName()
 	{
 		return name;
@@ -303,7 +267,7 @@ public class InterpretedTemplate extends Block implements Template
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
-		buffer.append("def " + (name != null ? null : "unnamed") + "(**vars)\n");
+		buffer.append("def " + (name != null ? name : "unnamed") + "(**vars)\n");
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("{\n");
@@ -651,6 +615,12 @@ public class InterpretedTemplate extends Block implements Template
 	// 	return new IteratorReader(new Renderer(variables));
 	// }
 
+	public Object evaluate(EvaluationContext context) throws IOException
+	{
+		context.put(name, this);
+		return null;
+	}
+
 	/**
 	 * Renders the template to a java.io.Writer object.
 	 * @param writer    the java.io.Writer object to which the output is written.
@@ -662,7 +632,7 @@ public class InterpretedTemplate extends Block implements Template
 		if (variables == null)
 			variables = new HashMap<String, Object>();
 		EvaluationContext context = new EvaluationContext(writer, variables, defaultLocale);
-		evaluate(context);
+		super.evaluate(context);
 	}
 
 	/**
@@ -767,10 +737,12 @@ public class InterpretedTemplate extends Block implements Template
 		return "template";
 	}
 
-	public void finish(String name)
+	public void finish(InterpretedTemplate template, Location startLocation, Location endLocation)
 	{
-		if (name != null && name.length() != 0 && !name.equals("def"))
-			throw new BlockException("def ended by end" + name);
+		String type = endLocation.getCode().trim();
+		if (type != null && type.length() != 0 && !type.equals("def"))
+			throw new BlockException("def ended by end" + type);
+		source = template.source.substring(startLocation.starttag, endLocation.endtag);
 	}
 
 	public boolean handleLoopControl(String name)

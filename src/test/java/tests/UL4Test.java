@@ -2146,6 +2146,13 @@ public class UL4Test
 	}
 
 	@Test
+	public void method_render_nested()
+	{
+		System.out.println(getTemplate("<?def outer?><?def inner?><?code x += 1?><?print x?>?<?end def?><?code x += 1?><?print inner.render(x=x)?><?print x?>?<?end def?><?code x += 1?><?print outer.render(x=x)?><?print x?>"));
+		checkTemplateOutput("45?44?43", "<?def outer?><?def inner?><?code x += 1?><?print x?>?<?end def?><?code x += 1?><?print inner.render(x=x)?><?print x?>?<?end def?><?code x += 1?><?print outer.render(x=x)?><?print x?>", "x", 42);
+	}
+
+	@Test
 	public void method_mimeformat()
 	{
 		Date t = makeDate(2010, 2, 22, 12, 34, 56);
