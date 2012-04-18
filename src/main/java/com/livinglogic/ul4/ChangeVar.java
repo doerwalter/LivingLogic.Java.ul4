@@ -37,8 +37,8 @@ abstract class ChangeVar extends AST
 		if (valueMakers == null)
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("funcname", new ValueMaker(){public Object getValue(Object object){return ((CallFunc)object).funcname;}});
-			v.put("args", new ValueMaker(){public Object getValue(Object object){return ((CallFunc)object).args;}});
+			v.put("varname", new ValueMaker(){public Object getValue(Object object){return ((ChangeVar)object).varname;}});
+			v.put("value", new ValueMaker(){public Object getValue(Object object){return ((ChangeVar)object).value;}});
 			valueMakers = v;
 		}
 		return valueMakers;
