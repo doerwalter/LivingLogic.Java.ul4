@@ -33,6 +33,7 @@ public class Name extends AST
 	{
 		return context.get(value);
 	}
+
 	private static Map<String, ValueMaker> valueMakers = null;
 
 	public Map<String, ValueMaker> getValueMakers()
