@@ -6,7 +6,23 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
+import java.util.HashMap;
+
 public abstract class LoadConst extends AST
 {
 	abstract public Object getValue();
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
+			v.put("value", new ValueMaker(){public Object getValue(Object object){return ((LoadConst)object).getValue();}});
+			valueMakers = v;
+		}
+		return valueMakers;
+	}
 }
