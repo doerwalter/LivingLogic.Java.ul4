@@ -295,15 +295,9 @@ public class CallMeth extends AST
 		else if (methname.equals("get"))
 		{
 			if (argcount == 1)
-				return ((Map)obj).get(args.get(0).evaluate(context));
+				return Utils.get(obj, args.get(0).evaluate(context));
 			else if (argcount == 2)
-			{
-				Object arg0 = args.get(0).evaluate(context);
-				Object result = ((Map)obj).get(arg0);
-				if (result == null && !((Map)obj).containsKey(arg0))
-					result = args.get(1).evaluate(context);
-				return result;
-			}
+				return Utils.get(obj, args.get(0).evaluate(context), args.get(1).evaluate(context));
 			throw new ArgumentCountMismatchException("method", "get", argcount, 1, 2);
 		}
 		else if (methname.equals("withlum"))
