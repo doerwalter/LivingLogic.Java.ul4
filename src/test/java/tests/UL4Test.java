@@ -2360,13 +2360,10 @@ public class UL4Test
 		checkTemplateOutput("<?", "<?print template.startdelim?>", "template", t);
 		checkTemplateOutput("?>", "<?print template.enddelim?>", "template", t);
 		checkTemplateOutput(source, "<?print template.source?>", "template", t);
-		checkTemplateOutput("2", "<?print len(template.opcodes)?>", "template", t);
-		checkTemplateOutput("loadvar", "<?print template.opcodes[0].code?>", "template", t);
-		checkTemplateOutput("0", "<?print template.opcodes[0].r1?>", "template", t);
-		checkTemplateOutput("", "<?print template.opcodes[0].r2?>", "template", t);
-		checkTemplateOutput("x", "<?print template.opcodes[0].arg?>", "template", t);
-		checkTemplateOutput(source, "<?code loc = template.opcodes[0].location?><?print template.source[loc.starttag:loc.endtag]?>", "template", t);
-		checkTemplateOutput("x", "<?code loc = template.opcodes[0].location?><?print template.source[loc.startcode:loc.endcode]?>", "template", t);
+		checkTemplateOutput("1", "<?print len(template.content)?>", "template", t);
+		checkTemplateOutput("print", "<?print template.content[0].type?>", "template", t);
+		checkTemplateOutput("loadvar", "<?print template.content[0].value.type?>", "template", t);
+		checkTemplateOutput("x", "<?print template.content[0].value.name?>", "template", t);
 	}
 
 	private InterpretedTemplate universaltemplate()

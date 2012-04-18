@@ -7,6 +7,8 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
 
 class Print extends AST
 {
@@ -38,5 +40,18 @@ class Print extends AST
 	{
 		context.write(Utils.str(value.evaluate(context)));
 		return null;
+	}
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
+			v.put("value", new ValueMaker(){public Object getValue(Object object){return ((Print)object).value;}});
+			valueMakers = v;
+		}
+		return valueMakers;
 	}
 }
