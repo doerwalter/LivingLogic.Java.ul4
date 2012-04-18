@@ -7,24 +7,25 @@
 package com.livinglogic.ul4;
 
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.HashMap;
 import java.io.IOException;
 
 public class CallMethKeywords extends AST
 {
 	protected AST obj;
-	protected String name;
+	protected String methname;
 	protected LinkedList<CallArg> args = new LinkedList<CallArg>();
 
-	public CallMethKeywords(AST obj, String name)
+	public CallMethKeywords(AST obj, String methname)
 	{
 		this.obj = obj;
-		this.name = name;
+		this.methname = methname;
 	}
 
-	public void append(String name, AST value)
+	public void append(String methname, AST value)
 	{
-		args.add(new CallArgNamed(name, value));
+		args.add(new CallArgNamed(methname, value));
 	}
 
 	public void append(AST value)
@@ -44,7 +45,7 @@ public class CallMethKeywords extends AST
 		buffer.append("callmethkw(");
 		buffer.append(obj.toString(indent));
 		buffer.append(", ");
-		buffer.append(Utils.repr(name));
+		buffer.append(Utils.repr(methname));
 		for (CallArg arg : args)
 		{
 			buffer.append(", ");
@@ -68,7 +69,7 @@ public class CallMethKeywords extends AST
 
 		for (CallArg arg : this.args)
 			arg.addTo(context, args);
-		if (name.equals("render")) // FIXME: Use switch in Java 7
+		if (methname.equals("render")) // FIXME: Use switch in Java 7
 		{
 			if (null != obj && obj instanceof InterpretedTemplate)
 			{
@@ -77,7 +78,7 @@ public class CallMethKeywords extends AST
 			}
 			throw new UnsupportedOperationException("render() method requires a template!");
 		}
-		else if (name.equals("renders"))
+		else if (methname.equals("renders"))
 		{
 			if (null != obj && obj instanceof InterpretedTemplate)
 			{
@@ -87,7 +88,21 @@ public class CallMethKeywords extends AST
 		}
 		else
 		{
-				throw new UnknownMethodException(name);
+				throw new UnknownMethodException(methname);
 		}
 	}
-}
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
+			v.put("obj", new ValueMaker(){public Object getValue(Object object){return ((CallMethKeywords)object).obj;}});
+			v.put("methname", new ValueMaker(){public Object getValue(Object object){return ((CallMethKeywords)object).methname;}});
+			v.put("args", new ValueMaker(){public Object getValue(Object object){return ((CallMethKeywords)object).args;}});
+			valueMakers = v;
+		}
+		return valueMakers;
+	}}

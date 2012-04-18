@@ -7,6 +7,8 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
 
 public class GetSlice extends AST
 {
@@ -34,5 +36,20 @@ public class GetSlice extends AST
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.getSlice(obj.evaluate(context), index1.evaluate(context), index2.evaluate(context));
+	}
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
+			v.put("obj", new ValueMaker(){public Object getValue(Object object){return ((GetSlice)object).obj;}});
+			v.put("index1", new ValueMaker(){public Object getValue(Object object){return ((GetSlice)object).index1;}});
+			v.put("index2", new ValueMaker(){public Object getValue(Object object){return ((GetSlice)object).index2;}});
+			valueMakers = v;
+		}
+		return valueMakers;
 	}
 }

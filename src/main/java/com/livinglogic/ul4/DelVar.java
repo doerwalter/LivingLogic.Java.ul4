@@ -8,6 +8,9 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
+import java.util.Map;
+import java.util.HashMap;
+
 public class DelVar extends AST
 {
 	protected String varname;
@@ -36,5 +39,18 @@ public class DelVar extends AST
 	{
 		context.remove(varname);
 		return null;
+	}
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
+			v.put("varname", new ValueMaker(){public Object getValue(Object object){return ((ChangeVar)object).varname;}});
+			valueMakers = v;
+		}
+		return valueMakers;
 	}
 }

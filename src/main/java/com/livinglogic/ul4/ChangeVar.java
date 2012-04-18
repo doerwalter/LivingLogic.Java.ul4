@@ -6,6 +6,9 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
+import java.util.HashMap;
+
 abstract class ChangeVar extends AST
 {
 	protected String varname;
@@ -25,5 +28,19 @@ abstract class ChangeVar extends AST
 			buffer.append("\t");
 		buffer.append(getType() + "(" + Utils.repr(varname) + ", " + value + ")\n");
 		return buffer.toString();
+	}
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
+			v.put("funcname", new ValueMaker(){public Object getValue(Object object){return ((CallFunc)object).funcname;}});
+			v.put("args", new ValueMaker(){public Object getValue(Object object){return ((CallFunc)object).args;}});
+			valueMakers = v;
+		}
+		return valueMakers;
 	}
 }

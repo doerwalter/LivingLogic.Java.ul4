@@ -6,6 +6,9 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
+import java.util.HashMap;
+
 abstract class Binary extends AST
 {
 	protected AST obj1;
@@ -20,5 +23,19 @@ abstract class Binary extends AST
 	public String toString(int indent)
 	{
 		return getType() + "(" + obj1 + ", " + obj2 + ")";
+	}
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
+			v.put("obj1", new ValueMaker(){public Object getValue(Object object){return ((Binary)object).obj1;}});
+			v.put("obj2", new ValueMaker(){public Object getValue(Object object){return ((Binary)object).obj2;}});
+			valueMakers = v;
+		}
+		return valueMakers;
 	}
 }
