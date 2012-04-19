@@ -85,6 +85,8 @@ public class Location extends ObjectAsMap
 			String tag = Utils.repr(getTag());
 			source = ": " + tag.substring(1, tag.length()-1);
 		}
+		else
+			source = "";
 
 		return tagType + " at position " + (starttag+1) + " (line " + line + ", col " + col + ", " + templatename + ")" + source;
 	}
