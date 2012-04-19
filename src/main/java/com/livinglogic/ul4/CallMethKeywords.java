@@ -10,22 +10,42 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.IOException;
+import com.livinglogic.utils.MapUtils;
 
 public class CallMethKeywords extends AST
 {
 	protected AST obj;
-	protected String methname;
+	protected KeywordMethod method;
 	protected LinkedList<CallArg> args = new LinkedList<CallArg>();
+
+	static Map<String, KeywordMethod> methods = new HashMap<String, KeywordMethod>();
+
+	static
+	{
+		MapUtils.putMap(
+			methods,
+			"render", new KeywordMethodRender(),
+			"renders", new KeywordMethodRenderS()
+		);
+	}
+
+	public CallMethKeywords(AST obj, KeywordMethod method)
+	{
+		this.obj = obj;
+		this.method = method;
+	}
 
 	public CallMethKeywords(AST obj, String methname)
 	{
 		this.obj = obj;
-		this.methname = methname;
+		method = methods.get(methname);
+		if (method == null)
+			throw new UnknownMethodException(methname);
 	}
 
-	public void append(String methname, AST value)
+	public void append(String argname, AST value)
 	{
-		args.add(new CallArgNamed(methname, value));
+		args.add(new CallArgNamed(argname, value));
 	}
 
 	public void append(AST value)
@@ -45,7 +65,7 @@ public class CallMethKeywords extends AST
 		buffer.append("callmethkw(");
 		buffer.append(obj.toString(indent));
 		buffer.append(", ");
-		buffer.append(Utils.repr(methname));
+		buffer.append(Utils.repr(method.getName()));
 		for (CallArg arg : args)
 		{
 			buffer.append(", ");
@@ -69,27 +89,7 @@ public class CallMethKeywords extends AST
 
 		for (CallArg arg : this.args)
 			arg.addTo(context, args);
-		if (methname.equals("render")) // FIXME: Use switch in Java 7
-		{
-			if (null != obj && obj instanceof Template)
-			{
-				((Template)obj).render(context.getWriter(), args);
-				return null;
-			}
-			throw new UnsupportedOperationException("render() method requires a template!");
-		}
-		else if (methname.equals("renders"))
-		{
-			if (null != obj && obj instanceof Template)
-			{
-				return ((Template)obj).renders(args);
-			}
-			throw new UnsupportedOperationException("render() method requires a template!");
-		}
-		else
-		{
-				throw new UnknownMethodException(methname);
-		}
+		return method.call(context, obj, args);
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;
@@ -100,7 +100,7 @@ public class CallMethKeywords extends AST
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
 			v.put("obj", new ValueMaker(){public Object getValue(Object object){return ((CallMethKeywords)object).obj;}});
-			v.put("methname", new ValueMaker(){public Object getValue(Object object){return ((CallMethKeywords)object).methname;}});
+			v.put("methname", new ValueMaker(){public Object getValue(Object object){return ((CallMethKeywords)object).method.getName();}});
 			v.put("args", new ValueMaker(){public Object getValue(Object object){return ((CallMethKeywords)object).args;}});
 			valueMakers = v;
 		}

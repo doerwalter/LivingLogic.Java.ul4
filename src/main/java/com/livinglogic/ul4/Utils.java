@@ -426,7 +426,7 @@ class SequenceIsLast implements Iterator<Vector>
 
 public class Utils
 {
-	private static String objectType(Object obj)
+	public static String objectType(Object obj)
 	{
 		return (obj != null) ? obj.getClass().toString().substring(6) : "null";
 	}
