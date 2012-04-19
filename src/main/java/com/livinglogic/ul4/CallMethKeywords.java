@@ -71,18 +71,18 @@ public class CallMethKeywords extends AST
 			arg.addTo(context, args);
 		if (methname.equals("render")) // FIXME: Use switch in Java 7
 		{
-			if (null != obj && obj instanceof InterpretedTemplate)
+			if (null != obj && obj instanceof Template)
 			{
-				((InterpretedTemplate)obj).render(context.getWriter(), args);
+				((Template)obj).render(context.getWriter(), args);
 				return null;
 			}
 			throw new UnsupportedOperationException("render() method requires a template!");
 		}
 		else if (methname.equals("renders"))
 		{
-			if (null != obj && obj instanceof InterpretedTemplate)
+			if (null != obj && obj instanceof Template)
 			{
-				return ((InterpretedTemplate)obj).renders(args);
+				return ((Template)obj).renders(args);
 			}
 			throw new UnsupportedOperationException("render() method requires a template!");
 		}
