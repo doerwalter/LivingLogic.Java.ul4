@@ -234,45 +234,37 @@ class MapItemIterator implements Iterator<Vector>
 
 class ZipIterator implements Iterator<Vector>
 {
-	Iterator iterator1;
-	Iterator iterator2;
-	Iterator iterator3;
+	Iterator[] iterators;
 
-	public ZipIterator(Iterator iterator1, Iterator iterator2)
+	public ZipIterator(Object... iterators)
 	{
-		this.iterator1 = iterator1;
-		this.iterator2 = iterator2;
-		this.iterator3 = null;
-	}
-
-	public ZipIterator(Iterator iterator1, Iterator iterator2, Iterator iterator3)
-	{
-		this.iterator1 = iterator1;
-		this.iterator2 = iterator2;
-		this.iterator3 = iterator3;
+		this.iterators = new Iterator[iterators.length];
+		for (int i = 0; i < iterators.length; ++i)
+			this.iterators[i] = Utils.iterator(iterators[i]);
 	}
 
 	public boolean hasNext()
 	{
-		return iterator1.hasNext() && iterator2.hasNext() && (iterator3 == null || iterator3.hasNext());
+		for (int i = 0; i < iterators.length; ++i)
+		{
+			if (!iterators[i].hasNext())
+				return false;
+		}
+		return true;
 	}
 
 	public Vector next()
 	{
-		Vector retVal = new Vector(iterator3 != null ? 3 : 2);
-		retVal.add(iterator1.next());
-		retVal.add(iterator2.next());
-		if (iterator3 != null)
-			retVal.add(iterator3.next());
-		return retVal;
+		Vector result = new Vector(iterators.length);
+		for (int i = 0; i < iterators.length; ++i)
+			result.add(iterators[i].next());
+		return result;
 	}
 
 	public void remove()
 	{
-		iterator1.remove();
-		iterator2.remove();
-		if (iterator3 != null)
-			iterator3.remove();
+		for (int i = 0; i < iterators.length; ++i)
+			iterators[i].remove();
 	}
 }
 
@@ -2031,7 +2023,7 @@ public class Utils
 		throw new UnsupportedOperationException("reversed(" + objectType(obj) + ") not supported!");
 	}
 
-	public static Object length(Object obj)
+	public static Object len(Object obj)
 	{
 		if (obj instanceof String)
 			return ((String)obj).length();
@@ -2301,14 +2293,9 @@ public class Utils
 		return new Range(_toInt(obj1), _toInt(obj2), _toInt(obj3));
 	}
 
-	public static Object zip(Object obj1, Object obj2)
+	public static Object zip(Object... objs)
 	{
-		return new ZipIterator(iterator(obj1), iterator(obj2));
-	}
-
-	public static Object zip(Object obj1, Object obj2, Object obj3)
-	{
-		return new ZipIterator(iterator(obj1), iterator(obj2), iterator(obj3));
+		return new ZipIterator(objs);
 	}
 
 	public static Object split(Object obj)
