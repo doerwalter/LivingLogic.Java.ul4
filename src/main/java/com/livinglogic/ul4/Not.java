@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class Not extends Unary
 {
-	public Not(AST obj)
+	public Not(Location location, AST obj)
 	{
-		super(obj);
+		super(location, obj);
 	}
 
 	public String getType()

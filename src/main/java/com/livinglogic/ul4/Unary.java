@@ -13,8 +13,9 @@ abstract class Unary extends AST
 {
 	protected AST obj;
 
-	public Unary(AST obj)
+	public Unary(Location location, AST obj)
 	{
+		super(location);
 		this.obj = obj;
 	}
 

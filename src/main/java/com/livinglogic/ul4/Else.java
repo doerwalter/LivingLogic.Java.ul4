@@ -10,6 +10,11 @@ import java.io.IOException;
 
 class Else extends ConditionalBlock
 {
+	public Else(Location location)
+	{
+		super(location);
+	}
+
 	public String getType()
 	{
 		return "else";

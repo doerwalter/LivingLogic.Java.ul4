@@ -14,15 +14,15 @@ public class ForUnpack extends For
 {
 	protected LinkedList<String> iternames;
 
-	public ForUnpack(AST container)
+	public ForUnpack(Location location, AST container)
 	{
-		super(container);
+		super(location, container);
 		this.iternames = new LinkedList<String>();
 	}
 
-	public ForUnpack()
+	public ForUnpack(Location location)
 	{
-		super(null);
+		super(location, null);
 		this.iternames = new LinkedList<String>();
 	}
 

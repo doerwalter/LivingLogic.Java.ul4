@@ -11,6 +11,11 @@ import java.util.HashMap;
 
 public abstract class LoadConst extends AST
 {
+	public LoadConst(Location location)
+	{
+		super(location);
+	}
+
 	abstract public Object getValue();
 
 	private static Map<String, ValueMaker> valueMakers = null;

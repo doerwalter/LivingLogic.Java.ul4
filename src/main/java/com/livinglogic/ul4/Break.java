@@ -8,6 +8,11 @@ package com.livinglogic.ul4;
 
 class Break extends AST
 {
+	public Break(Location location)
+	{
+		super(location);
+	}
+
 	public String getType()
 	{
 		return "break";

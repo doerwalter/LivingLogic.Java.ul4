@@ -14,8 +14,9 @@ public class List extends AST
 {
 	protected LinkedList<AST> items = new LinkedList<AST>();
 
-	public List()
+	public List(Location location)
 	{
+		super(location);
 	}
 
 	public void append(AST item)

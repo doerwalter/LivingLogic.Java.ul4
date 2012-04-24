@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class Or extends Binary
 {
-	public Or(AST obj1, AST obj2)
+	public Or(Location location, AST obj1, AST obj2)
 	{
-		super(obj1, obj2);
+		super(location, obj1, obj2);
 	}
 
 	public String getType()

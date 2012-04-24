@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class StoreVar extends ChangeVar
 {
-	public StoreVar(String varname, AST value)
+	public StoreVar(Location location, String varname, AST value)
 	{
-		super(varname, value);
+		super(location, varname, value);
 	}
 
 	public String getType()

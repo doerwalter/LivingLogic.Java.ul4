@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 class ElIf extends ConditionalBlockWithCondition
 {
-	public ElIf(AST condition)
+	public ElIf(Location location, AST condition)
 	{
-		super(condition);
+		super(location, condition);
 	}
 
 	public String getType()

@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class Mod extends Binary
 {
-	public Mod(AST obj1, AST obj2)
+	public Mod(Location location, AST obj1, AST obj2)
 	{
-		super(obj1, obj2);
+		super(location, obj1, obj2);
 	}
 
 	public String getType()

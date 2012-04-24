@@ -10,8 +10,9 @@ import java.io.IOException;
 
 public class LoadNone extends LoadConst
 {
-	public LoadNone()
+	public LoadNone(Location location)
 	{
+		super(location);
 	}
 
 	public String getType()

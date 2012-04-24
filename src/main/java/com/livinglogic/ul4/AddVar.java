@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class AddVar extends ChangeVar
 {
-	public AddVar(String varname, AST value)
+	public AddVar(Location location, String varname, AST value)
 	{
-		super(varname, value);
+		super(location, varname, value);
 	}
 
 	public String getType()

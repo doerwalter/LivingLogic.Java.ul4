@@ -76,13 +76,15 @@ public class CallFunc extends AST
 		);
 	}
 
-	public CallFunc(Function function)
+	public CallFunc(Location location, Function function)
 	{
+		super(location);
 		this.function = function;
 	}
 
-	public CallFunc(String funcname)
+	public CallFunc(Location location, String funcname)
 	{
+		super(location);
 		function = functions.get(funcname);
 		if (function == null)
 			throw new UnknownFunctionException(funcname);

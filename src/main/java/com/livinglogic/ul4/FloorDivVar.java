@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class FloorDivVar extends ChangeVar
 {
-	public FloorDivVar(String varname, AST value)
+	public FloorDivVar(Location location, String varname, AST value)
 	{
-		super(varname, value);
+		super(location, varname, value);
 	}
 
 	public String getType()

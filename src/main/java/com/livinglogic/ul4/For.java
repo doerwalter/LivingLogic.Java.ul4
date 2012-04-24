@@ -14,9 +14,9 @@ public abstract class For extends Block
 {
 	protected AST container;
 
-	public For(AST container)
+	public For(Location location, AST container)
 	{
-		super();
+		super(location);
 		this.container = container;
 	}
 

@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class EQ extends Binary
 {
-	public EQ(AST obj1, AST obj2)
+	public EQ(Location location, AST obj1, AST obj2)
 	{
-		super(obj1, obj2);
+		super(location, obj1, obj2);
 	}
 
 	public String getType()

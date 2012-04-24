@@ -15,8 +15,9 @@ public class DelVar extends AST
 {
 	protected String varname;
 
-	public DelVar(String varname)
+	public DelVar(Location location, String varname)
 	{
+		super(location);
 		this.varname = varname;
 	}
 

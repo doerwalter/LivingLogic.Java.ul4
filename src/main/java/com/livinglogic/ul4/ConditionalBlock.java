@@ -10,6 +10,11 @@ import java.io.IOException;
 
 abstract class ConditionalBlock extends Block
 {
+	public ConditionalBlock(Location location)
+	{
+		super(location);
+	}
+
 	abstract public boolean hasToBeExecuted(EvaluationContext context) throws IOException;
 
 	public boolean handleLoopControl(String name)

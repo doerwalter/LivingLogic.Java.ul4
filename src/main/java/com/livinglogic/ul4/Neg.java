@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class Neg extends Unary
 {
-	public Neg(AST obj)
+	public Neg(Location location, AST obj)
 	{
-		super(obj);
+		super(location, obj);
 	}
 
 	public String getType()

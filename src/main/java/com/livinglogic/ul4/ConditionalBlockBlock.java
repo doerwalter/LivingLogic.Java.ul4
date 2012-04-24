@@ -10,14 +10,14 @@ import java.io.IOException;
 
 class ConditionalBlockBlock extends Block
 {
-	public ConditionalBlockBlock()
+	public ConditionalBlockBlock(Location location)
 	{
-		super();
+		super(location);
 	}
 
-	public ConditionalBlockBlock(If block)
+	public ConditionalBlockBlock(Location location, If block)
 	{
-		super();
+		super(location);
 		startNewBlock(block);
 	}
 

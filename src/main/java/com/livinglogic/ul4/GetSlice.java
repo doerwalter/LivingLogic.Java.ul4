@@ -16,8 +16,9 @@ public class GetSlice extends AST
 	protected AST index1;
 	protected AST index2;
 
-	public GetSlice(AST obj, AST index1, AST index2)
+	public GetSlice(Location location, AST obj, AST index1, AST index2)
 	{
+		super(location);
 		this.obj = obj;
 		this.index1 = index1;
 		this.index2 = index2;

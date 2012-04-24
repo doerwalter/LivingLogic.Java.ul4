@@ -12,8 +12,9 @@ public class LoadFloat extends LoadConst
 {
 	protected double value;
 
-	public LoadFloat(double value)
+	public LoadFloat(Location location, double value)
 	{
+		super(location);
 		this.value = value;
 	}
 

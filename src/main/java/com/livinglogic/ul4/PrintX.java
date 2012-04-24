@@ -8,15 +8,12 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.HashMap;
 
-class PrintX extends AST
+class PrintX extends Unary
 {
-	protected AST value;
-
-	public PrintX(AST value)
+	public PrintX(Location location, AST obj)
 	{
-		this.value = value;
+		super(location, obj);
 	}
 
 	public String toString(int indent)
@@ -26,7 +23,7 @@ class PrintX extends AST
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("printx(");
-		buffer.append(value.toString(indent));
+		buffer.append(obj.toString(indent));
 		buffer.append(")\n");
 		return buffer.toString();
 	}
@@ -38,20 +35,7 @@ class PrintX extends AST
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.write(Utils.xmlescape(value.evaluate(context)));
+		context.write(Utils.xmlescape(obj.evaluate(context)));
 		return null;
-	}
-
-	private static Map<String, ValueMaker> valueMakers = null;
-
-	public Map<String, ValueMaker> getValueMakers()
-	{
-		if (valueMakers == null)
-		{
-			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("value", new ValueMaker(){public Object getValue(Object object){return ((PrintX)object).value;}});
-			valueMakers = v;
-		}
-		return valueMakers;
 	}
 }

@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class And extends Binary
 {
-	public And(AST obj1, AST obj2)
+	public And(Location location, AST obj1, AST obj2)
 	{
-		super(obj1, obj2);
+		super(location, obj1, obj2);
 	}
 
 	public String getType()

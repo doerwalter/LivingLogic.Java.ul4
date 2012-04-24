@@ -12,8 +12,9 @@ public class LoadDate extends LoadConst
 {
 	protected java.util.Date value;
 
-	public LoadDate(java.util.Date value)
+	public LoadDate(Location location, java.util.Date value)
 	{
+		super(location);
 		this.value = value;
 	}
 

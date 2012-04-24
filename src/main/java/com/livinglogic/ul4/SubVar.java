@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class SubVar extends ChangeVar
 {
-	public SubVar(String varname, AST value)
+	public SubVar(Location location, String varname, AST value)
 	{
-		super(varname, value);
+		super(location, varname, value);
 	}
 
 	public String getType()

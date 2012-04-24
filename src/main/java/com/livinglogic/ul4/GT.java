@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class GT extends Binary
 {
-	public GT(AST obj1, AST obj2)
+	public GT(Location location, AST obj1, AST obj2)
 	{
-		super(obj1, obj2);
+		super(location, obj1, obj2);
 	}
 
 	public String getType()

@@ -109,6 +109,8 @@ public class Location extends ObjectAsMap
 			v.put("endtag", new ValueMaker(){public Object getValue(Object object){return ((Location)object).endtag;}});
 			v.put("startcode", new ValueMaker(){public Object getValue(Object object){return ((Location)object).startcode;}});
 			v.put("endcode", new ValueMaker(){public Object getValue(Object object){return ((Location)object).endcode;}});
+			v.put("tag", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getTag();}});
+			v.put("code", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getCode();}});
 			valueMakers = v;
 		}
 		return valueMakers;

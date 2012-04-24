@@ -12,8 +12,9 @@ public class LoadColor extends LoadConst
 {
 	protected Color value;
 
-	public LoadColor(Color value)
+	public LoadColor(Location location, Color value)
 	{
+		super(location);
 		this.value = value;
 	}
 

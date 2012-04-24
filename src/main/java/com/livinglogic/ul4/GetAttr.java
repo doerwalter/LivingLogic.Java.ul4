@@ -15,8 +15,9 @@ public class GetAttr extends AST
 	protected AST obj;
 	protected String attrname;
 
-	public GetAttr(AST obj, String attrname)
+	public GetAttr(Location location, AST obj, String attrname)
 	{
+		super(location);
 		this.obj = obj;
 		this.attrname = attrname;
 	}

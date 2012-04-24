@@ -8,6 +8,11 @@ package com.livinglogic.ul4;
 
 class Continue extends AST
 {
+	public Continue(Location location)
+	{
+		super(location);
+	}
+
 	public String getType()
 	{
 		return "continue";

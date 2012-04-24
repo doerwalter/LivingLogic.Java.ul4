@@ -15,6 +15,11 @@ abstract class Block extends AST
 {
 	protected LinkedList<AST> content = new LinkedList<AST>();
 
+	public Block(Location location)
+	{
+		super(location);
+	}
+
 	public void append(AST item)
 	{
 		content.add(item);

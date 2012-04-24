@@ -14,8 +14,9 @@ abstract class ChangeVar extends AST
 	protected String varname;
 	protected AST value;
 
-	public ChangeVar(String varname, AST value)
+	public ChangeVar(Location location, String varname, AST value)
 	{
+		super(location);
 		this.varname = varname;
 		this.value = value;
 	}

@@ -12,8 +12,9 @@ public class LoadInt extends LoadConst
 {
 	protected Object value;
 
-	public LoadInt(Object value)
+	public LoadInt(Location location, Object value)
 	{
+		super(location);
 		this.value = value;
 	}
 

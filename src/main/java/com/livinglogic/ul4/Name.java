@@ -14,8 +14,9 @@ public class Name extends AST
 {
 	protected String value;
 
-	public Name(String value)
+	public Name(Location location, String value)
 	{
+		super(location);
 		this.value = value;
 	}
 

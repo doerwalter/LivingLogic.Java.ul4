@@ -12,8 +12,9 @@ public class LoadStr extends LoadConst
 {
 	protected String value;
 
-	public LoadStr(String value)
+	public LoadStr(Location location, String value)
 	{
+		super(location);
 		this.value = value;
 	}
 

@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class TrueDivVar extends ChangeVar
 {
-	public TrueDivVar(String varname, AST value)
+	public TrueDivVar(Location location, String varname, AST value)
 	{
-		super(varname, value);
+		super(location, varname, value);
 	}
 
 	public String getType()

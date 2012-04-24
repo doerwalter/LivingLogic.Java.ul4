@@ -10,8 +10,9 @@ import java.io.IOException;
 
 public class LoadTrue extends LoadConst
 {
-	public LoadTrue()
+	public LoadTrue(Location location)
 	{
+		super(location);
 	}
 
 	public String getType()

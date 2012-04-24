@@ -67,14 +67,16 @@ public class CallMeth extends AST
 		);
 	}
 
-	public CallMeth(AST obj, Method method)
+	public CallMeth(Location location, AST obj, Method method)
 	{
+		super(location);
 		this.obj = obj;
 		this.method = method;
 	}
 
-	public CallMeth(AST obj, String methname)
+	public CallMeth(Location location, AST obj, String methname)
 	{
+		super(location);
 		this.obj = obj;
 		method = methods.get(methname);
 		if (method == null)

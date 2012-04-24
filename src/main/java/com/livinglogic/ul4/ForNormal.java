@@ -14,9 +14,9 @@ public class ForNormal extends For
 {
 	protected String itername;
 
-	public ForNormal(AST container, String itername)
+	public ForNormal(Location location, AST container, String itername)
 	{
-		super(container);
+		super(location, container);
 		this.itername = itername;
 	}
 

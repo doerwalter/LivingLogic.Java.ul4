@@ -201,7 +201,8 @@ public class Utils
 			int count = readInt(reader);
 			char[] chars = new char[count];
 			reader.read(chars);
-			return InterpretedTemplate.load(new String(chars));
+			// return InterpretedTemplate.load(new String(chars));
+			return null; // FIXME
 		}
 		else if (typecode == '[')
 		{

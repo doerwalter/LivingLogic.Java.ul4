@@ -10,11 +10,14 @@ import java.io.IOException;
 
 class Text extends AST
 {
-	protected String text;
-
-	public Text(String text)
+	public Text(Location location)
 	{
-		this.text = text;
+		super(location);
+	}
+
+	public String getText()
+	{
+		return location.getCode();
 	}
 
 	public String toString(int indent)
@@ -24,7 +27,7 @@ class Text extends AST
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("text(");
-		buffer.append(Utils.repr(text));
+		buffer.append(Utils.repr(getText()));
 		buffer.append(")\n");
 		return buffer.toString();
 	}
@@ -36,7 +39,7 @@ class Text extends AST
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.write(text);
+		context.write(getText());
 		return null;
 	}
 }

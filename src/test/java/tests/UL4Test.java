@@ -2389,8 +2389,10 @@ public class UL4Test
 		checkTemplateOutput(source, "<?print template.source?>", "template", t);
 		checkTemplateOutput("1", "<?print len(template.content)?>", "template", t);
 		checkTemplateOutput("print", "<?print template.content[0].type?>", "template", t);
-		checkTemplateOutput("loadvar", "<?print template.content[0].value.type?>", "template", t);
-		checkTemplateOutput("x", "<?print template.content[0].value.name?>", "template", t);
+		checkTemplateOutput(source, "<?print template.content[0].location.tag?>", "template", t);
+		checkTemplateOutput("x", "<?print template.content[0].location.code?>", "template", t);
+		checkTemplateOutput("loadvar", "<?print template.content[0].obj.type?>", "template", t);
+		checkTemplateOutput("x", "<?print template.content[0].obj.name?>", "template", t);
 	}
 
 	@Test
@@ -2400,8 +2402,8 @@ public class UL4Test
 		InterpretedTemplate t = getTemplate(source);
 
 		checkTemplateOutput("printx", "<?print template.content[0].type?>", "template", t);
-		checkTemplateOutput("loadint", "<?print template.content[0].value.type?>", "template", t);
-		checkTemplateOutput("42", "<?print template.content[0].value.value?>", "template", t);
+		checkTemplateOutput("loadint", "<?print template.content[0].obj.type?>", "template", t);
+		checkTemplateOutput("42", "<?print template.content[0].obj.value?>", "template", t);
 	}
 
 	private InterpretedTemplate universaltemplate()

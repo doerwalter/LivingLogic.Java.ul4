@@ -8,14 +8,18 @@ package com.livinglogic.ul4;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 
 abstract class Binary extends AST
 {
 	protected AST obj1;
 	protected AST obj2;
 
-	public Binary(AST obj1, AST obj2)
+	public Binary(Location location, AST obj1, AST obj2)
 	{
+		super(location);
 		this.obj1 = obj1;
 		this.obj2 = obj2;
 	}
