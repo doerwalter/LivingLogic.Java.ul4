@@ -52,7 +52,7 @@ public class List extends AST
 		ArrayList result = new ArrayList(items.size());
 
 		for (AST item : items)
-			result.add(item.evaluate(context));
+			result.add(item.decoratedEvaluate(context));
 		return result;
 	}
 }

@@ -35,7 +35,7 @@ class Print extends Unary
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.write(Utils.str(obj.evaluate(context)));
+		context.write(Utils.str(obj.decoratedEvaluate(context)));
 		return null;
 	}
 }

@@ -22,7 +22,7 @@ class MulVar extends ChangeVar
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.put(varname, Utils.mul(context.get(varname), value.evaluate(context)));
+		context.put(varname, Utils.mul(context.get(varname), value.decoratedEvaluate(context)));
 		return null;
 	}
 }

@@ -46,7 +46,7 @@ public abstract class For extends Block
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		Object container = this.container.evaluate(context);
+		Object container = this.container.decoratedEvaluate(context);
 
 		Iterator iter = Utils.iterator(container);
 
@@ -56,7 +56,8 @@ public abstract class For extends Block
 
 			try
 			{
-				super.evaluate(context);
+				for (AST item : content)
+					item.decoratedEvaluate(context);
 			}
 			catch (BreakException ex)
 			{

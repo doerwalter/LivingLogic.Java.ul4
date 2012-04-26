@@ -84,7 +84,7 @@ public class CallMethKeywords extends AST
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		Object obj = this.obj.evaluate(context);
+		Object obj = this.obj.decoratedEvaluate(context);
 
 		// make argument dictionary
 		HashMap<String, Object> args = new HashMap<String, Object>();

@@ -25,6 +25,6 @@ public class DictItemDict extends DictItem
 
 	public void addTo(EvaluationContext context, Map dict) throws IOException
 	{
-		dict.putAll((Map)this.dict.evaluate(context));
+		dict.putAll((Map)this.dict.decoratedEvaluate(context));
 	}
 }

@@ -22,6 +22,6 @@ class Neg extends Unary
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		return Utils.neg(obj.evaluate(context));
+		return Utils.neg(obj.decoratedEvaluate(context));
 	}
 }

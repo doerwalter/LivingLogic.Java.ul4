@@ -34,7 +34,7 @@ abstract class Block extends AST
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		for (AST item : content)
-			item.evaluate(context);
+			item.decoratedEvaluate(context);
 		return null;
 	}
 

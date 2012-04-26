@@ -22,6 +22,6 @@ class Sub extends Binary
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		return Utils.sub(obj1.evaluate(context), obj2.evaluate(context));
+		return Utils.sub(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
 	}
 }

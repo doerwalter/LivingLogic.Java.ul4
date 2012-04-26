@@ -329,7 +329,29 @@ public class InterpretedTemplate extends Block implements Template
 		if (variables == null)
 			variables = new HashMap<String, Object>();
 		EvaluationContext context = new EvaluationContext(writer, variables, defaultLocale);
-		super.evaluate(context);
+		try
+		{
+			super.evaluate(context);
+		}
+		catch (BreakException ex)
+		{
+			throw ex;
+		}
+		catch (ContinueException ex)
+		{
+			throw ex;
+		}
+		catch (LocationException ex)
+		{
+			if (ex.location != location && location != null)
+				throw new LocationException(ex, location);
+			else
+				throw ex;
+		}
+		catch (Exception ex)
+		{
+			throw new LocationException(ex, location);
+		}
 	}
 
 	/**
@@ -368,17 +390,17 @@ public class InterpretedTemplate extends Block implements Template
 				start = matcher.start();
 				end = start + matcher.group().length();
 				if (pos != start)
-					tags.add(new Location(source, name, null, pos, start, pos, start));
+					tags.add(new Location(source, null, pos, start, pos, start));
 				int codestart = matcher.start(3);
 				int codeend = codestart + matcher.group(3).length();
 				String type = matcher.group(1);
 				if (!type.equals("note"))
-					tags.add(new Location(source, name, matcher.group(1), start, end, codestart, codeend));
+					tags.add(new Location(source, matcher.group(1), start, end, codestart, codeend));
 				pos = end;
 			}
 			end = source.length();
 			if (pos != end)
-				tags.add(new Location(source, name, null, pos, end, pos, end));
+				tags.add(new Location(source, null, pos, end, pos, end));
 		}
 		return tags;
 	}

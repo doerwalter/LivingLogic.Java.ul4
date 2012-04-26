@@ -25,6 +25,33 @@ public abstract class AST extends ObjectAsMap
 
 	abstract public Object evaluate(EvaluationContext context) throws IOException;
 
+	public Object decoratedEvaluate(EvaluationContext context) throws IOException
+	{
+		try
+		{
+			return evaluate(context);
+		}
+		catch (BreakException ex)
+		{
+			throw ex;
+		}
+		catch (ContinueException ex)
+		{
+			throw ex;
+		}
+		catch (LocationException ex)
+		{
+			if (ex.location != location && location != null)
+				throw new LocationException(ex, location);
+			else
+				throw ex;
+		}
+		catch (Exception ex)
+		{
+			throw new LocationException(ex, location);
+		}
+	}
+
 	abstract public String getType();
 
 	public Location getLocation()

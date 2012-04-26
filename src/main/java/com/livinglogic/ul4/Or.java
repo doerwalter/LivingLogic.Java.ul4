@@ -22,10 +22,10 @@ class Or extends Binary
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		Object obj1ev = obj1.evaluate(context);
+		Object obj1ev = obj1.decoratedEvaluate(context);
 		if (Utils.getBool(obj1ev))
 			return obj1ev;
 		else
-			return obj2.evaluate(context);
+			return obj2.decoratedEvaluate(context);
 	}
 }

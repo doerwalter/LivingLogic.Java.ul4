@@ -22,7 +22,7 @@ class StoreVar extends ChangeVar
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.put(varname, value.evaluate(context));
+		context.put(varname, value.decoratedEvaluate(context));
 		return null;
 	}
 }

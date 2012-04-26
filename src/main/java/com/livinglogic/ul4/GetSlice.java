@@ -36,7 +36,7 @@ public class GetSlice extends AST
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		return Utils.getSlice(obj.evaluate(context), index1 != null ? index1.evaluate(context) : null, index2 != null ? index2.evaluate(context) : null);
+		return Utils.getSlice(obj.decoratedEvaluate(context), index1 != null ? index1.decoratedEvaluate(context) : null, index2 != null ? index2.decoratedEvaluate(context) : null);
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

@@ -19,6 +19,8 @@ import java.io.IOException;
 
 public interface Template
 {
+	public String getName();
+
 	public String renders(Map<String, Object> variables);
 
 	public void render(Writer out, Map<String, Object> variables) throws java.io.IOException;

@@ -82,7 +82,7 @@ class ConditionalBlockBlock extends Block
 		for (AST item : content)
 		{
 			if (((ConditionalBlock)item).hasToBeExecuted(context))
-				return item.evaluate(context);
+				return item.decoratedEvaluate(context);
 		}
 		return null;
 	}

@@ -112,12 +112,12 @@ public class CallMeth extends AST
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		Object obj = this.obj.evaluate(context);
+		Object obj = this.obj.decoratedEvaluate(context);
 
 		Object[] realArgs = new Object[args.size()];
 
 		for (int i = 0; i < realArgs.length; ++i)
-			realArgs[i] = args.get(i).evaluate(context);
+			realArgs[i] = args.get(i).decoratedEvaluate(context);
 		return method.call(context, obj, realArgs);
 	}
 

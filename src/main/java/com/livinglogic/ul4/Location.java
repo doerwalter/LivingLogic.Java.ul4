@@ -13,27 +13,20 @@ import com.livinglogic.utils.ObjectAsMap;
 public class Location extends ObjectAsMap
 {
 	public String source;
-	public String name;
 	protected String type;
 	public int starttag;
 	public int endtag;
 	public int startcode;
 	public int endcode;
 
-	public Location(String source, String name, String type, int starttag, int endtag, int startcode, int endcode)
+	public Location(String source, String type, int starttag, int endtag, int startcode, int endcode)
 	{
 		this.source = source;
-		this.name = name;
 		this.type = type;
 		this.starttag = starttag;
 		this.endtag = endtag;
 		this.startcode = startcode;
 		this.endcode = endcode;
-	}
-
-	public String getName()
-	{
-		return name;
 	}
 
 	public String getType()
@@ -76,8 +69,6 @@ public class Location extends ObjectAsMap
 		}
 		String tagType = (type != null) ? "<?" + type + "?> tag" : "literal";
 
-		String templatename = (name != null) ? "template " + name : "unnamed template";
-
 		String source = null;
 
 		if (type != null)
@@ -88,12 +79,7 @@ public class Location extends ObjectAsMap
 		else
 			source = "";
 
-		return tagType + " at position " + (starttag+1) + " (line " + line + ", col " + col + ", " + templatename + ")" + source;
-	}
-
-	public void fixName(String name)
-	{
-		this.name = name;
+		return tagType + " at position " + (starttag+1) + " (line " + line + ", col " + col + ")" + source;
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;
@@ -103,7 +89,6 @@ public class Location extends ObjectAsMap
 		if (valueMakers == null)
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
-			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getName();}});
 			v.put("type", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getType();}});
 			v.put("starttag", new ValueMaker(){public Object getValue(Object object){return ((Location)object).starttag;}});
 			v.put("endtag", new ValueMaker(){public Object getValue(Object object){return ((Location)object).endtag;}});

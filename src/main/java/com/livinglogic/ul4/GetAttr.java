@@ -34,7 +34,7 @@ public class GetAttr extends AST
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		return Utils.getItem(obj.evaluate(context), attrname);
+		return Utils.getItem(obj.decoratedEvaluate(context), attrname);
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

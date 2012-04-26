@@ -27,6 +27,6 @@ public class CallArgNamed extends CallArg
 
 	public void addTo(EvaluationContext context, Map dict) throws IOException
 	{
-		dict.put(name, value.evaluate(context));
+		dict.put(name, value.decoratedEvaluate(context));
 	}
 }

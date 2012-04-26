@@ -120,7 +120,7 @@ public class CallFunc extends AST
 		Object[] realArgs = new Object[args.size()];
 
 		for (int i = 0; i < realArgs.length; ++i)
-			realArgs[i] = args.get(i).evaluate(context);
+			realArgs[i] = args.get(i).decoratedEvaluate(context);
 		return function.call(context, realArgs);
 	}
 

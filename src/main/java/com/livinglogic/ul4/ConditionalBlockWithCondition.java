@@ -22,7 +22,7 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 
 	public boolean hasToBeExecuted(EvaluationContext context) throws IOException
 	{
-		return Utils.getBool(condition.evaluate(context));
+		return Utils.getBool(condition.decoratedEvaluate(context));
 	}
 
 	public String toString(int indent)
