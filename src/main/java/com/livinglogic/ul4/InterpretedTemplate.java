@@ -29,6 +29,11 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import com.livinglogic.utils.ObjectAsMap;
+import com.livinglogic.ul4on.Utils;
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.ObjectFactory;
+import com.livinglogic.ul4on.UL4ONSerializable;
 
 public class InterpretedTemplate extends Block implements Template
 {
@@ -40,7 +45,7 @@ public class InterpretedTemplate extends Block implements Template
 	/**
 	 * The version number used in the compiled format of the template.
 	 */
-	public static final String VERSION = "16";
+	public static final String VERSION = "17";
 
 	/**
 	 * The name of the template (defaults to <code>unnamed</code>)
@@ -271,40 +276,23 @@ public class InterpretedTemplate extends Block implements Template
 	}
 
 	/**
-	 * loads a template from a string.
-	 * @param bytecode of the compiled template.
+	 * loads a template from a string in the UL4ON serialization format.
+	 * @param data The template in serialized form.
 	 * @return The template object.
 	 * @throws IOException if reading from the stream fails
 	 */
-	public static InterpretedTemplate loads(String bytecode)
+	public static InterpretedTemplate loads(String data)
 	{
-		Reader reader = new StringReader(bytecode);
-		try
-		{
-			// return (InterpretedTemplate)loadAST(reader);
-			throw new IOException(); // FIXME
-		}
-		catch (IOException ex) // can not happen when reading from a StringReader
-		{
-			return null;
-		}
+		return (InterpretedTemplate)Utils.loads(data);
 	}
 
 	/**
-	 * writes the Template object to a string.
-	 * @return The string containing the template in compiled format.
+	 * writes the Template object to a string in the UL4ON serialization format.
+	 * @return The string containing the template in serialized form.
 	 */
 	public String dumps()
 	{
-		StringWriter writer = new StringWriter();
-		// FIXME
-		// try
-		// {
-		// }
-		// catch (IOException ex) // can not happen when dumping to a StringWriter
-		// {
-		// }
-		return writer.toString();
+		return Utils.dumps(this);
 	}
 
 	// public Reader reader(Map<String, Object> variables)
@@ -434,7 +422,7 @@ public class InterpretedTemplate extends Block implements Template
 		source.append(javaSource());
 		source.append("\t}\n");
 
-		Class clazz = Utils.compileToJava(source.toString(), "com.livinglogic.ul4.JSPTemplate", null);
+		Class clazz = com.livinglogic.ul4.Utils.compileToJava(source.toString(), "com.livinglogic.ul4.JSPTemplate", null);
 		try
 		{
 			return (JSPTemplate)clazz.newInstance();
@@ -477,6 +465,95 @@ public class InterpretedTemplate extends Block implements Template
 	public String javascriptSource()
 	{
 		return new JavascriptSource4Template(this).toString();
+	}
+
+	static
+	{
+		Utils.register("de.livinglogic.ul4.location", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Location(null, null, -1, -1, -1, -1); }});
+		Utils.register("de.livinglogic.ul4.text", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Text(null); }});
+		Utils.register("de.livinglogic.ul4.none", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadNone(null); }});
+		Utils.register("de.livinglogic.ul4.true", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadTrue(null); }});
+		Utils.register("de.livinglogic.ul4.false", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadFalse(null); }});
+		Utils.register("de.livinglogic.ul4.int", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadInt(null, 0); }});
+		Utils.register("de.livinglogic.ul4.float", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadFloat(null, 0.0); }});
+		Utils.register("de.livinglogic.ul4.str", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadStr(null, null); }});
+		Utils.register("de.livinglogic.ul4.date", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadDate(null, null); }});
+		Utils.register("de.livinglogic.ul4.color", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadColor(null, null); }});
+		Utils.register("de.livinglogic.ul4.list", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.List(null); }});
+		Utils.register("de.livinglogic.ul4.dict", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Dict(null); }});
+		Utils.register("de.livinglogic.ul4.loadvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Name(null, null); }});
+		Utils.register("de.livinglogic.ul4.ieie", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConditionalBlockBlock(null); }});
+		Utils.register("de.livinglogic.ul4.if", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.If(null, null); }});
+		Utils.register("de.livinglogic.ul4.elif", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElIf(null, null); }});
+		Utils.register("de.livinglogic.ul4.else", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Else(null); }});
+		Utils.register("de.livinglogic.ul4.for", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ForNormal(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.foru", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ForUnpack(null, null); }});
+		Utils.register("de.livinglogic.ul4.break", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Break(null); }});
+		Utils.register("de.livinglogic.ul4.continue", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Continue(null); }});
+		Utils.register("de.livinglogic.ul4.getattr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GetAttr(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.getslice", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GetSlice(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.not", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Not(null, null); }});
+		Utils.register("de.livinglogic.ul4.neg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Neg(null, null); }});
+		Utils.register("de.livinglogic.ul4.print", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Print(null, null); }});
+		Utils.register("de.livinglogic.ul4.printx", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.PrintX(null, null); }});
+		Utils.register("de.livinglogic.ul4.getitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GetItem(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.eq", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.EQ(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.ne", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NE(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.lt", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LT(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.le", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LE(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.gt", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GT(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.ge", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GE(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.contains", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Contains(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.notcontains", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NotContains(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.add", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Add(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.sub", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Sub(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.mul", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Mul(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.floordiv", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.FloorDiv(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.truediv", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDiv(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.or", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Or(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.and", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.And(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.mod", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Mod(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.storevar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.StoreVar(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.addvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AddVar(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.subvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SubVar(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.mulvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.MulVar(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.floordivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.FloorDivVar(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.truedivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDivVar(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.modvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ModVar(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.delvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DelVar(null, null); }});
+		Utils.register("de.livinglogic.ul4.callfunc", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallFunc(null, (Function)null); }});
+		Utils.register("de.livinglogic.ul4.callmeth", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMeth(null, null, (Method)null); }});
+		Utils.register("de.livinglogic.ul4.callmethkw", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMethKeywords(null, null, (KeywordMethod)null); }});
+		// Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Render(null); }});
+		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate((Location)null, null, null, null); }});
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		encoder.dump(HEADER);
+		encoder.dump(VERSION);
+		encoder.dump(source);
+		encoder.dump(name);
+		encoder.dump(startdelim);
+		encoder.dump(enddelim);
+		super.dumpUL4ON(encoder);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		String header = (String)decoder.load();
+		if (!header.equals(HEADER))
+			throw new RuntimeException("Invalid header, expected " + HEADER + ", got " + header);
+		String version = (String)decoder.load();
+		if (!VERSION.equals(version))
+		{
+			throw new RuntimeException("Invalid version, expected " + VERSION + ", got " + version);
+		}
+		source = (String)decoder.load();
+		name = (String)decoder.load();
+		startdelim = (String)decoder.load();
+		enddelim = (String)decoder.load();
+		super.loadUL4ON(decoder);
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

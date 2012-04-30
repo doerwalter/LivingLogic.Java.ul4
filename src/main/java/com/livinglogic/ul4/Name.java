@@ -6,9 +6,12 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
+import java.io.IOException;
+
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
 
 public class Name extends AST
 {
@@ -33,6 +36,18 @@ public class Name extends AST
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return context.get(value);
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(value);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		value = (String)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

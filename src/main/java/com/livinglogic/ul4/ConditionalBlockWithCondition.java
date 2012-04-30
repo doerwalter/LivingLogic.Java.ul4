@@ -9,6 +9,10 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
+import java.io.IOException;
+
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
 
 abstract class ConditionalBlockWithCondition extends ConditionalBlock
 {
@@ -44,6 +48,18 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 			buffer.append("\t");
 		buffer.append("}\n");
 		return buffer.toString();
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(condition);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		condition = (AST)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

@@ -6,13 +6,16 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Date;
 import java.io.IOException;
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
 
 public class LoadDate extends LoadConst
 {
-	protected java.util.Date value;
+	protected Date value;
 
-	public LoadDate(Location location, java.util.Date value)
+	public LoadDate(Location location, Date value)
 	{
 		super(location);
 		this.value = value;
@@ -20,7 +23,7 @@ public class LoadDate extends LoadConst
 
 	public String getType()
 	{
-		return "loaddate";
+		return "date";
 	}
 
 	public Object getValue()
@@ -36,5 +39,17 @@ public class LoadDate extends LoadConst
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return value;
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(value);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		value = (Date)decoder.load();
 	}
 }

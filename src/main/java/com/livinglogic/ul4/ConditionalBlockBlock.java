@@ -23,7 +23,7 @@ class ConditionalBlockBlock extends Block
 
 	public String getType()
 	{
-		return "if";
+		return "ieie";
 	}
 
 	public String toString(int indent)

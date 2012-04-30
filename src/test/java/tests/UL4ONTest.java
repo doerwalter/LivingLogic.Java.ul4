@@ -35,7 +35,7 @@ public class UL4ONTest
 	private static void checkRoundtrip(Object object)
 	{
 		String output = dumps(object);
-		Object recreated = load(output);
+		Object recreated = loads(output);
 
 		// If we have an InterpretedTemplate, check the output instead
 		if ((recreated instanceof InterpretedTemplate) && (object instanceof InterpretedTemplate))

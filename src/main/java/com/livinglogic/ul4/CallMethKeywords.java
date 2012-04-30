@@ -6,17 +6,20 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.IOException;
 import com.livinglogic.utils.MapUtils;
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
 
 public class CallMethKeywords extends AST
 {
 	protected AST obj;
 	protected KeywordMethod method;
-	protected LinkedList<CallArg> args = new LinkedList<CallArg>();
+	protected List<CallArg> args = new LinkedList<CallArg>();
 
 	static Map<String, KeywordMethod> methods = new HashMap<String, KeywordMethod>();
 
@@ -92,6 +95,40 @@ public class CallMethKeywords extends AST
 		for (CallArg arg : this.args)
 			arg.addTo(context, args);
 		return method.call(context, obj, args);
+	}
+
+	KeywordMethod getMethod(String methname)
+	{
+		KeywordMethod method = methods.get(methname);
+		if (method == null)
+			throw new UnknownMethodException(methname);
+		return method;
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(method.getName());
+		encoder.dump(obj);
+		for (CallArg arg : args)
+			encoder.dump(arg.object4UL4ON());
+		encoder.dump(args);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		method = getMethod((String)decoder.load());
+		obj = (AST)decoder.load();
+		List<List> argList = (List<List>)decoder.load();
+		args = new LinkedList<CallArg>();
+		for (List arg : argList)
+		{
+			if (arg.size() == 2)
+				args.add(new CallArgNamed((String)arg.get(0), (AST)arg.get(1)));
+			else
+				args.add(new CallArgDict((AST)arg.get(0)));
+		}
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

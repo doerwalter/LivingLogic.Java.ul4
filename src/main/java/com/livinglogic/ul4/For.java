@@ -10,6 +10,9 @@ import java.util.LinkedList;
 import java.util.Iterator;
 import java.io.IOException;
 
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
+
 public abstract class For extends Block
 {
 	protected AST container;
@@ -18,11 +21,6 @@ public abstract class For extends Block
 	{
 		super(location);
 		this.container = container;
-	}
-
-	public String getType()
-	{
-		return "for";
 	}
 
 	public void setContainer(AST container)
@@ -69,5 +67,17 @@ public abstract class For extends Block
 			}
 		}
 		return null;
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(container);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		container = (AST)decoder.load();
 	}
 }

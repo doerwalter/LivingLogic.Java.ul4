@@ -10,6 +10,9 @@ import java.util.LinkedList;
 import java.util.Iterator;
 import java.io.IOException;
 
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
+
 public class ForNormal extends For
 {
 	protected String itername;
@@ -18,6 +21,11 @@ public class ForNormal extends For
 	{
 		super(location, container);
 		this.itername = itername;
+	}
+
+	public String getType()
+	{
+		return "for";
 	}
 
 	public String toString(int indent)
@@ -46,5 +54,17 @@ public class ForNormal extends For
 	protected void unpackLoopVariable(EvaluationContext context, Object item)
 	{
 		context.put(itername, item);
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(itername);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		itername = (String)decoder.load();
 	}
 }

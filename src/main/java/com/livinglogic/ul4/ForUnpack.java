@@ -6,29 +6,36 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.LinkedList;
 import java.util.Iterator;
 import java.io.IOException;
 
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
+
 public class ForUnpack extends For
 {
-	protected LinkedList<String> iternames;
+	protected List<String> iternames = new LinkedList<String>();
 
 	public ForUnpack(Location location, AST container)
 	{
 		super(location, container);
-		this.iternames = new LinkedList<String>();
 	}
 
 	public ForUnpack(Location location)
 	{
 		super(location, null);
-		this.iternames = new LinkedList<String>();
 	}
 
 	public void appendName(String itername)
 	{
 		iternames.add(itername);
+	}
+
+	public String getType()
+	{
+		return "foru";
 	}
 
 	public String toString(int indent)
@@ -59,11 +66,6 @@ public class ForUnpack extends For
 			buffer.append("\t");
 		buffer.append("}\n");
 		return buffer.toString();
-	}
-
-	public String getType()
-	{
-		return "foru";
 	}
 
 	protected void unpackLoopVariable(EvaluationContext context, Object item)
@@ -99,5 +101,17 @@ public class ForUnpack extends For
 				}
 			}
 		}
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(iternames);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		iternames = (List<String>)decoder.load();
 	}
 }

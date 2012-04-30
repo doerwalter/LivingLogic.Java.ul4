@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.LinkedList;
 import java.io.IOException;
 import java.util.Map;
@@ -14,13 +15,15 @@ import java.util.Date;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import com.livinglogic.utils.MapUtils;
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
 
 public class CallFunc extends AST
 {
 	protected Function function;
-	protected LinkedList<AST> args = new LinkedList<AST>();
+	protected List<AST> args = new LinkedList<AST>();
 
-	static Map<String, Function> functions = new HashMap<String, Function>();
+	private static Map<String, Function> functions = new HashMap<String, Function>();
 
 	static
 	{
@@ -85,9 +88,7 @@ public class CallFunc extends AST
 	public CallFunc(Location location, String funcname)
 	{
 		super(location);
-		function = functions.get(funcname);
-		if (function == null)
-			throw new UnknownFunctionException(funcname);
+		function = getFunction(funcname);
 	}
 
 	public void append(AST arg)
@@ -122,6 +123,28 @@ public class CallFunc extends AST
 		for (int i = 0; i < realArgs.length; ++i)
 			realArgs[i] = args.get(i).decoratedEvaluate(context);
 		return function.call(context, realArgs);
+	}
+
+	private static Function getFunction(String funcname)
+	{
+		Function function = functions.get(funcname);
+		if (function == null)
+			throw new UnknownFunctionException(funcname);
+		return function;
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(function.getName());
+		encoder.dump(args);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		function = getFunction((String)decoder.load());
+		args = (List<AST>)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

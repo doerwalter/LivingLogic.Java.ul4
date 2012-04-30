@@ -17,7 +17,7 @@ public class LoadNone extends LoadConst
 
 	public String getType()
 	{
-		return "loadnone";
+		return "none";
 	}
 
 	public Object getValue()

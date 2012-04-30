@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
+
 abstract class Binary extends AST
 {
 	protected AST obj1;
@@ -27,6 +30,20 @@ abstract class Binary extends AST
 	public String toString(int indent)
 	{
 		return getType() + "(" + obj1 + ", " + obj2 + ")";
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(obj1);
+		encoder.dump(obj2);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		obj1 = (AST)decoder.load();
+		obj2 = (AST)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

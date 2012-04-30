@@ -17,7 +17,7 @@ public class LoadFalse extends LoadConst
 
 	public String getType()
 	{
-		return "loadfalse";
+		return "false";
 	}
 
 	public Object getValue()

@@ -2402,7 +2402,7 @@ public class UL4Test
 		InterpretedTemplate t = getTemplate(source);
 
 		checkTemplateOutput("printx", "<?print template.content[0].type?>", "template", t);
-		checkTemplateOutput("loadint", "<?print template.content[0].obj.type?>", "template", t);
+		checkTemplateOutput("int", "<?print template.content[0].obj.type?>", "template", t);
 		checkTemplateOutput("42", "<?print template.content[0].obj.value?>", "template", t);
 	}
 

@@ -6,14 +6,18 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.IOException;
 
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
+
 abstract class Block extends AST
 {
-	protected LinkedList<AST> content = new LinkedList<AST>();
+	protected List<AST> content = new LinkedList<AST>();
 
 	public Block(Location location)
 	{
@@ -36,6 +40,18 @@ abstract class Block extends AST
 		for (AST item : content)
 			item.decoratedEvaluate(context);
 		return null;
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(content);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		content = (List<AST>)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

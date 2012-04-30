@@ -12,9 +12,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import com.livinglogic.ul4on.Utils;
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.UL4ONSerializable;
 import com.livinglogic.utils.ObjectAsMap;
 
-public abstract class AST extends ObjectAsMap
+public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 {
 	protected Location location = null;
 
@@ -65,6 +68,21 @@ public abstract class AST extends ObjectAsMap
 	}
 
 	abstract public String toString(int indent);
+
+	public String getUL4ONName()
+	{
+		return "de.livinglogic.ul4." + getType();
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		encoder.dump(location);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		location = (Location)decoder.load();
+	}
 
 	private static Map<String, ValueMaker> valueMakers = null;
 

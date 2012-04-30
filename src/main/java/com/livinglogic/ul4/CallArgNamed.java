@@ -7,6 +7,7 @@
 package com.livinglogic.ul4;
 
 import java.util.Map;
+import java.util.Arrays;
 import java.io.IOException;
 
 public class CallArgNamed extends CallArg
@@ -28,5 +29,10 @@ public class CallArgNamed extends CallArg
 	public void addTo(EvaluationContext context, Map dict) throws IOException
 	{
 		dict.put(name, value.decoratedEvaluate(context));
+	}
+
+	public Object object4UL4ON()
+	{
+		return Arrays.asList(name, value);
 	}
 }

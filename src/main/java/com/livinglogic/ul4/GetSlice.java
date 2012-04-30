@@ -9,6 +9,10 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
+import java.io.IOException;
+
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
 
 public class GetSlice extends AST
 {
@@ -37,6 +41,22 @@ public class GetSlice extends AST
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.getSlice(obj.decoratedEvaluate(context), index1 != null ? index1.decoratedEvaluate(context) : null, index2 != null ? index2.decoratedEvaluate(context) : null);
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(obj);
+		encoder.dump(index1);
+		encoder.dump(index2);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		obj = (AST)decoder.load();
+		index1 = (AST)decoder.load();
+		index2 = (AST)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

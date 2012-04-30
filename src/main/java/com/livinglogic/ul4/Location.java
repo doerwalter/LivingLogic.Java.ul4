@@ -8,9 +8,13 @@ package com.livinglogic.ul4;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.io.IOException;
 import com.livinglogic.utils.ObjectAsMap;
+import com.livinglogic.ul4on.UL4ONSerializable;
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
 
-public class Location extends ObjectAsMap
+public class Location extends ObjectAsMap implements UL4ONSerializable
 {
 	public String source;
 	protected String type;
@@ -80,6 +84,31 @@ public class Location extends ObjectAsMap
 			source = "";
 
 		return tagType + " at position " + (starttag+1) + " (line " + line + ", col " + col + ")" + source;
+	}
+
+	public String getUL4ONName()
+	{
+		return "de.livinglogic.ul4.location";
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		encoder.dump(source);
+		encoder.dump(type);
+		encoder.dump(starttag);
+		encoder.dump(endtag);
+		encoder.dump(startcode);
+		encoder.dump(endcode);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		source = (String)decoder.load();
+		type = (String)decoder.load();
+		starttag = (Integer)decoder.load();
+		endtag = (Integer)decoder.load();
+		startcode = (Integer)decoder.load();
+		endcode = (Integer)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;
