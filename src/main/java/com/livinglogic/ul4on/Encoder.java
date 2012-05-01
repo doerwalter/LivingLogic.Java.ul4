@@ -70,7 +70,7 @@ public class Encoder
 		}
 		else
 		{
-			// No -> really the real object
+			// No -> write the real object
 			if (obj == null)
 				writer.write("n");
 			else if (obj instanceof Boolean)
@@ -98,9 +98,8 @@ public class Encoder
 			else if (obj instanceof UL4ONSerializable) // check this before Collection and Map
 			{
 				record(obj);
-				String name = ((UL4ONSerializable)obj).getUL4ONName();
-				writer.write("O" + name.length() + "|");
-				writer.write(name);
+				writer.write("O");
+				dump(((UL4ONSerializable)obj).getUL4ONName());
 				((UL4ONSerializable)obj).dumpUL4ON(this);
 			}
 			else if (obj instanceof Collection)

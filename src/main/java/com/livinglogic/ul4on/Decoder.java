@@ -188,18 +188,28 @@ public class Decoder
 		}
 		else if (typecode == 'o' || typecode == 'O')
 		{
-			int count = readInt();
-			char[] chars = new char[count];
-			reader.read(chars);
-			String name = new String(chars);
+			int oldpos = 1;
+			if (typecode == 'O')
+			{
+				// We have a problem here:
+				// We have to record the object we're loading *now*, so that it is available for backreferences.
+				// However until we've read the UL4ON name of the class, we can't create the object.
+				// So we push null to the backreference list for now and put the right object in this spot,
+				// once we've created it (This shouldn't be a problem, because during the time the backreference
+				// is wrong, only the class name is read, so our object won't be refenced).
+				oldpos = objects.size();
+				loading(null);
+			}
+			String name = (String)load(-2);
 
 			ObjectFactory factory = Utils.registry.get(name);
 
 			if (factory == null)
 				throw new RuntimeException("can load object of type " + name);
 			UL4ONSerializable value = factory.create();
-			if (typecode == 'O')
-				loading(value);
+			// Fix object in backreference list
+			if (oldpos != -1)
+				objects.set(oldpos, value);
 			value.loadUL4ON(this);
 			return value;
 		}

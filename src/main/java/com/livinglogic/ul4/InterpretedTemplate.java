@@ -38,12 +38,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 public class InterpretedTemplate extends Block implements Template
 {
 	/**
-	 * The header used in the compiled format of the template.
-	 */
-	public static final String HEADER = "ul4";
-
-	/**
-	 * The version number used in the compiled format of the template.
+	 * The version number used in the UL4ON dump of the template.
 	 */
 	public static final String VERSION = "17";
 
@@ -530,7 +525,6 @@ public class InterpretedTemplate extends Block implements Template
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
-		encoder.dump(HEADER);
 		encoder.dump(VERSION);
 		encoder.dump(source);
 		encoder.dump(name);
@@ -541,9 +535,6 @@ public class InterpretedTemplate extends Block implements Template
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
-		String header = (String)decoder.load();
-		if (!header.equals(HEADER))
-			throw new RuntimeException("Invalid header, expected " + HEADER + ", got " + header);
 		String version = (String)decoder.load();
 		if (!VERSION.equals(version))
 		{
