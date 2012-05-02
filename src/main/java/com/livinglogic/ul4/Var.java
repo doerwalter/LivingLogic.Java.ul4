@@ -13,41 +13,41 @@ import java.io.IOException;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
 
-public class Name extends AST
+public class Var extends AST
 {
-	protected String value;
+	protected String name;
 
-	public Name(Location location, String value)
+	public Var(Location location, String name)
 	{
 		super(location);
-		this.value = value;
+		this.name = name;
 	}
 
 	public String toString(int indent)
 	{
-		return value;
+		return name;
 	}
 
 	public String getType()
 	{
-		return "loadvar";
+		return "var";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		return context.get(value);
+		return context.get(name);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(value);
+		encoder.dump(name);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		value = (String)decoder.load();
+		name = (String)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;
@@ -57,7 +57,7 @@ public class Name extends AST
 		if (valueMakers == null)
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((Name)object).value;}});
+			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((Var)object).name;}});
 			valueMakers = v;
 		}
 		return valueMakers;

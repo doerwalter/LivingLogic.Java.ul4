@@ -175,8 +175,8 @@ false_ returns [AST node]
 	: FALSE { $node = new LoadFalse(location); }
 	;
 
-name returns [Name node]
-	: NAME { $node = new Name(location, $NAME.text); }
+name returns [Var node]
+	: NAME { $node = new Var(location, $NAME.text); }
 	;
 
 int_ returns [AST node]

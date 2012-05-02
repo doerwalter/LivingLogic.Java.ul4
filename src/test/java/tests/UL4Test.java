@@ -2391,7 +2391,7 @@ public class UL4Test
 		checkTemplateOutput("print", "<?print template.content[0].type?>", "template", t);
 		checkTemplateOutput(source, "<?print template.content[0].location.tag?>", "template", t);
 		checkTemplateOutput("x", "<?print template.content[0].location.code?>", "template", t);
-		checkTemplateOutput("loadvar", "<?print template.content[0].obj.type?>", "template", t);
+		checkTemplateOutput("var", "<?print template.content[0].obj.type?>", "template", t);
 		checkTemplateOutput("x", "<?print template.content[0].obj.name?>", "template", t);
 	}
 
