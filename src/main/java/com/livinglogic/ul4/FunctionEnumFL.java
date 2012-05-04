@@ -12,7 +12,9 @@ public class FunctionEnumFL implements Function
 	{
 		if (args.length == 1)
 			return Utils.enumfl(args[0]);
-		throw new ArgumentCountMismatchException("function", "enumfl", args.length, 1);
+		else if (args.length == 2)
+			return Utils.enumfl(args[0], args[1]);
+		throw new ArgumentCountMismatchException("function", "enumfl", args.length, 1, 2);
 	}
 
 	public String getName()

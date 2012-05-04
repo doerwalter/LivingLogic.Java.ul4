@@ -272,11 +272,12 @@ class SequenceEnum implements Iterator<Vector>
 {
 	Iterator sequenceIterator;
 
-	int index = 0;
+	int index;
 
-	public SequenceEnum(Iterator sequenceIterator)
+	public SequenceEnum(Iterator sequenceIterator, int start)
 	{
 		this.sequenceIterator = sequenceIterator;
+		this.index = start;
 	}
 
 	public boolean hasNext()
@@ -302,11 +303,13 @@ class SequenceEnumFL implements Iterator<Vector>
 {
 	Iterator sequenceIterator;
 
-	int index = 0;
+	int index;
+	int start;
 
-	public SequenceEnumFL(Iterator sequenceIterator)
+	public SequenceEnumFL(Iterator sequenceIterator, int start)
 	{
 		this.sequenceIterator = sequenceIterator;
+		this.index = this.start = start;
 	}
 
 	public boolean hasNext()
@@ -319,7 +322,7 @@ class SequenceEnumFL implements Iterator<Vector>
 		Object next = sequenceIterator.next();
 		Vector retVal = new Vector(4);
 		retVal.add(new Integer(index++));
-		retVal.add(index == 1);
+		retVal.add(index == start+1);
 		retVal.add(!sequenceIterator.hasNext());
 		retVal.add(next);
 		return retVal;
@@ -2047,14 +2050,24 @@ public class Utils
 		throw new UnsupportedOperationException("iter(" + objectType(obj) + ") not supported!");
 	}
 
+	public static Object enumerate(Object obj, Object start)
+	{
+		return new SequenceEnum(iterator(obj), _toInt(start));
+	}
+
 	public static Object enumerate(Object obj)
 	{
-		return new SequenceEnum(iterator(obj));
+		return new SequenceEnum(iterator(obj), 0);
+	}
+
+	public static Object enumfl(Object obj, Object start)
+	{
+		return new SequenceEnumFL(iterator(obj), _toInt(start));
 	}
 
 	public static Object enumfl(Object obj)
 	{
-		return new SequenceEnumFL(iterator(obj));
+		return new SequenceEnumFL(iterator(obj), 0);
 	}
 
 	public static Object isfirstlast(Object obj)

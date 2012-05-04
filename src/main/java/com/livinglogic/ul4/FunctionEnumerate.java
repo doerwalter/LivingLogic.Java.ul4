@@ -12,7 +12,9 @@ public class FunctionEnumerate implements Function
 	{
 		if (args.length == 1)
 			return Utils.enumerate(args[0]);
-		throw new ArgumentCountMismatchException("function", "enumerate", args.length, 1);
+		else if (args.length == 2)
+			return Utils.enumerate(args[0], args[1]);
+		throw new ArgumentCountMismatchException("function", "enumerate", args.length, 1, 2);
 	}
 
 	public String getName()

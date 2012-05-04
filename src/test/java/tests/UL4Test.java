@@ -1248,11 +1248,15 @@ public class UL4Test
 	@Test
 	public void function_enumerate()
 	{
-		String source = "<?for (i, value) in enumerate(data)?>(<?print value?>=<?print i?>)<?end for?>";
+		String source1 = "<?for (i, value) in enumerate(data)?>(<?print value?>=<?print i?>)<?end for?>";
 
-		checkTemplateOutput("(f=0)(o=1)(o=2)", source, "data", "foo");
-		checkTemplateOutput("(foo=0)(bar=1)", source, "data", asList("foo", "bar"));
-		checkTemplateOutput("(foo=0)", source, "data", makeMap("foo", true));
+		checkTemplateOutput("(f=0)(o=1)(o=2)", source1, "data", "foo");
+		checkTemplateOutput("(foo=0)(bar=1)", source1, "data", asList("foo", "bar"));
+		checkTemplateOutput("(foo=0)", source1, "data", makeMap("foo", true));
+
+		String source2 = "<?for (i, value) in enumerate(data, 42)?>(<?print value?>=<?print i?>)<?end for?>";
+
+		checkTemplateOutput("(f=42)(o=43)(o=44)", source2, "data", "foo");
 	}
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
@@ -1262,9 +1266,9 @@ public class UL4Test
 	}
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
-	public void function_enumerate_2_args()
+	public void function_enumerate_3_args()
 	{
-		checkTemplateOutput("", "<?print enumerate(1, 2)?>");
+		checkTemplateOutput("", "<?print enumerate(1, 2, 3)?>");
 	}
 
 	@CauseTest(expectedCause=UnsupportedOperationException.class)
@@ -1300,13 +1304,17 @@ public class UL4Test
 	@Test
 	public void function_enumfl()
 	{
-		String source = "<?for (i, f, l, value) in enumfl(data)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>";
+		String source1 = "<?for (i, f, l, value) in enumfl(data)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>";
 
-		checkTemplateOutput("", source, "data", "");
-		checkTemplateOutput("[(?=0)]", source, "data", "?");
-		checkTemplateOutput("[(f=0)(o=1)(o=2)]", source, "data", "foo");
-		checkTemplateOutput("[(foo=0)(bar=1)]", source, "data", asList("foo", "bar"));
-		checkTemplateOutput("[(foo=0)]", source, "data", makeMap("foo", true));
+		checkTemplateOutput("", source1, "data", "");
+		checkTemplateOutput("[(?=0)]", source1, "data", "?");
+		checkTemplateOutput("[(f=0)(o=1)(o=2)]", source1, "data", "foo");
+		checkTemplateOutput("[(foo=0)(bar=1)]", source1, "data", asList("foo", "bar"));
+		checkTemplateOutput("[(foo=0)]", source1, "data", makeMap("foo", true));
+
+		String source2 = "<?for (i, f, l, value) in enumfl(data, 42)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>";
+
+		checkTemplateOutput("[(f=42)(o=43)(o=44)]", source2, "data", "foo");
 	}
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
@@ -1316,9 +1324,9 @@ public class UL4Test
 	}
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
-	public void function_enumfl_2_args()
+	public void function_enumfl_3_args()
 	{
-		checkTemplateOutput("", "<?print enumfl(1, 2)?>");
+		checkTemplateOutput("", "<?print enumfl(1, 2, 3)?>");
 	}
 
 	@CauseTest(expectedCause=UnsupportedOperationException.class)
