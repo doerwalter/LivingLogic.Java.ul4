@@ -63,11 +63,6 @@ public class InterpretedTemplate extends Block implements Template
 	public String source = null;
 
 	/**
-	 * The locale to be used when formatting int, float or date objects.
-	 */
-	private Locale defaultLocale = Locale.ENGLISH;
-
-	/**
 	 * Creates an empty template object. Must be filled in later (use for creating subtemplates)
 	 */
 	public InterpretedTemplate(Location location, String name, String startdelim, String enddelim)
@@ -198,6 +193,11 @@ public class InterpretedTemplate extends Block implements Template
 					}
 					innerBlock.append(new Continue(location));
 				}
+				else if (type.equals("render"))
+				{
+					UL4Parser parser = getParser(location);
+					innerBlock.append(new Render(location, parser.expression()));
+				}
 				else if (type.equals("def"))
 				{
 					// Copy over the attributes that we know now, the source is set once the <?end?> tag is encountered
@@ -302,16 +302,11 @@ public class InterpretedTemplate extends Block implements Template
 	}
 
 	/**
-	 * Renders the template to a java.io.Writer object.
-	 * @param writer    the java.io.Writer object to which the output is written.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the template code. May be null.
+	 * Renders the template.
+	 * @param context   the EvaluationContext.
 	 */
-	public void render(java.io.Writer writer, Map<String, Object> variables) throws IOException
+	public void render(EvaluationContext context) throws IOException
 	{
-		if (variables == null)
-			variables = new HashMap<String, Object>();
-		EvaluationContext context = new EvaluationContext(writer, variables, defaultLocale);
 		try
 		{
 			super.evaluate(context);
@@ -338,6 +333,20 @@ public class InterpretedTemplate extends Block implements Template
 	}
 
 	/**
+	 * Renders the template to a java.io.Writer object.
+	 * @param writer    the java.io.Writer object to which the output is written.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the template code. May be null.
+	 */
+	public void render(java.io.Writer writer, Map<String, Object> variables) throws IOException
+	{
+		if (variables == null)
+			variables = new HashMap<String, Object>();
+		EvaluationContext context = new EvaluationContext(writer, variables);
+		render(context);
+	}
+
+	/**
 	 * Renders the template and returns the resulting string.
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the template code. May be null
@@ -359,7 +368,7 @@ public class InterpretedTemplate extends Block implements Template
 
 	public static List<Location> tokenizeTags(String source, String name, String startdelim, String enddelim)
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|def|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|def|render|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Location> tags = new LinkedList<Location>();
 		if (source != null)
 		{

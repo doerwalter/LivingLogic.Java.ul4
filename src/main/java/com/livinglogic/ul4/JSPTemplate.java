@@ -40,5 +40,10 @@ public abstract class JSPTemplate implements Template
 		return out.toString();
 	}
 
-	public abstract void render(Writer out, Map<String, Object> variables) throws java.io.IOException;
+	public abstract void render(EvaluationContext context) throws java.io.IOException;
+
+	public void render(Writer out, Map<String, Object> variables) throws java.io.IOException
+	{
+		render(new EvaluationContext(out, variables));
+	}
 }

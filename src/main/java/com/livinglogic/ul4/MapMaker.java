@@ -19,7 +19,7 @@ public class MapMaker
 {
 	private Map map = new HashMap();
 
-	public MapMaker add(Object key, object value)
+	public MapMaker add(Object key, Object value)
 	{
 		map.put(key, value);
 		return this;

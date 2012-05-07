@@ -8,20 +8,25 @@ package com.livinglogic.ul4;
 
 import java.io.Writer;
 import java.util.Map;
-import java.util.Locale;
+import java.util.HashMap;
 import java.io.IOException;
 
 public class EvaluationContext
 {
 	protected Writer writer;
 	protected Map<String, Object> variables;
-	Locale locale;
 
-	public EvaluationContext(Writer writer, Map<String, Object> variables, Locale locale)
+	public EvaluationContext(Writer writer)
+	{
+		this(writer, null);
+	}
+
+	public EvaluationContext(Writer writer, Map<String, Object> variables)
 	{
 		this.writer = writer;
+		if (variables == null)
+			variables = new HashMap<String, Object>();
 		this.variables = variables;
-		this.locale = locale;
 	}
 
 	public Map<String, Object> getVariables()
@@ -32,11 +37,6 @@ public class EvaluationContext
 	public Writer getWriter()
 	{
 		return writer;
-	}
-
-	public Locale getLocale()
-	{
-		return locale;
 	}
 
 	public void write(String string) throws IOException

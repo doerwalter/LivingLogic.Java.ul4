@@ -2733,7 +2733,7 @@ public class Utils
 
 	public static Object format(Object obj, Object formatString)
 	{
-		return format(obj, formatString, Locale.getDefault());
+		return format(obj, formatString, Locale.ENGLISH);
 	}
 
 	public static Object replace(Object obj, Object arg1, Object arg2)
