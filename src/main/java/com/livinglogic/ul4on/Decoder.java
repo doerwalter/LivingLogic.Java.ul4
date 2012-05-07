@@ -219,24 +219,21 @@ public class Decoder
 	
 	private int readInt() throws IOException
 	{
-		int i = 0;
+		StringBuffer buffer = new StringBuffer();
 		
 		while (true)
 		{
 			int c = reader.read();
 			if (c == '|')
-				return i;
-			else if (c >= '0' && c <= '9')
-				i = 10 * i + (c - '0');
-			else
-				throw new RuntimeException("broken stream: expected digit or '|', got '\\u" + Integer.toHexString(c) + "'");
+				return Integer.valueOf(buffer.toString());
+			buffer.append((char)c);
 		}
 	}
 	
 	private double readFloat() throws IOException
 	{
 		StringBuffer buffer = new StringBuffer();
-		
+
 		while (true)
 		{
 			int c = reader.read();
