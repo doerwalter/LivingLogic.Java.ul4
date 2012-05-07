@@ -2165,13 +2165,13 @@ public class UL4Test
 		InterpretedTemplate t1 = getTemplate("<?print prefix?><?print data?><?print suffix?>");
 		InterpretedTemplate t2 = getTemplate("<?print 'foo'?>");
 
-		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?print t.render(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
-		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?print t.render(data=c, **{'prefix': '(', 'suffix': ')'})?><?end for?>", "t", t1, "data", "foo");
+		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t.render(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
+		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t.render(data=c, **{'prefix': '(', 'suffix': ')'})?><?end for?>", "t", t1, "data", "foo");
 		checkTemplateOutput("foo", "<?print t.render()?>", "t", t2);
 		checkTemplateOutput("foo", "<?print t.render \n\t(\n \t)\n\t ?>", "t", t2);
 
-		checkTemplateOutput("42", "<?print globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("<?print value?>")));
-		checkTemplateOutput("", "<?print globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("")));
+		checkTemplateOutput("42", "<?render globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("<?print value?>")));
+		checkTemplateOutput("", "<?render globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("")));
 	}
 
 	@Test
@@ -2179,7 +2179,7 @@ public class UL4Test
 	{
 		InterpretedTemplate t = getTemplate("<?code x += 1?><?print x?>");
 
-		checkTemplateOutput("42,43,42", "<?print x?>,<?print t.render(x=x)?>,<?print x?>", "t", t, "x", 42);
+		checkTemplateOutput("42,43,42", "<?print x?>,<?render t.render(x=x)?>,<?print x?>", "t", t, "x", 42);
 	}
 
 	@Test
@@ -2191,7 +2191,7 @@ public class UL4Test
 	@Test
 	public void method_render_nested()
 	{
-		checkTemplateOutput("45?44?43", "<?def outer?><?def inner?><?code x += 1?><?print x?>?<?end def?><?code x += 1?><?print inner.render(x=x)?><?print x?>?<?end def?><?code x += 1?><?print outer.render(x=x)?><?print x?>", "x", 42);
+		checkTemplateOutput("45?44?43", "<?def outer?><?def inner?><?code x += 1?><?print x?>?<?end def?><?code x += 1?><?render inner.render(x=x)?><?print x?>?<?end def?><?code x += 1?><?render outer.render(x=x)?><?print x?>", "x", 42);
 	}
 
 	@Test
