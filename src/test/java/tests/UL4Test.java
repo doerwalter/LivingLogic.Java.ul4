@@ -1096,6 +1096,7 @@ public class UL4Test
 	{
 		String source = "<?print str(data)?>";
 
+		checkTemplateOutput("", "<?print str()?>");
 		checkTemplateOutput("", source, "data", null);
 		checkTemplateOutput("True", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -1109,21 +1110,40 @@ public class UL4Test
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
-	public void function_str_0_args()
-	{
-		checkTemplateOutput("", "<?print str()?>");
-	}
-
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
-	@Test
 	public void function_str_2_args()
 	{
 		checkTemplateOutput("", "<?print str(1, 2)?>");
 	}
 
 	@Test
+	public void function_bool()
+	{
+		checkTemplateOutput("False", "<?print bool()?>");
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", true);
+		checkTemplateOutput("False", "<?print bool(data)?>", "data", false);
+		checkTemplateOutput("False", "<?print bool(data)?>", "data", 0);
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", 42);
+		checkTemplateOutput("False", "<?print bool(data)?>", "data", 0.0);
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", 4.2);
+		checkTemplateOutput("False", "<?print bool(data)?>", "data", "");
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", "foo");
+		checkTemplateOutput("False", "<?print bool(data)?>", "data", asList());
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", asList("foo", "bar"));
+		checkTemplateOutput("False", "<?print bool(data)?>", "data", makeMap());
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", makeMap("foo", "bar"));
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@Test
+	public void function_bool_2_args()
+	{
+		checkTemplateOutput("", "<?print bool(1, 2)?>");
+	}
+
+	@Test
 	public void function_int()
 	{
+		checkTemplateOutput("0", "<?print int()?>");
 		checkTemplateOutput("1", "<?print int(data)?>", "data", true);
 		checkTemplateOutput("0", "<?print int(data)?>", "data", false);
 		checkTemplateOutput("42", "<?print int(data)?>", "data", 42);
@@ -1146,13 +1166,6 @@ public class UL4Test
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
-	public void function_int_0_args()
-	{
-		checkTemplateOutput("", "<?print int()?>");
-	}
-
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
-	@Test
 	public void function_int_3_args()
 	{
 		checkTemplateOutput("", "<?print int(1, 2, 3)?>");
@@ -1163,6 +1176,7 @@ public class UL4Test
 	{
 		String source = "<?print float(data)?>";
 
+		checkTemplateOutput("0.0", "<?print float()?>");
 		checkTemplateOutput("1.0", source, "data", true);
 		checkTemplateOutput("0.0", source, "data", false);
 		checkTemplateOutput("42.0", source, "data", 42);
@@ -1179,12 +1193,6 @@ public class UL4Test
 	public void function_float_badstring()
 	{
 		checkTemplateOutput("", "<?print float(data)?>", "data", "foo");
-	}
-
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
-	public void function_float_0_args()
-	{
-		checkTemplateOutput("", "<?print float()?>");
 	}
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)

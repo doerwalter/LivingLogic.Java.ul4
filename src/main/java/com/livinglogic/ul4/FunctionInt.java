@@ -10,11 +10,13 @@ public class FunctionInt implements Function
 {
 	public Object call(EvaluationContext context, Object... args)
 	{
-		if (args.length == 1)
+		if (args.length == 0)
+			return 0;
+		else if (args.length == 1)
 			return Utils.toInteger(args[0]);
 		else if (args.length == 2)
 			return Utils.toInteger(args[0], args[1]);
-		throw new ArgumentCountMismatchException("function", "int", args.length, 1, 2);
+		throw new ArgumentCountMismatchException("function", "int", args.length, 0, 2);
 	}
 
 	public String getName()
