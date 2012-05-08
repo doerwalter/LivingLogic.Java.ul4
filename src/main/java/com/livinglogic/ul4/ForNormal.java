@@ -51,9 +51,14 @@ public class ForNormal extends For
 		return buffer.toString();
 	}
 
+	public static void unpackLoopVariable(EvaluationContext context, Object item, String varname)
+	{
+		context.put(varname, item);
+	}
+
 	protected void unpackLoopVariable(EvaluationContext context, Object item)
 	{
-		context.put(itername, item);
+		unpackLoopVariable(context, item, itername);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
