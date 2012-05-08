@@ -205,7 +205,7 @@ public class JavaSource4Template
 		// 			code("}");
 		// 			break;
 		// 		case Opcode.OC_DEF:
-		// 			code(variables +".put(\"" + StringEscapeUtils.escapeJava(opcode.arg) + "\", new com.livinglogic.ul4.JSPTemplate()");
+		// 			code(variables +".put(\"" + StringEscapeUtils.escapeJava(opcode.arg) + "\", new com.livinglogic.ul4.CompiledTemplate()");
 		// 			code("{");
 		// 			indent++;
 		// 			code("public String getName()");

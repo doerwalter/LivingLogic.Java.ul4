@@ -413,7 +413,7 @@ public class InterpretedTemplate extends Block implements Template
 		return output.toString();
 	}
 
-	public JSPTemplate compileToJava() throws java.io.IOException
+	public CompiledTemplate compileToJava() throws java.io.IOException
 	{
 		StringBuffer source = new StringBuffer();
 		source.append("\tpublic String getName()\n");
@@ -426,10 +426,10 @@ public class InterpretedTemplate extends Block implements Template
 		source.append(javaSource());
 		source.append("\t}\n");
 
-		Class clazz = com.livinglogic.ul4.Utils.compileToJava(source.toString(), "com.livinglogic.ul4.JSPTemplate", null);
+		Class clazz = com.livinglogic.ul4.Utils.compileToJava(source.toString(), "com.livinglogic.ul4.CompiledTemplate", null);
 		try
 		{
-			return (JSPTemplate)clazz.newInstance();
+			return (CompiledTemplate)clazz.newInstance();
 		}
 		catch (InstantiationException ex)
 		{
