@@ -7,25 +7,6 @@
 package com.livinglogic.ul4on;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.math.BigInteger;
-import java.math.BigDecimal;
-import java.sql.Clob;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.livinglogic.ul4.Color;
-import com.livinglogic.ul4.InterpretedTemplate;
 
 /**
  * Utility class for reading and writing the UL4ON object serialization format.
