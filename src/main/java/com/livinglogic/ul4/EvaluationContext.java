@@ -9,12 +9,14 @@ package com.livinglogic.ul4;
 import java.io.Writer;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Stack;
 import java.io.IOException;
 
 public class EvaluationContext
 {
 	protected Writer writer;
 	protected Map<String, Object> variables;
+	protected Stack<Object> stack = new Stack<Object>(); // used as temporary storage space for the ``and`` and ``or`` operators in compiled mode
 
 	public EvaluationContext(Writer writer)
 	{
@@ -57,5 +59,22 @@ public class EvaluationContext
 	public void remove(String key)
 	{
 		variables.remove(key);
+	}
+
+	public Object push(Object object)
+	{
+		stack.push(object);
+		return object;
+	}
+
+	public Object pop()
+	{
+		return stack.pop();
+	}
+
+	public Object pop(Object object)
+	{
+		stack.pop();
+		return object;
 	}
 }
