@@ -539,7 +539,7 @@ public class InterpretedTemplate extends Block implements Template
 		Utils.register("de.livinglogic.ul4.callfunc", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallFunc(null, (Function)null); }});
 		Utils.register("de.livinglogic.ul4.callmeth", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMeth(null, null, (Method)null); }});
 		Utils.register("de.livinglogic.ul4.callmethkw", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMethKeywords(null, null, (KeywordMethod)null); }});
-		// Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Render(null); }});
+		Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Render(null, null); }});
 		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate((Location)null, null, null, null); }});
 	}
 
