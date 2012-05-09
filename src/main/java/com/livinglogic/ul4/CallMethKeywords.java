@@ -110,9 +110,10 @@ public class CallMethKeywords extends AST
 		super.dumpUL4ON(encoder);
 		encoder.dump(method.getName());
 		encoder.dump(obj);
+		LinkedList argList = new LinkedList();
 		for (CallArg arg : args)
-			encoder.dump(arg.object4UL4ON());
-		encoder.dump(args);
+			argList.add(arg.object4UL4ON());
+		encoder.dump(argList);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException

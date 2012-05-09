@@ -7,6 +7,7 @@
 package com.livinglogic.ul4;
 
 import java.util.Map;
+import java.util.Arrays;
 import java.io.IOException;
 
 public class DictItemDict extends DictItem
@@ -26,5 +27,10 @@ public class DictItemDict extends DictItem
 	public void addTo(EvaluationContext context, Map dict) throws IOException
 	{
 		dict.putAll((Map)this.dict.decoratedEvaluate(context));
+	}
+
+	public Object object4UL4ON()
+	{
+		return Arrays.asList(dict);
 	}
 }

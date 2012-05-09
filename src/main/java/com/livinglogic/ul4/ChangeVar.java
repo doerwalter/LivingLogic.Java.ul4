@@ -8,6 +8,10 @@ package com.livinglogic.ul4;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.io.IOException;
+
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
 
 abstract class ChangeVar extends AST
 {
@@ -29,6 +33,20 @@ abstract class ChangeVar extends AST
 			buffer.append("\t");
 		buffer.append(getType() + "(" + Utils.repr(varname) + ", " + value + ")\n");
 		return buffer.toString();
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(varname);
+		encoder.dump(value);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		varname = (String)decoder.load();
+		value = (AST)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

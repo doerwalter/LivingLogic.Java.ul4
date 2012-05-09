@@ -67,7 +67,7 @@ public class Encoder
 				writer.write("n");
 			else if (obj instanceof Boolean)
 				writer.write(((Boolean)obj).booleanValue() ? "bT" : "bF");
-			else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof BigInteger)
+			else if (obj instanceof Integer || obj instanceof Long || obj instanceof Byte || obj instanceof Short || obj instanceof BigInteger)
 				writer.write("i" + obj.toString() + "|");
 			else if (obj instanceof Float || obj instanceof Double || obj instanceof BigDecimal)
 				writer.write("f" + obj.toString() + "|");
@@ -115,7 +115,7 @@ public class Encoder
 			}
 			else
 			{
-				throw new RuntimeException("unknown type ");
+				throw new RuntimeException("unknown type " + obj.getClass());
 			}
 		}
 	}

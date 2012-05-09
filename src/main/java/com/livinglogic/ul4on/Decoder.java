@@ -59,7 +59,7 @@ public class Decoder
 		
 		if (typecode == '^')
 		{
-			int position = readInt();
+			int position = (Integer)readInt();
 			return objects.get(position);
 		}
 		else if (typecode == 'n' || typecode == 'N')
@@ -84,7 +84,7 @@ public class Decoder
 		}
 		else if (typecode == 'i' || typecode == 'I')
 		{
-			int value = readInt();
+			Object value = readInt();
 			if (typecode == 'I')
 				loading(value);
 			return value;
@@ -98,7 +98,7 @@ public class Decoder
 		}
 		else if (typecode == 's' || typecode == 'S')
 		{
-			int count = readInt();
+			int count = (Integer)readInt();
 			char[] chars = new char[count];
 			reader.read(chars);
 			String value = new String(chars);
@@ -206,8 +206,8 @@ public class Decoder
 		else
 			throw new RuntimeException("broken stream: unknown typecode '\\u" + Integer.toHexString(typecode) + "'");
 	}
-	
-	private int readInt() throws IOException
+
+	private Object readInt() throws IOException
 	{
 		StringBuffer buffer = new StringBuffer();
 		
@@ -215,11 +215,11 @@ public class Decoder
 		{
 			int c = reader.read();
 			if (c == '|')
-				return Integer.valueOf(buffer.toString());
+				return com.livinglogic.ul4.Utils.parseUL4Int(buffer.toString());
 			buffer.append((char)c);
 		}
 	}
-	
+
 	private double readFloat() throws IOException
 	{
 		StringBuffer buffer = new StringBuffer();

@@ -36,7 +36,7 @@ public class ForNormal extends For
 		buffer.append("for ");
 		buffer.append(itername);
 		buffer.append(" in ");
-		buffer.append(container);
+		buffer.append(container.toString(indent));
 		buffer.append("\n");
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");

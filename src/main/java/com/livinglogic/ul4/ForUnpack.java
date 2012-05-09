@@ -53,7 +53,7 @@ public class ForUnpack extends For
 				buffer.append(", ");
 		}
 		buffer.append(") in ");
-		buffer.append(container);
+		buffer.append(container.toString(indent));
 		buffer.append("\n");
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");

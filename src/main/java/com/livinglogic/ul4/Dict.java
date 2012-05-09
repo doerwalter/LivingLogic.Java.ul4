@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.HashMap;
 import java.io.IOException;
 
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
+
 public class Dict extends AST
 {
 	protected LinkedList<DictItem> items = new LinkedList<DictItem>();
@@ -65,5 +68,28 @@ public class Dict extends AST
 		for (DictItem item : items)
 			item.addTo(context, result);
 		return result;
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		LinkedList itemList = new LinkedList();
+		for (DictItem item : items)
+			itemList.add(item.object4UL4ON());
+		encoder.dump(itemList);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		java.util.List<java.util.List<Object>> itemList = (java.util.List<java.util.List<Object>>)decoder.load();
+		items = new LinkedList<DictItem>();
+		for (java.util.List item : itemList)
+		{
+			if (item.size() == 2)
+				items.add(new DictItemKeyValue((AST)item.get(0), (AST)item.get(1)));
+			else
+				items.add(new DictItemDict((AST)item.get(0)));
+		}
 	}
 }
