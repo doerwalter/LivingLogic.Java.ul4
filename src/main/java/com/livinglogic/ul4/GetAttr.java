@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
+
 public class GetAttr extends AST
 {
 	protected AST obj;
@@ -35,6 +38,20 @@ public class GetAttr extends AST
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return Utils.getItem(obj.decoratedEvaluate(context), attrname);
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(obj);
+		encoder.dump(attrname);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		obj = (AST)decoder.load();
+		attrname = (String)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;
