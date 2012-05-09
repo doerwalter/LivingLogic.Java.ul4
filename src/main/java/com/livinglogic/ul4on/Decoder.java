@@ -195,7 +195,7 @@ public class Decoder
 			ObjectFactory factory = Utils.registry.get(name);
 
 			if (factory == null)
-				throw new RuntimeException("can load object of type " + name);
+				throw new RuntimeException("can't load object of type " + name);
 			UL4ONSerializable value = factory.create();
 			// Fix object in backreference list
 			if (oldpos != -1)
