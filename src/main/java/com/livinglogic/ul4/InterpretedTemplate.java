@@ -282,6 +282,17 @@ public class InterpretedTemplate extends Block implements Template
 	}
 
 	/**
+	 * loads a template from a reader in the UL4ON serialization format.
+	 * @param reader The Reader object from which to read the template.
+	 * @return The template object.
+	 * @throws IOException if reading from the stream fails
+	 */
+	public static InterpretedTemplate load(Reader reader) throws IOException
+	{
+		return (InterpretedTemplate)Utils.load(reader);
+	}
+
+	/**
 	 * writes the Template object to a string in the UL4ON serialization format.
 	 * @return The string containing the template in serialized form.
 	 */
