@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Stack;
 import java.util.Vector;
 import java.util.Set;
 import java.util.Date;
@@ -1889,11 +1890,11 @@ public class Utils
 						sb.append("}");
 						return sb.toString();
 					}
-					catch (Throwable t)
-					{
-						visited.pop();
-						return "{?}";
-					}
+				}
+				catch (Throwable t)
+				{
+					visited.pop();
+					return "{?}";
 				}
 			}
 			return "?";
