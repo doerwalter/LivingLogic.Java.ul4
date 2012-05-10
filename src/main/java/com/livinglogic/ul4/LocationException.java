@@ -12,12 +12,7 @@ public class LocationException extends RuntimeException
 
 	public LocationException(Throwable cause, Location location)
 	{
-		super(cause);
+		super("in " + location, cause);
 		this.location = location;
-	}
-
-	public String toString()
-	{
-		return "com.livinglogic.ul4.LocationException: in " + location;
 	}
 }
