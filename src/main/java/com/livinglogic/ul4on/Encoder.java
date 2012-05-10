@@ -54,7 +54,7 @@ public class Encoder
 	{
 		// Have we serialized this object before?
 		Integer index = object2id.get(obj);
-		if (index != null || object2id.containsKey(obj))
+		if (index != null)
 		{
 			// Yes -> output a backreference
 			String indexStr = index.toString();
