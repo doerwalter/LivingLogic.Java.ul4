@@ -18,7 +18,7 @@ import java.io.IOException;
  * @version $Revision$ $Date$
  */
 
-public abstract class JSPTemplate implements Template
+public abstract class CompiledTemplate implements Template
 {
 	public String getName()
 	{

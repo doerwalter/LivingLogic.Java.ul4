@@ -10,9 +10,12 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 import java.io.IOException;
 
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
+
 public class List extends AST
 {
-	protected LinkedList<AST> items = new LinkedList<AST>();
+	protected java.util.List<AST> items = new LinkedList<AST>();
 
 	public List(Location location)
 	{
@@ -54,5 +57,17 @@ public class List extends AST
 		for (AST item : items)
 			result.add(item.decoratedEvaluate(context));
 		return result;
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(items);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		items = (java.util.List<AST>)decoder.load();
 	}
 }

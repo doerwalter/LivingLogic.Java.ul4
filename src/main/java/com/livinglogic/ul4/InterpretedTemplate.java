@@ -282,6 +282,17 @@ public class InterpretedTemplate extends Block implements Template
 	}
 
 	/**
+	 * loads a template from a reader in the UL4ON serialization format.
+	 * @param reader The Reader object from which to read the template.
+	 * @return The template object.
+	 * @throws IOException if reading from the stream fails
+	 */
+	public static InterpretedTemplate load(Reader reader) throws IOException
+	{
+		return (InterpretedTemplate)Utils.load(reader);
+	}
+
+	/**
 	 * writes the Template object to a string in the UL4ON serialization format.
 	 * @return The string containing the template in serialized form.
 	 */
@@ -413,7 +424,7 @@ public class InterpretedTemplate extends Block implements Template
 		return output.toString();
 	}
 
-	public JSPTemplate compileToJava() throws java.io.IOException
+	public CompiledTemplate compileToJava() throws java.io.IOException
 	{
 		StringBuffer source = new StringBuffer();
 		source.append("\tpublic String getName()\n");
@@ -426,10 +437,10 @@ public class InterpretedTemplate extends Block implements Template
 		source.append(javaSource());
 		source.append("\t}\n");
 
-		Class clazz = com.livinglogic.ul4.Utils.compileToJava(source.toString(), "com.livinglogic.ul4.JSPTemplate", null);
+		Class clazz = com.livinglogic.ul4.Utils.compileToJava(source.toString(), "com.livinglogic.ul4.CompiledTemplate", null);
 		try
 		{
-			return (JSPTemplate)clazz.newInstance();
+			return (CompiledTemplate)clazz.newInstance();
 		}
 		catch (InstantiationException ex)
 		{
@@ -528,7 +539,7 @@ public class InterpretedTemplate extends Block implements Template
 		Utils.register("de.livinglogic.ul4.callfunc", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallFunc(null, (Function)null); }});
 		Utils.register("de.livinglogic.ul4.callmeth", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMeth(null, null, (Method)null); }});
 		Utils.register("de.livinglogic.ul4.callmethkw", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMethKeywords(null, null, (KeywordMethod)null); }});
-		// Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Render(null); }});
+		Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Render(null, null); }});
 		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate((Location)null, null, null, null); }});
 	}
 

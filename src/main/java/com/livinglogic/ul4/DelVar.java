@@ -6,10 +6,12 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 import java.util.Map;
 import java.util.HashMap;
+import java.io.IOException;
+
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
 
 public class DelVar extends AST
 {
@@ -40,6 +42,18 @@ public class DelVar extends AST
 	{
 		context.remove(varname);
 		return null;
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(varname);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		varname = (String)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

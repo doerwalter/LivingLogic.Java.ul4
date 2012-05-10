@@ -7,6 +7,7 @@ import static java.util.Arrays.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
+import org.antlr.runtime.RecognitionException;
 
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.InterpretedTemplate;
@@ -18,7 +19,6 @@ import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.UnknownFunctionException;
 import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.SyntaxException;
-import org.antlr.runtime.RecognitionException;
 
 @RunWith(CauseTestRunner.class)
 public class UL4Test
@@ -50,8 +50,20 @@ public class UL4Test
 
 	private static void checkTemplateOutput(String expected, String source, Object... args)
 	{
-		String output = getTemplateOutput(source, args);
-		assertEquals(expected, output);
+		// Render the template once by directly compliing and rendering it
+		InterpretedTemplate template1 = getTemplate(source);
+		String output1 = template1.renders(makeMap(args));
+		assertEquals(expected, output1);
+
+		// Recreate the template from the dump of the compiled template
+		InterpretedTemplate template2 = InterpretedTemplate.loads(template1.dumps());
+
+		// Check that the templates format the same
+		assertEquals(template1.toString(), template2.toString());
+
+		// Check that theyhave the same output
+		String output2 = template2.renders(makeMap(args));
+		assertEquals(expected, output2);
 	}
 
 	@Test

@@ -53,7 +53,7 @@ public class ForUnpack extends For
 				buffer.append(", ");
 		}
 		buffer.append(") in ");
-		buffer.append(container);
+		buffer.append(container.toString(indent));
 		buffer.append("\n");
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
@@ -68,10 +68,10 @@ public class ForUnpack extends For
 		return buffer.toString();
 	}
 
-	protected void unpackLoopVariable(EvaluationContext context, Object item)
+	public static void unpackLoopVariable(EvaluationContext context, Object item, List<String> varnames)
 	{
 		Iterator<Object> itemIter = Utils.iterator(item);
-		Iterator<String> nameIter = iternames.iterator();
+		Iterator<String> nameIter = varnames.iterator();
 
 		int count = 0;
 
@@ -101,6 +101,11 @@ public class ForUnpack extends For
 				}
 			}
 		}
+	}
+
+	protected void unpackLoopVariable(EvaluationContext context, Object item)
+	{
+		unpackLoopVariable(context, item, iternames);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

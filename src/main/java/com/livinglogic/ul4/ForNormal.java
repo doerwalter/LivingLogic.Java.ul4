@@ -36,7 +36,7 @@ public class ForNormal extends For
 		buffer.append("for ");
 		buffer.append(itername);
 		buffer.append(" in ");
-		buffer.append(container);
+		buffer.append(container.toString(indent));
 		buffer.append("\n");
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
@@ -51,9 +51,14 @@ public class ForNormal extends For
 		return buffer.toString();
 	}
 
+	public static void unpackLoopVariable(EvaluationContext context, Object item, String varname)
+	{
+		context.put(varname, item);
+	}
+
 	protected void unpackLoopVariable(EvaluationContext context, Object item)
 	{
-		context.put(itername, item);
+		unpackLoopVariable(context, item, itername);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
