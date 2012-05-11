@@ -19,6 +19,7 @@ public class MapUtils
 {
 	/**
 	 * Add entries to a Map.
+	 * @param map The map where entries are added.
 	 * @param args An even number of objects. The objects at index 0, 2, 4, ...
 	 *             are the keys, the objects at index 1, 3, 5 are the values.
 	 */
