@@ -12,9 +12,7 @@ public class FunctionZip implements Function
 {
 	public Object call(EvaluationContext context, Object... args)
 	{
-		if (args.length >= 2)
-			return Utils.zip(args);
-		throw new ArgumentCountMismatchException("function", "zip", args.length, 2, 999);
+		return Utils.zip(args);
 	}
 
 	public String getName()

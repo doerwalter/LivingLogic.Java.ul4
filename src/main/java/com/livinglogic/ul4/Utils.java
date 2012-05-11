@@ -246,6 +246,8 @@ class ZipIterator implements Iterator<Vector>
 
 	public boolean hasNext()
 	{
+		if (iterators.length == 0)
+			return false;
 		for (int i = 0; i < iterators.length; ++i)
 		{
 			if (!iterators[i].hasNext())
