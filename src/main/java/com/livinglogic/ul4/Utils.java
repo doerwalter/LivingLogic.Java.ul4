@@ -1889,9 +1889,9 @@ public class Utils
 						sb.append(toString(entry.getKey()));
 						sb.append(": ");
 						sb.append(toString(entry.getValue()));
-						sb.append("}");
-						return sb.toString();
 					}
+					sb.append("}");
+					return sb.toString();
 				}
 				catch (Throwable t)
 				{
