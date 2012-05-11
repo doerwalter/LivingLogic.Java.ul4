@@ -66,6 +66,26 @@ public class UL4Test
 		assertEquals(expected, output2);
 	}
 
+	private static void checkTemplateOutput2(String expected1, String expected2, String source, Object... args)
+	{
+		// Render the template once by directly compliing and rendering it
+		InterpretedTemplate template1 = getTemplate(source);
+		String output1 = template1.renders(makeMap(args));
+		if (!output1.equals(expected1) && !output1.equals(expected2))
+			fail("expected <" + expected1 + "> or <" + expected2 + ">, got <" + output1 + ">");
+
+		// Recreate the template from the dump of the compiled template
+		InterpretedTemplate template2 = InterpretedTemplate.loads(template1.dumps());
+
+		// Check that the templates format the same
+		assertEquals(template1.toString(), template2.toString());
+
+		// Check that theyhave the same output
+		String output2 = template2.renders(makeMap(args));
+		if (!output1.equals(expected1) && !output1.equals(expected2))
+			fail("expected <" + expected1 + "> or <" + expected2 + ">, got <" + output2 + ">");
+	}
+
 	@Test
 	public void tag_text()
 	{
@@ -1875,6 +1895,7 @@ public class UL4Test
 		checkTemplateOutput("\"foo\"", source, "data", "foo");
 		checkTemplateOutput("[1, 2, 3]", source, "data", asList(1, 2, 3));
 		checkTemplateOutput("{\"a\": 1}", source, "data", makeMap("a", 1));
+		checkTemplateOutput2("{\"a\": 1, \"b\": 2}", "{\"b\": 2, \"a\": 1}", source, "data", makeMap("a", 1, "b", 2));
 		checkTemplateOutput("@(2011-02-07T12:34:56.123000)", source, "data", makeDate(2011, 2, 7, 12, 34, 56, 123000));
 		checkTemplateOutput("@(2011-02-07T12:34:56)", source, "data", makeDate(2011, 2, 7, 12, 34, 56));
 		checkTemplateOutput("@(2011-02-07)", source, "data", makeDate(2011, 2, 7));
