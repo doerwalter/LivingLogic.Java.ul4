@@ -1879,7 +1879,8 @@ public class Utils
 					sb.append("{");
 					boolean first = true;
 
-					for (Map.Entry entry : ((Map)obj).entrySet())
+					Set<Map.Entry> entrySet = ((Map)obj).entrySet();
+					for (Map.Entry entry : entrySet)
 					{
 						if (first)
 							first = false;
