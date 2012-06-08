@@ -2463,7 +2463,7 @@ public class UL4Test
 		checkTemplateOutput(source + "<?print lower.source?>", source + "<?print lower.source?>");
 		checkTemplateOutput(source, source + "<?print lower.source[lower.location.starttag:lower.endlocation.endtag]?>");
 		checkTemplateOutput("<?print t.lower()?>", source + "<?print lower.source[lower.location.endtag:lower.endlocation.starttag]?>");
-		checkTemplateOutput("lower?>", source + "<?print lower.name?>");
+		checkTemplateOutput("lower", source + "<?print lower.name?>");
 	}
 
 	private InterpretedTemplate universaltemplate()
