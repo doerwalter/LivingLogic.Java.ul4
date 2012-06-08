@@ -143,7 +143,7 @@ public class Decoder
 			while (true)
 			{
 				typecode = reader.read();
-				if (typecode == '.')
+				if (typecode == ']')
 					return result;
 				else
 					result.add(load(typecode));
@@ -159,7 +159,7 @@ public class Decoder
 			while (true)
 			{
 				typecode = reader.read();
-				if (typecode == '.')
+				if (typecode == '}')
 					return result;
 				else
 				{

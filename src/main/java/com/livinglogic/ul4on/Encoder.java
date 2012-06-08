@@ -100,7 +100,7 @@ public class Encoder
 				writer.write("L");
 				for (Object o: (Collection)obj)
 					dump(o);
-				writer.write(".");
+				writer.write("]");
 			}
 			else if (obj instanceof Map)
 			{
@@ -111,7 +111,7 @@ public class Encoder
 					dump(entry.getKey());
 					dump(entry.getValue());
 				}
-				writer.write(".");
+				writer.write("}");
 			}
 			else
 			{
