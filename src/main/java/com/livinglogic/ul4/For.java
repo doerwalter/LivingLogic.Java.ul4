@@ -28,9 +28,10 @@ public abstract class For extends Block
 		this.container = container;
 	}
 
-	public void finish(InterpretedTemplate template, Location startLocation, Location endLocation)
+	public void finish(InterpretedTemplate template, Location endlocation)
 	{
-		String type = endLocation.getCode().trim();
+		super.finish(template, endlocation);
+		String type = endlocation.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("for"))
 			throw new BlockException("for ended by end" + type);
 	}

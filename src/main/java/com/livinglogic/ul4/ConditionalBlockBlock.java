@@ -70,9 +70,11 @@ class ConditionalBlockBlock extends Block
 		content.add(item);
 	}
 
-	public void finish(InterpretedTemplate template, Location startLocation, Location endLocation)
+	public void finish(InterpretedTemplate template, Location endlocation)
 	{
-		String type = endLocation.getCode().trim();
+		super.finish(template, endlocation);
+		((Block)content.get(content.size()-1)).endlocation = endlocation;
+		String type = endlocation.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("if"))
 			throw new BlockException("if ended by end" + type);
 	}

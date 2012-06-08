@@ -18,6 +18,7 @@ import com.livinglogic.ul4on.Decoder;
 abstract class Block extends AST
 {
 	protected List<AST> content = new LinkedList<AST>();
+	protected Location endlocation = null;
 
 	public Block(Location location)
 	{
@@ -29,8 +30,9 @@ abstract class Block extends AST
 		content.add(item);
 	}
 
-	public void finish(InterpretedTemplate template, Location startLocation, Location endLocation)
+	public void finish(InterpretedTemplate template, Location endlocation)
 	{
+		this.endlocation = endlocation;
 	}
 
 	abstract public boolean handleLoopControl(String name);
@@ -61,6 +63,7 @@ abstract class Block extends AST
 		if (valueMakers == null)
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
+			v.put("endlocation", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).endlocation;}});
 			v.put("content", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).content;}});
 			valueMakers = v;
 		}

@@ -162,7 +162,7 @@ public class InterpretedTemplate extends Block implements Template
 				{
 					if (stack.size() > 1)
 					{
-						innerBlock.finish(this, stack.peek().getLocation(), location);
+						innerBlock.finish(this, location);
 						stack.pop();
 					}
 					else
@@ -459,12 +459,13 @@ public class InterpretedTemplate extends Block implements Template
 		return "template";
 	}
 
-	public void finish(InterpretedTemplate template, Location startLocation, Location endLocation)
+	public void finish(InterpretedTemplate template, Location endlocation)
 	{
-		String type = endLocation.getCode().trim();
+		super.finish(template, endlocation);
+		String type = endlocation.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("def"))
 			throw new BlockException("def ended by end" + type);
-		source = template.source.substring(startLocation.starttag, endLocation.endtag);
+		source = template.source;
 	}
 
 	public boolean handleLoopControl(String name)
