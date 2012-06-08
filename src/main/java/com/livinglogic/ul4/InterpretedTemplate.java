@@ -274,7 +274,6 @@ public class InterpretedTemplate extends Block implements Template
 	 * loads a template from a string in the UL4ON serialization format.
 	 * @param data The template in serialized form.
 	 * @return The template object.
-	 * @throws IOException if reading from the stream fails
 	 */
 	public static InterpretedTemplate loads(String data)
 	{
