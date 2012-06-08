@@ -47,7 +47,7 @@ abstract class Block extends AST
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		endlocation.dump(content);
+		encoder.dump(endlocation);
 		encoder.dump(content);
 	}
 
