@@ -6,17 +6,17 @@
 
 package com.livinglogic.ul4;
 
-public class FunctionJSON implements Function
+public class FunctionAsUL4ON implements Function
 {
 	public Object call(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return Utils.json(args[0]);
-		throw new ArgumentCountMismatchException("function", "json", args.length, 1);
+			return com.livinglogic.ul4on.Utils.dumps(args[0]);
+		throw new ArgumentCountMismatchException("function", "asul4on", args.length, 1);
 	}
 
 	public String getName()
 	{
-		return "json";
+		return "asul4on";
 	}
 }

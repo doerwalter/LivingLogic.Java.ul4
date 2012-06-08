@@ -1070,57 +1070,57 @@ public class UL4Test
 	}
 
 	@Test
-	public void function_json()
+	public void function_asjson()
 	{
-		checkTemplateOutput("null", "<?print json(data)?>", "data", null);
-		checkTemplateOutput("false", "<?print json(data)?>", "data", false);
-		checkTemplateOutput("true", "<?print json(data)?>", "data", true);
-		checkTemplateOutput("42", "<?print json(data)?>", "data", 42);
+		checkTemplateOutput("null", "<?print asjson(data)?>", "data", null);
+		checkTemplateOutput("false", "<?print asjson(data)?>", "data", false);
+		checkTemplateOutput("true", "<?print asjson(data)?>", "data", true);
+		checkTemplateOutput("42", "<?print asjson(data)?>", "data", 42);
 		// no check for float
-		checkTemplateOutput("\"abc\"", "<?print json(data)?>", "data", "abc");
-		checkTemplateOutput("[1, 2, 3]", "<?print json(data)?>", "data", asList(1, 2, 3));
-		checkTemplateOutput("{\"one\": 1}", "<?print json(data)?>", "data", makeMap("one", 1));
+		checkTemplateOutput("\"abc\"", "<?print asjson(data)?>", "data", "abc");
+		checkTemplateOutput("[1, 2, 3]", "<?print asjson(data)?>", "data", asList(1, 2, 3));
+		checkTemplateOutput("{\"one\": 1}", "<?print asjson(data)?>", "data", makeMap("one", 1));
 	}
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
-	public void function_json_0_args()
+	public void function_asjson_0_args()
 	{
-		checkTemplateOutput("", "<?print json()?>");
+		checkTemplateOutput("", "<?print asjson()?>");
 	}
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
-	public void function_json_2_args()
+	public void function_asjson_2_args()
 	{
-		checkTemplateOutput("", "<?print json(1, 2)?>");
+		checkTemplateOutput("", "<?print asjson(1, 2)?>");
 	}
 
 	@Test
-	public void function_ul4on()
+	public void function_asul4on()
 	{
-		checkTemplateOutput(dumps(null), "<?print ul4on(data)?>", "data", null);
-		checkTemplateOutput(dumps(false), "<?print ul4on(data)?>", "data", false);
-		checkTemplateOutput(dumps(true), "<?print ul4on(data)?>", "data", true);
-		checkTemplateOutput(dumps(42), "<?print ul4on(data)?>", "data", 42);
-		checkTemplateOutput(dumps(42.5), "<?print ul4on(data)?>", "data", 42.5);
-		checkTemplateOutput(dumps("abc"), "<?print ul4on(data)?>", "data", "abc");
-		checkTemplateOutput(dumps(asList(1, 2, 3)), "<?print ul4on(data)?>", "data", asList(1, 2, 3));
-		checkTemplateOutput(dumps(makeMap("one", 1)), "<?print ul4on(data)?>", "data", makeMap("one", 1));
-	}
-
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
-	@Test
-	public void function_ul4on_0_args()
-	{
-		checkTemplateOutput("", "<?print ul4on()?>");
+		checkTemplateOutput(dumps(null), "<?print asul4on(data)?>", "data", null);
+		checkTemplateOutput(dumps(false), "<?print asul4on(data)?>", "data", false);
+		checkTemplateOutput(dumps(true), "<?print asul4on(data)?>", "data", true);
+		checkTemplateOutput(dumps(42), "<?print asul4on(data)?>", "data", 42);
+		checkTemplateOutput(dumps(42.5), "<?print asul4on(data)?>", "data", 42.5);
+		checkTemplateOutput(dumps("abc"), "<?print asul4on(data)?>", "data", "abc");
+		checkTemplateOutput(dumps(asList(1, 2, 3)), "<?print asul4on(data)?>", "data", asList(1, 2, 3));
+		checkTemplateOutput(dumps(makeMap("one", 1)), "<?print asul4on(data)?>", "data", makeMap("one", 1));
 	}
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
 	@Test
-	public void function_ul4on_2_args()
+	public void function_asul4on_0_args()
 	{
-		checkTemplateOutput("", "<?print ul4on(1, 2)?>");
+		checkTemplateOutput("", "<?print asul4on()?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@Test
+	public void function_asul4on_2_args()
+	{
+		checkTemplateOutput("", "<?print asul4on(1, 2)?>");
 	}
 
 	@Test
@@ -2080,6 +2080,22 @@ public class UL4Test
 
 		checkTemplateOutput("(3)(2)(1)", source, "x", "123");
 		checkTemplateOutput("(3)(2)(1)", source, "x", asList(1, 2, 3));
+	}
+
+	@Test
+	public void function_urlquote()
+	{
+		checkTemplateOutput("gurk", "<?print urlquote('gurk')?>");
+		checkTemplateOutput("%3C%3D%3E%2B%3F", "<?print urlquote('<=>+?')?>");
+		checkTemplateOutput("%7F%C3%BF%EF%BF%BF", "<?print urlquote('\u007f\u00ff\uffff')?>");
+	}
+
+	@Test
+	public void function_urlunquote()
+	{
+		checkTemplateOutput("gurk", "<?print urlunquote('gurk')?>");
+		checkTemplateOutput("<=>+?", "<?print urlunquote('%3C%3D%3E%2B%3F')?>");
+		checkTemplateOutput("\u007f\u00ff\uffff", "<?print urlunquote('%7F%C3%BF%EF%BF%BF')?>");
 	}
 
 	@Test
