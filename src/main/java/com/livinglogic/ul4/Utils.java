@@ -38,6 +38,9 @@ import java.io.PrintWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.net.URLDecoder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.ObjectUtils;
@@ -2354,6 +2357,40 @@ public class Utils
 	public static Object zip(Object... objs)
 	{
 		return new ZipIterator(objs);
+	}
+
+	public static Object urlquote(Object obj)
+	{
+		if (obj instanceof String)
+		{
+			try
+			{
+				return URLEncoder.encode((String)args[0], "utf-8");
+			}
+			catch (java.io.UnsupportedEncodingException ex)
+			{
+				// Can't happen
+				throw new RuntimeException(ex);
+			}
+		}
+		throw new UnsupportedOperationException("urlquote(" + Utils.objectType(obj) + ") not supported!");
+	}
+
+	public static Object urlunquote(Object obj)
+	{
+		if (obj instanceof String)
+		{
+			try
+			{
+				return URLDecoder.decode((String)args[0], "utf-8");
+			}
+			catch (java.io.UnsupportedEncodingException ex)
+			{
+				// Can't happen
+				throw new RuntimeException(ex);
+			}
+		}
+		throw new UnsupportedOperationException("urlunquote(" + Utils.objectType(obj) + ") not supported!");
 	}
 
 	public static Object split(Object obj)
