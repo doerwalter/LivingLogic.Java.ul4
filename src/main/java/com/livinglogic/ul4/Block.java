@@ -47,12 +47,14 @@ abstract class Block extends AST
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
+		endlocation.dump(content);
 		encoder.dump(content);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
+		endlocation = (Location)decoder.load();
 		content = (List<AST>)decoder.load();
 	}
 
