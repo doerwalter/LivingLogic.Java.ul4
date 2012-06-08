@@ -83,7 +83,7 @@ public class Location extends ObjectAsMap implements UL4ONSerializable
 		else
 			source = "";
 
-		return tagType + " at position " + (starttag+1) + " (line " + line + ", col " + col + ")" + source;
+		return tagType + " at position " + starttag + ":" + endtag + " (line " + line + ", col " + col + ")" + source;
 	}
 
 	public String getUL4ONName()
