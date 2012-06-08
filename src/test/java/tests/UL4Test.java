@@ -2455,6 +2455,17 @@ public class UL4Test
 		checkTemplateOutput("42", "<?print template.content[0].obj.value?>", "template", t);
 	}
 
+	@Test
+	public void templateattributes_localtemplate()
+	{
+		String source = "<?def lower?><?print t.lower()?><?end def?>";
+
+		checkTemplateOutput(source + "<?print lower.source?>", source + "<?print lower.source?>");
+		checkTemplateOutput(source, source + "<?print lower.source[lower.location.starttag:lower.endlocation.endtag]?>");
+		checkTemplateOutput("<?print t.lower()?>", source + "<?print lower.source[lower.location.endtag:lower.endlocation.starttag]?>");
+		checkTemplateOutput("lower?>", source + "<?print lower.name?>");
+	}
+
 	private InterpretedTemplate universaltemplate()
 	{
 		return getTemplate(
