@@ -2365,7 +2365,7 @@ public class Utils
 		{
 			try
 			{
-				return URLEncoder.encode((String)args[0], "utf-8");
+				return URLEncoder.encode((String)obj, "utf-8");
 			}
 			catch (java.io.UnsupportedEncodingException ex)
 			{
@@ -2382,7 +2382,7 @@ public class Utils
 		{
 			try
 			{
-				return URLDecoder.decode((String)args[0], "utf-8");
+				return URLDecoder.decode((String)obj, "utf-8");
 			}
 			catch (java.io.UnsupportedEncodingException ex)
 			{
