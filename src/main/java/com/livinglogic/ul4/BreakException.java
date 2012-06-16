@@ -6,6 +6,6 @@
 
 package com.livinglogic.ul4;
 
-class BreakException extends RuntimeException
+public class BreakException extends RuntimeException
 {
 }

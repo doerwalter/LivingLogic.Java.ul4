@@ -6,6 +6,6 @@
 
 package com.livinglogic.ul4;
 
-class ContinueException extends RuntimeException
+public class ContinueException extends RuntimeException
 {
 }
