@@ -3191,6 +3191,41 @@ public class Utils
 		throw new UnsupportedOperationException(objectType(obj) + ".endswith(" + objectType(arg) + ") not supported!");
 	}
 
+	public static Object r(Object obj)
+	{
+		if (obj instanceof Color)
+			return ((Color)obj).getR();
+		throw new UnsupportedOperationException(objectType(obj) + ".r() not supported!");
+	}
+
+	public static Object g(Object obj)
+	{
+		if (obj instanceof Color)
+			return ((Color)obj).getG();
+		throw new UnsupportedOperationException(objectType(obj) + ".g() not supported!");
+	}
+
+	public static Object b(Object obj)
+	{
+		if (obj instanceof Color)
+			return ((Color)obj).getB();
+		throw new UnsupportedOperationException(objectType(obj) + ".b() not supported!");
+	}
+
+	public static Object a(Object obj)
+	{
+		if (obj instanceof Color)
+			return ((Color)obj).getA();
+		throw new UnsupportedOperationException(objectType(obj) + ".a() not supported!");
+	}
+
+	public static Object lum(Object obj)
+	{
+		if (obj instanceof Color)
+			return ((Color)obj).lum();
+		throw new UnsupportedOperationException(objectType(obj) + ".lum() not supported!");
+	}
+
 	public static String unescapeUL4String(String string)
 	{
 		if (string == null)
