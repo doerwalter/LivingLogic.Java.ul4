@@ -3226,6 +3226,34 @@ public class Utils
 		throw new UnsupportedOperationException(objectType(obj) + ".lum() not supported!");
 	}
 
+	public static Object hsv(Object obj)
+	{
+		if (obj instanceof Color)
+			return ((Color)obj).hsv();
+		throw new UnsupportedOperationException(objectType(obj) + ".hsv() not supported!");
+	}
+
+	public static Object hsva(Object obj)
+	{
+		if (obj instanceof Color)
+			return ((Color)obj).hsva();
+		throw new UnsupportedOperationException(objectType(obj) + ".hsva() not supported!");
+	}
+
+	public static Object hls(Object obj)
+	{
+		if (obj instanceof Color)
+			return ((Color)obj).hls();
+		throw new UnsupportedOperationException(objectType(obj) + ".hls() not supported!");
+	}
+
+	public static Object hlsa(Object obj)
+	{
+		if (obj instanceof Color)
+			return ((Color)obj).hlsa();
+		throw new UnsupportedOperationException(objectType(obj) + ".hlsa() not supported!");
+	}
+
 	public static String unescapeUL4String(String string)
 	{
 		if (string == null)
