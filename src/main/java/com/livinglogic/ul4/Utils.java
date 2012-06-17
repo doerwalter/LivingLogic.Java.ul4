@@ -3198,6 +3198,13 @@ public class Utils
 		throw new UnsupportedOperationException(objectType(obj) + ".renders() not supported!");
 	}
 
+	public static Object renders(Object obj, Object variables)
+	{
+		if (obj instanceof Template && variables instanceof Map<String, Object>)
+			return ((Template)obj).renders((Map<String, Object>)variables);
+		throw new UnsupportedOperationException(objectType(obj) + ".renders(" + objectType(obj) + ") not supported!");
+	}
+
 	public static Object r(Object obj)
 	{
 		if (obj instanceof Color)
