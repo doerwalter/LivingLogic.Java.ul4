@@ -3191,6 +3191,13 @@ public class Utils
 		throw new UnsupportedOperationException(objectType(obj) + ".endswith(" + objectType(arg) + ") not supported!");
 	}
 
+	public static Object renders(Object obj)
+	{
+		if (obj instanceof Template)
+			return ((Template)obj).renders(null);
+		throw new UnsupportedOperationException(objectType(obj) + ".renders() not supported!");
+	}
+
 	public static Object r(Object obj)
 	{
 		if (obj instanceof Color)
