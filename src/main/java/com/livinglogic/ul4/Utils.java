@@ -3200,7 +3200,7 @@ public class Utils
 
 	public static Object renders(Object obj, Object variables)
 	{
-		if (obj instanceof Template && variables instanceof Map<String, Object>)
+		if (obj instanceof Template && variables instanceof Map)
 			return ((Template)obj).renders((Map<String, Object>)variables);
 		throw new UnsupportedOperationException(objectType(obj) + ".renders(" + objectType(obj) + ") not supported!");
 	}
