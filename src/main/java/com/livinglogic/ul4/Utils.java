@@ -1758,6 +1758,11 @@ public class Utils
 		return StringEscapeUtils.escapeCsv((String)obj);
 	}
 
+	public static Object toInteger()
+	{
+		return 0;
+	}
+
 	public static Object toInteger(Object obj)
 	{
 		if (obj instanceof String)
