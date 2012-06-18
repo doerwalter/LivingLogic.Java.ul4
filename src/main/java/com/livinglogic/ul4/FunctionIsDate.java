@@ -13,7 +13,7 @@ public class FunctionIsDate implements Function
 	public Object call(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return (null != args[0]) && (args[0] instanceof Date);
+			return Utils.isdate(args[0]);
 		throw new ArgumentCountMismatchException("function", "isdate", args.length, 1);
 	}
 
