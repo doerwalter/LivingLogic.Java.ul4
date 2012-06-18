@@ -1934,6 +1934,11 @@ public class Utils
 	public static SimpleDateFormat strDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	public static SimpleDateFormat strTimestampMicroFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'000'");
 
+	public static String str()
+	{
+		return "";
+	}
+
 	public static String str(Object obj)
 	{
 		if (obj == null)
