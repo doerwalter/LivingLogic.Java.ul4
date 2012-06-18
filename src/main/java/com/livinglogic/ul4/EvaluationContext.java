@@ -56,12 +56,12 @@ public class EvaluationContext
 		return Utils.getItem(variables, key);
 	}
 
-	public Object get(String key, Object default)
+	public Object get(String key, Object defaultValue)
 	{
 		Object result = variables.get(key);
 
 		if ((result == null) && !variables.containsKey(key))
-			return default;
+			return defaultValue;
 		return result;
 	}
 
