@@ -11,7 +11,7 @@ public class FunctionIsTemplate implements Function
 	public Object call(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return (null != args[0]) && (args[0] instanceof Template);
+			return Utils.istemplate(args[0]);
 		throw new ArgumentCountMismatchException("function", "istemplate", args.length, 1);
 	}
 

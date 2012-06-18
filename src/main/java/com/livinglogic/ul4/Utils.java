@@ -2168,6 +2168,11 @@ public class Utils
 		return (null != obj) && (obj instanceof Color);
 	}
 
+	public static boolean istemplate(Object obj)
+	{
+		return (null != obj) && (obj instanceof Template);
+	}
+
 	public static Object chr(Object obj)
 	{
 		if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short)
