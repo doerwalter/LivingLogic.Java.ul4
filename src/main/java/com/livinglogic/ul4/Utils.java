@@ -1732,6 +1732,11 @@ public class Utils
 		return sb.toString();
 	}
 
+	public static Date now()
+	{
+		return new Date();
+	}
+
 	public static Date utcnow()
 	{
 		DateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
