@@ -2163,7 +2163,7 @@ public class Utils
 		return (null != obj) && (obj instanceof Map) && !(obj instanceof Template);
 	}
 
-	public static boolean isdict(Object obj)
+	public static boolean iscolor(Object obj)
 	{
 		return (null != obj) && (obj instanceof Color);
 	}
