@@ -13,7 +13,7 @@ public class FunctionIsDict implements Function
 	public Object call(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return (null != args[0]) && (args[0] instanceof Map) && !(args[0] instanceof Template);
+			return Utils.isdict(args[0]);
 		throw new ArgumentCountMismatchException("function", "isdict", args.length, 1);
 	}
 

@@ -11,7 +11,7 @@ public class FunctionIsList implements Function
 	public Object call(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return (null != args[0]) && (args[0] instanceof java.util.List) && !(args[0] instanceof Color);
+			return Utils.islist(args[0]);
 		throw new ArgumentCountMismatchException("function", "islist", args.length, 1);
 	}
 

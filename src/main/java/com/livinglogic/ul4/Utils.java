@@ -2133,6 +2133,41 @@ public class Utils
 		return new SequenceIsLast(iterator(obj));
 	}
 
+	public static boolean isnone(Object obj)
+	{
+		return obj == null;
+	}
+
+	public static boolean isbool(Object obj)
+	{
+		return (obj != null) && (obj instanceof Boolean);
+	}
+
+	public static boolean isint(Object obj)
+	{
+		return (null != obj) && (obj instanceof BigInteger || obj instanceof Byte || obj instanceof Integer || obj instanceof Long || obj instanceof Short);
+	}
+
+	public static boolean isfloat(Object obj)
+	{
+		return (null != obj) && (obj instanceof BigDecimal || obj instanceof Float || obj instanceof Double);
+	}
+
+	public static boolean islist(Object obj)
+	{
+		return (null != obj) && (obj instanceof java.util.List) && !(obj instanceof Color);
+	}
+
+	public static boolean isdict(Object obj)
+	{
+		return (null != obj) && (obj instanceof Map) && !(obj instanceof Template);
+	}
+
+	public static boolean isdict(Object obj)
+	{
+		return (null != obj) && (obj instanceof Color);
+	}
+
 	public static Object chr(Object obj)
 	{
 		if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short)

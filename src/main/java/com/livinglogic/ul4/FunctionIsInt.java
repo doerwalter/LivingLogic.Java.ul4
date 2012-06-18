@@ -13,7 +13,7 @@ public class FunctionIsInt implements Function
 	public Object call(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return (null != args[0]) && (args[0] instanceof BigInteger || args[0] instanceof Byte || args[0] instanceof Integer || args[0] instanceof Long || args[0] instanceof Short);
+			return Utils.isint(args[0]);
 		throw new ArgumentCountMismatchException("function", "isint", args.length, 1);
 	}
 

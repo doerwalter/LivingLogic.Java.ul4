@@ -11,7 +11,7 @@ public class FunctionIsNone implements Function
 	public Object call(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return null == args[0];
+			return Utils.isnone(args[0]);
 		throw new ArgumentCountMismatchException("function", "isnone", args.length, 1);
 	}
 
