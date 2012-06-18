@@ -18,6 +18,18 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 public class FunctionAsJSON implements Function
 {
+	public String getName()
+	{
+		return "asjson";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "asjson", args.length, 1);
+	}
+
 	public static String call(Object obj)
 	{
 		if (obj == null)
@@ -120,17 +132,5 @@ public class FunctionAsJSON implements Function
 			return ((InterpretedTemplate)obj).javascriptSource();
 		}
 		return null;
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "asjson", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "asjson";
 	}
 }

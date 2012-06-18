@@ -9,7 +9,7 @@ package com.livinglogic.ul4;
 import java.net.URLDecoder;
 import java.io.UnsupportedEncodingException;
 
-public class FunctionURLUnQuote implements Function
+public class FunctionURLUnquote implements Function
 {
 	public static Object call(String obj)
 	{

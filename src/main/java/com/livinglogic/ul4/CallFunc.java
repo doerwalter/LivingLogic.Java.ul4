@@ -74,7 +74,7 @@ public class CallFunc extends AST
 			"randchoice", new FunctionRandChoice(),
 			"format", new FunctionFormat(),
 			"urlquote", new FunctionURLQuote(),
-			"urlunquote", new FunctionURLUnQuote(),
+			"urlunquote", new FunctionURLUnquote(),
 			"zip", new FunctionZip(),
 			"rgb", new FunctionRGB(),
 			"hls", new FunctionHLS(),

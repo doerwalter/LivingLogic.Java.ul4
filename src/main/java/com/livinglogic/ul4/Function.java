@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 public interface Function
 {
-	public Object evaluate(EvaluationContext context, Object... args);
-
 	public String getName();
+
+	public Object evaluate(EvaluationContext context, Object... args);
 }

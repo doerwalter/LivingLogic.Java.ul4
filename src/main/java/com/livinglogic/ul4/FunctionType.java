@@ -14,6 +14,18 @@ import java.math.BigDecimal;
 
 public class FunctionType implements Function
 {
+	public String getName()
+	{
+		return "type";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "type", args.length, 1);
+	}
+
 	public static String call(Object obj)
 	{
 		if (obj == null)
@@ -40,15 +52,4 @@ public class FunctionType implements Function
 			return null;
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "type", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "type";
-	}
 }
