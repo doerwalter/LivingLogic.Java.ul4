@@ -6,6 +6,10 @@
 
 package com.livinglogic.ul4;
 
+import java.math.BigInteger;
+import java.math.BigDecimal;
+import org.apache.commons.lang.math.NumberUtils;
+
 public class FunctionInt implements Function
 {
 	public static int call()
