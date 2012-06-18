@@ -1783,6 +1783,11 @@ public class Utils
 		throw new UnsupportedOperationException("int(" + objectType(obj1) + ", " + objectType(obj2) + ") not supported!");
 	}
 
+	public static Object toFloat()
+	{
+		return 0.0;
+	}
+
 	public static Object toFloat(Object obj)
 	{
 		if (obj instanceof String)
