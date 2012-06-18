@@ -56,6 +56,15 @@ public class EvaluationContext
 		return Utils.getItem(variables, key);
 	}
 
+	public Object get(String key, Object default)
+	{
+		Object result = variables.get(key);
+
+		if ((result == null) && !variables.containsKey(key))
+			return default;
+		return result;
+	}
+
 	public void remove(String key)
 	{
 		variables.remove(key);
