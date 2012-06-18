@@ -1607,36 +1607,6 @@ public class Utils
 		throw new UnsupportedOperationException(objectType(obj) + ".items() not supported!");
 	}
 
-	public static Color rgb(Object arg1, Object arg2, Object arg3)
-	{
-		return Color.fromrgb(toDouble(arg1), toDouble(arg2), toDouble(arg3));
-	}
-
-	public static Color rgb(Object arg1, Object arg2, Object arg3, Object arg4)
-	{
-		return Color.fromrgb(toDouble(arg1), toDouble(arg2), toDouble(arg3), toDouble(arg4));
-	}
-
-	public static Color hsv(Object arg1, Object arg2, Object arg3)
-	{
-		return Color.fromhsv(toDouble(arg1), toDouble(arg2), toDouble(arg3));
-	}
-
-	public static Color hsv(Object arg1, Object arg2, Object arg3, Object arg4)
-	{
-		return Color.fromhsv(toDouble(arg1), toDouble(arg2), toDouble(arg3), toDouble(arg4));
-	}
-
-	public static Color hls(Object arg1, Object arg2, Object arg3)
-	{
-		return Color.fromhls(toDouble(arg1), toDouble(arg2), toDouble(arg3));
-	}
-
-	public static Color hls(Object arg1, Object arg2, Object arg3, Object arg4)
-	{
-		return Color.fromhls(toDouble(arg1), toDouble(arg2), toDouble(arg3), toDouble(arg4));
-	}
-
 	public static Color withlum(Object arg1, Object arg2)
 	{
 		return ((Color)arg1).withlum(toDouble(arg2));
