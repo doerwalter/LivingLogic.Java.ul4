@@ -1241,36 +1241,6 @@ public class Utils
 		throw new RuntimeException("get(" + objectType(obj) + ", ?, ?) not supported!");
 	}
 
-	public static Object toInteger()
-	{
-		return 0;
-	}
-
-	public static Object toInteger(Object obj)
-	{
-		if (obj instanceof String)
-			return Integer.valueOf((String)obj);
-		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger)
-			return obj;
-		else if (obj instanceof Boolean)
-			return ((Boolean)obj).booleanValue() ? NumberUtils.INTEGER_ONE : NumberUtils.INTEGER_ZERO;
-		else if (obj instanceof Float || obj instanceof Double)
-			return ((Number)obj).intValue();
-		else if (obj instanceof BigDecimal)
-			return ((BigDecimal)obj).toBigInteger();
-		throw new UnsupportedOperationException("int(" + objectType(obj) + ") not supported!");
-	}
-
-	public static Object toInteger(Object obj1, Object obj2)
-	{
-		if (obj1 instanceof String)
-		{
-			if (obj2 instanceof Integer || obj2 instanceof Byte || obj2 instanceof Short || obj2 instanceof Long || obj2 instanceof BigInteger)
-				return Integer.valueOf((String)obj1, ((Number)obj2).intValue());
-		}
-		throw new UnsupportedOperationException("int(" + objectType(obj1) + ", " + objectType(obj2) + ") not supported!");
-	}
-
 	public static Iterator iterator(Object obj)
 	{
 		if (obj instanceof String)
