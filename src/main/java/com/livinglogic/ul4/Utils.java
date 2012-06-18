@@ -1976,7 +1976,7 @@ public class Utils
 			return repr(obj);
 	}
 
-	public static String json(Object obj)
+	public static String asjson(Object obj)
 	{
 		if (obj == null)
 			return "null";
@@ -2049,7 +2049,7 @@ public class Utils
 					first = false;
 				else
 					sb.append(", ");
-				sb.append(json(o));
+				sb.append(asjson(o));
 			}
 			sb.append("]");
 			return sb.toString();
@@ -2066,9 +2066,9 @@ public class Utils
 					first = false;
 				else
 					sb.append(", ");
-				sb.append(json(entry.getKey()));
+				sb.append(asjson(entry.getKey()));
 				sb.append(": ");
-				sb.append(json(entry.getValue()));
+				sb.append(asjson(entry.getValue()));
 			}
 			sb.append("}");
 			return sb.toString();

@@ -11,7 +11,7 @@ public class FunctionAsJSON implements Function
 	public Object call(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return Utils.json(args[0]);
+			return Utils.asjson(args[0]);
 		throw new ArgumentCountMismatchException("function", "asjson", args.length, 1);
 	}
 
