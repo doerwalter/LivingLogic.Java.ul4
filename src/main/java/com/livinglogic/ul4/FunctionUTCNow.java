@@ -6,12 +6,35 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Date;
+import java.util.TimeZone;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+
 public class FunctionUTCNow implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public static Date call()
+	{
+		DateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		String formatted = df.format(new Date());
+		df.setTimeZone(TimeZone.getDefault());
+		try
+		{
+			return df.parse(formatted);
+		}
+		catch (ParseException ex)
+		{
+			// Can't happen
+			return null;
+		}
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 0)
-			return Utils.utcnow();
+			return call();
 		throw new ArgumentCountMismatchException("function", "utcnow", args.length, 0);
 	}
 

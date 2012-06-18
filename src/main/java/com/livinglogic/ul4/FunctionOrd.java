@@ -8,10 +8,28 @@ package com.livinglogic.ul4;
 
 public class FunctionOrd implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public static int call(String obj)
+	{
+		if (obj.length() != 1)
+		{
+			throw new IllegalArgumentException("String " + obj + " contains more than one unicode character!");
+		}
+		return (int)obj.charAt(0);
+	}
+
+	public static int call(Object obj)
+	{
+		if (obj instanceof String)
+		{
+			return call((String)obj);
+		}
+		throw new UnsupportedOperationException("ord(" + Utils.objectType(obj) + ") not supported!");
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return Utils.ord(args[0]);
+			return call(args[0]);
 		throw new ArgumentCountMismatchException("function", "ord", args.length, 1);
 	}
 

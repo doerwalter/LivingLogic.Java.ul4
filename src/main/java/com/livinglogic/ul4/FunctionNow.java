@@ -10,10 +10,15 @@ import java.util.Date;
 
 public class FunctionNow implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public static Date call()
+	{
+		return new Date();
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 0)
-			return Utils.now();
+			return call();
 		throw new ArgumentCountMismatchException("function", "now", args.length, 0);
 	}
 

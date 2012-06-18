@@ -6,12 +6,21 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Random;
+
 public class FunctionRandom implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	private static Random rng = new Random();
+
+	public static double call()
+	{
+		return rng.nextDouble();
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 0)
-			return Utils.random();
+			return call();
 		throw new ArgumentCountMismatchException("function", "random", args.length, 0);
 	}
 

@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class KeywordMethodRender implements KeywordMethod
 {
-	public Object call(EvaluationContext context, Object obj, Map<String, Object> args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Map<String, Object> args) throws IOException
 	{
 		if (null != obj && obj instanceof Template)
 		{

@@ -8,10 +8,15 @@ package com.livinglogic.ul4;
 
 public class FunctionIsStr implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public static boolean call(Object obj)
+	{
+		return (null != obj) && (obj instanceof String);
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return Utils.isstr(args[0]);
+			return call(args[0]);
 		throw new ArgumentCountMismatchException("function", "isstr", args.length, 1);
 	}
 

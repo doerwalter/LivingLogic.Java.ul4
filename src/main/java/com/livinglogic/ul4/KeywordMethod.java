@@ -11,7 +11,7 @@ import java.util.Map;
 
 public interface KeywordMethod
 {
-	public Object call(EvaluationContext context, Object obj, Map<String, Object> args) throws IOException;
+	public Object evaluate(EvaluationContext context, Object obj, Map<String, Object> args) throws IOException;
 
 	public String getName();
 }

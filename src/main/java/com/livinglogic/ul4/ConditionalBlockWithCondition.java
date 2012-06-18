@@ -26,7 +26,7 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 
 	public boolean hasToBeExecuted(EvaluationContext context) throws IOException
 	{
-		return Utils.getBool(condition.decoratedEvaluate(context));
+		return FunctionBool.call(condition.decoratedEvaluate(context));
 	}
 
 	public String toString(int indent)

@@ -22,6 +22,6 @@ class Not extends Unary
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		return !Utils.getBool(obj.decoratedEvaluate(context));
+		return !FunctionBool.call(obj.decoratedEvaluate(context));
 	}
 }

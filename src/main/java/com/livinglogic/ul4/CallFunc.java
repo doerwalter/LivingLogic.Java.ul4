@@ -104,7 +104,7 @@ public class CallFunc extends AST
 		StringBuffer buffer = new StringBuffer();
 
 		buffer.append("callfunc(");
-		buffer.append(Utils.repr(function.getName()));
+		buffer.append(FunctionRepr.call(function.getName()));
 		for (AST arg : args)
 		{
 			buffer.append(", ");
@@ -125,7 +125,7 @@ public class CallFunc extends AST
 
 		for (int i = 0; i < realArgs.length; ++i)
 			realArgs[i] = args.get(i).decoratedEvaluate(context);
-		return function.call(context, realArgs);
+		return function.evaluate(context, realArgs);
 	}
 
 	private static Function getFunction(String funcname)

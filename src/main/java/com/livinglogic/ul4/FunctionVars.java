@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 public class FunctionVars implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 0)
 			return context.getVariables();

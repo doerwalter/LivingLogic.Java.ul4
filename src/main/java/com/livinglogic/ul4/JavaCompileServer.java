@@ -61,7 +61,7 @@ class JavaCompileHandler extends Thread
 				inputBuffer.append("\n");
 			}
 			inputBuffer.append("\t}\n");
-			System.out.println("INPUT: " + Utils.repr(inputBuffer.toString()));
+			System.out.println("INPUT: " + FunctionRepr.call(inputBuffer.toString()));
 			Executor executor = (Executor)Utils.compileToJava(inputBuffer.toString(), null, "com.livinglogic.ul4.Executor").newInstance();
 			String output;
 			String status;
@@ -78,7 +78,7 @@ class JavaCompileHandler extends Thread
 			}
 
 			System.out.print("STATUS: " + status);
-			System.out.println("OUTPUT: " + Utils.repr(output));
+			System.out.println("OUTPUT: " + FunctionRepr.call(output));
 			out.write(status.getBytes("UTF-8"));
 			out.flush();
 			out.write(output.getBytes("UTF-8"));

@@ -10,10 +10,15 @@ import java.math.BigInteger;
 
 public class FunctionIsInt implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public static boolean call(Object obj)
+	{
+		return (null != obj) && (obj instanceof BigInteger || obj instanceof Byte || obj instanceof Integer || obj instanceof Long || obj instanceof Short);
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return Utils.isint(args[0]);
+			return call(args[0]);
 		throw new ArgumentCountMismatchException("function", "isint", args.length, 1);
 	}
 

@@ -27,7 +27,7 @@ class Text extends AST
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("text(");
-		buffer.append(Utils.repr(getText()));
+		buffer.append(FunctionRepr.call(getText()));
 		buffer.append(")\n");
 		return buffer.toString();
 	}

@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 public class FunctionGet implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
 			return Utils.get(context.getVariables(), args[0]);

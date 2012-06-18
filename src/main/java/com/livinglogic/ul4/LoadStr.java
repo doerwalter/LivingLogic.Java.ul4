@@ -32,7 +32,7 @@ public class LoadStr extends LoadConst
 
 	public String toString(int indent)
 	{
-		return Utils.repr(value);
+		return FunctionRepr.call(value);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

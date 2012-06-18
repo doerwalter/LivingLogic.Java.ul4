@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 public class FunctionHLS implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 3)
 			return Utils.hls(args[0], args[1], args[2]);

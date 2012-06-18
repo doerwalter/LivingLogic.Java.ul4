@@ -96,7 +96,7 @@ public class CallMeth extends AST
 		buffer.append("callmeth(");
 		buffer.append(obj);
 		buffer.append(", ");
-		buffer.append(Utils.repr(method.getName()));
+		buffer.append(FunctionRepr.call(method.getName()));
 		for (AST arg : args)
 		{
 			buffer.append(", ");
@@ -119,7 +119,7 @@ public class CallMeth extends AST
 
 		for (int i = 0; i < realArgs.length; ++i)
 			realArgs[i] = args.get(i).decoratedEvaluate(context);
-		return method.call(context, obj, realArgs);
+		return method.evaluate(context, obj, realArgs);
 	}
 
 	private static Method getMethod(String methname)

@@ -6,14 +6,86 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Date;
+import java.util.Collection;
+import java.util.Map;
+
 public class FunctionBool implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public static boolean call()
+	{
+		return false;
+	}
+
+	public static boolean call(Boolean obj)
+	{
+		return obj.booleanValue();
+	}
+
+	public static boolean call(String obj)
+	{
+		return (obj.length() > 0);
+	}
+
+	public static boolean call(Integer obj)
+	{
+		return (obj.intValue() != 0);
+	}
+
+	public static boolean call(Long obj)
+	{
+		return (obj.longValue() != 0);
+	}
+
+	public static boolean call(Double obj)
+	{
+		return (obj.doubleValue() != 0.);
+	}
+
+	public static boolean call(Date obj)
+	{
+		return true;
+	}
+
+	public static boolean call(Collection obj)
+	{
+		return !obj.isEmpty();
+	}
+
+	public static boolean call(Map obj)
+	{
+		return !obj.isEmpty();
+	}
+
+	public static boolean call(Object obj)
+	{
+		if (null == obj)
+			return false;
+		else if (obj instanceof Boolean)
+			return call((Boolean)obj);
+		else if (obj instanceof String)
+			return call((String)obj);
+		else if (obj instanceof Integer)
+			return call((Integer)obj);
+		else if (obj instanceof Long)
+			return call((Long)obj);
+		else if (obj instanceof Double)
+			return call((Double)obj);
+		else if (obj instanceof Date)
+			return call((Date)obj);
+		else if (obj instanceof Collection)
+			return call((Collection)obj);
+		else if (obj instanceof Map)
+			return call((Map)obj);
+		return true;
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 0)
-			return false;
+			return call();
 		else if (args.length == 1)
-			return Utils.getBool(args[0]);
+			return call(args[0]);
 		throw new ArgumentCountMismatchException("function", "bool", args.length, 0);
 	}
 

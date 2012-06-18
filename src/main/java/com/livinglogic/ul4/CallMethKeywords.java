@@ -70,7 +70,7 @@ public class CallMethKeywords extends AST
 		buffer.append("callmethkw(");
 		buffer.append(obj.toString(indent));
 		buffer.append(", ");
-		buffer.append(Utils.repr(method.getName()));
+		buffer.append(FunctionRepr.call(method.getName()));
 		for (CallArg arg : args)
 		{
 			buffer.append(", ");
@@ -94,7 +94,7 @@ public class CallMethKeywords extends AST
 
 		for (CallArg arg : this.args)
 			arg.addTo(context, args);
-		return method.call(context, obj, args);
+		return method.evaluate(context, obj, args);
 	}
 
 	KeywordMethod getMethod(String methname)

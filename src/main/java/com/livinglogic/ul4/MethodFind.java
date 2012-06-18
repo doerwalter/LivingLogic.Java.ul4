@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class MethodFind implements Method
 {
-	public Object call(EvaluationContext context, Object obj, Object... args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
 	{
 		switch (args.length)
 		{

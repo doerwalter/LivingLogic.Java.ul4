@@ -6,12 +6,35 @@
 
 package com.livinglogic.ul4;
 
+import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
+
 public class FunctionURLQuote implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public static Object call(String obj)
+	{
+		try
+		{
+			return URLEncoder.encode(obj, "utf-8");
+		}
+		catch (UnsupportedEncodingException ex)
+		{
+			// Can't happen
+			throw new RuntimeException(ex);
+		}
+	}
+
+	public static Object call(Object obj)
+	{
+		if (obj instanceof String)
+			return call((String)obj);
+		throw new UnsupportedOperationException("urlquote(" + Utils.objectType(obj) + ") not supported!");
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return Utils.urlquote(args[0]);
+			return call(args[0]);
 		throw new ArgumentCountMismatchException("function", "urlquote", args.length, 1);
 	}
 

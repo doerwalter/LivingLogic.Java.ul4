@@ -31,7 +31,7 @@ abstract class ChangeVar extends AST
 
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
-		buffer.append(getType() + "(" + Utils.repr(varname) + ", " + value + ")\n");
+		buffer.append(getType() + "(" + FunctionRepr.call(varname) + ", " + value + ")\n");
 		return buffer.toString();
 	}
 

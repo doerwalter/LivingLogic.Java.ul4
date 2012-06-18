@@ -10,10 +10,15 @@ import java.util.Date;
 
 public class FunctionIsDate implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public static boolean call(Object obj)
+	{
+		return (null != obj) && (obj instanceof Date);
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return Utils.isdate(args[0]);
+			return call(args[0]);
 		throw new ArgumentCountMismatchException("function", "isdate", args.length, 1);
 	}
 

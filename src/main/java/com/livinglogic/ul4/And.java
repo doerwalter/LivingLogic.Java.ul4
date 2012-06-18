@@ -23,7 +23,7 @@ class And extends Binary
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		Object obj2ev = obj2.decoratedEvaluate(context);
-		if (Utils.getBool(obj2ev))
+		if (FunctionBool.call(obj2ev))
 			return obj1.decoratedEvaluate(context);
 		else
 			return obj2ev;

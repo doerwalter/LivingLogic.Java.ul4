@@ -6,12 +6,41 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Collection;
+import java.util.Map;
+
 public class FunctionLen implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public static int call(String obj)
+	{
+		return obj.length();
+	}
+
+	public static int call(Collection obj)
+	{
+		return obj.size();
+	}
+
+	public static int call(Map obj)
+	{
+		return obj.size();
+	}
+
+	public static Object call(Object obj)
+	{
+		if (obj instanceof String)
+			return call((String)obj);
+		else if (obj instanceof Collection)
+			return call((Collection)obj);
+		else if (obj instanceof Map)
+			return call((Map)obj);
+		throw new UnsupportedOperationException("len(" + Utils.objectType(obj) + ") not supported!");
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return Utils.len(args[0]);
+			return call(args[0]);
 		throw new ArgumentCountMismatchException("function", "len", args.length, 1);
 	}
 

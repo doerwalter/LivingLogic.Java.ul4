@@ -77,7 +77,7 @@ public class Location extends ObjectAsMap implements UL4ONSerializable
 
 		if (type != null)
 		{
-			String tag = Utils.repr(getTag());
+			String tag = FunctionRepr.call(getTag());
 			source = ": " + tag.substring(1, tag.length()-1);
 		}
 		else

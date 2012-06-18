@@ -29,7 +29,7 @@ public class DelVar extends AST
 
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
-		buffer.append("delvar(" + Utils.repr(varname) + ")\n");
+		buffer.append("delvar(" + FunctionRepr.call(varname) + ")\n");
 		return buffer.toString();
 	}
 

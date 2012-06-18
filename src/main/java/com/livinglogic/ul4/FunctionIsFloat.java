@@ -10,10 +10,15 @@ import java.math.BigDecimal;
 
 public class FunctionIsFloat implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public static boolean call(Object obj)
+	{
+		return (null != obj) && (obj instanceof BigDecimal || obj instanceof Float || obj instanceof Double);
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return (null != args[0]) && (args[0] instanceof BigDecimal || args[0] instanceof Float || args[0] instanceof Double);
+			return call(args[0]);
 		throw new ArgumentCountMismatchException("function", "isfloat", args.length, 1);
 	}
 

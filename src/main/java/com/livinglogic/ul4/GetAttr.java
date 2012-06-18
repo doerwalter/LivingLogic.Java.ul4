@@ -27,7 +27,7 @@ public class GetAttr extends AST
 
 	public String toString(int indent)
 	{
-		return "getattr(" + obj + ", " + Utils.repr(attrname) + ")";
+		return "getattr(" + obj + ", " + FunctionRepr.call(attrname) + ")";
 	}
 
 	public String getType()

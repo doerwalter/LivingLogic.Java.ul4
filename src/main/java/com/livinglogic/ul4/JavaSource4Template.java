@@ -73,7 +73,7 @@ public class JavaSource4Template
 		// 	if (opcode.location != lastLocation && opcode.name != Opcode.OC_TEXT)
 		// 	{
 		// 		lastLocation = opcode.location;
-		// 		String code = Utils.repr(lastLocation.getTag());
+		// 		String code = FunctionRepr.call(lastLocation.getTag());
 		// 		code = code.substring(1, code.length()-1);
 		// 		code("// " + lastLocation + ": " + code);
 		// 	}
@@ -234,7 +234,7 @@ public class JavaSource4Template
 		// 			code("continue;");
 		// 			break;
 		// 		case Opcode.OC_NOT:
-		// 			code("r" + opcode.r1 + " = !com.livinglogic.ul4.Utils.getBool(r" + opcode.r2 + ");");
+		// 			code("r" + opcode.r1 + " = !com.livinglogic.ul4.FunctionBool.call(r" + opcode.r2 + ");");
 		// 			break;
 		// 		case Opcode.OC_NEG:
 		// 			code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.neg(r" + opcode.r2 + ");");
@@ -282,10 +282,10 @@ public class JavaSource4Template
 		// 			code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.mod(r" + opcode.r2 + ", r" + opcode.r3 + ");");
 		// 			break;
 		// 		case Opcode.OC_AND:
-		// 			code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.getBool(r" + opcode.r3 + ") ? r" + opcode.r2 + " : r" + opcode.r3 + ";");
+		// 			code("r" + opcode.r1 + " = com.livinglogic.ul4.FunctionBool.call(r" + opcode.r3 + ") ? r" + opcode.r2 + " : r" + opcode.r3 + ";");
 		// 			break;
 		// 		case Opcode.OC_OR:
-		// 			code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.getBool(r" + opcode.r2 + ") ? r" + opcode.r2 + " : r" + opcode.r3 + ";");
+		// 			code("r" + opcode.r1 + " = com.livinglogic.ul4.FunctionBool.call(r" + opcode.r2 + ") ? r" + opcode.r2 + " : r" + opcode.r3 + ";");
 		// 			break;
 		// 		case Opcode.OC_CALLFUNC0:
 		// 			switch (opcode.argcode)
@@ -314,7 +314,7 @@ public class JavaSource4Template
 		// 					code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.csv(r" + opcode.r2 + ");");
 		// 					break;
 		// 				case Opcode.CF1_REPR:
-		// 					code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.repr(r" + opcode.r2 + ");");
+		// 					code("r" + opcode.r1 + " = com.livinglogic.ul4.FunctionRepr.call(r" + opcode.r2 + ");");
 		// 					break;
 		// 				case Opcode.CF1_ENUMERATE:
 		// 					code("r" + opcode.r1 + " = com.livinglogic.ul4.Utils.enumerate(r" + opcode.r2 + ");");
@@ -670,7 +670,7 @@ public class JavaSource4Template
 		// 			}
 		// 			break;
 		// 		case Opcode.OC_IF:
-		// 			code("if (com.livinglogic.ul4.Utils.getBool(r" + opcode.r1 + "))");
+		// 			code("if (com.livinglogic.ul4.FunctionBool.call(r" + opcode.r1 + "))");
 		// 			code("{");
 		// 			indent++;
 		// 			break;

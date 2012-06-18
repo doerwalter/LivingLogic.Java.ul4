@@ -6,12 +6,23 @@
 
 package com.livinglogic.ul4;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 public class FunctionCSV implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	public static String call(Object obj)
+	{
+		if (obj == null)
+			return "";
+		if (!(obj instanceof String))
+			obj = FunctionRepr.call(obj);
+		return StringEscapeUtils.escapeCsv((String)obj);
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return Utils.csv(args[0]);
+			return call(args[0]);
 		throw new ArgumentCountMismatchException("function", "csv", args.length, 1);
 	}
 

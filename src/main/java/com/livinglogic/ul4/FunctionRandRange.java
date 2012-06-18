@@ -6,18 +6,56 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Random;
+
 public class FunctionRandRange implements Function
 {
-	public Object call(EvaluationContext context, Object... args)
+	private static Random rng = new Random();
+
+	public static long call(Object stopObj)
+	{
+		long stop = Utils.toLong(stopObj);
+		double value = rng.nextDouble();
+		return (long)(value*stop);
+	}
+
+	public static long call(Object startObj, Object stopObj)
+	{
+		long start = Utils.toLong(startObj);
+		long stop = Utils.toLong(stopObj);
+		long width = stop-start;
+		double value = rng.nextDouble();
+		return start + ((long)(value*width));
+	}
+
+	public static long call(Object startObj, Object stopObj, Object stepObj)
+	{
+		long start = Utils.toLong(startObj);
+		long stop = Utils.toLong(stopObj);
+		long step = Utils.toLong(stepObj);
+		long width = stop-start;
+		double value = rng.nextDouble();
+
+		long n;
+		if (step > 0)
+			n = (width + step - 1) / step;
+		else if (step < 0)
+			n = (width + step + 1) / step;
+		else
+			throw new UnsupportedOperationException("step can't be 0 in randrange()");
+		return start + step*((long)(value * n));
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
 	{
 		switch (args.length)
 		{
 			case 1:
-				return Utils.randrange(args[0]);
+				return call(args[0]);
 			case 2:
-				return Utils.randrange(args[0], args[1]);
+				return call(args[0], args[1]);
 			case 3:
-				return Utils.randrange(args[0], args[1], args[1]);
+				return call(args[0], args[1], args[1]);
 			default:
 				throw new ArgumentCountMismatchException("function", "randrange", args.length, 1, 3);
 		}

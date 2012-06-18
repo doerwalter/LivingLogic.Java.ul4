@@ -48,7 +48,7 @@ public class ForUnpack extends For
 		for (String itername : iternames)
 		{
 			++count;
-			buffer.append(Utils.repr(itername));
+			buffer.append(FunctionRepr.call(itername));
 			if (count == 1 || count != iternames.size())
 				buffer.append(", ");
 		}

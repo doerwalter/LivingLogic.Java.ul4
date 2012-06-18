@@ -35,7 +35,7 @@ class PrintX extends Unary
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.write(Utils.xmlescape(obj.decoratedEvaluate(context)));
+		context.write(FunctionXMLEscape.call(obj.decoratedEvaluate(context)));
 		return null;
 	}
 }

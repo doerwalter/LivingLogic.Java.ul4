@@ -37,7 +37,7 @@ class Render extends Unary
 	{
 		Object object = obj.decoratedEvaluate(context);
 		if (object != null)
-			context.write(Utils.str(object));
+			context.write(FunctionStr.call(object));
 		return null;
 	}
 }

@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class MethodRender implements Method
 {
-	public Object call(EvaluationContext context, Object obj, Object... args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
 	{
 		if (null != obj && obj instanceof Template)
 		{
