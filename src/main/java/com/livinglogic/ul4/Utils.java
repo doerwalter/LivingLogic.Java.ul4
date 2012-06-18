@@ -2153,6 +2153,11 @@ public class Utils
 		return (null != obj) && (obj instanceof BigDecimal || obj instanceof Float || obj instanceof Double);
 	}
 
+	public static boolean isstr(Object obj)
+	{
+		return (null != obj) && (obj instanceof String);
+	}
+
 	public static boolean islist(Object obj)
 	{
 		return (null != obj) && (obj instanceof java.util.List) && !(obj instanceof Color);

@@ -11,7 +11,7 @@ public class FunctionIsStr implements Function
 	public Object call(EvaluationContext context, Object... args)
 	{
 		if (args.length == 1)
-			return (null != args[0]) && (args[0] instanceof String);
+			return Utils.isstr(args[0]);
 		throw new ArgumentCountMismatchException("function", "isstr", args.length, 1);
 	}
 
