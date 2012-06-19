@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class FunctionIsStr implements Function
 {
-	public static boolean call(Object obj)
+	public String getName()
 	{
-		return (null != obj) && (obj instanceof String);
+		return "isstr";
 	}
 
 	public Object evaluate(EvaluationContext context, Object... args)
@@ -20,8 +20,8 @@ public class FunctionIsStr implements Function
 		throw new ArgumentCountMismatchException("function", "isstr", args.length, 1);
 	}
 
-	public String getName()
+	public static boolean call(Object obj)
 	{
-		return "isstr";
+		return (null != obj) && (obj instanceof String);
 	}
 }

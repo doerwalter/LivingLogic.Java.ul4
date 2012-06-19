@@ -10,11 +10,9 @@ import java.util.Random;
 
 public class FunctionRandom implements Function
 {
-	private static Random rng = new Random();
-
-	public static double call()
+	public String getName()
 	{
-		return rng.nextDouble();
+		return "random";
 	}
 
 	public Object evaluate(EvaluationContext context, Object... args)
@@ -24,8 +22,10 @@ public class FunctionRandom implements Function
 		throw new ArgumentCountMismatchException("function", "random", args.length, 0);
 	}
 
-	public String getName()
+	private static Random rng = new Random();
+
+	public static double call()
 	{
-		return "random";
+		return rng.nextDouble();
 	}
 }

@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class FunctionIsTemplate implements Function
 {
-	public static boolean call(Object obj)
+	public String getName()
 	{
-		return (null != obj) && (obj instanceof Template);
+		return "istemplate";
 	}
 
 	public Object evaluate(EvaluationContext context, Object... args)
@@ -20,8 +20,8 @@ public class FunctionIsTemplate implements Function
 		throw new ArgumentCountMismatchException("function", "istemplate", args.length, 1);
 	}
 
-	public String getName()
+	public static boolean call(Object obj)
 	{
-		return "istemplate";
+		return (null != obj) && (obj instanceof Template);
 	}
 }

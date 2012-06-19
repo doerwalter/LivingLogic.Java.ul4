@@ -11,6 +11,30 @@ import java.util.Vector;
 
 public class FunctionEnumFL implements Function
 {
+	public String getName()
+	{
+		return "enumfl";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		else if (args.length == 2)
+			return call(args[0], args[1]);
+		throw new ArgumentCountMismatchException("function", "enumfl", args.length, 1, 2);
+	}
+
+	public static Object call(Object obj)
+	{
+		return new SequenceEnumFL(Utils.iterator(obj), 0);
+	}
+
+	public static Object call(Object obj, Object start)
+	{
+		return new SequenceEnumFL(Utils.iterator(obj), Utils.toInt(start));
+	}
+
 	private static class SequenceEnumFL implements Iterator<Vector>
 	{
 		Iterator sequenceIterator;
@@ -44,29 +68,5 @@ public class FunctionEnumFL implements Function
 		{
 			sequenceIterator.remove();
 		}
-	}
-
-	public static Object call(Object obj)
-	{
-		return new SequenceEnumFL(Utils.iterator(obj), 0);
-	}
-
-	public static Object call(Object obj, Object start)
-	{
-		return new SequenceEnumFL(Utils.iterator(obj), Utils.toInt(start));
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		else if (args.length == 2)
-			return call(args[0], args[1]);
-		throw new ArgumentCountMismatchException("function", "enumfl", args.length, 1, 2);
-	}
-
-	public String getName()
-	{
-		return "enumfl";
 	}
 }

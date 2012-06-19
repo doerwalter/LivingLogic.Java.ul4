@@ -14,6 +14,20 @@ import org.apache.commons.lang.StringUtils;
 
 public class FunctionStr implements Function
 {
+	public String getName()
+	{
+		return "str";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 0)
+			return call();
+		else if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "str", args.length, 0, 1);
+	}
+
 	public static SimpleDateFormat strDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 	private static SimpleDateFormat strDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static SimpleDateFormat strTimestampMicroFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'000'");
@@ -58,19 +72,5 @@ public class FunctionStr implements Function
 			return ((Color)obj).toString();
 		else
 			return FunctionRepr.call(obj);
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 0)
-			return call();
-		else if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "str", args.length, 0, 1);
-	}
-
-	public String getName()
-	{
-		return "str";
 	}
 }

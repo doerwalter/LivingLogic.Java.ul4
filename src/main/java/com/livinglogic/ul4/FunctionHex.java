@@ -10,6 +10,18 @@ import java.math.BigInteger;
 
 public class FunctionHex implements Function
 {
+	public String getName()
+	{
+		return "hex";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "hex", args.length, 1);
+	}
+
 	public static Object call(Object obj)
 	{
 		if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short)
@@ -43,17 +55,5 @@ public class FunctionHex implements Function
 				return "0x" + bi.toString(16);
 		}
 		throw new UnsupportedOperationException("hex(" + Utils.objectType(obj) + ") not supported!");
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "hex", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "hex";
 	}
 }

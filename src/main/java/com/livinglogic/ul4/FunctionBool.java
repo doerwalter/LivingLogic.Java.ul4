@@ -12,6 +12,20 @@ import java.util.Map;
 
 public class FunctionBool implements Function
 {
+	public String getName()
+	{
+		return "bool";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 0)
+			return call();
+		else if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "bool", args.length, 0);
+	}
+
 	public static boolean call()
 	{
 		return false;
@@ -78,19 +92,5 @@ public class FunctionBool implements Function
 		else if (obj instanceof Map)
 			return call((Map)obj);
 		return true;
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 0)
-			return call();
-		else if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "bool", args.length, 0);
-	}
-
-	public String getName()
-	{
-		return "bool";
 	}
 }

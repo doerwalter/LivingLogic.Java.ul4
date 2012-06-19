@@ -15,6 +15,18 @@ import java.util.Collections;
 
 public class FunctionSorted implements Function
 {
+	public String getName()
+	{
+		return "sorted";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "sorted", args.length, 1);
+	}
+
 	public static Vector call(String obj)
 	{
 		Vector retVal;
@@ -71,17 +83,5 @@ public class FunctionSorted implements Function
 		else if (obj instanceof Iterator)
 			return call((Iterator)obj);
 		throw new RuntimeException("sorted(" + Utils.objectType(obj) + ") not supported!");
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "sorted", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "sorted";
 	}
 }

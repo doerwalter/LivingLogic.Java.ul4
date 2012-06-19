@@ -10,9 +10,9 @@ import java.util.Date;
 
 public class FunctionNow implements Function
 {
-	public static Date call()
+	public String getName()
 	{
-		return new Date();
+		return "now";
 	}
 
 	public Object evaluate(EvaluationContext context, Object... args)
@@ -22,8 +22,8 @@ public class FunctionNow implements Function
 		throw new ArgumentCountMismatchException("function", "now", args.length, 0);
 	}
 
-	public String getName()
+	public static Date call()
 	{
-		return "now";
+		return new Date();
 	}
 }

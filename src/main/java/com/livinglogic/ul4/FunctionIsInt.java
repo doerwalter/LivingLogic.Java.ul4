@@ -10,9 +10,9 @@ import java.math.BigInteger;
 
 public class FunctionIsInt implements Function
 {
-	public static boolean call(Object obj)
+	public String getName()
 	{
-		return (null != obj) && (obj instanceof BigInteger || obj instanceof Byte || obj instanceof Integer || obj instanceof Long || obj instanceof Short);
+		return "isint";
 	}
 
 	public Object evaluate(EvaluationContext context, Object... args)
@@ -22,8 +22,8 @@ public class FunctionIsInt implements Function
 		throw new ArgumentCountMismatchException("function", "isint", args.length, 1);
 	}
 
-	public String getName()
+	public static boolean call(Object obj)
 	{
-		return "isint";
+		return (null != obj) && (obj instanceof BigInteger || obj instanceof Byte || obj instanceof Integer || obj instanceof Long || obj instanceof Short);
 	}
 }

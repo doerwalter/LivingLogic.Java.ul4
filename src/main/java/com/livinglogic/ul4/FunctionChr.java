@@ -8,6 +8,18 @@ package com.livinglogic.ul4;
 
 public class FunctionChr implements Function
 {
+	public String getName()
+	{
+		return "chr";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "chr", args.length, 1);
+	}
+
 	public static Object call(Object obj)
 	{
 		if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short)
@@ -36,17 +48,5 @@ public class FunctionChr implements Function
 		}
 		// FIXME: Add support for BigInteger
 		throw new UnsupportedOperationException("chr(" + Utils.objectType(obj) + ") not supported!");
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "chr", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "chr";
 	}
 }

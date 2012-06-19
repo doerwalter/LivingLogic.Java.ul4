@@ -11,6 +11,23 @@ import java.util.Vector;
 
 public class FunctionIsLast implements Function
 {
+	public String getName()
+	{
+		return "islast";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "islast", args.length, 1);
+	}
+
+	public static Object call(Object obj)
+	{
+		return new SequenceIsLast(Utils.iterator(obj));
+	}
+
 	private static class SequenceIsLast implements Iterator<Vector>
 	{
 		Iterator sequenceIterator;
@@ -38,22 +55,5 @@ public class FunctionIsLast implements Function
 		{
 			sequenceIterator.remove();
 		}
-	}
-
-	public static Object call(Object obj)
-	{
-		return new SequenceIsLast(Utils.iterator(obj));
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "islast", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "islast";
 	}
 }

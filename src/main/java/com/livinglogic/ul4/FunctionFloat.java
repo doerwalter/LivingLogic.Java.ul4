@@ -11,6 +11,20 @@ import java.math.BigDecimal;
 
 public class FunctionFloat implements Function
 {
+	public String getName()
+	{
+		return "float";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 0)
+			return call();
+		else if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "float", args.length, 0, 1);
+	}
+
 	public static Object call()
 	{
 		return 0.0;
@@ -31,19 +45,5 @@ public class FunctionFloat implements Function
 		else if (obj instanceof BigDecimal || obj instanceof Float || obj instanceof Double)
 			return obj;
 		throw new UnsupportedOperationException("float(" + Utils.objectType(obj) + ") not supported!");
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 0)
-			return call();
-		else if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "float", args.length, 0, 1);
-	}
-
-	public String getName()
-	{
-		return "float";
 	}
 }

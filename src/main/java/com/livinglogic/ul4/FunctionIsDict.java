@@ -10,9 +10,9 @@ import java.util.Map;
 
 public class FunctionIsDict implements Function
 {
-	public static boolean call(Object obj)
+	public String getName()
 	{
-		return (null != obj) && (obj instanceof Map) && !(obj instanceof Template);
+		return "isdict";
 	}
 
 	public Object evaluate(EvaluationContext context, Object... args)
@@ -22,8 +22,8 @@ public class FunctionIsDict implements Function
 		throw new ArgumentCountMismatchException("function", "isdict", args.length, 1);
 	}
 
-	public String getName()
+	public static boolean call(Object obj)
 	{
-		return "isdict";
+		return (null != obj) && (obj instanceof Map) && !(obj instanceof Template);
 	}
 }

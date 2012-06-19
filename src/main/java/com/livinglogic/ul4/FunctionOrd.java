@@ -8,6 +8,18 @@ package com.livinglogic.ul4;
 
 public class FunctionOrd implements Function
 {
+	public String getName()
+	{
+		return "ord";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "ord", args.length, 1);
+	}
+
 	public static int call(String obj)
 	{
 		if (obj.length() != 1)
@@ -24,17 +36,5 @@ public class FunctionOrd implements Function
 			return call((String)obj);
 		}
 		throw new UnsupportedOperationException("ord(" + Utils.objectType(obj) + ") not supported!");
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "ord", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "ord";
 	}
 }

@@ -11,6 +11,18 @@ import java.math.BigDecimal;
 
 public class FunctionAbs implements Function
 {
+	public String getName()
+	{
+		return "abs";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "abs", args.length, 1);
+	}
+
 	public static Object call(Object arg)
 	{
 		if (arg instanceof Integer)
@@ -64,17 +76,5 @@ public class FunctionAbs implements Function
 		else if (arg instanceof BigDecimal)
 			return ((BigDecimal)arg).abs();
 		throw new UnsupportedOperationException("abs(" + Utils.objectType(arg) + ") not supported!");
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "abs", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "abs";
 	}
 }

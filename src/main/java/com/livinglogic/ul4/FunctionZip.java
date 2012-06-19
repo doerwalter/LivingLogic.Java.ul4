@@ -11,6 +11,21 @@ import java.util.Vector;
 
 public class FunctionZip implements Function
 {
+	public String getName()
+	{
+		return "zip";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		return call(args);
+	}
+
+	public static Object call(Object... objs)
+	{
+		return new ZipIterator(objs);
+	}
+
 	private static class ZipIterator implements Iterator<Vector>
 	{
 		Iterator[] iterators;
@@ -47,20 +62,5 @@ public class FunctionZip implements Function
 			for (int i = 0; i < iterators.length; ++i)
 				iterators[i].remove();
 		}
-	}
-
-	public static Object call(Object... objs)
-	{
-		return new ZipIterator(objs);
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		return call(args);
-	}
-
-	public String getName()
-	{
-		return "zip";
 	}
 }

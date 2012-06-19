@@ -17,6 +17,18 @@ import java.util.Locale;
 
 public class FunctionFormat implements Function
 {
+	public String getName()
+	{
+		return "format";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 2)
+			return call(args[0], args[1]);
+		throw new ArgumentCountMismatchException("function", "format", args.length, 0);
+	}
+
 	private static HashMap<Integer, String> weekdayFormats;
 
 	static
@@ -184,17 +196,5 @@ public class FunctionFormat implements Function
 	public static String call(Object obj, Object formatString)
 	{
 		return call(obj, formatString, Locale.ENGLISH);
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 2)
-			return call(args[0], args[1]);
-		throw new ArgumentCountMismatchException("function", "format", args.length, 0);
-	}
-
-	public String getName()
-	{
-		return "format";
 	}
 }

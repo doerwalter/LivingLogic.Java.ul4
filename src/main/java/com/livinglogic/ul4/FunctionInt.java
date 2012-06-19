@@ -12,6 +12,22 @@ import org.apache.commons.lang.math.NumberUtils;
 
 public class FunctionInt implements Function
 {
+	public String getName()
+	{
+		return "int";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 0)
+			return call();
+		else if (args.length == 1)
+			return call(args[0]);
+		else if (args.length == 2)
+			return call(args[0], args[1]);
+		throw new ArgumentCountMismatchException("function", "int", args.length, 0, 2);
+	}
+
 	public static int call()
 	{
 		return 0;
@@ -40,21 +56,5 @@ public class FunctionInt implements Function
 				return Integer.valueOf((String)obj1, ((Number)obj2).intValue());
 		}
 		throw new UnsupportedOperationException("int(" + Utils.objectType(obj1) + ", " + Utils.objectType(obj2) + ") not supported!");
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 0)
-			return call();
-		else if (args.length == 1)
-			return call(args[0]);
-		else if (args.length == 2)
-			return call(args[0], args[1]);
-		throw new ArgumentCountMismatchException("function", "int", args.length, 0, 2);
-	}
-
-	public String getName()
-	{
-		return "int";
 	}
 }

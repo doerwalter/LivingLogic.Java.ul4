@@ -11,6 +11,18 @@ import java.io.UnsupportedEncodingException;
 
 public class FunctionURLQuote implements Function
 {
+	public String getName()
+	{
+		return "urlquote";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "urlquote", args.length, 1);
+	}
+
 	public static Object call(String obj)
 	{
 		try
@@ -29,17 +41,5 @@ public class FunctionURLQuote implements Function
 		if (obj instanceof String)
 			return call((String)obj);
 		throw new UnsupportedOperationException("urlquote(" + Utils.objectType(obj) + ") not supported!");
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "urlquote", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "urlquote";
 	}
 }

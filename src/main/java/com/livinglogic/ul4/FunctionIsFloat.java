@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 
 public class FunctionIsFloat implements Function
 {
-	public static boolean call(Object obj)
+	public String getName()
 	{
-		return (null != obj) && (obj instanceof BigDecimal || obj instanceof Float || obj instanceof Double);
+		return "isfloat";
 	}
 
 	public Object evaluate(EvaluationContext context, Object... args)
@@ -22,8 +22,8 @@ public class FunctionIsFloat implements Function
 		throw new ArgumentCountMismatchException("function", "isfloat", args.length, 1);
 	}
 
-	public String getName()
+	public static boolean call(Object obj)
 	{
-		return "isfloat";
+		return (null != obj) && (obj instanceof BigDecimal || obj instanceof Float || obj instanceof Double);
 	}
 }

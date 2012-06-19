@@ -14,6 +14,18 @@ import java.text.ParseException;
 
 public class FunctionUTCNow implements Function
 {
+	public String getName()
+	{
+		return "utcnow";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 0)
+			return call();
+		throw new ArgumentCountMismatchException("function", "utcnow", args.length, 0);
+	}
+
 	public static Date call()
 	{
 		DateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
@@ -29,17 +41,5 @@ public class FunctionUTCNow implements Function
 			// Can't happen
 			return null;
 		}
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 0)
-			return call();
-		throw new ArgumentCountMismatchException("function", "utcnow", args.length, 0);
-	}
-
-	public String getName()
-	{
-		return "utcnow";
 	}
 }

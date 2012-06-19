@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class FunctionIsColor implements Function
 {
-	public static boolean call(Object obj)
+	public String getName()
 	{
-		return (null != obj) && (obj instanceof Color);
+		return "iscolor";
 	}
 
 	public Object evaluate(EvaluationContext context, Object... args)
@@ -20,8 +20,8 @@ public class FunctionIsColor implements Function
 		throw new ArgumentCountMismatchException("function", "iscolor", args.length, 1);
 	}
 
-	public String getName()
+	public static boolean call(Object obj)
 	{
-		return "iscolor";
+		return (null != obj) && (obj instanceof Color);
 	}
 }

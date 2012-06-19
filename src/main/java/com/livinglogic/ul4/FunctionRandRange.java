@@ -10,6 +10,26 @@ import java.util.Random;
 
 public class FunctionRandRange implements Function
 {
+	public String getName()
+	{
+		return "randrange";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		switch (args.length)
+		{
+			case 1:
+				return call(args[0]);
+			case 2:
+				return call(args[0], args[1]);
+			case 3:
+				return call(args[0], args[1], args[1]);
+			default:
+				throw new ArgumentCountMismatchException("function", "randrange", args.length, 1, 3);
+		}
+	}
+
 	private static Random rng = new Random();
 
 	public static long call(Object stopObj)
@@ -44,25 +64,5 @@ public class FunctionRandRange implements Function
 		else
 			throw new UnsupportedOperationException("step can't be 0 in randrange()");
 		return start + step*((long)(value * n));
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		switch (args.length)
-		{
-			case 1:
-				return call(args[0]);
-			case 2:
-				return call(args[0], args[1]);
-			case 3:
-				return call(args[0], args[1], args[1]);
-			default:
-				throw new ArgumentCountMismatchException("function", "randrange", args.length, 1, 3);
-		}
-	}
-
-	public String getName()
-	{
-		return "randrange";
 	}
 }

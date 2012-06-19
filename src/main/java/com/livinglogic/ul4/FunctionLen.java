@@ -11,6 +11,18 @@ import java.util.Map;
 
 public class FunctionLen implements Function
 {
+	public String getName()
+	{
+		return "len";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "len", args.length, 1);
+	}
+
 	public static int call(String obj)
 	{
 		return obj.length();
@@ -35,17 +47,5 @@ public class FunctionLen implements Function
 		else if (obj instanceof Map)
 			return call((Map)obj);
 		throw new UnsupportedOperationException("len(" + Utils.objectType(obj) + ") not supported!");
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "len", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "len";
 	}
 }

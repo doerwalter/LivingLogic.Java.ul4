@@ -18,6 +18,23 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 public class FunctionRepr implements Function
 {
+	public String getName()
+	{
+		return "repr";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "repr", args.length, 1);
+	}
+
+	public static String call(Object obj)
+	{
+		return new Repr().toString(obj);
+	}
+
 	private static SimpleDateFormat isoReprDateFormatter = new SimpleDateFormat("@'('yyyy-MM-dd')'");
 	private static SimpleDateFormat isoReprDateTimeFormatter = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm:ss')'");
 	private static SimpleDateFormat isoReprTimestampMicroFormatter = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm:ss.SSS'000)'");
@@ -132,22 +149,5 @@ public class FunctionRepr implements Function
 			}
 			return false;
 		}
-	}
-
-	public static String call(Object obj)
-	{
-		return new Repr().toString(obj);
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "repr", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "repr";
 	}
 }

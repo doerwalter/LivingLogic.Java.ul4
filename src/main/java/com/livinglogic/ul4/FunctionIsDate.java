@@ -10,9 +10,9 @@ import java.util.Date;
 
 public class FunctionIsDate implements Function
 {
-	public static boolean call(Object obj)
+	public String getName()
 	{
-		return (null != obj) && (obj instanceof Date);
+		return "isdate";
 	}
 
 	public Object evaluate(EvaluationContext context, Object... args)
@@ -22,8 +22,8 @@ public class FunctionIsDate implements Function
 		throw new ArgumentCountMismatchException("function", "isdate", args.length, 1);
 	}
 
-	public String getName()
+	public static boolean call(Object obj)
 	{
-		return "isdate";
+		return (null != obj) && (obj instanceof Date);
 	}
 }

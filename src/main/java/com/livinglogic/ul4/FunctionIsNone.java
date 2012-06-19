@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class FunctionIsNone implements Function
 {
-	public static boolean call(Object obj)
+	public String getName()
 	{
-		return obj == null;
+		return "isnone";
 	}
 
 	public Object evaluate(EvaluationContext context, Object... args)
@@ -20,8 +20,8 @@ public class FunctionIsNone implements Function
 		throw new ArgumentCountMismatchException("function", "isnone", args.length, 1);
 	}
 
-	public String getName()
+	public static boolean call(Object obj)
 	{
-		return "isnone";
+		return obj == null;
 	}
 }

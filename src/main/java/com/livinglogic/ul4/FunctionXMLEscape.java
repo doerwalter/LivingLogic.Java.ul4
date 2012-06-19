@@ -8,6 +8,18 @@ package com.livinglogic.ul4;
 
 public class FunctionXMLEscape implements Function
 {
+	public String getName()
+	{
+		return "xmlescape";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "xmlescape", args.length, 1);
+	}
+
 	public static String call(Object obj)
 	{
 		if (obj == null)
@@ -57,17 +69,5 @@ public class FunctionXMLEscape implements Function
 			}
 		}
 		return sb.toString();
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "xmlescape", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "xmlescape";
 	}
 }

@@ -11,6 +11,18 @@ import java.util.List;
 
 public class FunctionRandChoice implements Function
 {
+	public String getName()
+	{
+		return "randchoice";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "randchoice", args.length, 1);
+	}
+
 	private static Random rng = new Random();
 
 	public static String call(String obj)
@@ -52,17 +64,5 @@ public class FunctionRandChoice implements Function
 		else if (obj instanceof Color)
 			return call((Color)obj);
 		throw new UnsupportedOperationException("randchoice(" + Utils.objectType(obj) + ") not supported!");
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "randchoice", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "randchoice";
 	}
 }

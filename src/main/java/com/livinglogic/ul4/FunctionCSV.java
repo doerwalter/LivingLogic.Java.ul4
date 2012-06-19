@@ -10,13 +10,9 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 public class FunctionCSV implements Function
 {
-	public static String call(Object obj)
+	public String getName()
 	{
-		if (obj == null)
-			return "";
-		if (!(obj instanceof String))
-			obj = FunctionRepr.call(obj);
-		return StringEscapeUtils.escapeCsv((String)obj);
+		return "csv";
 	}
 
 	public Object evaluate(EvaluationContext context, Object... args)
@@ -26,8 +22,12 @@ public class FunctionCSV implements Function
 		throw new ArgumentCountMismatchException("function", "csv", args.length, 1);
 	}
 
-	public String getName()
+	public static String call(Object obj)
 	{
-		return "csv";
+		if (obj == null)
+			return "";
+		if (!(obj instanceof String))
+			obj = FunctionRepr.call(obj);
+		return StringEscapeUtils.escapeCsv((String)obj);
 	}
 }

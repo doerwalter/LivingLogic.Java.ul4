@@ -12,6 +12,27 @@ import java.util.List;
 
 public class FunctionReversed implements Function
 {
+	public String getName()
+	{
+		return "reversed";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "reversed", args.length, 1);
+	}
+
+	public static Iterator call(Object obj)
+	{
+		if (obj instanceof String)
+			return new StringReversedIterator((String)obj);
+		else if (obj instanceof List)
+			return new ListReversedIterator((List)obj);
+		throw new UnsupportedOperationException("reversed(" + Utils.objectType(obj) + ") not supported!");
+	}
+
 	private static class StringReversedIterator implements Iterator<String>
 	{
 		String string;
@@ -80,26 +101,5 @@ public class FunctionReversed implements Function
 		{
 			list.remove(index);
 		}
-	}
-
-	public static Iterator call(Object obj)
-	{
-		if (obj instanceof String)
-			return new StringReversedIterator((String)obj);
-		else if (obj instanceof List)
-			return new ListReversedIterator((List)obj);
-		throw new UnsupportedOperationException("reversed(" + Utils.objectType(obj) + ") not supported!");
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "reversed", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "reversed";
 	}
 }

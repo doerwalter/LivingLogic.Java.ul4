@@ -11,6 +11,23 @@ import java.util.Vector;
 
 public class FunctionIsFirst implements Function
 {
+	public String getName()
+	{
+		return "isfirst";
+	}
+
+	public Object evaluate(EvaluationContext context, Object... args)
+	{
+		if (args.length == 1)
+			return call(args[0]);
+		throw new ArgumentCountMismatchException("function", "isfirst", args.length, 1);
+	}
+
+	public static Object call(Object obj)
+	{
+		return new SequenceIsFirst(Utils.iterator(obj));
+	}
+
 	private static class SequenceIsFirst implements Iterator<Vector>
 	{
 		Iterator sequenceIterator;
@@ -40,22 +57,5 @@ public class FunctionIsFirst implements Function
 		{
 			sequenceIterator.remove();
 		}
-	}
-
-	public static Object call(Object obj)
-	{
-		return new SequenceIsFirst(Utils.iterator(obj));
-	}
-
-	public Object evaluate(EvaluationContext context, Object... args)
-	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "isfirst", args.length, 1);
-	}
-
-	public String getName()
-	{
-		return "isfirst";
 	}
 }
