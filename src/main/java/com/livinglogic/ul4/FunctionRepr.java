@@ -66,11 +66,11 @@ public class FunctionRepr implements Function
 					.toString();
 			else if (obj instanceof Date)
 			{
-				if (Utils.microsecond(obj) != 0)
+				if (MethodMicrosecond.call(obj) != 0)
 					return isoReprTimestampMicroFormatter.format(obj);
 				else
 				{
-					if (Utils.hour(obj) != 0 || Utils.minute(obj) != 0 || Utils.second(obj) != 0)
+					if (MethodHour.call(obj) != 0 || MethodMinute.call(obj) != 0 || MethodSecond.call(obj) != 0)
 						return isoReprDateTimeFormatter.format(obj);
 					else
 						return isoReprDateFormatter.format(obj);

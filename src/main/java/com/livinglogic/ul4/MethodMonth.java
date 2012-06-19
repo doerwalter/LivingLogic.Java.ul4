@@ -6,23 +6,40 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Date;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class MethodMonth implements Method
 {
+	public String getName()
+	{
+		return "month";
+	}
+
 	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
 	{
 		switch (args.length)
 		{
 			case 0:
-				return Utils.month(obj);
+				return call(obj);
 			default:
 				throw new ArgumentCountMismatchException("method", "month", args.length, 0);
 		}
 	}
 
-	public String getName()
+	public static int call(Date obj)
 	{
-		return "month";
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(obj);
+		return calendar.get(Calendar.MONTH)+1;
+	}
+
+	public static int call(Object obj)
+	{
+		if (obj instanceof Date)
+			return call((Date)obj);
+		throw new UnsupportedOperationException(Utils.objectType(obj) + ".month() not supported!");
 	}
 }

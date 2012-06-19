@@ -10,19 +10,27 @@ import java.io.IOException;
 
 public class MethodA implements Method
 {
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
-	{
-		if (args.length == 0)
-		{
-			if (obj != null && obj instanceof Color)
-				return ((Color)obj).getA();
-			throw new UnsupportedOperationException(Utils.objectType(obj) + ".a() not supported!");
-		}
-		throw new ArgumentCountMismatchException("method", "a", args.length, 0);
-	}
-
 	public String getName()
 	{
 		return "a";
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	{
+		if (args.length == 0)
+			return call(obj);
+		throw new ArgumentCountMismatchException("method", "a", args.length, 0);
+	}
+
+	public static int call(Color obj)
+	{
+		return obj.getA();
+	}
+
+	public static int call(Object obj)
+	{
+		if (obj instanceof Color)
+			return call((Color)obj);
+		throw new UnsupportedOperationException(Utils.objectType(obj) + ".a() not supported!");
 	}
 }

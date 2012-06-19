@@ -10,19 +10,27 @@ import java.io.IOException;
 
 public class MethodLum implements Method
 {
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
-	{
-		if (args.length == 0)
-		{
-			if (obj != null && obj instanceof Color)
-				return ((Color)obj).lum();
-			throw new UnsupportedOperationException(Utils.objectType(obj) + ".lum) not supported!");
-		}
-		throw new ArgumentCountMismatchException("method", "lum", args.length, 0);
-	}
-
 	public String getName()
 	{
 		return "lum";
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	{
+		if (args.length == 0)
+			return call(obj);
+		throw new ArgumentCountMismatchException("method", "lum", args.length, 0);
+	}
+
+	public static double call(Color obj)
+	{
+		return obj.lum();
+	}
+
+	public static double call(Object obj)
+	{
+		if (obj instanceof Color)
+			return call((Color)obj);
+		throw new UnsupportedOperationException(Utils.objectType(obj) + ".lum() not supported!");
 	}
 }

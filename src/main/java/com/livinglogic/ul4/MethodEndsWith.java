@@ -10,19 +10,32 @@ import java.io.IOException;
 
 public class MethodEndsWith implements Method
 {
+	public String getName()
+	{
+		return "endswith";
+	}
+
 	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
 	{
 		switch (args.length)
 		{
 			case 1:
-				return Utils.endswith(obj, args[0]);
+				return call(obj, args[0]);
 			default:
 				throw new ArgumentCountMismatchException("method", "endswith", args.length, 1);
 		}
 	}
 
-	public String getName()
+	public static boolean call(String obj, String arg)
 	{
-		return "endswith";
+		return obj.endsWith(arg);
 	}
+
+	public static boolean call(Object obj, Object arg)
+	{
+		if (obj instanceof String && arg instanceof String)
+			return call((String)obj, (String)arg);
+		throw new UnsupportedOperationException(Utils.objectType(obj) + ".endswith(" + Utils.objectType(arg) + ") not supported!");
+	}
+
 }

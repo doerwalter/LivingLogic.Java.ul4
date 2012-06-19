@@ -6,23 +6,41 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Date;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class MethodSecond implements Method
 {
+	public String getName()
+	{
+		return "second";
+	}
+
 	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
 	{
 		switch (args.length)
 		{
 			case 0:
-				return Utils.second(obj);
+				return call(obj);
 			default:
 				throw new ArgumentCountMismatchException("method", "second", args.length, 0);
 		}
 	}
 
-	public String getName()
+	public static int call(Date obj)
 	{
-		return "second";
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(obj);
+		return calendar.get(Calendar.SECOND);
 	}
+
+	public static int call(Object obj)
+	{
+		if (obj instanceof Date)
+			return call((Date)obj);
+		throw new UnsupportedOperationException(Utils.objectType(obj) + ".second() not supported!");
+	}
+
 }

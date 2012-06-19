@@ -58,11 +58,11 @@ public class FunctionStr implements Function
 			return (String)obj;
 		else if (obj instanceof Date)
 		{
-			if (Utils.microsecond(obj) != 0)
+			if (MethodMicrosecond.call(obj) != 0)
 				return strTimestampMicroFormatter.format(obj);
 			else
 			{
-				if (Utils.hour(obj) != 0 || Utils.minute(obj) != 0 || Utils.second(obj) != 0)
+				if (MethodHour.call(obj) != 0 || MethodMinute.call(obj) != 0 || MethodSecond.call(obj) != 0)
 					return strDateTimeFormatter.format(obj);
 				else
 					return strDateFormatter.format(obj);

@@ -82,35 +82,6 @@ class StringIterator implements Iterator<String>
 	}
 }
 
-class MapItemIterator implements Iterator<Vector>
-{
-	Iterator iterator;
-
-	public MapItemIterator(Map map)
-	{
-		iterator = map.entrySet().iterator();
-	}
-
-	public boolean hasNext()
-	{
-		return iterator.hasNext();
-	}
-
-	public Vector next()
-	{
-		Vector retVal = new Vector(2);
-		Map.Entry entry = (Map.Entry)iterator.next();
-		retVal.add(entry.getKey());
-		retVal.add(entry.getValue());
-		return retVal;
-	}
-
-	public void remove()
-	{
-		iterator.remove();
-	}
-}
-
 public class Utils
 {
 	public static String objectType(Object obj)
@@ -1355,20 +1326,6 @@ public class Utils
 		throw new UnsupportedOperationException(objectType(obj) + ".strip(" + objectType(stripChars) + ") not supported!");
 	}
 
-	public static Object lstrip(Object obj)
-	{
-		if (obj instanceof String)
-			return StringUtils.stripStart((String)obj, null);
-		throw new UnsupportedOperationException(objectType(obj) + ".lstrip() not supported!");
-	}
-
-	public static Object lstrip(Object obj, Object stripChars)
-	{
-		if (obj instanceof String && stripChars instanceof String)
-			return StringUtils.stripStart((String)obj, (String)stripChars);
-		throw new UnsupportedOperationException(objectType(obj) + ".lstrip(" + objectType(stripChars) + ") not supported!");
-	}
-
 	public static Object rstrip(Object obj)
 	{
 		if (obj instanceof String)
@@ -1381,42 +1338,6 @@ public class Utils
 		if (obj instanceof String && stripChars instanceof String)
 			return StringUtils.stripEnd((String)obj, (String)stripChars);
 		throw new UnsupportedOperationException(objectType(obj) + ".rstrip(" + objectType(stripChars) + ") not supported!");
-	}
-
-	public static Object upper(String obj)
-	{
-		return obj.toUpperCase();
-	}
-
-	public static Object upper(Object obj)
-	{
-		if (obj instanceof String)
-			return upper((String)obj);
-		throw new UnsupportedOperationException(objectType(obj) + ".upper() not supported!");
-	}
-
-	public static Object lower(String obj)
-	{
-		return obj.toLowerCase();
-	}
-
-	public static Object lower(Object obj)
-	{
-		if (obj instanceof String)
-			return lower((String)obj);
-		throw new UnsupportedOperationException(objectType(obj) + ".lower() not supported!");
-	}
-
-	public static Object capitalize(String obj)
-	{
-		return String.valueOf(Character.toTitleCase(obj.charAt(0))) + obj.substring(1).toLowerCase();
-	}
-
-	public static Object capitalize(Object obj)
-	{
-		if (obj instanceof String)
-			return capitalize((String)obj);
-		throw new UnsupportedOperationException(objectType(obj) + ".capitalize() not supported!");
 	}
 
 	public static Date makeDate(int year, int month, int day, int hour, int minute, int second, int microsecond)
@@ -1442,26 +1363,6 @@ public class Utils
 	public static SimpleDateFormat isoDateTime2Formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	public static SimpleDateFormat isoTimestampFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 	public static SimpleDateFormat isoTimestampMicroFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'000'");
-
-	public static String isoformat(Date obj)
-	{
-		if (microsecond(obj) != 0)
-			return isoTimestampMicroFormatter.format(obj);
-		else
-		{
-			if (hour(obj) != 0 || minute(obj) != 0 || second(obj) != 0)
-				return isoDateTime2Formatter.format(obj);
-			else
-				return isoDateFormatter.format(obj);
-		}
-	}
-
-	public static String isoformat(Object obj)
-	{
-		if (obj instanceof Date)
-			return isoformat((Date)obj);
-		throw new UnsupportedOperationException(objectType(obj) + ".isoformat() not supported!");
-	}
 
 	public static Date isoparse(String format)
 	{
@@ -1489,53 +1390,11 @@ public class Utils
 		}
 	}
 
-	public static SimpleDateFormat mimeDateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", new Locale("en"));
-
-	public static String mimeformat(Date obj)
-	{
-		return mimeDateFormatter.format(obj);
-	}
-
-	public static String mimeformat(Object obj)
-	{
-		if (obj instanceof Date)
-			return mimeformat((Date)obj);
-		throw new UnsupportedOperationException(objectType(obj) + ".mimeformat() not supported!");
-	}
-
 	public static Object replace(Object obj, Object arg1, Object arg2)
 	{
 		if (obj instanceof String && arg1 instanceof String && arg2 instanceof String)
 			return StringUtils.replace((String)obj, (String)arg1, (String)arg2);
 		throw new UnsupportedOperationException(objectType(obj) + ".replace(" + objectType(arg1) + ", " + objectType(arg2) + ") not supported!");
-	}
-
-	public static Object find(Object obj, Object arg1)
-	{
-		if (obj instanceof String && arg1 instanceof String)
-			return ((String)obj).indexOf((String)arg1);
-		throw new UnsupportedOperationException(objectType(obj) + ".find(" + objectType(arg1) + ") not supported!");
-	}
-
-	public static Object find(Object obj, Object arg1, Object arg2)
-	{
-		if (obj instanceof String && arg1 instanceof String)
-			return ((String)obj).indexOf((String)arg1, toInt(arg2));
-		throw new UnsupportedOperationException(objectType(obj) + ".find(" + objectType(arg1) + ", " + objectType(arg2) + ") not supported!");
-	}
-
-	public static Object find(Object obj, Object arg1, Object arg2, Object arg3)
-	{
-		if (obj instanceof String && arg1 instanceof String)
-		{
-			int startIndex = toInt(arg2);
-			int endIndex = toInt(arg3);
-			int result = ((String)obj).indexOf((String)arg1, toInt(arg2));
-			if (result + ((String)arg1).length() > endIndex)
-				return -1;
-			return result;
-		}
-		throw new UnsupportedOperationException(objectType(obj) + ".find(" + objectType(arg1) + ", " + objectType(arg2) + ", " + objectType(arg3) + ") not supported!");
 	}
 
 	public static Object rfind(Object obj, Object arg1)
@@ -1574,18 +1433,6 @@ public class Utils
 		throw new UnsupportedOperationException(objectType(obj) + ".rfind(" + objectType(arg1) + ", " + objectType(arg2) + ", " + objectType(arg3) + ") not supported!");
 	}
 
-	public static Object items(Map obj)
-	{
-		return new MapItemIterator(obj);
-	}
-
-	public static Object items(Object obj)
-	{
-		if (obj instanceof Map)
-			return items((Map)obj);
-		throw new UnsupportedOperationException(objectType(obj) + ".items() not supported!");
-	}
-
 	public static Color withlum(Object arg1, Object arg2)
 	{
 		return ((Color)arg1).withlum(toDouble(arg2));
@@ -1594,96 +1441,6 @@ public class Utils
 	public static Color witha(Object arg1, Object arg2)
 	{
 		return ((Color)arg1).witha(toInt(arg2));
-	}
-
-	public static String join(Object obj, Object arg)
-	{
-		if (obj instanceof String)
-		{
-			if (arg instanceof Collection)
-				return StringUtils.join((Collection)arg, (String)obj);
-			else
-				return StringUtils.join(iterator(arg), (String)obj);
-		}
-		else
-			throw new UnsupportedOperationException(objectType(obj) + ".join(" + objectType(arg) + ") not supported!");
-	}
-
-	public static int day(Object obj)
-	{
-		if (obj instanceof Date)
-		{
-			Calendar calendar = new GregorianCalendar();
-			calendar.setTime((Date)obj);
-			return calendar.get(Calendar.DAY_OF_MONTH);
-		}
-		throw new UnsupportedOperationException(objectType(obj) + ".day() not supported!");
-	}
-
-	public static int month(Object obj)
-	{
-		if (obj instanceof Date)
-		{
-			Calendar calendar = new GregorianCalendar();
-			calendar.setTime((Date)obj);
-			return calendar.get(Calendar.MONTH)+1;
-		}
-		throw new UnsupportedOperationException(objectType(obj) + ".month() not supported!");
-	}
-
-	public static int year(Object obj)
-	{
-		if (obj instanceof Date)
-		{
-			Calendar calendar = new GregorianCalendar();
-			calendar.setTime((Date)obj);
-			return calendar.get(Calendar.YEAR);
-		}
-		throw new UnsupportedOperationException(objectType(obj) + ".year() not supported!");
-	}
-
-	public static int hour(Object obj)
-	{
-		if (obj instanceof Date)
-		{
-			Calendar calendar = new GregorianCalendar();
-			calendar.setTime((Date)obj);
-			return calendar.get(Calendar.HOUR_OF_DAY);
-		}
-		throw new UnsupportedOperationException(objectType(obj) + ".hour() not supported!");
-	}
-
-	public static int minute(Object obj)
-	{
-		if (obj instanceof Date)
-		{
-			Calendar calendar = new GregorianCalendar();
-			calendar.setTime((Date)obj);
-			return calendar.get(Calendar.MINUTE);
-		}
-		throw new UnsupportedOperationException(objectType(obj) + ".minute() not supported!");
-	}
-
-	public static int second(Object obj)
-	{
-		if (obj instanceof Date)
-		{
-			Calendar calendar = new GregorianCalendar();
-			calendar.setTime((Date)obj);
-			return calendar.get(Calendar.SECOND);
-		}
-		throw new UnsupportedOperationException(objectType(obj) + ".second() not supported!");
-	}
-
-	public static int microsecond(Object obj)
-	{
-		if (obj instanceof Date)
-		{
-			Calendar calendar = new GregorianCalendar();
-			calendar.setTime((Date)obj);
-			return calendar.get(Calendar.MILLISECOND)*1000;
-		}
-		throw new UnsupportedOperationException(objectType(obj) + ".microsecond() not supported!");
 	}
 
 	private static HashMap<Integer, Integer> weekdays;
@@ -1729,13 +1486,6 @@ public class Utils
 		throw new UnsupportedOperationException(objectType(obj) + ".startswith(" + objectType(arg) + ") not supported!");
 	}
 
-	public static Object endswith(Object obj, Object arg)
-	{
-		if (obj instanceof String && arg instanceof String)
-			return ((String)obj).endsWith((String)arg);
-		throw new UnsupportedOperationException(objectType(obj) + ".endswith(" + objectType(arg) + ") not supported!");
-	}
-
 	public static Object renders(Object obj)
 	{
 		if (obj instanceof Template)
@@ -1748,69 +1498,6 @@ public class Utils
 		if (obj instanceof Template && variables instanceof Map)
 			return ((Template)obj).renders((Map<String, Object>)variables);
 		throw new UnsupportedOperationException(objectType(obj) + ".renders(" + objectType(obj) + ") not supported!");
-	}
-
-	public static Object r(Object obj)
-	{
-		if (obj instanceof Color)
-			return ((Color)obj).getR();
-		throw new UnsupportedOperationException(objectType(obj) + ".r() not supported!");
-	}
-
-	public static Object g(Object obj)
-	{
-		if (obj instanceof Color)
-			return ((Color)obj).getG();
-		throw new UnsupportedOperationException(objectType(obj) + ".g() not supported!");
-	}
-
-	public static Object b(Object obj)
-	{
-		if (obj instanceof Color)
-			return ((Color)obj).getB();
-		throw new UnsupportedOperationException(objectType(obj) + ".b() not supported!");
-	}
-
-	public static Object a(Object obj)
-	{
-		if (obj instanceof Color)
-			return ((Color)obj).getA();
-		throw new UnsupportedOperationException(objectType(obj) + ".a() not supported!");
-	}
-
-	public static Object lum(Object obj)
-	{
-		if (obj instanceof Color)
-			return ((Color)obj).lum();
-		throw new UnsupportedOperationException(objectType(obj) + ".lum() not supported!");
-	}
-
-	public static Object hsv(Object obj)
-	{
-		if (obj instanceof Color)
-			return ((Color)obj).hsv();
-		throw new UnsupportedOperationException(objectType(obj) + ".hsv() not supported!");
-	}
-
-	public static Object hsva(Object obj)
-	{
-		if (obj instanceof Color)
-			return ((Color)obj).hsva();
-		throw new UnsupportedOperationException(objectType(obj) + ".hsva() not supported!");
-	}
-
-	public static Object hls(Object obj)
-	{
-		if (obj instanceof Color)
-			return ((Color)obj).hls();
-		throw new UnsupportedOperationException(objectType(obj) + ".hls() not supported!");
-	}
-
-	public static Object hlsa(Object obj)
-	{
-		if (obj instanceof Color)
-			return ((Color)obj).hlsa();
-		throw new UnsupportedOperationException(objectType(obj) + ".hlsa() not supported!");
 	}
 
 	public static String unescapeUL4String(String string)

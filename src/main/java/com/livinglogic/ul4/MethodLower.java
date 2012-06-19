@@ -10,19 +10,31 @@ import java.io.IOException;
 
 public class MethodLower implements Method
 {
+	public String getName()
+	{
+		return "lower";
+	}
+
 	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
 	{
 		switch (args.length)
 		{
 			case 0:
-				return Utils.lower(obj);
+				return call(obj);
 			default:
 				throw new ArgumentCountMismatchException("method", "lower", args.length, 0);
 		}
 	}
 
-	public String getName()
+	public static Object call(String obj)
 	{
-		return "lower";
+		return obj.toLowerCase();
+	}
+
+	public static Object call(Object obj)
+	{
+		if (obj instanceof String)
+			return call((String)obj);
+		throw new UnsupportedOperationException(Utils.objectType(obj) + ".lower() not supported!");
 	}
 }
