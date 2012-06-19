@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
+
 public class FunctionGet implements Function
 {
 	public String getName()
