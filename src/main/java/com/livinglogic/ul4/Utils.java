@@ -1220,27 +1220,6 @@ public class Utils
 		return !contains(obj, container);
 	}
 
-	public static Object get(Object obj, Object key)
-	{
-		if (obj instanceof Map)
-		{
-			return ((Map)obj).get(key);
-		}
-		throw new RuntimeException("get(" + objectType(obj) + ", ?) not supported!");
-	}
-
-	public static Object get(Object obj, Object key, Object defaultValue)
-	{
-		if (obj instanceof Map)
-		{
-			Object result = ((Map)obj).get(key);
-			if (result == null && !((Map)obj).containsKey(key))
-				result = defaultValue;
-			return result;
-		}
-		throw new RuntimeException("get(" + objectType(obj) + ", ?, ?) not supported!");
-	}
-
 	public static Iterator iterator(Object obj)
 	{
 		if (obj instanceof String)
