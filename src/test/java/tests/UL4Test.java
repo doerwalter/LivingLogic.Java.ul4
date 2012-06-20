@@ -2368,8 +2368,8 @@ public class UL4Test
 	@Test
 	public void method_year()
 	{
-		checkTemplateOutput("5", "<?print @(2010-05-12).month()?>");
-		checkTemplateOutput("5", "<?print d.month()?>", "d", makeDate(2010, 5, 12));
+		checkTemplateOutput("2010", "<?print @(2010-05-12).year()?>");
+		checkTemplateOutput("2010", "<?print d.year()?>", "d", makeDate(2010, 5, 12));
 	}
 
 	@Test

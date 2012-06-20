@@ -6,23 +6,40 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Date;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class MethodYearday implements Method
 {
+	public String getName()
+	{
+		return "yearday";
+	}
+
 	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
 	{
 		switch (args.length)
 		{
 			case 0:
-				return Utils.yearday(obj);
+				return call(obj);
 			default:
 				throw new ArgumentCountMismatchException("method", "yearday", args.length, 0);
 		}
 	}
 
-	public String getName()
+	public static int call(Date obj)
 	{
-		return "yearday";
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(obj);
+		return calendar.get(Calendar.DAY_OF_YEAR);
+	}
+
+	public static int call(Object obj)
+	{
+		if (obj instanceof Date)
+			return call((Date)obj);
+		throw new UnsupportedOperationException(Utils.objectType(obj) + ".yearday() not supported!");
 	}
 }

@@ -10,24 +10,31 @@ import java.io.IOException;
 
 public class MethodRenderS implements Method
 {
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
-	{
-		if (null != obj && obj instanceof Template)
-		{
-			switch (args.length)
-			{
-				case 0:
-					return ((Template)obj).renders(null);
-				default:
-					throw new ArgumentCountMismatchException("method", "renders", args.length, 0);
-			}
-		}
-		throw new UnsupportedOperationException("renders() method requires a template!");
-
-	}
-
 	public String getName()
 	{
 		return "renders";
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	{
+		switch (args.length)
+		{
+			case 0:
+				return call(obj);
+			default:
+				throw new ArgumentCountMismatchException("method", "renders", args.length, 0);
+		}
+	}
+
+	public static String call(Template obj)
+	{
+		return obj.renders(null);
+	}
+
+	public static String call(Object obj)
+	{
+		if (obj instanceof Template)
+			return call((Template)obj);
+		throw new UnsupportedOperationException("renders() method requires a template!");
 	}
 }

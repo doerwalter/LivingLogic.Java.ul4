@@ -23,7 +23,7 @@ public class MethodYear implements Method
 		switch (args.length)
 		{
 			case 0:
-				call(obj);
+				return call(obj);
 			default:
 				throw new ArgumentCountMismatchException("method", "year", args.length, 0);
 		}

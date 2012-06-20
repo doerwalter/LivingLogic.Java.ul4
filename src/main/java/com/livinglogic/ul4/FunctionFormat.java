@@ -125,7 +125,7 @@ public class FunctionFormat implements Function
 						calendarFirstday.setTime(Utils.makeDate(MethodYear.call(obj), 1, 1));
 						int firstday = calendar.get(Calendar.DAY_OF_WEEK) - 1;
 						firstday = firstday != 0 ? firstday-1 : 6;
-						int value = (Utils.yearday(obj) + firstday - 1) / 7;
+						int value = (MethodYearday.call(obj) + firstday - 1) / 7;
 						output.append(twodigits.format(value));
 						break;
 					}
@@ -137,7 +137,7 @@ public class FunctionFormat implements Function
 						Calendar calendarFirstday = new GregorianCalendar();
 						calendarFirstday.setTime(Utils.makeDate(MethodYear.call(obj), 1, 1));
 						int firstday = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-						int value = (Utils.yearday(obj) + firstday - 1) / 7;
+						int value = (MethodYearday.call(obj) + firstday - 1) / 7;
 						output.append(twodigits.format(value));
 						break;
 					}

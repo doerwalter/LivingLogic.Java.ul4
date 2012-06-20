@@ -6,23 +6,55 @@
 
 package com.livinglogic.ul4;
 
+import java.util.HashMap;
+import java.util.Date;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class MethodWeekday implements Method
 {
+	public String getName()
+	{
+		return "weekday";
+	}
+
 	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
 	{
 		switch (args.length)
 		{
 			case 0:
-				return Utils.weekday(obj);
+				return call(obj);
 			default:
 				throw new ArgumentCountMismatchException("method", "weekday", args.length, 0);
 		}
 	}
 
-	public String getName()
+	public static int call(Date obj)
 	{
-		return "weekday";
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(obj);
+		return weekdays.get(calendar.get(Calendar.DAY_OF_WEEK));
+	}
+
+	public static int call(Object obj)
+	{
+		if (obj instanceof Date)
+			return call((Date)obj);
+		throw new UnsupportedOperationException(Utils.objectType(obj) + ".weekday() not supported!");
+	}
+
+	private static HashMap<Integer, Integer> weekdays;
+
+	static
+	{
+		weekdays = new HashMap<Integer, Integer>();
+		weekdays.put(Calendar.MONDAY, 0);
+		weekdays.put(Calendar.TUESDAY, 1);
+		weekdays.put(Calendar.WEDNESDAY, 2);
+		weekdays.put(Calendar.THURSDAY, 3);
+		weekdays.put(Calendar.FRIDAY, 4);
+		weekdays.put(Calendar.SATURDAY, 5);
+		weekdays.put(Calendar.SUNDAY, 6);
 	}
 }
