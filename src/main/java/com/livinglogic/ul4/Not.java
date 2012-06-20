@@ -22,7 +22,7 @@ public class Not extends Unary
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		return !call(obj.decoratedEvaluate(context));
+		return call(obj.decoratedEvaluate(context));
 	}
 
 	public static boolean call(Object obj)
