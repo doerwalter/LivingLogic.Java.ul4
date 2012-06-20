@@ -22,7 +22,7 @@ class TrueDivVar extends ChangeVar
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.put(varname, Utils.truediv(context.get(varname), value.decoratedEvaluate(context)));
+		context.put(varname, TrueDiv.call(context.get(varname), value.decoratedEvaluate(context)));
 		return null;
 	}
 }

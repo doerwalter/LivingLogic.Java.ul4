@@ -22,7 +22,7 @@ class SubVar extends ChangeVar
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.put(varname, Utils.sub(context.get(varname), value.decoratedEvaluate(context)));
+		context.put(varname, Sub.call(context.get(varname), value.decoratedEvaluate(context)));
 		return null;
 	}
 }

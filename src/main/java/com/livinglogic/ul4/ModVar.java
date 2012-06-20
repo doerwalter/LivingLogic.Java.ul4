@@ -22,7 +22,7 @@ class ModVar extends ChangeVar
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.put(varname, Utils.mod(context.get(varname), value.decoratedEvaluate(context)));
+		context.put(varname, Mod.call(context.get(varname), value.decoratedEvaluate(context)));
 		return null;
 	}
 }
