@@ -11,7 +11,7 @@ import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-class TrueDiv extends Binary
+public class TrueDiv extends Binary
 {
 	public TrueDiv(Location location, AST obj1, AST obj2)
 	{

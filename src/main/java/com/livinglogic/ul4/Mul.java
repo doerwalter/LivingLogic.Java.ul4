@@ -13,7 +13,7 @@ import java.math.BigInteger;
 import java.math.BigDecimal;
 import org.apache.commons.lang.StringUtils;
 
-class Mul extends Binary
+public class Mul extends Binary
 {
 	public Mul(Location location, AST obj1, AST obj2)
 	{

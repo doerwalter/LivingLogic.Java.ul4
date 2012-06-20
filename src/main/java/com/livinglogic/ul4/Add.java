@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
-class Add extends Binary
+public class Add extends Binary
 {
 	public Add(Location location, AST obj1, AST obj2)
 	{

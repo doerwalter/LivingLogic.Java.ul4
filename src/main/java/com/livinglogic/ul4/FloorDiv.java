@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
-class FloorDiv extends Binary
+public class FloorDiv extends Binary
 {
 	public FloorDiv(Location location, AST obj1, AST obj2)
 	{

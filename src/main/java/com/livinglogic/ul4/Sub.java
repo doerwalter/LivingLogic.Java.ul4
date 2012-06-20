@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
-class Sub extends Binary
+public class Sub extends Binary
 {
 	public Sub(Location location, AST obj1, AST obj2)
 	{
