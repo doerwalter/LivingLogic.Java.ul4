@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
-class Mod extends Binary
+public class Mod extends Binary
 {
 	public Mod(Location location, AST obj1, AST obj2)
 	{
