@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-class Not extends Unary
+public class Not extends Unary
 {
 	public Not(Location location, AST obj)
 	{
@@ -22,6 +22,11 @@ class Not extends Unary
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		return !FunctionBool.call(obj.decoratedEvaluate(context));
+		return !call(obj.decoratedEvaluate(context));
+	}
+
+	public static boolean call(Object obj)
+	{
+		return !FunctionBool.call(obj);
 	}
 }
