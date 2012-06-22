@@ -15,7 +15,7 @@ public class ArgumentTypeMismatchException extends UnsupportedOperationException
 
 	private static String format(String template, Object... args)
 	{
-		String[] parts = (template = " not supported!").split("\\{\\}");
+		String[] parts = (template + " not supported!").split("\\{\\}");
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < parts.length; ++i)
 		{
