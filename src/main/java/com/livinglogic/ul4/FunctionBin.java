@@ -54,6 +54,6 @@ public class FunctionBin implements Function
 			else
 				return "0b" + bi.toString(2);
 		}
-		throw new UnsupportedOperationException("bin(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("bin({})", obj);
 	}
 }

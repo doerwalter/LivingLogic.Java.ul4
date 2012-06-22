@@ -35,6 +35,6 @@ public class MethodUpper implements Method
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".upper() not supported!");
+		throw new ArgumentTypeMismatchException("{}.upper()", obj);
 	}
 }

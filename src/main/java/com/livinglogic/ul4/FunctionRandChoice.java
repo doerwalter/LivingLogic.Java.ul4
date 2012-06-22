@@ -63,6 +63,6 @@ public class FunctionRandChoice implements Function
 			return call((List)obj);
 		else if (obj instanceof Color)
 			return call((Color)obj);
-		throw new UnsupportedOperationException("randchoice(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("randchoice({})", obj);
 	}
 }

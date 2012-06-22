@@ -133,6 +133,6 @@ public class Sub extends Binary
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg1).subtract((BigDecimal)arg2);
 		}
-		throw new UnsupportedOperationException(Utils.objectType(arg1) + " - " + Utils.objectType(arg2) + " not supported!");
+		throw new ArgumentTypeMismatchException("{} - {}", arg1, arg2);
 	}
 }

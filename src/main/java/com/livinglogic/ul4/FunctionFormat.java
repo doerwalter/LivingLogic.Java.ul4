@@ -190,7 +190,7 @@ public class FunctionFormat implements Function
 				return call((Date)obj, (String)formatString, locale);
 			}
 		}
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".format(" + Utils.objectType(formatString) + ") not supported!");
+		throw new ArgumentTypeMismatchException("format({}, {})", obj, formatString);
 	}
 
 	public static String call(Object obj, Object formatString)

@@ -45,7 +45,7 @@ public class FunctionInt implements Function
 			return ((Number)obj).intValue();
 		else if (obj instanceof BigDecimal)
 			return ((BigDecimal)obj).toBigInteger();
-		throw new UnsupportedOperationException("int(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("int({})", obj);
 	}
 
 	public static Object call(Object obj1, Object obj2)
@@ -55,6 +55,6 @@ public class FunctionInt implements Function
 			if (obj2 instanceof Integer || obj2 instanceof Byte || obj2 instanceof Short || obj2 instanceof Long || obj2 instanceof BigInteger)
 				return Integer.valueOf((String)obj1, ((Number)obj2).intValue());
 		}
-		throw new UnsupportedOperationException("int(" + Utils.objectType(obj1) + ", " + Utils.objectType(obj2) + ") not supported!");
+		throw new ArgumentTypeMismatchException("int({}, {})", obj1, obj2);
 	}
 }

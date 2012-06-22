@@ -38,7 +38,7 @@ public class Mul extends Binary
 	public static String call(long arg1, String arg2)
 	{
 		if (((int)arg1) != arg1)
-			throw new UnsupportedOperationException(Utils.objectType(arg1) + " * " + Utils.objectType(arg2) + " not supported!");
+			throw new ArgumentTypeMismatchException("{} * {}", arg1, arg2);
 		return StringUtils.repeat(arg2, (int)arg1);
 	}
 
@@ -190,7 +190,7 @@ public class Mul extends Binary
 			else if (arg2 instanceof Long)
 				return call(Utils.toLong(arg2), (List)arg1);
 		}
-		throw new UnsupportedOperationException(Utils.objectType(arg1) + " * " + Utils.objectType(arg2) + " not supported!");
+		throw new ArgumentTypeMismatchException("{} * {}", arg1, arg2);
 	}
 
 }

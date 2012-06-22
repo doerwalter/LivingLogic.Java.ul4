@@ -39,7 +39,7 @@ public class MethodRFind implements Method
 	{
 		if (obj instanceof String && search instanceof String)
 			return call((String)obj, (String)search);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".rfind(" + Utils.objectType(search) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.rfind({})", obj, search);
 	}
 
 	public static int call(String obj, String search, int startIndex)
@@ -54,7 +54,7 @@ public class MethodRFind implements Method
 	{
 		if (obj instanceof String && search instanceof String)
 			return call((String)obj, (String)search, Utils.toInt(startIndex));
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".rfind(" + Utils.objectType(search) + ", " + Utils.objectType(startIndex) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.rfind({}, {})", obj, search, startIndex);
 	}
 
 	public static int call(String obj, String search, int startIndex, int endIndex)
@@ -72,7 +72,7 @@ public class MethodRFind implements Method
 	{
 		if (obj instanceof String && search instanceof String)
 			return call((String)obj, (String)search, Utils.toInt(startIndex), Utils.toInt(endIndex));
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".rfind(" + Utils.objectType(search) + ", " + Utils.objectType(startIndex) + ", " + Utils.objectType(endIndex) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.rfind({}, {}, {})", obj, search, startIndex, endIndex);
 	}
 
 }

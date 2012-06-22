@@ -37,7 +37,12 @@ public class GetAttr extends AST
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		return Utils.getItem(obj.decoratedEvaluate(context), attrname);
+		return call(obj.decoratedEvaluate(context), attrname);
+	}
+
+	public static Object call(Object obj, String attrname)
+	{
+		return GetItem.call(obj, attrname);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

@@ -32,6 +32,6 @@ public class MethodHLS implements Method
 	{
 		if (obj instanceof Color)
 			return call((Color)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".hls() not supported!");
+		throw new ArgumentTypeMismatchException("{}.hls()", obj);
 	}
 }

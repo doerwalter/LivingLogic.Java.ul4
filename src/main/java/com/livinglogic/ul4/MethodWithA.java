@@ -35,6 +35,6 @@ public class MethodWithA implements Method
 	{
 		if (obj instanceof Color)
 			return call((Color)obj, Utils.toInt(a));
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".witha(" + Utils.objectType(a) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.witha({})", obj, a);
 	}
 }

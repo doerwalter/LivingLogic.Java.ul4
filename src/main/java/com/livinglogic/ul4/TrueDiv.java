@@ -57,7 +57,7 @@ public class TrueDiv extends Binary
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg1).divide((BigDecimal)arg2, MathContext.DECIMAL128);
 		}
-		throw new UnsupportedOperationException(Utils.objectType(arg1) + " / " + Utils.objectType(arg2) + " not supported!");
+		throw new ArgumentTypeMismatchException("{} / {}", arg1, arg2);
 	}
 
 }

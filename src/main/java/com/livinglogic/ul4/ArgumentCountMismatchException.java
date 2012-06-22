@@ -6,7 +6,7 @@
 
 package com.livinglogic.ul4;
 
-public class ArgumentCountMismatchException extends RuntimeException
+public class ArgumentCountMismatchException extends UnsupportedOperationException
 {
 	public ArgumentCountMismatchException(String type, String name, int given, int requiredMin, int requiredMax)
 	{

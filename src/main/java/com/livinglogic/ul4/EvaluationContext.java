@@ -53,7 +53,11 @@ public class EvaluationContext
 
 	public Object get(String key)
 	{
-		return Utils.getItem(variables, key);
+		Object result = variables.get(key);
+
+		if ((result == null) && !variables.containsKey(key))
+			throw new KeyException(key);
+		return result;
 	}
 
 	public Object get(String key, Object defaultValue)

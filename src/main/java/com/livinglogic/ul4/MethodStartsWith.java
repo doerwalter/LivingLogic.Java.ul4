@@ -35,6 +35,6 @@ public class MethodStartsWith implements Method
 	{
 		if (obj instanceof String && prefix instanceof String)
 			return call((String)obj, (String)prefix);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".startswith(" + Utils.objectType(prefix) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.startswith({})", obj, prefix);
 	}
 }

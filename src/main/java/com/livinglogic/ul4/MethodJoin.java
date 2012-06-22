@@ -47,6 +47,6 @@ public class MethodJoin implements Method
 			return call((String)obj, iterable);
 		}
 		else
-			throw new UnsupportedOperationException(Utils.objectType(obj) + ".join(" + Utils.objectType(iterable) + ") not supported!");
+			throw new ArgumentTypeMismatchException("{}.join({})", obj, iterable);
 	}
 }

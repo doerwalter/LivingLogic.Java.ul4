@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-class And extends Binary
+public class And extends Binary
 {
 	public And(Location location, AST obj1, AST obj2)
 	{
@@ -28,4 +28,6 @@ class And extends Binary
 		else
 			return obj2ev;
 	}
+
+	// we can't implement a static call version here, because that would require that we evaluate both sides
 }

@@ -40,6 +40,6 @@ public class MethodHour implements Method
 	{
 		if (obj instanceof Date)
 			return call((Date)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".hour() not supported!");
+		throw new ArgumentTypeMismatchException("{}.hour()", obj);
 	}
 }

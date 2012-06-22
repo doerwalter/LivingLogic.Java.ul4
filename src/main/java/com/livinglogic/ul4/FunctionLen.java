@@ -46,6 +46,6 @@ public class FunctionLen implements Function
 			return call((Collection)obj);
 		else if (obj instanceof Map)
 			return call((Map)obj);
-		throw new UnsupportedOperationException("len(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("len({})", obj);
 	}
 }

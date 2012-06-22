@@ -31,6 +31,6 @@ public class MethodLum implements Method
 	{
 		if (obj instanceof Color)
 			return call((Color)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".lum() not supported!");
+		throw new ArgumentTypeMismatchException("{}.lum()", obj);
 	}
 }

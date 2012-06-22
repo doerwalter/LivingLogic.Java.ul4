@@ -32,6 +32,6 @@ public class MethodHLSA implements Method
 	{
 		if (obj instanceof Color)
 			return call((Color)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".hlsa() not supported!");
+		throw new ArgumentTypeMismatchException("{}.hlsa()", obj);
 	}
 }

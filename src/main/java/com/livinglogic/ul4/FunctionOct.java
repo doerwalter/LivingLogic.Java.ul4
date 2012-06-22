@@ -54,6 +54,6 @@ public class FunctionOct implements Function
 			else
 				return "0o" + bi.toString(8);
 		}
-		throw new UnsupportedOperationException("oct(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("oct({})", obj);
 	}
 }

@@ -35,6 +35,6 @@ public class MethodCapitalize implements Method
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".capitalize() not supported!");
+		throw new ArgumentTypeMismatchException("{}.capitalize()", obj);
 	}
 }

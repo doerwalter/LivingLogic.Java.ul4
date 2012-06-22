@@ -7,8 +7,10 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
 
-class Contains extends Binary
+public class Contains extends Binary
 {
 	public Contains(Location location, AST obj1, AST obj2)
 	{
@@ -22,6 +24,35 @@ class Contains extends Binary
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		return Utils.contains(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
+		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
+	}
+
+	public static boolean call(String obj, String container)
+	{
+		return container.indexOf(obj) >= 0;
+	}
+
+	public static boolean call(Object obj, Collection container)
+	{
+		return container.contains(obj);
+	}
+
+	public static boolean call(Object obj, Map container)
+	{
+		return container.containsKey(obj);
+	}
+
+	public static boolean call(Object obj, Object container)
+	{
+		if (container instanceof String)
+		{
+			if (obj instanceof String)
+				return call((String)obj, (String)container);
+		}
+		else if (container instanceof Collection)
+			return call(obj, (Collection)container);
+		else if (container instanceof Map)
+			return call(obj, (Map)container);
+		throw new ArgumentTypeMismatchException("{} in {}", obj, container);
 	}
 }

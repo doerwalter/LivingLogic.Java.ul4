@@ -33,7 +33,7 @@ public class MethodGet implements Method
 	{
 		if (obj instanceof Map)
 			return ((Map)obj).get(key);
-		throw new RuntimeException(Utils.objectType(obj) + ".get() not supported!");
+		throw new ArgumentTypeMismatchException("{}.get({})", obj, key);
 	}
 
 	public static Object call(Object obj, Object key, Object defaultValue)
@@ -45,6 +45,6 @@ public class MethodGet implements Method
 				result = defaultValue;
 			return result;
 		}
-		throw new RuntimeException(Utils.objectType(obj) + ".get() not supported!");
+		throw new ArgumentTypeMismatchException("{}.get({}, {})", obj, key, defaultValue);
 	}
 }

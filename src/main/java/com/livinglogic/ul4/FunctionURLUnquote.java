@@ -40,6 +40,6 @@ public class FunctionURLUnquote implements Function
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new UnsupportedOperationException("urlunquote(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("urlunquote({})", obj);
 	}
 }

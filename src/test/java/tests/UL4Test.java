@@ -18,6 +18,7 @@ import com.livinglogic.ul4.KeyException;
 import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.UnknownFunctionException;
 import com.livinglogic.ul4.ArgumentCountMismatchException;
+import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.SyntaxException;
 
 @RunWith(CauseTestRunner.class)
@@ -1184,7 +1185,7 @@ public class UL4Test
 		checkTemplateOutput("66", "<?print int(data, 16)?>", "data", "42");
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_int_null()
 	{
 		checkTemplateOutput("", "<?print int(data)?>", "data", null);
@@ -1215,7 +1216,7 @@ public class UL4Test
 		checkTemplateOutput("42.0", source, "data", "42");
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_float_null()
 	{
 		checkTemplateOutput("", "<?print float(data)?>", "data", null);
@@ -1255,31 +1256,31 @@ public class UL4Test
 		checkTemplateOutput("", "<?print len(1, 2)?>");
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_len_null()
 	{
 		checkTemplateOutput("", "<?print len(data)?>", "data", null);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_len_true()
 	{
 		checkTemplateOutput("", "<?print len(data)?>", "data", true);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_len_false()
 	{
 		checkTemplateOutput("", "<?print len(data)?>", "data", false);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_len_int()
 	{
 		checkTemplateOutput("", "<?print len(data)?>", "data", 42);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_len_float()
 	{
 		checkTemplateOutput("", "<?print len(data)?>", "data", 42.4);
@@ -1311,31 +1312,31 @@ public class UL4Test
 		checkTemplateOutput("", "<?print enumerate(1, 2, 3)?>");
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumerate_null()
 	{
 		checkTemplateOutput("", "<?print enumerate(data)?>", "data", null);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumerate_true()
 	{
 		checkTemplateOutput("", "<?print enumerate(data)?>", "data", true);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumerate_false()
 	{
 		checkTemplateOutput("", "<?print enumerate(data)?>", "data", false);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumerate_int()
 	{
 		checkTemplateOutput("", "<?print enumerate(data)?>", "data", 42);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumerate_float()
 	{
 		checkTemplateOutput("", "<?print enumerate(data)?>", "data", 42.4);
@@ -1369,31 +1370,31 @@ public class UL4Test
 		checkTemplateOutput("", "<?print enumfl(1, 2, 3)?>");
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumfl_null()
 	{
 		checkTemplateOutput("", "<?print enumfl(data)?>", "data", null);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumfl_true()
 	{
 		checkTemplateOutput("", "<?print enumfl(data)?>", "data", true);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumfl_false()
 	{
 		checkTemplateOutput("", "<?print enumfl(data)?>", "data", false);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumfl_int()
 	{
 		checkTemplateOutput("", "<?print enumfl(data)?>", "data", 42);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumfl_float()
 	{
 		checkTemplateOutput("", "<?print enumfl(data)?>", "data", 42.4);
@@ -1423,31 +1424,31 @@ public class UL4Test
 		checkTemplateOutput("", "<?print isfirstlast(1, 2)?>");
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirstlast_null()
 	{
 		checkTemplateOutput("", "<?print isfirstlast(data)?>", "data", null);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirstlast_true()
 	{
 		checkTemplateOutput("", "<?print isfirstlast(data)?>", "data", true);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirstlast_false()
 	{
 		checkTemplateOutput("", "<?print isfirstlast(data)?>", "data", false);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirstlast_int()
 	{
 		checkTemplateOutput("", "<?print isfirstlast(data)?>", "data", 42);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirstlast_float()
 	{
 		checkTemplateOutput("", "<?print isfirstlast(data)?>", "data", 42.4);
@@ -1477,31 +1478,31 @@ public class UL4Test
 		checkTemplateOutput("", "<?print isfirst(1, 2)?>");
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirst_null()
 	{
 		checkTemplateOutput("", "<?print isfirst(data)?>", "data", null);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirst_true()
 	{
 		checkTemplateOutput("", "<?print isfirst(data)?>", "data", true);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirst_false()
 	{
 		checkTemplateOutput("", "<?print isfirst(data)?>", "data", false);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirst_int()
 	{
 		checkTemplateOutput("", "<?print isfirst(data)?>", "data", 42);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirst_float()
 	{
 		checkTemplateOutput("", "<?print isfirst(data)?>", "data", 42.4);
@@ -1531,31 +1532,31 @@ public class UL4Test
 		checkTemplateOutput("", "<?print islast(1, 2)?>");
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_islast_null()
 	{
 		checkTemplateOutput("", "<?print islast(data)?>", "data", null);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_islast_true()
 	{
 		checkTemplateOutput("", "<?print islast(data)?>", "data", true);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_islast_false()
 	{
 		checkTemplateOutput("", "<?print islast(data)?>", "data", false);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_islast_int()
 	{
 		checkTemplateOutput("", "<?print islast(data)?>", "data", 42);
 	}
 
-	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_islast_float()
 	{
 		checkTemplateOutput("", "<?print islast(data)?>", "data", 42.4);

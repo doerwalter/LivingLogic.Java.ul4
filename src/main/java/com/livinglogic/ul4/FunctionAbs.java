@@ -75,6 +75,6 @@ public class FunctionAbs implements Function
 			return ((BigInteger)arg).abs();
 		else if (arg instanceof BigDecimal)
 			return ((BigDecimal)arg).abs();
-		throw new UnsupportedOperationException("abs(" + Utils.objectType(arg) + ") not supported!");
+		throw new ArgumentTypeMismatchException("abs({})", arg);
 	}
 }

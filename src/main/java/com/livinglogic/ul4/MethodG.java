@@ -31,6 +31,6 @@ public class MethodG implements Method
 	{
 		if (obj instanceof Color)
 			return call((Color)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".g() not supported!");
+		throw new ArgumentTypeMismatchException("{}.g()", obj);
 	}
 }

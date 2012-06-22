@@ -31,6 +31,6 @@ public class MethodR implements Method
 	{
 		if (obj instanceof Color)
 			return call((Color)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".r() not supported!");
+		throw new ArgumentTypeMismatchException("{}.r()", obj);
 	}
 }

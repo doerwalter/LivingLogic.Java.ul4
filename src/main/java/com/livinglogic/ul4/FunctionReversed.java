@@ -30,7 +30,7 @@ public class FunctionReversed implements Function
 			return new StringReversedIterator((String)obj);
 		else if (obj instanceof List)
 			return new ListReversedIterator((List)obj);
-		throw new UnsupportedOperationException("reversed(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("reversed({})", obj);
 	}
 
 	private static class StringReversedIterator implements Iterator<String>

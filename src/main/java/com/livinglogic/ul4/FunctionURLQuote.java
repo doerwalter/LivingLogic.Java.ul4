@@ -40,6 +40,6 @@ public class FunctionURLQuote implements Function
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new UnsupportedOperationException("urlquote(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("urlquote({})", obj);
 	}
 }

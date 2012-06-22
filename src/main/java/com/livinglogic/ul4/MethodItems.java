@@ -38,7 +38,7 @@ public class MethodItems implements Method
 	{
 		if (obj instanceof Map)
 			return call((Map)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".items() not supported!");
+		throw new ArgumentTypeMismatchException("{}.items()", obj);
 	}
 
 	private static class MapItemIterator implements Iterator<Vector>

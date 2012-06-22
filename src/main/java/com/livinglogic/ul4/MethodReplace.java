@@ -37,13 +37,13 @@ public class MethodReplace implements Method
 	{
 		if (obj instanceof String)
 			return call((String)obj, search, replace);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".replace(" + Utils.objectType(search) + ", " + Utils.objectType(replace) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.replace({}, {})", obj, search, replace);
 	}
 
 	public static String call(Object obj, Object search, Object replace)
 	{
 		if (search instanceof String && replace instanceof String)
 			return call(obj, (String)search, (String)replace);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".replace(" + Utils.objectType(search) + ", " + Utils.objectType(replace) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.replace({}, {})", obj, search, replace);
 	}
 }

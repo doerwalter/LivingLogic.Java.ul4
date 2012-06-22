@@ -49,6 +49,6 @@ public class MethodISOFormat implements Method
 	{
 		if (obj instanceof Date)
 			return call((Date)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".isoformat() not supported!");
+		throw new ArgumentTypeMismatchException("{}.isoformat()", obj);
 	}
 }

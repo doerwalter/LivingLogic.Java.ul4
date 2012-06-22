@@ -44,6 +44,6 @@ public class FunctionFloat implements Function
 			return new BigDecimal(((BigInteger)obj).toString());
 		else if (obj instanceof BigDecimal || obj instanceof Float || obj instanceof Double)
 			return obj;
-		throw new UnsupportedOperationException("float(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("float({})", obj);
 	}
 }

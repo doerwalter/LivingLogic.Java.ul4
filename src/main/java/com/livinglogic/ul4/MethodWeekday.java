@@ -41,7 +41,7 @@ public class MethodWeekday implements Method
 	{
 		if (obj instanceof Date)
 			return call((Date)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".weekday() not supported!");
+		throw new ArgumentTypeMismatchException("{}.weekday()", obj);
 	}
 
 	private static HashMap<Integer, Integer> weekdays;

@@ -32,6 +32,6 @@ public class MethodHSV implements Method
 	{
 		if (obj instanceof Color)
 			return call((Color)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".hsv() not supported!");
+		throw new ArgumentTypeMismatchException("{}.hsv()", obj);
 	}
 }

@@ -40,6 +40,6 @@ public class MethodMinute implements Method
 	{
 		if (obj instanceof Date)
 			return call((Date)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".minute() not supported!");
+		throw new ArgumentTypeMismatchException("{}.minute()", obj);
 	}
 }

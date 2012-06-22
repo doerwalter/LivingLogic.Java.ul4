@@ -9,7 +9,9 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 import java.io.IOException;
+import org.apache.commons.lang.StringUtils;
 
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
@@ -40,7 +42,7 @@ public class GetSlice extends AST
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		return Utils.getSlice(obj.decoratedEvaluate(context), index1 != null ? index1.decoratedEvaluate(context) : null, index2 != null ? index2.decoratedEvaluate(context) : null);
+		return call(obj.decoratedEvaluate(context), index1 != null ? index1.decoratedEvaluate(context) : null, index2 != null ? index2.decoratedEvaluate(context) : null);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
@@ -57,6 +59,79 @@ public class GetSlice extends AST
 		obj = (AST)decoder.load();
 		index1 = (AST)decoder.load();
 		index2 = (AST)decoder.load();
+	}
+
+	private static int getSliceStartPos(int sequenceSize, int virtualPos)
+	{
+		int retVal = virtualPos;
+		if (0 > retVal)
+		{
+			retVal += sequenceSize;
+		}
+		if (0 > retVal)
+		{
+			retVal = 0;
+		}
+		else if (sequenceSize < retVal)
+		{
+			retVal = sequenceSize;
+		}
+		return retVal;
+	}
+
+	private static int getSliceEndPos(int sequenceSize, int virtualPos)
+	{
+		int retVal = virtualPos;
+		if (0 > retVal)
+		{
+			retVal += sequenceSize;
+		}
+		if (0 > retVal)
+		{
+			retVal = 0;
+		}
+		else if (sequenceSize < retVal)
+		{
+			retVal = sequenceSize;
+		}
+		return retVal;
+	}
+
+	public static Object call(List obj, int startIndex, int endIndex)
+	{
+		int size = obj.size();
+		int start = getSliceStartPos(size, startIndex);
+		int end = getSliceEndPos(size, endIndex);
+		if (end < start)
+			end = start;
+		return obj.subList(start, end);
+	}
+
+	public static Object call(String obj, int startIndex, int endIndex)
+	{
+		int size = obj.length();
+		int start = getSliceStartPos(size, startIndex);
+		int end = getSliceEndPos(size, endIndex);
+		if (end < start)
+			end = start;
+		return StringUtils.substring(obj, start, end);
+	}
+
+	public static Object call(Object obj, Object startIndex, Object endIndex)
+	{
+		if (obj instanceof List)
+		{
+			int start = startIndex != null ? Utils.toInt(startIndex) : 0;
+			int end = endIndex != null ? Utils.toInt(endIndex) : ((List)obj).size();
+			return call((List)obj, start, end);
+		}
+		else if (obj instanceof String)
+		{
+			int start = startIndex != null ? Utils.toInt(startIndex) : 0;
+			int end = endIndex != null ? Utils.toInt(endIndex) : ((String)obj).length();
+			return call((String)obj, start, end);
+		}
+		throw new ArgumentTypeMismatchException("{}[{}:{}]", obj, startIndex, endIndex);
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

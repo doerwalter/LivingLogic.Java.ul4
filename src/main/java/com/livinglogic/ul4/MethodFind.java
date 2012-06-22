@@ -39,7 +39,7 @@ public class MethodFind implements Method
 	{
 		if (obj instanceof String && sub instanceof String)
 			return call((String)obj, (String)sub);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".find(" + Utils.objectType(sub) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.find({})", obj, sub);
 	}
 
 	public static int call(String obj, String sub, int start)
@@ -51,7 +51,7 @@ public class MethodFind implements Method
 	{
 		if (obj instanceof String && sub instanceof String)
 			return call((String)obj, (String)sub, Utils.toInt(start));
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".find(" + Utils.objectType(sub) + ", " + Utils.objectType(start) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.find({}, {})", obj, sub, start);
 	}
 
 	public static Object call(String obj, String sub, int start, int end)
@@ -66,6 +66,6 @@ public class MethodFind implements Method
 	{
 		if (obj instanceof String && sub instanceof String)
 			return call((String)obj, (String)sub, Utils.toInt(start), Utils.toInt(end));
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".find(" + Utils.objectType(sub) + ", " + Utils.objectType(start) + ", " + Utils.objectType(end) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.find({}, {}, {})", obj, sub, start, end);
 	}
 }

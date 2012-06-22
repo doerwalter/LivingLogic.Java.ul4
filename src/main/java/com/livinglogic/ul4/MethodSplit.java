@@ -42,7 +42,7 @@ public class MethodSplit implements Method
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".split() not supported!");
+		throw new ArgumentTypeMismatchException("{}.split()", obj);
 	}
 
 	public static List<String> call(String obj, String separator)
@@ -61,7 +61,7 @@ public class MethodSplit implements Method
 			else if (separator instanceof String)
 				return call((String)obj, (String)separator);
 		}
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".split(" + Utils.objectType(separator) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.split({})", obj, separator);
 	}
 
 	public static List<String> call(String obj, String separator, int maxsplit)
@@ -80,6 +80,6 @@ public class MethodSplit implements Method
 			else if (separator instanceof String)
 				return call((String)obj, (String)separator, Utils.toInt(maxsplit));
 		}
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".split(" + Utils.objectType(separator) + ", " + Utils.objectType(maxsplit) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.split({}, {})", obj, separator, maxsplit);
 	}
 }

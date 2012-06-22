@@ -35,6 +35,6 @@ public class MethodWithLum implements Method
 	{
 		if (obj instanceof Color)
 			return call((Color)obj, Utils.toDouble(lum));
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".withlum(" + Utils.objectType(lum) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.withlum({})", obj, lum);
 	}
 }

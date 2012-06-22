@@ -43,7 +43,7 @@ public class MethodRSplit implements Method
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".rsplit() not supported!");
+		throw new ArgumentTypeMismatchException("{}.rsplit()", obj);
 	}
 
 	public static List<String> call(String obj, int maxsplit)
@@ -82,7 +82,7 @@ public class MethodRSplit implements Method
 			else if (separator instanceof String)
 				return call((String)obj, (String)separator, 0x7fffffff);
 		}
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".rsplit(" + Utils.objectType(separator) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.rsplit({})", obj, separator);
 	}
 
 	public static List<String> call(String obj, String separator, int maxsplit)
@@ -113,6 +113,6 @@ public class MethodRSplit implements Method
 			else if (separator instanceof String)
 				return call((String)obj, (String)separator, Utils.toInt(maxsplit));
 		}
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".rsplit(" + Utils.objectType(separator) + ", " + Utils.objectType(maxsplit) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.rsplit({}, {})", obj, separator, maxsplit);
 	}
 }

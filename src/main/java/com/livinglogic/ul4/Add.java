@@ -149,7 +149,7 @@ public class Add extends Binary
 		}
 		else if (arg1 instanceof String && arg2 instanceof String)
 			return call((String)arg1, (String)arg2);
-		throw new UnsupportedOperationException(Utils.objectType(arg1) + " + " + Utils.objectType(arg2) + " not supported!");
+		throw new ArgumentTypeMismatchException("{} + {}", arg1, arg2);
 	}
 
 }

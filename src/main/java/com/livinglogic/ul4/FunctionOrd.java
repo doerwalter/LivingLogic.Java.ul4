@@ -35,6 +35,6 @@ public class FunctionOrd implements Function
 		{
 			return call((String)obj);
 		}
-		throw new UnsupportedOperationException("ord(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("ord({})", obj);
 	}
 }

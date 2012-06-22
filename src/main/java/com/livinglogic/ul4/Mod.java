@@ -163,6 +163,6 @@ public class Mod extends Binary
 		}
 		else if (arg1 instanceof Color && arg2 instanceof Color)
 			return ((Color)arg1).blend((Color)arg2);
-		throw new UnsupportedOperationException(Utils.objectType(arg1) + " % " + Utils.objectType(arg2) + " not supported!");
+		throw new ArgumentTypeMismatchException("{} % {}", arg1, arg2);
 	}
 }

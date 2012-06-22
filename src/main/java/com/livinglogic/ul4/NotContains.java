@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-class NotContains extends Binary
+public class NotContains extends Binary
 {
 	public NotContains(Location location, AST obj1, AST obj2)
 	{
@@ -22,6 +22,11 @@ class NotContains extends Binary
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		return Utils.notcontains(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
+		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
+	}
+
+	public static boolean call(Object obj, Object container)
+	{
+		return !Contains.call(obj, container);
 	}
 }

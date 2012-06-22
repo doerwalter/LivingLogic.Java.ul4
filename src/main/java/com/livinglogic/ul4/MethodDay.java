@@ -40,6 +40,6 @@ public class MethodDay implements Method
 	{
 		if (obj instanceof Date)
 			return call((Date)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".day() not supported!");
+		throw new ArgumentTypeMismatchException("{}.day{}", obj);
 	}
 }

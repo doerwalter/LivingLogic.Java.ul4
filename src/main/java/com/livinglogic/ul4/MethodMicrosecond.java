@@ -40,6 +40,6 @@ public class MethodMicrosecond implements Method
 	{
 		if (obj instanceof Date)
 			return call((Date)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".microsecond() not supported!");
+		throw new ArgumentTypeMismatchException("{}.microsecond()", obj);
 	}
 }

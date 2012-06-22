@@ -29,6 +29,6 @@ public class FunctionFromUL4ON implements Function
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new UnsupportedOperationException("fromul4on(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("fromul4on({})", obj);
 	}
 }

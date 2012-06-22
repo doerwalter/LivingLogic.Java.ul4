@@ -89,39 +89,6 @@ public class Utils
 		return (obj != null) ? obj.getClass().toString().substring(6) : "null";
 	}
 
-	public static Object neg(Object arg)
-	{
-		if (arg instanceof Integer)
-		{
-			int value = ((Integer)arg).intValue();
-			if (value == -0x80000000) // Prevent overflow by switching to long
-				return 0x80000000L;
-			else
-				return -value;
-		}
-		else if (arg instanceof Long)
-		{
-			long value = ((Long)arg).longValue();
-			if (value == -0x8000000000000000L) // Prevent overflow by switching to BigInteger
-				return new BigInteger("8000000000000000", 16);
-			else
-				return -value;
-		}
-		else if (arg instanceof Boolean)
-			return ((Boolean)arg).booleanValue() ? -1 : 0;
-		else if (arg instanceof Short || arg instanceof Byte || arg instanceof Boolean)
-			return -((Number)arg).intValue();
-		else if (arg instanceof Float)
-			return -((Float)arg).floatValue();
-		else if (arg instanceof Double)
-			return -((Double)arg).doubleValue();
-		else if (arg instanceof BigInteger)
-			return ((BigInteger)arg).negate();
-		else if (arg instanceof BigDecimal)
-			return ((BigDecimal)arg).negate();
-		throw new UnsupportedOperationException("-" + objectType(arg) + " not supported!");
-	}
-
 	public static BigInteger toBigInteger(int arg)
 	{
 		return new BigInteger(Integer.toString(arg));
@@ -166,142 +133,6 @@ public class Utils
 		else if (arg instanceof Number)
 			return ((Number)arg).doubleValue();
 		throw new UnsupportedOperationException("can't convert " + objectType(arg) + " to double!");
-	}
-
-	public static Object getItem(String arg1, Integer arg2)
-	{
-		int index = arg2.intValue();
-		if (0 > index)
-		{
-			index += arg1.length();
-		}
-		return arg1.substring(index, index + 1);
-	}
-
-	public static Object getItem(List arg1, Integer arg2)
-	{
-		int index = arg2.intValue();
-		if (0 > index)
-		{
-			index += arg1.size();
-		}
-		return arg1.get(index);
-	}
-
-	public static Object getItem(Color arg1, Integer arg2)
-	{
-		int index = arg2.intValue();
-		switch (index)
-		{
-			case 0:
-				return arg1.getR();
-			case 1:
-				return arg1.getG();
-			case 2:
-				return arg1.getB();
-			case 3:
-				return arg1.getA();
-			default:
-				throw new ArrayIndexOutOfBoundsException();
-		}
-	}
-
-	public static Object getItem(Map arg1, Object arg2)
-	{
-		Object result = arg1.get(arg2);
-
-		if ((result == null) && !arg1.containsKey(arg2))
-			throw new KeyException(arg2);
-		return result;
-	}
-
-	public static Object getItem(Object arg1, Object arg2)
-	{
-		if (arg1 instanceof Map)
-			return getItem((Map)arg1, arg2);
-		else if (arg2 instanceof Integer)
-		{
-			if (arg1 instanceof String)
-				return getItem((String)arg1, (Integer)arg2);
-			else if (arg1 instanceof List)
-				return getItem((List)arg1, (Integer)arg2);
-			else if (arg1 instanceof Color)
-				return getItem((Color)arg1, (Integer)arg2);
-		}
-		throw new UnsupportedOperationException(objectType(arg1) + "[" + objectType(arg2) + "] not supported!");
-	}
-
-	private static int getSliceStartPos(int sequenceSize, int virtualPos)
-	{
-		int retVal = virtualPos;
-		if (0 > retVal)
-		{
-			retVal += sequenceSize;
-		}
-		if (0 > retVal)
-		{
-			retVal = 0;
-		}
-		else if (sequenceSize < retVal)
-		{
-			retVal = sequenceSize;
-		}
-		return retVal;
-	}
-
-	private static int getSliceEndPos(int sequenceSize, int virtualPos)
-	{
-		int retVal = virtualPos;
-		if (0 > retVal)
-		{
-			retVal += sequenceSize;
-		}
-		if (0 > retVal)
-		{
-			retVal = 0;
-		}
-		else if (sequenceSize < retVal)
-		{
-			retVal = sequenceSize;
-		}
-		return retVal;
-	}
-
-	public static Object getSlice(List arg1, int arg2, int arg3)
-	{
-		int size = arg1.size();
-		int start = getSliceStartPos(size, arg2);
-		int end = getSliceEndPos(size, arg3);
-		if (end < start)
-			end = start;
-		return arg1.subList(start, end);
-	}
-
-	public static Object getSlice(String arg1, int arg2, int arg3)
-	{
-		int size = arg1.length();
-		int start = getSliceStartPos(size, arg2);
-		int end = getSliceEndPos(size, arg3);
-		if (end < start)
-			end = start;
-		return StringUtils.substring(arg1, start, end);
-	}
-
-	public static Object getSlice(Object arg1, Object arg2, Object arg3)
-	{
-		if (arg1 instanceof List)
-		{
-			int start = arg2 != null ? toInt(arg2) : 0;
-			int end = arg3 != null ? toInt(arg3) : ((List)arg1).size();
-			return getSlice((List)arg1, start, end);
-		}
-		else if (arg1 instanceof String)
-		{
-			int start = arg2 != null ? toInt(arg2) : 0;
-			int end = arg3 != null ? toInt(arg3) : ((String)arg1).length();
-			return getSlice((String)arg1, start, end);
-		}
-		throw new UnsupportedOperationException(objectType(arg1) + "[" + objectType(arg2) + ":" + objectType(arg3) + "] not supported!");
 	}
 
 	public static int cmp(int arg1, int arg2)
@@ -414,91 +245,7 @@ public class Utils
 		}
 		else if (arg1 instanceof String && arg2 instanceof String)
 			return cmp((String)arg1, (String)arg2);
-		throw new UnsupportedOperationException(objectType(arg1) + " " + op + " " + objectType(arg2) + " not supported!");
-	}
-
-	public static boolean eq(Object obj1, Object obj2)
-	{
-		if (null != obj1 && null != obj2)
-			return cmp(obj1, obj2, "==") == 0;
-		return (null == obj1) == (null == obj2);
-	}
-
-	public static boolean ne(Object obj1, Object obj2)
-	{
-		if (null != obj1 && null != obj2)
-			return cmp(obj1, obj2, "!=") != 0;
-		return (null == obj1) != (null == obj2);
-	}
-
-	public static boolean lt(Object obj1, Object obj2)
-	{
-		if (null != obj1 && null != obj2)
-			return cmp(obj1, obj2, "<") < 0;
-		if ((null == obj1) != (null == obj2))
-			throw new UnsupportedOperationException(objectType(obj1) + " < " + objectType(obj2) + " not supported!");
-		return false;
-	}
-
-	public static boolean le(Object obj1, Object obj2)
-	{
-		if (null != obj1 && null != obj2)
-			return cmp(obj1, obj2, "<=") <= 0;
-		if ((null == obj1) != (null == obj2))
-			throw new UnsupportedOperationException(objectType(obj1) + " <= " + objectType(obj2) + " not supported!");
-		return true;
-	}
-
-	public static boolean gt(Object obj1, Object obj2)
-	{
-		if (null != obj1 && null != obj2)
-			return cmp(obj1, obj2, ">") > 0;
-		if ((null == obj1) != (null == obj2))
-			throw new UnsupportedOperationException(objectType(obj1) + " > " + objectType(obj2) + " not supported!");
-		return false;
-	}
-
-	public static boolean ge(Object obj1, Object obj2)
-	{
-		if (null != obj1 && null != obj2)
-			return cmp(obj1, obj2, ">=") >= 0;
-		if ((null == obj1) != (null == obj2))
-			throw new UnsupportedOperationException(objectType(obj1) + " >= " + objectType(obj2) + " not supported!");
-		return true;
-	}
-
-	public static boolean contains(String obj, String container)
-	{
-		return container.indexOf(obj) >= 0;
-	}
-
-	public static boolean contains(Object obj, Collection container)
-	{
-		return container.contains(obj);
-	}
-
-	public static boolean contains(Object obj, Map container)
-	{
-		return container.containsKey(obj);
-	}
-
-	public static boolean contains(Object obj, Object container)
-	{
-		if (container instanceof String)
-		{
-			if (obj instanceof String)
-				return contains((String)obj, (String)container);
-		}
-		else if (container instanceof Collection)
-			return contains(obj, (Collection)container);
-		else if (container instanceof Map)
-			return contains(obj, (Map)container);
-		throw new RuntimeException(objectType(obj) + " in " + objectType(container) + " not supported!");
-	}
-
-	public static boolean notcontains(Object obj, Object container)
-	{
-		return !contains(obj, container);
+		throw new ArgumentTypeMismatchException("{} " + op + " {}", arg1, arg2);
 	}
 
 	public static Iterator iterator(Object obj)
@@ -511,7 +258,7 @@ public class Utils
 			return ((Map)obj).keySet().iterator();
 		else if (obj instanceof Iterator)
 			return (Iterator)obj;
-		throw new UnsupportedOperationException("iter(" + objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("iter({})", obj);
 	}
 
 	public static Date makeDate(int year, int month, int day, int hour, int minute, int second, int microsecond)
@@ -562,20 +309,6 @@ public class Utils
 		{
 			throw new RuntimeException("can't parse " + FunctionRepr.call(format));
 		}
-	}
-
-	public static Object renders(Object obj)
-	{
-		if (obj instanceof Template)
-			return ((Template)obj).renders(null);
-		throw new UnsupportedOperationException(objectType(obj) + ".renders() not supported!");
-	}
-
-	public static Object renders(Object obj, Object variables)
-	{
-		if (obj instanceof Template && variables instanceof Map)
-			return ((Template)obj).renders((Map<String, Object>)variables);
-		throw new UnsupportedOperationException(objectType(obj) + ".renders(" + objectType(obj) + ") not supported!");
 	}
 
 	public static String unescapeUL4String(String string)

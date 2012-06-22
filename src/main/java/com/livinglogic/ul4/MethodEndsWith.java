@@ -35,7 +35,7 @@ public class MethodEndsWith implements Method
 	{
 		if (obj instanceof String && arg instanceof String)
 			return call((String)obj, (String)arg);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".endswith(" + Utils.objectType(arg) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.endswith({})", obj, arg);
 	}
 
 }

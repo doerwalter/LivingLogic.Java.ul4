@@ -8,21 +8,37 @@ package com.livinglogic.ul4;
 
 import java.util.Map;
 import java.io.IOException;
+import java.io.Writer;
 
 public class KeywordMethodRender implements KeywordMethod
 {
-	public Object evaluate(EvaluationContext context, Object obj, Map<String, Object> args) throws IOException
-	{
-		if (null != obj && obj instanceof Template)
-		{
-			((Template)obj).render(context.getWriter(), args);
-			return null;
-		}
-		throw new UnsupportedOperationException("render() method requires a template!");
-	}
-
 	public String getName()
 	{
 		return "render";
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Map<String, Object> args) throws IOException
+	{
+		return call(context.getWriter(), obj, args);
+	}
+
+	public static Object call(Writer writer, Template template, Map<String, Object> variables)
+	{
+		try
+		{
+			template.render(writer, variables);
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+		return null;
+	}
+
+	public static Object call(Writer writer, Object template, Map<String, Object> variables)
+	{
+		if (template instanceof Template)
+			return call(writer, (Template)template, variables);
+		throw new ArgumentTypeMismatchException("{}.render({})", template, variables);
 	}
 }

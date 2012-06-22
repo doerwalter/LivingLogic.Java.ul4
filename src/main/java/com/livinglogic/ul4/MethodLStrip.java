@@ -38,7 +38,7 @@ public class MethodLStrip implements Method
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".lstrip() not supported!");
+		throw new ArgumentTypeMismatchException("{}.lstrip()", obj);
 	}
 
 	public static String call(String obj, String stripChars)
@@ -50,6 +50,6 @@ public class MethodLStrip implements Method
 	{
 		if (obj instanceof String && stripChars instanceof String)
 			return call((String)obj, (String)stripChars);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".lstrip(" + Utils.objectType(stripChars) + ") not supported!");
+		throw new ArgumentTypeMismatchException("{}.lstrip({})", obj, stripChars);
 	}
 }

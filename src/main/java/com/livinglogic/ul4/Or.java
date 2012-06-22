@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-class Or extends Binary
+public class Or extends Binary
 {
 	public Or(Location location, AST obj1, AST obj2)
 	{
@@ -28,4 +28,6 @@ class Or extends Binary
 		else
 			return obj2.decoratedEvaluate(context);
 	}
+
+	// we can't implement a static call version here, because that would require that we evaluate both sides
 }

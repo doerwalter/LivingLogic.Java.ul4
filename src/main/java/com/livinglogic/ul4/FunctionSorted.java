@@ -82,6 +82,6 @@ public class FunctionSorted implements Function
 			return call((Set)obj);
 		else if (obj instanceof Iterator)
 			return call((Iterator)obj);
-		throw new RuntimeException("sorted(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("sorted({})", obj);
 	}
 }

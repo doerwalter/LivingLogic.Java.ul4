@@ -35,6 +35,6 @@ public class MethodLower implements Method
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new UnsupportedOperationException(Utils.objectType(obj) + ".lower() not supported!");
+		throw new ArgumentTypeMismatchException("{}.lower()", obj);
 	}
 }

@@ -54,6 +54,6 @@ public class FunctionHex implements Function
 			else
 				return "0x" + bi.toString(16);
 		}
-		throw new UnsupportedOperationException("hex(" + Utils.objectType(obj) + ") not supported!");
+		throw new ArgumentTypeMismatchException("hex({})", obj);
 	}
 }
