@@ -54,13 +54,6 @@ public class FunctionSorted implements Function
 		return retVal;
 	}
 
-	public static Vector call(Set obj)
-	{
-		Vector retVal = new Vector(obj);
-		Collections.sort(retVal);
-		return retVal;
-	}
-
 	public static Vector call(Iterator obj)
 	{
 		Vector retVal = new Vector();
@@ -78,8 +71,6 @@ public class FunctionSorted implements Function
 			return call((Collection)obj);
 		else if (obj instanceof Map)
 			return call((Map)obj);
-		else if (obj instanceof Set)
-			return call((Set)obj);
 		else if (obj instanceof Iterator)
 			return call((Iterator)obj);
 		throw new ArgumentTypeMismatchException("sorted({})", obj);
