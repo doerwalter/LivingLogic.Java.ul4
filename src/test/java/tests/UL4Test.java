@@ -1098,6 +1098,32 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_fromjson()
+	{
+		checkTemplateOutput("None", "<?print repr(fromjson(data))?>", "data", "null");
+		checkTemplateOutput("False", "<?print repr(fromjson(data))?>", "data", "false");
+		checkTemplateOutput("True", "<?print repr(fromjson(data))?>", "data", "true");
+		checkTemplateOutput("42", "<?print repr(fromjson(data))?>", "data", "42");
+		checkTemplateOutput("\"abc\"", "<?print repr(fromjson(data))?>", "data", "\"abc\"");
+		checkTemplateOutput("[1, 2, 3]", "<?print repr(fromjson(data))?>", "data", "[1,2,3]");
+		checkTemplateOutput("{\"eins\": 42}", "<?print repr(fromjson(data))?>", "data", "{\"eins\": 42}");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@Test
+	public void function_fromjson_0_args()
+	{
+		checkTemplateOutput("", "<?print fromjson()?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@Test
+	public void function_fromjson_2_args()
+	{
+		checkTemplateOutput("", "<?print fromjson(1, 2)?>");
+	}
+
+	@Test
 	public void function_asul4on()
 	{
 		checkTemplateOutput(dumps(null), "<?print asul4on(data)?>", "data", null);
@@ -2560,7 +2586,7 @@ public class UL4Test
 	public void template_javaSource()
 	{
 		universaltemplate().javaSource();
-	}
+	}	
 
 	@Test
 	public void template_javascriptSource()
