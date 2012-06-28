@@ -67,6 +67,7 @@ public class CallFunc extends AST
 			"type", new FunctionType(),
 			"get", new FunctionGet(),
 			"asjson", new FunctionAsJSON(),
+			"fromjson", new FunctionFromJSON(),
 			"asul4on", new FunctionAsUL4ON(),
 			"fromul4on", new FunctionFromUL4ON(),
 			"reversed", new FunctionReversed(),
