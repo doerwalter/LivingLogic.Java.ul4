@@ -24,7 +24,7 @@ public class FunctionRandRange implements Function
 			case 2:
 				return call(args[0], args[1]);
 			case 3:
-				return call(args[0], args[1], args[1]);
+				return call(args[0], args[1], args[2]);
 			default:
 				throw new ArgumentCountMismatchException("function", "randrange", args.length, 1, 3);
 		}
