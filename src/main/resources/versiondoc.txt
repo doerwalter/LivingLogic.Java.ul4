@@ -10,7 +10,9 @@ Comments:
     <?render x()?> -> <?print x.render()?>
     <?print x.render()?> -> <?print x.renders()?>
 
-* UL4 templates now support the ul4on function.
+* UL4 templates now support the functions fromjson, asul4on, fromul4on.
+
+* The function json has been renamed to asjson.
 
 * Added support for templates and floats to UL4ON.
 
