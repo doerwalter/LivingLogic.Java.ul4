@@ -578,7 +578,6 @@ public class InterpretedTemplate extends Block implements Template
 			v.put("startdelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).startdelim;}});
 			v.put("enddelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).enddelim;}});
 			v.put("source", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).source;}});
-			// v.put("opcodes", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).opcodes;}});
 			valueMakers = v;
 		}
 		return valueMakers;
