@@ -14,7 +14,6 @@ import java.io.IOException;
  * Interface for various methods for generating template output.
  *
  * @author W. Doerwald
- * @version $Revision$ $Date$
  */
 
 public interface Template

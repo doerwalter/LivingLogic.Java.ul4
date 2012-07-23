@@ -15,13 +15,14 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * A subclass of HashMap where when a key or entry isn't found a second
- * ("chained") Map is consulted.
+ * A subclass of {@code HashMap} where when a key or entry isn't found a second
+ * ("chained") {@code Map} is consulted.
  *
- * Methods of ChainedHashMap that modify the mapping only modify the
- * ChainedHashMap itself not the chained Map. Modifying the ChainedHashMap
- * via the Sets returned by keySet() or entrySet() is forbidded (i.e. those)
- * methods throws a UnsupportedOperationException exception.
+ * Methods of {@code ChainedHashMap} that modify the mapping only modify the
+ * {@code ChainedHashMap} itself not the chained {@code Map}. Modifying the
+ * {@code ChainedHashMap} via the sets returned by {@code keySet()} or
+ * {@code entrySet()} is forbidden (i.e. those methods throws a
+ * {@code UnsupportedOperationException} exception).
  *
  * @author W. Doerwald
  */
@@ -30,12 +31,13 @@ public abstract class ChainedHashMap<K, V> extends HashMap<K, V>
 	private static final long serialVersionUID = 5436650168502819105L;
 
 	/**
-	 * getChainedMap() returns the map where lookup of keys/entries continues
-	 * If they can't be found in the ChainedHashMap itself. If getChainedMap()
-	 * returns null, no further lookup is done and a ChainedHashMap behaves
-	 * exactly like a HashMap (except that modification via keySet()/entrySet()
+	 * {@code getChainedMap()} returns the map where lookup of keys/entries
+	 * continues ff they can't be found in the {@code ChainedHashMap} itself.
+	 * If {@code getChainedMap()} returns {@code null}, no further lookup is
+	 * done and a {@code ChainedHashMap} behaves exactly like a {@code HashMap}
+	 * (except that modification via {@code keySet()}/{@code entrySet()}
 	 * are not allowed).
-	 * @return the chained Map or null
+	 * @return the chained {@code Map} or {@code null}
 	 */
 	abstract public Map<K, V> getChainedMap();
 

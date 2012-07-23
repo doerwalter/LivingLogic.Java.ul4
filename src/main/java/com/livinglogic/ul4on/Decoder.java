@@ -39,7 +39,7 @@ public class Decoder
 
 	/**
 	 * Reads a object in the UL4ON object serialization from the reader and returns it.
-	 * @returns the object read from the stream
+	 * @return the object read from the stream
 	 * @throws IOException if reading from the stream fails
 	 */
 	public Object load() throws IOException

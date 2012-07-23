@@ -19,25 +19,44 @@ import java.util.Map;
 /**
  * Utility class for reading and writing the UL4ON object serialization format.
  *
- * The UL4ON object serialization format is a simple (text-based) serialization format
- * the supports all objects supported by UL4, i.e. it supports the same type of objects
- * as JSON does (plus colors, dates and templates)
+ * The UL4ON object serialization format is a simple (text-based) extensible
+ * object serialization format the supports all objects supported by UL4, i.e.
+ * it supports the same type of objects as JSON does (plus colors, dates and
+ * templates).
+ *
+ * Furthermore it is extensible by implementing the {@link UL4ONSerializable}
+ * interface and registering your class via {@link #register}.
  *
  * @author W. Dörwald, A. Gaßner
  */
 public class Utils
 {
+	/**
+	 * Date format for serializing/deserializing {@code Date} objects.
+	 */
 	public final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
+	/**
+	 * Registry where all {@link ObjectFactory} objects registered via
+	 * {@link #register} are stored.
+	 */
 	public static Map<String, ObjectFactory> registry = new HashMap<String, ObjectFactory>();
 
+	/**
+	 * Register a class for the UL4ON serialization machinery.
+	 *
+	 * @param name the name of the class as returned by its
+	 *             {@link UL4ONSerializable#getUL4ONName}.
+	 * @param factory An {@link ObjectFactory} object that will be used to create
+	 *                an "empty" instance of the class.
+	 */
 	public static void register(String name, ObjectFactory factory)
 	{
 		registry.put(name, factory);
 	}
 
 	/**
-	 * Return the serialized output of the object <code>data</code>.
+	 * Return the serialized UL4ON output of the object {@code data}.
 	 * @param data the object to be dumped.
 	 * @return the serialized object
 	 */
@@ -58,7 +77,7 @@ public class Utils
 	}
 
 	/**
-	 * Load an object by reading in the UL4ON object serialization format reader <code>reader</code>.
+	 * Load an object by reading in the UL4ON object serialization format from {@code reader}.
 	 * @param reader The Reader from which to read the object
 	 * @return the deserialized object
 	 */
@@ -76,7 +95,7 @@ public class Utils
 	}
 
 	/**
-	 * Load an object by reading in the UL4ON object serialization format from the string <code>s</code>.
+	 * Load an object by reading in the UL4ON object serialization format from the string {@code s}.
 	 * @param s The object in serialized form
 	 * @return the deserialized object
 	 */
@@ -94,7 +113,7 @@ public class Utils
 	}
 	
 	/**
-	 * Load an object by reading in the UL4ON object serialization format from the CLOB <code>clob</code>.
+	 * Load an object by reading in the UL4ON object serialization format from the CLOB {@code clob}.
 	 * @param clob The CLOB that contains the object in serialized form
 	 * @return the deserialized object
 	 */

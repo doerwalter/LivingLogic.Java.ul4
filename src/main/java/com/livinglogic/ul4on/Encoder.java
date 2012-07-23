@@ -20,25 +20,42 @@ import java.util.Map;
 import com.livinglogic.ul4.Color;
 
 /**
- * Utility class for reading and writing the UL4ON object serialization format.
- *
- * The UL4ON object serialization format is a simple (text-based) serialization format
- * the supports all objects supported by UL4, i.e. it supports the same type of objects
- * as JSON does (plus colors, dates and templates)
- *
- * @author W. Dörwald, A. Gaßner
+ * An {@code Encoder} object wraps a {@code Writer} object and can dump any object
+ * to this {@code Writer} in the UL4ON serialization format.
  */
 public class Encoder
 {
+	/**
+	 * The {@code Writer} instance where the final output will be written.
+	 */
 	private Writer writer = null;
+
+	/**
+	 * The list of objects that have been recorded for being available for
+	 * backreferences
+	 */
 	private List<Object> objects = new ArrayList<Object>();
+
+	/**
+	 * A {@code Map} that maps certain objects that have been output before to an
+	 * index that specifies at which position in the list of unique objects that
+	 * have been output before this object is.
+	 */
 	private Map<Object, Integer> object2id = new HashMap<Object, Integer>();
 
+	/**
+	 * Create an {@code Encoder} object for writing serialized UL4ON output
+	 * to the {@code Writer} {@code writer}
+	 */
 	public Encoder(Writer writer)
 	{
 		this.writer = writer;
 	}
 
+	/**
+	 * Record that the object {@code obj} has been output and should be available
+	 * to output backreferences to this object later.
+	 */
 	private void record(Object obj)
 	{
 		object2id.put(obj, objects.size());
@@ -46,7 +63,7 @@ public class Encoder
 	}
 
 	/**
-	 * Writes the object <code>obj</code> to the writer in the UL4ON object serialization format.
+	 * Writes the object {@code obj} to the writer in the UL4ON object serialization format.
 	 * @param obj the object to be dumped.
 	 * @throws IOException if writing to the stream fails
 	 */

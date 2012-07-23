@@ -15,7 +15,6 @@ import java.io.IOException;
  * Base class for template code that has been converted to Java source code.
  *
  * @author W. Doerwald
- * @version $Revision$ $Date$
  */
 
 public abstract class CompiledTemplate implements Template

@@ -8,15 +8,16 @@ package com.livinglogic.ul4on;
 
 
 /**
- * Utility class for reading and writing the UL4ON object serialization format.
- *
- * The UL4ON object serialization format is a simple (text-based) serialization format
- * the supports all objects supported by UL4, i.e. it supports the same type of objects
- * as JSON does (plus colors, dates and templates)
- *
- * @author W. Dörwald, A. Gaßner
+ * An {@code ObjectFactory} object is responsible for creating an object that
+ * implements the {@link UL4ONSerializable} interface. It is used by
+ * {@link Decoder} to create an object of the appropriate type when deserializing
+ * objects.
  */
 public interface ObjectFactory
 {
+	/**
+	 * Create an object of the appropriate type. The content of the object will
+	 * we recreated after this call by {@link UL4ONSerializable#loadUL4ON}.
+	 */
 	public UL4ONSerializable create();
 }

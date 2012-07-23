@@ -43,17 +43,17 @@ public class InterpretedTemplate extends Block implements Template
 	public static final String VERSION = "17";
 
 	/**
-	 * The name of the template (defaults to <code>unnamed</code>)
+	 * The name of the template (defaults to {@code "unnamed"})
 	 */
 	public String name = null;
 
 	/**
-	 * The start delimiter for tags (defaults to <code>&lt;?</code>)
+	 * The start delimiter for tags (defaults to {@code "<?"})
 	 */
 	public String startdelim = "<?";
 
 	/**
-	 * The end delimiter for tags (defaults to <code>?&gt;</code>)
+	 * The end delimiter for tags (defaults to {@code "?>"})
 	 */
 	public String enddelim = "?>";
 

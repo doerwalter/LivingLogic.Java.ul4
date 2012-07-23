@@ -6,6 +6,10 @@
 
 package com.livinglogic.ul4;
 
+/**
+ * Thrown by implementions of {@link Function} or {@link Method} when the
+ * function/method cannot handle the number of arguments provided.
+ */
 public class ArgumentCountMismatchException extends UnsupportedOperationException
 {
 	public ArgumentCountMismatchException(String type, String name, int given, int requiredMin, int requiredMax)

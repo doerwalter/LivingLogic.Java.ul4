@@ -6,6 +6,9 @@
 
 package com.livinglogic.ul4;
 
+/**
+ * Thrown when an unknown function is encountered in an UL4 template.
+ */
 public class UnknownFunctionException extends RuntimeException
 {
 	public UnknownFunctionException(String functionName)
