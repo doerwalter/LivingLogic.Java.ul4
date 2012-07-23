@@ -31,12 +31,6 @@ public class Encoder
 	private Writer writer = null;
 
 	/**
-	 * The list of objects that have been recorded for being available for
-	 * backreferences
-	 */
-	private List<Object> objects = new ArrayList<Object>();
-
-	/**
 	 * A {@code Map} that maps certain objects that have been output before to an
 	 * index that specifies at which position in the list of unique objects that
 	 * have been output before this object is.
@@ -58,8 +52,7 @@ public class Encoder
 	 */
 	private void record(Object obj)
 	{
-		object2id.put(obj, objects.size());
-		objects.add(obj);
+		object2id.put(obj, object2id.size());
 	}
 
 	/**
