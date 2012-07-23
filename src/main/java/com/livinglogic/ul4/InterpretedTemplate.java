@@ -300,11 +300,6 @@ public class InterpretedTemplate extends Block implements Template
 		return Utils.dumps(this);
 	}
 
-	// public Reader reader(Map<String, Object> variables)
-	// {
-	// 	return new IteratorReader(new Renderer(variables));
-	// }
-
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		context.put(name, this);
@@ -374,6 +369,20 @@ public class InterpretedTemplate extends Block implements Template
 			// can't happen
 		}
 		return output.toString();
+	}
+
+	/**
+	 * Renders the template and returns a Reader object from which the template
+	 * output can be read.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the template code. May be null
+	 * @return The reader from which the template output can be read.
+	 */
+	public Reader reader(Map<String, Object> variables)
+	{
+		// This is a preliminary implementation, what we really what is that the
+		// template is rendered incrementally, which would require threading.
+		return new StringReader(renders(variables));
 	}
 
 	public static List<Location> tokenizeTags(String source, String name, String startdelim, String enddelim)
