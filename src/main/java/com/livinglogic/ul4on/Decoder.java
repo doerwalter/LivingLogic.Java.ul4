@@ -18,20 +18,32 @@ import java.util.Map;
 import com.livinglogic.ul4.Color;
 
 /**
- * Utility class for reading and writing the UL4ON object serialization format.
- *
- * The UL4ON object serialization format is a simple (text-based) serialization format
- * the supports all objects supported by UL4, i.e. it supports the same type of objects
- * as JSON does (plus colors, dates and templates)
- *
- * @author W. Dörwald, A. Gaßner
+ * A {@code Decoder} object wraps a {@code Reader} object and can read any object
+ * in the UL4ON serialization format from this {@code Reader}.
  */
 public class Decoder
 {
+	/**
+	 * The {@code Reader} instance from where serialized objects will be read.
+	 */
 	private Reader reader = null;
+
+	/**
+	 * The list of objects that have been read so far from {@code reader} and
+	 * that must be available for backreferences.
+	 */
 	private List<Object> objects = new ArrayList<Object>();
+
+	/**
+	 * A {@code Map} that maps string to strings of the same value. This is used
+	 * to make sure that string keys in a map always use the same string objects.
+	 */
 	private Map<Object, Object> keys = new HashMap<Object, Object>();
 
+	/**
+	 * Create an {@code Decoder} object for reading serialized UL4ON output
+	 * from the {@code Reader} {@code reader}.
+	 */
 	public Decoder(Reader reader)
 	{
 		this.reader = reader;
@@ -46,12 +58,20 @@ public class Decoder
 	{
 		return load(-2);
 	}
-	
+
+	/**
+	 * Record {@code obj} in the list of backreferences.
+	 */
 	private void loading(Object obj)
 	{
 		objects.add(obj);
 	}
 
+	/**
+	 * Read an object from {@link #reader} and return it.
+	 * @param typecode The typecode from a previous read or -2 if the typecode
+	 *                 has to be read from the {@link #reader}.
+	 */
 	private Object load(int typecode) throws IOException
 	{
 		if (typecode == -2)
@@ -184,9 +204,9 @@ public class Decoder
 				// We have a problem here:
 				// We have to record the object we're loading *now*, so that it is available for backreferences.
 				// However until we've read the UL4ON name of the class, we can't create the object.
-				// So we push null to the backreference list for now and put the right object in this spot,
+				// So we push null to the backreference list for now and put the right object in this spot
 				// once we've created it (This shouldn't be a problem, because during the time the backreference
-				// is wrong, only the class name is read, so our object won't be refenced).
+				// is wrong, only the class name is read, so our object won't be referenced).
 				oldpos = objects.size();
 				loading(null);
 			}
