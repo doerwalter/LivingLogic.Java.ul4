@@ -100,7 +100,7 @@ public class InterpretedTemplate extends Block implements Template
 		if (source == null)
 			return;
 
-		List<Location> tags = InterpretedTemplate.tokenizeTags(source, name, startdelim, enddelim);
+		List<Location> tags = InterpretedTemplate.tokenizeTags(source, startdelim, enddelim);
 
 		Stack<Block> stack = new Stack<Block>();
 
@@ -385,7 +385,14 @@ public class InterpretedTemplate extends Block implements Template
 		return new StringReader(renders(variables));
 	}
 
-	public static List<Location> tokenizeTags(String source, String name, String startdelim, String enddelim)
+	/**
+	 * Split the template source into tags and literal text.
+	 * @param source The sourcecode of the template
+	 * @param startdelim The start delimiter for template tags (usually {@code "<?"})
+	 * @param enddelim The end delimiter for template tags (usually {@code "?>"})
+	 * @return A list of {@link Location} objects
+	 */
+	public static List<Location> tokenizeTags(String source, String startdelim, String enddelim)
 	{
 		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|def|render|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Location> tags = new LinkedList<Location>();
