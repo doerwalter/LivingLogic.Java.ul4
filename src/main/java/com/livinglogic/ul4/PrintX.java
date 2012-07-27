@@ -9,6 +9,12 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * {@code PrintX} is an unary AST node that writes a string version of its
+ * operand to the output stream and replaces the characters {@code <}, {@code >},
+ * {@code &}, {@code '} and {@code "} with the appropriate XML character
+ * entities.
+ */
 public class PrintX extends Unary
 {
 	public PrintX(Location location, AST obj)

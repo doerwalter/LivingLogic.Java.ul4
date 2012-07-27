@@ -52,7 +52,7 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 
 	/**
 	 * {@code decoratedEvaluate} wraps a call to {@link evaluate} with exception
-	 * handling. {@link evaluate} should not be called directly. Indead
+	 * handling. {@link evaluate} should not be called directly. Instead
 	 * {@code decoratedEvaluate} should be used. When an exception bubbles up
 	 * the call stack, {@code decoratedEvaluate} creates a exception chain
 	 * containing information about the location of the exception.
@@ -107,7 +107,7 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 	 * nicely formatted sourcecode for this node formatted for indentation level
 	 * {@code indent}.
 	 * @param indent the indentation level
-	 * @return The formatted sourcecode.
+	 * @return The formatted sourcecode
 	 */
 	abstract public String toString(int indent);
 

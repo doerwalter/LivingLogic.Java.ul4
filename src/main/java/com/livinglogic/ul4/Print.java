@@ -9,6 +9,10 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * {@code Print} is an unary AST node that writes a string version of its
+ * operand to the output stream.
+ */
 public class Print extends Unary
 {
 	public Print(Location location, AST obj)
