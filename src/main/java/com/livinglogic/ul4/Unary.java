@@ -13,10 +13,21 @@ import java.io.IOException;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
 
+/**
+ * The base class of all nodes that model unary operations.
+ */
 abstract class Unary extends AST
 {
+	/**
+	 * The operand of the unary operation
+	 */
 	protected AST obj;
 
+	/**
+	 * Create a new {@code Unary} object
+	 * @param location The source code location where this node appears in.
+	 * @param obj The operand
+	 */
 	public Unary(Location location, AST obj)
 	{
 		super(location);
