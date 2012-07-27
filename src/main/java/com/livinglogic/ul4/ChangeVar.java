@@ -13,7 +13,7 @@ import java.io.IOException;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
 
-abstract class ChangeVar extends AST
+public abstract class ChangeVar extends AST
 {
 	protected String varname;
 	protected AST value;

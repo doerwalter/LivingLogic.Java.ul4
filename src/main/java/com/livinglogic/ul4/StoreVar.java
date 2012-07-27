@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-class StoreVar extends ChangeVar
+public class StoreVar extends ChangeVar
 {
 	public StoreVar(Location location, String varname, AST value)
 	{

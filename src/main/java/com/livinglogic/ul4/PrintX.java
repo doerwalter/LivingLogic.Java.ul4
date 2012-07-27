@@ -9,7 +9,7 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.Map;
 
-class PrintX extends Unary
+public class PrintX extends Unary
 {
 	public PrintX(Location location, AST obj)
 	{

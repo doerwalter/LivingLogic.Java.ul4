@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-class TrueDivVar extends ChangeVar
+public class TrueDivVar extends ChangeVar
 {
 	public TrueDivVar(Location location, String varname, AST value)
 	{

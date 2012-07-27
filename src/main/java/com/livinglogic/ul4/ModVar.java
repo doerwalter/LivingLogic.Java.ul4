@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-class ModVar extends ChangeVar
+public class ModVar extends ChangeVar
 {
 	public ModVar(Location location, String varname, AST value)
 	{

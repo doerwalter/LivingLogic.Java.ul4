@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-class SubVar extends ChangeVar
+public class SubVar extends ChangeVar
 {
 	public SubVar(Location location, String varname, AST value)
 	{
