@@ -311,6 +311,42 @@ public class Utils
 		}
 	}
 
+	public static int getSliceStartPos(int sequenceSize, int virtualPos)
+	{
+		int retVal = virtualPos;
+		if (0 > retVal)
+		{
+			retVal += sequenceSize;
+		}
+		if (0 > retVal)
+		{
+			retVal = 0;
+		}
+		else if (sequenceSize < retVal)
+		{
+			retVal = sequenceSize;
+		}
+		return retVal;
+	}
+
+	public static int getSliceEndPos(int sequenceSize, int virtualPos)
+	{
+		int retVal = virtualPos;
+		if (0 > retVal)
+		{
+			retVal += sequenceSize;
+		}
+		if (0 > retVal)
+		{
+			retVal = 0;
+		}
+		else if (sequenceSize < retVal)
+		{
+			retVal = sequenceSize;
+		}
+		return retVal;
+	}
+
 	public static String unescapeUL4String(String string)
 	{
 		if (string == null)

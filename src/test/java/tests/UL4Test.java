@@ -2362,8 +2362,19 @@ public class UL4Test
 		checkTemplateOutput("2", "<?print s.find('rk', 2)?>", "s", "gurkgurk");
 		checkTemplateOutput("2", "<?print s.find('rk', 2, 4)?>", "s", "gurkgurk");
 		checkTemplateOutput("6", "<?print s.find('rk', 4, 8)?>", "s", "gurkgurk");
+		checkTemplateOutput("5", "<?print s.find('ur', -4, -1)?>", "s", "gurkgurk");
 		checkTemplateOutput("-1", "<?print s.find('rk', 2, 3)?>", "s", "gurkgurk");
 		checkTemplateOutput("-1", "<?print s.find('rk', 7)?>", "s", "gurkgurk");
+
+		checkTemplateOutput("-1", "<?print l.find('x')?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("2", "<?print l.find('r')?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("2", "<?print l.find('r', 2)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("2", "<?print l.find('r', 2, 4)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("6", "<?print l.find('r', 4, 8)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("6", "<?print l.find('r', -3, -1)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("-1", "<?print l.find('r', 2, 2)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("-1", "<?print l.find('r', 7)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("2", "<?print l.find(None)?>", "l", asList("g", "u", null, "k", "g", "u", "r", "k"));
 	}
 
 	@Test
@@ -2374,8 +2385,19 @@ public class UL4Test
 		checkTemplateOutput("6", "<?print s.rfind('rk', 2)?>", "s", "gurkgurk");
 		checkTemplateOutput("2", "<?print s.rfind('rk', 2, 4)?>", "s", "gurkgurk");
 		checkTemplateOutput("6", "<?print s.rfind('rk', 4, 8)?>", "s", "gurkgurk");
+		checkTemplateOutput("5", "<?print s.rfind('ur', -4, -1)?>", "s", "gurkgurk");
 		checkTemplateOutput("-1", "<?print s.rfind('rk', 2, 3)?>", "s", "gurkgurk");
 		checkTemplateOutput("-1", "<?print s.rfind('rk', 7)?>", "s", "gurkgurk");
+
+		checkTemplateOutput("-1", "<?print l.rfind('x')?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("6", "<?print l.rfind('r')?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("6", "<?print l.rfind('r', 2)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("2", "<?print l.rfind('r', 2, 4)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("6", "<?print l.rfind('r', 4, 8)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("6", "<?print l.rfind('r', -3, -1)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("-1", "<?print l.rfind('r', 2, 2)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("-1", "<?print l.rfind('r', 7)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
+		checkTemplateOutput("2", "<?print l.rfind(None)?>", "l", asList("g", "u", null, "k", "g", "u", "r", "k"));
 	}
 
 	@Test

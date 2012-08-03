@@ -61,47 +61,11 @@ public class GetSlice extends AST
 		index2 = (AST)decoder.load();
 	}
 
-	private static int getSliceStartPos(int sequenceSize, int virtualPos)
-	{
-		int retVal = virtualPos;
-		if (0 > retVal)
-		{
-			retVal += sequenceSize;
-		}
-		if (0 > retVal)
-		{
-			retVal = 0;
-		}
-		else if (sequenceSize < retVal)
-		{
-			retVal = sequenceSize;
-		}
-		return retVal;
-	}
-
-	private static int getSliceEndPos(int sequenceSize, int virtualPos)
-	{
-		int retVal = virtualPos;
-		if (0 > retVal)
-		{
-			retVal += sequenceSize;
-		}
-		if (0 > retVal)
-		{
-			retVal = 0;
-		}
-		else if (sequenceSize < retVal)
-		{
-			retVal = sequenceSize;
-		}
-		return retVal;
-	}
-
 	public static Object call(List obj, int startIndex, int endIndex)
 	{
 		int size = obj.size();
-		int start = getSliceStartPos(size, startIndex);
-		int end = getSliceEndPos(size, endIndex);
+		int start = Utils.getSliceStartPos(size, startIndex);
+		int end = Utils.getSliceEndPos(size, endIndex);
 		if (end < start)
 			end = start;
 		return obj.subList(start, end);
@@ -110,8 +74,8 @@ public class GetSlice extends AST
 	public static Object call(String obj, int startIndex, int endIndex)
 	{
 		int size = obj.length();
-		int start = getSliceStartPos(size, startIndex);
-		int end = getSliceEndPos(size, endIndex);
+		int start = Utils.getSliceStartPos(size, startIndex);
+		int end = Utils.getSliceEndPos(size, endIndex);
 		if (end < start)
 			end = start;
 		return StringUtils.substring(obj, start, end);
