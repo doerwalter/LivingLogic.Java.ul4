@@ -14,7 +14,7 @@ public class ArgumentCountMismatchException extends UnsupportedOperationExceptio
 {
 	public ArgumentCountMismatchException(String type, String name, int given, int requiredMin, int requiredMax)
 	{
-		super(type + " " + name + "() expects " + (requiredMin == requiredMax ? "exactly " + requiredMin + " argument" + (requiredMin==1 ? "" : "s") : requiredMin + "-" + requiredMax + " arguments") + ", " + given + " given!");
+		super(type + " " + name + "() expects " + (requiredMin == requiredMax ? "exactly " + requiredMin + " argument" + (requiredMin==1 ? "" : "s") : (requiredMax < 0 ? "at least " + requiredMin + " argument" + (requiredMin==1 ? "" : "s") : requiredMin + "-" + requiredMax + " arguments")) + ", " + given + " given!");
 	}
 
 	public ArgumentCountMismatchException(String type, String name, int given, int required)
