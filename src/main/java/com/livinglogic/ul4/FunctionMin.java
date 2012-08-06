@@ -22,13 +22,14 @@ public class FunctionMin implements Function
 
 	public Object evaluate(EvaluationContext context, Object... args)
 	{
-		if (args.length >= 1)
-			return call(args);
-		throw new ArgumentCountMismatchException("function", "min", args.length, 1, -1);
+		return call(args);
 	}
 
 	public static Object call(Object ... objs)
 	{
+		if (objs.length == 0)
+			throw new ArgumentCountMismatchException("function", "min", objs.length, 1, -1);
+
 		Iterator iter = Utils.iterator(objs.length == 1 ? objs[0] : objs);
 
 		Object minValue = null;
