@@ -256,6 +256,8 @@ public class Utils
 			return ((Iterable)obj).iterator();
 		else if (obj instanceof Map)
 			return ((Map)obj).keySet().iterator();
+		else if (obj instanceof Object[])
+			return Arrays.asList((Object[])obj).iterator();
 		else if (obj instanceof Iterator)
 			return (Iterator)obj;
 		throw new ArgumentTypeMismatchException("iter({})", obj);
