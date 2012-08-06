@@ -22,13 +22,13 @@ public class FunctionMax implements Function
 
 	public Object evaluate(EvaluationContext context, Object... args)
 	{
-		if (args.length >= 1)
-			return call(args);
-		throw new ArgumentCountMismatchException("function", "max", args.length, 1, -1);
+		return call(args);
 	}
 
 	public static Object call(Object ... objs)
 	{
+		if (objs.length == 0)
+			throw new ArgumentCountMismatchException("function", "max", objs.length, 1, -1);
 		Iterator iter = Utils.iterator(objs.length == 1 ? objs[0] : objs);
 
 		Object maxValue = null;
