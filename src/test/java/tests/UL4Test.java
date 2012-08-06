@@ -2035,6 +2035,38 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_min()
+	{
+		checkTemplateOutput("1", "<?print min('123')?>");
+		checkTemplateOutput("1", "<?print min(1, 2, 3)?>");
+		checkTemplateOutput("0", "<?print min(0, False, 1, True)?>");
+		checkTemplateOutput("False", "<?print min(False, 0, True, 1)?>");
+		checkTemplateOutput("False", "<?print min([False, 0, True, 1])?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_min_0_args()
+	{
+		checkTemplateOutput("", "<?print min()?>");
+	}
+
+	@Test
+	public void function_max()
+	{
+		checkTemplateOutput("3", "<?print max('123')?>");
+		checkTemplateOutput("3", "<?print max(1, 2, 3)?>");
+		checkTemplateOutput("1", "<?print max(0, False, 1, True)?>");
+		checkTemplateOutput("True", "<?print max(False, 0, True, 1)?>");
+		checkTemplateOutput("True", "<?print max([False, 0, True, 1])?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_max_0_args()
+	{
+		checkTemplateOutput("", "<?print max()?>");
+	}
+
+	@Test
 	public void function_sorted()
 	{
 		String source = "<?for i in sorted(data)?><?print i?><?end for?>";

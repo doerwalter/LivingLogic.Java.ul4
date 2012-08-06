@@ -63,6 +63,8 @@ public class CallFunc extends AST
 			"bin", new FunctionBin(),
 			"abs", new FunctionAbs(),
 			"range", new FunctionRange(),
+			"min", new FunctionMin(),
+			"max", new FunctionMax(),
 			"sorted", new FunctionSorted(),
 			"type", new FunctionType(),
 			"get", new FunctionGet(),
