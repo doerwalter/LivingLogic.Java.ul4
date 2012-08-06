@@ -29,6 +29,7 @@ public class FunctionMax implements Function
 	{
 		if (objs.length == 0)
 			throw new ArgumentCountMismatchException("function", "max", objs.length, 1, -1);
+
 		Iterator iter = Utils.iterator(objs.length == 1 ? objs[0] : objs);
 
 		Object maxValue = null;
