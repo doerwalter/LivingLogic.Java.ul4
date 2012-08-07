@@ -124,6 +124,9 @@ public class CallFunc extends AST
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
+		if (args.size() == 0)
+			return function.evaluate(context); // otherwise evaluate() would be called with one argument (being an empty array)
+
 		Object[] realArgs = new Object[args.size()];
 
 		for (int i = 0; i < realArgs.length; ++i)
