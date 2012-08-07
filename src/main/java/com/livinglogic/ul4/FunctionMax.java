@@ -45,7 +45,7 @@ public class FunctionMax implements Function
 			first = false;
 		}
 		if (first)
-			throw new UnsupportedOperationException("max() sequence is empty!");
+			throw new UnsupportedOperationException("max() arg is an empty sequence!");
 		return maxValue;
 	}
 }

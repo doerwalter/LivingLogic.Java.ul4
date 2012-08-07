@@ -45,7 +45,7 @@ public class FunctionMin implements Function
 			first = false;
 		}
 		if (first)
-			throw new UnsupportedOperationException("min() sequence is empty!");
+			throw new UnsupportedOperationException("min() arg is an empty sequence!");
 		return minValue;
 	}
 }
