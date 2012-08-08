@@ -7,6 +7,8 @@
 package com.livinglogic.ul4;
 
 import java.io.BufferedReader;
+import java.io.PipedReader;
+import java.io.PipedWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.io.StringWriter;
@@ -371,18 +373,49 @@ public class InterpretedTemplate extends Block implements Template
 		return output.toString();
 	}
 
+	private static class RenderRunnable implements Runnable
+	{
+		protected InterpretedTemplate template;
+		protected Writer writer;
+		protected Map<String, Object> variables;
+		
+		public RenderRunnable(InterpretedTemplate template, Writer writer, Map<String, Object> variables)
+		{
+			this.template = template;
+			this.writer = writer;
+			this.variables = variables;
+		}
+
+		@Override
+		public void run()
+		{
+			try
+			{
+				template.render(writer, variables);
+				writer.close();
+			}
+			catch (IOException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	
 	/**
 	 * Renders the template and returns a Reader object from which the template
 	 * output can be read.
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the template code. May be null
 	 * @return The reader from which the template output can be read.
+	 * @throws IOException 
 	 */
-	public Reader reader(Map<String, Object> variables)
+	public Reader reader(Map<String, Object> variables) throws IOException
 	{
-		// This is a preliminary implementation, what we really what is that the
-		// template is rendered incrementally, which would require threading.
-		return new StringReader(renders(variables));
+		PipedReader reader = new PipedReader(10);
+		PipedWriter writer = new PipedWriter(reader);
+		new Thread(new RenderRunnable(this, writer, variables)).start();
+		
+		return reader;
 	}
 
 	/**
