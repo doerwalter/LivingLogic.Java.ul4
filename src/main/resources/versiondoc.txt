@@ -1,3 +1,10 @@
+exp-51:
+-------
+Comments:
+* Added the functions min() and max().
+* Added a proper (threaded) implementation of InterpretedTemplate.reader().
+
+
 exp-50:
 -------
 Comments:
