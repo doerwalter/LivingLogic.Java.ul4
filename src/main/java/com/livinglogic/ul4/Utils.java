@@ -6,45 +6,21 @@
 
 package com.livinglogic.ul4;
 
-import java.util.AbstractList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Stack;
-import java.util.Vector;
-import java.util.Set;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Random;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.math.BigInteger;
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.io.File;
-import java.io.PrintWriter;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.net.URLDecoder;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.math.NumberUtils;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 
 class StringIterator implements Iterator<String>

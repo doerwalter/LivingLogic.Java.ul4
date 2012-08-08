@@ -6,10 +6,11 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Vector;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Vector;
+
 import org.apache.commons.lang.math.NumberUtils;
 
 public class Color implements Collection

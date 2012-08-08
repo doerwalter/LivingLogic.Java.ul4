@@ -1,15 +1,18 @@
 package tests;
 
+import static com.livinglogic.ul4on.Utils.dumps;
+import static com.livinglogic.ul4on.Utils.loads;
+import static com.livinglogic.utils.MapUtils.makeMap;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
-import static java.util.Arrays.*;
+
+import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import  org.antlr.runtime.RecognitionException;
 
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.InterpretedTemplate;
-import static com.livinglogic.utils.MapUtils.*;
-import static com.livinglogic.ul4on.Utils.*;
 
 public class UL4ONTest
 {

@@ -6,8 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Date;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 public class FunctionBool implements Function

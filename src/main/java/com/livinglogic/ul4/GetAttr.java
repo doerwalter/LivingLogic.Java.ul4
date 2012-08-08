@@ -7,11 +7,11 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
-import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
 
 public class GetAttr extends AST
 {

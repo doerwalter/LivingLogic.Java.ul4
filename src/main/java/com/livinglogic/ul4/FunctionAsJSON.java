@@ -6,14 +6,15 @@
 
 package com.livinglogic.ul4;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Date;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang.StringEscapeUtils;
 
 public class FunctionAsJSON implements Function

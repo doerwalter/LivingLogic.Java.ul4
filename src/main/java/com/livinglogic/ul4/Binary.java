@@ -6,14 +6,12 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
 
 /**
  * The base class of all nodes that model binary operations.

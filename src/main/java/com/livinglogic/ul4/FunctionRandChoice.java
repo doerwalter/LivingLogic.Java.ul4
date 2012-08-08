@@ -6,8 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Random;
 import java.util.List;
+import java.util.Random;
 
 public class FunctionRandChoice implements Function
 {

@@ -6,10 +6,11 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Date;
 import java.io.IOException;
-import com.livinglogic.ul4on.Encoder;
+import java.util.Date;
+
 import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
 
 public class LoadDate extends LoadConst
 {

@@ -6,14 +6,15 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.HashMap;
 import java.io.IOException;
-import com.livinglogic.utils.MapUtils;
-import com.livinglogic.ul4on.Encoder;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.utils.MapUtils;
 
 public class CallMeth extends AST
 {

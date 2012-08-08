@@ -6,9 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
 import java.io.Writer;
-import java.io.IOException;
+import java.util.Map;
 
 /**
  * Interface for various methods for generating template output.

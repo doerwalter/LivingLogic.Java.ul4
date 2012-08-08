@@ -6,14 +6,14 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.HashMap;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
 
 abstract class Block extends AST
 {

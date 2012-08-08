@@ -7,8 +7,9 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
-import com.livinglogic.ul4on.Encoder;
+
 import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
 
 public class LoadColor extends LoadConst
 {

@@ -1,26 +1,27 @@
 package tests;
 
+import static com.livinglogic.ul4.Utils.makeDate;
+import static com.livinglogic.ul4on.Utils.dumps;
+import static com.livinglogic.utils.MapUtils.makeMap;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Date;
-import java.util.List;
-import static java.util.Arrays.*;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
 import org.antlr.runtime.RecognitionException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.livinglogic.ul4.Color;
-import com.livinglogic.ul4.InterpretedTemplate;
-import static com.livinglogic.utils.MapUtils.*;
-import static com.livinglogic.ul4on.Utils.*;
-import static com.livinglogic.ul4.Utils.*;
-import com.livinglogic.ul4.KeyException;
-import com.livinglogic.ul4.BlockException;
-import com.livinglogic.ul4.UnknownFunctionException;
 import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
+import com.livinglogic.ul4.BlockException;
+import com.livinglogic.ul4.Color;
+import com.livinglogic.ul4.InterpretedTemplate;
+import com.livinglogic.ul4.KeyException;
 import com.livinglogic.ul4.SyntaxException;
 
 @RunWith(CauseTestRunner.class)

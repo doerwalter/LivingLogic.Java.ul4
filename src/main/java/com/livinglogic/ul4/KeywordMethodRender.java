@@ -6,9 +6,9 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 
 public class KeywordMethodRender implements KeywordMethod
 {

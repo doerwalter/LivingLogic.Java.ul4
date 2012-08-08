@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class FunctionReversed implements Function
 {

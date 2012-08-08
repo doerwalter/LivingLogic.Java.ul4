@@ -6,10 +6,11 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 
 public class FunctionStr implements Function

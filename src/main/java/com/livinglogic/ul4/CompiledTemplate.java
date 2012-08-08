@@ -6,10 +6,10 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
-import java.io.Writer;
-import java.io.StringWriter;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Map;
 
 /**
  * Base class for template code that has been converted to Java source code.

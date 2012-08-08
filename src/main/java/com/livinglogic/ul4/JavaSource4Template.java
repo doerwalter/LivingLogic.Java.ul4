@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 
 public class JavaSource4Template
 {

@@ -6,13 +6,13 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Iterator;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
-import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
 
 public class ForUnpack extends For
 {

@@ -7,14 +7,14 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.io.IOException;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 
-import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
 
 public class GetSlice extends AST
 {

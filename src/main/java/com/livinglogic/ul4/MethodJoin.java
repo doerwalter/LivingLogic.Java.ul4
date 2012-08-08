@@ -8,6 +8,7 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 import java.util.Collection;
+
 import org.apache.commons.lang.StringUtils;
 
 public class MethodJoin implements Method

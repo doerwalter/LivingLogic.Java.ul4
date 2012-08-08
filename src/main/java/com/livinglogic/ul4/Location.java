@@ -6,13 +6,14 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.io.IOException;
-import com.livinglogic.utils.ObjectAsMap;
-import com.livinglogic.ul4on.UL4ONSerializable;
-import com.livinglogic.ul4on.Encoder;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.UL4ONSerializable;
+import com.livinglogic.utils.ObjectAsMap;
 
 /**
  * A {@code Location} object marks a position in the sourcecode of an UL4

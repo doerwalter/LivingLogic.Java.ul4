@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 public class MethodItems implements Method

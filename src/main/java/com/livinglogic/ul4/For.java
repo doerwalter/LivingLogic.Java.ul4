@@ -6,12 +6,11 @@
 
 package com.livinglogic.ul4;
 
-import java.util.LinkedList;
-import java.util.Iterator;
 import java.io.IOException;
+import java.util.Iterator;
 
-import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
 
 public abstract class For extends Block
 {

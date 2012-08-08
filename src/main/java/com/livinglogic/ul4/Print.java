@@ -7,7 +7,6 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * {@code Print} is an unary AST node that writes a string version of its

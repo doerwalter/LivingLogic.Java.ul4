@@ -1,11 +1,11 @@
 package tests;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 // This is from http://stackoverflow.com/questions/871216/junit-possible-to-expect-a-wrapped-exception

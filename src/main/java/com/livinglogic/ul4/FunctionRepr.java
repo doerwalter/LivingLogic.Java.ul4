@@ -6,14 +6,15 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
-import java.util.Stack;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
-import java.math.BigInteger;
-import java.math.BigDecimal;
+import java.util.Stack;
+
 import org.apache.commons.lang.StringEscapeUtils;
 
 public class FunctionRepr implements Function

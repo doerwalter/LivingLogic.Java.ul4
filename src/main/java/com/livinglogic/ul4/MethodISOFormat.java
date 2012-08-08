@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MethodISOFormat implements Method
 {

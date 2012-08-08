@@ -6,11 +6,11 @@
 
 package com.livinglogic.ul4;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
 
 public class FunctionUTCNow implements Function
 {

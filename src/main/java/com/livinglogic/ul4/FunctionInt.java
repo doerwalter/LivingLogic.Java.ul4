@@ -6,8 +6,9 @@
 
 package com.livinglogic.ul4;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.apache.commons.lang.math.NumberUtils;
 
 public class FunctionInt implements Function

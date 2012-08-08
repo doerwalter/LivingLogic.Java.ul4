@@ -6,11 +6,11 @@
 
 package com.livinglogic.utils;
 
-import java.util.Set;
-import java.util.Map;
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The purpose of this class it to provide a base class for classes that want to

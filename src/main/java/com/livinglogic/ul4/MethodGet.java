@@ -6,8 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
 import java.io.IOException;
+import java.util.Map;
 
 public class MethodGet implements Method
 {

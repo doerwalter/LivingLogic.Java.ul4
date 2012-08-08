@@ -6,11 +6,11 @@
 
 package com.livinglogic.ul4;
 
-import java.io.Writer;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Stack;
 import java.io.IOException;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * An {@code EvaluationContext} object is passed around calls to the node method

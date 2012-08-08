@@ -6,8 +6,8 @@
 
 package com.livinglogic.utils;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class that provides utilities for working with maps

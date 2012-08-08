@@ -6,12 +6,11 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.Iterator;
-import java.util.Vector;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Vector;
 
 public class FunctionSorted implements Function
 {

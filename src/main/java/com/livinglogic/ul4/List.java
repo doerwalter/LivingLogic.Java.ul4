@@ -6,12 +6,12 @@
 
 package com.livinglogic.ul4;
 
-import java.util.LinkedList;
-import java.util.ArrayList;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
-import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
 
 public class List extends AST
 {

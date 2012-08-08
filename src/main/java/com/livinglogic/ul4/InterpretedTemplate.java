@@ -6,36 +6,30 @@
 
 package com.livinglogic.ul4;
 
-import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.Reader;
-import java.io.Writer;
 import java.io.StringWriter;
-import java.io.StringReader;
-import java.io.IOException;
+import java.io.Writer;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Stack;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import org.antlr.runtime.*;
-import java.lang.reflect.InvocationTargetException;
-import org.apache.commons.lang.ObjectUtils;
+import java.util.regex.Pattern;
+
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
 import org.apache.commons.lang.StringEscapeUtils;
-import com.livinglogic.utils.ObjectAsMap;
-import com.livinglogic.ul4on.Utils;
-import com.livinglogic.ul4on.Encoder;
+
 import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.ObjectFactory;
 import com.livinglogic.ul4on.UL4ONSerializable;
+import com.livinglogic.ul4on.Utils;
 
 public class InterpretedTemplate extends Block implements Template
 {

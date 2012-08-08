@@ -6,11 +6,11 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.List;
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class FunctionType implements Function
 {

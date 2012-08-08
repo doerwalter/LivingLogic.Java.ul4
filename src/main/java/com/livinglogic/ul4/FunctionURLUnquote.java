@@ -6,8 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.net.URLDecoder;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 public class FunctionURLUnquote implements Function
 {

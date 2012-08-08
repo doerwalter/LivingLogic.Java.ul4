@@ -6,13 +6,13 @@
 
 package com.livinglogic.utils;
 
-import java.util.Set;
 import java.util.AbstractSet;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * A subclass of {@code HashMap} where when a key or entry isn't found a second
