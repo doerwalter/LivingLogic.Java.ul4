@@ -57,7 +57,7 @@ class ConditionalBlockBlock extends Block
 				throw new BlockException("elif can't be first in if/elif/else chain");
 			AST last = content.get(content.size()-1);
 			if (last instanceof Else)
-				throw new BlockException("else can't follow elif in if/elif/else chain");
+				throw new BlockException("elif can't follow else in if/elif/else chain");
 		}
 		else if (item instanceof Else)
 		{
