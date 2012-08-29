@@ -22,11 +22,11 @@ public class And extends Binary
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		Object obj2ev = obj2.decoratedEvaluate(context);
-		if (FunctionBool.call(obj2ev))
-			return obj1.decoratedEvaluate(context);
+		Object obj1ev = obj1.decoratedEvaluate(context);
+		if (!FunctionBool.call(obj1ev))
+			return obj1ev;
 		else
-			return obj2ev;
+			return obj2.decoratedEvaluate(context);
 	}
 
 	// we can't implement a static call version here, because that would require that we evaluate both sides
