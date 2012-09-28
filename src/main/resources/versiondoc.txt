@@ -1,3 +1,9 @@
+exp-53:
+-------
+Comments:
+* Variable unpacking in for loops can now be nested arbitrarily deep.
+
+
 exp-52:
 -------
 Comments:

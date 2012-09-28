@@ -486,31 +486,29 @@ expression returns [AST node]
 
 /* Additional rules for "for" tag */
 
-for_ returns [For node]
+nestedvarname returns [Object varname]
 	:
-		n=name
-		'in'
-		e=expr1 { $node = new ForNormal(location, $e.node, $n.text); }
-		EOF
+		n=name { $varname = $n.text; }
+	|
+		'(' n0=nestedvarname ',' ')' { $varname = java.util.Arrays.asList($n0.varname); }
 	|
 		'('
-		n1=name
+		n1=nestedvarname
 		','
-		')'
-		'in'
-		e=expr1 { $node = new ForUnpack(location, $e.node); ((ForUnpack)$node).appendName($n1.text); }
-		EOF
-	|
-		'(' { $node = new ForUnpack(location); }
-		n1=name { ((ForUnpack)$node).appendName($n1.text); }
+		n2=nestedvarname { $varname = new ArrayList(2); ((ArrayList)$varname).add($n1.varname); ((ArrayList)$varname).add($n2.varname); }
 		(
 			','
-			n2=name { ((ForUnpack)$node).appendName($n2.text); }
-		)+
+			n3=nestedvarname { ((ArrayList)$varname).add($n3.varname); }
+		)*
 		','?
-		')'
+		')' 
+	;
+
+for_ returns [For node]
+	:
+		n=nestedvarname
 		'in'
-		e=expr1 { $node.setContainer($e.node); }
+		e=expr1 { $node = new For(location, $n.varname, $e.node); }
 		EOF
 	;
 

@@ -372,7 +372,7 @@ public class UL4Test
 	}
 
 	@Test
-	public void tag_for_nested()
+	public void tag_for_nested_loop()
 	{
 		String source = "<?for list in data?>[<?for n in list?>(<?print n?>)<?end for?>]<?end for?>";
 		checkTemplateOutput("[(1)(2)][(3)(4)]", source, "data", asList(asList(1, 2), asList(3, 4)));
@@ -409,6 +409,18 @@ public class UL4Test
 		checkTemplateOutput("(spam,eggs)(gurk,hurz)(hinz,kunz)", "<?for (a, b) in data?>(<?print a?>,<?print b?>)<?end for?>", "data", data2);
 		checkTemplateOutput("(spam,eggs,17)(gurk,hurz,23)(hinz,kunz,42)", "<?for (a, b, c) in data?>(<?print a?>,<?print b?>,<?print c?>)<?end for?>", "data", data3);
 		checkTemplateOutput("(spam,eggs,17,)(gurk,hurz,23,False)(hinz,kunz,42,True)", "<?for (a, b, c, d) in data?>(<?print a?>,<?print b?>,<?print c?>,<?print d?>)<?end for?>", "data", data4);
+	}
+
+	@Test
+	public void tag_for_nested_unpacking()
+	{
+		Object data = asList(
+			asList(asList("spam", "eggs"), asList(17), null),
+			asList(asList("gurk", "hurz"), asList(23), false),
+			asList(asList("hinz", "kunz"), asList(42), true)
+		);
+
+		checkTemplateOutput("(spam,eggs,17,)(gurk,hurz,23,False)(hinz,kunz,42,True)", "<?for ((a, b), (c,), d) in data?>(<?print a?>,<?print b?>,<?print c?>,<?print d?>)<?end for?>", "data", data);
 	}
 
 	@Test

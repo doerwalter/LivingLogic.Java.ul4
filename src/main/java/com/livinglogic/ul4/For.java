@@ -8,23 +8,29 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public abstract class For extends Block
+public class For extends Block
 {
+	/**
+	 * This is either a string or a list of strings/lists
+	 */
+	protected Object varname;
 	protected AST container;
 
-	public For(Location location, AST container)
+	public For(Location location, Object varname, AST container)
 	{
 		super(location);
+		this.varname = varname;
 		this.container = container;
 	}
 
-	public void setContainer(AST container)
+	public String getType()
 	{
-		this.container = container;
+		return "for";
 	}
 
 	public void finish(InterpretedTemplate template, Location endlocation)
@@ -35,12 +41,95 @@ public abstract class For extends Block
 			throw new BlockException("for ended by end" + type);
 	}
 
+	private void formatVarname(StringBuilder buffer, Object varname)
+	{
+		if (varname instanceof String)
+			buffer.append((String)varname);
+		else
+		{
+			List varnames = (List)varname;
+			buffer.append("(");
+			int count = 0;
+			for (Object subvarname : varnames)
+			{
+				++count;
+				formatVarname(buffer, subvarname);
+				if (count == 1 || count != varnames.size())
+					buffer.append(", ");
+			}
+			buffer.append(")");
+		}
+	}
+
+	public String toString(int indent)
+	{
+		StringBuilder buffer = new StringBuilder();
+		for (int i = 0; i < indent; ++i)
+			buffer.append("\t");
+		buffer.append("for ");
+		formatVarname(buffer, varname);
+		buffer.append(" in ");
+		buffer.append(container.toString(indent));
+		buffer.append("\n");
+		for (int i = 0; i < indent; ++i)
+			buffer.append("\t");
+		buffer.append("{\n");
+		++indent;
+		for (AST item : content)
+			buffer.append(item.toString(indent));
+		--indent;
+		for (int i = 0; i < indent; ++i)
+			buffer.append("\t");
+		buffer.append("}\n");
+		return buffer.toString();
+	}
+
 	public boolean handleLoopControl(String name)
 	{
 		return true;
 	}
 
-	abstract protected void unpackLoopVariable(EvaluationContext context, Object item);
+	private void unpackVariable(EvaluationContext context, Object varname, Object item)
+	{
+		if (varname instanceof String)
+		{
+			context.put((String)varname, item);
+		}
+		else
+		{
+			Iterator<Object> itemIter = Utils.iterator(item);
+			Iterator<String> nameIter = ((List)varname).iterator();
+
+			int count = 0;
+
+			for (;;)
+			{
+				if (itemIter.hasNext())
+				{
+					if (nameIter.hasNext())
+					{
+						unpackVariable(context, nameIter.next(), itemIter.next());
+						++count;
+					}
+					else
+					{
+						throw new UnpackingException("mismatched for loop unpacking: " + count + " varnames, " + count + "+ items");
+					}
+				}
+				else
+				{
+					if (nameIter.hasNext())
+					{
+						throw new UnpackingException("mismatched for loop unpacking: " + count + "+ varnames, " + count + " items");
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+		}
+	}
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
@@ -50,7 +139,7 @@ public abstract class For extends Block
 
 		while (iter.hasNext())
 		{
-			unpackLoopVariable(context, iter.next());
+			unpackVariable(context, varname, iter.next());
 
 			try
 			{
@@ -72,12 +161,14 @@ public abstract class For extends Block
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
+		encoder.dump(varname);
 		encoder.dump(container);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
+		varname = decoder.load();
 		container = (AST)decoder.load();
 	}
 }
