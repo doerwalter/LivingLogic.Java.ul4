@@ -89,7 +89,7 @@ public class For extends Block
 		return true;
 	}
 
-	private void unpackVariable(EvaluationContext context, Object varname, Object item)
+	public void unpackVariable(EvaluationContext context, Object varname, Object item)
 	{
 		if (varname instanceof String)
 		{
