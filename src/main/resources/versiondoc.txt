@@ -1,3 +1,9 @@
+exp-52:
+-------
+Comments:
+* Fixed implementation of And to try the first operand first.
+
+
 exp-51:
 -------
 Comments:
