@@ -41,7 +41,7 @@ public class For extends Block
 			throw new BlockException("for ended by end" + type);
 	}
 
-	private void formatVarname(StringBuilder buffer, Object varname)
+	private static void formatVarname(StringBuilder buffer, Object varname)
 	{
 		if (varname instanceof String)
 			buffer.append((String)varname);
@@ -89,7 +89,7 @@ public class For extends Block
 		return true;
 	}
 
-	public void unpackVariable(EvaluationContext context, Object varname, Object item)
+	public static void unpackVariable(EvaluationContext context, Object varname, Object item)
 	{
 		if (varname instanceof String)
 		{
