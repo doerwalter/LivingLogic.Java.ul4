@@ -261,6 +261,25 @@ atom returns [AST node]
 	| '(' e_bracket=expr1 ')' { $node = $e_bracket.node; }
 	;
 
+/* For variable unpacking in assignments and for loops */
+nestedname returns [Object varname]
+	:
+		n=name { $varname = $n.text; }
+	|
+		'(' n0=nestedname ',' ')' { $varname = java.util.Arrays.asList($n0.varname); }
+	|
+		'('
+		n1=nestedname
+		','
+		n2=nestedname { $varname = new ArrayList(2); ((ArrayList)$varname).add($n1.varname); ((ArrayList)$varname).add($n2.varname); }
+		(
+			','
+			n3=nestedname { ((ArrayList)$varname).add($n3.varname); }
+		)*
+		','?
+		')' 
+	;
+
 /* Function call */
 expr10 returns [AST node]
 	: a=atom { $node = $a.node; }
@@ -486,27 +505,9 @@ expression returns [AST node]
 
 /* Additional rules for "for" tag */
 
-nestedvarname returns [Object varname]
-	:
-		n=name { $varname = $n.text; }
-	|
-		'(' n0=nestedvarname ',' ')' { $varname = java.util.Arrays.asList($n0.varname); }
-	|
-		'('
-		n1=nestedvarname
-		','
-		n2=nestedvarname { $varname = new ArrayList(2); ((ArrayList)$varname).add($n1.varname); ((ArrayList)$varname).add($n2.varname); }
-		(
-			','
-			n3=nestedvarname { ((ArrayList)$varname).add($n3.varname); }
-		)*
-		','?
-		')' 
-	;
-
 for_ returns [For node]
 	:
-		n=nestedvarname
+		n=nestedname
 		'in'
 		e=expr1 { $node = new For(location, $n.varname, $e.node); }
 		EOF
@@ -516,7 +517,7 @@ for_ returns [For node]
 /* Additional rules for "code" tag */
 
 stmt returns [AST node]
-	: n=name '=' e=expr1 EOF { $node = new StoreVar(location, $n.text, $e.node); }
+	: nn=nestedname '=' e=expr1 EOF { $node = new StoreVar(location, $nn.varname, $e.node); }
 	| n=name '+=' e=expr1 EOF { $node = new AddVar(location, $n.text, $e.node); }
 	| n=name '-=' e=expr1 EOF { $node = new SubVar(location, $n.text, $e.node); }
 	| n=name '*=' e=expr1 EOF { $node = new MulVar(location, $n.text, $e.node); }

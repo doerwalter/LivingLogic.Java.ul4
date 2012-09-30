@@ -240,8 +240,11 @@ public class UL4Test
 	@Test
 	public void tag_storevar()
 	{
-		checkTemplateOutput("42", "<?code x = 42?><?print x?>");
-		checkTemplateOutput("xyzzy", "<?code x = 'xyzzy'?><?print x?>");
+		// checkTemplateOutput("42", "<?code x = 42?><?print x?>");
+		// checkTemplateOutput("xyzzy", "<?code x = 'xyzzy'?><?print x?>");
+		checkTemplateOutput("42", "<?code (x,) = [42]?><?print x?>");
+		// checkTemplateOutput("17,23", "<?code (x,y) = [17, 23]?><?print x?>,<?print y?>");
+		// checkTemplateOutput("17,23,37,42,105", "<?code ((v, w), (x,), (y,), z) = [[17, 23], [37], [42], 105]?><?print v?>,<?print w?>,<?print x?>,<?print y?>,<?print z?>");
 	}
 
 	@Test

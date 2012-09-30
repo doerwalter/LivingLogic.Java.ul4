@@ -89,48 +89,6 @@ public class For extends Block
 		return true;
 	}
 
-	public static void unpackVariable(EvaluationContext context, Object varname, Object item)
-	{
-		if (varname instanceof String)
-		{
-			context.put((String)varname, item);
-		}
-		else
-		{
-			Iterator<Object> itemIter = Utils.iterator(item);
-			Iterator<String> nameIter = ((List)varname).iterator();
-
-			int count = 0;
-
-			for (;;)
-			{
-				if (itemIter.hasNext())
-				{
-					if (nameIter.hasNext())
-					{
-						unpackVariable(context, nameIter.next(), itemIter.next());
-						++count;
-					}
-					else
-					{
-						throw new UnpackingException("mismatched for loop unpacking: " + count + " varnames, " + count + "+ items");
-					}
-				}
-				else
-				{
-					if (nameIter.hasNext())
-					{
-						throw new UnpackingException("mismatched for loop unpacking: " + count + "+ varnames, " + count + " items");
-					}
-					else
-					{
-						break;
-					}
-				}
-			}
-		}
-	}
-
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		Object container = this.container.decoratedEvaluate(context);
@@ -139,7 +97,7 @@ public class For extends Block
 
 		while (iter.hasNext())
 		{
-			unpackVariable(context, varname, iter.next());
+			Utils.unpackVariable(context.getVariables(), varname, iter.next());
 
 			try
 			{

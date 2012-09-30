@@ -239,6 +239,46 @@ public class Utils
 		throw new ArgumentTypeMismatchException("iter({})", obj);
 	}
 
+	public static void unpackVariable(Map<String, Object> variables, Object varname, Object item)
+	{
+		if (varname instanceof String)
+		{
+			variables.put((String)varname, item);
+		}
+		else
+		{
+			Iterator<Object> itemIter = Utils.iterator(item);
+			java.util.List varnames = (java.util.List)varname;
+			int varnameCount = varnames.size();
+
+			for (int i = 0;;++i)
+			{
+				if (itemIter.hasNext())
+				{
+					if (i < varnameCount)
+					{
+						unpackVariable(variables, varnames.get(i), itemIter.next());
+					}
+					else
+					{
+						throw new UnpackingException("mismatched for loop unpacking: " + varnameCount + " varnames, >" + i + " items");
+					}
+				}
+				else
+				{
+					if (i < varnameCount)
+					{
+						throw new UnpackingException("mismatched for loop unpacking: " + varnameCount + "+ varnames, " + i + " items");
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+		}
+	}
+
 	public static Date makeDate(int year, int month, int day, int hour, int minute, int second, int microsecond)
 	{
 		Calendar calendar = new GregorianCalendar();
