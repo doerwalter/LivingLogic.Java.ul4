@@ -466,36 +466,6 @@ public class InterpretedTemplate extends Block implements Template
 		return output.toString();
 	}
 
-	public CompiledTemplate compileToJava() throws java.io.IOException
-	{
-		StringBuffer source = new StringBuffer();
-		source.append("\tpublic String getName()\n");
-		source.append("\t{\n");
-		source.append("\t\treturn \"" + StringEscapeUtils.escapeJava(name) + "\";\n");
-		source.append("\t}\n");
-		source.append("\n");
-		source.append("\tpublic void render(java.io.Writer out, java.util.Map<String, Object> variables) throws java.io.IOException\n");
-		source.append("\t{\n");
-		source.append(javaSource());
-		source.append("\t}\n");
-
-		Class clazz = com.livinglogic.ul4.Utils.compileToJava(source.toString(), "com.livinglogic.ul4.CompiledTemplate", null);
-		try
-		{
-			return (CompiledTemplate)clazz.newInstance();
-		}
-		catch (InstantiationException ex)
-		{
-			// Can't happen
-			throw new RuntimeException(ex);
-		}
-		catch (IllegalAccessException ex)
-		{
-			// Can't happen
-			throw new RuntimeException(ex);
-		}
-	}
-
 	public String getType()
 	{
 		return "template";
