@@ -223,6 +223,13 @@ public class UL4Test
 	}
 
 	@Test
+	public void type_listcomprehension()
+	{
+		checkTemplateOutput("[2, 6]", "<?code d = [2*i for i in range(4) if i%2]?><?print d?>");
+		checkTemplateOutput("[0, 2, 4, 6]", "<?code d = [2*i for i in range(4)]?><?print d?>");
+	}
+
+	@Test
 	public void type_dict()
 	{
 		checkTemplateOutput("", "<?for (key, value) in {}.items()?><?print key?>:<?print value?>\n<?end for?>");
@@ -235,6 +242,14 @@ public class UL4Test
 		checkTemplateOutput("1:4\n", "<?for (key, value) in {1:1, **{1:2}, 1:3, **{1:4}}.items()?><?print key?>:<?print value?>\n<?end for?>");
 		checkTemplateOutput("no", "<?if {}?>yes<?else?>no<?end if?>");
 		checkTemplateOutput("yes", "<?if {1:2}?>yes<?else?>no<?end if?>");
+	}
+
+	@Test
+	public void type_dictcomprehension()
+	{
+		checkTemplateOutput("", "<?code d = {i:2*i for i in range(10) if i%2}?><?if 2 in d?><?print d[2]?><?end if?>");
+		checkTemplateOutput("6", "<?code d = {i:2*i for i in range(10) if i%2}?><?if 3 in d?><?print d[3]?><?end if?>");
+		checkTemplateOutput("6", "<?code d = {i:2*i for i in range(10)}?><?print d[3]?>");
 	}
 
 	@Test

@@ -7,70 +7,58 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class For extends Block
+public class ListComprehension extends AST
 {
-	/**
-	 * This is either a string or a list of strings/lists
-	 */
+	protected AST item;
 	protected Object varname;
 	protected AST container;
+	protected AST condition;
 
-	public For(Location location, Object varname, AST container)
+	public ListComprehension(Location location, AST item, Object varname, AST container, AST condition)
 	{
 		super(location);
+		this.item = item;
 		this.varname = varname;
 		this.container = container;
-	}
-
-	public String getType()
-	{
-		return "for";
-	}
-
-	public void finish(InterpretedTemplate template, Location endlocation)
-	{
-		super.finish(template, endlocation);
-		String type = endlocation.getCode().trim();
-		if (type != null && type.length() != 0 && !type.equals("for"))
-			throw new BlockException("for ended by end" + type);
+		this.condition = condition;
 	}
 
 	public String toString(int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("for ");
+		buffer.append("[");
+		buffer.append(item.toString(indent));
+		buffer.append(" for ");
 		Utils.formatVarname(buffer, varname);
 		buffer.append(" in ");
 		buffer.append(container.toString(indent));
-		buffer.append("\n");
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("{\n");
-		++indent;
-		for (AST item : content)
-			buffer.append(item.toString(indent));
-		--indent;
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("}\n");
+		if (condition != null)
+		{
+			buffer.append(" if ");
+			buffer.append(condition.toString(indent));
+		}
+		buffer.append("]");
 		return buffer.toString();
 	}
 
-	public boolean handleLoopControl(String name)
+	public String getType()
 	{
-		return true;
+		return "listcomp";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
+		List result = new ArrayList();
+
 		Object container = this.container.decoratedEvaluate(context);
 
 		Iterator iter = Utils.iterator(container);
@@ -79,34 +67,32 @@ public class For extends Block
 		{
 			Utils.unpackVariable(context.getVariables(), varname, iter.next());
 
-			try
+			boolean use = condition != null ? FunctionBool.call(condition.decoratedEvaluate(context)) : true;
+
+			if (use)
 			{
-				for (AST item : content)
-					item.decoratedEvaluate(context);
-			}
-			catch (BreakException ex)
-			{
-				break; // breaking this while loop breaks the evaluated for loop
-			}
-			catch (ContinueException ex)
-			{
-				// doing nothing here does exactly what we need ;)
+				Object item = this.item.decoratedEvaluate(context);
+				result.add(item);
 			}
 		}
-		return null;
+		return result;
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
+		encoder.dump(item);
 		encoder.dump(varname);
 		encoder.dump(container);
+		encoder.dump(condition);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
+		item = (AST)decoder.load();
 		varname = decoder.load();
 		container = (AST)decoder.load();
+		condition = (AST)decoder.load();
 	}
 }

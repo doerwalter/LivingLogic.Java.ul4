@@ -508,7 +508,9 @@ public class InterpretedTemplate extends Block implements Template
 		Utils.register("de.livinglogic.ul4.date", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadDate(null, null); }});
 		Utils.register("de.livinglogic.ul4.color", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadColor(null, null); }});
 		Utils.register("de.livinglogic.ul4.list", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.List(null); }});
+		Utils.register("de.livinglogic.ul4.listcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListComprehension(null, null, null, null, null); }});
 		Utils.register("de.livinglogic.ul4.dict", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Dict(null); }});
+		Utils.register("de.livinglogic.ul4.dictcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DictComprehension(null, null, null, null, null, null); }});
 		Utils.register("de.livinglogic.ul4.var", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Var(null, null); }});
 		Utils.register("de.livinglogic.ul4.ieie", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConditionalBlockBlock(null); }});
 		Utils.register("de.livinglogic.ul4.if", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.If(null, null); }});

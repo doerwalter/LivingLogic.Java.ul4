@@ -227,6 +227,25 @@ list returns [com.livinglogic.ul4.List node]
 		']'
 	;
 
+listcomprehension returns [ListComprehension node]
+	@init
+	{
+		AST _condition = null;
+	}
+	:
+		'['
+		item=expr1
+		'for'
+		n=nestedname
+		'in'
+		container=expr1
+		(
+			'if'
+			condition=expr1 { _condition = $condition.node; }
+		)?
+		']' { $node = new ListComprehension(location, $item.node, $n.varname, $container.node, _condition); }
+	;
+
 /* Dict literal */
 fragment
 dictitem returns [DictItem node]
@@ -254,10 +273,33 @@ dict returns [Dict node]
 		'}'
 	;
 
+dictcomprehension returns [DictComprehension node]
+	@init
+	{
+		AST _condition = null;
+	}
+	:
+		'{'
+		key=expr1
+		':'
+		value=expr1
+		'for'
+		n=nestedname
+		'in'
+		container=expr1
+		(
+			'if'
+			condition=expr1 { _condition = $condition.node; }
+		)?
+		'}' { $node = new DictComprehension(location, $key.node, $value.node, $n.varname, $container.node, _condition); }
+	;
+
 atom returns [AST node]
 	: e_literal=literal { $node = $e_literal.node; }
 	| e_list=list { $node = $e_list.node; }
+	| e_listcomprehension=listcomprehension { $node = $e_listcomprehension.node; }
 	| e_dict=dict { $node = $e_dict.node; }
+	| e_dictcomprehension=dictcomprehension { $node = $e_dictcomprehension.node; }
 	| '(' e_bracket=expr1 ')' { $node = $e_bracket.node; }
 	;
 

@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 
@@ -470,6 +471,26 @@ public class Utils
 			{
 				return new BigInteger(string, base);
 			}
+		}
+	}
+
+	public static void formatVarname(StringBuilder buffer, Object varname)
+	{
+		if (varname instanceof String)
+			buffer.append((String)varname);
+		else
+		{
+			List varnames = (List)varname;
+			buffer.append("(");
+			int count = 0;
+			for (Object subvarname : varnames)
+			{
+				++count;
+				formatVarname(buffer, subvarname);
+				if (count == 1 || count != varnames.size())
+					buffer.append(", ");
+			}
+			buffer.append(")");
 		}
 	}
 }
