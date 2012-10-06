@@ -280,24 +280,6 @@ public class Utils
 		}
 	}
 
-	public static Date makeDate(int year, int month, int day, int hour, int minute, int second, int microsecond)
-	{
-		Calendar calendar = new GregorianCalendar();
-		calendar.set(year, month-1, day, hour, minute, second);
-		calendar.set(Calendar.MILLISECOND, microsecond/1000);
-		return calendar.getTime();
-	}
-
-	public static Date makeDate(int year, int month, int day, int hour, int minute, int second)
-	{
-		return makeDate(year, month, day, hour, minute, second, 0);
-	}
-
-	public static Date makeDate(int year, int month, int day)
-	{
-		return makeDate(year, month, day, 0, 0, 0, 0);
-	}
-
 	public static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 	public static SimpleDateFormat isoDateTime1Formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 	public static SimpleDateFormat isoDateTime2Formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");

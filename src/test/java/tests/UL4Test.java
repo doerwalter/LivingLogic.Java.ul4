@@ -1,6 +1,5 @@
 package tests;
 
-import static com.livinglogic.ul4.Utils.makeDate;
 import static com.livinglogic.ul4on.Utils.dumps;
 import static com.livinglogic.utils.MapUtils.makeMap;
 import static java.util.Arrays.asList;
@@ -21,6 +20,7 @@ import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.InterpretedTemplate;
+import com.livinglogic.ul4.FunctionDate;
 import com.livinglogic.ul4.KeyException;
 import com.livinglogic.ul4.SyntaxException;
 
@@ -975,6 +975,16 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_date()
+	{
+		checkTemplateOutput("@(2012-10-06)", "<?print repr(date(2012, 10, 6))?>");
+		checkTemplateOutput("@(2012-10-06T12:00:00)", "<?print repr(date(2012, 10, 6, 12))?>");
+		checkTemplateOutput("@(2012-10-06T12:34:00)", "<?print repr(date(2012, 10, 6, 12, 34))?>");
+		checkTemplateOutput("@(2012-10-06T12:34:56)", "<?print repr(date(2012, 10, 6, 12, 34, 56))?>");
+		checkTemplateOutput("@(2012-10-06T12:34:56.987000)", "<?print repr(date(2012, 10, 6, 12, 34, 56, 987000))?>");
+	}
+
+	@Test
 	public void function_vars()
 	{
 		String source = "<?if var in vars()?>yes<?else?>no<?end if?>";
@@ -1195,9 +1205,9 @@ public class UL4Test
 		checkTemplateOutput("42", source, "data", 42);
 		checkTemplateOutput("4.2", source, "data", 4.2);
 		checkTemplateOutput("foo", source, "data", "foo");
-		checkTemplateOutput("2011-02-09", source, "data", makeDate(2011, 2, 9));
-		checkTemplateOutput("2011-02-09 12:34:56", source, "data", makeDate(2011, 2, 9, 12, 34, 56));
-		checkTemplateOutput("2011-02-09 12:34:56.987000", source, "data", makeDate(2011, 2, 9, 12, 34, 56, 987000));
+		checkTemplateOutput("2011-02-09", source, "data", FunctionDate.call(2011, 2, 9));
+		checkTemplateOutput("2011-02-09 12:34:56", source, "data", FunctionDate.call(2011, 2, 9, 12, 34, 56));
+		checkTemplateOutput("2011-02-09 12:34:56.987000", source, "data", FunctionDate.call(2011, 2, 9, 12, 34, 56, 987000));
 	}
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
@@ -1956,10 +1966,10 @@ public class UL4Test
 		checkTemplateOutput("[1, 2, 3]", source, "data", asList(1, 2, 3));
 		checkTemplateOutput("{\"a\": 1}", source, "data", makeMap("a", 1));
 		checkTemplateOutput2("{\"a\": 1, \"b\": 2}", "{\"b\": 2, \"a\": 1}", source, "data", makeMap("a", 1, "b", 2));
-		checkTemplateOutput("@(2011-02-07T12:34:56.123000)", source, "data", makeDate(2011, 2, 7, 12, 34, 56, 123000));
-		checkTemplateOutput("@(2011-02-07T12:34:56)", source, "data", makeDate(2011, 2, 7, 12, 34, 56));
-		checkTemplateOutput("@(2011-02-07)", source, "data", makeDate(2011, 2, 7));
-		checkTemplateOutput("@(2011-02-07)", source, "data", makeDate(2011, 2, 7));
+		checkTemplateOutput("@(2011-02-07T12:34:56.123000)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56, 123000));
+		checkTemplateOutput("@(2011-02-07T12:34:56)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56));
+		checkTemplateOutput("@(2011-02-07)", source, "data", FunctionDate.call(2011, 2, 7));
+		checkTemplateOutput("@(2011-02-07)", source, "data", FunctionDate.call(2011, 2, 7));
 	}
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
@@ -1977,7 +1987,7 @@ public class UL4Test
 	@Test
 	public void function_format()
 	{
-		Date t = makeDate(2011, 2, 6, 12, 34, 56, 987000);
+		Date t = FunctionDate.call(2011, 2, 6, 12, 34, 56, 987000);
 
 		String source = "<?print format(data, format)?>";
 
@@ -2338,7 +2348,7 @@ public class UL4Test
 	@Test
 	public void method_mimeformat()
 	{
-		Date t = makeDate(2010, 2, 22, 12, 34, 56);
+		Date t = FunctionDate.call(2010, 2, 22, 12, 34, 56);
 		checkTemplateOutput("Mon, 22 Feb 2010 12:34:56 GMT", "<?print data.mimeformat()?>", "data", t);
 	}
 
@@ -2469,56 +2479,56 @@ public class UL4Test
 	public void method_day()
 	{
 		checkTemplateOutput("12", "<?print @(2010-05-12).day()?>");
-		checkTemplateOutput("12", "<?print d.day()?>", "d", makeDate(2010, 5, 12));
+		checkTemplateOutput("12", "<?print d.day()?>", "d", FunctionDate.call(2010, 5, 12));
 	}
 
 	@Test
 	public void method_month()
 	{
 		checkTemplateOutput("5", "<?print @(2010-05-12).month()?>");
-		checkTemplateOutput("5", "<?print d.month()?>", "d", makeDate(2010, 5, 12));
+		checkTemplateOutput("5", "<?print d.month()?>", "d", FunctionDate.call(2010, 5, 12));
 	}
 
 	@Test
 	public void method_year()
 	{
 		checkTemplateOutput("2010", "<?print @(2010-05-12).year()?>");
-		checkTemplateOutput("2010", "<?print d.year()?>", "d", makeDate(2010, 5, 12));
+		checkTemplateOutput("2010", "<?print d.year()?>", "d", FunctionDate.call(2010, 5, 12));
 	}
 
 	@Test
 	public void method_hour()
 	{
 		checkTemplateOutput("16", "<?print @(2010-05-12T16:47:56).hour()?>");
-		checkTemplateOutput("16", "<?print d.hour()?>", "d", makeDate(2010, 5, 12, 16, 47, 56));
+		checkTemplateOutput("16", "<?print d.hour()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56));
 	}
 
 	@Test
 	public void method_minute()
 	{
 		checkTemplateOutput("47", "<?print @(2010-05-12T16:47:56).minute()?>");
-		checkTemplateOutput("47", "<?print d.minute()?>", "d", makeDate(2010, 5, 12, 16, 47, 56));
+		checkTemplateOutput("47", "<?print d.minute()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56));
 	}
 
 	@Test
 	public void method_second()
 	{
 		checkTemplateOutput("56", "<?print @(2010-05-12T16:47:56).second()?>");
-		checkTemplateOutput("56", "<?print d.second()?>", "d", makeDate(2010, 5, 12, 16, 47, 56));
+		checkTemplateOutput("56", "<?print d.second()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56));
 	}
 
 	@Test
 	public void method_microsecond()
 	{
 		checkTemplateOutput("123000", "<?print @(2010-05-12T16:47:56.123000).microsecond()?>");
-		checkTemplateOutput("123000", "<?print d.microsecond()?>", "d", makeDate(2010, 5, 12, 16, 47, 56, 123000));
+		checkTemplateOutput("123000", "<?print d.microsecond()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56, 123000));
 	}
 
 	@Test
 	public void method_weekday()
 	{
 		checkTemplateOutput("2", "<?print @(2010-05-12).weekday()?>");
-		checkTemplateOutput("2", "<?print d.weekday()?>", "d", makeDate(2010, 5, 12));
+		checkTemplateOutput("2", "<?print d.weekday()?>", "d", FunctionDate.call(2010, 5, 12));
 	}
 
 	@Test
@@ -2529,8 +2539,8 @@ public class UL4Test
 		checkTemplateOutput("365", "<?print @(2010-12-31).yearday()?>");
 		checkTemplateOutput("132", "<?print @(2010-05-12).yearday()?>");
 		checkTemplateOutput("132", "<?print @(2010-05-12T16:47:56).yearday()?>");
-		checkTemplateOutput("132", "<?print d.yearday()?>", "d", makeDate(2010, 5, 12));
-		checkTemplateOutput("132", "<?print d.yearday()?>", "d", makeDate(2010, 5, 12, 16, 47, 56));
+		checkTemplateOutput("132", "<?print d.yearday()?>", "d", FunctionDate.call(2010, 5, 12));
+		checkTemplateOutput("132", "<?print d.yearday()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56));
 	}
 
 	@Test

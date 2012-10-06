@@ -29,6 +29,7 @@ public class CallFunc extends AST
 			functions,
 			"now", new FunctionNow(),
 			"utcnow", new FunctionUTCNow(),
+			"date", new FunctionDate(),
 			"vars", new FunctionVars(),
 			"random", new FunctionRandom(),
 			"xmlescape", new FunctionXMLEscape(),
