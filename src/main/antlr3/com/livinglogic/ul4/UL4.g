@@ -294,12 +294,30 @@ dictcomprehension returns [DictComprehension node]
 		'}' { $node = new DictComprehension(location, $key.node, $value.node, $n.varname, $container.node, _condition); }
 	;
 
+generatorexpression returns [GeneratorExpression node]
+	@init
+	{
+		AST _condition = null;
+	}
+	:
+		item=expr1
+		'for'
+		n=nestedname
+		'in'
+		container=expr1
+		(
+			'if'
+			condition=expr1 { _condition = $condition.node; }
+		)? { $node = new GeneratorExpression(location, $item.node, $n.varname, $container.node, _condition); }
+	;
+
 atom returns [AST node]
 	: e_literal=literal { $node = $e_literal.node; }
 	| e_list=list { $node = $e_list.node; }
-	| e_listcomprehension=listcomprehension { $node = $e_listcomprehension.node; }
+	| e_listcomp=listcomprehension { $node = $e_listcomp.node; }
 	| e_dict=dict { $node = $e_dict.node; }
-	| e_dictcomprehension=dictcomprehension { $node = $e_dictcomprehension.node; }
+	| e_dictcomp=dictcomprehension { $node = $e_dictcomp.node; }
+	| '(' e_genexpr=generatorexpression ')' { $node = $e_genexpr.node; }
 	| '(' e_bracket=expr1 ')' { $node = $e_bracket.node; }
 	;
 
@@ -329,10 +347,10 @@ expr10 returns [AST node]
 	|
 		n=name { $node = new CallFunc(location, $n.text); }
 		'('
-		a1=expr1 { ((CallFunc)$node).append($a1.node); }
+		a1=exprarg { ((CallFunc)$node).append($a1.node); }
 		(
 			','
-			a2=expr1 { ((CallFunc)$node).append($a2.node); }
+			a2=exprarg { ((CallFunc)$node).append($a2.node); }
 		)*
 		','?
 		')'
@@ -344,10 +362,10 @@ callarg returns [CallArg node]
 	:
 		n=name
 		'='
-		e=expr1 { $node = new CallArgNamed($n.text, $e.node); }
+		e=exprarg { $node = new CallArgNamed($n.text, $e.node); }
 	|
 		'**'
-		e=expr1 { $node = new CallArgDict($e.node); }
+		e=exprarg { $node = new CallArgDict($e.node); }
 	;
 
 expr9 returns [AST node]
@@ -373,10 +391,10 @@ expr9 returns [AST node]
 				|
 					/* Positional argument */
 					'(' { callmeth = true; $node = new CallMeth(location, $node, $n.text); }
-					pa1=expr1 { ((CallMeth)$node).append($pa1.node); }
+					pa1=exprarg { ((CallMeth)$node).append($pa1.node); }
 					(
 						','
-						pa2=expr1 { ((CallMeth)$node).append($pa2.node); }
+						pa2=exprarg { ((CallMeth)$node).append($pa2.node); }
 					)*
 					','?
 					')'
@@ -540,8 +558,14 @@ expr1 returns [AST node]
 		)*
 	;
 
+exprarg returns [AST node]
+	: ege=generatorexpression { $node = $ege.node; }
+	| e1=expr1 { $node = $e1.node; }
+	;
+
 expression returns [AST node]
-	: e=expr1 EOF { $node = $e.node; }
+	: ege=generatorexpression EOF { $node = $ege.node; }
+	| e=expr1 EOF { $node = $e.node; }
 	;
 
 

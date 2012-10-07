@@ -253,6 +253,15 @@ public class UL4Test
 	}
 
 	@Test
+	public void generatorexpression()
+	{
+		checkTemplateOutput("2, 6", "<?code ge = (str(2*i) for i in range(4) if i%2)?><?print ', '.join(ge)?>");
+		checkTemplateOutput("2, 6", "<?print ', '.join(str(2*i) for i in range(4) if i%2)?>");
+		checkTemplateOutput("0, 2, 4, 6", "<?print ', '.join(str(2*i) for i in range(4))?>");
+		checkTemplateOutput("0, 2, 4, 6", "<?print ', '.join((str(2*i) for i in range(4)))?>");
+	}
+
+	@Test
 	public void tag_storevar()
 	{
 		// checkTemplateOutput("42", "<?code x = 42?><?print x?>");
@@ -2426,7 +2435,7 @@ public class UL4Test
 	public void method_join()
 	{
 		checkTemplateOutput("1,2,3,4", "<?print ','.join('1234')?>");
-		checkTemplateOutput("1,2,3,4", "<?print ','.join([1, 2, 3, 4])?>");
+		checkTemplateOutput("1,2,3,4", "<?print ','.join(['1', '2', '3', '4'])?>");
 	}
 
 	@Test

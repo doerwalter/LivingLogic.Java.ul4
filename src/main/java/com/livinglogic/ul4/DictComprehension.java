@@ -70,9 +70,7 @@ public class DictComprehension extends AST
 		{
 			Utils.unpackVariable(context.getVariables(), varname, iter.next());
 
-			boolean use = condition != null ? FunctionBool.call(condition.decoratedEvaluate(context)) : true;
-
-			if (use)
+			if (condition == null || FunctionBool.call(condition.decoratedEvaluate(context)))
 			{
 				Object key = this.key.decoratedEvaluate(context);
 				Object value = this.value.decoratedEvaluate(context);

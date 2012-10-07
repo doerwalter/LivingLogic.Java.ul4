@@ -1,7 +1,8 @@
 exp-55:
 -------
 Comments:
-* Added support for list/dict comprehension and the date function.
+* Added support for list/dict comprehension, generator expressions and the date
+  function.
 
 
 exp-54:

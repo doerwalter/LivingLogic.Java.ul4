@@ -16,14 +16,14 @@ import java.util.Iterator;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class ListComprehension extends AST
+public class GeneratorExpression extends AST
 {
 	protected AST item;
 	protected Object varname;
 	protected AST container;
 	protected AST condition;
 
-	public ListComprehension(Location location, AST item, Object varname, AST container, AST condition)
+	public GeneratorExpression(Location location, AST item, Object varname, AST container, AST condition)
 	{
 		super(location);
 		this.item = item;
@@ -35,7 +35,7 @@ public class ListComprehension extends AST
 	public String toString(int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
-		buffer.append("[");
+		buffer.append("(");
 		buffer.append(item.toString(indent));
 		buffer.append(" for ");
 		Utils.formatVarname(buffer, varname);
@@ -46,34 +46,18 @@ public class ListComprehension extends AST
 			buffer.append(" if ");
 			buffer.append(condition.toString(indent));
 		}
-		buffer.append("]");
+		buffer.append(")");
 		return buffer.toString();
 	}
 
 	public String getType()
 	{
-		return "listcomp";
+		return "genexpr";
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		List result = new ArrayList();
-
-		Object container = this.container.decoratedEvaluate(context);
-
-		Iterator iter = Utils.iterator(container);
-
-		while (iter.hasNext())
-		{
-			Utils.unpackVariable(context.getVariables(), varname, iter.next());
-
-			if (condition == null || FunctionBool.call(condition.decoratedEvaluate(context)))
-			{
-				Object item = this.item.decoratedEvaluate(context);
-				result.add(item);
-			}
-		}
-		return result;
+		return new GeneratorExpressionIterator(context);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
@@ -92,5 +76,79 @@ public class ListComprehension extends AST
 		varname = decoder.load();
 		container = (AST)decoder.load();
 		condition = (AST)decoder.load();
+	}
+
+	private class GeneratorExpressionIterator implements Iterator
+	{
+		private EvaluationContext context;
+		private Iterator iterator;
+		private boolean hasNextItem;
+
+		public GeneratorExpressionIterator(EvaluationContext context)
+		{
+			this.context = context;
+			try
+			{
+				this.iterator = Utils.iterator(container.decoratedEvaluate(context));
+			}
+			catch (IOException ex)
+			{
+				throw new RuntimeException(ex);
+			}
+			fetchNextItem();
+		}
+
+		private void fetchNextItem()
+		{
+			while (iterator.hasNext())
+			{
+				Utils.unpackVariable(context.getVariables(), varname, iterator.next());
+				boolean use;
+				if (condition == null)
+					use = true;
+				else
+				{
+					try
+					{
+						use = FunctionBool.call(condition.decoratedEvaluate(context));
+					}
+					catch (IOException ex)
+					{
+						throw new RuntimeException(ex);
+					}
+				}
+				if (use)
+				{
+					hasNextItem = true;
+					return;
+				}
+			}
+			hasNextItem = false;
+		}
+
+		public boolean hasNext()
+		{
+			return hasNextItem;
+		}
+
+		public Object next()
+		{
+			Object result;
+			try
+			{
+				result = item.decoratedEvaluate(context);
+			}
+			catch (IOException ex)
+			{
+				throw new RuntimeException(ex);
+			}
+			fetchNextItem();
+			return result;
+		}
+
+		public void remove()
+		{
+			iterator.remove();
+		}
 	}
 }
