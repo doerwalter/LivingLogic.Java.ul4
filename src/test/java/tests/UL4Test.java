@@ -1996,32 +1996,58 @@ public class UL4Test
 	@Test
 	public void function_format()
 	{
-		Date t = FunctionDate.call(2011, 2, 6, 12, 34, 56, 987000);
+		Date t = FunctionDate.call(2011, 1, 24, 12, 34, 56, 987000);
 
-		String source = "<?print format(data, format)?>";
+		String source2 = "<?print format(data, format)?>";
+		String source3 = "<?print format(data, format, lang)?>";
 
-		checkTemplateOutput("2011", source, "format", "%Y", "data", t);
-		checkTemplateOutput("02", source, "format", "%m", "data", t);
-		checkTemplateOutput("06", source, "format", "%d", "data", t);
-		checkTemplateOutput("12", source, "format", "%H", "data", t);
-		checkTemplateOutput("34", source, "format", "%M", "data", t);
-		checkTemplateOutput("56", source, "format", "%S", "data", t);
-		checkTemplateOutput("987000", source, "format", "%f", "data", t);
-		//checkTemplateOutput("Sun", source, "format", "%a", "data", t);
-		//checkTemplateOutput("Sunday", source, "format", "%A", "data", t);
-		checkTemplateOutput("Feb", source, "format", "%b", "data", t);
-		//checkTemplateOutput("February", source, "format", "%B", "data", t);
-		checkTemplateOutput("12", source, "format", "%I", "data", t);
-		checkTemplateOutput("037", source, "format", "%j", "data", t);
-		checkTemplateOutput("PM", source, "format", "%p", "data", t);
-		checkTemplateOutput("06", source, "format", "%U", "data", t);
-		checkTemplateOutput("0", source, "format", "%w", "data", t);
-		checkTemplateOutput("05", source, "format", "%W", "data", t);
-		checkTemplateOutput("11", source, "format", "%y", "data", t);
-		//checkTemplateOutput("Sun Feb  6 12:34:56 2011", source, "format", "%c", "data", t);
-		checkTemplateOutput("02/06/11", source, "format", "%x", "data", t);
-		checkTemplateOutput("12:34:56", source, "format", "%X", "data", t);
-		checkTemplateOutput("%", source, "format", "%%", "data", t);
+		checkTemplateOutput("2011", source2, "format", "%Y", "data", t);
+		checkTemplateOutput("01", source2, "format", "%m", "data", t);
+		checkTemplateOutput("24", source2, "format", "%d", "data", t);
+		checkTemplateOutput("12", source2, "format", "%H", "data", t);
+		checkTemplateOutput("34", source2, "format", "%M", "data", t);
+		checkTemplateOutput("56", source2, "format", "%S", "data", t);
+		checkTemplateOutput("987000", source2, "format", "%f", "data", t);
+		checkTemplateOutput("Mon", source2, "format", "%a", "data", t);
+		checkTemplateOutput("Mon", source3, "format", "%a", "data", t, "lang", null);
+		checkTemplateOutput("Mon", source3, "format", "%a", "data", t, "lang", "en");
+		checkTemplateOutput("Mo", source3, "format", "%a", "data", t, "lang", "de");
+		checkTemplateOutput("Mo", source3, "format", "%a", "data", t, "lang", "de_DE");
+		checkTemplateOutput("Mo", source3, "format", "%a", "data", t, "lang", "de_AT");
+		checkTemplateOutput("Monday", source2, "format", "%A", "data", t);
+		checkTemplateOutput("Monday", source3, "format", "%A", "data", t, "lang", null);
+		checkTemplateOutput("Monday", source3, "format", "%A", "data", t, "lang", "en");
+		checkTemplateOutput("Montag", source3, "format", "%A", "data", t, "lang", "de");
+		checkTemplateOutput("Montag", source3, "format", "%A", "data", t, "lang", "de_DE");
+		checkTemplateOutput("Montag", source3, "format", "%A", "data", t, "lang", "de_AT");
+		checkTemplateOutput("Jan", source2, "format", "%b", "data", t);
+		checkTemplateOutput("Jan", source3, "format", "%b", "data", t, "lang", null);
+		checkTemplateOutput("Jan", source3, "format", "%b", "data", t, "lang", "en");
+		checkTemplateOutput("Jan", source3, "format", "%b", "data", t, "lang", "de");
+		checkTemplateOutput("Jan", source3, "format", "%b", "data", t, "lang", "de_DE");
+		checkTemplateOutput("Jän", source3, "format", "%b", "data", t, "lang", "de_AT");
+		checkTemplateOutput("January", source2, "format", "%B", "data", t);
+		checkTemplateOutput("January", source3, "format", "%B", "data", t, "lang", null);
+		checkTemplateOutput("January", source3, "format", "%B", "data", t, "lang", "en");
+		checkTemplateOutput("Januar", source3, "format", "%B", "data", t, "lang", "de");
+		checkTemplateOutput("Januar", source3, "format", "%B", "data", t, "lang", "de_DE");
+		checkTemplateOutput("Jänner", source3, "format", "%B", "data", t, "lang", "de_AT");
+		checkTemplateOutput("12", source2, "format", "%I", "data", t);
+		checkTemplateOutput("024", source2, "format", "%j", "data", t);
+		checkTemplateOutput("PM", source2, "format", "%p", "data", t);
+		checkTemplateOutput("03", source2, "format", "%U", "data", t);
+		checkTemplateOutput("1", source2, "format", "%w", "data", t);
+		checkTemplateOutput("03", source2, "format", "%W", "data", t);
+		checkTemplateOutput("11", source2, "format", "%y", "data", t);
+		checkTemplateOutput("Mon Jan 24 12:34:56 2011", source2, "format", "%c", "data", t);
+		checkTemplateOutput("Mon Jan 24 12:34:56 2011", source3, "format", "%c", "data", t, "lang", null);
+		checkTemplateOutput("Mon Jan 24 12:34:56 2011", source3, "format", "%c", "data", t, "lang", "en");
+		checkTemplateOutput("Mo Jan 24 12:34:56 2011", source3, "format", "%c", "data", t, "lang", "de");
+		checkTemplateOutput("Mo Jan 24 12:34:56 2011", source3, "format", "%c", "data", t, "lang", "de_DE");
+		checkTemplateOutput("Mo Jän 24 12:34:56 2011", source3, "format", "%c", "data", t, "lang", "de_AT");
+		checkTemplateOutput("01/24/11", source2, "format", "%x", "data", t);
+		checkTemplateOutput("12:34:56", source2, "format", "%X", "data", t);
+		checkTemplateOutput("%", source2, "format", "%%", "data", t);
 	}
 
 	@Test

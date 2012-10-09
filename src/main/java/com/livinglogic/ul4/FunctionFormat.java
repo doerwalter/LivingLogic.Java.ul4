@@ -25,7 +25,9 @@ public class FunctionFormat implements Function
 	{
 		if (args.length == 2)
 			return call(args[0], args[1]);
-		throw new ArgumentCountMismatchException("function", "format", args.length, 0);
+		else if (args.length == 3)
+			return call(args[0], args[1], args[2]);
+		throw new ArgumentCountMismatchException("function", "format", args.length, 2, 3);
 	}
 
 	private static HashMap<Integer, String> weekdayFormats;
@@ -49,6 +51,8 @@ public class FunctionFormat implements Function
 
 	public static String call(Date obj, String formatString, Locale locale)
 	{
+		if (locale == null)
+			locale = Locale.ENGLISH;
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime((Date)obj);
 		StringBuffer output = new StringBuffer();
@@ -180,20 +184,42 @@ public class FunctionFormat implements Function
 		return output.toString();
 	}
 
-	public static String call(Object obj, Object formatString, Locale locale)
+	public static String call(Object obj, String formatString, Locale locale)
+	{
+		if (obj instanceof Date)
+		{
+			return call((Date)obj, formatString, locale);
+		}
+		throw new ArgumentTypeMismatchException("format({}, {}, {})", obj, formatString, locale);
+	}
+
+	public static String call(Object obj, Object formatString, Object lang)
 	{
 		if (formatString instanceof String)
 		{
-			if (obj instanceof Date)
+			if (lang == null)
+				return call(obj, (String)formatString, null);
+			else if (lang instanceof String)
 			{
-				return call((Date)obj, (String)formatString, locale);
+				Locale locale;
+				int seppos = ((String)lang).indexOf("_");
+				if (seppos >= 0)
+					locale = new Locale(((String)lang).substring(0, seppos), ((String)lang).substring(seppos+1));
+				else
+					locale = new Locale((String)lang);
+				return call(obj, (String)formatString, locale);
 			}
 		}
-		throw new ArgumentTypeMismatchException("format({}, {})", obj, formatString);
+		throw new ArgumentTypeMismatchException("format({}, {}, {})", obj, formatString, lang);
+	}
+
+	public static String call(Object obj, String formatString)
+	{
+		return call(obj, formatString, null);
 	}
 
 	public static String call(Object obj, Object formatString)
 	{
-		return call(obj, formatString, Locale.ENGLISH);
+		return call(obj, formatString, null);
 	}
 }
