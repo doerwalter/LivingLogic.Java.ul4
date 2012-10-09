@@ -11,8 +11,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.Locale;
+
+import com.livinglogic.utils.MapUtils;
 
 public class FunctionFormat implements Function
 {
@@ -49,6 +52,78 @@ public class FunctionFormat implements Function
 	private static DecimalFormat fourdigits = new DecimalFormat("0000");
 	private static DecimalFormat sixdigits = new DecimalFormat("000000");
 
+	private static Map<String, String> cFormats = MapUtils.makeMap(
+		"de", "%a %d %b %Y %H:%M:%S",
+		"en", "%a %b %d %H:%M:%S %Y",
+		"fr", "%a %d %b %Y %H:%M:%S",
+		"es", "%a %d %b %Y %H:%M:%S",
+		"it", "%a %d %b %Y %H:%M:%S",
+		"da", "%a %d %b %Y %H:%M:%S",
+		"sv", "%a %d %b %Y %H.%M.%S",
+		"nl", "%a %d %b %Y %H:%M:%S",
+		"pt", "%a %d %b %Y %H:%M:%S",
+		"cs", "%a\u00a0%d.\u00a0%B\u00a0%Y,\u00a0%H:%M:%S",
+		"sk", "%a\u00a0%d.\u00a0%B\u00a0%Y,\u00a0%H:%M:%S",
+		"pl", "%a, %d %b %Y, %H:%M:%S",
+		"hr", "%a %d %b %Y %H:%M:%S",
+		"sr", "%A, %d. %B %Y. %H:%M:%S",
+		"ro", "%a %d %b %Y %H:%M:%S",
+		"hu", "%Y. %b. %d., %A, %H.%M.%S",
+		"tr", "%a %d %b %Y %H:%M:%S",
+		"ru", "%a %d %b %Y %H:%M:%S",
+		"zh", "%Y\u5e74%b%d\u65e5 %A %H\u65f6%M\u5206%S\u79d2",
+		"ko", "%Y\ub144 %B %d\uc77c (%a) %p %I\uc2dc %M\ubd84 %S\ucd08",
+		"ja", "%Y\u5e74%B%d\u65e5 %H\u6642%M\u5206%S\u79d2"
+	);
+
+	private static Map<String, String> xFormats = MapUtils.makeMap(
+		"de", "%d.%m.%Y",
+		"en", "%m/%d/%Y",
+		"fr", "%d/%m/%Y",
+		"es", "%d/%m/%y",
+		"it", "%d/%m/%Y",
+		"da", "%d-%m-%Y",
+		"sv", "%Y-%m-%d",
+		"nl", "%d-%m-%y",
+		"pt", "%d-%m-%Y",
+		"cs", "%d.%m.%Y",
+		"sk", "%d.%m.%Y",
+		"pl", "%d.%m.%Y",
+		"hr", "%d.%m.%Y",
+		"sr", "%d.%m.%Y.",
+		"ro", "%d.%m.%Y",
+		"hu", "%Y-%m-%d",
+		"tr", "%d-%m-%Y",
+		"ru", "%d.%m.%Y",
+		"zh", "%Y\u5e74%b%d\u65e5",
+		"ko", "%Y\ub144 %B %d\uc77c",
+		"ja", "%Y\u5e74%B%d\u65e5"
+	);
+
+	private static Map<String, String> XFormats = MapUtils.makeMap(
+		"de", "%H:%M:%S",
+		"en", "%H:%M:%S",
+		"fr", "%H:%M:%S",
+		"es", "%H:%M:%S",
+		"it", "%H:%M:%S",
+		"da", "%H:%M:%S",
+		"sv", "%H.%M.%S",
+		"nl", "%H:%M:%S",
+		"pt", "%H:%M:%S",
+		"cs", "%H:%M:%S",
+		"sk", "%H:%M:%S",
+		"pl", "%H:%M:%S",
+		"hr", "%H:%M:%S",
+		"sr", "%H:%M:%S",
+		"ro", "%H:%M:%S",
+		"hu", "%H.%M.%S",
+		"tr", "%H:%M:%S",
+		"ru", "%H:%M:%S",
+		"zh", "%H\u65f6%M\u5206%S\u79d2",
+		"ko", "%H\uc2dc %M\ubd84 %S\ucd08",
+		"ja", "%H\u6642%M\u5206%S\u79d2"
+	);
+
 	public static String call(Date obj, String formatString, Locale locale)
 	{
 		if (locale == null)
@@ -79,20 +154,10 @@ public class FunctionFormat implements Function
 						break;
 					case 'c':
 					{
-						int day = calendar.get(Calendar.DAY_OF_MONTH);
-						output.append(new SimpleDateFormat("EEE MMM", locale).format(obj));
-						output.append(' ');
-						if (day < 10)
-							output.append(' ');
-						output.append(day);
-						output.append(' ');
-						output.append(twodigits.format(calendar.get(Calendar.HOUR_OF_DAY)));
-						output.append(':');
-						output.append(twodigits.format(calendar.get(Calendar.MINUTE)));
-						output.append(':');
-						output.append(twodigits.format(calendar.get(Calendar.SECOND)));
-						output.append(' ');
-						output.append(fourdigits.format(calendar.get(Calendar.YEAR)));
+						String format = cFormats.get(locale.getLanguage());
+						if (format == null)
+							format = cFormats.get("en");
+						output.append(call(obj, format, locale));
 						break;
 					}
 					case 'd':
@@ -145,19 +210,21 @@ public class FunctionFormat implements Function
 						break;
 					}
 					case 'x':
-						output.append(twodigits.format(calendar.get(Calendar.MONTH)+1));
-						output.append('/');
-						output.append(twodigits.format(calendar.get(Calendar.DAY_OF_MONTH)));
-						output.append('/');
-						output.append(twodigits.format(calendar.get(Calendar.YEAR) % 100));
+					{
+						String format = xFormats.get(locale.getLanguage());
+						if (format == null)
+							format = xFormats.get("en");
+						output.append(call(obj, format, locale));
 						break;
+					}
 					case 'X':
-						output.append(twodigits.format(calendar.get(Calendar.HOUR_OF_DAY)));
-						output.append(':');
-						output.append(twodigits.format(calendar.get(Calendar.MINUTE)));
-						output.append(':');
-						output.append(twodigits.format(calendar.get(Calendar.SECOND)));
+					{
+						String format = XFormats.get(locale.getLanguage());
+						if (format == null)
+							format = XFormats.get("en");
+						output.append(call(obj, format, locale));
 						break;
+					}
 					case 'y':
 						output.append(twodigits.format(calendar.get(Calendar.YEAR) % 100));
 						break;
