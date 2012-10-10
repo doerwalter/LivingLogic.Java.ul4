@@ -55,6 +55,7 @@ public class CallMeth extends AST
 			"minute", new MethodMinute(),
 			"second", new MethodSecond(),
 			"microsecond", new MethodMicrosecond(),
+			"week", new MethodWeek(),
 			"weekday", new MethodWeekday(),
 			"yearday", new MethodYearday(),
 			"render", new MethodRender(),
