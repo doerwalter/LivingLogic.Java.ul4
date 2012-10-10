@@ -188,27 +188,14 @@ public class FunctionFormat implements Function
 						output.append(twodigits.format(calendar.get(Calendar.SECOND)));
 						break;
 					case 'U':
-					{
-						Calendar calendarFirstday = new GregorianCalendar();
-						calendarFirstday.setTime(FunctionDate.call(MethodYear.call(obj), 1, 1));
-						int firstday = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-						firstday = firstday != 0 ? firstday-1 : 6;
-						int value = (MethodYearday.call(obj) + firstday - 1) / 7;
-						output.append(twodigits.format(value));
+						output.append(twodigits.format(MethodWeek.call(obj, 6)));
 						break;
-					}
 					case 'w':
 						output.append(weekdayFormats.get(calendar.get(Calendar.DAY_OF_WEEK)));
 						break;
 					case 'W':
-					{
-						Calendar calendarFirstday = new GregorianCalendar();
-						calendarFirstday.setTime(FunctionDate.call(MethodYear.call(obj), 1, 1));
-						int firstday = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-						int value = (MethodYearday.call(obj) + firstday - 1) / 7;
-						output.append(twodigits.format(value));
+						output.append(twodigits.format(MethodWeek.call(obj, 0)));
 						break;
-					}
 					case 'x':
 					{
 						String format = xFormats.get(locale.getLanguage());
