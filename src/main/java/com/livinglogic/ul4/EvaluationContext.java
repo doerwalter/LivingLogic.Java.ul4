@@ -30,12 +30,6 @@ public class EvaluationContext
 	protected Map<String, Object> variables;
 
 	/**
-	 * Used as temporary storage space for the {@link And} and {@link Or}
-	 * operators in compiled mode.
-	 */
-	protected Stack<Object> stack = new Stack<Object>();
-
-	/**
 	 * Create a new {@code EvaluationContext} object. (No variables) will
 	 * be available to the template code.
 	 * @param writer The output stream where the template output will be written
@@ -129,22 +123,5 @@ public class EvaluationContext
 	public void remove(String key)
 	{
 		variables.remove(key);
-	}
-
-	public Object push(Object object)
-	{
-		stack.push(object);
-		return object;
-	}
-
-	public Object pop()
-	{
-		return stack.pop();
-	}
-
-	public Object pop(Object object)
-	{
-		stack.pop();
-		return object;
 	}
 }
