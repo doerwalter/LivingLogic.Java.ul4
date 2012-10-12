@@ -2035,7 +2035,7 @@ public class UL4Test
 		checkTemplateOutput("2", source2, "data", t, "format", "%w");
 		checkTemplateOutput("04", source2, "data", t, "format", "%W");
 		checkTemplateOutput("11", source2, "data", t, "format", "%y");
-		checkTemplateOutput("Tue Jan 25 13:34:56 2011", source2, "data", t, "format", "%c");
+		checkTemplateOutput("Tue 25 Jan 2011 01:34:56 PM", source2, "data", t, "format", "%c");
 		checkTemplateOutput("01/25/2011", source2, "data", t, "format", "%x");
 		checkTemplateOutput("01/25/2011", source3, "data", t, "format", "%x", "lang", null);
 		checkTemplateOutput("01/25/2011", source3, "data", t, "format", "%x", "lang", "en");
