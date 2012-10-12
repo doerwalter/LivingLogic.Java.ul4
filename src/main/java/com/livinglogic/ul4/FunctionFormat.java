@@ -54,7 +54,7 @@ public class FunctionFormat implements Function
 
 	private static Map<String, String> cFormats = MapUtils.makeMap(
 		"de", "%a %d %b %Y %H:%M:%S",
-		"en", "%a %b %d %H:%M:%S %Y",
+		"en", "%a %d %b %Y %H:%I:%S %p",
 		"fr", "%a %d %b %Y %H:%M:%S",
 		"es", "%a %d %b %Y %H:%M:%S",
 		"it", "%a %d %b %Y %H:%M:%S",
