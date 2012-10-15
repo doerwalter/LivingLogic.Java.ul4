@@ -2,7 +2,7 @@ exp-55:
 -------
 Comments:
 * Added support for list/dict comprehension, generator expressions and the date
-  function. Added language argument to format function. Add support for the
+  function. Added language argument to format function. Added support for the
   week method.
 
 
