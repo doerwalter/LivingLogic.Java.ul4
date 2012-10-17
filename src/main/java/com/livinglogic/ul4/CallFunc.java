@@ -58,7 +58,7 @@ public class CallFunc extends AST
 			"istemplate", new FunctionIsTemplate(),
 			"iscolor", new FunctionIsColor(),
 			"istimedelta", new FunctionIsTimeDelta(),
-			"ismonthdelta", new FunctionIsTimeDelta(),
+			"ismonthdelta", new FunctionIsMonthDelta(),
 			"chr", new FunctionChr(),
 			"ord", new FunctionOrd(),
 			"hex", new FunctionHex(),
