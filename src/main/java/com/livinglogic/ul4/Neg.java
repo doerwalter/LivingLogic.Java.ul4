@@ -27,6 +27,16 @@ public class Neg extends Unary
 		return call(obj.decoratedEvaluate(context));
 	}
 
+	public static TimeDelta call(TimeDelta arg)
+	{
+		return arg.negate();
+	}
+
+	public static MonthDelta call(MonthDelta arg)
+	{
+		return arg.negate();
+	}
+
 	public static Object call(Object arg)
 	{
 		if (arg instanceof Integer)
@@ -57,6 +67,10 @@ public class Neg extends Unary
 			return ((BigInteger)arg).negate();
 		else if (arg instanceof BigDecimal)
 			return ((BigDecimal)arg).negate();
+		else if (arg instanceof TimeDelta)
+			return call((TimeDelta)arg);
+		else if (arg instanceof MonthDelta)
+			return call((MonthDelta)arg);
 		throw new ArgumentTypeMismatchException("-{}", arg);
 	}
 }

@@ -62,15 +62,14 @@ public class FunctionStr implements Function
 			if (MethodMicrosecond.call(obj) != 0)
 				return strTimestampMicroFormatter.format(obj);
 			else
-			{
-				if (MethodHour.call(obj) != 0 || MethodMinute.call(obj) != 0 || MethodSecond.call(obj) != 0)
-					return strDateTimeFormatter.format(obj);
-				else
-					return strDateFormatter.format(obj);
-			}
+				return strDateTimeFormatter.format(obj);
 		}
 		else if (obj instanceof Color)
-			return ((Color)obj).toString();
+			return obj.toString();
+		else if (obj instanceof TimeDelta)
+			return obj.toString();
+		else if (obj instanceof MonthDelta)
+			return obj.toString();
 		else
 			return FunctionRepr.call(obj);
 	}

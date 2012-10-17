@@ -79,6 +79,10 @@ public class FunctionRepr implements Function
 			}
 			else if (obj instanceof Color)
 				return ((Color)obj).repr();
+			else if (obj instanceof TimeDelta)
+				return ((TimeDelta)obj).repr();
+			else if (obj instanceof MonthDelta)
+				return ((MonthDelta)obj).repr();
 			else if (obj instanceof Collection)
 			{
 				if (seen(obj))

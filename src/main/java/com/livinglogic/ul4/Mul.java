@@ -95,6 +95,66 @@ public class Mul extends Binary
 		return arg1 * arg2;
 	}
 
+	public static Object call(int arg1, TimeDelta arg2)
+	{
+		return arg2.mul(arg1);
+	}
+
+	public static Object call(long arg1, TimeDelta arg2)
+	{
+		return arg2.mul(arg1);
+	}
+
+	public static Object call(float arg1, TimeDelta arg2)
+	{
+		return arg2.mul(arg1);
+	}
+
+	public static Object call(double arg1, TimeDelta arg2)
+	{
+		return arg2.mul(arg1);
+	}
+
+	public static Object call(TimeDelta arg1, int arg2)
+	{
+		return arg1.mul(arg2);
+	}
+
+	public static Object call(TimeDelta arg1, long arg2)
+	{
+		return arg1.mul(arg2);
+	}
+
+	public static Object call(TimeDelta arg1, float arg2)
+	{
+		return arg1.mul(arg2);
+	}
+
+	public static Object call(TimeDelta arg1, double arg2)
+	{
+		return arg1.mul(arg2);
+	}
+
+	public static Object call(int arg1, MonthDelta arg2)
+	{
+		return arg2.mul(arg1);
+	}
+
+	public static Object call(long arg1, MonthDelta arg2)
+	{
+		return arg2.mul(arg1);
+	}
+
+	public static Object call(MonthDelta arg1, int arg2)
+	{
+		return arg1.mul(arg2);
+	}
+
+	public static Object call(MonthDelta arg1, long arg2)
+	{
+		return arg1.mul(arg2);
+	}
+
 	public static Object call(Object arg1, Object arg2)
 	{
 		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
@@ -115,6 +175,10 @@ public class Mul extends Binary
 				return ((BigDecimal)arg2).multiply(new BigDecimal(Utils.toDouble(arg1)));
 			else if (arg2 instanceof List)
 				return call(Utils.toInt(arg1), (List)arg2);
+			else if (arg2 instanceof TimeDelta)
+				return call(Utils.toInt(arg1), (TimeDelta)arg2);
+			else if (arg2 instanceof MonthDelta)
+				return call(Utils.toInt(arg1), (MonthDelta)arg2);
 		}
 		else if (arg1 instanceof Long)
 		{
@@ -132,6 +196,10 @@ public class Mul extends Binary
 				return ((BigDecimal)arg2).multiply(new BigDecimal(Utils.toDouble(arg1)));
 			else if (arg2 instanceof List)
 				return call(Utils.toLong(arg1), (List)arg2);
+			else if (arg2 instanceof TimeDelta)
+				return call(Utils.toLong(arg1), (TimeDelta)arg2);
+			else if (arg2 instanceof MonthDelta)
+				return call(Utils.toLong(arg1), (MonthDelta)arg2);
 		}
 		else if (arg1 instanceof Float)
 		{
@@ -143,6 +211,8 @@ public class Mul extends Binary
 				return new BigDecimal((BigInteger)arg2).multiply(new BigDecimal(Utils.toDouble(arg1)));
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg2).multiply(new BigDecimal(Utils.toDouble(arg1)));
+			else if (arg2 instanceof TimeDelta)
+				return call(Utils.toFloat(arg1), (TimeDelta)arg2);
 		}
 		else if (arg1 instanceof Double)
 		{
@@ -152,6 +222,8 @@ public class Mul extends Binary
 				return new BigDecimal((BigInteger)arg2).multiply(new BigDecimal(Utils.toDouble(arg1)));
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg2).multiply(new BigDecimal(Utils.toDouble(arg1)));
+			else if (arg2 instanceof TimeDelta)
+				return call(Utils.toDouble(arg1), (TimeDelta)arg2);
 		}
 		else if (arg1 instanceof BigInteger)
 		{
@@ -191,7 +263,22 @@ public class Mul extends Binary
 			else if (arg2 instanceof Long)
 				return call(Utils.toLong(arg2), (List)arg1);
 		}
+		else if (arg1 instanceof TimeDelta)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return call((TimeDelta)arg1, Utils.toInt(arg2));
+			else if (arg2 instanceof Long)
+				return call((TimeDelta)arg1, Utils.toLong(arg2));
+			else if (arg2 instanceof Float || arg2 instanceof Double)
+				return call((TimeDelta)arg1, Utils.toDouble(arg2));
+		}
+		else if (arg1 instanceof MonthDelta)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return call((MonthDelta)arg1, Utils.toInt(arg2));
+			else if (arg2 instanceof Long)
+				return call((MonthDelta)arg1, Utils.toLong(arg2));
+		}
 		throw new ArgumentTypeMismatchException("{} * {}", arg1, arg2);
 	}
-
 }

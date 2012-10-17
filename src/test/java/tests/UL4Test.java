@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.BlockException;
+import com.livinglogic.ul4.TimeDelta;
+import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.InterpretedTemplate;
 import com.livinglogic.ul4.FunctionDate;
@@ -101,7 +103,6 @@ public class UL4Test
 	{
 		checkTemplateOutput("no", "<?if None?>yes<?else?>no<?end if?>");
 		checkTemplateOutput("", "<?print None?>");
-
 	}
 
 	@Test
@@ -556,6 +557,16 @@ public class UL4Test
 		checkTemplateOutput("24", source, "x", true, "y", 23);
 		checkTemplateOutput("22.0", source, "x", -1.0, "y", 23);
 		checkTemplateOutput("foobar", source, "x", "foo", "y", "bar");
+		checkTemplateOutput("2012-10-18 00:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(1));
+		checkTemplateOutput("2013-10-17 00:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(365));
+		checkTemplateOutput("2012-10-17 12:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 12*60*60));
+		checkTemplateOutput("2012-10-17 00:00:01", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 1));
+		checkTemplateOutput("2012-10-17 00:00:00.500000", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 0, 500000));
+		checkTemplateOutput("2012-10-17 00:00:00.001000", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 0, 1000));
+		checkTemplateOutput("2 days, 0:00:00", source, "x", new TimeDelta(1), "y", new TimeDelta(1));
+		checkTemplateOutput("1 day, 0:00:01", source, "x", new TimeDelta(1), "y", new TimeDelta(0, 1));
+		checkTemplateOutput("1 day, 0:00:00.000001", source, "x", new TimeDelta(1), "y", new TimeDelta(0, 0, 1));
+		checkTemplateOutput("2 months", source, "x", new MonthDelta(1), "y", new MonthDelta(1));
 		// List addition is not implemented: checkTemplateOutput("(foo)(bar)(gurk)(hurz)", "<?for i in a+b?>(<?print i?>)<?end for?>", "a", asList("foo", "bar"), "b", asList("gurk", "hurz"));
 		// This checks constant folding
 		checkTemplateOutput("3", "<?print 1+2?>");
@@ -577,10 +588,42 @@ public class UL4Test
 		checkTemplateOutput("16.0", source, "x", 17, "y", 1.0);
 		checkTemplateOutput("-22", source, "x", true, "y", 23);
 		checkTemplateOutput("-24.0", source, "x", -1.0, "y", 23);
+		checkTemplateOutput("2012-10-16 00:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(1));
+		checkTemplateOutput("2011-10-17 00:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(366));
+		checkTemplateOutput("2012-10-16 12:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 12*60*60));
+		checkTemplateOutput("2012-10-16 23:59:59", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 1));
+		checkTemplateOutput("2012-10-16 23:59:59.500000", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 0, 500000));
+		checkTemplateOutput("2012-10-16 23:59:59.999000", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 0, 1000));
+		checkTemplateOutput("0:00:00", source, "x", new TimeDelta(1), "y", new TimeDelta(1));
+		checkTemplateOutput("1 day, 0:00:00", source, "x", new TimeDelta(2), "y", new TimeDelta(1));
+		checkTemplateOutput("23:59:59", source, "x", new TimeDelta(1), "y", new TimeDelta(0, 1));
+		checkTemplateOutput("23:59:59.999999", source, "x", new TimeDelta(1), "y", new TimeDelta(0, 0, 1));
+		checkTemplateOutput("-1 day, 23:59:59", source, "x", new TimeDelta(0), "y", new TimeDelta(0, 1));
+		checkTemplateOutput("-1 day, 23:59:59.999999", source, "x", new TimeDelta(0), "y", new TimeDelta(0, 0, 1));
 		// This checks constant folding
 		checkTemplateOutput("-1", "<?print 1-2?>");
 		checkTemplateOutput("1", "<?print 2-True?>");
 		checkTemplateOutput("-1.0", "<?print 1-2.0?>");
+	}
+
+	@Test
+	public void operator_neg()
+	{
+		String source = "<?print -x?>";
+
+		checkTemplateOutput("0", source, "x", false);
+		checkTemplateOutput("-1", source, "x", true);
+		checkTemplateOutput("-17", source, "x", 17);
+		checkTemplateOutput("-17.0", source, "x", 17.0);
+		checkTemplateOutput("0:00:00", source, "x", new TimeDelta());
+		checkTemplateOutput("-1 day, 0:00:00", source, "x", new TimeDelta(1));
+		checkTemplateOutput("-1 day, 23:59:59", source, "x", new TimeDelta(0, 1));
+		checkTemplateOutput("-1 day, 23:59:59.999999", source, "x", new TimeDelta(0, 0, 1));
+		// This checks constant folding
+		checkTemplateOutput("0", "<?print -False?>");
+		checkTemplateOutput("-1", "<?print -True?>");
+		checkTemplateOutput("-2", "<?print -2?>");
+		checkTemplateOutput("-2.0", "<?print -2.0?>");
 	}
 
 	@Test
@@ -599,6 +642,16 @@ public class UL4Test
 		checkTemplateOutput("-23.0", source, "x", -1.0, "y", 23);
 		checkTemplateOutput("foofoofoo", source, "x", 3, "y", "foo");
 		checkTemplateOutput("foofoofoo", source, "x", "foo", "y", 3);
+		checkTemplateOutput("0:00:00", source, "x", 4, "y", new TimeDelta());
+		checkTemplateOutput("4 days, 0:00:00", source, "x", 4, "y", new TimeDelta(1));
+		checkTemplateOutput("2 days, 0:00:00", source, "x", 4, "y", new TimeDelta(0, 12*60*60));
+		checkTemplateOutput("0:00:02", source, "x", 4, "y", new TimeDelta(0, 0, 500000));
+		checkTemplateOutput("12:00:00", source, "x", 0.5, "y", new TimeDelta(1));
+		checkTemplateOutput("0:00:00", source, "x", new TimeDelta(), "y", 4);
+		checkTemplateOutput("4 days, 0:00:00", source, "x", new TimeDelta(1), "y", 4);
+		checkTemplateOutput("2 days, 0:00:00", source, "x", new TimeDelta(0, 12*60*60), "y", 4);
+		checkTemplateOutput("0:00:02", source, "x", new TimeDelta(0, 0, 500000), "y", 4);
+		checkTemplateOutput("12:00:00", source, "x", new TimeDelta(1), "y", 0.5);
 		checkTemplateOutput("(foo)(bar)(foo)(bar)(foo)(bar)", "<?for i in 3*data?>(<?print i?>)<?end for?>", "data", asList("foo", "bar"));
 		// This checks constant folding
 		checkTemplateOutput("391", "<?print 17*23?>");
@@ -617,6 +670,12 @@ public class UL4Test
 		checkTemplateOutput("17.0", source, "x", 391, "y", 23);
 		checkTemplateOutput("17.0", source, "x", 17, "y", 1.0);
 		checkTemplateOutput("0.5", source, "x", 1, "y", 2);
+		checkTemplateOutput("0:00:00", source, "x", new TimeDelta(), "y", 4);
+		checkTemplateOutput("2 days, 0:00:00", source, "x", new TimeDelta(8), "y", 4);
+		checkTemplateOutput("12:00:00", source, "x", new TimeDelta(4), "y", 8);
+		checkTemplateOutput("0:00:00.500000", source, "x", new TimeDelta(0, 4), "y", 8);
+		checkTemplateOutput("2 days, 0:00:00", source, "x", new TimeDelta(1), "y", 0.5);
+		checkTemplateOutput("9:36:00", source, "x", new TimeDelta(1), "y", 2.5);
 		// This checks constant folding
 		checkTemplateOutput("0.5", "<?print 1/2?>");
 		checkTemplateOutput("2.0", "<?print 2.0/True?>");
@@ -633,6 +692,10 @@ public class UL4Test
 		checkTemplateOutput("17", source, "x", 392, "y", 23);
 		checkTemplateOutput("17.0", source, "x", 17, "y", 1.0);
 		checkTemplateOutput("0", source, "x", 1, "y", 2);
+		checkTemplateOutput("0:00:00", source, "x", new TimeDelta(), "y", 4);
+		checkTemplateOutput("2 days, 0:00:00", source, "x", new TimeDelta(8), "y", 4);
+		checkTemplateOutput("12:00:00", source, "x", new TimeDelta(4), "y", 8);
+		checkTemplateOutput("0:00:00.500000", source, "x", new TimeDelta(0, 4), "y", 8);
 		// This checks constant folding
 		checkTemplateOutput("0.5", "<?print 1/2?>");
 		checkTemplateOutput("2.0", "<?print 2.0/True?>");
@@ -994,6 +1057,38 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_timedelta()
+	{
+		checkTemplateOutput("0:00:00", "<?print timedelta()?>");
+		checkTemplateOutput("1 day, 0:00:00", "<?print timedelta(1)?>");
+		checkTemplateOutput("2 days, 0:00:00", "<?print timedelta(2)?>");
+		checkTemplateOutput("0:00:01", "<?print timedelta(0, 1)?>");
+		checkTemplateOutput("0:01:00", "<?print timedelta(0, 60)?>");
+		checkTemplateOutput("1:00:00", "<?print timedelta(0, 60*60)?>");
+		checkTemplateOutput("1 day, 1:01:01.000001", "<?print timedelta(1, 60*60+60+1, 1)?>");
+		checkTemplateOutput("0:00:00.000001", "<?print timedelta(0, 0, 1)?>");
+		checkTemplateOutput("0:00:01", "<?print timedelta(0, 0, 1000000)?>");
+		checkTemplateOutput("1 day, 0:00:00", "<?print timedelta(0, 0, 24*60*60*1000000)?>");
+		checkTemplateOutput("1 day, 0:00:00", "<?print timedelta(0, 24*60*60)?>");
+		checkTemplateOutput("-1 day, 0:00:00", "<?print timedelta(-1)?>");
+		checkTemplateOutput("-1 day, 23:59:59", "<?print timedelta(0, -1)?>");
+		checkTemplateOutput("-1 day, 23:59:59.999999", "<?print timedelta(0, 0, -1)?>");
+		checkTemplateOutput("12:00:00", "<?print timedelta(0.5)?>");
+		checkTemplateOutput("0:00:00.500000", "<?print timedelta(0, 0.5)?>");
+		checkTemplateOutput("0:00:00.500000", "<?print timedelta(0.5/(24*60*60))?>");
+		checkTemplateOutput("-1 day, 12:00:00", "<?print timedelta(-0.5)?>");
+		checkTemplateOutput("-1 day, 23:59:59.500000", "<?print timedelta(0, -0.5)?>");
+	}
+	@Test
+	public void function_monthdelta()
+	{
+		checkTemplateOutput("0 months", "<?print monthdelta()?>");
+		checkTemplateOutput("1 month", "<?print monthdelta(1)?>");
+		checkTemplateOutput("2 months", "<?print monthdelta(2)?>");
+		checkTemplateOutput("-1 month", "<?print monthdelta(-1)?>");
+	}
+
+	@Test
 	public void function_vars()
 	{
 		String source = "<?if var in vars()?>yes<?else?>no<?end if?>";
@@ -1214,7 +1309,7 @@ public class UL4Test
 		checkTemplateOutput("42", source, "data", 42);
 		checkTemplateOutput("4.2", source, "data", 4.2);
 		checkTemplateOutput("foo", source, "data", "foo");
-		checkTemplateOutput("2011-02-09", source, "data", FunctionDate.call(2011, 2, 9));
+		checkTemplateOutput("2011-02-09 00:00:00", source, "data", FunctionDate.call(2011, 2, 9));
 		checkTemplateOutput("2011-02-09 12:34:56", source, "data", FunctionDate.call(2011, 2, 9, 12, 34, 56));
 		checkTemplateOutput("2011-02-09 12:34:56.987000", source, "data", FunctionDate.call(2011, 2, 9, 12, 34, 56, 987000));
 	}
@@ -1652,6 +1747,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
@@ -1682,6 +1779,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
@@ -1712,6 +1811,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
@@ -1742,6 +1843,8 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
@@ -1772,6 +1875,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("True", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
@@ -1802,6 +1907,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("True", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
@@ -1832,6 +1939,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("True", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
@@ -1862,6 +1971,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("True", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
@@ -1892,6 +2003,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("True", source, "data", getTemplate(""));
@@ -1922,6 +2035,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
@@ -1938,6 +2053,38 @@ public class UL4Test
 	public void function_iscolor_2_args()
 	{
 		checkTemplateOutput("", "<?print iscolor(1, 2)?>");
+	}
+
+	@Test
+	public void function_istimedelta()
+	{
+		String source = "<?print istimedelta(data)?>";
+
+		checkTemplateOutput("False", source, "data", null);
+		checkTemplateOutput("False", source, "data", true);
+		checkTemplateOutput("False", source, "data", false);
+		checkTemplateOutput("False", source, "data", 42);
+		checkTemplateOutput("False", source, "data", 4.2);
+		checkTemplateOutput("False", source, "data", "foo");
+		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("True", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
+		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeMap());
+		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_istimedelta_0_args()
+	{
+		checkTemplateOutput("", "<?print istimedelta()?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_istimedelta_2_args()
+	{
+		checkTemplateOutput("", "<?print istimedelta(1, 2)?>");
 	}
 
 	@Test

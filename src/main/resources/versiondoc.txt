@@ -3,7 +3,8 @@ exp-55:
 Comments:
 * Added support for list/dict comprehension, generator expressions and the date
   function. Added language argument to format function. Added support for the
-  week method.
+  week method. Added support for timedelta and monthdelta objects. Added support
+  for the functions timedelta, istimedelta, monthdelta and ismonthdelta.
 
 
 exp-54:

@@ -146,6 +146,20 @@ public class FloorDiv extends Binary
 			else if (arg2 instanceof BigDecimal)
 				return value1.divideToIntegralValue((BigDecimal)arg2);
 		}
+		else if (arg1 instanceof TimeDelta)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return ((TimeDelta)arg1).floordiv(Utils.toInt(arg2));
+			else if (arg2 instanceof Long)
+				return ((TimeDelta)arg1).floordiv(Utils.toLong(arg2));
+		}
+		else if (arg1 instanceof MonthDelta)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return ((MonthDelta)arg1).floordiv(Utils.toInt(arg2));
+			else if (arg2 instanceof Long)
+				return ((MonthDelta)arg1).floordiv(Utils.toLong(arg2));
+		}
 		throw new ArgumentTypeMismatchException("{} // {}", arg1, arg2);
 	}
 }

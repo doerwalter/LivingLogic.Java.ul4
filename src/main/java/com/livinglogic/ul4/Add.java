@@ -9,6 +9,9 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class Add extends Binary
 {
@@ -62,6 +65,36 @@ public class Add extends Binary
 	public static Object call(String arg1, String arg2)
 	{
 		return arg1 + arg2;
+	}
+
+	public static TimeDelta call(TimeDelta arg1, TimeDelta arg2)
+	{
+		return arg1.add(arg2);
+	}
+
+	public static Date call(Date arg1, TimeDelta arg2)
+	{
+		return arg2.addTo(arg1);
+	}
+
+	public static Date call(TimeDelta arg1, Date arg2)
+	{
+		return arg1.addTo(arg2);
+	}
+
+	public static MonthDelta call(MonthDelta arg1, MonthDelta arg2)
+	{
+		return arg1.add(arg2);
+	}
+
+	public static Date call(Date arg1, MonthDelta arg2)
+	{
+		return arg2.addTo(arg1);
+	}
+
+	public static Date call(MonthDelta arg1, Date arg2)
+	{
+		return arg1.addTo(arg2);
 	}
 
 	public static Object call(Object arg1, Object arg2)
@@ -147,9 +180,29 @@ public class Add extends Binary
 			else if (arg2 instanceof BigDecimal)
 				return value1.add((BigDecimal)arg2);
 		}
+		else if (arg1 instanceof Date)
+		{
+			if (arg2 instanceof TimeDelta)
+				return call((Date)arg1, (TimeDelta)arg2);
+			else if (arg2 instanceof MonthDelta)
+				return call((Date)arg1, (MonthDelta)arg2);
+		}
+		else if (arg1 instanceof TimeDelta)
+		{
+			if (arg2 instanceof Date)
+				return call((Date)arg2, (TimeDelta)arg1);
+			else if (arg2 instanceof TimeDelta)
+				return call((TimeDelta)arg2, (TimeDelta)arg1);
+		}
+		else if (arg1 instanceof MonthDelta)
+		{
+			if (arg2 instanceof Date)
+				return call((Date)arg2, (MonthDelta)arg1);
+			else if (arg2 instanceof MonthDelta)
+				return call((MonthDelta)arg2, (MonthDelta)arg1);
+		}
 		else if (arg1 instanceof String && arg2 instanceof String)
 			return call((String)arg1, (String)arg2);
 		throw new ArgumentTypeMismatchException("{} + {}", arg1, arg2);
 	}
-
 }
