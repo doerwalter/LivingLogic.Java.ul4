@@ -25,6 +25,20 @@ public class MonthDelta
 		this.months = months;
 	}
 
+	public boolean equals(Object other)
+	{
+		if (other == null)
+			return false;
+		if (!(other instanceof MonthDelta))
+			return false;
+		return months == ((MonthDelta)other).months;
+	}
+
+	public int hashCode()
+	{
+		return months;
+	}
+
 	public int getMonths()
 	{
 		return months;

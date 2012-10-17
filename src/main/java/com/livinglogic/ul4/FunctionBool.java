@@ -61,6 +61,16 @@ public class FunctionBool implements Function
 		return true;
 	}
 
+	public static boolean call(TimeDelta obj)
+	{
+		return obj.getDays() != 0 || obj.getSeconds() != 0 || obj.getMicroseconds() != 0;
+	}
+
+	public static boolean call(MonthDelta obj)
+	{
+		return obj.getMonths() != 0;
+	}
+
 	public static boolean call(Collection obj)
 	{
 		return !obj.isEmpty();
@@ -87,6 +97,10 @@ public class FunctionBool implements Function
 			return call((Double)obj);
 		else if (obj instanceof Date)
 			return call((Date)obj);
+		else if (obj instanceof TimeDelta)
+			return call((TimeDelta)obj);
+		else if (obj instanceof MonthDelta)
+			return call((MonthDelta)obj);
 		else if (obj instanceof Collection)
 			return call((Collection)obj);
 		else if (obj instanceof Map)

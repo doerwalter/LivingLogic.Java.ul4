@@ -64,6 +64,20 @@ public class TimeDelta
 		this((int)days, (long)((days % 1.0)*24*60*60+seconds), (long)((days%(1./(24*60*60)))*24*60*60*1000000L+(seconds%1.0)*1000000+microseconds));
 	}
 
+	public boolean equals(Object other)
+	{
+		if (other == null)
+			return false;
+		if (!(other instanceof TimeDelta))
+			return false;
+		return days == ((TimeDelta)other).days && seconds == ((TimeDelta)other).seconds && microseconds == ((TimeDelta)other).microseconds;
+	}
+
+	public int hashCode()
+	{
+		return days ^ seconds ^ microseconds;
+	}
+
 	public int getDays()
 	{
 		return days;
