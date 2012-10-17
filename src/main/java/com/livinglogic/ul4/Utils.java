@@ -220,8 +220,8 @@ public class Utils
 			else if (arg2 instanceof BigDecimal)
 				return cmp(value1, (BigDecimal)arg2);
 		}
-		else if (arg1 instanceof String && arg2 instanceof String)
-			return cmp((String)arg1, (String)arg2);
+		else if (arg1 instanceof Comparable && arg2 instanceof Comparable)
+			return cmp((Comparable)arg1, (Comparable)arg2);
 		throw new ArgumentTypeMismatchException("{} " + op + " {}", arg1, arg2);
 	}
 

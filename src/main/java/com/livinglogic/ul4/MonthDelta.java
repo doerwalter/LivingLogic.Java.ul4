@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class MonthDelta
+public class MonthDelta implements Comparable
 {
 	private int months;
 
@@ -37,6 +37,11 @@ public class MonthDelta
 	public int hashCode()
 	{
 		return months;
+	}
+
+	public int compareTo(Object other)
+	{
+		return Utils.cmp(months, ((MonthDelta)other).months);
 	}
 
 	public int getMonths()

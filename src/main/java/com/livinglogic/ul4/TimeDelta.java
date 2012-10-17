@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class TimeDelta
+public class TimeDelta implements Comparable
 {
 	private int days;
 	private int seconds;
@@ -73,6 +73,18 @@ public class TimeDelta
 		return days == ((TimeDelta)other).days && seconds == ((TimeDelta)other).seconds && microseconds == ((TimeDelta)other).microseconds;
 	}
 
+	public int compareTo(Object other)
+	{
+		int temp;
+
+		temp = Utils.cmp(days, ((TimeDelta)other).days);
+		if (temp == 0)
+			temp = Utils.cmp(seconds, ((TimeDelta)other).seconds);
+		if (temp == 0)
+			temp = Utils.cmp(microseconds, ((TimeDelta)other).microseconds);
+		return temp;
+	}
+
 	public int hashCode()
 	{
 		return days ^ seconds ^ microseconds;
@@ -92,6 +104,7 @@ public class TimeDelta
 	{
 		return microseconds;
 	}
+
 
 	public TimeDelta add(TimeDelta other)
 	{

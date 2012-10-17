@@ -762,6 +762,12 @@ public class UL4Test
 		checkTemplateOutput("False", source, "x", 23, "y", 17);
 		checkTemplateOutput("False", source, "x", 17, "y", 17.0);
 		checkTemplateOutput("True", source, "x", 17, "y", 23.0);
+		checkTemplateOutput("False", source, "x", new TimeDelta(0), "y", new TimeDelta(0));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0), "y", new TimeDelta(1));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0), "y", new TimeDelta(0, 1));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0), "y", new TimeDelta(0, 0, 1));
+		checkTemplateOutput("False", source, "x", new MonthDelta(0), "y", new MonthDelta(0));
+		checkTemplateOutput("True", source, "x", new MonthDelta(0), "y", new MonthDelta(1));
 		// This checks constant folding
 		checkTemplateOutput("True", "<?print 17 < 23?>");
 		checkTemplateOutput("False", "<?print 17 < 17.?>");
@@ -780,6 +786,12 @@ public class UL4Test
 		checkTemplateOutput("False", source, "x", 23, "y", 17);
 		checkTemplateOutput("True", source, "x", 17, "y", 17);
 		checkTemplateOutput("True", source, "x", 17, "y", 17.0);
+		checkTemplateOutput("False", source, "x", new TimeDelta(1), "y", new TimeDelta(0));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0), "y", new TimeDelta(1));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0), "y", new TimeDelta(0, 1));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0), "y", new TimeDelta(0, 0, 1));
+		checkTemplateOutput("False", source, "x", new MonthDelta(1), "y", new MonthDelta(0));
+		checkTemplateOutput("True", source, "x", new MonthDelta(0), "y", new MonthDelta(1));
 		// This checks constant folding
 		checkTemplateOutput("True", "<?print 17 <= 23?>");
 		checkTemplateOutput("True", "<?print 17 <= 17.?>");
@@ -800,6 +812,12 @@ public class UL4Test
 		checkTemplateOutput("True", source, "x", 23, "y", 17);
 		checkTemplateOutput("False", source, "x", 17, "y", 17.0);
 		checkTemplateOutput("True", source, "x", 23.0, "y", 17);
+		checkTemplateOutput("False", source, "x", new TimeDelta(0), "y", new TimeDelta(0));
+		checkTemplateOutput("True", source, "x", new TimeDelta(1), "y", new TimeDelta(0));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0, 1), "y", new TimeDelta(0));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0, 0, 1), "y", new TimeDelta(0));
+		checkTemplateOutput("False", source, "x", new MonthDelta(0), "y", new MonthDelta(0));
+		checkTemplateOutput("True", source, "x", new MonthDelta(1), "y", new MonthDelta(0));
 		// This checks constant folding
 		checkTemplateOutput("False", "<?print 17 > 23?>");
 		checkTemplateOutput("False", "<?print 17 > 17.?>");
@@ -820,6 +838,12 @@ public class UL4Test
 		checkTemplateOutput("True", source, "x", 23, "y", 17);
 		checkTemplateOutput("True", source, "x", 17, "y", 17);
 		checkTemplateOutput("True", source, "x", 17, "y", 17.0);
+		checkTemplateOutput("False", source, "x", new TimeDelta(0), "y", new TimeDelta(1));
+		checkTemplateOutput("True", source, "x", new TimeDelta(1), "y", new TimeDelta(0));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0, 1), "y", new TimeDelta(0));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0, 0, 1), "y", new TimeDelta(0));
+		checkTemplateOutput("False", source, "x", new MonthDelta(0), "y", new MonthDelta(1));
+		checkTemplateOutput("True", source, "x", new MonthDelta(1), "y", new MonthDelta(0));
 		// This checks constant folding
 		checkTemplateOutput("False", "<?print 17 >= 23?>");
 		checkTemplateOutput("True", "<?print 17 >= 17.?>");
