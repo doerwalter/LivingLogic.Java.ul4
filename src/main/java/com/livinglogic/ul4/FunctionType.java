@@ -40,6 +40,10 @@ public class FunctionType implements Function
 			return "float";
 		else if (obj instanceof Date)
 			return "date";
+		else if (obj instanceof TimeDelta)
+			return "timedelta";
+		else if (obj instanceof MonthDelta)
+			return "monthdelta";
 		else if (obj instanceof Color) // check Color before List
 			return "color";
 		else if (obj instanceof List)
