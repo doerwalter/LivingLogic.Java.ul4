@@ -384,9 +384,6 @@ public class Utils
 					case 'a':
 						output.append('\u0007');
 						break;
-					case 'e':
-						output.append('\u001b');
-						break;
 					case '"':
 						output.append('"');
 						break;

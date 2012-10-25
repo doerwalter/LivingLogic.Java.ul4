@@ -36,7 +36,7 @@ public class InterpretedTemplate extends Block implements Template
 	/**
 	 * The version number used in the UL4ON dump of the template.
 	 */
-	public static final String VERSION = "19";
+	public static final String VERSION = "20";
 
 	/**
 	 * The name of the template (defaults to {@code "unnamed"})
@@ -499,14 +499,7 @@ public class InterpretedTemplate extends Block implements Template
 	{
 		Utils.register("de.livinglogic.ul4.location", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Location(null, null, -1, -1, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.text", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Text(null); }});
-		Utils.register("de.livinglogic.ul4.none", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadNone(null); }});
-		Utils.register("de.livinglogic.ul4.true", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadTrue(null); }});
-		Utils.register("de.livinglogic.ul4.false", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadFalse(null); }});
-		Utils.register("de.livinglogic.ul4.int", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadInt(null, 0); }});
-		Utils.register("de.livinglogic.ul4.float", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadFloat(null, 0.0); }});
-		Utils.register("de.livinglogic.ul4.str", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadStr(null, null); }});
-		Utils.register("de.livinglogic.ul4.date", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadDate(null, null); }});
-		Utils.register("de.livinglogic.ul4.color", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LoadColor(null, null); }});
+		Utils.register("de.livinglogic.ul4.const", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Const(null, null); }});
 		Utils.register("de.livinglogic.ul4.list", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.List(null); }});
 		Utils.register("de.livinglogic.ul4.listcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListComprehension(null, null, null, null, null); }});
 		Utils.register("de.livinglogic.ul4.dict", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Dict(null); }});

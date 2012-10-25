@@ -133,13 +133,13 @@ WS
 	;
 
 STRING
-	: '"' ( ESC_SEQ | ~('\\'|'"') )* '"'
-	| '\'' ( ESC_SEQ | ~('\\'|'\'') )* '\''
+	: '"' ( ESC_SEQ | ~('\\'|'"'|'\r'|'\n') )* '"'
+	| '\'' ( ESC_SEQ | ~('\\'|'\''|'\r'|'\n') )* '\''
 	;
 
 fragment
 ESC_SEQ
-	: '\\' ('a'|'b'|'e'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
+	: '\\' ('a'|'b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
 	| UNICODE1_ESC
 	| UNICODE2_ESC
 	| UNICODE4_ESC
@@ -164,51 +164,51 @@ UNICODE4_ESC
 /* Rules common to all tags */
 
 none returns [AST node]
-	: NONE { $node = new LoadNone(location); }
+	: NONE { $node = new Const(location, null); }
 	;
 
 true_ returns [AST node]
-	: TRUE { $node = new LoadTrue(location); }
+	: TRUE { $node = new Const(location, true); }
 	;
 
 false_ returns [AST node]
-	: FALSE { $node = new LoadFalse(location); }
+	: FALSE { $node = new Const(location, false); }
+	;
+
+int_ returns [AST node]
+	: INT { $node = new Const(location, Utils.parseUL4Int($INT.text)); }
+	;
+
+float_ returns [AST node]
+	: FLOAT { $node = new Const(location, Double.parseDouble($FLOAT.text)); }
+	;
+
+string returns [AST node]
+	: STRING { $node = new Const(location, Utils.unescapeUL4String($STRING.text.substring(1, $STRING.text.length()-1))); }
+	;
+
+date returns [AST node]
+	: DATE { $node = new Const(location, Utils.isoparse($DATE.text.substring(2, $DATE.text.length()-1))); }
+	;
+
+color returns [AST node]
+	: COLOR { $node = new Const(location, Color.fromrepr($COLOR.text)); }
 	;
 
 name returns [Var node]
 	: NAME { $node = new Var(location, $NAME.text); }
 	;
 
-int_ returns [AST node]
-	: INT { $node = new LoadInt(location, Utils.parseUL4Int($INT.text)); }
-	;
-
-float_ returns [AST node]
-	: FLOAT { $node = new LoadFloat(location, Double.parseDouble($FLOAT.text)); }
-	;
-
-string returns [AST node]
-	: STRING { $node = new LoadStr(location, Utils.unescapeUL4String($STRING.text.substring(1, $STRING.text.length()-1))); }
-	;
-
-date returns [AST node]
-	: DATE { $node = new LoadDate(location, Utils.isoparse($DATE.text.substring(2, $DATE.text.length()-1))); }
-	;
-
-color returns [AST node]
-	: COLOR { $node = new LoadColor(location, Color.fromrepr($COLOR.text)); }
-	;
-
 literal returns [AST node]
 	: e_none=none { $node = $e_none.node; }
 	| e_false=false_ { $node = $e_false.node; }
 	| e_true=true_ { $node = $e_true.node; }
-	| e_name=name { $node = $e_name.node; }
 	| e_int=int_ { $node = $e_int.node; }
 	| e_float=float_ { $node = $e_float.node; }
 	| e_string=string { $node = $e_string.node; }
 	| e_date=date { $node = $e_date.node; }
 	| e_color=color { $node = $e_color.node; }
+	| e_name=name { $node = $e_name.node; }
 	;
 
 /* List literals */
