@@ -175,15 +175,13 @@ public class UL4Test
 		checkTemplateOutput("\f", "<?print \"\\f\"?>");
 		checkTemplateOutput("\u0008", "<?print \"\\b\"?>");
 		checkTemplateOutput("\u0007", "<?print \"\\a\"?>");
-		checkTemplateOutput("\u001b", "<?print \"\\e\"?>");
 		checkTemplateOutput("\u0000", "<?print \"\\x00\"?>");
 		checkTemplateOutput("\"", "<?print \"\\\"\"?>");
 		checkTemplateOutput("'", "<?print \"\\'\"?>");
 		checkTemplateOutput("\u20ac", "<?print \"\u20ac\"?>");
 		checkTemplateOutput("\u00ff", "<?print \"\\xff\"?>");
 		checkTemplateOutput("\u20ac", "<?print \"\\u20ac\"?>");
-		checkTemplateOutput("a\nb", "<?print \"a\nb\"?>");
-		checkTemplateOutput("gu\n\r\trk", "<?print 'gu\n\r\trk'?>");
+		checkTemplateOutput("gu\trk", "<?print 'gu\trk'?>");
 		checkTemplateOutput("gu\n\r\t\\rk", "<?print 'gu\\n\\r\\t\\\\rk'?>");
 		checkTemplateOutput("no", "<?if ''?>yes<?else?>no<?end if?>");
 		checkTemplateOutput("yes", "<?if 'foo'?>yes<?else?>no<?end if?>");
