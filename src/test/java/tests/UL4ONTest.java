@@ -12,6 +12,8 @@ import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
 import com.livinglogic.ul4.Color;
+import com.livinglogic.ul4.TimeDelta;
+import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.InterpretedTemplate;
 
 public class UL4ONTest
@@ -62,6 +64,8 @@ public class UL4ONTest
 		checkRoundtrip("gurk");
 		checkRoundtrip(new Color(0x66, 0x99, 0xcc, 0xff));
 		checkRoundtrip(new Date());
+		checkRoundtrip(new TimeDelta(-1, 1, 1));
+		checkRoundtrip(new MonthDelta(-1));
 		checkRoundtrip(asList(1, 2, 3));
 		checkRoundtrip(makeMap("eins", 1, "zwei", 2, "drei", 3));
 		checkRoundtrip(template);

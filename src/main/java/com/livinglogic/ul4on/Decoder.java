@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.livinglogic.ul4.Color;
+import com.livinglogic.ul4.TimeDelta;
+import com.livinglogic.ul4.MonthDelta;
 
 /**
  * A {@code Decoder} object wraps a {@code Reader} object and can read any object
@@ -135,7 +137,7 @@ public class Decoder
 				loading(value);
 			return value;
 		}
-		else if (typecode == 't' || typecode == 'T')
+		else if (typecode == 'z' || typecode == 'Z')
 		{
 			char[] chars = new char[20];
 			reader.read(chars);
@@ -149,7 +151,25 @@ public class Decoder
 				// can happen with broken data
 				throw new RuntimeException(e);
 			}
+			if (typecode == 'Z')
+				loading(value);
+			return value;
+		}
+		else if (typecode == 't' || typecode == 'T')
+		{
+			int days = (Integer)readInt();
+			int seconds = (Integer)readInt();
+			int microseconds = (Integer)readInt();
+			TimeDelta value = new TimeDelta(days, seconds, microseconds);
 			if (typecode == 'T')
+				loading(value);
+			return value;
+		}
+		else if (typecode == 'm' || typecode == 'M')
+		{
+			int months = (Integer)readInt();
+			MonthDelta value = new MonthDelta(months);
+			if (typecode == 'M')
 				loading(value);
 			return value;
 		}
@@ -198,7 +218,7 @@ public class Decoder
 		}
 		else if (typecode == 'o' || typecode == 'O')
 		{
-			int oldpos = 1;
+			int oldpos = -1;
 			if (typecode == 'O')
 			{
 				// We have a problem here:

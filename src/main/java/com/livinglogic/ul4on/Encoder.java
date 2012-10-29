@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.livinglogic.ul4.Color;
+import com.livinglogic.ul4.TimeDelta;
+import com.livinglogic.ul4.MonthDelta;
 
 /**
  * An {@code Encoder} object wraps a {@code Writer} object and can dump any object
@@ -88,7 +90,18 @@ public class Encoder
 			else if (obj instanceof Date)
 			{
 				record(obj);
-				writer.write("T" + Utils.dateFormat.format((Date)obj) + "000");
+				writer.write("Z" + Utils.dateFormat.format((Date)obj) + "000");
+			}
+			else if (obj instanceof TimeDelta)
+			{
+				record(obj);
+				TimeDelta td = (TimeDelta)obj;
+				writer.write("T" + td.getDays() + "|" + td.getSeconds() + "|" + td.getMicroseconds() + "|");
+			}
+			else if (obj instanceof MonthDelta)
+			{
+				record(obj);
+				writer.write("M" + ((MonthDelta)obj).getMonths() + "|");
 			}
 			else if (obj instanceof Color)
 			{
