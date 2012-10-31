@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.livinglogic.ul4.Undefined;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.MonthDelta;
@@ -89,6 +90,12 @@ public class Decoder
 			if (typecode == 'N')
 				loading(null);
 			return null;
+		}
+		else if (typecode == 'u' || typecode == 'U')
+		{
+			if (typecode == 'U')
+				loading(Undefined.undefined);
+			return Undefined.undefined;
 		}
 		else if (typecode == 'b' || typecode == 'B')
 		{

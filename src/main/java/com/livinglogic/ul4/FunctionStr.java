@@ -42,6 +42,8 @@ public class FunctionStr implements Function
 	{
 		if (obj == null)
 			return "";
+		else if (obj == Undefined.undefined)
+			return "";
 		else if (obj instanceof Boolean)
 			return ((Boolean)obj).booleanValue() ? "True" : "False";
 		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger)

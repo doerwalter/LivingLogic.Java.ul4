@@ -59,6 +59,10 @@ options
 	}
 }
 
+UNDEFINED
+	: 'Undefined'
+	;
+
 NONE
 	: 'None'
 	;
@@ -163,6 +167,10 @@ UNICODE4_ESC
 
 /* Rules common to all tags */
 
+undefined returns [AST node]
+	: UNDEFINED { $node = new Const(location, Undefined.undefined); }
+	;
+
 none returns [AST node]
 	: NONE { $node = new Const(location, null); }
 	;
@@ -200,7 +208,8 @@ name returns [Var node]
 	;
 
 literal returns [AST node]
-	: e_none=none { $node = $e_none.node; }
+	: e_undefined=undefined { $node = $e_undefined.node; }
+	| e_none=none { $node = $e_none.node; }
 	| e_false=false_ { $node = $e_false.node; }
 	| e_true=true_ { $node = $e_true.node; }
 	| e_int=int_ { $node = $e_int.node; }
@@ -590,5 +599,4 @@ stmt returns [AST node]
 	| n=name '/=' e=expr1 EOF { $node = new TrueDivVar(location, $n.text, $e.node); }
 	| n=name '//=' e=expr1 EOF { $node = new FloorDivVar(location, $n.text, $e.node); }
 	| n=name '%=' e=expr1 EOF { $node = new ModVar(location, $n.text, $e.node); }
-	| 'del' n=name EOF { $node = new DelVar(location, $n.text); }
 	;

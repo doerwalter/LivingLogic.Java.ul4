@@ -47,6 +47,8 @@ public class CallFunc extends AST
 			"isfirstlast", new FunctionIsFirstLast(),
 			"isfirst", new FunctionIsFirst(),
 			"islast", new FunctionIsLast(),
+			"isundefined", new FunctionIsUndefined(),
+			"isdefined", new FunctionIsDefined(),
 			"isnone", new FunctionIsNone(),
 			"isstr", new FunctionIsStr(),
 			"isint", new FunctionIsInt(),

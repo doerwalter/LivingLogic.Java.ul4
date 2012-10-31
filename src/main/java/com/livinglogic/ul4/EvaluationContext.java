@@ -97,7 +97,7 @@ public class EvaluationContext
 		Object result = variables.get(key);
 
 		if ((result == null) && !variables.containsKey(key))
-			throw new KeyException(key);
+			return Undefined.undefined;
 		return result;
 	}
 
@@ -117,7 +117,7 @@ public class EvaluationContext
 	}
 
 	/**
-	 * Delete a template vaiable
+	 * Delete a template variable
 	 * @param key The name of the variable
 	 */
 	public void remove(String key)

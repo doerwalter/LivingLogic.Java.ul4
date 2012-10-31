@@ -543,7 +543,6 @@ public class InterpretedTemplate extends Block implements Template
 		Utils.register("de.livinglogic.ul4.floordivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.FloorDivVar(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.truedivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDivVar(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.modvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ModVar(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.delvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DelVar(null, null); }});
 		Utils.register("de.livinglogic.ul4.callfunc", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallFunc(null, (Function)null); }});
 		Utils.register("de.livinglogic.ul4.callmeth", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMeth(null, null, (Method)null); }});
 		Utils.register("de.livinglogic.ul4.callmethkw", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMethKeywords(null, null, (KeywordMethod)null); }});

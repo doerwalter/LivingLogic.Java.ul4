@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.livinglogic.ul4.Undefined;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.MonthDelta;
@@ -75,6 +76,8 @@ public class Encoder
 			// No -> write the real object
 			if (obj == null)
 				writer.write("n");
+			else if (obj == Undefined.undefined)
+				writer.write("u");
 			else if (obj instanceof Boolean)
 				writer.write(((Boolean)obj).booleanValue() ? "bT" : "bF");
 			else if (obj instanceof Integer || obj instanceof Long || obj instanceof Byte || obj instanceof Short || obj instanceof BigInteger)

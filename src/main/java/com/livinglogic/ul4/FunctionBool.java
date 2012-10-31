@@ -85,6 +85,8 @@ public class FunctionBool implements Function
 	{
 		if (null == obj)
 			return false;
+		else if (Undefined.undefined == obj)
+			return false;
 		else if (obj instanceof Boolean)
 			return call((Boolean)obj);
 		else if (obj instanceof String)

@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.BlockException;
+import com.livinglogic.ul4.Undefined;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.Color;
@@ -365,12 +366,6 @@ public class UL4Test
 		checkTemplateOutput("-1.5", source, "x", -6.5, "y", -2.5);
 		checkTemplateOutput("1", source, "x", true, "y", 23);
 		checkTemplateOutput("0", source, "x", false, "y", 23);
-	}
-
-	@CauseTest(expectedCause=KeyException.class)
-	public void tag_delvar()
-	{
-		checkTemplateOutput("", "<?code x = 1729?><?code del x?><?print x?>");
 	}
 
 	@Test
@@ -915,30 +910,10 @@ public class UL4Test
 		checkTemplateOutput("u", "<?print x[1]?>", "x", "gurk");
 		checkTemplateOutput("u", "<?print 'gurk'[-3]?>");
 		checkTemplateOutput("u", "<?print x[-3]?>", "x", "gurk");
-	}
-
-	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
-	public void operator_getitem_fail_1()
-	{
-		checkTemplateOutput("u", "<?print 'gurk'[4]?>");
-	}
-
-	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
-	public void operator_getitem_fail_2()
-	{
-		checkTemplateOutput("u", "<?print x[4]?>", "x", "gurk");
-	}
-
-	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
-	public void operator_getitem_fail_3()
-	{
-		checkTemplateOutput("u", "<?print 'gurk'[-5]?>");
-	}
-
-	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
-	public void operator_getitem_fail_4()
-	{
-		checkTemplateOutput("u", "<?print x[-5]?>", "x", "gurk");
+		checkTemplateOutput("Undefined", "<?print repr('gurk'[4])?>");
+		checkTemplateOutput("Undefined", "<?print repr(x[4])?>", "x", "gurk");
+		checkTemplateOutput("Undefined", "<?print repr('gurk'[-5])?>");
+		checkTemplateOutput("Undefined", "<?print repr(x[-5])?>", "x", "gurk");
 	}
 
 	@Test
@@ -1758,10 +1733,77 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_isundefined()
+	{
+		String source = "<?print isundefined(data)?>";
+
+		checkTemplateOutput("True", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", null);
+		checkTemplateOutput("False", source, "data", true);
+		checkTemplateOutput("False", source, "data", false);
+		checkTemplateOutput("False", source, "data", 42);
+		checkTemplateOutput("False", source, "data", 4.2);
+		checkTemplateOutput("False", source, "data", "foo");
+		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
+		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeMap());
+		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_isundefined_0_args()
+	{
+		checkTemplateOutput("", "<?print isundefined()?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_isundefined_2_args()
+	{
+		checkTemplateOutput("", "<?print isundefined(1, 2)?>");
+	}
+
+	@Test
+	public void function_isdefined()
+	{
+		String source = "<?print isdefined(data)?>";
+
+		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("True", source, "data", null);
+		checkTemplateOutput("True", source, "data", true);
+		checkTemplateOutput("True", source, "data", false);
+		checkTemplateOutput("True", source, "data", 42);
+		checkTemplateOutput("True", source, "data", 4.2);
+		checkTemplateOutput("True", source, "data", "foo");
+		checkTemplateOutput("True", source, "data", new Date());
+		checkTemplateOutput("True", source, "data", new TimeDelta(1));
+		checkTemplateOutput("True", source, "data", new MonthDelta(1));
+		checkTemplateOutput("True", source, "data", asList());
+		checkTemplateOutput("True", source, "data", makeMap());
+		checkTemplateOutput("True", source, "data", getTemplate(""));
+		checkTemplateOutput("True", source, "data", new Color(0, 0, 0));
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_isdefined_0_args()
+	{
+		checkTemplateOutput("", "<?print isdefined()?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_isdefined_2_args()
+	{
+		checkTemplateOutput("", "<?print isdefined(1, 2)?>");
+	}
+
+	@Test
 	public void function_isnone()
 	{
 		String source = "<?print isnone(data)?>";
 
+		checkTemplateOutput("False", source, "data", Undefined.undefined);
 		checkTemplateOutput("True", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -1794,6 +1836,7 @@ public class UL4Test
 	{
 		String source = "<?print isbool(data)?>";
 
+		checkTemplateOutput("False", source, "data", Undefined.undefined);
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("True", source, "data", true);
 		checkTemplateOutput("True", source, "data", false);
@@ -1826,6 +1869,7 @@ public class UL4Test
 	{
 		String source = "<?print isint(data)?>";
 
+		checkTemplateOutput("False", source, "data", Undefined.undefined);
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -1858,6 +1902,7 @@ public class UL4Test
 	{
 		String source = "<?print isfloat(data)?>";
 
+		checkTemplateOutput("False", source, "data", Undefined.undefined);
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -1890,6 +1935,7 @@ public class UL4Test
 	{
 		String source = "<?print isstr(data)?>";
 
+		checkTemplateOutput("False", source, "data", Undefined.undefined);
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -1922,6 +1968,7 @@ public class UL4Test
 	{
 		String source = "<?print isdate(data)?>";
 
+		checkTemplateOutput("False", source, "data", Undefined.undefined);
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -1954,6 +2001,7 @@ public class UL4Test
 	{
 		String source = "<?print islist(data)?>";
 
+		checkTemplateOutput("False", source, "data", Undefined.undefined);
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -1986,6 +2034,7 @@ public class UL4Test
 	{
 		String source = "<?print isdict(data)?>";
 
+		checkTemplateOutput("False", source, "data", Undefined.undefined);
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -2018,6 +2067,7 @@ public class UL4Test
 	{
 		String source = "<?print istemplate(data)?>";
 
+		checkTemplateOutput("False", source, "data", Undefined.undefined);
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -2050,6 +2100,7 @@ public class UL4Test
 	{
 		String source = "<?print iscolor(data)?>";
 
+		checkTemplateOutput("False", source, "data", Undefined.undefined);
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -2082,6 +2133,7 @@ public class UL4Test
 	{
 		String source = "<?print istimedelta(data)?>";
 
+		checkTemplateOutput("False", source, "data", Undefined.undefined);
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -2836,7 +2888,6 @@ public class UL4Test
 			"<?code x /= 42?>" +
 			"<?code x //= 42?>" +
 			"<?code x %= 42?>" +
-			"<?code del x?>" +
 			"<?print x.gurk?>" +
 			"<?print x['gurk']?>" +
 			"<?print x[1:2]?>" +

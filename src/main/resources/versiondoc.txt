@@ -3,6 +3,7 @@ exp-56:
 Comments:
 * Merged constant loading AST classes into one class: Const.
 * UL4ON can now read/write TimeDelta and MonthDelta objects.
+* Added the Undefined singleton.
 
 
 exp-55:

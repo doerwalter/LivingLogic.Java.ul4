@@ -26,10 +26,13 @@ public class GetItem extends Binary
 	{
 		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
 	}
+
 	public static Object call(String obj, int index)
 	{
 		if (0 > index)
 			index += obj.length();
+		if (index < 0 || index >= obj.length())
+			return Undefined.undefined;
 		return obj.substring(index, index+1);
 	}
 
@@ -37,6 +40,8 @@ public class GetItem extends Binary
 	{
 		if (0 > index)
 			index += obj.size();
+		if (index < 0 || index >= obj.size())
+			return Undefined.undefined;
 		return obj.get(index);
 	}
 
@@ -53,7 +58,7 @@ public class GetItem extends Binary
 			case 3:
 				return obj.getA();
 			default:
-				throw new ArrayIndexOutOfBoundsException();
+				return Undefined.undefined;
 		}
 	}
 
@@ -62,7 +67,7 @@ public class GetItem extends Binary
 		Object result = obj.get(index);
 
 		if ((result == null) && !obj.containsKey(index))
-			throw new KeyException(index);
+			return Undefined.undefined;
 		return result;
 	}
 

@@ -11,6 +11,7 @@ import java.util.Date;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
+import com.livinglogic.ul4.Undefined;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.MonthDelta;
@@ -57,6 +58,7 @@ public class UL4ONTest
 		InterpretedTemplate template = getTemplate("<?for i in range(10)?>[<?print i?>]<?end for?>");
 
 		checkRoundtrip(null);
+		checkRoundtrip(Undefined.undefined);
 		checkRoundtrip(true);
 		checkRoundtrip(false);
 		checkRoundtrip(42);
