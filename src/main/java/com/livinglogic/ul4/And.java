@@ -20,6 +20,13 @@ public class And extends Binary
 		return "and";
 	}
 
+	public static AST make(Location location, AST obj1, AST obj2)
+	{
+		if (obj1 instanceof Const && obj2 instanceof Const)
+			return new Const(location, call(((Const)obj1).value, ((Const)obj2).value));
+		return new And(location, obj1, obj2);
+	}
+
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		Object obj1ev = obj1.decoratedEvaluate(context);
@@ -29,5 +36,9 @@ public class And extends Binary
 			return obj2.decoratedEvaluate(context);
 	}
 
-	// we can't implement a static call version here, because that would require that we evaluate both sides
+	// this static version is only used for constant folding, not in evaluate(), because that would require that we evaluate both sides
+	public static Object call(Object arg1, Object arg2)
+	{
+		return !FunctionBool.call(arg1) ? arg1 : arg2;
+	}
 }

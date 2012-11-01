@@ -20,6 +20,13 @@ public class Not extends Unary
 		return "not";
 	}
 
+	public static AST make(Location location, AST obj)
+	{
+		if (obj instanceof Const)
+			return new Const(location, call(((Const)obj).value));
+		return new Not(location, obj);
+	}
+
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return call(obj.decoratedEvaluate(context));

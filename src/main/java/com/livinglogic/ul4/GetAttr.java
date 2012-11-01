@@ -35,6 +35,13 @@ public class GetAttr extends AST
 		return "getattr";
 	}
 
+	public static AST make(Location location, AST obj, String attrname)
+	{
+		if (obj instanceof Const)
+			return new Const(location, call(((Const)obj).value, attrname));
+		return new GetAttr(location, obj, attrname);
+	}
+
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return call(obj.decoratedEvaluate(context), attrname);

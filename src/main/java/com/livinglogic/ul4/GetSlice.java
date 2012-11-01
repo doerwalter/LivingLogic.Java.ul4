@@ -40,6 +40,28 @@ public class GetSlice extends AST
 		return "getslice";
 	}
 
+	public static AST make(Location location, AST obj, AST index1, AST index2)
+	{
+		if (obj instanceof Const)
+		{
+			if (index1 == null)
+			{
+				if (index2 == null)
+					return new Const(location, call(((Const)obj).value, null, null));
+				else if (index2 instanceof Const)
+					return new Const(location, call(((Const)obj).value, null, ((Const)index2).value));
+			}
+			else if (index1 instanceof Const)
+			{
+				if (index2 == null)
+					return new Const(location, call(((Const)obj).value, ((Const)index1).value, null));
+				else if (index2 instanceof Const)
+					return new Const(location, call(((Const)obj).value, ((Const)index1).value, ((Const)index2).value));
+			}
+		}
+		return new GetSlice(location, obj, index1, index2);
+	}
+
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return call(obj.decoratedEvaluate(context), index1 != null ? index1.decoratedEvaluate(context) : null, index2 != null ? index2.decoratedEvaluate(context) : null);

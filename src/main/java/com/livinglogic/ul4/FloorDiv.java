@@ -22,6 +22,13 @@ public class FloorDiv extends Binary
 		return "floordiv";
 	}
 
+	public static AST make(Location location, AST obj1, AST obj2)
+	{
+		if (obj1 instanceof Const && obj2 instanceof Const)
+			return new Const(location, call(((Const)obj1).value, ((Const)obj2).value));
+		return new FloorDiv(location, obj1, obj2);
+	}
+
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));

@@ -418,7 +418,7 @@ expr9 returns [AST node]
 					','?
 					')'
 				)
-			)? { if (!callmeth) $node = new GetAttr(location, $node, $n.text); }
+			)? { if (!callmeth) $node = GetAttr.make(location, $node, $n.text); }
 		|
 			/* Item/slice access */
 			'['
@@ -426,7 +426,7 @@ expr9 returns [AST node]
 				':'
 				(
 					e2=expr1 { index2 = $e2.node; }
-				)? { $node = new GetSlice(location, $node, null, index2); }
+				)? { $node = GetSlice.make(location, $node, null, index2); }
 			|
 				e2=expr1 { index1 = $e2.node; }
 				(
@@ -434,7 +434,7 @@ expr9 returns [AST node]
 					(
 						e3=expr1 { index2 = $e3.node; }
 					)?
-				)? { $node = slice ? new GetSlice(location, $node, index1, index2) : new GetItem(location, $node, index1); }
+				)? { $node = slice ? GetSlice.make(location, $node, index1, index2) : GetItem.make(location, $node, index1); }
 			)
 			']'
 		)*
@@ -450,7 +450,7 @@ expr8 returns [AST node]
 		(
 			'-' { ++count; }
 		)*
-		e=expr9 { $node = $e.node; while (count-- != 0) { $node = new Neg(location, $node); } }
+		e=expr9 { $node = $e.node; while (count-- != 0) { $node = Neg.make(location, $node); } }
 	;
 
 /* Multiplication, division, modulo */
@@ -471,7 +471,7 @@ expr7 returns [AST node]
 			|
 				'%' { opcode = 3; }
 			)
-			e2=expr8 { switch (opcode) { case 0: $node = new Mul(location, $node, $e2.node); break; case 1: $node = new TrueDiv(location, $node, $e2.node); break; case 2: $node = new FloorDiv(location, $node, $e2.node); break; case 3: $node = new Mod(location, $node, $e2.node); break; } }
+			e2=expr8 { switch (opcode) { case 0: $node = Mul.make(location, $node, $e2.node); break; case 1: $node = TrueDiv.make(location, $node, $e2.node); break; case 2: $node = FloorDiv.make(location, $node, $e2.node); break; case 3: $node = Mod.make(location, $node, $e2.node); break; } }
 		)*
 	;
 
@@ -489,7 +489,7 @@ expr6 returns [AST node]
 			|
 				'-' { add = false; }
 			)
-			e2=expr7 { $node = add ? new Add(location, $node, $e2.node) : new Sub(location, $node, $e2.node); }
+			e2=expr7 { $node = add ? Add.make(location, $node, $e2.node) : Sub.make(location, $node, $e2.node); }
 		)*
 	;
 
@@ -515,7 +515,7 @@ expr5 returns [AST node]
 			|
 				'>=' { opcode = 5; }
 			)
-			e2=expr6 { switch (opcode) { case 0: $node = new EQ(location, $node, $e2.node); break; case 1: $node = new NE(location, $node, $e2.node); break; case 2: $node = new LT(location, $node, $e2.node); break; case 3: $node = new LE(location, $node, $e2.node); break; case 4: $node = new GT(location, $node, $e2.node); break; case 5: $node = new GE(location, $node, $e2.node); break; } }
+			e2=expr6 { switch (opcode) { case 0: $node = EQ.make(location, $node, $e2.node); break; case 1: $node = NE.make(location, $node, $e2.node); break; case 2: $node = LT.make(location, $node, $e2.node); break; case 3: $node = LE.make(location, $node, $e2.node); break; case 4: $node = GT.make(location, $node, $e2.node); break; case 5: $node = GE.make(location, $node, $e2.node); break; } }
 		)*
 	;
 
@@ -533,7 +533,7 @@ expr4 returns [AST node]
 				'not' { not = true; }
 			)?
 			'in'
-			e2=expr5 { $node = not ? new NotContains(location, $node, $e2.node) : new Contains(location, $node, $e2.node); }
+			e2=expr5 { $node = not ? NotContains.make(location, $node, $e2.node) : Contains.make(location, $node, $e2.node); }
 		)?
 	;
 
@@ -541,7 +541,7 @@ expr4 returns [AST node]
 expr3 returns [AST node]
 	:
 		'not'
-		e=expr4 { $node = new Not(location, $e.node); }
+		e=expr4 { $node = Not.make(location, $e.node); }
 	|
 		e=expr4 { $node = $e.node; }
 	;
@@ -553,7 +553,7 @@ expr2 returns [AST node]
 		e1=expr3 { $node = $e1.node; }
 		(
 			'and'
-			e2=expr3 { $node = new And(location, $node, $e2.node); }
+			e2=expr3 { $node = And.make(location, $node, $e2.node); }
 		)*
 	;
 
@@ -563,7 +563,7 @@ expr1 returns [AST node]
 		e1=expr2 { $node = $e1.node; }
 		(
 			'or'
-			e2=expr2 { $node = new Or(location, $node, $e2.node); }
+			e2=expr2 { $node = Or.make(location, $node, $e2.node); }
 		)*
 	;
 

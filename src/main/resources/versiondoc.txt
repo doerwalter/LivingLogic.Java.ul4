@@ -4,6 +4,7 @@ Comments:
 * Merged constant loading AST classes into one class: Const.
 * UL4ON can now read/write TimeDelta and MonthDelta objects.
 * Added the Undefined singleton.
+* Implemented constant folding for binary and unary operators and GetSlice.
 
 
 exp-55:
