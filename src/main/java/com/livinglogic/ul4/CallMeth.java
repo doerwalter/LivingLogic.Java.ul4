@@ -37,6 +37,7 @@ public class CallMeth extends AST
 			"lower", new MethodLower(),
 			"capitalize", new MethodCapitalize(),
 			"items", new MethodItems(),
+			"values", new MethodValues(),
 			"isoformat", new MethodISOFormat(),
 			"mimeformat", new MethodMIMEFormat(),
 			"r", new MethodR(),

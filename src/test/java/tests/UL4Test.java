@@ -2608,6 +2608,18 @@ public class UL4Test
 	}
 
 	@Test
+	public void method_items()
+	{
+		checkTemplateOutput("a:42;b:17;c:23;", "<?for (key, value) in sorted(data.items())?><?print key?>:<?print value?>;<?end for?>", "data", makeMap("a", 42, "b", 17, "c", 23));
+	}
+
+	@Test
+	public void method_values()
+	{
+		checkTemplateOutput("17;23;42;", "<?for value in sorted(data.values())?><?print value?>;<?end for?>", "data", makeMap("a", 42, "b", 17, "c", 23));
+	}
+
+	@Test
 	public void method_get()
 	{
 		checkTemplateOutput("42", "<?print {}.get('foo', 42)?>");

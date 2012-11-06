@@ -1,3 +1,11 @@
+exp-57:
+-------
+Comments:
+* Use StringBuilder instead of StringBuffer everywhere.
+* FunctionSort can now sort collections (lexicographically).
+* Added values method.
+
+
 exp-56:
 -------
 Comments:
