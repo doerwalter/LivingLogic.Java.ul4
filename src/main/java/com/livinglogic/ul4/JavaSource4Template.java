@@ -14,7 +14,7 @@ public class JavaSource4Template
 
 	public JavaSource4Template(InterpretedTemplate template)
 	{
-		this.temlate = template;
+		this.template = template;
 	}
 
 	public String toString()
