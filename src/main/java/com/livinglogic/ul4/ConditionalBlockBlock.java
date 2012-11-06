@@ -28,7 +28,7 @@ class ConditionalBlockBlock extends Block
 
 	public String toString(int indent)
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (AST item : content)
 			buffer.append(item.toString(indent));
 		return buffer.toString();

@@ -40,7 +40,7 @@ public class Dict extends AST
 
 	public String toString(int indent)
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append("{");
 
 		boolean first = true;

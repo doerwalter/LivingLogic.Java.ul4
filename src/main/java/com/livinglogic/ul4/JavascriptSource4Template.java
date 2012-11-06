@@ -18,7 +18,7 @@ public class JavascriptSource4Template
 
 	public String toString()
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append("ul4.Template.loads(");
 		buffer.append(FunctionAsJSON.call(template.dumps()));
 		buffer.append(")");

@@ -47,7 +47,7 @@ public class FunctionAsJSON implements Function
 			return result;
 		}
 		else if (obj instanceof String)
-			return new StringBuffer()
+			return new StringBuilder()
 				.append("\"")
 				.append(StringEscapeUtils.escapeJavaScript(((String)obj)))
 				.append("\"")
@@ -56,7 +56,7 @@ public class FunctionAsJSON implements Function
 		{
 			Calendar calendar = new GregorianCalendar();
 			calendar.setTime((Date)obj);
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			buffer
 				.append("new Date(")
 				.append(calendar.get(Calendar.YEAR))
@@ -81,7 +81,7 @@ public class FunctionAsJSON implements Function
 		else if (obj instanceof Color)
 		{
 			Color c = (Color)obj;
-			return new StringBuffer()
+			return new StringBuilder()
 				.append("ul4.Color.create(")
 				.append(c.getR())
 				.append(", ")
@@ -95,7 +95,7 @@ public class FunctionAsJSON implements Function
 		}
 		else if (obj instanceof Collection)
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("[");
 			boolean first = true;
 			for (Object o : (Collection)obj)
@@ -111,7 +111,7 @@ public class FunctionAsJSON implements Function
 		}
 		else if (obj instanceof Map)
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("{");
 			boolean first = true;
 			Set<Map.Entry> entrySet = ((Map)obj).entrySet();

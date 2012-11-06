@@ -62,7 +62,7 @@ public class FunctionRepr implements Function
 				return result;
 			}
 			else if (obj instanceof String)
-				return new StringBuffer()
+				return new StringBuilder()
 					.append("\"")
 					.append(StringEscapeUtils.escapeJava(((String)obj)))
 					.append("\"")
@@ -92,7 +92,7 @@ public class FunctionRepr implements Function
 				visited.push(obj);
 				try
 				{
-					StringBuffer sb = new StringBuffer();
+					StringBuilder sb = new StringBuilder();
 					sb.append("[");
 					boolean first = true;
 					for (Object o : ((Collection)obj))
@@ -120,7 +120,7 @@ public class FunctionRepr implements Function
 
 				try
 				{
-					StringBuffer sb = new StringBuffer();
+					StringBuilder sb = new StringBuilder();
 					sb.append("{");
 					boolean first = true;
 

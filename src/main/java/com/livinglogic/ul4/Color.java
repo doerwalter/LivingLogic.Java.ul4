@@ -240,7 +240,7 @@ public class Color implements Collection
 
 	public String repr()
 	{
-		StringBuffer buffer = new StringBuffer(9);
+		StringBuilder buffer = new StringBuilder(9);
 
 		buffer.append("#");
 		if (((r>>4) == (r&0xf)) && ((g>>4) == (g&0xf)) && ((b>>4) == (b&0xf)) && ((a>>4) == (a&0xf)))
@@ -281,7 +281,7 @@ public class Color implements Collection
 
 	public String dump()
 	{
-		StringBuffer buffer = new StringBuffer(8);
+		StringBuilder buffer = new StringBuilder(8);
 
 		String sr = Integer.toHexString(r);
 		if (sr.length() < 2)

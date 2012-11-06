@@ -93,7 +93,7 @@ public class CallMeth extends AST
 
 	public String toString(int indent)
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		buffer.append("callmeth(");
 		buffer.append(obj);

@@ -249,7 +249,7 @@ public class InterpretedTemplate extends Block implements Template
 
 	public String toString(int indent)
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("def " + (name != null ? name : "unnamed") + "(**vars)\n");
@@ -454,16 +454,16 @@ public class InterpretedTemplate extends Block implements Template
 	{
 		int len = input.length();
 
-		StringBuffer output = new StringBuffer(len);
+		StringBuilder buffer = new StringBuilder(len);
 
 		for (int i = 0; i < len; ++i)
 		{
 			char c = input.charAt(i);
 			if (!(('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || ('0' <= c && c <= '9')))
-				output.append('\\');
-			output.append(c);
+				buffer.append('\\');
+			buffer.append(c);
 		}
-		return output.toString();
+		return buffer.toString();
 	}
 
 	public String getType()

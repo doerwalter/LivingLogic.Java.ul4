@@ -25,7 +25,7 @@ class Break extends AST
 
 	public String toString(int indent)
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("break\n");

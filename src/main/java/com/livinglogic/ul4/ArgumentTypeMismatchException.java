@@ -20,7 +20,7 @@ public class ArgumentTypeMismatchException extends UnsupportedOperationException
 	private static String format(String template, Object... args)
 	{
 		String[] parts = (template + " not supported!").split("\\{\\}");
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < parts.length; ++i)
 		{
 			if (i != 0)

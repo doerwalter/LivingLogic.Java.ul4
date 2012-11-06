@@ -109,7 +109,7 @@ public class CallFunc extends AST
 
 	public String toString(int indent)
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		buffer.append("callfunc(");
 		buffer.append(FunctionRepr.call(function.getName()));

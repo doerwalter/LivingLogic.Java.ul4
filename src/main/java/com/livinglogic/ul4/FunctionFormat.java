@@ -130,7 +130,7 @@ public class FunctionFormat implements Function
 			locale = Locale.ENGLISH;
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime((Date)obj);
-		StringBuffer output = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		boolean escapeCharacterFound = false;
 		int formatStringLength = formatString.length();
 		for (int i = 0; i < formatStringLength; i++)
@@ -141,67 +141,67 @@ public class FunctionFormat implements Function
 				switch (c)
 				{
 					case 'a':
-						output.append(new SimpleDateFormat("EE", locale).format(obj));
+						buffer.append(new SimpleDateFormat("EE", locale).format(obj));
 						break;
 					case 'A':
-						output.append(new SimpleDateFormat("EEEE", locale).format(obj));
+						buffer.append(new SimpleDateFormat("EEEE", locale).format(obj));
 						break;
 					case 'b':
-						output.append(new SimpleDateFormat("MMM", locale).format(obj));
+						buffer.append(new SimpleDateFormat("MMM", locale).format(obj));
 						break;
 					case 'B':
-						output.append(new SimpleDateFormat("MMMM", locale).format(obj));
+						buffer.append(new SimpleDateFormat("MMMM", locale).format(obj));
 						break;
 					case 'c':
 					{
 						String format = cFormats.get(locale.getLanguage());
 						if (format == null)
 							format = cFormats.get("en");
-						output.append(call(obj, format, locale));
+						buffer.append(call(obj, format, locale));
 						break;
 					}
 					case 'd':
-						output.append(twodigits.format(calendar.get(Calendar.DAY_OF_MONTH)));
+						buffer.append(twodigits.format(calendar.get(Calendar.DAY_OF_MONTH)));
 						break;
 					case 'f':
-						output.append(sixdigits.format(calendar.get(Calendar.MILLISECOND)*1000));
+						buffer.append(sixdigits.format(calendar.get(Calendar.MILLISECOND)*1000));
 						break;
 					case 'H':
-						output.append(twodigits.format(calendar.get(Calendar.HOUR_OF_DAY)));
+						buffer.append(twodigits.format(calendar.get(Calendar.HOUR_OF_DAY)));
 						break;
 					case 'I':
-						output.append(twodigits.format(((calendar.get(Calendar.HOUR_OF_DAY) - 1) % 12) + 1));
+						buffer.append(twodigits.format(((calendar.get(Calendar.HOUR_OF_DAY) - 1) % 12) + 1));
 						break;
 					case 'j':
-						output.append(threedigits.format(calendar.get(Calendar.DAY_OF_YEAR)));
+						buffer.append(threedigits.format(calendar.get(Calendar.DAY_OF_YEAR)));
 						break;
 					case 'm':
-						output.append(twodigits.format(calendar.get(Calendar.MONTH)+1));
+						buffer.append(twodigits.format(calendar.get(Calendar.MONTH)+1));
 						break;
 					case 'M':
-						output.append(twodigits.format(calendar.get(Calendar.MINUTE)));
+						buffer.append(twodigits.format(calendar.get(Calendar.MINUTE)));
 						break;
 					case 'p':
-						output.append(new SimpleDateFormat("aa", locale).format(obj));
+						buffer.append(new SimpleDateFormat("aa", locale).format(obj));
 						break;
 					case 'S':
-						output.append(twodigits.format(calendar.get(Calendar.SECOND)));
+						buffer.append(twodigits.format(calendar.get(Calendar.SECOND)));
 						break;
 					case 'U':
-						output.append(twodigits.format(MethodWeek.call(obj, 6)));
+						buffer.append(twodigits.format(MethodWeek.call(obj, 6)));
 						break;
 					case 'w':
-						output.append(weekdayFormats.get(calendar.get(Calendar.DAY_OF_WEEK)));
+						buffer.append(weekdayFormats.get(calendar.get(Calendar.DAY_OF_WEEK)));
 						break;
 					case 'W':
-						output.append(twodigits.format(MethodWeek.call(obj, 0)));
+						buffer.append(twodigits.format(MethodWeek.call(obj, 0)));
 						break;
 					case 'x':
 					{
 						String format = xFormats.get(locale.getLanguage());
 						if (format == null)
 							format = xFormats.get("en");
-						output.append(call(obj, format, locale));
+						buffer.append(call(obj, format, locale));
 						break;
 					}
 					case 'X':
@@ -209,17 +209,17 @@ public class FunctionFormat implements Function
 						String format = XFormats.get(locale.getLanguage());
 						if (format == null)
 							format = XFormats.get("en");
-						output.append(call(obj, format, locale));
+						buffer.append(call(obj, format, locale));
 						break;
 					}
 					case 'y':
-						output.append(twodigits.format(calendar.get(Calendar.YEAR) % 100));
+						buffer.append(twodigits.format(calendar.get(Calendar.YEAR) % 100));
 						break;
 					case 'Y':
-						output.append(fourdigits.format(calendar.get(Calendar.YEAR)));
+						buffer.append(fourdigits.format(calendar.get(Calendar.YEAR)));
 						break;
 					default:
-						output.append(c);
+						buffer.append(c);
 						break;
 				}
 				escapeCharacterFound = false;
@@ -229,13 +229,13 @@ public class FunctionFormat implements Function
 				if (c == '%')
 					escapeCharacterFound = true;
 				else
-					output.append(c);
+					buffer.append(c);
 				
 			}
 		}
 		if (escapeCharacterFound)
-			output.append('%');
-		return output.toString();
+			buffer.append('%');
+		return buffer.toString();
 	}
 
 	public static String call(Object obj, String formatString, Locale locale)

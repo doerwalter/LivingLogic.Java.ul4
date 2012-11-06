@@ -66,7 +66,7 @@ public class CallMethKeywords extends AST
 
 	public String toString(int indent)
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		buffer.append("callmethkw(");
 		buffer.append(obj.toString(indent));
