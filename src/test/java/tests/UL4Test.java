@@ -2937,33 +2937,33 @@ public class UL4Test
 	public void template_javaSource()
 	{
 		universaltemplate().javaSource();
-	}	
+	}
 
 	@Test
 	public void template_javascriptSource()
 	{
 		universaltemplate().javascriptSource();
 	}
-	
+
 	@Test
 	public void reader() throws IOException
 	{
 		String li = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
 		InterpretedTemplate template = getTemplate("<?for i in range(100)?>" + li + "<?end for?>", "reader");
-		
+
 		Reader reader = template.reader(null);
-		
+
 		int c;
 		StringBuffer buffer = new StringBuffer();
 		while ((c = reader.read()) != -1)
 		{
 			buffer.append((char)c);
 		}
-		
+
 		StringBuffer expected = new StringBuffer();
 		for (int i = 0; i < 100; i++)
 			expected.append(li);
-		
+
 		assertEquals(buffer.toString(), expected.toString());
 	}
 }
