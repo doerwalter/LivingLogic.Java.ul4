@@ -22,12 +22,9 @@ public class FunctionXMLEscape implements Function
 
 	public static String call(Object obj)
 	{
-		if (obj == null)
-			return "";
-
 		String str = FunctionStr.call(obj);
 		int length = str.length();
-		StringBuffer sb = new StringBuffer((int)(1.2 * length));
+		StringBuilder sb = new StringBuilder((int)(1.2 * length));
 		for (int offset = 0; offset < length; offset++)
 		{
 			char c = str.charAt(offset);
