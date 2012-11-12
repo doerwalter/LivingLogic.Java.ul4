@@ -1,3 +1,9 @@
+exp-58:
+-------
+Comments:
+* format() now works for integers.
+
+
 exp-57:
 -------
 Comments:

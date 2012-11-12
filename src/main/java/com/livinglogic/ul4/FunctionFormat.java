@@ -14,6 +14,9 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Locale;
+import java.math.BigInteger;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.livinglogic.utils.MapUtils;
 
@@ -238,12 +241,238 @@ public class FunctionFormat implements Function
 		return buffer.toString();
 	}
 
+	private static class IntegerFormat
+	{
+		// The format string is
+		// [[fill]align][sign][#][0][minimumwidth][type]
+		private char fill = ' ';
+		private char align = '>'; // '<', '>', '=' or '^'
+		private char sign = '-'; // '+', '-' or ' '
+		private boolean alternate = false;
+		private int minimumwidth = 0;
+		private char type = 'd'; // 'b', 'c', 'd', 'o', 'x', 'X' or 'n'
+
+		public IntegerFormat(String formatString)
+		{
+			String workStr = formatString;
+
+			// Determine output type
+			if (workStr.endsWith("b") || workStr.endsWith("c") || workStr.endsWith("d") || workStr.endsWith("o") || workStr.endsWith("x") || workStr.endsWith("X") || workStr.endsWith("n"))
+			{
+				this.type = workStr.charAt(workStr.length()-1);
+				workStr = workStr.substring(0, workStr.length()-1);
+			}
+
+			// Extract minimum width
+			int minimumwidthPos = workStr.length();
+			while (minimumwidthPos > 0 && Character.isDigit(workStr.charAt(minimumwidthPos-1)))
+				--minimumwidthPos;
+			String minimumwidthStr = workStr.substring(minimumwidthPos);
+			workStr = workStr.substring(0, minimumwidthPos);
+			if (minimumwidthStr.length() > 0)
+			{
+				if (minimumwidthStr.startsWith("0"))
+				{
+					this.align = '=';
+					this.fill = '0';
+				}
+				this.minimumwidth = Integer.parseInt(minimumwidthStr);
+			}
+
+			// Alternate form?
+			if (workStr.endsWith("#"))
+			{
+				this.alternate = true;
+				workStr = workStr.substring(0, workStr.length()-1);
+			}
+
+			// Determine sign
+			if (workStr.endsWith("+") || workStr.endsWith("-") || workStr.endsWith(" "))
+			{
+				if (this.type == 'c')
+					throw new RuntimeException("sign not allowed for integer format type 'c'");
+				this.sign = workStr.charAt(workStr.length()-1);
+				workStr = workStr.substring(0, workStr.length()-1);
+			}
+
+			// Extract fill and align char
+			if (workStr.length() >= 3)
+			{
+				throw new RuntimeException("illegal integer format string " + FunctionRepr.call(formatString));
+			}
+			else if (workStr.length() == 2)
+			{
+				if (workStr.endsWith("<") || workStr.endsWith(">") || workStr.endsWith("=") || workStr.endsWith("^"))
+				{
+					this.align = workStr.charAt(1);
+					this.fill = workStr.charAt(0);
+				}
+				else
+					throw new RuntimeException("illegal integer format string " + FunctionRepr.call(formatString));
+			}
+			else if (workStr.length() == 1)
+			{
+				if (workStr.equals("<") || workStr.equals(">") || workStr.equals("=") || workStr.equals("^"))
+					this.align = workStr.charAt(0);
+				else
+					throw new RuntimeException("illegal integer format string " + FunctionRepr.call(formatString));
+			}
+		}
+
+		public String toString()
+		{
+			return "fill=" + Character.toString(fill) + "; align=" + Character.toString(align) + "; sign=" + Character.toString(sign) + "; alternate=" + (alternate ? "true" : "false") + "; minimumwidth=" + minimumwidth + "; type=" + Character.toString(type);
+		}
+	}
+
+	private static String formatIntegerString(String string, boolean neg, IntegerFormat format)
+	{
+		if (format.align == '=')
+		{
+			int minimumwidth = format.minimumwidth;
+			if (neg || format.sign != '-')
+				--minimumwidth;
+			if (format.alternate && (format.type == 'b' || format.type == 'o' || format.type == 'x' || format.type == 'X'))
+				minimumwidth -= 2;
+
+			if (string.length() < minimumwidth)
+				string = StringUtils.repeat(Character.toString(format.fill), minimumwidth-string.length()) + string;
+
+			if (format.alternate && (format.type == 'b' || format.type == 'o' || format.type == 'x' || format.type == 'X'))
+				string = "0" + Character.toString(format.type) + string;
+
+			if (neg)
+				string = "-" + string;
+			else
+			{
+				if (format.sign != '-')
+					string = Character.toString(format.sign) + string;
+			}
+			return string;
+		}
+		else
+		{
+			if (format.alternate && (format.type == 'b' || format.type == 'o' || format.type == 'x' || format.type == 'X'))
+				string = "0" + Character.toString(format.type) + string;
+			if (neg)
+				string = "-" + string;
+			else
+			{
+				if (format.sign != '-')
+					string = Character.toString(format.sign) + string;
+			}
+			if (string.length() < format.minimumwidth)
+			{
+				if (format.align == '<')
+					string = string + StringUtils.repeat(Character.toString(format.fill), format.minimumwidth-string.length());
+				else if (format.align == '>')
+					string = StringUtils.repeat(Character.toString(format.fill), format.minimumwidth-string.length()) + string;
+				else // if (format.align == '^')
+				{
+					int pad = format.minimumwidth - string.length();
+					int padBefore = pad/2;
+					int padAfter = pad-padBefore;
+					string = StringUtils.repeat(Character.toString(format.fill), padBefore) + string + StringUtils.repeat(Character.toString(format.fill), padAfter);
+				}
+			}
+			return string;
+		}
+	}
+
+	public static String call(BigInteger obj, String formatString, Locale locale)
+	{
+		IntegerFormat format = new IntegerFormat(formatString);
+
+		if (locale == null)
+			locale = Locale.ENGLISH;
+
+		String output = null;
+
+		boolean neg = obj.signum() < 0;
+		if (neg)
+			obj = obj.negate();
+
+		switch (format.type)
+		{
+			case 'b':
+				output = obj.toString(2);
+				break;
+			case 'c':
+				if (neg || obj.compareTo(new BigInteger("65535")) > 0)
+					throw new RuntimeException("value out of bounds for c format");
+				output = Character.toString((char)obj.intValue());
+				break;
+			case 'd':
+				output = obj.toString();
+				break;
+			case 'o':
+				output = obj.toString(8);
+				break;
+			case 'x':
+				output = obj.toString(16);
+				break;
+			case 'X':
+				output = obj.toString(16).toUpperCase();
+				break;
+			case 'n':
+				// FIXME: locale formatting
+				output = obj.toString();
+				break;
+		}
+		return formatIntegerString(output, neg, format);
+	}
+
+	public static String call(long obj, String formatString, Locale locale)
+	{
+		IntegerFormat format = new IntegerFormat(formatString);
+
+		if (locale == null)
+			locale = Locale.ENGLISH;
+
+		String output = null;
+
+		boolean neg = obj < 0;
+		if (neg)
+			obj = -obj;
+
+		switch (format.type)
+		{
+			case 'b':
+				output = Long.toBinaryString(obj);
+				break;
+			case 'c':
+				if (neg || obj > 0xffff)
+					throw new RuntimeException("value out of bounds for c format");
+				output = Character.toString((char)obj);
+				break;
+			case 'd':
+				output = Long.toString(obj);
+				break;
+			case 'o':
+				output = Long.toOctalString(obj);
+				break;
+			case 'x':
+				output = Long.toHexString(obj);
+				break;
+			case 'X':
+				output = Long.toHexString(obj).toUpperCase();
+				break;
+			case 'n':
+				// FIXME: locale formatting
+				output = Long.toString(obj);
+				break;
+		}
+		return formatIntegerString(output, neg, format);
+	}
+
 	public static String call(Object obj, String formatString, Locale locale)
 	{
 		if (obj instanceof Date)
-		{
 			return call((Date)obj, formatString, locale);
-		}
+		else if (obj instanceof Integer || obj instanceof Long || obj instanceof Byte || obj instanceof Short || obj instanceof Boolean)
+			return call(Utils.toLong(obj), formatString, locale);
+		else if (obj instanceof BigInteger)
+			return call((BigInteger)obj, formatString, locale);
 		throw new ArgumentTypeMismatchException("format({}, {}, {})", obj, formatString, locale);
 	}
 

@@ -10,6 +10,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Date;
+import java.math.BigInteger;
 
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
@@ -2215,7 +2216,7 @@ public class UL4Test
 	}
 
 	@Test
-	public void function_format()
+	public void function_format_date()
 	{
 		Date t = FunctionDate.call(2011, 1, 25, 13, 34, 56, 987000);
 
@@ -2268,6 +2269,33 @@ public class UL4Test
 		checkTemplateOutput("13:34:56", source3, "data", t, "format", "%X", "lang", "de");
 		checkTemplateOutput("13:34:56", source3, "data", t, "format", "%X", "lang", "de_DE");
 		checkTemplateOutput("%", source2, "format", "%%", "data", t);
+	}
+
+	@Test
+	public void function_format_int()
+	{
+		String source2 = "<?print format(data, format)?>";
+		String source3 = "<?print format(data, format, lang)?>";
+
+		checkTemplateOutput("42", source2, "data", 42, "format", "");
+		checkTemplateOutput("-42", source2, "data", -42, "format", "");
+		checkTemplateOutput("   42", source2, "data", 42, "format", "5");
+		checkTemplateOutput("00042", source2, "data", 42, "format", "05");
+		checkTemplateOutput("-0042", source2, "data", -42, "format", "05");
+		checkTemplateOutput("+0042", source2, "data", 42, "format", "+05");
+		checkTemplateOutput(" +101010", source2, "data", 42, "format", "+8b");
+		checkTemplateOutput(" +0b101010", source2, "data", 42, "format", "+#10b");
+		checkTemplateOutput("52", source2, "data", 42, "format", "o");
+		checkTemplateOutput("+0x2a", source2, "data", 42, "format", "+#x");
+		checkTemplateOutput("+0X2A", source2, "data", 42, "format", "+#X");
+		checkTemplateOutput("42   ", source2, "data", 42, "format", "<5");
+		checkTemplateOutput("   42", source2, "data", 42, "format", ">5");
+		checkTemplateOutput("???42", source2, "data", 42, "format", "?>5");
+		checkTemplateOutput(" 42  ", source2, "data", 42, "format", "^5");
+		checkTemplateOutput(" ??42", source2, "data", 42, "format", "?= 5");
+		checkTemplateOutput(" 0b??101010", source2, "data", 42, "format", "?= #11b");
+		checkTemplateOutput("00001", source2, "data", true, "format", "05");
+		checkTemplateOutput("00042", source2, "data", new BigInteger("42"), "format", "05");
 	}
 
 	@Test
