@@ -1458,6 +1458,60 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_any()
+	{
+		checkTemplateOutput("False", "<?print any('')?>");
+		checkTemplateOutput("True", "<?print any('foo')?>");
+		checkTemplateOutput("True", "<?print any(i > 7 for i in range(10))?>");
+		checkTemplateOutput("False", "<?print any(i > 17 for i in range(10))?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_any_0_args()
+	{
+		checkTemplateOutput("", "<?print any()?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_any_2_args()
+	{
+		checkTemplateOutput("", "<?print any(1, 2)?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
+	public void function_any_none()
+	{
+		checkTemplateOutput("", "<?print any(None)?>");
+	}
+
+	@Test
+	public void function_all()
+	{
+		checkTemplateOutput("True", "<?print all('')?>");
+		checkTemplateOutput("True", "<?print all('foo')?>");
+		checkTemplateOutput("False", "<?print all(i < 7 for i in range(10))?>");
+		checkTemplateOutput("True", "<?print all(i < 17 for i in range(10))?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_all_0_args()
+	{
+		checkTemplateOutput("", "<?print all()?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_all_2_args()
+	{
+		checkTemplateOutput("", "<?print all(1, 2)?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
+	public void function_all_none()
+	{
+		checkTemplateOutput("", "<?print all(None)?>");
+	}
+
+	@Test
 	public void function_enumerate()
 	{
 		String source1 = "<?for (i, value) in enumerate(data)?>(<?print value?>=<?print i?>)<?end for?>";

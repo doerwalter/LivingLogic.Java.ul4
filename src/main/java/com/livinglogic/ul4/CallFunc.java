@@ -42,6 +42,8 @@ public class CallFunc extends AST
 			"float", new FunctionFloat(),
 			"bool", new FunctionBool(),
 			"len", new FunctionLen(),
+			"any", new FunctionAny(),
+			"all", new FunctionAll(),
 			"enumerate", new FunctionEnumerate(),
 			"enumfl", new FunctionEnumFL(),
 			"isfirstlast", new FunctionIsFirstLast(),

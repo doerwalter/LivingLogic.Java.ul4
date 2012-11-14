@@ -1,3 +1,9 @@
+exp-59:
+-------
+Comments:
+* Added functions any() and all().
+
+
 exp-58:
 -------
 Comments:
