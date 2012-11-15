@@ -91,12 +91,6 @@ public class Decoder
 				loading(null);
 			return null;
 		}
-		else if (typecode == 'u' || typecode == 'U')
-		{
-			if (typecode == 'U')
-				loading(Undefined.undefined);
-			return Undefined.undefined;
-		}
 		else if (typecode == 'b' || typecode == 'B')
 		{
 			int data = reader.read();

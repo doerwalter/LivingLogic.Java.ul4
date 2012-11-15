@@ -58,7 +58,6 @@ public class UL4ONTest
 		InterpretedTemplate template = getTemplate("<?for i in range(10)?>[<?print i?>]<?end for?>");
 
 		checkRoundtrip(null);
-		checkRoundtrip(Undefined.undefined);
 		checkRoundtrip(true);
 		checkRoundtrip(false);
 		checkRoundtrip(42);
