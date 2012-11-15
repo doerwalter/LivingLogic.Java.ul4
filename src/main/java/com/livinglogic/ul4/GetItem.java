@@ -12,9 +12,9 @@ import java.util.Map;
 
 public class GetItem extends Binary
 {
-	public GetItem(Location location, AST obj1, AST obj2)
+	public GetItem(AST obj1, AST obj2)
 	{
-		super(location, obj1, obj2);
+		super(obj1, obj2);
 	}
 
 	public String getType()
@@ -22,11 +22,15 @@ public class GetItem extends Binary
 		return "getitem";
 	}
 
-	public static AST make(Location location, AST obj1, AST obj2)
+	public static AST make(AST obj1, AST obj2)
 	{
 		if (obj1 instanceof Const && obj2 instanceof Const)
-			return new Const(location, call(((Const)obj1).value, ((Const)obj2).value));
-		return new GetItem(location, obj1, obj2);
+		{
+			Object result = call(((Const)obj1).value, ((Const)obj2).value);
+			if (!(result instanceof Undefined))
+				return new Const(result);
+		}
+		return new GetItem(obj1, obj2);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException
@@ -39,7 +43,7 @@ public class GetItem extends Binary
 		if (0 > index)
 			index += obj.length();
 		if (index < 0 || index >= obj.length())
-			return Undefined.undefined;
+			return new UndefinedIndex(index);
 		return obj.substring(index, index+1);
 	}
 
@@ -48,7 +52,7 @@ public class GetItem extends Binary
 		if (0 > index)
 			index += obj.size();
 		if (index < 0 || index >= obj.size())
-			return Undefined.undefined;
+			return new UndefinedIndex(index);
 		return obj.get(index);
 	}
 
@@ -65,7 +69,7 @@ public class GetItem extends Binary
 			case 3:
 				return obj.getA();
 			default:
-				return Undefined.undefined;
+				return new UndefinedIndex(index);
 		}
 	}
 
@@ -74,7 +78,7 @@ public class GetItem extends Binary
 		Object result = obj.get(index);
 
 		if ((result == null) && !obj.containsKey(index))
-			return Undefined.undefined;
+			return new UndefinedKey(index);
 		return result;
 	}
 

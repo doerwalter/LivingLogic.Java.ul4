@@ -13,7 +13,7 @@ import java.io.IOException;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class StoreVar extends AST
+public class StoreVar extends LocationAST
 {
 	/**
 	 * This is either a string or a list of strings/lists

@@ -23,9 +23,9 @@ public class DictComprehension extends AST
 	protected AST container;
 	protected AST condition;
 
-	public DictComprehension(Location location, AST key, AST value, Object varname, AST container, AST condition)
+	public DictComprehension(AST key, AST value, Object varname, AST container, AST condition)
 	{
-		super(location);
+		super();
 		this.key = key;
 		this.value = value;
 		this.varname = varname;

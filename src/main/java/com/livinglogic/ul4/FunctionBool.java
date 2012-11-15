@@ -31,6 +31,11 @@ public class FunctionBool implements Function
 		return false;
 	}
 
+	public static boolean call(Undefined obj)
+	{
+		return false;
+	}
+
 	public static boolean call(Boolean obj)
 	{
 		return obj.booleanValue();
@@ -85,8 +90,8 @@ public class FunctionBool implements Function
 	{
 		if (null == obj)
 			return false;
-		else if (Undefined.undefined == obj)
-			return false;
+		else if (obj instanceof Undefined)
+			return call((Undefined)obj);
 		else if (obj instanceof Boolean)
 			return call((Boolean)obj);
 		else if (obj instanceof String)

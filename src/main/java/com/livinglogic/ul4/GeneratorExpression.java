@@ -23,9 +23,9 @@ public class GeneratorExpression extends AST
 	protected AST container;
 	protected AST condition;
 
-	public GeneratorExpression(Location location, AST item, Object varname, AST container, AST condition)
+	public GeneratorExpression(AST item, Object varname, AST container, AST condition)
 	{
-		super(location);
+		super();
 		this.item = item;
 		this.varname = varname;
 		this.container = container;

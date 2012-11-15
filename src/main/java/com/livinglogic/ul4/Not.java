@@ -10,9 +10,9 @@ import java.io.IOException;
 
 public class Not extends Unary
 {
-	public Not(Location location, AST obj)
+	public Not(AST obj)
 	{
-		super(location, obj);
+		super(obj);
 	}
 
 	public String getType()
@@ -20,11 +20,15 @@ public class Not extends Unary
 		return "not";
 	}
 
-	public static AST make(Location location, AST obj)
+	public static AST make(AST obj)
 	{
 		if (obj instanceof Const)
-			return new Const(location, call(((Const)obj).value));
-		return new Not(location, obj);
+		{
+			Object result = call(((Const)obj).value);
+			if (!(result instanceof Undefined))
+				return new Const(result);
+		}
+		return new Not(obj);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

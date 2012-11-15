@@ -17,9 +17,9 @@ public class Const extends AST
 {
 	protected Object value;
 
-	public Const(Location location, Object value)
+	public Const(Object value)
 	{
-		super(location);
+		super();
 		this.value = value;
 	}
 

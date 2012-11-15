@@ -1,3 +1,14 @@
+exp-60:
+-------
+Comments:
+* To improve UL4 exception messages there are now several undefined objects,
+  which give information about which key/name/index resulted in the undefined
+  object being created.
+* AST nodes below the level of the tag now no longer have any location
+  information. This information is added when the exception bubbling reaches a
+  tag node.
+
+
 exp-59:
 -------
 Comments:

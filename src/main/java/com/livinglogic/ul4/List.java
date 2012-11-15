@@ -17,9 +17,9 @@ public class List extends AST
 {
 	protected java.util.List<AST> items = new LinkedList<AST>();
 
-	public List(Location location)
+	public List()
 	{
-		super(location);
+		super();
 	}
 
 	public void append(AST item)

@@ -18,9 +18,9 @@ public class GetAttr extends AST
 	protected AST obj;
 	protected String attrname;
 
-	public GetAttr(Location location, AST obj, String attrname)
+	public GetAttr(AST obj, String attrname)
 	{
-		super(location);
+		super();
 		this.obj = obj;
 		this.attrname = attrname;
 	}
@@ -35,11 +35,15 @@ public class GetAttr extends AST
 		return "getattr";
 	}
 
-	public static AST make(Location location, AST obj, String attrname)
+	public static AST make(AST obj, String attrname)
 	{
 		if (obj instanceof Const)
-			return new Const(location, call(((Const)obj).value, attrname));
-		return new GetAttr(location, obj, attrname);
+		{
+			Object result = call(((Const)obj).value, attrname);
+			if (!(result instanceof Undefined))
+				return new Const(result);
+		}
+		return new GetAttr(obj, attrname);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

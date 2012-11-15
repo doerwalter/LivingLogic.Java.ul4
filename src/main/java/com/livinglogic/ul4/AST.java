@@ -21,17 +21,10 @@ import com.livinglogic.utils.ObjectAsMap;
 public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 {
 	/**
-	 * The source code location where this node appears in.
-	 */
-	protected Location location = null;
-
-	/**
 	 * Create a new {@code AST} object.
-	 * @param location The source code location where this node appears in.
 	 */
-	public AST(Location location)
+	public AST()
 	{
-		this.location = location;
 	}
 
 	/**
@@ -69,16 +62,9 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 		{
 			throw ex;
 		}
-		catch (LocationException ex)
-		{
-			if (ex.location != location && location != null)
-				throw new LocationException(ex, location);
-			else
-				throw ex;
-		}
 		catch (Exception ex)
 		{
-			throw new LocationException(ex, location);
+			throw new ASTException(ex, this);
 		}
 	}
 
@@ -86,14 +72,6 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 	 * Return a unique name for this type of AST node.
 	 */
 	abstract public String getType();
-
-	/**
-	 * Return the source code location where this node appears in.
-	 */
-	public Location getLocation()
-	{
-		return location;
-	}
 
 	public String toString()
 	{
@@ -116,12 +94,10 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
-		encoder.dump(location);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
-		location = (Location)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;
@@ -132,7 +108,6 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
 			v.put("type", new ValueMaker(){public Object getValue(Object object){return ((AST)object).getType();}});
-			v.put("location", new ValueMaker(){public Object getValue(Object object){return ((AST)object).getLocation();}});
 			valueMakers = v;
 		}
 		return valueMakers;

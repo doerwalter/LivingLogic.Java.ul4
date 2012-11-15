@@ -63,7 +63,11 @@ public class Utils
 {
 	public static String objectType(Object obj)
 	{
-		return (obj != null) ? obj.getClass().toString().substring(6) : "null";
+		if (obj == null)
+			return "null";
+		if (obj instanceof Undefined)
+			return obj.toString();
+		return obj.getClass().toString().substring(6);
 	}
 
 	public static BigInteger toBigInteger(int arg)

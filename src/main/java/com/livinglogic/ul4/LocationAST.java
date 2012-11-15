@@ -8,35 +8,38 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-abstract class Block extends LocationAST
+/**
+ * An AST node that has a location (i.e. is the top level AST in a tag)
+ */
+public abstract class LocationAST extends AST
 {
-	protected List<LocationAST> content = new LinkedList<LocationAST>();
-	protected Location endlocation = null;
+	/**
+	 * The source code location where this node appears in.
+	 */
+	protected Location location = null;
 
-	public Block(Location location)
+	/**
+	 * Create a new {@code AST} object.
+	 * @param location The source code location where this node appears in.
+	 */
+	public LocationAST(Location location)
 	{
-		super(location);
+		super();
+		this.location = location;
 	}
 
-	public void append(LocationAST item)
-	{
-		content.add(item);
-	}
-
-	public void finish(InterpretedTemplate template, Location endlocation)
-	{
-		this.endlocation = endlocation;
-	}
-
-	abstract public boolean handleLoopControl(String name);
-
+	/**
+	 * {@code decoratedEvaluate} wraps a call to {@link evaluate} with exception
+	 * handling. {@link evaluate} should not be called directly. Instead
+	 * {@code decoratedEvaluate} should be used. When an exception bubbles up
+	 * the call stack, {@code decoratedEvaluate} creates a exception chain
+	 * containing information about the location of the exception.
+	 */
 	public Object decoratedEvaluate(EvaluationContext context) throws IOException
 	{
 		try
@@ -53,7 +56,7 @@ abstract class Block extends LocationAST
 		}
 		catch (LocationException ex)
 		{
-			if (ex.location != location && location != null)
+			if (ex.location != location)
 				throw new LocationException(ex, location);
 			else
 				throw ex;
@@ -64,25 +67,24 @@ abstract class Block extends LocationAST
 		}
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	/**
+	 * Return the source code location where this node appears in.
+	 */
+	public Location getLocation()
 	{
-		for (LocationAST item : content)
-			item.decoratedEvaluate(context);
-		return null;
+		return location;
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(endlocation);
-		encoder.dump(content);
+		encoder.dump(location);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		endlocation = (Location)decoder.load();
-		content = (List<LocationAST>)decoder.load();
+		location = (Location)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;
@@ -92,8 +94,7 @@ abstract class Block extends LocationAST
 		if (valueMakers == null)
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("endlocation", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).endlocation;}});
-			v.put("content", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).content;}});
+			v.put("location", new ValueMaker(){public Object getValue(Object object){return ((LocationAST)object).getLocation();}});
 			valueMakers = v;
 		}
 		return valueMakers;

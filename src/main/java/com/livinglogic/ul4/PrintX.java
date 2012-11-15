@@ -7,6 +7,11 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
 
 /**
  * {@code PrintX} is an unary AST node that writes a string version of its
@@ -14,11 +19,17 @@ import java.io.IOException;
  * {@code &}, {@code '} and {@code "} with the appropriate XML character
  * entities.
  */
-public class PrintX extends Unary
+public class PrintX extends LocationAST
 {
+	/**
+	 * The object to be printed
+	 */
+	protected AST obj;
+
 	public PrintX(Location location, AST obj)
 	{
-		super(location, obj);
+		super(location);
+		this.obj = obj;
 	}
 
 	public String toString(int indent)
@@ -42,5 +53,30 @@ public class PrintX extends Unary
 	{
 		context.write(FunctionXMLEscape.call(obj.decoratedEvaluate(context)));
 		return null;
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(obj);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		obj = (AST)decoder.load();
+	}
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
+			v.put("obj", new ValueMaker(){public Object getValue(Object object){return ((PrintX)object).obj;}});
+			valueMakers = v;
+		}
+		return valueMakers;
 	}
 }

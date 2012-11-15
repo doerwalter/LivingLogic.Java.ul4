@@ -36,7 +36,7 @@ public class InterpretedTemplate extends Block implements Template
 	/**
 	 * The version number used in the UL4ON dump of the template.
 	 */
-	public static final String VERSION = "20";
+	public static final String VERSION = "21";
 
 	/**
 	 * The name of the template (defaults to {@code "unnamed"})
@@ -320,16 +320,12 @@ public class InterpretedTemplate extends Block implements Template
 		{
 			throw ex;
 		}
-		catch (LocationException ex)
-		{
-			if (ex.location != location && location != null)
-				throw new LocationException(ex, location);
-			else
-				throw ex;
-		}
 		catch (Exception ex)
 		{
-			throw new LocationException(ex, location);
+			if (location == null)
+				throw new TemplateException(ex, this);
+			else
+				throw new LocationException(ex, location);
 		}
 	}
 
@@ -499,13 +495,13 @@ public class InterpretedTemplate extends Block implements Template
 	{
 		Utils.register("de.livinglogic.ul4.location", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Location(null, null, -1, -1, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.text", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Text(null); }});
-		Utils.register("de.livinglogic.ul4.const", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Const(null, null); }});
-		Utils.register("de.livinglogic.ul4.list", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.List(null); }});
-		Utils.register("de.livinglogic.ul4.listcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListComprehension(null, null, null, null, null); }});
-		Utils.register("de.livinglogic.ul4.dict", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Dict(null); }});
-		Utils.register("de.livinglogic.ul4.dictcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DictComprehension(null, null, null, null, null, null); }});
-		Utils.register("de.livinglogic.ul4.genexpr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GeneratorExpression(null, null, null, null, null); }});
-		Utils.register("de.livinglogic.ul4.var", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Var(null, null); }});
+		Utils.register("de.livinglogic.ul4.const", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Const(null); }});
+		Utils.register("de.livinglogic.ul4.list", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.List(); }});
+		Utils.register("de.livinglogic.ul4.listcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListComprehension(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.dict", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Dict(); }});
+		Utils.register("de.livinglogic.ul4.dictcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DictComprehension(null, null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.genexpr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GeneratorExpression(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.var", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Var(null); }});
 		Utils.register("de.livinglogic.ul4.ieie", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConditionalBlockBlock(null); }});
 		Utils.register("de.livinglogic.ul4.if", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.If(null, null); }});
 		Utils.register("de.livinglogic.ul4.elif", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElIf(null, null); }});
@@ -513,29 +509,29 @@ public class InterpretedTemplate extends Block implements Template
 		Utils.register("de.livinglogic.ul4.for", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.For(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.break", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Break(null); }});
 		Utils.register("de.livinglogic.ul4.continue", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Continue(null); }});
-		Utils.register("de.livinglogic.ul4.getattr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GetAttr(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.getslice", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GetSlice(null, null, null, null); }});
-		Utils.register("de.livinglogic.ul4.not", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Not(null, null); }});
-		Utils.register("de.livinglogic.ul4.neg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Neg(null, null); }});
+		Utils.register("de.livinglogic.ul4.getattr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GetAttr(null, null); }});
+		Utils.register("de.livinglogic.ul4.getslice", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GetSlice(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.not", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Not(null); }});
+		Utils.register("de.livinglogic.ul4.neg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Neg(null); }});
 		Utils.register("de.livinglogic.ul4.print", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Print(null, null); }});
 		Utils.register("de.livinglogic.ul4.printx", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.PrintX(null, null); }});
-		Utils.register("de.livinglogic.ul4.getitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GetItem(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.eq", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.EQ(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.ne", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NE(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.lt", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LT(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.le", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LE(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.gt", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GT(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.ge", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GE(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.contains", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Contains(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.notcontains", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NotContains(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.add", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Add(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.sub", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Sub(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.mul", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Mul(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.floordiv", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.FloorDiv(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.truediv", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDiv(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.or", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Or(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.and", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.And(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.mod", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Mod(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.getitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GetItem(null, null); }});
+		Utils.register("de.livinglogic.ul4.eq", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.EQ(null, null); }});
+		Utils.register("de.livinglogic.ul4.ne", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NE(null, null); }});
+		Utils.register("de.livinglogic.ul4.lt", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LT(null, null); }});
+		Utils.register("de.livinglogic.ul4.le", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LE(null, null); }});
+		Utils.register("de.livinglogic.ul4.gt", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GT(null, null); }});
+		Utils.register("de.livinglogic.ul4.ge", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GE(null, null); }});
+		Utils.register("de.livinglogic.ul4.contains", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Contains(null, null); }});
+		Utils.register("de.livinglogic.ul4.notcontains", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NotContains(null, null); }});
+		Utils.register("de.livinglogic.ul4.add", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Add(null, null); }});
+		Utils.register("de.livinglogic.ul4.sub", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Sub(null, null); }});
+		Utils.register("de.livinglogic.ul4.mul", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Mul(null, null); }});
+		Utils.register("de.livinglogic.ul4.floordiv", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.FloorDiv(null, null); }});
+		Utils.register("de.livinglogic.ul4.truediv", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDiv(null, null); }});
+		Utils.register("de.livinglogic.ul4.or", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Or(null, null); }});
+		Utils.register("de.livinglogic.ul4.and", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.And(null, null); }});
+		Utils.register("de.livinglogic.ul4.mod", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Mod(null, null); }});
 		Utils.register("de.livinglogic.ul4.storevar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.StoreVar(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.addvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AddVar(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.subvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SubVar(null, null, null); }});
@@ -543,9 +539,9 @@ public class InterpretedTemplate extends Block implements Template
 		Utils.register("de.livinglogic.ul4.floordivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.FloorDivVar(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.truedivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDivVar(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.modvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ModVar(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.callfunc", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallFunc(null, (Function)null); }});
-		Utils.register("de.livinglogic.ul4.callmeth", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMeth(null, null, (Method)null); }});
-		Utils.register("de.livinglogic.ul4.callmethkw", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMethKeywords(null, null, (KeywordMethod)null); }});
+		Utils.register("de.livinglogic.ul4.callfunc", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallFunc((Function)null); }});
+		Utils.register("de.livinglogic.ul4.callmeth", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMeth(null, (Method)null); }});
+		Utils.register("de.livinglogic.ul4.callmethkw", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMethKeywords(null, (KeywordMethod)null); }});
 		Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Render(null, null); }});
 		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate((Location)null, null, null, null); }});
 	}

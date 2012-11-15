@@ -6,7 +6,7 @@
 
 package com.livinglogic.ul4;
 
-class Continue extends AST
+class Continue extends LocationAST
 {
 	public Continue(Location location)
 	{

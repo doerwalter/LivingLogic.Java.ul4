@@ -17,9 +17,9 @@ public class Var extends AST
 {
 	protected String name;
 
-	public Var(Location location, String name)
+	public Var(String name)
 	{
-		super(location);
+		super();
 		this.name = name;
 	}
 

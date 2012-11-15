@@ -28,9 +28,9 @@ abstract class Unary extends AST
 	 * @param location The source code location where this node appears in.
 	 * @param obj The operand
 	 */
-	public Unary(Location location, AST obj)
+	public Unary(AST obj)
 	{
-		super(location);
+		super();
 		this.obj = obj;
 	}
 

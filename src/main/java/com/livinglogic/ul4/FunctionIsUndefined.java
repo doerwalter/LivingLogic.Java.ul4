@@ -22,6 +22,6 @@ public class FunctionIsUndefined implements Function
 
 	public static boolean call(Object obj)
 	{
-		return obj == Undefined.undefined;
+		return obj instanceof Undefined;
 	}
 }

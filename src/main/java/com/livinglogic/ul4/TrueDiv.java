@@ -13,9 +13,9 @@ import java.math.MathContext;
 
 public class TrueDiv extends Binary
 {
-	public TrueDiv(Location location, AST obj1, AST obj2)
+	public TrueDiv(AST obj1, AST obj2)
 	{
-		super(location, obj1, obj2);
+		super(obj1, obj2);
 	}
 
 	public String getType()
@@ -23,11 +23,15 @@ public class TrueDiv extends Binary
 		return "truediv";
 	}
 
-	public static AST make(Location location, AST obj1, AST obj2)
+	public static AST make(AST obj1, AST obj2)
 	{
 		if (obj1 instanceof Const && obj2 instanceof Const)
-			return new Const(location, call(((Const)obj1).value, ((Const)obj2).value));
-		return new TrueDiv(location, obj1, obj2);
+		{
+			Object result = call(((Const)obj1).value, ((Const)obj2).value);
+			if (!(result instanceof Undefined))
+				return new Const(result);
+		}
+		return new TrueDiv(obj1, obj2);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

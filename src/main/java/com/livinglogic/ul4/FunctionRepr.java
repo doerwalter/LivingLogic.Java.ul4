@@ -48,8 +48,8 @@ public class FunctionRepr implements Function
 		{
 			if (obj == null)
 				return "None";
-			else if (obj == Undefined.undefined)
-				return "Undefined";
+			else if (obj instanceof Undefined)
+				return obj.toString();
 			else if (obj instanceof Boolean)
 				return ((Boolean)obj).booleanValue() ? "True" : "False";
 			else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger || obj instanceof Double || obj instanceof Float)

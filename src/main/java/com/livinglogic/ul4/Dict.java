@@ -18,9 +18,9 @@ public class Dict extends AST
 {
 	protected LinkedList<DictItem> items = new LinkedList<DictItem>();
 
-	public Dict(Location location)
+	public Dict()
 	{
-		super(location);
+		super();
 	}
 
 	public void append(AST key, AST value)

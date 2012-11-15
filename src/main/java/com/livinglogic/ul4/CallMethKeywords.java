@@ -33,16 +33,16 @@ public class CallMethKeywords extends AST
 		);
 	}
 
-	public CallMethKeywords(Location location, AST obj, KeywordMethod method)
+	public CallMethKeywords(AST obj, KeywordMethod method)
 	{
-		super(location);
+		super();
 		this.obj = obj;
 		this.method = method;
 	}
 
-	public CallMethKeywords(Location location, AST obj, String methname)
+	public CallMethKeywords(AST obj, String methname)
 	{
-		super(location);
+		super();
 		this.obj = obj;
 		method = methods.get(methname);
 		if (method == null)

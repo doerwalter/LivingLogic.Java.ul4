@@ -92,15 +92,15 @@ public class CallFunc extends AST
 		);
 	}
 
-	public CallFunc(Location location, Function function)
+	public CallFunc(Function function)
 	{
-		super(location);
+		super();
 		this.function = function;
 	}
 
-	public CallFunc(Location location, String funcname)
+	public CallFunc(String funcname)
 	{
-		super(location);
+		super();
 		function = getFunction(funcname);
 	}
 

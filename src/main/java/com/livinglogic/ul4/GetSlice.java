@@ -22,9 +22,9 @@ public class GetSlice extends AST
 	protected AST index1;
 	protected AST index2;
 
-	public GetSlice(Location location, AST obj, AST index1, AST index2)
+	public GetSlice(AST obj, AST index1, AST index2)
 	{
-		super(location);
+		super();
 		this.obj = obj;
 		this.index1 = index1;
 		this.index2 = index2;
@@ -40,26 +40,42 @@ public class GetSlice extends AST
 		return "getslice";
 	}
 
-	public static AST make(Location location, AST obj, AST index1, AST index2)
+	public static AST make(AST obj, AST index1, AST index2)
 	{
 		if (obj instanceof Const)
 		{
 			if (index1 == null)
 			{
 				if (index2 == null)
-					return new Const(location, call(((Const)obj).value, null, null));
+				{
+					Object result = call(((Const)obj).value, null, null);
+					if (!(result instanceof Undefined))
+						return new Const(result);
+				}
 				else if (index2 instanceof Const)
-					return new Const(location, call(((Const)obj).value, null, ((Const)index2).value));
+				{
+					Object result = call(((Const)obj).value, null, ((Const)index2).value);
+					if (!(result instanceof Undefined))
+						return new Const(result);
+				}
 			}
 			else if (index1 instanceof Const)
 			{
 				if (index2 == null)
-					return new Const(location, call(((Const)obj).value, ((Const)index1).value, null));
+				{
+					Object result = call(((Const)obj).value, ((Const)index1).value, null);
+					if (!(result instanceof Undefined))
+						return new Const(result);
+				}
 				else if (index2 instanceof Const)
-					return new Const(location, call(((Const)obj).value, ((Const)index1).value, ((Const)index2).value));
+				{
+					Object result = call(((Const)obj).value, ((Const)index1).value, ((Const)index2).value);
+					if (!(result instanceof Undefined))
+						return new Const(result);
+				}
 			}
 		}
-		return new GetSlice(location, obj, index1, index2);
+		return new GetSlice(obj, index1, index2);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

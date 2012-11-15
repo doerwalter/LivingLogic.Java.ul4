@@ -97,7 +97,7 @@ public class EvaluationContext
 		Object result = variables.get(key);
 
 		if ((result == null) && !variables.containsKey(key))
-			return Undefined.undefined;
+			return new UndefinedVariable(key);
 		return result;
 	}
 

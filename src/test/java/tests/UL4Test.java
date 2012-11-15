@@ -19,7 +19,7 @@ import org.junit.runner.RunWith;
 import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.BlockException;
-import com.livinglogic.ul4.Undefined;
+import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.Color;
@@ -911,10 +911,10 @@ public class UL4Test
 		checkTemplateOutput("u", "<?print x[1]?>", "x", "gurk");
 		checkTemplateOutput("u", "<?print 'gurk'[-3]?>");
 		checkTemplateOutput("u", "<?print x[-3]?>", "x", "gurk");
-		checkTemplateOutput("Undefined", "<?print repr('gurk'[4])?>");
-		checkTemplateOutput("Undefined", "<?print repr(x[4])?>", "x", "gurk");
-		checkTemplateOutput("Undefined", "<?print repr('gurk'[-5])?>");
-		checkTemplateOutput("Undefined", "<?print repr(x[-5])?>", "x", "gurk");
+		checkTemplateOutput("", "<?print 'gurk'[4]?>");
+		checkTemplateOutput("", "<?print x[4]?>", "x", "gurk");
+		checkTemplateOutput("", "<?print 'gurk'[-5]?>");
+		checkTemplateOutput("", "<?print x[-5]?>", "x", "gurk");
 	}
 
 	@Test
@@ -1792,7 +1792,7 @@ public class UL4Test
 	{
 		String source = "<?print isundefined(data)?>";
 
-		checkTemplateOutput("True", source, "data", Undefined.undefined);
+		checkTemplateOutput("True", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -1825,7 +1825,7 @@ public class UL4Test
 	{
 		String source = "<?print isdefined(data)?>";
 
-		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("True", source, "data", null);
 		checkTemplateOutput("True", source, "data", true);
 		checkTemplateOutput("True", source, "data", false);
@@ -1858,7 +1858,7 @@ public class UL4Test
 	{
 		String source = "<?print isnone(data)?>";
 
-		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("True", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -1891,7 +1891,7 @@ public class UL4Test
 	{
 		String source = "<?print isbool(data)?>";
 
-		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("True", source, "data", true);
 		checkTemplateOutput("True", source, "data", false);
@@ -1924,7 +1924,7 @@ public class UL4Test
 	{
 		String source = "<?print isint(data)?>";
 
-		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -1957,7 +1957,7 @@ public class UL4Test
 	{
 		String source = "<?print isfloat(data)?>";
 
-		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -1990,7 +1990,7 @@ public class UL4Test
 	{
 		String source = "<?print isstr(data)?>";
 
-		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -2023,7 +2023,7 @@ public class UL4Test
 	{
 		String source = "<?print isdate(data)?>";
 
-		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -2056,7 +2056,7 @@ public class UL4Test
 	{
 		String source = "<?print islist(data)?>";
 
-		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -2089,7 +2089,7 @@ public class UL4Test
 	{
 		String source = "<?print isdict(data)?>";
 
-		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -2122,7 +2122,7 @@ public class UL4Test
 	{
 		String source = "<?print istemplate(data)?>";
 
-		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -2155,7 +2155,7 @@ public class UL4Test
 	{
 		String source = "<?print iscolor(data)?>";
 
-		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
@@ -2188,7 +2188,7 @@ public class UL4Test
 	{
 		String source = "<?print istimedelta(data)?>";
 
-		checkTemplateOutput("False", source, "data", Undefined.undefined);
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
 		checkTemplateOutput("False", source, "data", null);
 		checkTemplateOutput("False", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);

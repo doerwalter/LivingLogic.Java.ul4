@@ -34,9 +34,9 @@ abstract class Binary extends AST
 	 * @param obj1 The left operand
 	 * @param obj2 The right operand
 	 */
-	public Binary(Location location, AST obj1, AST obj2)
+	public Binary(AST obj1, AST obj2)
 	{
-		super(location);
+		super();
 		this.obj1 = obj1;
 		this.obj2 = obj2;
 	}
