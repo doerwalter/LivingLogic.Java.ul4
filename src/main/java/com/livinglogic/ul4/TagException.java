@@ -6,11 +6,11 @@
 
 package com.livinglogic.ul4;
 
-public class LocationException extends RuntimeException
+public class TagException extends RuntimeException
 {
 	protected Location location;
 
-	public LocationException(Throwable cause, Location location)
+	public TagException(Throwable cause, Location location)
 	{
 		super("in " + location, cause);
 		this.location = location;

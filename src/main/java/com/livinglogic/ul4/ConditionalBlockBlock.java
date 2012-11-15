@@ -39,7 +39,7 @@ class ConditionalBlockBlock extends Block
 		return false;
 	}
 
-	public void append(LocationAST item)
+	public void append(Tag item)
 	{
 		((ConditionalBlock)content.get(content.size()-1)).append(item);
 	}
@@ -81,7 +81,7 @@ class ConditionalBlockBlock extends Block
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		for (LocationAST item : content)
+		for (Tag item : content)
 		{
 			if (((ConditionalBlock)item).hasToBeExecuted(context))
 				return item.decoratedEvaluate(context);

@@ -19,7 +19,7 @@ import com.livinglogic.ul4on.Encoder;
  * {@code &}, {@code '} and {@code "} with the appropriate XML character
  * entities.
  */
-public class PrintX extends LocationAST
+public class PrintX extends Tag
 {
 	/**
 	 * The object to be printed

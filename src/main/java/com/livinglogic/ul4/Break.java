@@ -6,7 +6,7 @@
 
 package com.livinglogic.ul4;
 
-class Break extends LocationAST
+class Break extends Tag
 {
 	public Break(Location location)
 	{

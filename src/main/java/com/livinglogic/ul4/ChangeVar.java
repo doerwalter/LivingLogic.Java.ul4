@@ -13,7 +13,7 @@ import java.util.Map;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public abstract class ChangeVar extends LocationAST
+public abstract class ChangeVar extends Tag
 {
 	protected String varname;
 	protected AST value;

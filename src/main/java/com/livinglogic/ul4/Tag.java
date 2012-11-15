@@ -16,7 +16,7 @@ import com.livinglogic.ul4on.Encoder;
 /**
  * An AST node that has a location (i.e. is the top level AST in a tag)
  */
-public abstract class LocationAST extends AST
+public abstract class Tag extends AST
 {
 	/**
 	 * The source code location where this node appears in.
@@ -24,10 +24,10 @@ public abstract class LocationAST extends AST
 	protected Location location = null;
 
 	/**
-	 * Create a new {@code AST} object.
+	 * Create a new {@code Tag} object.
 	 * @param location The source code location where this node appears in.
 	 */
-	public LocationAST(Location location)
+	public Tag(Location location)
 	{
 		super();
 		this.location = location;
@@ -54,16 +54,9 @@ public abstract class LocationAST extends AST
 		{
 			throw ex;
 		}
-		catch (LocationException ex)
-		{
-			if (ex.location != location)
-				throw new LocationException(ex, location);
-			else
-				throw ex;
-		}
 		catch (Exception ex)
 		{
-			throw new LocationException(ex, location);
+			throw new TagException(ex, location);
 		}
 	}
 
@@ -94,7 +87,7 @@ public abstract class LocationAST extends AST
 		if (valueMakers == null)
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("location", new ValueMaker(){public Object getValue(Object object){return ((LocationAST)object).getLocation();}});
+			v.put("location", new ValueMaker(){public Object getValue(Object object){return ((Tag)object).getLocation();}});
 			valueMakers = v;
 		}
 		return valueMakers;

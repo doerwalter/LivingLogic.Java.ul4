@@ -13,7 +13,7 @@ import java.util.Map;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-class Render extends LocationAST
+class Render extends Tag
 {
 	/**
 	 * The object to be renders

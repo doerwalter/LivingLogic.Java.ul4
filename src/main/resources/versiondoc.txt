@@ -130,7 +130,7 @@ exp-44:
 -------
 Comments:
 * Enhanced Location.toString() for literals.
-* Fixed LocationException.toString() for parsing errors.
+* Fixed TagException.toString() for parsing errors.
 
 
 exp-43:

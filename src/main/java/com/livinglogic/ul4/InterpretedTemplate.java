@@ -207,19 +207,19 @@ public class InterpretedTemplate extends Block implements Template
 					throw new RuntimeException("unknown tag " + type);
 				}
 			}
-			catch (LocationException ex)
+			catch (TagException ex)
 			{
 				throw ex; // we have no info to add
 			}
 			catch (Exception ex)
 			{
-				throw new LocationException(ex, location);
+				throw new TagException(ex, location);
 			}
 		}
 		if (stack.size() > 1) // the template itself is still on the stack
 		{
 			Block innerBlock = stack.peek();
-			throw new LocationException(new BlockException(innerBlock.getType() + " block unclosed"), innerBlock.getLocation());
+			throw new TagException(new BlockException(innerBlock.getType() + " block unclosed"), innerBlock.getLocation());
 		}
 	}
 
@@ -325,7 +325,7 @@ public class InterpretedTemplate extends Block implements Template
 			if (location == null)
 				throw new TemplateException(ex, this);
 			else
-				throw new LocationException(ex, location);
+				throw new TagException(ex, location);
 		}
 	}
 

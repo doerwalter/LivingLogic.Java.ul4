@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-class Text extends LocationAST
+class Text extends Tag
 {
 	public Text(Location location)
 	{

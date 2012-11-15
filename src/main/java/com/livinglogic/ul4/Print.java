@@ -17,7 +17,7 @@ import com.livinglogic.ul4on.Encoder;
  * {@code Print} is an AST node that writes a string version of its
  * operand to the output stream.
  */
-public class Print extends LocationAST
+public class Print extends Tag
 {
 	/**
 	 * The object to be printed

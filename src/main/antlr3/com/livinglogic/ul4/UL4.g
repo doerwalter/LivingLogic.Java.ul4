@@ -582,7 +582,7 @@ for_ returns [For node]
 
 /* Additional rules for "code" tag */
 
-stmt returns [LocationAST node]
+stmt returns [Tag node]
 	: nn=nestedname '=' e=expr1 EOF { $node = new StoreVar(location, $nn.varname, $e.node); }
 	| n=name '+=' e=expr1 EOF { $node = new AddVar(location, $n.text, $e.node); }
 	| n=name '-=' e=expr1 EOF { $node = new SubVar(location, $n.text, $e.node); }

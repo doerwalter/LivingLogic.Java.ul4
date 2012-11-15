@@ -15,9 +15,9 @@ import java.util.Map;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-abstract class Block extends LocationAST
+abstract class Block extends Tag
 {
-	protected List<LocationAST> content = new LinkedList<LocationAST>();
+	protected List<Tag> content = new LinkedList<Tag>();
 	protected Location endlocation = null;
 
 	public Block(Location location)
@@ -25,7 +25,7 @@ abstract class Block extends LocationAST
 		super(location);
 	}
 
-	public void append(LocationAST item)
+	public void append(Tag item)
 	{
 		content.add(item);
 	}
@@ -51,22 +51,22 @@ abstract class Block extends LocationAST
 		{
 			throw ex;
 		}
-		catch (LocationException ex)
+		catch (TagException ex)
 		{
 			if (ex.location != location && location != null)
-				throw new LocationException(ex, location);
+				throw new TagException(ex, location);
 			else
 				throw ex;
 		}
 		catch (Exception ex)
 		{
-			throw new LocationException(ex, location);
+			throw new TagException(ex, location);
 		}
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		for (LocationAST item : content)
+		for (Tag item : content)
 			item.decoratedEvaluate(context);
 		return null;
 	}
@@ -82,7 +82,7 @@ abstract class Block extends LocationAST
 	{
 		super.loadUL4ON(decoder);
 		endlocation = (Location)decoder.load();
-		content = (List<LocationAST>)decoder.load();
+		content = (List<Tag>)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;
