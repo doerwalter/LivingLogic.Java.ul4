@@ -9,6 +9,8 @@ package com.livinglogic.ul4;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
+import java.math.BigInteger;
+import java.math.BigDecimal;
 
 public class FunctionBool implements Function
 {
@@ -56,9 +58,19 @@ public class FunctionBool implements Function
 		return (obj.longValue() != 0);
 	}
 
+	public static boolean call(BigInteger obj)
+	{
+		return (!obj.equals(BigInteger.ZERO));
+	}
+
 	public static boolean call(Double obj)
 	{
 		return (obj.doubleValue() != 0.);
+	}
+
+	public static boolean call(BigDecimal obj)
+	{
+		return (obj.signum() != 0);
 	}
 
 	public static boolean call(Date obj)
@@ -100,8 +112,12 @@ public class FunctionBool implements Function
 			return call((Integer)obj);
 		else if (obj instanceof Long)
 			return call((Long)obj);
+		else if (obj instanceof BigInteger)
+			return call((BigInteger)obj);
 		else if (obj instanceof Double)
 			return call((Double)obj);
+		else if (obj instanceof BigDecimal)
+			return call((BigDecimal)obj);
 		else if (obj instanceof Date)
 			return call((Date)obj);
 		else if (obj instanceof TimeDelta)

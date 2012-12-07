@@ -1,3 +1,9 @@
+exp-60-1:
+---------
+Comments:
+* Fixed FunctionBool for BigInteger and BigDecimal objects.
+
+
 exp-60:
 -------
 Comments:

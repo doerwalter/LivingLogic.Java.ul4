@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Date;
 import java.math.BigInteger;
+import java.math.BigDecimal;
 
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
@@ -1327,8 +1328,12 @@ public class UL4Test
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", false);
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", 0);
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", 42);
+		checkTemplateOutput("False", "<?print bool(data)?>", "data", new BigInteger("0"));
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", new BigInteger("42"));
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", 0.0);
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", 4.2);
+		checkTemplateOutput("False", "<?print bool(data)?>", "data", new BigDecimal("0.000"));
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", new BigDecimal("42.5"));
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", "");
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", "foo");
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", asList());
