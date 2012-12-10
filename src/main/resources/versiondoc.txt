@@ -56,7 +56,7 @@ Comments:
 exp-54:
 -------
 Comments:
-* Variable unpacking ist now supported for assignment too.
+* Variable unpacking is now supported for assignment too.
 
 
 exp-53:
