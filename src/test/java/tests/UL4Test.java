@@ -2418,6 +2418,7 @@ public class UL4Test
 		checkTemplateOutput("42", source, "data", 42);
 		checkTemplateOutput("42", source, "data", -42);
 		checkTemplateOutput("1 month", source, "data", new MonthDelta(-1));
+		checkTemplateOutput("1 day, 0:00:01.000001", source, "data", new TimeDelta(-1, -1, -1));
 	}
 
 	@Test
