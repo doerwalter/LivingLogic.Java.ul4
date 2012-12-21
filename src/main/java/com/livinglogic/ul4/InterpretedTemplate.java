@@ -31,7 +31,7 @@ import com.livinglogic.ul4on.ObjectFactory;
 import com.livinglogic.ul4on.UL4ONSerializable;
 import com.livinglogic.ul4on.Utils;
 
-public class InterpretedTemplate extends Block implements Template
+public class InterpretedTemplate extends Block implements Template, UL4Type
 {
 	/**
 	 * The version number used in the UL4ON dump of the template.
@@ -568,6 +568,11 @@ public class InterpretedTemplate extends Block implements Template
 		startdelim = (String)decoder.load();
 		enddelim = (String)decoder.load();
 		super.loadUL4ON(decoder);
+	}
+
+	public String typeUL4()
+	{
+		return "template";
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

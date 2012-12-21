@@ -56,21 +56,19 @@ public class GetItem extends Binary
 		return obj.get(index);
 	}
 
-	public static Object call(Color obj, int index)
+	public static Object call(UL4GetItem obj, Object key)
 	{
-		switch (index)
-		{
-			case 0:
-				return obj.getR();
-			case 1:
-				return obj.getG();
-			case 2:
-				return obj.getB();
-			case 3:
-				return obj.getA();
-			default:
-				return new UndefinedIndex(index);
-		}
+		return obj.getItemUL4(key);
+	}
+
+	public static Object call(UL4GetItemString obj, String key)
+	{
+		return obj.getItemStringUL4(key);
+	}
+
+	public static int call(Color obj, int index)
+	{
+		return obj.getItemIntegerUL4(index);
 	}
 
 	public static Object call(Map obj, Object index)
@@ -82,10 +80,25 @@ public class GetItem extends Binary
 		return result;
 	}
 
+	public static Object call(Object obj, String key)
+	{
+		if (obj instanceof UL4GetItem)
+			return call((UL4GetItem)obj, (Object)key);
+		else if (obj instanceof UL4GetItemString)
+			return call((UL4GetItemString)obj, key);
+		else if (obj instanceof Map)
+			return call((Map)obj, (Object)key);
+		throw new ArgumentTypeMismatchException("{}[{}]", obj, key);
+	}
+
 	public static Object call(Object obj, Object index)
 	{
-		if (obj instanceof Map)
+		if (obj instanceof UL4GetItem)
+			return call((UL4GetItem)obj, index);
+		else if (obj instanceof Map)
 			return call((Map)obj, index);
+		else if (index instanceof String)
+			return call(obj, (String)index);
 		else if (index instanceof Boolean || index instanceof Number)
 		{
 			if (obj instanceof String)

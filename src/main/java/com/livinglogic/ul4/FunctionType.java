@@ -40,16 +40,10 @@ public class FunctionType implements Function
 			return "float";
 		else if (obj instanceof Date)
 			return "date";
-		else if (obj instanceof TimeDelta)
-			return "timedelta";
-		else if (obj instanceof MonthDelta)
-			return "monthdelta";
-		else if (obj instanceof Color) // check Color before List
-			return "color";
+		else if (obj instanceof UL4Type)
+			return ((UL4Type)obj).typeUL4();
 		else if (obj instanceof List)
 			return "list";
-		else if (obj instanceof Template) // check Template before Map
-			return "template";
 		else if (obj instanceof Map)
 			return "dict";
 		else

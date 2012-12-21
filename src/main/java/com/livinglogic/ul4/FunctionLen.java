@@ -28,6 +28,11 @@ public class FunctionLen implements Function
 		return obj.length();
 	}
 
+	public static int call(UL4Len obj)
+	{
+		return obj.lenUL4();
+	}
+
 	public static int call(Collection obj)
 	{
 		return obj.size();
@@ -42,6 +47,8 @@ public class FunctionLen implements Function
 	{
 		if (obj instanceof String)
 			return call((String)obj);
+		else if (obj instanceof UL4Len)
+			return call((Map)obj);
 		else if (obj instanceof Collection)
 			return call((Collection)obj);
 		else if (obj instanceof Map)

@@ -17,7 +17,7 @@ import java.util.Map;
  * @author W. Doerwald
  */
 
-public abstract class CompiledTemplate implements Template
+public abstract class CompiledTemplate implements Template, UL4Type
 {
 	public String getName()
 	{
@@ -44,5 +44,10 @@ public abstract class CompiledTemplate implements Template
 	public void render(Writer out, Map<String, Object> variables) throws java.io.IOException
 	{
 		render(new EvaluationContext(out, variables));
+	}
+
+	public String typeUL4()
+	{
+		return "template";
 	}
 }

@@ -33,9 +33,9 @@ public class FunctionBool implements Function
 		return false;
 	}
 
-	public static boolean call(Undefined obj)
+	public static boolean call(UL4Bool obj)
 	{
-		return false;
+		return obj.boolUL4();
 	}
 
 	public static boolean call(Boolean obj)
@@ -78,16 +78,6 @@ public class FunctionBool implements Function
 		return true;
 	}
 
-	public static boolean call(TimeDelta obj)
-	{
-		return obj.getDays() != 0 || obj.getSeconds() != 0 || obj.getMicroseconds() != 0;
-	}
-
-	public static boolean call(MonthDelta obj)
-	{
-		return obj.getMonths() != 0;
-	}
-
 	public static boolean call(Collection obj)
 	{
 		return !obj.isEmpty();
@@ -102,8 +92,8 @@ public class FunctionBool implements Function
 	{
 		if (null == obj)
 			return false;
-		else if (obj instanceof Undefined)
-			return call((Undefined)obj);
+		else if (obj instanceof UL4Bool)
+			return call((UL4Bool)obj);
 		else if (obj instanceof Boolean)
 			return call((Boolean)obj);
 		else if (obj instanceof String)
@@ -120,10 +110,6 @@ public class FunctionBool implements Function
 			return call((BigDecimal)obj);
 		else if (obj instanceof Date)
 			return call((Date)obj);
-		else if (obj instanceof TimeDelta)
-			return call((TimeDelta)obj);
-		else if (obj instanceof MonthDelta)
-			return call((MonthDelta)obj);
 		else if (obj instanceof Collection)
 			return call((Collection)obj);
 		else if (obj instanceof Map)

@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class TimeDelta implements Comparable
+public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type
 {
 	private int days;
 	private int seconds;
@@ -230,7 +230,12 @@ public class TimeDelta implements Comparable
 		);
 	}
 
-	public String repr()
+	public boolean boolUL4()
+	{
+		return days != 0 || seconds != 0 || microseconds != 0;
+	}
+
+	public String reprUL4()
 	{
 		StringBuilder buffer = new StringBuilder();
 
@@ -285,5 +290,10 @@ public class TimeDelta implements Comparable
 			buffer.append(sixdigits.format(microseconds));
 		}
 		return buffer.toString();
+	}
+
+	public String typeUL4()
+	{
+		return "timedelta";
 	}
 }

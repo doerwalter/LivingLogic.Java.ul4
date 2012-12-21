@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class MonthDelta implements Comparable
+public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 {
 	private int months;
 
@@ -100,7 +100,12 @@ public class MonthDelta implements Comparable
 		return new MonthDelta((int)(months/divisor));
 	}
 
-	public String repr()
+	public boolean boolUL4()
+	{
+		return months != 0;
+	}
+
+	public String reprUL4()
 	{
 		StringBuilder buffer = new StringBuilder();
 
@@ -120,5 +125,15 @@ public class MonthDelta implements Comparable
 		if ((months != 1) && (months != -1))
 			buffer.append("s");
 		return buffer.toString();
+	}
+
+	public String typeUL4()
+	{
+		return "monthdelta";
+	}
+
+	public MonthDelta absUL4()
+	{
+		return months < 0 ? new MonthDelta(-months) : this;
 	}
 }

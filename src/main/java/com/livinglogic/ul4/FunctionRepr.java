@@ -48,8 +48,6 @@ public class FunctionRepr implements Function
 		{
 			if (obj == null)
 				return "None";
-			else if (obj instanceof Undefined)
-				return obj.toString();
 			else if (obj instanceof Boolean)
 				return ((Boolean)obj).booleanValue() ? "True" : "False";
 			else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger || obj instanceof Double || obj instanceof Float)
@@ -67,6 +65,8 @@ public class FunctionRepr implements Function
 					.append(StringEscapeUtils.escapeJava(((String)obj)))
 					.append("\"")
 					.toString();
+			else if (obj instanceof UL4Repr)
+				return ((UL4Repr)obj).reprUL4();
 			else if (obj instanceof Date)
 			{
 				if (MethodMicrosecond.call(obj) != 0)
@@ -79,12 +79,6 @@ public class FunctionRepr implements Function
 						return isoReprDateFormatter.format(obj);
 				}
 			}
-			else if (obj instanceof Color)
-				return ((Color)obj).repr();
-			else if (obj instanceof TimeDelta)
-				return ((TimeDelta)obj).repr();
-			else if (obj instanceof MonthDelta)
-				return ((MonthDelta)obj).repr();
 			else if (obj instanceof Collection)
 			{
 				if (seen(obj))

@@ -13,7 +13,7 @@ import java.util.Vector;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-public class Color implements Collection
+public class Color implements Collection, UL4Repr, UL4Len, UL4Type
 {
 	private char r;
 	private char g;
@@ -238,7 +238,7 @@ public class Color implements Collection
 		}
 	}
 
-	public String repr()
+	public String reprUL4()
 	{
 		StringBuilder buffer = new StringBuilder(9);
 
@@ -622,5 +622,36 @@ public class Color implements Collection
 	public int size()
 	{
 		return 4;
+	}
+
+	public int lenUL4()
+	{
+		return 4;
+	}
+
+	public String typeUL4()
+	{
+		return "color";
+	}
+
+	int getItemIntegerUL4(int index)
+	{
+		switch (index)
+		{
+			case 0:
+			case -4:
+				return r;
+			case 1:
+			case -3:
+				return g;
+			case 2:
+			case -2:
+				return b;
+			case 3:
+			case -1:
+				return a;
+			default:
+				throw new ArrayIndexOutOfBoundsException(index);
+		}
 	}
 }

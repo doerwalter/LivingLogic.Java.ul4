@@ -2417,6 +2417,7 @@ public class UL4Test
 		checkTemplateOutput("0", source, "data", 0);
 		checkTemplateOutput("42", source, "data", 42);
 		checkTemplateOutput("42", source, "data", -42);
+		checkTemplateOutput("1 month", source, "data", new MonthDelta(-1));
 	}
 
 	@Test

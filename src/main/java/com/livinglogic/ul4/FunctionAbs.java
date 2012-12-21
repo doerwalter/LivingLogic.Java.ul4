@@ -75,6 +75,8 @@ public class FunctionAbs implements Function
 			return ((BigInteger)arg).abs();
 		else if (arg instanceof BigDecimal)
 			return ((BigDecimal)arg).abs();
+		else if (arg instanceof UL4Abs)
+			return ((UL4Abs)arg).absUL4();
 		throw new ArgumentTypeMismatchException("abs({})", arg);
 	}
 }
