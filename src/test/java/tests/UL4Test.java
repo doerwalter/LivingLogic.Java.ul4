@@ -59,7 +59,7 @@ public class UL4Test
 
 	private static void checkTemplateOutput(String expected, String source, Object... args)
 	{
-		// Render the template once by directly compliing and rendering it
+		// Render the template once by directly compiling and rendering it
 		InterpretedTemplate template1 = getTemplate(source);
 		String output1 = template1.renders(makeMap(args));
 		assertEquals(expected, output1);
@@ -77,7 +77,7 @@ public class UL4Test
 
 	private static void checkTemplateOutput2(String expected1, String expected2, String source, Object... args)
 	{
-		// Render the template once by directly compliing and rendering it
+		// Render the template once by directly compiling and rendering it
 		InterpretedTemplate template1 = getTemplate(source);
 		String output1 = template1.renders(makeMap(args));
 		if (!output1.equals(expected1) && !output1.equals(expected2))
