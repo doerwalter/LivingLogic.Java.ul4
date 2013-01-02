@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.apache.commons.lang.ObjectUtils;
+
+
 /**
  * A {@code Map} implemention that forwards all operation to one or two mapps.
  * When a key or entry isn't found in the first map the second ("chained")
@@ -105,11 +108,29 @@ public class MapChain<K, V> implements Map<K, V>
 
 		public boolean containsAll(Collection<?> c)
 		{
-			for (Object obj: c)
+			for (Object obj : c)
 			{
 				if (!containsKey(obj))
 					return false;
 			}
+			return true;
+		}
+
+		public boolean equals(Object other)
+		{
+			if (!(other instanceof Set))
+				return false;
+
+			int size = ((Set)other).size();
+			for (Object key : this)
+			{
+				if (!((Set)other).contains(key))
+					return false;
+				if (--size < 0)
+					return false;
+			}
+			if (size != 0)
+				return false;
 			return true;
 		}
 
@@ -195,6 +216,47 @@ public class MapChain<K, V> implements Map<K, V>
 			}
 		}
 
+		public boolean contains(Object o)
+		{
+			if (!(o instanceof Map.Entry))
+				return false;
+			Object key = ((Map.Entry)o).getKey();
+			Object value = ((Map.Entry)o).getValue();
+			Object ourValue = get(key);
+
+			if (ourValue == null && !containsKey(key))
+				return false;
+			return ObjectUtils.equals(value, ourValue);
+		}
+
+		public boolean containsAll(Collection<?> c)
+		{
+			for (Object obj : c)
+			{
+				if (!contains(obj))
+					return false;
+			}
+			return true;
+		}
+
+		public boolean equals(Object other)
+		{
+			if (!(other instanceof Set))
+				return false;
+
+			int size = ((Set)other).size();
+			for (Object entry : this)
+			{
+				if (!((Set)other).contains(entry))
+					return false;
+				if (--size < 0)
+					return false;
+			}
+			if (size != 0)
+				return false;
+			return true;
+		}
+
 		public Iterator<Map.Entry<K, V>> iterator()
 		{
 			return new EntrySetIterator();
@@ -262,6 +324,11 @@ public class MapChain<K, V> implements Map<K, V>
 		return new KeySet();
 	}
 
+	public int hashCode()
+	{
+		return first.hashCode() ^ second.hashCode();
+	}
+
 	public int size()
 	{
 		int size = first.size();
@@ -272,6 +339,30 @@ public class MapChain<K, V> implements Map<K, V>
 				++size;
 		}
 		return size;
+	}
+
+	public boolean equals(Object other)
+	{
+		if (!(other instanceof Map))
+			return false;
+		Map otherMap = (Map)other;
+		int size = otherMap.size();
+
+		for (Object key : keySet())
+		{
+			if (!((Map)other).containsKey(key))
+				return false;
+			if (--size < 0)
+				return false;
+
+			Object thisValue = get(key);
+			Object otherValue = ((Map)other).get(key);
+			if (!ObjectUtils.equals(thisValue, otherValue))
+				return false;
+		}
+		if (size != 0)
+			return false;
+		return true;
 	}
 
 	public void clear()
@@ -298,5 +389,15 @@ public class MapChain<K, V> implements Map<K, V>
 	public Collection<V> values()
 	{
 		throw new UnsupportedOperationException();
+	}
+
+	public Map<K, V> getFirst()
+	{
+		return first;
+	}
+
+	public Map<K, V> getSecond()
+	{
+		return second;
 	}
 }
