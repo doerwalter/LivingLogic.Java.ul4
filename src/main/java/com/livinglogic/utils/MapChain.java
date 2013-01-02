@@ -56,11 +56,10 @@ public class MapChain<K, V> implements Map<K, V>
 					return true;
 
 				// the first iterator is exhausted; use the second one
-				// ignore all keys that the first iterator has already produced
 				while (secondIterator.hasNext())
 				{
 					K item = secondIterator.next();
-					// Is this a key we haven't seen before?
+					// ignore all keys that the first iterator has already produced
 					if (!first.containsKey(item))
 					{
 						haveBufferedKey = true;
@@ -84,11 +83,10 @@ public class MapChain<K, V> implements Map<K, V>
 					return firstIterator.next();
 
 				// the first iterator is exhausted; use the second one
-				// ignore all keys that the first iterator has already produced
 				while (secondIterator.hasNext())
 				{
 					K item = secondIterator.next();
-					// Is this a key we haven't seen before?
+					// ignore all keys that the first iterator has already produced
 					if (!first.containsKey(item))
 						return item;
 				}
@@ -285,7 +283,7 @@ public class MapChain<K, V> implements Map<K, V>
 	public boolean containsKey(Object key)
 	{
 		boolean containsKey = first.containsKey(key);
-		if (!containsKey)
+		if (!containsKey && second != null)
 			containsKey = second.containsKey(key);
 		return containsKey;
 	}
@@ -293,20 +291,20 @@ public class MapChain<K, V> implements Map<K, V>
 	public boolean containsValue(Object value)
 	{
 		boolean containsValue = first.containsValue(value);
-		if (!containsValue)
+		if (!containsValue && second != null)
 			containsValue = second.containsValue(value);
 		return containsValue;
 	}
 
 	public Set<Map.Entry<K,V>> entrySet()
 	{
-		return new EntrySet();
+		return second != null ? new EntrySet() : first.entrySet();
 	}
 
 	public V get(Object key)
 	{
 		V value = first.get(key);
-		if (value == null && !first.containsKey(key))
+		if (value == null && !first.containsKey(key) && second != null)
 			value = second.get(key);
 		return value;
 	}
@@ -314,55 +312,67 @@ public class MapChain<K, V> implements Map<K, V>
 	public boolean isEmpty()
 	{
 		boolean isEmpty = first.isEmpty();
-		if (isEmpty)
+		if (isEmpty && second != null)
 			isEmpty = second.isEmpty();
 		return isEmpty;
 	}
 
 	public Set<K> keySet()
 	{
-		return new KeySet();
+		return second != null ? new KeySet() : first.keySet();
 	}
 
 	public int hashCode()
 	{
-		return first.hashCode() ^ second.hashCode();
+		int hashCode = first.hashCode();
+		if (second != null)
+			hashCode ^= second.hashCode();
+		return hashCode;
 	}
 
 	public int size()
 	{
 		int size = first.size();
 
-		for (Object key : second.keySet())
+		if (second != null)
 		{
-			if (!first.containsKey(key))
-				++size;
+			for (Object key : second.keySet())
+			{
+				if (!first.containsKey(key))
+					++size;
+			}
 		}
 		return size;
 	}
 
 	public boolean equals(Object other)
 	{
-		if (!(other instanceof Map))
-			return false;
-		Map otherMap = (Map)other;
-		int size = otherMap.size();
-
-		for (Object key : keySet())
+		if (second != null)
 		{
-			if (!((Map)other).containsKey(key))
+			if (!(other instanceof Map))
 				return false;
-			if (--size < 0)
-				return false;
+			Map otherMap = (Map)other;
 
-			Object thisValue = get(key);
-			Object otherValue = ((Map)other).get(key);
-			if (!ObjectUtils.equals(thisValue, otherValue))
+			int size = otherMap.size();
+
+			for (Object key : keySet())
+			{
+				if (!((Map)other).containsKey(key))
+					return false;
+				if (--size < 0)
+					return false;
+
+				Object thisValue = get(key);
+				Object otherValue = ((Map)other).get(key);
+				if (!ObjectUtils.equals(thisValue, otherValue))
+					return false;
+			}
+			if (size != 0)
 				return false;
+			return true;
 		}
-		if (size != 0)
-			return false;
-		return true;
+		else
+			return first.equals(other);
 	}
 
 	public void clear()
