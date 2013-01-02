@@ -21,7 +21,7 @@ import java.util.Set;
  * Methods of {@code ChainedHashMap} that modify the mapping only modify the
  * {@code ChainedHashMap} itself not the chained {@code Map}. Modifying the
  * {@code ChainedHashMap} via the sets returned by {@code keySet()} or
- * {@code entrySet()} is forbidden (i.e. those methods throws a
+ * {@code entrySet()} is forbidden (i.e. those methods throw a
  * {@code UnsupportedOperationException} exception).
  *
  * @author W. Doerwald
