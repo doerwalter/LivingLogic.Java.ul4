@@ -2,7 +2,7 @@ exp-61:
 -------
 Comments:
 * Added support classes AbstractMapChain and MapChain.
-* Added support for the autoamtic variable self the function allvars.
+* Added support for the automatic variable self and the function allvars.
 
 
 exp-60-1:
