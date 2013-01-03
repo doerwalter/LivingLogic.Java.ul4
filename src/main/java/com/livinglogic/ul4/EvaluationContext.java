@@ -23,7 +23,8 @@ import com.livinglogic.utils.MapChain;
 public class EvaluationContext
 {
 	/**
-	 * The {@code Writer} object where output can be written via {@link #write}
+	 * The {@code Writer} object where output can be written via {@link #write}.
+	 * May by {@code null}, in which case outputs will be ignored.
 	 */
 	protected Writer writer;
 
@@ -151,7 +152,8 @@ public class EvaluationContext
 	 */
 	public void write(String string) throws IOException
 	{
-		writer.write(string);
+		if (writer != null)
+			writer.write(string);
 	}
 
 	/**
