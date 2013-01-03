@@ -39,6 +39,11 @@ public abstract class CompiledTemplate implements Template, UL4Type
 		}
 	}
 
+	public void render(Writer out, Map<String, Object> variables) throws java.io.IOException
+	{
+		render(new EvaluationContext(out, variables));
+	}
+
 	public String renders(EvaluationContext context)
 	{
 		StringWriter out = new StringWriter();
@@ -72,9 +77,9 @@ public abstract class CompiledTemplate implements Template, UL4Type
 		}
 	}
 
-	public void render(Writer out, Map<String, Object> variables) throws java.io.IOException
+	public String renders(Map<String, Object> variables)
 	{
-		render(new EvaluationContext(out, variables));
+		return renders(new EvaluationContext(null, variables));
 	}
 
 	public String typeUL4()
