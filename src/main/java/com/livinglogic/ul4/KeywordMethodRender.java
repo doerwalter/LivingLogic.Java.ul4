@@ -19,14 +19,14 @@ public class KeywordMethodRender implements KeywordMethod
 
 	public Object evaluate(EvaluationContext context, Object obj, Map<String, Object> args) throws IOException
 	{
-		return call(context.getWriter(), obj, args);
+		return call(context, obj, args);
 	}
 
-	public static Object call(Writer writer, Template template, Map<String, Object> variables)
+	public static Object call(EvaluationContext context, Template template, Map<String, Object> variables)
 	{
 		try
 		{
-			template.render(writer, variables);
+			template.render(context, variables);
 		}
 		catch (IOException ex)
 		{
@@ -35,10 +35,10 @@ public class KeywordMethodRender implements KeywordMethod
 		return null;
 	}
 
-	public static Object call(Writer writer, Object template, Map<String, Object> variables)
+	public static Object call(EvaluationContext context, Object template, Map<String, Object> variables)
 	{
 		if (template instanceof Template)
-			return call(writer, (Template)template, variables);
+			return call(context, (Template)template, variables);
 		throw new ArgumentTypeMismatchException("{}.render({})", template, variables);
 	}
 }

@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -21,18 +22,18 @@ public class MethodRender implements Method
 		switch (args.length)
 		{
 			case 0:
-				call(context.getWriter(), obj);
+				call(context, obj);
 				return null;
 			default:
 				throw new ArgumentCountMismatchException("method", "render", args.length, 0);
 		}
 	}
 
-	public static void call(Writer writer, Template obj)
+	public static void call(EvaluationContext context, Template obj)
 	{
 		try
 		{
-			obj.render(writer, null);
+			obj.render(context, null);
 		}
 		catch (IOException ex)
 		{
@@ -40,10 +41,10 @@ public class MethodRender implements Method
 		}
 	}
 
-	public static void call(Writer writer, Object obj)
+	public static void call(EvaluationContext context, Object obj)
 	{
 		if (obj instanceof Template)
-			call(writer, (Template)obj);
+			call(context, (Template)obj);
 		else
 			throw new UnsupportedOperationException("render() method requires a template!");
 	}

@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import static com.livinglogic.utils.MapUtils.makeMap;
+import com.livinglogic.utils.MapChain;
+
 /**
  * An {@code EvaluationContext} object is passed around calls to the node method
  * {@link AST#evaluate} and stores an output stream and a map containing the
@@ -28,6 +31,26 @@ public class EvaluationContext
 	 * A map containing the currently defined variables
 	 */
 	protected Map<String, Object> variables;
+
+	/**
+	 * The currently executing template
+	 *
+	 */
+	protected Template template;
+
+	/**
+	 * A map containing just the variable {@code self}, referencing the currently
+	 * executing template
+	 */
+	protected Map<String, Template> templateVariables;
+
+	/**
+	 * A {@link com.livinglogic.utils.MapChain} object chaining all variables:
+	 * The user defined ones from {@link #variables}, {@link #templateVariables}
+	 * (referencing the current template) and the map containing the globally
+	 * defined functions.
+	 */
+	protected MapChain<String, Object> allVariables;
 
 	/**
 	 * Create a new {@code EvaluationContext} object. (No variables) will
@@ -51,14 +74,68 @@ public class EvaluationContext
 		if (variables == null)
 			variables = new HashMap<String, Object>();
 		this.variables = variables;
+		this.template = null;
+		this.templateVariables = makeMap("self", null);
+		this.allVariables = new MapChain<String, Object>(variables, (Map)this.templateVariables);
 	}
 
 	/**
-	 * Return the map containing the template variables.
+	 * Set the writer in {@link #writer} and return the previously defined one.
+	 */
+	public Writer setWriter(Writer writer)
+	{
+		Writer oldWriter = this.writer;
+		this.writer = writer;
+		return oldWriter;
+	}
+
+	/**
+	 * Set the currently executing template variable contained in {@link #templateVariables} and
+	 * return the previously defined one.
+	 */
+	public Template setTemplate(Template template)
+	{
+		Template oldTemplate = this.template;
+		this.template = template;
+		templateVariables.put("self", template);
+		return oldTemplate;
+	}
+
+	/**
+	 * Get the template that is currently executing.
+	 */
+	public Template getTemplate()
+	{
+		return template;
+	}
+
+	/**
+	 * Return the map containing the variables local to the template.
 	 */
 	public Map<String, Object> getVariables()
 	{
 		return variables;
+	}
+
+	/**
+	 * Return the map containing the all variables.
+	 */
+	public Map<String, Object> getAllVariables()
+	{
+		return allVariables;
+	}
+
+	/**
+	 * Set the map containing the template variables and return the previous map.
+	 */
+	public Map<String, Object> setVariables(Map<String, Object> variables)
+	{
+		Map<String, Object> oldVariables = this.variables;
+		if (variables == null)
+			variables = new HashMap<String, Object>();
+		this.variables = variables;
+		this.allVariables.setFirst(variables);
+		return oldVariables;
 	}
 
 	/**
@@ -94,9 +171,9 @@ public class EvaluationContext
 	 */
 	public Object get(String key)
 	{
-		Object result = variables.get(key);
+		Object result = allVariables.get(key);
 
-		if ((result == null) && !variables.containsKey(key))
+		if ((result == null) && !allVariables.containsKey(key))
 			return new UndefinedVariable(key);
 		return result;
 	}
@@ -109,9 +186,9 @@ public class EvaluationContext
 	 */
 	public Object get(String key, Object defaultValue)
 	{
-		Object result = variables.get(key);
+		Object result = allVariables.get(key);
 
-		if ((result == null) && !variables.containsKey(key))
+		if ((result == null) && !allVariables.containsKey(key))
 			return defaultValue;
 		return result;
 	}

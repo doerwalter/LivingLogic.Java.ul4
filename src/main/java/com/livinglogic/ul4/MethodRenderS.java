@@ -20,21 +20,21 @@ public class MethodRenderS implements Method
 		switch (args.length)
 		{
 			case 0:
-				return call(obj);
+				return call(context, obj);
 			default:
 				throw new ArgumentCountMismatchException("method", "renders", args.length, 0);
 		}
 	}
 
-	public static String call(Template obj)
+	public static String call(EvaluationContext context, Template obj)
 	{
-		return obj.renders(null);
+		return obj.renders(context, null);
 	}
 
-	public static String call(Object obj)
+	public static String call(EvaluationContext context, Object obj)
 	{
 		if (obj instanceof Template)
-			return call((Template)obj);
+			return call(context, (Template)obj);
 		throw new UnsupportedOperationException("renders() method requires a template!");
 	}
 }

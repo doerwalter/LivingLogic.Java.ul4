@@ -308,6 +308,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	 */
 	public void render(EvaluationContext context) throws IOException
 	{
+		Template oldTemplate = context.setTemplate(this);
 		try
 		{
 			super.evaluate(context);
@@ -327,6 +328,28 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 			else
 				throw new TagException(ex, location);
 		}
+		finally
+		{
+			context.setTemplate(oldTemplate);
+		}
+	}
+
+	/**
+	 * Renders the template using the passed in variables.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the template code. May be null.
+	 */
+	public void render(EvaluationContext context, Map<String, Object> variables) throws IOException
+	{
+		Map<String, Object> oldVariables = context.setVariables(variables);
+		try
+		{
+			render(context);
+		}
+		finally
+		{
+			context.setVariables(oldVariables);
+		}
 	}
 
 	/**
@@ -337,10 +360,49 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	 */
 	public void render(java.io.Writer writer, Map<String, Object> variables) throws IOException
 	{
-		if (variables == null)
-			variables = new HashMap<String, Object>();
-		EvaluationContext context = new EvaluationContext(writer, variables);
-		render(context);
+		render(new EvaluationContext(writer, variables));
+	}
+
+	/**
+	 * Renders the template and returns the resulting string.
+	 * @return The render output as a string.
+	 */
+	public String renders(EvaluationContext context)
+	{
+		StringWriter output = new StringWriter();
+		Writer oldWriter = context.setWriter(output);
+		try
+		{
+			render(context);
+		}
+		catch (IOException ex)
+		{
+			// can't happen
+		}
+		finally
+		{
+			context.setWriter(oldWriter);
+		}
+		return output.toString();
+	}
+
+	/**
+	 * Renders the template using the passed in variables and returns the resulting string.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the template code. May be null
+	 * @return The render output as a string.
+	 */
+	public String renders(EvaluationContext context, Map<String, Object> variables)
+	{
+		Map<String, Object> oldVariables = context.setVariables(variables);
+		try
+		{
+			return renders(context);
+		}
+		finally
+		{
+			context.setVariables(oldVariables);
+		}
 	}
 
 	/**

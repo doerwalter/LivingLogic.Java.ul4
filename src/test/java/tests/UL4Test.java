@@ -1094,6 +1094,7 @@ public class UL4Test
 
 		checkTemplateOutput("yes", source, "var", "spam", "spam", "eggs");
 		checkTemplateOutput("no", source, "var", "nospam", "spam", "eggs");
+		checkTemplateOutput("no", source, "var", "self", "spam", "eggs");
 	}
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
@@ -1106,6 +1107,28 @@ public class UL4Test
 	public void function_vars_2_args()
 	{
 		checkTemplateOutput("", "<?print vars(1, 2)?>");
+	}
+
+	@Test
+	public void function_allvars()
+	{
+		String source = "<?if var in allvars()?>yes<?else?>no<?end if?>";
+
+		checkTemplateOutput("yes", source, "var", "spam", "spam", "eggs");
+		checkTemplateOutput("no", source, "var", "nospam", "spam", "eggs");
+		checkTemplateOutput("yes", source, "var", "self", "spam", "eggs");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_allvars_1_args()
+	{
+		checkTemplateOutput("", "<?print allvars(1)?>");
+	}
+
+	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	public void function_allvars_2_args()
+	{
+		checkTemplateOutput("", "<?print allvars(1, 2)?>");
 	}
 
 	@Test
@@ -2228,6 +2251,7 @@ public class UL4Test
 		checkTemplateOutput("42", "<?print get('x')?>", "x", 42);
 		checkTemplateOutput("17", "<?print get('x', 17)?>");
 		checkTemplateOutput("42", "<?print get('x', 17)?>", "x", 42);
+		checkTemplateOutput("True", "<?print istemplate(get('self'))?>");
 	}
 
 	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
@@ -2897,6 +2921,14 @@ public class UL4Test
 		checkTemplateOutput("132", "<?print @(2010-05-12T16:47:56).yearday()?>");
 		checkTemplateOutput("132", "<?print d.yearday()?>", "d", FunctionDate.call(2010, 5, 12));
 		checkTemplateOutput("132", "<?print d.yearday()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56));
+	}
+
+	@Test
+	public void self()
+	{
+		checkTemplateOutput("True", "<?print istemplate(self)?>");
+		checkTemplateOutput("x", "<?def x?><?print self.name?><?end def?><?render x.render()?>");
+		checkTemplateOutput("42", "<?code self = 42?><?print self?>");
 	}
 
 	@Test

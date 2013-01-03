@@ -7,6 +7,7 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
@@ -46,8 +47,8 @@ public class UL4ONTest
 		// If we have an InterpretedTemplate, check the output instead
 		if ((recreated instanceof InterpretedTemplate) && (object instanceof InterpretedTemplate))
 		{
-			recreated = ((InterpretedTemplate)recreated).renders(null);
-			object = ((InterpretedTemplate)object).renders(null);
+			recreated = ((InterpretedTemplate)recreated).renders((Map<String, Object>)null);
+			object = ((InterpretedTemplate)object).renders((Map<String, Object>)null);
 		}
 		assertEquals(object, recreated);
 	}

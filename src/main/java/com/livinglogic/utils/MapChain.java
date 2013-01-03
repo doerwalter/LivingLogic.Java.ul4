@@ -37,4 +37,11 @@ public class MapChain<K, V> extends AbstractMapChain<K, V>
 	{
 		return second;
 	}
+
+	public Map<K, V> setSecond(Map<K, V> second)
+	{
+		Map<K, V> oldSecond = this.second;
+		this.second = second;
+		return oldSecond;
+	}
 }

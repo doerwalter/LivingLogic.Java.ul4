@@ -33,6 +33,7 @@ public class CallFunc extends AST
 			"timedelta", new FunctionTimeDelta(),
 			"monthdelta", new FunctionMonthDelta(),
 			"vars", new FunctionVars(),
+			"allvars", new FunctionAllVars(),
 			"random", new FunctionRandom(),
 			"xmlescape", new FunctionXMLEscape(),
 			"csv", new FunctionCSV(),

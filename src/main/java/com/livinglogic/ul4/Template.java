@@ -19,9 +19,11 @@ public interface Template
 {
 	public String getName();
 
-	public String renders(Map<String, Object> variables);
+	public void render(EvaluationContext context, Map<String, Object> variables) throws java.io.IOException;
 
 	public void render(EvaluationContext context) throws java.io.IOException;
 
-	public void render(Writer out, Map<String, Object> variables) throws java.io.IOException;
+	public String renders(EvaluationContext context, Map<String, Object> variables);
+
+	public String renders(EvaluationContext context);
 }

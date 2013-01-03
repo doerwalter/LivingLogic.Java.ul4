@@ -24,22 +24,53 @@ public abstract class CompiledTemplate implements Template, UL4Type
 		return "unnamed";
 	}
 
-	public String renders(Map<String, Object> variables)
+	public abstract void render(EvaluationContext context) throws java.io.IOException;
+
+	public void render(EvaluationContext context, Map<String, Object> variables) throws java.io.IOException
+	{
+		Map<String, Object> oldVariables = context.setVariables(variables);
+		try
+		{
+			render(context);
+		}
+		finally
+		{
+			context.setVariables(oldVariables);
+		}
+	}
+
+	public String renders(EvaluationContext context)
 	{
 		StringWriter out = new StringWriter();
 
+		Writer oldWriter = context.setWriter(out);
 		try
 		{
-			render(out, variables);
+			render(context);
 		}
 		catch (IOException ex)
 		{
 			// Can't happen with a StringWriter!
 		}
+		finally
+		{
+			context.setWriter(oldWriter);
+		}
 		return out.toString();
 	}
 
-	public abstract void render(EvaluationContext context) throws java.io.IOException;
+	public String renders(EvaluationContext context, Map<String, Object> variables)
+	{
+		Map<String, Object> oldVariables = context.setVariables(variables);
+		try
+		{
+			return renders(context);
+		}
+		finally
+		{
+			context.setVariables(oldVariables);
+		}
+	}
 
 	public void render(Writer out, Map<String, Object> variables) throws java.io.IOException
 	{

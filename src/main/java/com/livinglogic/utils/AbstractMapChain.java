@@ -420,6 +420,13 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 		throw new UnsupportedOperationException();
 	}
 
+	public Map<K, V> setFirst(Map<K, V> first)
+	{
+		Map<K, V> oldFirst = this.first;
+		this.first = first;
+		return oldFirst;
+	}
+
 	public Map<K, V> getFirst()
 	{
 		return first;
