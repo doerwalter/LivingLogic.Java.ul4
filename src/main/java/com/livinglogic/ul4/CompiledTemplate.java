@@ -11,6 +11,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
+import static com.livinglogic.utils.MapUtils.makeMap;
+import com.livinglogic.utils.MapChain;
+
 /**
  * Base class for template code that has been converted to Java source code.
  *
@@ -24,14 +27,27 @@ public abstract class CompiledTemplate implements Template, UL4Type
 		return "unnamed";
 	}
 
-	public abstract void render(EvaluationContext context) throws java.io.IOException;
+	public abstract void renderImpl(EvaluationContext context) throws java.io.IOException;
+
+	public void render(EvaluationContext context) throws java.io.IOException
+	{
+		Map<String, Object> oldVariables = context.setVariables(new MapChain<String, Object>(context.getVariables(), makeMap("self", this)));
+		try
+		{
+			renderImpl(context);
+		}
+		finally
+		{
+			context.setVariables(oldVariables);
+		}
+	}
 
 	public void render(EvaluationContext context, Map<String, Object> variables) throws java.io.IOException
 	{
-		Map<String, Object> oldVariables = context.setVariables(variables);
+		Map<String, Object> oldVariables = context.setVariables(new MapChain<String, Object>(variables, makeMap("self", this)));
 		try
 		{
-			render(context);
+			renderImpl(context);
 		}
 		finally
 		{
