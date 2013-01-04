@@ -3,6 +3,7 @@ exp-61:
 Comments:
 * Added support classes AbstractMapChain and MapChain.
 * Added support for the automatic variable self and the function allvars.
+* Added support for nested scopes/closures.
 
 
 exp-60-1:

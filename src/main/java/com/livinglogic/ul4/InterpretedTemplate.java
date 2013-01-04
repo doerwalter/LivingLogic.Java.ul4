@@ -247,6 +247,21 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		this.name = name;
 	}
 
+	public String getSource()
+	{
+		return source;
+	}
+
+	public String getStartDelim()
+	{
+		return startdelim;
+	}
+
+	public String getEndDelim()
+	{
+		return enddelim;
+	}
+
 	public String toString(int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -298,7 +313,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.put(name, this);
+		context.put(name, new TemplateClosure(this, context.getVariables()));
 		return null;
 	}
 

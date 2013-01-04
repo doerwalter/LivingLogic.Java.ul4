@@ -35,6 +35,16 @@ abstract class Block extends Tag
 		this.endlocation = endlocation;
 	}
 
+	public Location getEndLocation()
+	{
+		return endlocation;
+	}
+
+	public List<Tag> getContent()
+	{
+		return content;
+	}
+
 	abstract public boolean handleLoopControl(String name);
 
 	public Object decoratedEvaluate(EvaluationContext context) throws IOException

@@ -2994,6 +2994,14 @@ public class UL4Test
 		checkTemplateOutput("lower", source + "<?print lower.name?>");
 	}
 
+	@Test
+	public void nestedscopes()
+	{
+		checkTemplateOutput("0;1;2;", "<?for i in range(3)?><?def x?><?print i?>;<?end def?><?render x.render()?><?end for?>");
+		checkTemplateOutput("1;", "<?for i in range(3)?><?if i == 1?><?def x?><?print i?>;<?end def?><?end if?><?end for?><?render x.render()?>");
+		checkTemplateOutput("1", "<?code i = 1?><?def x?><?print i?><?end def?><?code i = 2?><?render x.render()?>");
+	}
+
 	private InterpretedTemplate universaltemplate()
 	{
 		return getTemplate(
