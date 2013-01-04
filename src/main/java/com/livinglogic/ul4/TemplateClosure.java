@@ -60,10 +60,13 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 	// so we extend ObjectAsMap and reimplement the methods of CompiledTemplate
 	public void render(EvaluationContext context, Map<String, Object> variables) throws java.io.IOException
 	{
-		Map<String, Object> oldVariables = context.setVariables(variables);
+		if (variables == null)
+			variables = new HashMap<String, Object>();
+		Map<String, Object> newVariables = new MapChain<String, Object>(variables, this.variables);
+		Map<String, Object> oldVariables = context.setVariables(newVariables);
 		try
 		{
-			render(context);
+			template.render(context);
 		}
 		finally
 		{

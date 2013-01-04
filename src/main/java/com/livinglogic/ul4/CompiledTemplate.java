@@ -10,8 +10,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
+import java.util.HashMap;
 
 import static com.livinglogic.utils.MapUtils.makeMap;
+import com.livinglogic.utils.ObjectAsMap;
 import com.livinglogic.utils.MapChain;
 
 /**
@@ -20,7 +22,7 @@ import com.livinglogic.utils.MapChain;
  * @author W. Doerwald
  */
 
-public abstract class CompiledTemplate implements Template, UL4Type
+public abstract class CompiledTemplate extends ObjectAsMap implements Template, UL4Type
 {
 	public String getName()
 	{
@@ -31,20 +33,20 @@ public abstract class CompiledTemplate implements Template, UL4Type
 
 	public void render(EvaluationContext context) throws java.io.IOException
 	{
-		Map<String, Object> oldVariables = context.setVariables(new MapChain<String, Object>(context.getVariables(), makeMap("self", this)));
+		Template oldTemplate = context.setTemplate(this);
 		try
 		{
 			renderImpl(context);
 		}
 		finally
 		{
-			context.setVariables(oldVariables);
+			context.setTemplate(oldTemplate);
 		}
 	}
 
 	public void render(EvaluationContext context, Map<String, Object> variables) throws java.io.IOException
 	{
-		Map<String, Object> oldVariables = context.setVariables(new MapChain<String, Object>(variables, makeMap("self", this)));
+		Map<String, Object> oldVariables = context.setVariables(variables);
 		try
 		{
 			renderImpl(context);
@@ -101,5 +103,18 @@ public abstract class CompiledTemplate implements Template, UL4Type
 	public String typeUL4()
 	{
 		return "template";
+	}
+
+	private static Map<String, ValueMaker> valueMakers = null;
+
+	public Map<String, ValueMaker> getValueMakers()
+	{
+		if (valueMakers == null)
+		{
+			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
+			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((CompiledTemplate)object).getName();}});
+			valueMakers = v;
+		}
+		return valueMakers;
 	}
 }
