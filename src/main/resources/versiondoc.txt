@@ -4,7 +4,7 @@ Comments:
 * Added support classes AbstractMapChain and MapChain.
 * Added support for the automatic variable self and the function allvars.
 * Added support for nested scopes/closures.
-* Added support for calling functions with a mixture of postitional and keyword
+* Added support for calling functions with a mixture of positional and keyword
   arguments.
 
 
