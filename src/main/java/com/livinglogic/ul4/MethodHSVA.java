@@ -9,18 +9,16 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.Vector;
 
-public class MethodHSVA implements Method
+public class MethodHSVA extends NormalMethod
 {
 	public String getName()
 	{
 		return "hsva";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
 	{
-		if (args.length == 0)
-			return call(obj);
-		throw new ArgumentCountMismatchException("method", "hsva", args.length, 0);
+		return call(obj);
 	}
 
 	public static Vector call(Color obj)

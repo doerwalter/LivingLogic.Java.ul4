@@ -10,22 +10,23 @@ import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
 
-public class MethodReplace implements Method
+public class MethodReplace extends NormalMethod
 {
 	public String getName()
 	{
 		return "replace";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 2:
-				return call(obj, args[0], args[1]);
-			default:
-				throw new ArgumentCountMismatchException("method", "replace", args.length, 2);
-		}
+		argumentDescriptions.add("old");
+		argumentDescriptions.add("new");
+		argumentDescriptions.add("count", null);
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	{
+		return call(obj, args[0], args[1], args[2]);
 	}
 
 	public static String call(String obj, String search, String replace)
@@ -33,17 +34,20 @@ public class MethodReplace implements Method
 		return StringUtils.replace(obj, search, replace);
 	}
 
-	public static String call(Object obj, String search, String replace)
+	public static String call(String obj, String search, String replace, int count)
 	{
-		if (obj instanceof String)
-			return call((String)obj, search, replace);
-		throw new ArgumentTypeMismatchException("{}.replace({}, {})", obj, search, replace);
+		return StringUtils.replace(obj, search, replace, count);
 	}
 
-	public static String call(Object obj, Object search, Object replace)
+	public static String call(Object obj, Object search, Object replace, Object count)
 	{
-		if (search instanceof String && replace instanceof String)
-			return call(obj, (String)search, (String)replace);
+		if (obj instanceof String && search instanceof String && replace instanceof String)
+		{
+			if (count == null)
+				return call((String)obj, (String)search, (String)replace);
+			else
+				return call((String)obj, (String)search, (String)replace, Utils.toInt(count));
+		}
 		throw new ArgumentTypeMismatchException("{}.replace({}, {})", obj, search, replace);
 	}
 }

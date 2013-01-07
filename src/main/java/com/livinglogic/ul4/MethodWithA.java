@@ -8,22 +8,21 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-public class MethodWithA implements Method
+public class MethodWithA extends NormalMethod
 {
 	public String getName()
 	{
 		return "witha";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 1:
-				return call(obj, args[0]);
-			default:
-				throw new ArgumentCountMismatchException("method", "witha", args.length, 1);
-		}
+		argumentDescriptions.add("a");
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	{
+		return call(obj, args[0]);
 	}
 
 	public static Color call(Color obj, int a)

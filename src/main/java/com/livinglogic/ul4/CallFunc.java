@@ -23,6 +23,8 @@ public class CallFunc extends AST
 	protected Function function;
 	protected List<AST> args = new LinkedList<AST>();
 	protected List<KeywordArgument> kwargs = new LinkedList<KeywordArgument>();
+	protected AST remainingArgs = null;
+	protected AST remainingKWArgs = null;
 
 	private static Map<String, Function> functions = new HashMap<String, Function>();
 
@@ -118,6 +120,16 @@ public class CallFunc extends AST
 		kwargs.add(new KeywordArgument(name, arg));
 	}
 
+	public void setRemainingArguments(AST arguments)
+	{
+		remainingArgs = arguments;
+	}
+
+	public void setRemainingKeywordArguments(AST arguments)
+	{
+		remainingKWArgs = arguments;
+	}
+
 	public String toString(int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -128,6 +140,23 @@ public class CallFunc extends AST
 		{
 			buffer.append(", ");
 			buffer.append(arg);
+		}
+		for (KeywordArgument arg : kwargs)
+		{
+			buffer.append(", ");
+			buffer.append(arg.getName());
+			buffer.append("=");
+			buffer.append(arg.getArg());
+		}
+		if (remainingArgs != null)
+		{
+			buffer.append(", *");
+			buffer.append(remainingArgs);
+		}
+		if (remainingKWArgs != null)
+		{
+			buffer.append(", **");
+			buffer.append(remainingKWArgs);
 		}
 		buffer.append(")");
 		return buffer.toString();
@@ -140,15 +169,50 @@ public class CallFunc extends AST
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		Object[] realArgs = new Object[args.size()];
+		Object[] realArgs;
+		if (remainingArgs != null)
+		{
+			Object realRemainingArgs = remainingArgs.decoratedEvaluate(context);
+			if (!(realRemainingArgs instanceof List))
+				throw new RemainingArgumentsException(function.getName());
 
-		for (int i = 0; i < realArgs.length; ++i)
-			realArgs[i] = args.get(i).decoratedEvaluate(context);
+			int argsSize = args.size();
+			realArgs = new Object[argsSize + ((List)realRemainingArgs).size()];
+
+			for (int i = 0; i < argsSize; ++i)
+				realArgs[i] = args.get(i).decoratedEvaluate(context);
+
+			for (int i = 0; i < ((List)realRemainingArgs).size(); ++i)
+				realArgs[argsSize + i] = ((List)realRemainingArgs).get(i);
+		}
+		else
+		{
+			realArgs = new Object[args.size()];
+
+			for (int i = 0; i < realArgs.length; ++i)
+				realArgs[i] = args.get(i).decoratedEvaluate(context);
+		}
 
 		Map<String, Object> realKWArgs = new LinkedHashMap<String, Object>();
 
 		for (KeywordArgument arg : kwargs)
 			realKWArgs.put(arg.getName(), arg.getArg().decoratedEvaluate(context));
+
+		if (remainingKWArgs != null)
+		{
+			Object realRemainingKWArgs = remainingKWArgs.decoratedEvaluate(context);
+			if (!(realRemainingKWArgs instanceof Map))
+				throw new RemainingKeywordArgumentsException(function.getName());
+			for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)realRemainingKWArgs).entrySet())
+			{
+				Object argumentName = entry.getKey();
+				if (!(argumentName instanceof String))
+					throw new RemainingKeywordArgumentsException(function.getName());
+				if (realKWArgs.containsKey(argumentName))
+					throw new DuplicateArgumentException(function.getName(), (String)argumentName);
+				realKWArgs.put((String)argumentName, entry.getValue());
+			}
+		}
 
 		return function.evaluate(context, realArgs, realKWArgs);
 	}
@@ -170,6 +234,8 @@ public class CallFunc extends AST
 		for (KeywordArgument arg : kwargs)
 			kwargList.add(asList(arg.getName(), arg.getArg()));
 		encoder.dump(kwargList);
+		encoder.dump(remainingArgs);
+		encoder.dump(remainingKWArgs);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
@@ -180,6 +246,8 @@ public class CallFunc extends AST
 		List<List> kwargList = (List<List>)decoder.load();
 		for (List arg : kwargList)
 			append((String)arg.get(0), (AST)arg.get(1));
+		remainingArgs = (AST)decoder.load();
+		remainingKWArgs = (AST)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

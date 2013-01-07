@@ -10,22 +10,16 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MethodISOFormat implements Method
+public class MethodISOFormat extends NormalMethod
 {
 	public String getName()
 	{
 		return "isoformat";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
 	{
-		switch (args.length)
-		{
-			case 0:
-				return call(obj);
-			default:
-				throw new ArgumentCountMismatchException("method", "isoformat", args.length, 0);
-		}
+		return call(obj);
 	}
 
 	private static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy-MM-dd");

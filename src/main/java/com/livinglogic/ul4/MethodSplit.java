@@ -12,26 +12,22 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-public class MethodSplit implements Method
+public class MethodSplit extends NormalMethod
 {
 	public String getName()
 	{
 		return "split";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 0:
-				return call(obj);
-			case 1:
-				return call(obj, args[0]);
-			case 2:
-				return call(obj, args[0], args[1]);
-			default:
-				throw new ArgumentCountMismatchException("method", "split", args.length, 0, 2);
-		}
+		argumentDescriptions.add("sep", null);
+		argumentDescriptions.add("count", null);
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	{
+		return call(obj, args[0], args[1]);
 	}
 
 	public static List<String> call(String obj)
@@ -39,30 +35,11 @@ public class MethodSplit implements Method
 		return Arrays.asList(StringUtils.split(obj));
 	}
 
-	public static List<String> call(Object obj)
-	{
-		if (obj instanceof String)
-			return call((String)obj);
-		throw new ArgumentTypeMismatchException("{}.split()", obj);
-	}
-
 	public static List<String> call(String obj, String separator)
 	{
 		if (separator == null)
 			return call(obj);
 		return Arrays.asList(StringUtils.splitByWholeSeparatorPreserveAllTokens(obj, separator));
-	}
-
-	public static List<String> call(Object obj, Object separator)
-	{
-		if (obj instanceof String)
-		{
-			if (separator == null)
-				return call((String)obj);
-			else if (separator instanceof String)
-				return call((String)obj, (String)separator);
-		}
-		throw new ArgumentTypeMismatchException("{}.split({})", obj, separator);
 	}
 
 	public static List<String> call(String obj, String separator, int maxsplit)
@@ -76,10 +53,20 @@ public class MethodSplit implements Method
 	{
 		if (obj instanceof String)
 		{
-			if (separator == null)
-				return call((String)obj, null, Utils.toInt(maxsplit));
-			else if (separator instanceof String)
-				return call((String)obj, (String)separator, Utils.toInt(maxsplit));
+			if (maxsplit == null)
+			{
+				if (separator == null)
+					return call((String)obj, null);
+				else if (separator instanceof String)
+					return call((String)obj, (String)separator);
+			}
+			else
+			{
+				if (separator == null)
+					return call((String)obj, null, Utils.toInt(maxsplit));
+				else if (separator instanceof String)
+					return call((String)obj, (String)separator, Utils.toInt(maxsplit));
+			}
 		}
 		throw new ArgumentTypeMismatchException("{}.split({}, {})", obj, separator, maxsplit);
 	}

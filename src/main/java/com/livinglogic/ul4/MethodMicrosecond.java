@@ -11,22 +11,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class MethodMicrosecond implements Method
+public class MethodMicrosecond extends NormalMethod
 {
 	public String getName()
 	{
 		return "microsecond";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
 	{
-		switch (args.length)
-		{
-			case 0:
-				return call(obj);
-			default:
-				throw new ArgumentCountMismatchException("method", "microsecond", args.length, 0);
-		}
+		return call(obj);
 	}
 
 	public static int call(Date obj)

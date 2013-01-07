@@ -8,22 +8,21 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-public class MethodEndsWith implements Method
+public class MethodEndsWith extends NormalMethod
 {
 	public String getName()
 	{
 		return "endswith";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 1:
-				return call(obj, args[0]);
-			default:
-				throw new ArgumentCountMismatchException("method", "endswith", args.length, 1);
-		}
+		argumentDescriptions.add("suffix");
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	{
+		return call(obj, args[0]);
 	}
 
 	public static boolean call(String obj, String arg)

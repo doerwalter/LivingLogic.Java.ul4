@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
 import java.io.IOException;
 
 public class MethodRenderS implements Method
@@ -15,26 +16,22 @@ public class MethodRenderS implements Method
 		return "renders";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs) throws IOException
 	{
-		switch (args.length)
-		{
-			case 0:
-				return call(context, obj);
-			default:
-				throw new ArgumentCountMismatchException("method", "renders", args.length, 0);
-		}
+		if (args.length > 0)
+			throw new PositionalArgumentsNotSupportedException(getName());
+		return call(context, obj, kwargs);
 	}
 
-	public static String call(EvaluationContext context, Template obj)
+	public static String call(EvaluationContext context, Template obj, Map<String, Object> variables)
 	{
-		return obj.renders(context, null);
+		return obj.renders(context, variables);
 	}
 
-	public static String call(EvaluationContext context, Object obj)
+	public static String call(EvaluationContext context, Object obj, Map<String, Object> variables)
 	{
 		if (obj instanceof Template)
-			return call(context, (Template)obj);
+			return call(context, (Template)obj, variables);
 		throw new UnsupportedOperationException("renders() method requires a template!");
 	}
 }

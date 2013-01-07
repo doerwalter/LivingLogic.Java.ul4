@@ -8,18 +8,16 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-public class MethodLum implements Method
+public class MethodLum extends NormalMethod
 {
 	public String getName()
 	{
 		return "lum";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
 	{
-		if (args.length == 0)
-			return call(obj);
-		throw new ArgumentCountMismatchException("method", "lum", args.length, 0);
+		return call(obj);
 	}
 
 	public static double call(Color obj)

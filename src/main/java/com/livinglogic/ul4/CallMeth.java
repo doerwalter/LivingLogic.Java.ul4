@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedHashMap;
+import static java.util.Arrays.asList;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
@@ -21,6 +23,9 @@ public class CallMeth extends AST
 	protected Method method;
 	protected AST obj;
 	protected List<AST> args = new LinkedList<AST>();
+	protected List<KeywordArgument> kwargs = new LinkedList<KeywordArgument>();
+	protected AST remainingArgs = null;
+	protected AST remainingKWArgs = null;
 
 	static Map<String, Method> methods = new HashMap<String, Method>();
 
@@ -92,6 +97,21 @@ public class CallMeth extends AST
 		args.add(arg);
 	}
 
+	public void append(String name, AST arg)
+	{
+		kwargs.add(new KeywordArgument(name, arg));
+	}
+
+	public void setRemainingArguments(AST arguments)
+	{
+		remainingArgs = arguments;
+	}
+
+	public void setRemainingKeywordArguments(AST arguments)
+	{
+		remainingKWArgs = arguments;
+	}
+
 	public String toString(int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -104,6 +124,23 @@ public class CallMeth extends AST
 		{
 			buffer.append(", ");
 			buffer.append(arg);
+		}
+		for (KeywordArgument arg : kwargs)
+		{
+			buffer.append(", ");
+			buffer.append(arg.getName());
+			buffer.append("=");
+			buffer.append(arg.getArg());
+		}
+		if (remainingArgs != null)
+		{
+			buffer.append(", *");
+			buffer.append(remainingArgs);
+		}
+		if (remainingKWArgs != null)
+		{
+			buffer.append(", **");
+			buffer.append(remainingKWArgs);
 		}
 		buffer.append(")");
 		return buffer.toString();
@@ -118,11 +155,51 @@ public class CallMeth extends AST
 	{
 		Object obj = this.obj.decoratedEvaluate(context);
 
-		Object[] realArgs = new Object[args.size()];
+		Object[] realArgs;
+		if (remainingArgs != null)
+		{
+			Object realRemainingArgs = remainingArgs.decoratedEvaluate(context);
+			if (!(realRemainingArgs instanceof List))
+				throw new RemainingArgumentsException(method.getName());
 
-		for (int i = 0; i < realArgs.length; ++i)
-			realArgs[i] = args.get(i).decoratedEvaluate(context);
-		return method.evaluate(context, obj, realArgs);
+			realArgs = new Object[args.size() + remainingArgs.size()];
+
+			for (int i = 0; i < realArgs.length; ++i)
+				realArgs[i] = args.get(i).decoratedEvaluate(context);
+
+			for (int i = 0; i < ((List)realRemainingArgs).size(); ++i)
+				realArgs[args.size() + i] = ((List)realRemainingArgs).get(i);
+		}
+		else
+		{
+			realArgs = new Object[args.size()];
+
+			for (int i = 0; i < realArgs.length; ++i)
+				realArgs[i] = args.get(i).decoratedEvaluate(context);
+		}
+
+		Map<String, Object> realKWArgs = new LinkedHashMap<String, Object>();
+
+		for (KeywordArgument arg : kwargs)
+			realKWArgs.put(arg.getName(), arg.getArg().decoratedEvaluate(context));
+
+		if (remainingKWArgs != null)
+		{
+			Object realRemainingKWArgs = remainingKWArgs.decoratedEvaluate(context);
+			if (!(realRemainingKWArgs instanceof Map))
+				throw new RemainingKeywordArgumentsException(method.getName());
+			for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)realRemainingKWArgs).entrySet())
+			{
+				Object argumentName = entry.getKey();
+				if (!(argumentName instanceof String))
+					throw new RemainingKeywordArgumentsException(method.getName());
+				if (realKWArgs.containsKey(argumentName))
+					throw new DuplicateArgumentException(method.getName(), (String)argumentName);
+				realKWArgs.put((String)argumentName, entry.getValue());
+			}
+		}
+
+		return method.evaluate(context, obj, realArgs, realKWArgs);
 	}
 
 	private static Method getMethod(String methname)
@@ -139,6 +216,12 @@ public class CallMeth extends AST
 		encoder.dump(method.getName());
 		encoder.dump(obj);
 		encoder.dump(args);
+		List kwargList = new LinkedList();
+		for (KeywordArgument arg : kwargs)
+			kwargList.add(asList(arg.getName(), arg.getArg()));
+		encoder.dump(kwargList);
+		encoder.dump(remainingArgs);
+		encoder.dump(remainingKWArgs);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
@@ -147,6 +230,11 @@ public class CallMeth extends AST
 		method = getMethod((String)decoder.load());
 		obj = (AST)decoder.load();
 		args = (List<AST>)decoder.load();
+		List<List> kwargList = (List<List>)decoder.load();
+		for (List arg : kwargList)
+			append((String)arg.get(0), (AST)arg.get(1));
+		remainingArgs = (AST)decoder.load();
+		remainingKWArgs = (AST)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;
@@ -159,6 +247,7 @@ public class CallMeth extends AST
 			v.put("obj", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).obj;}});
 			v.put("methname", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).method.getName();}});
 			v.put("args", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).args;}});
+			v.put("kwargs", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).kwargs;}});
 			valueMakers = v;
 		}
 		return valueMakers;

@@ -17,23 +17,20 @@ public class MethodRender implements Method
 		return "render";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs) throws IOException
 	{
-		switch (args.length)
-		{
-			case 0:
-				call(context, obj);
-				return null;
-			default:
-				throw new ArgumentCountMismatchException("method", "render", args.length, 0);
-		}
+		if (args.length > 0)
+			throw new PositionalArgumentsNotSupportedException(getName());
+
+		call(context, obj, kwargs);
+		return null;
 	}
 
-	public static void call(EvaluationContext context, Template obj)
+	public static void call(EvaluationContext context, Template obj, Map<String, Object> variables)
 	{
 		try
 		{
-			obj.render(context, null);
+			obj.render(context, variables);
 		}
 		catch (IOException ex)
 		{
@@ -41,10 +38,10 @@ public class MethodRender implements Method
 		}
 	}
 
-	public static void call(EvaluationContext context, Object obj)
+	public static void call(EvaluationContext context, Object obj, Map<String, Object> variables)
 	{
 		if (obj instanceof Template)
-			call(context, (Template)obj);
+			call(context, (Template)obj, variables);
 		else
 			throw new UnsupportedOperationException("render() method requires a template!");
 	}

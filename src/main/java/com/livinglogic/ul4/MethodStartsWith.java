@@ -8,22 +8,21 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-public class MethodStartsWith implements Method
+public class MethodStartsWith extends NormalMethod
 {
 	public String getName()
 	{
 		return "startswith";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 1:
-				return call(obj, args[0]);
-			default:
-				throw new ArgumentCountMismatchException("method", "startswith", args.length, 1);
-		}
+		argumentDescriptions.add("prefix");
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	{
+		return call(obj, args[0]);
 	}
 
 	public static Object call(String obj, String prefix)

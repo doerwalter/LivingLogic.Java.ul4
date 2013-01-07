@@ -11,22 +11,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
-public class MethodValues implements Method
+public class MethodValues extends NormalMethod
 {
 	public String getName()
 	{
 		return "values";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
 	{
-		switch (args.length)
-		{
-			case 0:
-				return call(obj);
-			default:
-				throw new ArgumentCountMismatchException("method", "values", args.length, 0);
-		}
+		return call(obj);
 	}
 
 	public static Object call(Map obj)

@@ -11,22 +11,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class MethodMinute implements Method
+public class MethodMinute extends NormalMethod
 {
 	public String getName()
 	{
 		return "minute";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
 	{
-		switch (args.length)
-		{
-			case 0:
-				return call(obj);
-			default:
-				throw new ArgumentCountMismatchException("method", "minute", args.length, 0);
-		}
+		return call(obj);
 	}
 
 	public static int call(Date obj)

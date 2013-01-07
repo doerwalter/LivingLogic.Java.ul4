@@ -9,26 +9,23 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.List;
 
-public class MethodRFind implements Method
+public class MethodRFind extends NormalMethod
 {
 	public String getName()
 	{
 		return "rfind";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 1:
-				return call(obj, args[0]);
-			case 2:
-				return call(obj, args[0], args[1]);
-			case 3:
-				return call(obj, args[0], args[1], args[2]);
-			default:
-				throw new ArgumentCountMismatchException("method", "rfind", args.length, 1, 3);
-		}
+		argumentDescriptions.add("sub");
+		argumentDescriptions.add("start", null);
+		argumentDescriptions.add("end", null);
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	{
+		return call(obj, args[0], args[1], args[2]);
 	}
 
 	public static int call(String obj, String search)
@@ -39,15 +36,6 @@ public class MethodRFind implements Method
 	public static int call(List obj, Object search)
 	{
 		return obj.lastIndexOf(search);
-	}
-
-	public static int call(Object obj, Object search)
-	{
-		if (obj instanceof String && search instanceof String)
-			return call((String)obj, (String)search);
-		else if (obj instanceof List)
-			return call((List)obj, search);
-		throw new ArgumentTypeMismatchException("{}.rfind({})", obj, search);
 	}
 
 	public static int call(String obj, String search, int start)
@@ -66,15 +54,6 @@ public class MethodRFind implements Method
 		if (result < start)
 			return -1;
 		return result;
-	}
-
-	public static int call(Object obj, Object search, Object start)
-	{
-		if (obj instanceof String && search instanceof String)
-			return call((String)obj, (String)search, Utils.toInt(start));
-		else if (obj instanceof List)
-			return call((List)obj, search, Utils.toInt(start));
-		throw new ArgumentTypeMismatchException("{}.rfind({}, {})", obj, search, start);
 	}
 
 	public static int call(String obj, String search, int start, int end)
@@ -101,12 +80,20 @@ public class MethodRFind implements Method
 		return pos;
 	}
 
-	public static int call(Object obj, Object search, Object start, Object end)
+	public static Object call(Object obj, Object sub, Object start, Object end)
 	{
-		if (obj instanceof String && search instanceof String)
-			return call((String)obj, (String)search, Utils.toInt(start), Utils.toInt(end));
+		if (obj instanceof String && sub instanceof String)
+		{
+			int startIndex = start != null ? Utils.toInt(start) : 0;
+			int endIndex = end != null ? Utils.toInt(end) : ((String)obj).length();
+			return call((String)obj, (String)sub, startIndex, endIndex);
+		}
 		else if (obj instanceof List)
-			return call((List)obj, search, Utils.toInt(start), Utils.toInt(end));
-		throw new ArgumentTypeMismatchException("{}.rfind({}, {}, {})", obj, search, start, end);
+		{
+			int startIndex = start != null ? Utils.toInt(start) : 0;
+			int endIndex = end != null ? Utils.toInt(end) : ((List)obj).size();
+			return call((List)obj, sub, startIndex, endIndex);
+		}
+		throw new ArgumentTypeMismatchException("{}.rfind({}, {}, {})", obj, sub, start, end);
 	}
 }

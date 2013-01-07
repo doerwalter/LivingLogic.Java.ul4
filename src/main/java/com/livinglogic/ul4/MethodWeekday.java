@@ -12,22 +12,16 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-public class MethodWeekday implements Method
+public class MethodWeekday extends NormalMethod
 {
 	public String getName()
 	{
 		return "weekday";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
 	{
-		switch (args.length)
-		{
-			case 0:
-				return call(obj);
-			default:
-				throw new ArgumentCountMismatchException("method", "weekday", args.length, 0);
-		}
+		return call(obj);
 	}
 
 	public static int call(Date obj)

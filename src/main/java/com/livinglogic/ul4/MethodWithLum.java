@@ -8,22 +8,21 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-public class MethodWithLum implements Method
+public class MethodWithLum extends NormalMethod
 {
 	public String getName()
 	{
 		return "withlum";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 1:
-				return call(obj, args[0]);
-			default:
-				throw new ArgumentCountMismatchException("method", "withlum", args.length, 1);
-		}
+		argumentDescriptions.add("lum");
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	{
+		return call(obj, args[0]);
 	}
 
 	public static Color call(Color obj, double lum)

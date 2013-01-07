@@ -10,24 +10,21 @@ import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
 
-public class MethodStrip implements Method
+public class MethodStrip extends NormalMethod
 {
 	public String getName()
 	{
 		return "strip";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 0:
-				return call(obj);
-			case 1:
-				return call(obj, args[0]);
-			default:
-				throw new ArgumentCountMismatchException("method", "strip", args.length, 0, 1);
-		}
+		argumentDescriptions.add("chars", null);
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	{
+		return call(obj, args[0]);
 	}
 
 	public static String call(String obj)
@@ -49,8 +46,13 @@ public class MethodStrip implements Method
 
 	public static String call(Object obj, Object stripChars)
 	{
-		if (obj instanceof String && stripChars instanceof String)
-			return call((String)obj, (String)stripChars);
+		if (obj instanceof String)
+		{
+			if (stripChars == null)
+				return call((String)obj);
+			else if (stripChars instanceof String)
+				return call((String)obj, (String)stripChars);
+		}
 		throw new ArgumentTypeMismatchException("{}.strip({})", obj, stripChars);
 	}
 }

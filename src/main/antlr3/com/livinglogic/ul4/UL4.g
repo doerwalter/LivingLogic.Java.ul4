@@ -14,7 +14,6 @@ options
 
 	import com.livinglogic.ul4.Utils;
 	import com.livinglogic.ul4.Color;
-	import com.livinglogic.ul4.CallArg;
 }
 
 @lexer::header
@@ -345,48 +344,64 @@ expr10 returns [AST node]
 	: a=atom { $node = $a.node; }
 	|
 		/* No arguments */
-		n=name '(' ')' { $node = new CallFunc($n.text); }
-	|
-		/* At least one positional argument */
-		n=name { $node = new CallFunc($n.text); }
-		'('
-		a1=exprarg { ((CallFunc)$node).append($a1.node); }
+		n=name
+		'(' { $node = new CallFunc($n.text); }
 		(
-			','
-			a2=exprarg { ((CallFunc)$node).append($a2.node); }
-		)*
-		(
-			','
-			an3=name '=' av3=exprarg { ((CallFunc)$node).append($an3.text, $av3.node); }
-		)*
-		','?
-		')'
-	|
-		/* Keyword arguments only */
-		n=name { $node = new CallFunc($n.text); }
-		'('
-		an1=name '=' av1=exprarg { ((CallFunc)$node).append($an1.text, $av1.node); }
-		(
-			','
-			an2=name '=' av2=exprarg { ((CallFunc)$node).append($an2.text, $av2.node); }
-		)*
-		','?
-		')'
+			/* No arguments */
+		|
+			/* "**" argument only */
+			'**' rkwargs=exprarg { ((CallFunc)$node).setRemainingKeywordArguments($rkwargs.node); }
+			','?
+		|
+			/* "*" argument only (and maybe **) */
+			'*' rargs=exprarg { ((CallFunc)$node).setRemainingArguments($rargs.node); }
+			(
+				','
+				'**' rkwargs=exprarg { ((CallFunc)$node).setRemainingKeywordArguments($rkwargs.node); }
+			)?
+			','?
+		|
+			/* At least one positional argument */
+			a1=exprarg { ((CallFunc)$node).append($a1.node); }
+			(
+				','
+				a2=exprarg { ((CallFunc)$node).append($a2.node); }
+			)*
+			(
+				','
+				an3=name '=' av3=exprarg { ((CallFunc)$node).append($an3.text, $av3.node); }
+			)*
+			(
+				','
+				'*' rargs=exprarg { ((CallFunc)$node).setRemainingArguments($rargs.node); }
+			)?
+			(
+				','
+				'**' rkwargs=exprarg { ((CallFunc)$node).setRemainingKeywordArguments($rkwargs.node); }
+			)?
+			','?
+		|
+			/* Keyword arguments only */
+			an1=name '=' av1=exprarg { ((CallFunc)$node).append($an1.text, $av1.node); }
+			(
+				','
+				an2=name '=' av2=exprarg { ((CallFunc)$node).append($an2.text, $av2.node); }
+			)*
+			(
+				','
+				'*' rargs=exprarg { ((CallFunc)$node).setRemainingArguments($rargs.node); }
+			)?
+			(
+				','
+				'**' rkwargs=exprarg { ((CallFunc)$node).setRemainingKeywordArguments($rkwargs.node); }
+			)?
+			','?
+		)
+		')' 
 	;
 
 
 /* Attribute access, method call, item access, slice access */
-fragment
-callarg returns [CallArg node]
-	:
-		n=name
-		'='
-		e=exprarg { $node = new CallArgNamed($n.text, $e.node); }
-	|
-		'**'
-		e=exprarg { $node = new CallArgDict($e.node); }
-	;
-
 expr9 returns [AST node]
 	@init
 	{
@@ -398,36 +413,64 @@ expr9 returns [AST node]
 	:
 		e1=expr10 { $node = $e1.node; }
 		(
-			/* Attribute access/function call */
+			/* Attribute access/method call */
 			'.'
 			n=name
 			(
-				/* Function call */
+				/* Method call */
+				'(' { callmeth = true; $node = new CallMeth($node, $n.text); }
 				(
 					/* No arguments */
-					'('
-					')' { callmeth = true; $node = new CallMeth($node, $n.text); }
 				|
-					/* Positional argument */
-					'(' { callmeth = true; $node = new CallMeth($node, $n.text); }
-					pa1=exprarg { ((CallMeth)$node).append($pa1.node); }
+					/* "**" argument only */
+					'**' rkwargs=exprarg { ((CallMeth)$node).setRemainingKeywordArguments($rkwargs.node); }
+					','?
+				|
+					/* "*" argument only (and maybe **) */
+					'*' rargs=exprarg { ((CallMeth)$node).setRemainingArguments($rargs.node); }
 					(
 						','
-						pa2=exprarg { ((CallMeth)$node).append($pa2.node); }
-					)*
+						'**' rkwargs=exprarg { ((CallMeth)$node).setRemainingKeywordArguments($rkwargs.node); }
+					)?
 					','?
-					')'
 				|
-					/* Keyword arguments */
-					'(' { callmeth = true; $node = new CallMethKeywords($node, $n.text); }
-					kwa1=callarg { ((CallMethKeywords)$node).append($kwa1.node); }
+					/* At least one positional argument */
+					a1=exprarg { ((CallMeth)$node).append($a1.node); }
 					(
 						','
-						kwa2=callarg { ((CallMethKeywords)$node).append($kwa2.node); }
+						a2=exprarg { ((CallMeth)$node).append($a2.node); }
 					)*
+					(
+						','
+						an3=name '=' av3=exprarg { ((CallMeth)$node).append($an3.text, $av3.node); }
+					)*
+					(
+						','
+						'*' rargs=exprarg { ((CallMeth)$node).setRemainingArguments($rargs.node); }
+					)?
+					(
+						','
+						'**' rkwargs=exprarg { ((CallMeth)$node).setRemainingKeywordArguments($rkwargs.node); }
+					)?
 					','?
-					')'
+				|
+					/* Keyword arguments only */
+					an1=name '=' av1=exprarg { ((CallMeth)$node).append($an1.text, $av1.node); }
+					(
+						','
+						an2=name '=' av2=exprarg { ((CallMeth)$node).append($an2.text, $av2.node); }
+					)*
+					(
+						','
+						'*' rargs=exprarg { ((CallMeth)$node).setRemainingArguments($rargs.node); }
+					)?
+					(
+						','
+						'**' rkwargs=exprarg { ((CallMeth)$node).setRemainingKeywordArguments($rkwargs.node); }
+					)?
+					','?
 				)
+				')'
 			)? { if (!callmeth) $node = GetAttr.make($node, $n.text); }
 		|
 			/* Item/slice access */

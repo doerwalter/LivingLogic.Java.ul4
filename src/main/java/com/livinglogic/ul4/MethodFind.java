@@ -9,26 +9,23 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.List;
 
-public class MethodFind implements Method
+public class MethodFind extends NormalMethod
 {
 	public String getName()
 	{
 		return "find";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 1:
-				return call(obj, args[0]);
-			case 2:
-				return call(obj, args[0], args[1]);
-			case 3:
-				return call(obj, args[0], args[1], args[2]);
-			default:
-				throw new ArgumentCountMismatchException("method", "find", args.length, 1, 3);
-		}
+		argumentDescriptions.add("sub");
+		argumentDescriptions.add("start", null);
+		argumentDescriptions.add("end", null);
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	{
+		return call(obj, args[0], args[1], args[2]);
 	}
 
 	public static int call(String obj, String sub)
@@ -39,15 +36,6 @@ public class MethodFind implements Method
 	public static int call(List obj, Object sub)
 	{
 		return obj.indexOf(sub);
-	}
-
-	public static int call(Object obj, Object sub)
-	{
-		if (obj instanceof String && sub instanceof String)
-			return call((String)obj, (String)sub);
-		else if (obj instanceof List)
-			return call((List)obj, sub);
-		throw new ArgumentTypeMismatchException("{}.find({})", obj, sub);
 	}
 
 	public static int call(String obj, String sub, int start)
@@ -101,9 +89,17 @@ public class MethodFind implements Method
 	public static Object call(Object obj, Object sub, Object start, Object end)
 	{
 		if (obj instanceof String && sub instanceof String)
-			return call((String)obj, (String)sub, Utils.toInt(start), Utils.toInt(end));
+		{
+			int startIndex = start != null ? Utils.toInt(start) : 0;
+			int endIndex = end != null ? Utils.toInt(end) : ((String)obj).length();
+			return call((String)obj, (String)sub, startIndex, endIndex);
+		}
 		else if (obj instanceof List)
-			return call((List)obj, sub, Utils.toInt(start), Utils.toInt(end));
+		{
+			int startIndex = start != null ? Utils.toInt(start) : 0;
+			int endIndex = end != null ? Utils.toInt(end) : ((List)obj).size();
+			return call((List)obj, sub, startIndex, endIndex);
+		}
 		throw new ArgumentTypeMismatchException("{}.find({}, {}, {})", obj, sub, start, end);
 	}
 }

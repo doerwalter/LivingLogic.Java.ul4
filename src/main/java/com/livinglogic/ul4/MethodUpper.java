@@ -8,22 +8,16 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
-public class MethodUpper implements Method
+public class MethodUpper extends NormalMethod
 {
 	public String getName()
 	{
 		return "upper";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
 	{
-		switch (args.length)
-		{
-			case 0:
-				return call(obj);
-			default:
-				throw new ArgumentCountMismatchException("method", "upper", args.length, 0);
-		}
+		return call(obj);
 	}
 
 	public static Object call(String obj)

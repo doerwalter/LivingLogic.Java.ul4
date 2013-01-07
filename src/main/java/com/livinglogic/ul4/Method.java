@@ -6,11 +6,12 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
 import java.io.IOException;
 
 public interface Method
 {
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException;
-
 	public String getName();
+
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs) throws IOException;
 }

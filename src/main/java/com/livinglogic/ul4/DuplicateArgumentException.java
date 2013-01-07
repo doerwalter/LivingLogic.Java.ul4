@@ -13,7 +13,12 @@ public class DuplicateArgumentException extends ArgumentException
 {
 	public DuplicateArgumentException(String name, String argumentName, int argumentPosition)
 	{
-		super(name + "() argument given by name (" + FunctionRepr.call(argumentName) + ") and position (" + argumentPosition + ")");
+		super(name + "() argument " + FunctionRepr.call(argumentName) + (argumentPosition >= 0 ? " (position " + argumentPosition + ")": "") + " specified multiple times");
+	}
+
+	public DuplicateArgumentException(String name, String argumentName)
+	{
+		this(name, argumentName, -1);
 	}
 
 	public DuplicateArgumentException(ArgumentDescriptions descriptions, ArgumentDescription description)

@@ -11,22 +11,21 @@ import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 
-public class MethodJoin implements Method
+public class MethodJoin extends NormalMethod
 {
 	public String getName()
 	{
 		return "join";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object... args) throws IOException
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 1:
-				return call(obj, args[0]);
-			default:
-				throw new ArgumentCountMismatchException("method", "join", args.length, 1);
-		}
+		argumentDescriptions.add("iterable");
+	}
+
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	{
+		return call(obj, args[0]);
 	}
 
 	public static String call(String obj, Iterator iterator)
