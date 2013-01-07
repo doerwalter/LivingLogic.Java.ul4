@@ -6,18 +6,23 @@
 
 package com.livinglogic.ul4;
 
-public class FunctionOrd implements Function
+import java.util.List;
+
+public class FunctionOrd extends NormalFunction
 {
 	public String getName()
 	{
 		return "ord";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "ord", args.length, 1);
+		argumentDescriptions.add("c");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static int call(String obj)

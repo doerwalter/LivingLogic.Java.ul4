@@ -6,22 +6,26 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-public class FunctionFromJSON implements Function
+public class FunctionFromJSON extends NormalFunction
 {
 	public String getName()
 	{
 		return "fromjson";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "fromjson", args.length, 1);
+		argumentDescriptions.add("string");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static Object call(String obj)

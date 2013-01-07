@@ -6,23 +6,26 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class FunctionEnumFL implements Function
+public class FunctionEnumFL extends NormalFunction
 {
 	public String getName()
 	{
 		return "enumfl";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		else if (args.length == 2)
-			return call(args[0], args[1]);
-		throw new ArgumentCountMismatchException("function", "enumfl", args.length, 1, 2);
+		argumentDescriptions.add("iterable");
+		argumentDescriptions.add("start", 0);
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0], args[1]);
 	}
 
 	public static Object call(Object obj)

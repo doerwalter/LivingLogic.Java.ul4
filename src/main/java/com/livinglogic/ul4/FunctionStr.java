@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
+import java.util.LinkedHashMap;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -13,20 +15,21 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
-public class FunctionStr implements Function
+public class FunctionStr extends NormalFunction
 {
 	public String getName()
 	{
 		return "str";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 0)
-			return call();
-		else if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "str", args.length, 0, 1);
+		argumentDescriptions.add("obj", "");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static SimpleDateFormat strDateFormatter = new SimpleDateFormat("yyyy-MM-dd");

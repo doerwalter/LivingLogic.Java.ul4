@@ -6,24 +6,23 @@
 
 package com.livinglogic.ul4;
 
-public class FunctionMonthDelta implements Function
+import java.util.List;
+
+public class FunctionMonthDelta extends NormalFunction
 {
 	public String getName()
 	{
 		return "monthdelta";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 0:
-				return call();
-			case 1:
-				return call(args[0]);
-			default:
-				throw new ArgumentCountMismatchException("function", "monthdelta", args.length, 0, 1);
-		}
+		argumentDescriptions.add("months", 0);
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static MonthDelta call()

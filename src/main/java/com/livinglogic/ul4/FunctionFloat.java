@@ -6,23 +6,25 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class FunctionFloat implements Function
+public class FunctionFloat extends NormalFunction
 {
 	public String getName()
 	{
 		return "float";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 0)
-			return call();
-		else if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "float", args.length, 0, 1);
+		argumentDescriptions.add("obj", 0.0);
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static Object call()

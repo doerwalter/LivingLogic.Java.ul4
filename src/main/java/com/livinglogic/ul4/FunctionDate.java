@@ -6,34 +6,32 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class FunctionDate implements Function
+public class FunctionDate extends NormalFunction
 {
 	public String getName()
 	{
 		return "date";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 3:
-				return call(args[0], args[1], args[2]);
-			case 4:
-				return call(args[0], args[1], args[2], args[3]);
-			case 5:
-				return call(args[0], args[1], args[2], args[3], args[4]);
-			case 6:
-				return call(args[0], args[1], args[2], args[3], args[4], args[5]);
-			case 7:
-				return call(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
-			default:
-				throw new ArgumentCountMismatchException("function", "date", args.length, 3, 7);
-		}
+		argumentDescriptions.add("year");
+		argumentDescriptions.add("month");
+		argumentDescriptions.add("day");
+		argumentDescriptions.add("hour", 0);
+		argumentDescriptions.add("minute", 0);
+		argumentDescriptions.add("second", 0);
+		argumentDescriptions.add("microsecond", 0);
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
 	}
 
 	public static Date call(int year, int month, int day)

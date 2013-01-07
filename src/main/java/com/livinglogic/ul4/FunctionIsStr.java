@@ -6,18 +6,23 @@
 
 package com.livinglogic.ul4;
 
-public class FunctionIsStr implements Function
+import java.util.List;
+
+public class FunctionIsStr extends NormalFunction
 {
 	public String getName()
 	{
 		return "isstr";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "isstr", args.length, 1);
+		argumentDescriptions.add("obj");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static boolean call(Object obj)

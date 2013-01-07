@@ -6,28 +6,25 @@
 
 package com.livinglogic.ul4;
 
-public class FunctionTimeDelta implements Function
+import java.util.List;
+
+public class FunctionTimeDelta extends NormalFunction
 {
 	public String getName()
 	{
 		return "timedelta";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		switch (args.length)
-		{
-			case 0:
-				return call();
-			case 1:
-				return call(args[0]);
-			case 2:
-				return call(args[0], args[1]);
-			case 3:
-				return call(args[0], args[1], args[2]);
-			default:
-				throw new ArgumentCountMismatchException("function", "timedelta", args.length, 0, 3);
-		}
+		argumentDescriptions.add("days", 0);
+		argumentDescriptions.add("seconds", 0);
+		argumentDescriptions.add("microseconds", 0);
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0], args[1], args[2]);
 	}
 
 	public static TimeDelta call()

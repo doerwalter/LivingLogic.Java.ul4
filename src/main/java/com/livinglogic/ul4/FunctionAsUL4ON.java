@@ -6,18 +6,23 @@
 
 package com.livinglogic.ul4;
 
-public class FunctionAsUL4ON implements Function
+import java.util.List;
+
+public class FunctionAsUL4ON extends NormalFunction
 {
 	public String getName()
 	{
 		return "asul4on";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "asul4on", args.length, 1);
+		argumentDescriptions.add("obj");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static String call(Object obj)

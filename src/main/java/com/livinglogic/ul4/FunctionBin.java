@@ -6,20 +6,24 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.math.BigInteger;
 
-public class FunctionBin implements Function
+public class FunctionBin extends NormalFunction
 {
 	public String getName()
 	{
 		return "bin";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "bin", args.length, 1);
+		argumentDescriptions.add("number");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static Object call(Object obj)

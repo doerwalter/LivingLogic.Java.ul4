@@ -6,26 +6,28 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
-public class FunctionBool implements Function
+public class FunctionBool extends NormalFunction
 {
 	public String getName()
 	{
 		return "bool";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 0)
-			return call();
-		else if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "bool", args.length, 0);
+		argumentDescriptions.add("obj", false);
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static boolean call()

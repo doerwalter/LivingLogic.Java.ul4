@@ -9,18 +9,21 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.util.Random;
 
-public class FunctionRandChoice implements Function
+public class FunctionRandChoice extends NormalFunction
 {
 	public String getName()
 	{
 		return "randchoice";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "randchoice", args.length, 1);
+		argumentDescriptions.add("sequence");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	private static Random rng = new Random();

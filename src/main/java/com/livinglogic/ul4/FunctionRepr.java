@@ -11,24 +11,28 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-public class FunctionRepr implements Function
+public class FunctionRepr extends NormalFunction
 {
 	public String getName()
 	{
 		return "repr";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "repr", args.length, 1);
+		argumentDescriptions.add("obj");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static String call(Object obj)

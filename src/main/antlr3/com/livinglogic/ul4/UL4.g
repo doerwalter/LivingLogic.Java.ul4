@@ -343,8 +343,11 @@ nestedname returns [Object varname]
 /* Function call */
 expr10 returns [AST node]
 	: a=atom { $node = $a.node; }
-	| n=name '(' ')' { $node = new CallFunc($n.text); }
 	|
+		/* No arguments */
+		n=name '(' ')' { $node = new CallFunc($n.text); }
+	|
+		/* At least one positional argument */
 		n=name { $node = new CallFunc($n.text); }
 		'('
 		a1=exprarg { ((CallFunc)$node).append($a1.node); }
@@ -352,9 +355,25 @@ expr10 returns [AST node]
 			','
 			a2=exprarg { ((CallFunc)$node).append($a2.node); }
 		)*
+		(
+			','
+			an3=name '=' av3=exprarg { ((CallFunc)$node).append($an3.text, $av3.node); }
+		)*
+		','?
+		')'
+	|
+		/* Keyword arguments only */
+		n=name { $node = new CallFunc($n.text); }
+		'('
+		an1=name '=' av1=exprarg { ((CallFunc)$node).append($an1.text, $av1.node); }
+		(
+			','
+			an2=name '=' av2=exprarg { ((CallFunc)$node).append($an2.text, $av2.node); }
+		)*
 		','?
 		')'
 	;
+
 
 /* Attribute access, method call, item access, slice access */
 fragment

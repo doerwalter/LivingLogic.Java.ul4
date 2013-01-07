@@ -6,20 +6,19 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Map;
 
-public class FunctionAllVars implements Function
+public class FunctionAllVars extends NormalFunction
 {
 	public String getName()
 	{
 		return "allvars";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	public Object evaluate(EvaluationContext context, Object[] args)
 	{
-		if (args.length == 0)
-			return call(context.getAllVariables());
-		throw new ArgumentCountMismatchException("function", "allvars", args.length, 0);
+		return call(context.getAllVariables());
 	}
 
 	public static Object call(Map<String, Object> variables)

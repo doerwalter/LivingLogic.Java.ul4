@@ -6,20 +6,25 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringEscapeUtils;
 
-public class FunctionCSV implements Function
+public class FunctionCSV extends NormalFunction
 {
 	public String getName()
 	{
 		return "csv";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "csv", args.length, 1);
+		argumentDescriptions.add("obj");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static String call(Object obj)

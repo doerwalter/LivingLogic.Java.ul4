@@ -6,24 +6,23 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class FunctionUTCNow implements Function
+public class FunctionUTCNow extends NormalFunction
 {
 	public String getName()
 	{
 		return "utcnow";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	public Object evaluate(EvaluationContext context, Object[] args)
 	{
-		if (args.length == 0)
-			return call();
-		throw new ArgumentCountMismatchException("function", "utcnow", args.length, 0);
+		return call();
 	}
 
 	public static Date call()

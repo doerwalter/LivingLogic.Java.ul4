@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Iterator;
 
 public class FunctionMax implements Function
@@ -15,17 +17,19 @@ public class FunctionMax implements Function
 		return "max";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	public Object evaluate(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
 	{
+		if (kwargs.size() != 0)
+			throw new KeywordArgumentsNotSupportedException(this.getName());
 		return args.length == 0 ? call() : call(args);
 	}
 
 	public static Object call()
 	{
-		throw new ArgumentCountMismatchException("function", "max", 0, 1, -1);
+		throw new MissingArgumentException("max", "iterable", 0);
 	}
 
-	public static Object call(Object... objs)
+	public static Object call(Object[] objs)
 	{
 		Iterator iter = Utils.iterator(objs.length == 1 ? objs[0] : objs);
 

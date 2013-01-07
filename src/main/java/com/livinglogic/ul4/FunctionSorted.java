@@ -9,15 +9,21 @@ package com.livinglogic.ul4;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.Comparator;
 
-public class FunctionSorted implements Function
+public class FunctionSorted extends NormalFunction
 {
 	public String getName()
 	{
 		return "sorted";
+	}
+
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	{
+		argumentDescriptions.add("iterable");
 	}
 
 	private static Comparator comparator = new Comparator()
@@ -59,11 +65,9 @@ public class FunctionSorted implements Function
 		}
 	};
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	public Object evaluate(EvaluationContext context, Object[] args)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "sorted", args.length, 1);
+		return call(args[0]);
 	}
 
 	public static Vector call(String obj)

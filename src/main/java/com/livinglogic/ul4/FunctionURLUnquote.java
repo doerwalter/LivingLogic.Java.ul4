@@ -6,21 +6,25 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-public class FunctionURLUnquote implements Function
+public class FunctionURLUnquote extends NormalFunction
 {
 	public String getName()
 	{
 		return "urlunquote";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "urlunquote", args.length, 1);
+		argumentDescriptions.add("string");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static Object call(String obj)

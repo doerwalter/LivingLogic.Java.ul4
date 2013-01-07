@@ -6,18 +6,23 @@
 
 package com.livinglogic.ul4;
 
-public class FunctionIsList implements Function
+import java.util.List;
+
+public class FunctionIsList extends NormalFunction
 {
 	public String getName()
 	{
 		return "islist";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "islist", args.length, 1);
+		argumentDescriptions.add("obj");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static boolean call(Object obj)

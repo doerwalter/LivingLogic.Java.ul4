@@ -6,20 +6,26 @@
 
 package com.livinglogic.ul4;
 
-public class FunctionHSV implements Function
+import java.util.List;
+
+public class FunctionHSV extends NormalFunction
 {
 	public String getName()
 	{
 		return "hsv";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 3)
-			return call(args[0], args[1], args[2]);
-		else if (args.length == 4)
-			return call(args[0], args[1], args[2], args[3]);
-		throw new ArgumentCountMismatchException("function", "hsv", args.length, 3, 4);
+		argumentDescriptions.add("h");
+		argumentDescriptions.add("s");
+		argumentDescriptions.add("v");
+		argumentDescriptions.add("a", 1.0);
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0], args[1], args[2], args[3]);
 	}
 
 	public static Color call(Object arg1, Object arg2, Object arg3)

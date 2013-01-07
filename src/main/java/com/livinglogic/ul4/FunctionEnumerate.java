@@ -6,23 +6,26 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class FunctionEnumerate implements Function
+public class FunctionEnumerate extends NormalFunction
 {
 	public String getName()
 	{
 		return "enumerate";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		else if (args.length == 2)
-			return call(args[0], args[1]);
-		throw new ArgumentCountMismatchException("function", "enumerate", args.length, 1, 2);
+		argumentDescriptions.add("iterable");
+		argumentDescriptions.add("start", 0);
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0], args[1]);
 	}
 
 	public static Object call(Object obj, Object start)

@@ -6,20 +6,24 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Date;
 
-public class FunctionIsDate implements Function
+public class FunctionIsDate extends NormalFunction
 {
 	public String getName()
 	{
 		return "isdate";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "isdate", args.length, 1);
+		argumentDescriptions.add("obj");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static boolean call(Object obj)

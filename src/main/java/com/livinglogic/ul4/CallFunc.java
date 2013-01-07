@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedHashMap;
+import static java.util.Arrays.asList;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
@@ -20,6 +22,7 @@ public class CallFunc extends AST
 {
 	protected Function function;
 	protected List<AST> args = new LinkedList<AST>();
+	protected List<KeywordArgument> kwargs = new LinkedList<KeywordArgument>();
 
 	private static Map<String, Function> functions = new HashMap<String, Function>();
 
@@ -110,6 +113,11 @@ public class CallFunc extends AST
 		args.add(arg);
 	}
 
+	public void append(String name, AST arg)
+	{
+		kwargs.add(new KeywordArgument(name, arg));
+	}
+
 	public String toString(int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -132,14 +140,17 @@ public class CallFunc extends AST
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		if (args.size() == 0)
-			return function.evaluate(context); // otherwise evaluate() would be called with one argument (being an empty array)
-
 		Object[] realArgs = new Object[args.size()];
 
 		for (int i = 0; i < realArgs.length; ++i)
 			realArgs[i] = args.get(i).decoratedEvaluate(context);
-		return function.evaluate(context, realArgs);
+
+		Map<String, Object> realKWArgs = new LinkedHashMap<String, Object>();
+
+		for (KeywordArgument arg : kwargs)
+			realKWArgs.put(arg.getName(), arg.getArg().decoratedEvaluate(context));
+
+		return function.evaluate(context, realArgs, realKWArgs);
 	}
 
 	private static Function getFunction(String funcname)
@@ -155,6 +166,10 @@ public class CallFunc extends AST
 		super.dumpUL4ON(encoder);
 		encoder.dump(function.getName());
 		encoder.dump(args);
+		List kwargList = new LinkedList();
+		for (KeywordArgument arg : kwargs)
+			kwargList.add(asList(arg.getName(), arg.getArg()));
+		encoder.dump(kwargList);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
@@ -162,6 +177,9 @@ public class CallFunc extends AST
 		super.loadUL4ON(decoder);
 		function = getFunction((String)decoder.load());
 		args = (List<AST>)decoder.load();
+		List<List> kwargList = (List<List>)decoder.load();
+		for (List arg : kwargList)
+			append((String)arg.get(0), (AST)arg.get(1));
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;

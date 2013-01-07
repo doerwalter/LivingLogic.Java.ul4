@@ -6,27 +6,28 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-public class FunctionInt implements Function
+public class FunctionInt extends NormalFunction
 {
 	public String getName()
 	{
 		return "int";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 0)
-			return call();
-		else if (args.length == 1)
-			return call(args[0]);
-		else if (args.length == 2)
-			return call(args[0], args[1]);
-		throw new ArgumentCountMismatchException("function", "int", args.length, 0, 2);
+		argumentDescriptions.add("obj", 0);
+		argumentDescriptions.add("base", null);
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0], args[1]);
 	}
 
 	public static int call()
@@ -51,7 +52,9 @@ public class FunctionInt implements Function
 
 	public static Object call(Object obj1, Object obj2)
 	{
-		if (obj1 instanceof String)
+		if (obj2 == null)
+			return call(obj1);
+		else if (obj1 instanceof String)
 		{
 			if (obj2 instanceof Integer || obj2 instanceof Byte || obj2 instanceof Short || obj2 instanceof Long || obj2 instanceof BigInteger)
 				return Integer.valueOf((String)obj1, ((Number)obj2).intValue());

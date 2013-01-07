@@ -17,6 +17,8 @@ import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.livinglogic.ul4.MissingArgumentException;
+import com.livinglogic.ul4.TooManyArgumentsException;
 import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.BlockException;
@@ -1014,13 +1016,13 @@ public class UL4Test
 		assertTrue(output.compareTo("2012-03-28") > 0);
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_now_1_args()
 	{
 		checkTemplateOutput("", "<?print now(1)?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_now_2_args()
 	{
 		checkTemplateOutput("", "<?print now(1, 2)?>");
@@ -1033,13 +1035,13 @@ public class UL4Test
 		assertTrue(output.compareTo("2012-03-28") > 0);
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_utcnow_1_args()
 	{
 		checkTemplateOutput("", "<?print utcnow(1)?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_utcnow_2_args()
 	{
 		checkTemplateOutput("", "<?print utcnow(1, 2)?>");
@@ -1097,13 +1099,13 @@ public class UL4Test
 		checkTemplateOutput("no", source, "var", "self", "spam", "eggs");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_vars_1_args()
 	{
 		checkTemplateOutput("", "<?print vars(1)?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_vars_2_args()
 	{
 		checkTemplateOutput("", "<?print vars(1, 2)?>");
@@ -1119,13 +1121,13 @@ public class UL4Test
 		checkTemplateOutput("yes", source, "var", "self", "spam", "eggs");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_allvars_1_args()
 	{
 		checkTemplateOutput("", "<?print allvars(1)?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_allvars_2_args()
 	{
 		checkTemplateOutput("", "<?print allvars(1, 2)?>");
@@ -1137,13 +1139,13 @@ public class UL4Test
 		checkTemplateOutput("ok", "<?code r = random()?><?if r>=0 and r<1?>ok<?else?>fail<?end if?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
-	public void function_random_0_args()
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	public void function_random_1_args()
 	{
 		checkTemplateOutput("", "<?print random(1)?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_random_2_args()
 	{
 		checkTemplateOutput("", "<?print random(1, 2)?>");
@@ -1177,14 +1179,14 @@ public class UL4Test
 		checkTemplateOutput("ok", "<?code s = #12345678?><?code sl = [0x12, 0x34, 0x56, 0x78]?><?code r = randchoice(s)?><?if r in sl?>ok<?else?>fail<?end if?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	@Test
 	public void function_randchoice_0_args()
 	{
 		checkTemplateOutput("", "<?print randchoice()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	@Test
 	public void function_randchoice_2_args()
 	{
@@ -1197,14 +1199,14 @@ public class UL4Test
 		checkTemplateOutput("&lt;&lt;&gt;&gt;&amp;&#39;&quot;gurk", "<?print xmlescape(data)?>", "data", "<<>>&'\"gurk");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	@Test
 	public void function_xmlescape_0_args()
 	{
 		checkTemplateOutput("", "<?print xmlescape()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	@Test
 	public void function_xmlescape_2_args()
 	{
@@ -1225,14 +1227,14 @@ public class UL4Test
 		checkTemplateOutput("\"a\nb\nc\"", "<?print csv(data)?>", "data", "a\nb\nc");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	@Test
 	public void function_csv_0_args()
 	{
 		checkTemplateOutput("", "<?print csv()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	@Test
 	public void function_csv_2_args()
 	{
@@ -1252,14 +1254,14 @@ public class UL4Test
 		checkTemplateOutput("{\"one\": 1}", "<?print asjson(data)?>", "data", makeMap("one", 1));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	@Test
 	public void function_asjson_0_args()
 	{
 		checkTemplateOutput("", "<?print asjson()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	@Test
 	public void function_asjson_2_args()
 	{
@@ -1278,14 +1280,14 @@ public class UL4Test
 		checkTemplateOutput("{\"eins\": 42}", "<?print repr(fromjson(data))?>", "data", "{\"eins\": 42}");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	@Test
 	public void function_fromjson_0_args()
 	{
 		checkTemplateOutput("", "<?print fromjson()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	@Test
 	public void function_fromjson_2_args()
 	{
@@ -1305,14 +1307,14 @@ public class UL4Test
 		checkTemplateOutput(dumps(makeMap("one", 1)), "<?print asul4on(data)?>", "data", makeMap("one", 1));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	@Test
 	public void function_asul4on_0_args()
 	{
 		checkTemplateOutput("", "<?print asul4on()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	@Test
 	public void function_asul4on_2_args()
 	{
@@ -1323,6 +1325,7 @@ public class UL4Test
 	public void function_str()
 	{
 		String source = "<?print str(data)?>";
+		String sourcekw = "<?print str(obj=data)?>";
 
 		checkTemplateOutput("", "<?print str()?>");
 		checkTemplateOutput("", source, "data", null);
@@ -1334,9 +1337,10 @@ public class UL4Test
 		checkTemplateOutput("2011-02-09 00:00:00", source, "data", FunctionDate.call(2011, 2, 9));
 		checkTemplateOutput("2011-02-09 12:34:56", source, "data", FunctionDate.call(2011, 2, 9, 12, 34, 56));
 		checkTemplateOutput("2011-02-09 12:34:56.987000", source, "data", FunctionDate.call(2011, 2, 9, 12, 34, 56, 987000));
+		checkTemplateOutput("foo", sourcekw, "data", "foo");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	@Test
 	public void function_str_2_args()
 	{
@@ -1365,7 +1369,7 @@ public class UL4Test
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", makeMap("foo", "bar"));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	@Test
 	public void function_bool_2_args()
 	{
@@ -1396,7 +1400,7 @@ public class UL4Test
 		checkTemplateOutput("", "<?print int(data)?>", "data", "foo");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	@Test
 	public void function_int_3_args()
 	{
@@ -1427,7 +1431,7 @@ public class UL4Test
 		checkTemplateOutput("", "<?print float(data)?>", "data", "foo");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_float_2_args()
 	{
 		checkTemplateOutput("", "<?print float(1, 2)?>");
@@ -1443,13 +1447,13 @@ public class UL4Test
 		checkTemplateOutput("3", source, "data", makeMap("a", 1, "b", 2, "c", 3));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_len_0_args()
 	{
 		checkTemplateOutput("", "<?print len()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_len_2_args()
 	{
 		checkTemplateOutput("", "<?print len(1, 2)?>");
@@ -1494,13 +1498,13 @@ public class UL4Test
 		checkTemplateOutput("False", "<?print any(i > 17 for i in range(10))?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_any_0_args()
 	{
 		checkTemplateOutput("", "<?print any()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_any_2_args()
 	{
 		checkTemplateOutput("", "<?print any(1, 2)?>");
@@ -1521,13 +1525,13 @@ public class UL4Test
 		checkTemplateOutput("True", "<?print all(i < 17 for i in range(10))?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_all_0_args()
 	{
 		checkTemplateOutput("", "<?print all()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_all_2_args()
 	{
 		checkTemplateOutput("", "<?print all(1, 2)?>");
@@ -1553,13 +1557,13 @@ public class UL4Test
 		checkTemplateOutput("(f=42)(o=43)(o=44)", source2, "data", "foo");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_enumerate_0_args()
 	{
 		checkTemplateOutput("", "<?print enumerate()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_enumerate_3_args()
 	{
 		checkTemplateOutput("", "<?print enumerate(1, 2, 3)?>");
@@ -1611,13 +1615,13 @@ public class UL4Test
 		checkTemplateOutput("[(f=42)(o=43)(o=44)]", source2, "data", "foo");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_enumfl_0_args()
 	{
 		checkTemplateOutput("", "<?print enumfl()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_enumfl_3_args()
 	{
 		checkTemplateOutput("", "<?print enumfl(1, 2, 3)?>");
@@ -1665,13 +1669,13 @@ public class UL4Test
 		checkTemplateOutput("[(foo)]", source, "data", makeMap("foo", true));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_isfirstlast_0_args()
 	{
 		checkTemplateOutput("", "<?print isfirstlast()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_isfirstlast_2_args()
 	{
 		checkTemplateOutput("", "<?print isfirstlast(1, 2)?>");
@@ -1719,13 +1723,13 @@ public class UL4Test
 		checkTemplateOutput("[(foo)", source, "data", makeMap("foo", true));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_isfirst_0_args()
 	{
 		checkTemplateOutput("", "<?print isfirst()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_isfirst_2_args()
 	{
 		checkTemplateOutput("", "<?print isfirst(1, 2)?>");
@@ -1773,13 +1777,13 @@ public class UL4Test
 		checkTemplateOutput("(foo)]", source, "data", makeMap("foo", true));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_islast_0_args()
 	{
 		checkTemplateOutput("", "<?print islast()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_islast_2_args()
 	{
 		checkTemplateOutput("", "<?print islast(1, 2)?>");
@@ -1836,13 +1840,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_isundefined_0_args()
 	{
 		checkTemplateOutput("", "<?print isundefined()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_isundefined_2_args()
 	{
 		checkTemplateOutput("", "<?print isundefined(1, 2)?>");
@@ -1869,13 +1873,13 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_isdefined_0_args()
 	{
 		checkTemplateOutput("", "<?print isdefined()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_isdefined_2_args()
 	{
 		checkTemplateOutput("", "<?print isdefined(1, 2)?>");
@@ -1902,13 +1906,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_isnone_0_args()
 	{
 		checkTemplateOutput("", "<?print isnone()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_isnone_2_args()
 	{
 		checkTemplateOutput("", "<?print isnone(1, 2)?>");
@@ -1935,13 +1939,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_isbool_0_args()
 	{
 		checkTemplateOutput("", "<?print isbool()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_isbool_2_args()
 	{
 		checkTemplateOutput("", "<?print isbool(1, 2)?>");
@@ -1968,13 +1972,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_isint_0_args()
 	{
 		checkTemplateOutput("", "<?print isint()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_isint_2_args()
 	{
 		checkTemplateOutput("", "<?print isint(1, 2)?>");
@@ -2001,13 +2005,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_isfloat_0_args()
 	{
 		checkTemplateOutput("", "<?print isfloat()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_isfloat_2_args()
 	{
 		checkTemplateOutput("", "<?print isfloat(1, 2)?>");
@@ -2034,13 +2038,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_isstr_0_args()
 	{
 		checkTemplateOutput("", "<?print isstr()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_isstr_2_args()
 	{
 		checkTemplateOutput("", "<?print isstr(1, 2)?>");
@@ -2067,13 +2071,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_isdate_0_args()
 	{
 		checkTemplateOutput("", "<?print isdate()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_isdate_2_args()
 	{
 		checkTemplateOutput("", "<?print isdate(1, 2)?>");
@@ -2100,13 +2104,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_islist_0_args()
 	{
 		checkTemplateOutput("", "<?print islist()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_islist_2_args()
 	{
 		checkTemplateOutput("", "<?print islist(1, 2)?>");
@@ -2133,13 +2137,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_isdict_0_args()
 	{
 		checkTemplateOutput("", "<?print isdict()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_isdict_2_args()
 	{
 		checkTemplateOutput("", "<?print isdict(1, 2)?>");
@@ -2166,13 +2170,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_istemplate_0_args()
 	{
 		checkTemplateOutput("", "<?print istemplate()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_istemplate_2_args()
 	{
 		checkTemplateOutput("", "<?print istemplate(1, 2)?>");
@@ -2199,13 +2203,13 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_iscolor_0_args()
 	{
 		checkTemplateOutput("", "<?print iscolor()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_iscolor_2_args()
 	{
 		checkTemplateOutput("", "<?print iscolor(1, 2)?>");
@@ -2232,13 +2236,13 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_istimedelta_0_args()
 	{
 		checkTemplateOutput("", "<?print istimedelta()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_istimedelta_2_args()
 	{
 		checkTemplateOutput("", "<?print istimedelta(1, 2)?>");
@@ -2254,13 +2258,13 @@ public class UL4Test
 		checkTemplateOutput("True", "<?print istemplate(get('self'))?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_get_0_args()
 	{
 		checkTemplateOutput("", "<?print get()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_get_3_args()
 	{
 		checkTemplateOutput("", "<?print get(1, 2, 3)?>");
@@ -2286,13 +2290,13 @@ public class UL4Test
 		checkTemplateOutput("@(2011-02-07)", source, "data", FunctionDate.call(2011, 2, 7));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_repr_0_args()
 	{
 		checkTemplateOutput("", "<?print repr()?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_repr_2_args()
 	{
 		checkTemplateOutput("", "<?print repr(1, 2)?>");
@@ -2455,7 +2459,7 @@ public class UL4Test
 		checkTemplateOutput("False", "<?print min([False, 0, True, 1])?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_min_0_args()
 	{
 		checkTemplateOutput("", "<?print min()?>");
@@ -2471,7 +2475,7 @@ public class UL4Test
 		checkTemplateOutput("True", "<?print max([False, 0, True, 1])?>");
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_max_0_args()
 	{
 		checkTemplateOutput("", "<?print max()?>");

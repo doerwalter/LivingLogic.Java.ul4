@@ -6,21 +6,25 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class FunctionIsFirstLast implements Function
+public class FunctionIsFirstLast extends NormalFunction
 {
 	public String getName()
 	{
 		return "isfirstlast";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "isfirstlast", args.length, 1);
+		argumentDescriptions.add("iterable");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static Object call(Object obj)

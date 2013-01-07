@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -16,12 +18,12 @@ public class FunctionZip implements Function
 		return "zip";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	public Object evaluate(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
 	{
 		return call(args);
 	}
 
-	public static Object call(Object... objs)
+	public static Object call(Object[] objs)
 	{
 		return new ZipIterator(objs);
 	}
@@ -30,9 +32,10 @@ public class FunctionZip implements Function
 	{
 		Iterator[] iterators;
 
-		public ZipIterator(Object... iterators)
+		public ZipIterator(Object[] iterators)
 		{
 			this.iterators = new Iterator[iterators.length];
+			
 			for (int i = 0; i < iterators.length; ++i)
 				this.iterators[i] = Utils.iterator(iterators[i]);
 		}

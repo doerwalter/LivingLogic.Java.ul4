@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Locale;
@@ -20,20 +21,23 @@ import org.apache.commons.lang.StringUtils;
 
 import com.livinglogic.utils.MapUtils;
 
-public class FunctionFormat implements Function
+public class FunctionFormat extends NormalFunction
 {
 	public String getName()
 	{
 		return "format";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 2)
-			return call(args[0], args[1]);
-		else if (args.length == 3)
-			return call(args[0], args[1], args[2]);
-		throw new ArgumentCountMismatchException("function", "format", args.length, 2, 3);
+		argumentDescriptions.add("obj");
+		argumentDescriptions.add("fmt");
+		argumentDescriptions.add("lang", null);
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0], args[1], args[2]);
 	}
 
 	private static HashMap<Integer, String> weekdayFormats;

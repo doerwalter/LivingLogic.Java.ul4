@@ -6,20 +6,24 @@
 
 package com.livinglogic.ul4;
 
-public class FunctionRGB implements Function
+public class FunctionRGB extends NormalFunction
 {
 	public String getName()
 	{
 		return "rgb";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 3)
-			return call(args[0], args[1], args[2]);
-		else if (args.length == 4)
-			return call(args[0], args[1], args[2], args[3]);
-		throw new ArgumentCountMismatchException("function", "rgb", args.length, 3, 4);
+		argumentDescriptions.add("r");
+		argumentDescriptions.add("g");
+		argumentDescriptions.add("b");
+		argumentDescriptions.add("a", 1.0);
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0], args[1], args[2], args[3]);
 	}
 
 	public static Color call(Object arg1, Object arg2, Object arg3)

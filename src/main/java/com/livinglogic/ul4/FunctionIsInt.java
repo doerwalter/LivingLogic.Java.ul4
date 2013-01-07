@@ -6,20 +6,24 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.math.BigInteger;
 
-public class FunctionIsInt implements Function
+public class FunctionIsInt extends NormalFunction
 {
 	public String getName()
 	{
 		return "isint";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "isint", args.length, 1);
+		argumentDescriptions.add("obj");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static boolean call(Object obj)

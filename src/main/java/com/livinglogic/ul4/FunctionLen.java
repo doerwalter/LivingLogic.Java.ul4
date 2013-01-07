@@ -6,21 +6,25 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
-public class FunctionLen implements Function
+public class FunctionLen extends NormalFunction
 {
 	public String getName()
 	{
 		return "len";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "len", args.length, 1);
+		argumentDescriptions.add("sequence");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static int call(String obj)

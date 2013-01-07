@@ -56,7 +56,7 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 		}
 	}
 
-	// The following methods are here, because we can't extens both ObjectAsMap and CompiledTemplate,
+	// The following methods are here, because we can't extend both ObjectAsMap and CompiledTemplate,
 	// so we extend ObjectAsMap and reimplement the methods of CompiledTemplate
 	public void render(EvaluationContext context, Map<String, Object> variables) throws java.io.IOException
 	{

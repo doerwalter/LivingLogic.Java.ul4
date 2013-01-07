@@ -6,22 +6,25 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class FunctionReversed implements Function
+public class FunctionReversed extends NormalFunction
 {
 	public String getName()
 	{
 		return "reversed";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "reversed", args.length, 1);
+		argumentDescriptions.add("sequence");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static Iterator call(Object obj)

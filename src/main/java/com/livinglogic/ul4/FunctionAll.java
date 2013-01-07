@@ -6,22 +6,26 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.Collection;
 
-public class FunctionAll implements Function
+public class FunctionAll extends NormalFunction
 {
 	public String getName()
 	{
 		return "all";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "all", args.length, 1);
+		argumentDescriptions.add("iterable");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static boolean call(String obj)

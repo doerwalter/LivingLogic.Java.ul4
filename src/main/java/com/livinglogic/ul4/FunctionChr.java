@@ -6,18 +6,23 @@
 
 package com.livinglogic.ul4;
 
-public class FunctionChr implements Function
+import java.util.List;
+
+public class FunctionChr extends NormalFunction
 {
 	public String getName()
 	{
 		return "chr";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
 	{
-		if (args.length == 1)
-			return call(args[0]);
-		throw new ArgumentCountMismatchException("function", "chr", args.length, 1);
+		argumentDescriptions.add("i");
+	}
+
+	public Object evaluate(EvaluationContext context, Object[] args)
+	{
+		return call(args[0]);
 	}
 
 	public static Object call(Object obj)

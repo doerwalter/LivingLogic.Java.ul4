@@ -7,6 +7,8 @@
 package com.livinglogic.ul4;
 
 import java.util.Random;
+import java.util.List;
+import java.util.Map;
 
 public class FunctionRandRange implements Function
 {
@@ -15,7 +17,7 @@ public class FunctionRandRange implements Function
 		return "randrange";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	public Object evaluate(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
 	{
 		switch (args.length)
 		{

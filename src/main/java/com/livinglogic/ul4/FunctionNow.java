@@ -6,20 +6,19 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Date;
 
-public class FunctionNow implements Function
+public class FunctionNow extends NormalFunction
 {
 	public String getName()
 	{
 		return "now";
 	}
 
-	public Object evaluate(EvaluationContext context, Object... args)
+	public Object evaluate(EvaluationContext context, Object[] args)
 	{
-		if (args.length == 0)
-			return call();
-		throw new ArgumentCountMismatchException("function", "now", args.length, 0);
+		return call();
 	}
 
 	public static Date call()
