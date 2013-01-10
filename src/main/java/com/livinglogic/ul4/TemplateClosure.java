@@ -63,7 +63,15 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 
 		try
 		{
-			template.render(context, variables != null ? variables : new HashMap<String, Object>());
+			context.pushVariables(variables);
+			try
+			{
+				template.render(context);
+			}
+			finally
+			{
+				context.popVariables();
+			}
 		}
 		finally
 		{
