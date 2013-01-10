@@ -1100,35 +1100,13 @@ public class UL4Test
 
 		checkTemplateOutput("yes", source, "var", "spam", "spam", "eggs");
 		checkTemplateOutput("no", source, "var", "nospam", "spam", "eggs");
-		checkTemplateOutput("no", source, "var", "self", "spam", "eggs");
+		checkTemplateOutput("yes", source, "var", "stack", "spam", "eggs");
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_vars_1_args()
 	{
 		checkTemplateOutput("", "<?print vars(1)?>");
-	}
-
-	@Test
-	public void function_allvars()
-	{
-		String source = "<?if var in allvars()?>yes<?else?>no<?end if?>";
-
-		checkTemplateOutput("yes", source, "var", "spam", "spam", "eggs");
-		checkTemplateOutput("no", source, "var", "nospam", "spam", "eggs");
-		checkTemplateOutput("yes", source, "var", "stack", "spam", "eggs");
-	}
-
-	@CauseTest(expectedCause=TooManyArgumentsException.class)
-	public void function_allvars_1_args()
-	{
-		checkTemplateOutput("", "<?print allvars(1)?>");
-	}
-
-	@Test
-	public void function_random()
-	{
-		checkTemplateOutput("ok", "<?code r = random()?><?if r>=0 and r<1?>ok<?else?>fail<?end if?>");
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)

@@ -18,7 +18,7 @@ public class FunctionVars extends NormalFunction
 
 	public Object evaluate(EvaluationContext context, Object[] args)
 	{
-		return call(context.getVariables());
+		return call(context.getAllVariables());
 	}
 
 	public static Object call(Map<String, Object> variables)
