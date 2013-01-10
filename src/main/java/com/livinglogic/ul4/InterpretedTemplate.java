@@ -313,7 +313,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.put(name, new TemplateClosure(this, context.getVariables()));
+		context.put(name, new TemplateClosure(this, context.getAllVariables()));
 		return null;
 	}
 

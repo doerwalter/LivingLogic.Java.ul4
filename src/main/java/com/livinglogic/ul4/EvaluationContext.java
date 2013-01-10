@@ -118,11 +118,10 @@ public class EvaluationContext
 	 */
 	public void pushVariables(Map<String, Object> variables)
 	{
-		Map<String, Object> oldVariables = allVariables.getFirst();
 		if (variables == null)
 			variables = new HashMap<String, Object>();
 		this.variables = variables;
-		this.allVariables.setFirst(new MapChain<String, Object>(variables, oldVariables));
+		this.allVariables = new MapChain<String, Object>(variables, allVariables);
 	}
 
 	/**
@@ -131,12 +130,12 @@ public class EvaluationContext
 	public Map<String, Object> popVariables()
 	{
 		Map<String, Object> first = allVariables.getFirst();
-		if (first instanceof MapChain)
+		Map<String, Object> second = allVariables.getSecond();
+		if (second instanceof MapChain)
 		{
-			Map<String, Object> firstfirst = ((MapChain<String, Object>)first).getFirst();
-			variables = ((MapChain<String, Object>)first).getSecond();
-			allVariables.setFirst(variables);
-			return firstfirst;
+			allVariables = (MapChain<String, Object>)second;
+			variables = allVariables.getFirst();
+			return first;
 		}
 		return null;
 	}

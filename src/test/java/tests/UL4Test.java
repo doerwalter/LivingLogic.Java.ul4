@@ -2766,7 +2766,27 @@ public class UL4Test
 	@Test
 	public void method_render_nested()
 	{
-		checkTemplateOutput("45?44?43", "<?def outer?><?def inner?><?code x += 1?><?print x?>?<?end def?><?code x += 1?><?render inner.render(x=x)?><?print x?>?<?end def?><?code x += 1?><?render outer.render(x=x)?><?print x?>", "x", 42);
+		String source = (
+			"<?def outer?>" +
+				"<?def inner?>" +
+					"<?code x += 1?>" +
+					"<?code y += 1?>" +
+					"<?print x?>!" +
+					"<?print y?>!" +
+				"<?end def?>" +
+				"<?code x += 1?>" +
+				"<?code y += 1?>" +
+				"<?render inner.render(x=x)?>" +
+				"<?print x?>!" +
+				"<?print y?>!" +
+			"<?end def?>" +
+			"<?code x += 1?>" +
+			"<?code y += 1?>" +
+			"<?render outer.render(x=x)?>" +
+			"<?print x?>!" +
+			"<?print y?>!"
+		);
+		checkTemplateOutput("45!43!44!43!43!43!", source, "x", 42, "y", 42);
 	}
 
 	@Test
@@ -3069,6 +3089,7 @@ public class UL4Test
 		checkTemplateOutput("0;1;2;", "<?for i in range(3)?><?def x?><?print i?>;<?end def?><?render x.render()?><?end for?>");
 		checkTemplateOutput("1;", "<?for i in range(3)?><?if i == 1?><?def x?><?print i?>;<?end def?><?end if?><?end for?><?render x.render()?>");
 		checkTemplateOutput("1", "<?code i = 1?><?def x?><?print i?><?end def?><?code i = 2?><?render x.render()?>");
+		checkTemplateOutput("1", "<?code i = 1?><?def x?><?def y?><?print i?><?end def?><?code i = 2?><?render y.render()?><?end def?><?code i = 3?><?render x.render()?>");
 	}
 
 	private InterpretedTemplate universaltemplate()
