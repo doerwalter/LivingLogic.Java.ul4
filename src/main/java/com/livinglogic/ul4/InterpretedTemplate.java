@@ -323,7 +323,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	 */
 	public void render(EvaluationContext context) throws IOException
 	{
-		Template oldTemplate = context.setTemplate(this);
+		context.pushTemplate(this);
 		try
 		{
 			super.evaluate(context);
@@ -345,7 +345,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		}
 		finally
 		{
-			context.setTemplate(oldTemplate);
+			context.popTemplate();
 		}
 	}
 
@@ -356,14 +356,14 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	 */
 	public void render(EvaluationContext context, Map<String, Object> variables) throws IOException
 	{
-		Map<String, Object> oldVariables = context.setVariables(variables);
+		context.pushVariables(variables);
 		try
 		{
 			render(context);
 		}
 		finally
 		{
-			context.setVariables(oldVariables);
+			context.popVariables();
 		}
 	}
 
@@ -409,14 +409,14 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	 */
 	public String renders(EvaluationContext context, Map<String, Object> variables)
 	{
-		Map<String, Object> oldVariables = context.setVariables(variables);
+		context.pushVariables(variables);
 		try
 		{
 			return renders(context);
 		}
 		finally
 		{
-			context.setVariables(oldVariables);
+			context.popVariables();
 		}
 	}
 
@@ -481,7 +481,6 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		PipedReader reader = new PipedReader(10);
 		PipedWriter writer = new PipedWriter(reader);
 		new Thread(new RenderRunnable(this, writer, variables)).start();
-		
 		return reader;
 	}
 

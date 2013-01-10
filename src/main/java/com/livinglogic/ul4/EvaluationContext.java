@@ -34,22 +34,14 @@ public class EvaluationContext
 	protected Map<String, Object> variables;
 
 	/**
-	 * The currently executing template
-	 *
+	 * The stack of currently executing templates.
 	 */
-	protected Template template;
-
-	/**
-	 * A map containing just the variable {@code self}, referencing the currently
-	 * executing template
-	 */
-	protected Map<String, Template> templateVariables;
+	protected Stack<Template> stack;
 
 	/**
 	 * A {@link com.livinglogic.utils.MapChain} object chaining all variables:
-	 * The user defined ones from {@link #variables}, {@link #templateVariables}
-	 * (referencing the current template) and the map containing the globally
-	 * defined functions.
+	 * The user defined ones from {@link #variables} and the one containing
+	 * {@link #stack}
 	 */
 	protected MapChain<String, Object> allVariables;
 
@@ -75,9 +67,8 @@ public class EvaluationContext
 		if (variables == null)
 			variables = new HashMap<String, Object>();
 		this.variables = variables;
-		this.template = null;
-		this.templateVariables = makeMap("self", null);
-		this.allVariables = new MapChain<String, Object>(variables, (Map)this.templateVariables);
+		this.stack = new Stack<Template>();
+		this.allVariables = new MapChain<String, Object>(variables, makeMap("stack", stack));
 	}
 
 	/**
@@ -91,23 +82,19 @@ public class EvaluationContext
 	}
 
 	/**
-	 * Set the currently executing template variable contained in {@link #templateVariables} and
-	 * return the previously defined one.
+	 * Push a template onto the stack.
 	 */
-	public Template setTemplate(Template template)
+	public void pushTemplate(Template template)
 	{
-		Template oldTemplate = this.template;
-		this.template = template;
-		templateVariables.put("self", template);
-		return oldTemplate;
+		stack.push(template);
 	}
 
 	/**
-	 * Get the template that is currently executing.
+	 * Remove the template from the top of the stack and return it.
 	 */
-	public Template getTemplate()
+	public Template popTemplate()
 	{
-		return template;
+		return stack.pop();
 	}
 
 	/**
@@ -127,18 +114,32 @@ public class EvaluationContext
 	}
 
 	/**
-	 * Set the map containing the template variables and return the previous map.
+	 * Push a new map containing the template variables in front of the map chain
 	 */
-	public Map<String, Object> setVariables(Map<String, Object> variables)
+	public void pushVariables(Map<String, Object> variables)
 	{
-		Map<String, Object> oldVariables = this.variables;
+		Map<String, Object> oldVariables = allVariables.getFirst();
 		if (variables == null)
 			variables = new HashMap<String, Object>();
 		this.variables = variables;
-		this.allVariables.setFirst(variables);
-		return oldVariables;
+		this.allVariables.setFirst(new MapChain<String, Object>(variables, oldVariables));
 	}
 
+	/**
+	 * Pop the frontmost map from the map chain and return it
+	 */
+	public Map<String, Object> popVariables()
+	{
+		Map<String, Object> first = allVariables.getFirst();
+		if (first instanceof MapChain)
+		{
+			Map<String, Object> firstfirst = ((MapChain<String, Object>)first).getFirst();
+			variables = ((MapChain<String, Object>)first).getSecond();
+			allVariables.setFirst(variables);
+			return firstfirst;
+		}
+		return null;
+	}
 	/**
 	 * Return the {@code Writer} object where template output is written to.
 	 */

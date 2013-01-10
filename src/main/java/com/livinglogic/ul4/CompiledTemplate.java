@@ -33,27 +33,27 @@ public abstract class CompiledTemplate extends ObjectAsMap implements Template, 
 
 	public void render(EvaluationContext context) throws java.io.IOException
 	{
-		Template oldTemplate = context.setTemplate(this);
+		context.pushTemplate(this);
 		try
 		{
 			renderImpl(context);
 		}
 		finally
 		{
-			context.setTemplate(oldTemplate);
+			context.popTemplate();
 		}
 	}
 
 	public void render(EvaluationContext context, Map<String, Object> variables) throws java.io.IOException
 	{
-		Map<String, Object> oldVariables = context.setVariables(variables);
+		context.pushVariables(variables);
 		try
 		{
 			renderImpl(context);
 		}
 		finally
 		{
-			context.setVariables(oldVariables);
+			context.popVariables();
 		}
 	}
 
@@ -84,14 +84,14 @@ public abstract class CompiledTemplate extends ObjectAsMap implements Template, 
 
 	public String renders(EvaluationContext context, Map<String, Object> variables)
 	{
-		Map<String, Object> oldVariables = context.setVariables(variables);
+		context.pushVariables(variables);
 		try
 		{
 			return renders(context);
 		}
 		finally
 		{
-			context.setVariables(oldVariables);
+			context.popVariables();
 		}
 	}
 

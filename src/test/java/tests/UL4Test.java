@@ -21,6 +21,7 @@ import com.livinglogic.ul4.MissingArgumentException;
 import com.livinglogic.ul4.TooManyArgumentsException;
 import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
+import com.livinglogic.ul4.UnsupportedArgumentNameException;
 import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.ul4.TimeDelta;
@@ -1055,6 +1056,7 @@ public class UL4Test
 		checkTemplateOutput("@(2012-10-06T12:34:00)", "<?print repr(date(2012, 10, 6, 12, 34))?>");
 		checkTemplateOutput("@(2012-10-06T12:34:56)", "<?print repr(date(2012, 10, 6, 12, 34, 56))?>");
 		checkTemplateOutput("@(2012-10-06T12:34:56.987000)", "<?print repr(date(2012, 10, 6, 12, 34, 56, 987000))?>");
+		checkTemplateOutput("@(2012-10-06T12:34:56.987000)", "<?print repr(date(year=2012, month=10, day=6, hour=12, minute=34, second=56, microsecond=987000))?>");
 	}
 
 	@Test
@@ -1079,6 +1081,7 @@ public class UL4Test
 		checkTemplateOutput("0:00:00.500000", "<?print timedelta(0.5/(24*60*60))?>");
 		checkTemplateOutput("-1 day, 12:00:00", "<?print timedelta(-0.5)?>");
 		checkTemplateOutput("-1 day, 23:59:59.500000", "<?print timedelta(0, -0.5)?>");
+		checkTemplateOutput("1 day, 0:00:01.000001", "<?print timedelta(days=1, seconds=1, microseconds=1)?>");
 	}
 	@Test
 	public void function_monthdelta()
@@ -1087,6 +1090,7 @@ public class UL4Test
 		checkTemplateOutput("1 month", "<?print monthdelta(1)?>");
 		checkTemplateOutput("2 months", "<?print monthdelta(2)?>");
 		checkTemplateOutput("-1 month", "<?print monthdelta(-1)?>");
+		checkTemplateOutput("1 month", "<?print monthdelta(months=1)?>");
 	}
 
 	@Test
@@ -1105,12 +1109,6 @@ public class UL4Test
 		checkTemplateOutput("", "<?print vars(1)?>");
 	}
 
-	@CauseTest(expectedCause=TooManyArgumentsException.class)
-	public void function_vars_2_args()
-	{
-		checkTemplateOutput("", "<?print vars(1, 2)?>");
-	}
-
 	@Test
 	public void function_allvars()
 	{
@@ -1118,19 +1116,13 @@ public class UL4Test
 
 		checkTemplateOutput("yes", source, "var", "spam", "spam", "eggs");
 		checkTemplateOutput("no", source, "var", "nospam", "spam", "eggs");
-		checkTemplateOutput("yes", source, "var", "self", "spam", "eggs");
+		checkTemplateOutput("yes", source, "var", "stack", "spam", "eggs");
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_allvars_1_args()
 	{
 		checkTemplateOutput("", "<?print allvars(1)?>");
-	}
-
-	@CauseTest(expectedCause=TooManyArgumentsException.class)
-	public void function_allvars_2_args()
-	{
-		checkTemplateOutput("", "<?print allvars(1, 2)?>");
 	}
 
 	@Test
@@ -1143,12 +1135,6 @@ public class UL4Test
 	public void function_random_1_args()
 	{
 		checkTemplateOutput("", "<?print random(1)?>");
-	}
-
-	@CauseTest(expectedCause=TooManyArgumentsException.class)
-	public void function_random_2_args()
-	{
-		checkTemplateOutput("", "<?print random(1, 2)?>");
 	}
 
 	@Test
@@ -1177,6 +1163,7 @@ public class UL4Test
 		checkTemplateOutput("ok", "<?code r = randchoice('abc')?><?if r in 'abc'?>ok<?else?>fail<?end if?>");
 		checkTemplateOutput("ok", "<?code s = [17, 23, 42]?><?code r = randchoice(s)?><?if r in s?>ok<?else?>fail<?end if?>");
 		checkTemplateOutput("ok", "<?code s = #12345678?><?code sl = [0x12, 0x34, 0x56, 0x78]?><?code r = randchoice(s)?><?if r in sl?>ok<?else?>fail<?end if?>");
+		checkTemplateOutput("ok", "<?code r = randchoice(sequence='abc')?><?if r in 'abc'?>ok<?else?>fail<?end if?>");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1197,6 +1184,7 @@ public class UL4Test
 	public void function_xmlescape()
 	{
 		checkTemplateOutput("&lt;&lt;&gt;&gt;&amp;&#39;&quot;gurk", "<?print xmlescape(data)?>", "data", "<<>>&'\"gurk");
+		checkTemplateOutput("42", "<?print xmlescape(obj=data)?>", "data", 42);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1225,6 +1213,7 @@ public class UL4Test
 		checkTemplateOutput("\"a,b,c\"", "<?print csv(data)?>", "data", "a,b,c");
 		checkTemplateOutput("\"a\"\"b\"\"c\"", "<?print csv(data)?>", "data", "a\"b\"c");
 		checkTemplateOutput("\"a\nb\nc\"", "<?print csv(data)?>", "data", "a\nb\nc");
+		checkTemplateOutput("42", "<?print csv(obj=data)?>", "data", 42);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1252,6 +1241,7 @@ public class UL4Test
 		checkTemplateOutput("\"abc\"", "<?print asjson(data)?>", "data", "abc");
 		checkTemplateOutput("[1, 2, 3]", "<?print asjson(data)?>", "data", asList(1, 2, 3));
 		checkTemplateOutput("{\"one\": 1}", "<?print asjson(data)?>", "data", makeMap("one", 1));
+		checkTemplateOutput("null", "<?print asjson(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1278,6 +1268,7 @@ public class UL4Test
 		checkTemplateOutput("\"abc\"", "<?print repr(fromjson(data))?>", "data", "\"abc\"");
 		checkTemplateOutput("[1, 2, 3]", "<?print repr(fromjson(data))?>", "data", "[1,2,3]");
 		checkTemplateOutput("{\"eins\": 42}", "<?print repr(fromjson(data))?>", "data", "{\"eins\": 42}");
+		checkTemplateOutput("None", "<?print repr(fromjson(string=data))?>", "data", "null");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1305,6 +1296,7 @@ public class UL4Test
 		checkTemplateOutput(dumps("abc"), "<?print asul4on(data)?>", "data", "abc");
 		checkTemplateOutput(dumps(asList(1, 2, 3)), "<?print asul4on(data)?>", "data", asList(1, 2, 3));
 		checkTemplateOutput(dumps(makeMap("one", 1)), "<?print asul4on(data)?>", "data", makeMap("one", 1));
+		checkTemplateOutput(dumps(null), "<?print asul4on(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1325,7 +1317,6 @@ public class UL4Test
 	public void function_str()
 	{
 		String source = "<?print str(data)?>";
-		String sourcekw = "<?print str(obj=data)?>";
 
 		checkTemplateOutput("", "<?print str()?>");
 		checkTemplateOutput("", source, "data", null);
@@ -1337,7 +1328,7 @@ public class UL4Test
 		checkTemplateOutput("2011-02-09 00:00:00", source, "data", FunctionDate.call(2011, 2, 9));
 		checkTemplateOutput("2011-02-09 12:34:56", source, "data", FunctionDate.call(2011, 2, 9, 12, 34, 56));
 		checkTemplateOutput("2011-02-09 12:34:56.987000", source, "data", FunctionDate.call(2011, 2, 9, 12, 34, 56, 987000));
-		checkTemplateOutput("foo", sourcekw, "data", "foo");
+		checkTemplateOutput("foo", "<?print str(obj=data)?>", "data", "foo");
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
@@ -1367,6 +1358,7 @@ public class UL4Test
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", asList("foo", "bar"));
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", makeMap());
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", makeMap("foo", "bar"));
+		checkTemplateOutput("True", "<?print bool(obj=data)?>", "data", true);
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
@@ -1386,6 +1378,8 @@ public class UL4Test
 		checkTemplateOutput("4", "<?print int(data)?>", "data", 4.2);
 		checkTemplateOutput("42", "<?print int(data)?>", "data", "42");
 		checkTemplateOutput("66", "<?print int(data, 16)?>", "data", "42");
+		checkTemplateOutput("42", "<?print int(obj=data, base=None)?>", "data", "42");
+		checkTemplateOutput("66", "<?print int(obj=data, base=16)?>", "data", "42");
 	}
 
 	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
@@ -1417,6 +1411,7 @@ public class UL4Test
 		checkTemplateOutput("0.0", source, "data", false);
 		checkTemplateOutput("42.0", source, "data", 42);
 		checkTemplateOutput("42.0", source, "data", "42");
+		checkTemplateOutput("1.0", "<?print float(obj=data)?>", "data", true);
 	}
 
 	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
@@ -1445,6 +1440,7 @@ public class UL4Test
 		checkTemplateOutput("3", source, "data", "foo");
 		checkTemplateOutput("3", source, "data", asList(1, 2, 3));
 		checkTemplateOutput("3", source, "data", makeMap("a", 1, "b", 2, "c", 3));
+		checkTemplateOutput("3", "<?print len(sequence=data)?>", "data", "foo");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1496,6 +1492,7 @@ public class UL4Test
 		checkTemplateOutput("True", "<?print any('foo')?>");
 		checkTemplateOutput("True", "<?print any(i > 7 for i in range(10))?>");
 		checkTemplateOutput("False", "<?print any(i > 17 for i in range(10))?>");
+		checkTemplateOutput("True", "<?print any(iterable='foo')?>");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1523,6 +1520,7 @@ public class UL4Test
 		checkTemplateOutput("True", "<?print all('foo')?>");
 		checkTemplateOutput("False", "<?print all(i < 7 for i in range(10))?>");
 		checkTemplateOutput("True", "<?print all(i < 17 for i in range(10))?>");
+		checkTemplateOutput("True", "<?print all(iterable='foo')?>");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1547,14 +1545,15 @@ public class UL4Test
 	public void function_enumerate()
 	{
 		String source1 = "<?for (i, value) in enumerate(data)?>(<?print value?>=<?print i?>)<?end for?>";
-
 		checkTemplateOutput("(f=0)(o=1)(o=2)", source1, "data", "foo");
 		checkTemplateOutput("(foo=0)(bar=1)", source1, "data", asList("foo", "bar"));
 		checkTemplateOutput("(foo=0)", source1, "data", makeMap("foo", true));
 
 		String source2 = "<?for (i, value) in enumerate(data, 42)?>(<?print value?>=<?print i?>)<?end for?>";
-
 		checkTemplateOutput("(f=42)(o=43)(o=44)", source2, "data", "foo");
+
+		String source2kw = "<?for (i, value) in enumerate(iterable=data, start=42)?>(<?print value?>=<?print i?>)<?end for?>";
+		checkTemplateOutput("(f=42)(o=43)(o=44)", source2kw, "data", "foo");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1603,7 +1602,6 @@ public class UL4Test
 	public void function_enumfl()
 	{
 		String source1 = "<?for (i, f, l, value) in enumfl(data)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>";
-
 		checkTemplateOutput("", source1, "data", "");
 		checkTemplateOutput("[(?=0)]", source1, "data", "?");
 		checkTemplateOutput("[(f=0)(o=1)(o=2)]", source1, "data", "foo");
@@ -1611,8 +1609,10 @@ public class UL4Test
 		checkTemplateOutput("[(foo=0)]", source1, "data", makeMap("foo", true));
 
 		String source2 = "<?for (i, f, l, value) in enumfl(data, 42)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>";
-
 		checkTemplateOutput("[(f=42)(o=43)(o=44)]", source2, "data", "foo");
+
+		String source2kw = "<?for (i, f, l, value) in enumfl(iterable=data, start=42)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>";
+		checkTemplateOutput("[(f=42)(o=43)(o=44)]", source2kw, "data", "foo");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1667,6 +1667,9 @@ public class UL4Test
 		checkTemplateOutput("[(f)(o)(o)]", source, "data", "foo");
 		checkTemplateOutput("[(foo)(bar)]", source, "data", asList("foo", "bar"));
 		checkTemplateOutput("[(foo)]", source, "data", makeMap("foo", true));
+
+		String sourcekw = "<?for (f, l, value) in isfirstlast(iterable=data)?><?if f?>[<?end if?>(<?print value?>)<?if l?>]<?end if?><?end for?>";
+		checkTemplateOutput("[(f)(o)(o)]", sourcekw, "data", "foo");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1721,6 +1724,9 @@ public class UL4Test
 		checkTemplateOutput("[(f)(o)(o)", source, "data", "foo");
 		checkTemplateOutput("[(foo)(bar)", source, "data", asList("foo", "bar"));
 		checkTemplateOutput("[(foo)", source, "data", makeMap("foo", true));
+
+		String sourcekw = "<?for (f, value) in isfirst(iterable=data)?><?if f?>[<?end if?>(<?print value?>)<?end for?>";
+		checkTemplateOutput("[(f)(o)(o)", sourcekw, "data", "foo");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1775,6 +1781,9 @@ public class UL4Test
 		checkTemplateOutput("(f)(o)(o)]", source, "data", "foo");
 		checkTemplateOutput("(foo)(bar)]", source, "data", asList("foo", "bar"));
 		checkTemplateOutput("(foo)]", source, "data", makeMap("foo", true));
+
+		String sourcekw = "<?for (l, value) in islast(iterable=data)?>(<?print value?>)<?if l?>]<?end if?><?end for?>";
+		checkTemplateOutput("(f)(o)(o)]", sourcekw, "data", "foo");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1838,6 +1847,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print isundefined(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1871,6 +1881,7 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", makeMap());
 		checkTemplateOutput("True", source, "data", getTemplate(""));
 		checkTemplateOutput("True", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("True", "<?print isdefined(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1904,6 +1915,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("True", "<?print isnone(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1937,6 +1949,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print isbool(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1970,6 +1983,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print isint(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2003,6 +2017,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print isfloat(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2036,6 +2051,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print isstr(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2069,6 +2085,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print isdate(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2102,6 +2119,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print islist(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2135,6 +2153,7 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print isdict(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2168,6 +2187,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("True", source, "data", getTemplate(""));
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print istemplate(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2201,6 +2221,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("True", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print iscolor(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2234,6 +2255,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print istimedelta(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2255,7 +2277,8 @@ public class UL4Test
 		checkTemplateOutput("42", "<?print get('x')?>", "x", 42);
 		checkTemplateOutput("17", "<?print get('x', 17)?>");
 		checkTemplateOutput("42", "<?print get('x', 17)?>", "x", 42);
-		checkTemplateOutput("True", "<?print istemplate(get('self'))?>");
+		checkTemplateOutput("True", "<?print islist(get('stack'))?>");
+		checkTemplateOutput("17", "<?print get(name='x', default=17)?>");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2288,6 +2311,7 @@ public class UL4Test
 		checkTemplateOutput("@(2011-02-07T12:34:56)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56));
 		checkTemplateOutput("@(2011-02-07)", source, "data", FunctionDate.call(2011, 2, 7));
 		checkTemplateOutput("@(2011-02-07)", source, "data", FunctionDate.call(2011, 2, 7));
+		checkTemplateOutput("None", "<?print repr(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2309,6 +2333,7 @@ public class UL4Test
 
 		String source2 = "<?print format(data, format)?>";
 		String source3 = "<?print format(data, format, lang)?>";
+		String source3kw = "<?print format(obj=data, fmt=format, lang=lang)?>";
 
 		checkTemplateOutput("2011", source2, "data", t, "format", "%Y");
 		checkTemplateOutput("01", source2, "data", t, "format", "%m");
@@ -2356,6 +2381,7 @@ public class UL4Test
 		checkTemplateOutput("13:34:56", source3, "data", t, "format", "%X", "lang", "de");
 		checkTemplateOutput("13:34:56", source3, "data", t, "format", "%X", "lang", "de_DE");
 		checkTemplateOutput("%", source2, "format", "%%", "data", t);
+		checkTemplateOutput("2011", source3kw, "data", t, "format", "%Y", "lang", "de_DE");
 	}
 
 	@Test
@@ -2389,42 +2415,51 @@ public class UL4Test
 	public void function_chr()
 	{
 		String source = "<?print chr(data)?>";
-
 		checkTemplateOutput("\u0000", source, "data", 0);
 		checkTemplateOutput("a", source, "data", (int)'a');
 		checkTemplateOutput("\u20ac", source, "data", 0x20ac);
+
+		String sourcekw = "<?print chr(i=data)?>";
+		checkTemplateOutput("\u0000", sourcekw, "data", 0);
 	}
 
 	@Test
 	public void function_ord()
 	{
 		String source = "<?print ord(data)?>";
-
 		checkTemplateOutput("0", source, "data", "\u0000");
 		checkTemplateOutput("97", source, "data", "a");
 		checkTemplateOutput("8364", source, "data", "\u20ac");
+
+		String sourcekw = "<?print ord(c=data)?>";
+		checkTemplateOutput("0", sourcekw, "data", "\u0000");
 	}
 
 	@Test
 	public void function_hex()
 	{
 		String source = "<?print hex(data)?>";
-
 		checkTemplateOutput("0x0", source, "data", 0);
 		checkTemplateOutput("0xff", source, "data", 0xff);
 		checkTemplateOutput("0xffff", source, "data", 0xffff);
 		checkTemplateOutput("-0xffff", source, "data", -0xffff);
+
+		String sourcekw = "<?print hex(number=data)?>";
+		checkTemplateOutput("0x0", sourcekw, "data", 0);
 	}
 
 	@Test
 	public void function_oct()
 	{
 		String source = "<?print oct(data)?>";
-
 		checkTemplateOutput("0o0", source, "data", 0);
 		checkTemplateOutput("0o77", source, "data", 077);
 		checkTemplateOutput("0o7777", source, "data", 07777);
 		checkTemplateOutput("-0o7777", source, "data", -07777);
+
+
+		String sourcekw = "<?print oct(number=data)?>";
+		checkTemplateOutput("0o0", sourcekw, "data", 0);
 	}
 
 	@Test
@@ -2435,18 +2470,24 @@ public class UL4Test
 		checkTemplateOutput("0b0", source, "data", 0);
 		checkTemplateOutput("0b11", source, "data", 3);
 		checkTemplateOutput("-0b1111", source, "data", -15);
+
+
+		String sourcekw = "<?print bin(number=data)?>";
+		checkTemplateOutput("0b0", sourcekw, "data", 0);
 	}
 
 	@Test
 	public void function_abs()
 	{
 		String source = "<?print abs(data)?>";
-
 		checkTemplateOutput("0", source, "data", 0);
 		checkTemplateOutput("42", source, "data", 42);
 		checkTemplateOutput("42", source, "data", -42);
 		checkTemplateOutput("1 month", source, "data", new MonthDelta(-1));
 		checkTemplateOutput("1 day, 0:00:01.000001", source, "data", new TimeDelta(-1, -1, -1));
+
+		String sourcekw = "<?print abs(number=data)?>";
+		checkTemplateOutput("0", sourcekw, "data", 0);
 	}
 
 	@Test
@@ -2485,11 +2526,13 @@ public class UL4Test
 	public void function_sorted()
 	{
 		String source = "<?for i in sorted(data)?><?print i?><?end for?>";
-
 		checkTemplateOutput("gkru", source, "data", "gurk");
 		checkTemplateOutput("24679", source, "data", "92746");
 		checkTemplateOutput("172342", source, "data", asList(42, 17, 23));
 		checkTemplateOutput("012", source, "data", makeMap(0, "zero", 1, "one", 2, "two"));
+
+		String sourcekw = "<?for i in sorted(iterable=data)?><?print i?><?end for?>";
+		checkTemplateOutput("gkru", sourcekw, "data", "gurk");
 	}
 
 	@Test
@@ -2533,7 +2576,6 @@ public class UL4Test
 	public void function_type()
 	{
 		String source = "<?print type(data)?>";
-
 		checkTemplateOutput("none", source, "data", null);
 		checkTemplateOutput("bool", source, "data", false);
 		checkTemplateOutput("bool", source, "data", true);
@@ -2545,15 +2587,20 @@ public class UL4Test
 		checkTemplateOutput("dict", source, "data", makeMap(1, 2));
 		checkTemplateOutput("template", source, "data", getTemplate(""));
 		checkTemplateOutput("color", source, "data", new Color(0, 0, 0));
+
+		String sourcekw = "<?print type(obj=data)?>";
+		checkTemplateOutput("none", sourcekw, "data", null);
 	}
 
 	@Test
 	public void function_reversed()
 	{
 		String source = "<?for i in reversed(x)?>(<?print i?>)<?end for?>";
-
 		checkTemplateOutput("(3)(2)(1)", source, "x", "123");
 		checkTemplateOutput("(3)(2)(1)", source, "x", asList(1, 2, 3));
+
+		String sourcekw = "<?for i in reversed(sequence=x)?>(<?print i?>)<?end for?>";
+		checkTemplateOutput("(3)(2)(1)", sourcekw, "x", "123");
 	}
 
 	@Test
@@ -2562,6 +2609,8 @@ public class UL4Test
 		checkTemplateOutput("gurk", "<?print urlquote('gurk')?>");
 		checkTemplateOutput("%3C%3D%3E%2B%3F", "<?print urlquote('<=>+?')?>");
 		checkTemplateOutput("%7F%C3%BF%EF%BF%BF", "<?print urlquote('\u007f\u00ff\uffff')?>");
+
+		checkTemplateOutput("gurk", "<?print urlquote(string='gurk')?>");
 	}
 
 	@Test
@@ -2570,6 +2619,8 @@ public class UL4Test
 		checkTemplateOutput("gurk", "<?print urlunquote('gurk')?>");
 		checkTemplateOutput("<=>+?", "<?print urlunquote('%3C%3D%3E%2B%3F')?>");
 		checkTemplateOutput("\u007f\u00ff\uffff", "<?print urlunquote('%7F%C3%BF%EF%BF%BF')?>");
+
+		checkTemplateOutput("gurk", "<?print urlunquote(string='gurk')?>");
 	}
 
 	@Test
@@ -2577,6 +2628,8 @@ public class UL4Test
 	{
 		checkTemplateOutput("#369", "<?print repr(rgb(0.2, 0.4, 0.6))?>");
 		checkTemplateOutput("#369c", "<?print repr(rgb(0.2, 0.4, 0.6, 0.8))?>");
+
+		checkTemplateOutput("#369c", "<?print repr(rgb(r=0.2, g=0.4, b=0.6, a=0.8))?>");
 	}
 
 	@Test
@@ -2584,6 +2637,8 @@ public class UL4Test
 	{
 		checkTemplateOutput("#fff", "<?print repr(hls(0, 1, 0))?>");
 		checkTemplateOutput("#fff0", "<?print repr(hls(0, 1, 0, 0))?>");
+
+		checkTemplateOutput("#fff0", "<?print repr(hls(h=0, l=1, s=0, a=0))?>");
 	}
 
 	@Test
@@ -2591,6 +2646,8 @@ public class UL4Test
 	{
 		checkTemplateOutput("#fff", "<?print repr(hsv(0, 0, 1))?>");
 		checkTemplateOutput("#fff0", "<?print repr(hsv(0, 0, 1, 0))?>");
+
+		checkTemplateOutput("#fff0", "<?print repr(hsv(h=0, s=0, v=1, a=0))?>");
 	}
 
 	@Test
@@ -2616,6 +2673,8 @@ public class UL4Test
 	{
 		checkTemplateOutput("True", "<?print 'gurkhurz'.startswith('gurk')?>");
 		checkTemplateOutput("False", "<?print 'gurkhurz'.startswith('hurz')?>");
+
+		checkTemplateOutput("False", "<?print 'gurkhurz'.startswith(prefix='hurz')?>");
 	}
 
 	@Test
@@ -2623,6 +2682,8 @@ public class UL4Test
 	{
 		checkTemplateOutput("True", "<?print 'gurkhurz'.endswith('hurz')?>");
 		checkTemplateOutput("False", "<?print 'gurkhurz'.endswith('gurk')?>");
+
+		checkTemplateOutput("False", "<?print 'gurkhurz'.endswith(suffix='gurk')?>");
 	}
 
 	@Test
@@ -2630,6 +2691,8 @@ public class UL4Test
 	{
 		checkTemplateOutput("gurk", "<?print obj.strip()?>", "obj", " \t\r\ngurk \t\r\n");
 		checkTemplateOutput("gurk", "<?print obj.strip('xyz')?>", "obj", "xyzzygurkxyzzy");
+
+		checkTemplateOutput("gurk", "<?print obj.strip(chars='xyz')?>", "obj", "xyzzygurkxyzzy");
 	}
 
 	@Test
@@ -2637,6 +2700,8 @@ public class UL4Test
 	{
 		checkTemplateOutput("gurk \t\r\n", "<?print obj.lstrip()?>", "obj", " \t\r\ngurk \t\r\n");
 		checkTemplateOutput("gurkxyzzy", "<?print obj.lstrip(arg)?>", "obj", "xyzzygurkxyzzy", "arg", "xyz");
+
+		checkTemplateOutput("gurkxyzzy", "<?print obj.lstrip(chars=arg)?>", "obj", "xyzzygurkxyzzy", "arg", "xyz");
 	}
 
 	@Test
@@ -2644,6 +2709,8 @@ public class UL4Test
 	{
 		checkTemplateOutput(" \t\r\ngurk", "<?print obj.rstrip()?>", "obj", " \t\r\ngurk \t\r\n");
 		checkTemplateOutput("xyzzygurk", "<?print obj.rstrip(arg)?>", "obj", "xyzzygurkxyzzy", "arg", "xyz");
+
+		checkTemplateOutput("xyzzygurk", "<?print obj.rstrip(chars=arg)?>", "obj", "xyzzygurkxyzzy", "arg", "xyz");
 	}
 
 	@Test
@@ -2652,7 +2719,10 @@ public class UL4Test
 		checkTemplateOutput("(f)(o)(o)", "<?for item in obj.split()?>(<?print item?>)<?end for?>", "obj", " \t\r\nf \t\r\no \t\r\no \t\r\n");
 		checkTemplateOutput("(f)(o \t\r\no \t\r\n)", "<?for item in obj.split(None, 1)?>(<?print item?>)<?end for?>", "obj", " \t\r\nf \t\r\no \t\r\no \t\r\n");
 		checkTemplateOutput("()(f)(o)(o)()", "<?for item in obj.split(arg)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
+		checkTemplateOutput("()(f)(o)(o)()", "<?for item in obj.split(arg, None)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
 		checkTemplateOutput("()(f)(oxxoxx)", "<?for item in obj.split(arg, 2)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
+
+		checkTemplateOutput("()(f)(oxxoxx)", "<?for item in obj.split(sep=arg, count=2)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
 	}
 
 	@Test
@@ -2661,13 +2731,19 @@ public class UL4Test
 		checkTemplateOutput("(f)(o)(o)", "<?for item in obj.rsplit()?>(<?print item?>)<?end for?>", "obj", " \t\r\nf \t\r\no \t\r\no \t\r\n");
 		checkTemplateOutput("( \t\r\nf \t\r\no)(o)", "<?for item in obj.rsplit(None, 1)?>(<?print item?>)<?end for?>", "obj", " \t\r\nf \t\r\no \t\r\no \t\r\n");
 		checkTemplateOutput("()(f)(o)(o)()", "<?for item in obj.rsplit(arg)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
+		checkTemplateOutput("()(f)(o)(o)()", "<?for item in obj.rsplit(arg, None)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
 		checkTemplateOutput("(xxfxxo)(o)()", "<?for item in obj.rsplit(arg, 2)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
+
+		checkTemplateOutput("(xxfxxo)(o)()", "<?for item in obj.rsplit(sep=arg, count=2)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
 	}
 
 	@Test
 	public void method_replace()
 	{
 		checkTemplateOutput("goork", "<?print 'gurk'.replace('u', 'oo')?>");
+		checkTemplateOutput("fuuuu", "<?print 'foo'.replace('o', 'uu', None)?>");
+		checkTemplateOutput("fuuo", "<?print 'foo'.replace('o', 'uu', 1)?>");
+		checkTemplateOutput("fuuo", "<?print 'foo'.replace(old='o', new='uu', count=1)?>");
 	}
 
 	@Test
@@ -2676,7 +2752,6 @@ public class UL4Test
 		InterpretedTemplate t1 = getTemplate("(<?print data?>)", "t1");
 
 		checkTemplateOutput("(GURK)", "<?print t.renders(data='gurk').upper()?>", "t", t1);
-		checkTemplateOutput("(GURK)", "<?print t.renders(**{'data': 'gurk'}).upper()?>", "t", t1);
 
 		InterpretedTemplate t2 = getTemplate("(gurk)", "t2");
 		checkTemplateOutput("(GURK)", "<?print t.renders().upper()?>", "t", t2);
@@ -2689,7 +2764,6 @@ public class UL4Test
 		InterpretedTemplate t2 = getTemplate("<?print 'foo'?>");
 
 		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t.render(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
-		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t.render(data=c, **{'prefix': '(', 'suffix': ')'})?><?end for?>", "t", t1, "data", "foo");
 		checkTemplateOutput("foo", "<?print t.render()?>", "t", t2);
 		checkTemplateOutput("foo", "<?print t.render \n\t(\n \t)\n\t ?>", "t", t2);
 
@@ -2743,6 +2817,8 @@ public class UL4Test
 		checkTemplateOutput("17", "<?print {'foo': 17}.get('foo', 42)?>");
 		checkTemplateOutput("", "<?print {}.get('foo')?>");
 		checkTemplateOutput("17", "<?print {'foo': 17}.get('foo')?>");
+
+		checkTemplateOutput("17", "<?print {'foo': 17}.get(key='foo', default=42)?>");
 	}
 
 	@Test
@@ -2798,12 +2874,16 @@ public class UL4Test
 	public void method_withlum()
 	{
 		checkTemplateOutput("#fff", "<?print #000.withlum(1)?>");
+
+		checkTemplateOutput("#fff", "<?print #000.withlum(lum=1)?>");
 	}
 
 	@Test
 	public void method_witha()
 	{
 		checkTemplateOutput("#0063a82a", "<?print repr(#0063a8.witha(42))?>");
+
+		checkTemplateOutput("#0063a82a", "<?print repr(#0063a8.witha(a=42))?>");
 	}
 
 	@Test
@@ -2811,6 +2891,8 @@ public class UL4Test
 	{
 		checkTemplateOutput("1,2,3,4", "<?print ','.join('1234')?>");
 		checkTemplateOutput("1,2,3,4", "<?print ','.join(['1', '2', '3', '4'])?>");
+
+		checkTemplateOutput("1,2,3,4", "<?print ','.join(iterable='1234')?>");
 	}
 
 	@Test
@@ -2834,6 +2916,8 @@ public class UL4Test
 		checkTemplateOutput("-1", "<?print l.find('r', 2, 2)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
 		checkTemplateOutput("-1", "<?print l.find('r', 7)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
 		checkTemplateOutput("2", "<?print l.find(None)?>", "l", asList("g", "u", null, "k", "g", "u", "r", "k"));
+
+		checkTemplateOutput("2", "<?print s.find(sub='rk', start=2, end=4)?>", "s", "gurkgurk");
 	}
 
 	@Test
@@ -2857,6 +2941,8 @@ public class UL4Test
 		checkTemplateOutput("-1", "<?print l.rfind('r', 2, 2)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
 		checkTemplateOutput("-1", "<?print l.rfind('r', 7)?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
 		checkTemplateOutput("2", "<?print l.rfind(None)?>", "l", asList("g", "u", null, "k", "g", "u", "r", "k"));
+
+		checkTemplateOutput("2", "<?print s.rfind(sub='rk', start=2, end=4)?>", "s", "gurkgurk");
 	}
 
 	@Test
@@ -2928,11 +3014,12 @@ public class UL4Test
 	}
 
 	@Test
-	public void self()
+	public void stack()
 	{
-		checkTemplateOutput("True", "<?print istemplate(self)?>");
-		checkTemplateOutput("x", "<?def x?><?print self.name?><?end def?><?render x.render()?>");
-		checkTemplateOutput("42", "<?code self = 42?><?print self?>");
+		checkTemplateOutput("True", "<?print istemplate(stack[-1])?>");
+		checkTemplateOutput("x", "<?def x?><?print stack[-1].name?><?end def?><?render x.render()?>");
+		checkTemplateOutput("42", "<?code stack = 42?><?print stack?>");
+		checkTemplateOutput("42", "<?code stack = 42?><?def x?><?print stack?><?end def?><?render x.render()?>");
 	}
 
 	@Test

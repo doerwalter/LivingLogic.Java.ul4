@@ -44,15 +44,14 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 
 	public void render(EvaluationContext context) throws java.io.IOException
 	{
-		Map<String, Object> newVariables = new MapChain<String, Object>(context.getVariables(), variables);
-		Map<String, Object> oldVariables = context.setVariables(newVariables);
+		context.pushVariables(new HashMap<String, Object>(variables));
 		try
 		{
 			template.render(context);
 		}
 		finally
 		{
-			context.setVariables(oldVariables);
+			context.popVariables();
 		}
 	}
 
@@ -60,17 +59,15 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 	// so we extend ObjectAsMap and reimplement the methods of CompiledTemplate
 	public void render(EvaluationContext context, Map<String, Object> variables) throws java.io.IOException
 	{
-		if (variables == null)
-			variables = new HashMap<String, Object>();
-		Map<String, Object> newVariables = new MapChain<String, Object>(variables, this.variables);
-		Map<String, Object> oldVariables = context.setVariables(newVariables);
+		context.pushVariables(this.variables);
+
 		try
 		{
-			template.render(context);
+			template.render(context, variables != null ? variables : new HashMap<String, Object>());
 		}
 		finally
 		{
-			context.setVariables(oldVariables);
+			context.popVariables();
 		}
 	}
 
@@ -101,14 +98,14 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 
 	public String renders(EvaluationContext context, Map<String, Object> variables)
 	{
-		Map<String, Object> oldVariables = context.setVariables(variables);
+		context.pushVariables(variables);
 		try
 		{
 			return renders(context);
 		}
 		finally
 		{
-			context.setVariables(oldVariables);
+			context.popVariables();
 		}
 	}
 
