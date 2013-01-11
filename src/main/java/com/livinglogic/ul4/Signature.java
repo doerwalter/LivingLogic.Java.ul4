@@ -10,15 +10,15 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.Iterator;
 
-public class ArgumentDescriptions implements Iterable<ArgumentDescription>
+public class Signature implements Iterable<ArgumentDescription>
 {
 	protected String name;
-	protected Map<String, ArgumentDescription> descriptions;
+	protected Map<String, ArgumentDescription> arguments;
 
-	public ArgumentDescriptions(String name)
+	public Signature(String name)
 	{
 		this.name = name;
-		descriptions = new LinkedHashMap<String, ArgumentDescription>();
+		arguments = new LinkedHashMap<String, ArgumentDescription>();
 	}
 
 	public String getName()
@@ -28,27 +28,27 @@ public class ArgumentDescriptions implements Iterable<ArgumentDescription>
 
 	public void add(String name)
 	{
-		descriptions.put(name, new ArgumentDescription(name, descriptions.size()));
+		arguments.put(name, new ArgumentDescription(name, arguments.size()));
 	}
 
 	public void add(String name, Object defaultValue)
 	{
-		descriptions.put(name, new ArgumentDescription(name, descriptions.size(), defaultValue));
+		arguments.put(name, new ArgumentDescription(name, arguments.size(), defaultValue));
 	}
 
 	public Iterator<ArgumentDescription> iterator()
 	{
-		return descriptions.values().iterator();
+		return arguments.values().iterator();
 	}
 
 	public int size()
 	{
-		return descriptions.size();
+		return arguments.size();
 	}
 
 	public boolean containsArgumentNamed(String argName)
 	{
-		return descriptions.containsKey(argName);
+		return arguments.containsKey(argName);
 	}
 
 	public Object[] makeArgumentArray(EvaluationContext context, Object[] args, Map<String, Object> kwargs)

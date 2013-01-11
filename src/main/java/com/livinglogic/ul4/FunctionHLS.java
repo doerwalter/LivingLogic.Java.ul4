@@ -15,12 +15,12 @@ public class FunctionHLS extends NormalFunction
 		return "hls";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("h");
-		argumentDescriptions.add("l");
-		argumentDescriptions.add("s");
-		argumentDescriptions.add("a", 1.0);
+		signature.add("h");
+		signature.add("l");
+		signature.add("s");
+		signature.add("a", 1.0);
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

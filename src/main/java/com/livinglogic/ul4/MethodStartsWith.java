@@ -15,9 +15,9 @@ public class MethodStartsWith extends NormalMethod
 		return "startswith";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("prefix");
+		signature.add("prefix");
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException

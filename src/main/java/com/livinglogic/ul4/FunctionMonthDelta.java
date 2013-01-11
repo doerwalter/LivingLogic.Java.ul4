@@ -15,9 +15,9 @@ public class FunctionMonthDelta extends NormalFunction
 		return "monthdelta";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("months", 0);
+		signature.add("months", 0);
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

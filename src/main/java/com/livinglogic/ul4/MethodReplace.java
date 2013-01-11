@@ -17,11 +17,11 @@ public class MethodReplace extends NormalMethod
 		return "replace";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("old");
-		argumentDescriptions.add("new");
-		argumentDescriptions.add("count", null);
+		signature.add("old");
+		signature.add("new");
+		signature.add("count", null);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException

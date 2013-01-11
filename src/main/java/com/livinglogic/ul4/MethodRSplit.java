@@ -20,10 +20,10 @@ public class MethodRSplit extends NormalMethod
 		return "rsplit";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("sep", null);
-		argumentDescriptions.add("count", null);
+		signature.add("sep", null);
+		signature.add("count", null);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException

@@ -16,8 +16,8 @@ public class UnsupportedArgumentNameException extends ArgumentException
 		super(name + "() doesn't support an argument named " + FunctionRepr.call(argumentName));
 	}
 
-	public UnsupportedArgumentNameException(ArgumentDescriptions argumentDescriptions, String name)
+	public UnsupportedArgumentNameException(Signature signature, String argumentName)
 	{
-		this(argumentDescriptions.getName(), name);
+		this(signature.getName(), argumentName);
 	}
 }

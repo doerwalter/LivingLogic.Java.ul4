@@ -16,8 +16,8 @@ public class PositionalArgumentsNotSupportedException extends ArgumentException
 		super(name + "() doesn't support positional arguments");
 	}
 
-	public PositionalArgumentsNotSupportedException(ArgumentDescriptions argumentDescriptions)
+	public PositionalArgumentsNotSupportedException(Signature signature)
 	{
-		this(argumentDescriptions.getName());
+		this(signature.getName());
 	}
 }

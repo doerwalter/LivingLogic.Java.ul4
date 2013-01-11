@@ -17,10 +17,10 @@ public class FunctionEnumFL extends NormalFunction
 		return "enumfl";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("iterable");
-		argumentDescriptions.add("start", 0);
+		signature.add("iterable");
+		signature.add("start", 0);
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

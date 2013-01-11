@@ -15,12 +15,12 @@ public class FunctionHSV extends NormalFunction
 		return "hsv";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("h");
-		argumentDescriptions.add("s");
-		argumentDescriptions.add("v");
-		argumentDescriptions.add("a", 1.0);
+		signature.add("h");
+		signature.add("s");
+		signature.add("v");
+		signature.add("a", 1.0);
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

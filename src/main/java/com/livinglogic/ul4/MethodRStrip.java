@@ -17,9 +17,9 @@ public class MethodRStrip extends NormalMethod
 		return "rstrip";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("chars", null);
+		signature.add("chars", null);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException

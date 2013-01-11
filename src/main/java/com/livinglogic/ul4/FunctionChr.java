@@ -15,9 +15,9 @@ public class FunctionChr extends NormalFunction
 		return "chr";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("i");
+		signature.add("i");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

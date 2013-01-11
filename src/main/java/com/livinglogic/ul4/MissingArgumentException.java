@@ -16,8 +16,8 @@ public class MissingArgumentException extends ArgumentException
 		super("required " + name + "() argument " + FunctionRepr.call(argumentName) + " (position " + argumentPosition + ") missing");
 	}
 
-	public MissingArgumentException(ArgumentDescriptions descriptions, ArgumentDescription description)
+	public MissingArgumentException(Signature signature, ArgumentDescription argument)
 	{
-		this(descriptions.getName(), description.getName(), description.getPosition());
+		this(signature.getName(), argument.getName(), argument.getPosition());
 	}
 }

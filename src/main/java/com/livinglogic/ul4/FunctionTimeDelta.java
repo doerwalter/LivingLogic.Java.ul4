@@ -15,11 +15,11 @@ public class FunctionTimeDelta extends NormalFunction
 		return "timedelta";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("days", 0);
-		argumentDescriptions.add("seconds", 0);
-		argumentDescriptions.add("microseconds", 0);
+		signature.add("days", 0);
+		signature.add("seconds", 0);
+		signature.add("microseconds", 0);
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

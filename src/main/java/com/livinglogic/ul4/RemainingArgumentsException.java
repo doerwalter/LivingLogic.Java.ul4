@@ -16,8 +16,8 @@ public class RemainingArgumentsException extends ArgumentException
 		super("* argument for " + name + "() must be list");
 	}
 
-	public RemainingArgumentsException(ArgumentDescriptions descriptions)
+	public RemainingArgumentsException(Signature signature)
 	{
-		this(descriptions.getName());
+		this(signature.getName());
 	}
 }

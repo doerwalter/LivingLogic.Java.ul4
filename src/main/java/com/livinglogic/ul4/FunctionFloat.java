@@ -17,9 +17,9 @@ public class FunctionFloat extends NormalFunction
 		return "float";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("obj", 0.0);
+		signature.add("obj", 0.0);
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

@@ -15,9 +15,9 @@ public class MethodEndsWith extends NormalMethod
 		return "endswith";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("suffix");
+		signature.add("suffix");
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException

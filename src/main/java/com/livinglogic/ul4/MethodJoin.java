@@ -18,9 +18,9 @@ public class MethodJoin extends NormalMethod
 		return "join";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("iterable");
+		signature.add("iterable");
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException

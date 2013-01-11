@@ -16,8 +16,8 @@ public class RemainingKeywordArgumentsException extends ArgumentException
 		super("** argument for " + name + "() must be dict with string keys");
 	}
 
-	public RemainingKeywordArgumentsException(ArgumentDescriptions descriptions)
+	public RemainingKeywordArgumentsException(Signature signature)
 	{
-		this(descriptions.getName());
+		this(signature.getName());
 	}
 }

@@ -13,12 +13,12 @@ public class FunctionRGB extends NormalFunction
 		return "rgb";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("r");
-		argumentDescriptions.add("g");
-		argumentDescriptions.add("b");
-		argumentDescriptions.add("a", 1.0);
+		signature.add("r");
+		signature.add("g");
+		signature.add("b");
+		signature.add("a", 1.0);
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

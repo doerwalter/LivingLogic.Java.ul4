@@ -20,9 +20,9 @@ public class FunctionBool extends NormalFunction
 		return "bool";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("obj", false);
+		signature.add("obj", false);
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

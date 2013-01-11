@@ -15,9 +15,9 @@ public class MethodWithLum extends NormalMethod
 		return "withlum";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("lum");
+		signature.add("lum");
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException

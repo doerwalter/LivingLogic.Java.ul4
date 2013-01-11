@@ -25,9 +25,9 @@ public class FunctionRepr extends NormalFunction
 		return "repr";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("obj");
+		signature.add("obj");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

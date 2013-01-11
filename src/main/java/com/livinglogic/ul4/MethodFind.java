@@ -16,11 +16,11 @@ public class MethodFind extends NormalMethod
 		return "find";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("sub");
-		argumentDescriptions.add("start", null);
-		argumentDescriptions.add("end", null);
+		signature.add("sub");
+		signature.add("start", null);
+		signature.add("end", null);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException

@@ -16,9 +16,9 @@ public class FunctionOct extends NormalFunction
 		return "oct";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("number");
+		signature.add("number");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

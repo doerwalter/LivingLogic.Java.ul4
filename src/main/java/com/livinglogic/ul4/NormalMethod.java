@@ -13,25 +13,25 @@ public abstract class NormalMethod implements Method
 {
 	public abstract String getName();
 
-	private ArgumentDescriptions argumentDescriptions = null;
+	private Signature signature = null;
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
 	}
 
-	private ArgumentDescriptions getArgumentDescriptions()
+	private Signature getSignature()
 	{
-		if (argumentDescriptions == null)
+		if (signature == null)
 		{
-			argumentDescriptions = new ArgumentDescriptions(getName());
-			makeArgumentDescriptions(argumentDescriptions);
+			signature = new Signature(getName());
+			makeSignature(signature);
 		}
-		return argumentDescriptions;
+		return signature;
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs) throws IOException
 	{
-		return evaluate(context, obj, getArgumentDescriptions().makeArgumentArray(context, args, kwargs));
+		return evaluate(context, obj, getSignature().makeArgumentArray(context, args, kwargs));
 	}
 
 	public abstract Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException;

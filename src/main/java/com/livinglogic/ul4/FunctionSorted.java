@@ -21,9 +21,9 @@ public class FunctionSorted extends NormalFunction
 		return "sorted";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("iterable");
+		signature.add("iterable");
 	}
 
 	private static Comparator comparator = new Comparator()

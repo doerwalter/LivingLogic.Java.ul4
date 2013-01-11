@@ -17,9 +17,9 @@ public class FunctionIsFirstLast extends NormalFunction
 		return "isfirstlast";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("iterable");
+		signature.add("iterable");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

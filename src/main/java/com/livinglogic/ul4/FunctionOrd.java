@@ -15,9 +15,9 @@ public class FunctionOrd extends NormalFunction
 		return "ord";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("c");
+		signature.add("c");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

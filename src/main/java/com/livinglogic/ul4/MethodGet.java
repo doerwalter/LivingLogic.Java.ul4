@@ -16,10 +16,10 @@ public class MethodGet extends NormalMethod
 		return "get";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("key");
-		argumentDescriptions.add("default", null);
+		signature.add("key");
+		signature.add("default", null);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException

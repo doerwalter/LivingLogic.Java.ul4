@@ -17,9 +17,9 @@ public class FunctionURLUnquote extends NormalFunction
 		return "urlunquote";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("string");
+		signature.add("string");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

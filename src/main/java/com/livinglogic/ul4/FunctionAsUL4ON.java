@@ -15,9 +15,9 @@ public class FunctionAsUL4ON extends NormalFunction
 		return "asul4on";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("obj");
+		signature.add("obj");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

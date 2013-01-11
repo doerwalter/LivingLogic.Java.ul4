@@ -16,9 +16,9 @@ public class FunctionHex extends NormalFunction
 		return "hex";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("number");
+		signature.add("number");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

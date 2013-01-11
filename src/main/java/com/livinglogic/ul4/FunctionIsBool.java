@@ -15,9 +15,9 @@ public class FunctionIsBool extends NormalFunction
 		return "isbool";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("obj");
+		signature.add("obj");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

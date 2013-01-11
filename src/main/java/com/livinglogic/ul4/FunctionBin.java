@@ -16,9 +16,9 @@ public class FunctionBin extends NormalFunction
 		return "bin";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("number");
+		signature.add("number");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

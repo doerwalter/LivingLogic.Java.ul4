@@ -18,15 +18,15 @@ public class FunctionDate extends NormalFunction
 		return "date";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("year");
-		argumentDescriptions.add("month");
-		argumentDescriptions.add("day");
-		argumentDescriptions.add("hour", 0);
-		argumentDescriptions.add("minute", 0);
-		argumentDescriptions.add("second", 0);
-		argumentDescriptions.add("microsecond", 0);
+		signature.add("year");
+		signature.add("month");
+		signature.add("day");
+		signature.add("hour", 0);
+		signature.add("minute", 0);
+		signature.add("second", 0);
+		signature.add("microsecond", 0);
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

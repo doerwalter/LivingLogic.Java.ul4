@@ -19,10 +19,10 @@ public class FunctionInt extends NormalFunction
 		return "int";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("obj", 0);
-		argumentDescriptions.add("base", null);
+		signature.add("obj", 0);
+		signature.add("base", null);
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

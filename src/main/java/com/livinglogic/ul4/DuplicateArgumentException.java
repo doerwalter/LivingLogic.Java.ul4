@@ -21,8 +21,8 @@ public class DuplicateArgumentException extends ArgumentException
 		this(name, argumentName, -1);
 	}
 
-	public DuplicateArgumentException(ArgumentDescriptions descriptions, ArgumentDescription description)
+	public DuplicateArgumentException(Signature signature, ArgumentDescription argument)
 	{
-		this(descriptions.getName(), description.getName(), description.getPosition());
+		this(signature.getName(), argument.getName(), argument.getPosition());
 	}
 }

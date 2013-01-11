@@ -15,9 +15,9 @@ public class FunctionFromUL4ON extends NormalFunction
 		return "fromul4on";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("string");
+		signature.add("string");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

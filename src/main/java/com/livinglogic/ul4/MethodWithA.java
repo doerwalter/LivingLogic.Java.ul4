@@ -15,9 +15,9 @@ public class MethodWithA extends NormalMethod
 		return "witha";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("a");
+		signature.add("a");
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException

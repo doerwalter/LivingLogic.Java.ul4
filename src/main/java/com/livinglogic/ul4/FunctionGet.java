@@ -16,10 +16,10 @@ public class FunctionGet extends NormalFunction
 		return "get";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("name");
-		argumentDescriptions.add("default", null);
+		signature.add("name");
+		signature.add("default", null);
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

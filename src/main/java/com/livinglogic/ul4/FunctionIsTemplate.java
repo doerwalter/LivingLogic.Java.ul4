@@ -15,9 +15,9 @@ public class FunctionIsTemplate extends NormalFunction
 		return "istemplate";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("obj");
+		signature.add("obj");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

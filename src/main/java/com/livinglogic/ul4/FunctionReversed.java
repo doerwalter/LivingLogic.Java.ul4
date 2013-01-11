@@ -17,9 +17,9 @@ public class FunctionReversed extends NormalFunction
 		return "reversed";
 	}
 
-	protected void makeArgumentDescriptions(ArgumentDescriptions argumentDescriptions)
+	protected void makeSignature(Signature signature)
 	{
-		argumentDescriptions.add("sequence");
+		signature.add("sequence");
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)
