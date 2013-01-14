@@ -24,7 +24,7 @@ public class UL4ONTest
 	{
 		try
 		{
-			InterpretedTemplate template = new InterpretedTemplate(source, name);
+			InterpretedTemplate template = new InterpretedTemplate(source, name, true);
 			// System.out.println(template);
 			return template;
 		}

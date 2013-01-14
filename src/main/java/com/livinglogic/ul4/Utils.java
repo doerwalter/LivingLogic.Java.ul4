@@ -356,7 +356,7 @@ public class Utils
 	{
 		if (string == null)
 			return null;
-		StringBuffer output = new StringBuffer(string.length());
+		StringBuilder output = new StringBuilder(string.length());
 		for (int i = 0; i < string.length(); ++i)
 		{
 			char c = string.charAt(i);

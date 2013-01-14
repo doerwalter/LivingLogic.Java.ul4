@@ -39,7 +39,7 @@ public class UL4Test
 	{
 		try
 		{
-			InterpretedTemplate template = new InterpretedTemplate(source, name);
+			InterpretedTemplate template = new InterpretedTemplate(source, name, false);
 			// System.out.println(template);
 			return template;
 		}
@@ -73,7 +73,7 @@ public class UL4Test
 		// Check that the templates format the same
 		assertEquals(template1.toString(), template2.toString());
 
-		// Check that theyhave the same output
+		// Check that they have the same output
 		String output2 = template2.renders(makeMap(args));
 		assertEquals(expected, output2);
 	}
@@ -102,6 +102,7 @@ public class UL4Test
 	public void tag_text()
 	{
 		checkTemplateOutput("gurk", "gurk");
+		checkTemplateOutput("g\tu rk", "g\t\n\t u \n  r\n\t\tk");
 	}
 
 	@Test
@@ -237,14 +238,14 @@ public class UL4Test
 	@Test
 	public void type_dict()
 	{
-		checkTemplateOutput("", "<?for (key, value) in {}.items()?><?print key?>:<?print value?>\n<?end for?>");
-		checkTemplateOutput("1:2\n", "<?for (key, value) in {1:2}.items()?><?print key?>:<?print value?>\n<?end for?>");
-		checkTemplateOutput("1:2\n", "<?for (key, value) in {1:2,}.items()?><?print key?>:<?print value?>\n<?end for?>");
+		checkTemplateOutput("", "<?for (key, value) in {}.items()?><?print key?>:<?print value?>!<?end for?>");
+		checkTemplateOutput("1:2!", "<?for (key, value) in {1:2}.items()?><?print key?>:<?print value?>!<?end for?>");
+		checkTemplateOutput("1:2!", "<?for (key, value) in {1:2,}.items()?><?print key?>:<?print value?>!<?end for?>");
 		// With duplicate keys, later ones simply overwrite earlier ones
-		checkTemplateOutput("1:3\n", "<?for (key, value) in {1:2, 1: 3}.items()?><?print key?>:<?print value?>\n<?end for?>");
+		checkTemplateOutput("1:3!", "<?for (key, value) in {1:2, 1: 3}.items()?><?print key?>:<?print value?>!<?end for?>");
 		// Test **
-		checkTemplateOutput("1:2\n", "<?for (key, value) in {**{1:2}}.items()?><?print key?>:<?print value?>\n<?end for?>");
-		checkTemplateOutput("1:4\n", "<?for (key, value) in {1:1, **{1:2}, 1:3, **{1:4}}.items()?><?print key?>:<?print value?>\n<?end for?>");
+		checkTemplateOutput("1:2!", "<?for (key, value) in {**{1:2}}.items()?><?print key?>:<?print value?>!<?end for?>");
+		checkTemplateOutput("1:4!", "<?for (key, value) in {1:1, **{1:2}, 1:3, **{1:4}}.items()?><?print key?>:<?print value?>!<?end for?>");
 		checkTemplateOutput("no", "<?if {}?>yes<?else?>no<?end if?>");
 		checkTemplateOutput("yes", "<?if {1:2}?>yes<?else?>no<?end if?>");
 	}
@@ -482,7 +483,7 @@ public class UL4Test
 	@Test
 	public void tag_continue_nested()
 	{
-		checkTemplateOutput("1, 3, \n1, 3, \n", "<?for i in [1,2,3]?><?if i==2?><?continue?><?end if?><?for j in [1,2,3]?><?if j==2?><?continue?><?end if?><?print j?>, <?end for?>\n<?end for?>");
+		checkTemplateOutput("1, 3, !1, 3, !", "<?for i in [1,2,3]?><?if i==2?><?continue?><?end if?><?for j in [1,2,3]?><?if j==2?><?continue?><?end if?><?print j?>, <?end for?>!<?end for?>");
 	}
 
 	@CauseTest(expectedCause=BlockException.class)
@@ -3185,13 +3186,13 @@ public class UL4Test
 		Reader reader = template.reader(null);
 
 		int c;
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		while ((c = reader.read()) != -1)
 		{
 			buffer.append((char)c);
 		}
 
-		StringBuffer expected = new StringBuffer();
+		StringBuilder expected = new StringBuilder();
 		for (int i = 0; i < 100; i++)
 			expected.append(li);
 

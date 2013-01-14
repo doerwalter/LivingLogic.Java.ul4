@@ -8,21 +8,27 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
+import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
+
 class Text extends Tag
 {
-	public Text(Location location)
+	private String text;
+
+	public Text(Location location, String text)
 	{
 		super(location);
+		this.text = text;
 	}
 
 	public String getText()
 	{
-		return location.getCode();
+		return text != null ? text : location.getCode();
 	}
 
 	public String toString(int indent)
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
@@ -41,5 +47,17 @@ class Text extends Tag
 	{
 		context.write(getText());
 		return null;
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(text);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		text = (String)decoder.load();
 	}
 }

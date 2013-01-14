@@ -79,7 +79,7 @@ public class Decoder
 	{
 		if (typecode == -2)
 			typecode = reader.read();
-		
+
 		if (typecode == '^')
 		{
 			int position = (Integer)readInt();
@@ -250,7 +250,7 @@ public class Decoder
 
 	private Object readInt() throws IOException
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		
 		while (true)
 		{
@@ -263,7 +263,7 @@ public class Decoder
 
 	private double readFloat() throws IOException
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		while (true)
 		{
