@@ -25,7 +25,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.apache.commons.lang.StringEscapeUtils;
 
-import static com.livinglogic.utils.StringUtils.removeWhiteSpace;
+import static com.livinglogic.utils.StringUtils.removeWhitespace;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.ObjectFactory;
@@ -45,10 +45,10 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	public String name = null;
 
 	/**
-	 * Should whitespace be stripped from text nodes?
-	 * (i.e. linefeed an the whitespace after the linefeed will be removed. Other spaces/tabs etc. will not be removed)
+	 * Should whitespace be skipped when outputting text nodes?
+	 * (i.e. linefeed and the whitespace after the linefeed will be skipped. Other spaces/tabs etc. will not be skipped)
 	 */
-	public boolean keepWhiteSpace = true;
+	public boolean keepWhitespace = true;
 
 	/**
 	 * The start delimiter for tags (defaults to {@code "<?"})
@@ -68,12 +68,12 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	/**
 	 * Creates an empty template object. Must be filled in later (use for creating subtemplates)
 	 */
-	public InterpretedTemplate(Location location, String name, boolean keepWhiteSpace, String startdelim, String enddelim)
+	public InterpretedTemplate(Location location, String name, boolean keepWhitespace, String startdelim, String enddelim)
 	{
 		super(location);
 		this.source = null;
 		this.name = name;
-		this.keepWhiteSpace = keepWhiteSpace;
+		this.keepWhitespace = keepWhitespace;
 		this.startdelim = startdelim;
 		this.enddelim = enddelim;
 	}
@@ -83,9 +83,9 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		this(source, null, true, "<?", "?>");
 	}
 
-	public InterpretedTemplate(String source, boolean keepWhiteSpace) throws RecognitionException
+	public InterpretedTemplate(String source, boolean keepWhitespace) throws RecognitionException
 	{
-		this(source, null, keepWhiteSpace, "<?", "?>");
+		this(source, null, keepWhitespace, "<?", "?>");
 	}
 
 	public InterpretedTemplate(String source, String name) throws RecognitionException
@@ -93,9 +93,9 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		this(source, name, true, "<?", "?>");
 	}
 
-	public InterpretedTemplate(String source, String name, boolean keepWhiteSpace) throws RecognitionException
+	public InterpretedTemplate(String source, String name, boolean keepWhitespace) throws RecognitionException
 	{
-		this(source, name, keepWhiteSpace, "<?", "?>");
+		this(source, name, keepWhitespace, "<?", "?>");
 	}
 
 	public InterpretedTemplate(String source, String startdelim, String enddelim) throws RecognitionException
@@ -103,17 +103,17 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		this(source, null, true, startdelim, enddelim);
 	}
 
-	public InterpretedTemplate(String source, boolean keepWhiteSpace, String startdelim, String enddelim) throws RecognitionException
+	public InterpretedTemplate(String source, boolean keepWhitespace, String startdelim, String enddelim) throws RecognitionException
 	{
-		this(source, null, keepWhiteSpace, startdelim, enddelim);
+		this(source, null, keepWhitespace, startdelim, enddelim);
 	}
 
-	public InterpretedTemplate(String source, String name, boolean keepWhiteSpace, String startdelim, String enddelim) throws RecognitionException
+	public InterpretedTemplate(String source, String name, boolean keepWhitespace, String startdelim, String enddelim) throws RecognitionException
 	{
 		super((Location)null);
 		this.source = source;
 		this.name = name;
-		this.keepWhiteSpace = keepWhiteSpace;
+		this.keepWhitespace = keepWhitespace;
 		this.startdelim = startdelim;
 		this.enddelim = enddelim;
 
@@ -135,17 +135,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 				// FIXME: use a switch in Java 7
 				if (type == null)
 				{
-					if (keepWhiteSpace)
-						innerBlock.append(new Text(location, null));
-					else
-					{
-						String originalText = location.getCode();
-						String text = removeWhiteSpace(originalText);
-						if (text.length() != 0)
-						{
-							innerBlock.append(new Text(location, text.equals(originalText) ? null : text));
-						}
-					}
+					innerBlock.append(new Text(location));
 				}
 				else if (type.equals("print"))
 				{
@@ -231,7 +221,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 				else if (type.equals("def"))
 				{
 					// Copy over the attributes that we know now, the source is set once the <?end?> tag is encountered
-					InterpretedTemplate subtemplate = new InterpretedTemplate(location, location.getCode(), keepWhiteSpace, startdelim, enddelim);
+					InterpretedTemplate subtemplate = new InterpretedTemplate(location, location.getCode(), keepWhitespace, startdelim, enddelim);
 					innerBlock.append(subtemplate);
 					stack.push(subtemplate);
 				}
@@ -284,6 +274,11 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	public String getSource()
 	{
 		return source;
+	}
+
+	public boolean getKeepWhitespace()
+	{
+		return keepWhitespace;
 	}
 
 	public String getStartDelim()
@@ -409,7 +404,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	 */
 	public void render(java.io.Writer writer, Map<String, Object> variables) throws IOException
 	{
-		render(new EvaluationContext(writer, variables));
+		render(new EvaluationContext(writer, variables, keepWhitespace));
 	}
 
 	/**
@@ -604,7 +599,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	static
 	{
 		Utils.register("de.livinglogic.ul4.location", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Location(null, null, -1, -1, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.text", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Text(null, null); }});
+		Utils.register("de.livinglogic.ul4.text", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Text(null); }});
 		Utils.register("de.livinglogic.ul4.const", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Const(null); }});
 		Utils.register("de.livinglogic.ul4.list", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.List(); }});
 		Utils.register("de.livinglogic.ul4.listcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListComprehension(null, null, null, null); }});
@@ -660,7 +655,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		encoder.dump(VERSION);
 		encoder.dump(source);
 		encoder.dump(name);
-		encoder.dump(keepWhiteSpace);
+		encoder.dump(keepWhitespace);
 		encoder.dump(startdelim);
 		encoder.dump(enddelim);
 		super.dumpUL4ON(encoder);
@@ -675,7 +670,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		}
 		source = (String)decoder.load();
 		name = (String)decoder.load();
-		keepWhiteSpace = (Boolean)decoder.load();
+		keepWhitespace = (Boolean)decoder.load();
 		startdelim = (String)decoder.load();
 		enddelim = (String)decoder.load();
 		super.loadUL4ON(decoder);
@@ -694,7 +689,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
 			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).name;}});
-			v.put("keepws", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).keepWhiteSpace;}});
+			v.put("keepws", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).keepWhitespace;}});
 			v.put("startdelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).startdelim;}});
 			v.put("enddelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).enddelim;}});
 			v.put("source", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).source;}});

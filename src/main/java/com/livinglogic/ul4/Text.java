@@ -8,22 +8,24 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 
+import static com.livinglogic.utils.StringUtils.removeWhitespace;
+
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
 class Text extends Tag
 {
-	private String text;
-
-	public Text(Location location, String text)
+	public Text(Location location)
 	{
 		super(location);
-		this.text = text;
 	}
 
-	public String getText()
+	public String getText(boolean keepWhitespace)
 	{
-		return text != null ? text : location.getCode();
+		String text = location.getCode();
+		if (!keepWhitespace)
+			text = removeWhitespace(text);
+		return text;
 	}
 
 	public String toString(int indent)
@@ -33,7 +35,7 @@ class Text extends Tag
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("text(");
-		buffer.append(FunctionRepr.call(getText()));
+		buffer.append(FunctionRepr.call(getText(true)));
 		buffer.append(")\n");
 		return buffer.toString();
 	}
@@ -45,19 +47,7 @@ class Text extends Tag
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.write(getText());
+		context.write(getText(context.getKeepWhitespace()));
 		return null;
-	}
-
-	public void dumpUL4ON(Encoder encoder) throws IOException
-	{
-		super.dumpUL4ON(encoder);
-		encoder.dump(text);
-	}
-
-	public void loadUL4ON(Decoder decoder) throws IOException
-	{
-		super.loadUL4ON(decoder);
-		text = (String)decoder.load();
 	}
 }

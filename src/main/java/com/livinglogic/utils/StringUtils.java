@@ -14,7 +14,7 @@ package com.livinglogic.utils;
 
 public class StringUtils
 {
-	public static String removeWhiteSpace(String string)
+	public static String removeWhitespace(String string)
 	{
 		String[] lines = string.split("\n");
 		StringBuilder buffer = new StringBuilder();

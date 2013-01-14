@@ -23,16 +23,16 @@ import com.livinglogic.utils.MapChain;
 
 public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 {
-	private Template template;
+	private InterpretedTemplate template;
 	private Map<String, Object> variables;
 
-	public TemplateClosure(Template template, Map<String, Object> variables)
+	public TemplateClosure(InterpretedTemplate template, Map<String, Object> variables)
 	{
 		this.template = template;
 		this.variables = new HashMap<String, Object>(variables);
 	}
 
-	public Template getTemplate()
+	public InterpretedTemplate getTemplate()
 	{
 		return template;
 	}
@@ -81,7 +81,7 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 
 	public void render(Writer out, Map<String, Object> variables) throws java.io.IOException
 	{
-		render(new EvaluationContext(out, variables));
+		render(new EvaluationContext(out, variables, template.getKeepWhitespace()));
 	}
 
 	public String renders(EvaluationContext context)
@@ -119,7 +119,7 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 
 	public String renders(Map<String, Object> variables)
 	{
-		return renders(new EvaluationContext(null, variables));
+		return renders(new EvaluationContext(null, variables, template.getKeepWhitespace()));
 	}
 
 	public String typeUL4()
