@@ -4,6 +4,7 @@ Comments:
 * Removed ChainedHashMap, as MapChain can be used instead now.
 * Removed EvaluationContext.keepWhitespace, as this would be used for all
   templates called, even if their value is different.
+* Formatting literal text is now done be the currently running template.
 
 
 exp-62:
