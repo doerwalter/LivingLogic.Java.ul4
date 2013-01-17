@@ -26,4 +26,6 @@ public interface Template
 	public String renders(EvaluationContext context, Map<String, Object> variables);
 
 	public String renders(EvaluationContext context);
+
+	public String formatText(String text);
 }

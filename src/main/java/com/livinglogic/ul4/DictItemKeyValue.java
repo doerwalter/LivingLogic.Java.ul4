@@ -21,9 +21,9 @@ public class DictItemKeyValue extends DictItem
 		this.value = value;
 	}
 
-	public String toString()
+	public String toString(InterpretedTemplate template, int indent)
 	{
-		return key.toString() + ": " + value.toString();
+		return key.toString() + ": " + value.toString(template, indent);
 	}
 
 	public void addTo(EvaluationContext context, Map dict) throws IOException

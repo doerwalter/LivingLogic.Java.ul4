@@ -42,6 +42,11 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 		return template.getName();
 	}
 
+	public String formatText(String text)
+	{
+		return template.formatText(text);
+	}
+
 	public void render(EvaluationContext context) throws java.io.IOException
 	{
 		context.pushVariables(new HashMap<String, Object>(variables));
@@ -81,7 +86,7 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 
 	public void render(Writer out, Map<String, Object> variables) throws java.io.IOException
 	{
-		render(new EvaluationContext(out, variables, template.getKeepWhitespace()));
+		render(new EvaluationContext(out, variables));
 	}
 
 	public String renders(EvaluationContext context)
@@ -119,7 +124,7 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 
 	public String renders(Map<String, Object> variables)
 	{
-		return renders(new EvaluationContext(null, variables, template.getKeepWhitespace()));
+		return renders(new EvaluationContext(null, variables));
 	}
 
 	public String typeUL4()

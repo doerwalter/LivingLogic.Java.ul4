@@ -33,21 +33,21 @@ public class DictComprehension extends AST
 		this.condition = condition;
 	}
 
-	public String toString(int indent)
+	public String toString(InterpretedTemplate template, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("{");
-		buffer.append(key.toString(indent));
+		buffer.append(key.toString(template, indent));
 		buffer.append(":");
-		buffer.append(value.toString(indent));
+		buffer.append(value.toString(template, indent));
 		buffer.append(" for ");
 		Utils.formatVarname(buffer, varname);
 		buffer.append(" in ");
-		buffer.append(container.toString(indent));
+		buffer.append(container.toString(template, indent));
 		if (condition != null)
 		{
 			buffer.append(" if ");
-			buffer.append(condition.toString(indent));
+			buffer.append(condition.toString(template, indent));
 		}
 		buffer.append("}");
 		return buffer.toString();

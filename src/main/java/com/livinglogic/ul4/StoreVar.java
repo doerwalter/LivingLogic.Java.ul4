@@ -33,7 +33,7 @@ public class StoreVar extends Tag
 		return "storevar";
 	}
 
-	public String toString(int indent)
+	public String toString(InterpretedTemplate template, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 

@@ -25,7 +25,7 @@ class Else extends ConditionalBlock
 		return true;
 	}
 
-	public String toString(int indent)
+	public String toString(InterpretedTemplate template, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 
@@ -36,7 +36,7 @@ class Else extends ConditionalBlock
 			buffer.append("\t");
 		buffer.append("{\n");
 		for (AST item : content)
-			buffer.append(item.toString(indent+1));
+			buffer.append(item.toString(template, indent+1));
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("}\n");

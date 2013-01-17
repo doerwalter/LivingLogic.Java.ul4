@@ -26,11 +26,11 @@ class ConditionalBlockBlock extends Block
 		return "ieie";
 	}
 
-	public String toString(int indent)
+	public String toString(InterpretedTemplate template, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 		for (AST item : content)
-			buffer.append(item.toString(indent));
+			buffer.append(item.toString(template, indent));
 		return buffer.toString();
 	}
 

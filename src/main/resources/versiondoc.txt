@@ -1,3 +1,11 @@
+exp-63:
+-------
+Comments:
+* Removed ChainedHashMap, as MapChain can be used instead now.
+* Removed EvaluationContext.keepWhitespace, as this would be used for all
+  templates called, even if their value is different.
+
+
 exp-62:
 -------
 Comments:

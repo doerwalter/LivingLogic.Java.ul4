@@ -15,14 +15,14 @@ class Render extends UnaryTag
 		super(location, obj);
 	}
 
-	public String toString(int indent)
+	public String toString(InterpretedTemplate template, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("render(");
-		buffer.append(obj.toString(indent));
+		buffer.append(obj.toString(template, indent));
 		buffer.append(")\n");
 		return buffer.toString();
 	}

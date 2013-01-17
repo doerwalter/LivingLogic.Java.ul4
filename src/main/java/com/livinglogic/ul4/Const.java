@@ -28,7 +28,7 @@ public class Const extends AST
 		return "const";
 	}
 
-	public String toString(int indent)
+	public String toString(InterpretedTemplate template, int indent)
 	{
 		return FunctionRepr.call(value);
 	}

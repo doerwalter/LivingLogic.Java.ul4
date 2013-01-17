@@ -34,11 +34,6 @@ public class EvaluationContext
 	protected Map<String, Object> variables;
 
 	/**
-	 * Should whitespace in literal text be kept?
-	 */
-	protected boolean keepWhitespace;
-
-	/**
 	 * The stack of currently executing templates.
 	 */
 	protected Stack<Template> stack;
@@ -55,9 +50,9 @@ public class EvaluationContext
 	 * be available to the template code.
 	 * @param writer The output stream where the template output will be written
 	 */
-	public EvaluationContext(Writer writer, boolean keepWhitespace)
+	public EvaluationContext(Writer writer)
 	{
-		this(writer, null, keepWhitespace);
+		this(writer, null);
 	}
 
 	/**
@@ -66,13 +61,12 @@ public class EvaluationContext
 	 * @param variables The template variables that will be available to the
 	 *                  template code (or {@code null} for no variables)
 	 */
-	public EvaluationContext(Writer writer, Map<String, Object> variables, boolean keepWhitespace)
+	public EvaluationContext(Writer writer, Map<String, Object> variables)
 	{
 		this.writer = writer;
 		if (variables == null)
 			variables = new HashMap<String, Object>();
 		this.variables = variables;
-		this.keepWhitespace = keepWhitespace;
 		this.stack = new Stack<Template>();
 		this.allVariables = new MapChain<String, Object>(variables, makeMap("stack", stack));
 	}
@@ -104,6 +98,14 @@ public class EvaluationContext
 	}
 
 	/**
+	 * Return the template at the top of the stack
+	 */
+	public Template getTemplate()
+	{
+		return stack.peek();
+	}
+
+	/**
 	 * Return the map containing the variables local to the template.
 	 */
 	public Map<String, Object> getVariables()
@@ -117,14 +119,6 @@ public class EvaluationContext
 	public Map<String, Object> getAllVariables()
 	{
 		return allVariables;
-	}
-
-	/**
-	 * Return whether whitespace should be kept in output of literal text.
-	 */
-	boolean getKeepWhitespace()
-	{
-		return keepWhitespace;
 	}
 
 	/**

@@ -291,7 +291,12 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		return enddelim;
 	}
 
-	public String toString(int indent)
+	public String toString()
+	{
+		return toString(this, 0);
+	}
+
+	public String toString(InterpretedTemplate template, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < indent; ++i)
@@ -302,7 +307,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		buffer.append("{\n");
 		++indent;
 		for (AST item : content)
-			buffer.append(item.toString(indent));
+			buffer.append(item.toString(template, indent));
 		--indent;
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
@@ -338,6 +343,11 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	public String dumps()
 	{
 		return Utils.dumps(this);
+	}
+
+	public String formatText(String text)
+	{
+		return keepWhitespace ? text : removeWhitespace(text);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException
@@ -404,7 +414,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	 */
 	public void render(java.io.Writer writer, Map<String, Object> variables) throws IOException
 	{
-		render(new EvaluationContext(writer, variables, keepWhitespace));
+		render(new EvaluationContext(writer, variables));
 	}
 
 	/**

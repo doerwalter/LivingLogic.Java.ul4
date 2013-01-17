@@ -112,7 +112,7 @@ public class CallMeth extends AST
 		remainingKWArgs = arguments;
 	}
 
-	public String toString(int indent)
+	public String toString(InterpretedTemplate template, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 
@@ -130,17 +130,17 @@ public class CallMeth extends AST
 			buffer.append(", ");
 			buffer.append(arg.getName());
 			buffer.append("=");
-			buffer.append(arg.getArg());
+			buffer.append(arg.getArg().toString(template, indent));
 		}
 		if (remainingArgs != null)
 		{
 			buffer.append(", *");
-			buffer.append(remainingArgs);
+			buffer.append(remainingArgs.toString(template, indent));
 		}
 		if (remainingKWArgs != null)
 		{
 			buffer.append(", **");
-			buffer.append(remainingKWArgs);
+			buffer.append(remainingKWArgs.toString(template, indent));
 		}
 		buffer.append(")");
 		return buffer.toString();

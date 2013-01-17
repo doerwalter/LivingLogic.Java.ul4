@@ -38,7 +38,7 @@ public class Dict extends AST
 		items.add(item);
 	}
 
-	public String toString(int indent)
+	public String toString(InterpretedTemplate template, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("{");
@@ -50,7 +50,7 @@ public class Dict extends AST
 				first = false;
 			else
 				buffer.append(", ");
-			buffer.append(item);
+			buffer.append(item.toString(template, indent));
 		}
 		buffer.append("}");
 		return buffer.toString();

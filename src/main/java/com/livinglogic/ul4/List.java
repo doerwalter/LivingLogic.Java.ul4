@@ -27,7 +27,7 @@ public class List extends AST
 		items.add(item);
 	}
 
-	public String toString(int indent)
+	public String toString(InterpretedTemplate template, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("[");
@@ -39,7 +39,7 @@ public class List extends AST
 				first = false;
 			else
 				buffer.append(", ");
-			buffer.append(item.toString(indent));
+			buffer.append(item.toString(template, indent));
 		}
 		buffer.append("]");
 		return buffer.toString();

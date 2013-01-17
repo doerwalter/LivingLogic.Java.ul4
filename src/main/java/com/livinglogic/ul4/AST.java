@@ -75,17 +75,18 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 
 	public String toString()
 	{
-		return toString(0);
+		return toString(null, 0);
 	}
 
 	/**
 	 * This is an extension of the normal {@code toString} method: Returns
 	 * nicely formatted sourcecode for this node formatted for indentation level
 	 * {@code indent}.
+	 * @param template the top level template for which this node should be formatted
 	 * @param indent the indentation level
 	 * @return The formatted sourcecode
 	 */
-	abstract public String toString(int indent);
+	abstract public String toString(InterpretedTemplate template, int indent);
 
 	public String getUL4ONName()
 	{

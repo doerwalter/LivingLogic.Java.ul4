@@ -19,9 +19,9 @@ public class DictItemDict extends DictItem
 		this.dict = dict;
 	}
 
-	public String toString()
+	public String toString(InterpretedTemplate template, int indent)
 	{
-		return "**" + dict.toString();
+		return "**" + dict.toString(template, indent);
 	}
 
 	public void addTo(EvaluationContext context, Map dict) throws IOException

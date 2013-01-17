@@ -57,9 +57,9 @@ public abstract class CompiledTemplate extends ObjectAsMap implements Template, 
 		}
 	}
 
-	public void render(Writer out, Map<String, Object> variables, boolean keepWhitespace) throws java.io.IOException
+	public void render(Writer out, Map<String, Object> variables) throws java.io.IOException
 	{
-		render(new EvaluationContext(out, variables, keepWhitespace));
+		render(new EvaluationContext(out, variables));
 	}
 
 	public String renders(EvaluationContext context)
@@ -95,9 +95,9 @@ public abstract class CompiledTemplate extends ObjectAsMap implements Template, 
 		}
 	}
 
-	public String renders(Map<String, Object> variables, boolean keepWhitespace)
+	public String renders(Map<String, Object> variables)
 	{
-		return renders(new EvaluationContext(null, variables, keepWhitespace));
+		return renders(new EvaluationContext(null, variables));
 	}
 
 	public String typeUL4()

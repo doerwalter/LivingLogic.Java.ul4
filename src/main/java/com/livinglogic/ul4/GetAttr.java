@@ -25,7 +25,7 @@ public class GetAttr extends AST
 		this.attrname = attrname;
 	}
 
-	public String toString(int indent)
+	public String toString(InterpretedTemplate template, int indent)
 	{
 		return "getattr(" + obj + ", " + FunctionRepr.call(attrname) + ")";
 	}

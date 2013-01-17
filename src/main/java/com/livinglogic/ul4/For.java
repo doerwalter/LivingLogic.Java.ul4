@@ -41,7 +41,7 @@ public class For extends Block
 			throw new BlockException("for ended by end" + type);
 	}
 
-	public String toString(int indent)
+	public String toString(InterpretedTemplate template, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < indent; ++i)
@@ -49,14 +49,14 @@ public class For extends Block
 		buffer.append("for ");
 		Utils.formatVarname(buffer, varname);
 		buffer.append(" in ");
-		buffer.append(container.toString(indent));
+		buffer.append(container.toString(template, indent));
 		buffer.append("\n");
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("{\n");
 		++indent;
 		for (AST item : content)
-			buffer.append(item.toString(indent));
+			buffer.append(item.toString(template, indent));
 		--indent;
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
