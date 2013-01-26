@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Collection;
 
-public class FunctionLen extends NormalFunction
+public class FunctionLen extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "len";
 	}
@@ -22,7 +22,7 @@ public class FunctionLen extends NormalFunction
 		signature.add("sequence");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

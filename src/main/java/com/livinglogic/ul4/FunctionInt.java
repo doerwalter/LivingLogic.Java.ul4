@@ -12,9 +12,9 @@ import java.math.BigInteger;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-public class FunctionInt extends NormalFunction
+public class FunctionInt extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "int";
 	}
@@ -25,7 +25,7 @@ public class FunctionInt extends NormalFunction
 		signature.add("base", null);
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0], args[1]);
 	}

@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Iterator;
 
-public class FunctionMax implements Function
+public class FunctionMax implements UL4Callable
 {
 	public String getName()
 	{
 		return "max";
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args, Map<String, Object> kwargs)
 	{
 		if (kwargs.size() != 0)
 			throw new KeywordArgumentsNotSupportedException(this.getName());

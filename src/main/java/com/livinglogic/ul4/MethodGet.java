@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class MethodGet extends NormalMethod
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "get";
 	}

@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class FunctionReversed extends NormalFunction
+public class FunctionReversed extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "reversed";
 	}
@@ -22,7 +22,7 @@ public class FunctionReversed extends NormalFunction
 		signature.add("sequence");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

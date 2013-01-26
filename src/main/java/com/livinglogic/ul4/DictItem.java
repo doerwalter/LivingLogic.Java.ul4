@@ -15,5 +15,5 @@ public abstract class DictItem
 
 	public abstract Object object4UL4ON();
 
-	public abstract String toString(InterpretedTemplate template, int indent);
+	public abstract String toString(InterpretedCode code, int indent);
 }

@@ -13,9 +13,9 @@ import java.util.Map;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
-public class FunctionBool extends NormalFunction
+public class FunctionBool extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "bool";
 	}
@@ -25,7 +25,7 @@ public class FunctionBool extends NormalFunction
 		signature.add("obj", false);
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

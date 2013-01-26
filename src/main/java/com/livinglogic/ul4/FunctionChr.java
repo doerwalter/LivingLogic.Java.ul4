@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 
-public class FunctionChr extends NormalFunction
+public class FunctionChr extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "chr";
 	}
@@ -20,7 +20,7 @@ public class FunctionChr extends NormalFunction
 		signature.add("i");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

@@ -11,9 +11,9 @@ import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-public class FunctionFromJSON extends NormalFunction
+public class FunctionFromJSON extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "fromjson";
 	}
@@ -23,7 +23,7 @@ public class FunctionFromJSON extends NormalFunction
 		signature.add("string");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

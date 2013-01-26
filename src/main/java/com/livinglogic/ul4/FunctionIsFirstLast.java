@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class FunctionIsFirstLast extends NormalFunction
+public class FunctionIsFirstLast extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "isfirstlast";
 	}
@@ -22,7 +22,7 @@ public class FunctionIsFirstLast extends NormalFunction
 		signature.add("iterable");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

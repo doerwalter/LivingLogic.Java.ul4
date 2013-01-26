@@ -13,7 +13,7 @@ import java.util.GregorianCalendar;
 
 public class MethodYear extends NormalMethod
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "year";
 	}

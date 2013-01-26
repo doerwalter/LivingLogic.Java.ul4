@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class MethodLum extends NormalMethod
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "lum";
 	}

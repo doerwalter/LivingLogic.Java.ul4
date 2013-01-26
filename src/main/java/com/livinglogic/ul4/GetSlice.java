@@ -30,9 +30,9 @@ public class GetSlice extends AST
 		this.index2 = index2;
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
-		return "getslice(" + obj.toString(template, indent) + ", " + (index1 != null ? index1.toString(template, indent) : "None") + ", " + (index2 != null ? index2.toString(template, indent) : "None") + ")";
+		return "getslice(" + obj.toString(code, indent) + ", " + (index1 != null ? index1.toString(code, indent) : "None") + ", " + (index2 != null ? index2.toString(code, indent) : "None") + ")";
 	}
 
 	public String getType()

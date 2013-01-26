@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Iterator;
 
-public class FunctionMin implements Function
+public class FunctionMin implements UL4Callable
 {
 	public String getName()
 	{
 		return "min";
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args, Map<String, Object> kwargs)
 	{
 		if (kwargs.size() != 0)
 			throw new KeywordArgumentsNotSupportedException(this.getName());

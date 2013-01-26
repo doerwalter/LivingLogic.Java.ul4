@@ -32,15 +32,15 @@ import com.livinglogic.ul4on.ObjectFactory;
 import com.livinglogic.ul4on.UL4ONSerializable;
 import com.livinglogic.ul4on.Utils;
 
-public class InterpretedTemplate extends Block implements Template, UL4Type
+public abstract class InterpretedCode extends Block
 {
 	/**
-	 * The version number used in the UL4ON dump of the template.
+	 * The version number used in the UL4ON dump of the template/function.
 	 */
 	public static final String VERSION = "24";
 
 	/**
-	 * The name of the template (defaults to {@code "unnamed"})
+	 * The name of the template/function (defaults to {@code null})
 	 */
 	public String name = null;
 
@@ -61,70 +61,37 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	public String enddelim = "?>";
 
 	/**
-	 * The template source (of the top-level template, i.e. subtemplates always get the full source).
+	 * The template/function source (of the top-level template/function, i.e. subtemplates/subfunctions always get the full source).
 	 */
 	public String source = null;
 
 	/**
-	 * Creates an empty template object. Must be filled in later (use for creating subtemplates)
+	 * Creates an {@code InterpretedCode} object. The content will be filled later through a call to {@link #compile)
 	 */
-	public InterpretedTemplate(Location location, String name, boolean keepWhitespace, String startdelim, String enddelim)
+	public InterpretedCode(Location location, String source, String name, boolean keepWhitespace, String startdelim, String enddelim)
 	{
 		super(location);
-		this.source = null;
-		this.name = name;
-		this.keepWhitespace = keepWhitespace;
-		this.startdelim = startdelim;
-		this.enddelim = enddelim;
-	}
-
-	public InterpretedTemplate(String source) throws RecognitionException
-	{
-		this(source, null, true, "<?", "?>");
-	}
-
-	public InterpretedTemplate(String source, boolean keepWhitespace) throws RecognitionException
-	{
-		this(source, null, keepWhitespace, "<?", "?>");
-	}
-
-	public InterpretedTemplate(String source, String name) throws RecognitionException
-	{
-		this(source, name, true, "<?", "?>");
-	}
-
-	public InterpretedTemplate(String source, String name, boolean keepWhitespace) throws RecognitionException
-	{
-		this(source, name, keepWhitespace, "<?", "?>");
-	}
-
-	public InterpretedTemplate(String source, String startdelim, String enddelim) throws RecognitionException
-	{
-		this(source, null, true, startdelim, enddelim);
-	}
-
-	public InterpretedTemplate(String source, boolean keepWhitespace, String startdelim, String enddelim) throws RecognitionException
-	{
-		this(source, null, keepWhitespace, startdelim, enddelim);
-	}
-
-	public InterpretedTemplate(String source, String name, boolean keepWhitespace, String startdelim, String enddelim) throws RecognitionException
-	{
-		super((Location)null);
 		this.source = source;
 		this.name = name;
 		this.keepWhitespace = keepWhitespace;
 		this.startdelim = startdelim;
 		this.enddelim = enddelim;
+	}
 
+	protected void compile() throws RecognitionException
+	{
 		if (source == null)
 			return;
 
-		List<Location> tags = InterpretedTemplate.tokenizeTags(source, startdelim, enddelim);
+		List<Location> tags = tokenizeTags(source, startdelim, enddelim);
 
+		// Stack of currently active blocks
 		Stack<Block> stack = new Stack<Block>();
+		stack.push(this);
 
-		stack.push(this); // Stack of currently active blocks
+		// Stack of currently active code objects
+		Stack<InterpretedCode> codeStack = new Stack<InterpretedCode>();
+		codeStack.push(this);
 
 		for (Location location : tags)
 		{
@@ -135,7 +102,8 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 				// FIXME: use a switch in Java 7
 				if (type == null)
 				{
-					innerBlock.append(new Text(location));
+					if (codeStack.peek() instanceof InterpretedTemplate)
+						innerBlock.append(new Text(location));
 				}
 				else if (type.equals("print"))
 				{
@@ -182,8 +150,9 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 				{
 					if (stack.size() > 1)
 					{
-						innerBlock.finish(this, location);
-						stack.pop();
+						innerBlock.finish(location);
+						if (stack.pop() instanceof InterpretedCode)
+							codeStack.pop();
 					}
 					else
 						throw new BlockException("not in any block");
@@ -218,12 +187,28 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 					UL4Parser parser = getParser(location);
 					innerBlock.append(new Render(location, parser.expression()));
 				}
-				else if (type.equals("def"))
+				else if (type.equals("return"))
 				{
-					// Copy over the attributes that we know now, the source is set once the <?end?> tag is encountered
-					InterpretedTemplate subtemplate = new InterpretedTemplate(location, location.getCode(), keepWhitespace, startdelim, enddelim);
+					if (codeStack.peek() instanceof InterpretedTemplate)
+						throw new BlockException("return in template");
+					UL4Parser parser = getParser(location);
+					innerBlock.append(new Return(location, parser.expression()));
+				}
+				else if (type.equals("template"))
+				{
+					// Copy over all the attributes, however passing a {@link Location} will prevent compilation
+					InterpretedTemplate subtemplate = new InterpretedTemplate(location, source, location.getCode(), keepWhitespace, startdelim, enddelim);
 					innerBlock.append(subtemplate);
 					stack.push(subtemplate);
+					codeStack.push(subtemplate);
+				}
+				else if (type.equals("function"))
+				{
+					// Copy over all the attributes, however passing a {@link Location} will prevent compilation
+					InterpretedFunction subfunction = new InterpretedFunction(location, source, location.getCode(), keepWhitespace, startdelim, enddelim);
+					innerBlock.append(subfunction);
+					stack.push(subfunction);
+					codeStack.push(subfunction);
 				}
 				else
 				{
@@ -240,7 +225,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 				throw new TagException(ex, location);
 			}
 		}
-		if (stack.size() > 1) // the template itself is still on the stack
+		if (stack.size() > 1) // the template/function itself is still on the stack
 		{
 			Block innerBlock = stack.peek();
 			throw new TagException(new BlockException(innerBlock.getType() + " block unclosed"), innerBlock.getLocation());
@@ -291,23 +276,18 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		return enddelim;
 	}
 
-	public String toString()
-	{
-		return toString(this, 0);
-	}
-
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
-		buffer.append("def " + (name != null ? name : "unnamed") + "(**vars)\n");
+		buffer.append(this.getType() + " " + (name != null ? name : "unnamed") + "(**vars)\n");
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("{\n");
 		++indent;
 		for (AST item : content)
-			buffer.append(item.toString(template, indent));
+			buffer.append(item.toString(code, indent));
 		--indent;
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
@@ -315,30 +295,14 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		return buffer.toString();
 	}
 
-	/**
-	 * loads a template from a string in the UL4ON serialization format.
-	 * @param data The template in serialized form.
-	 * @return The template object.
-	 */
-	public static InterpretedTemplate loads(String data)
+	public String toString()
 	{
-		return (InterpretedTemplate)Utils.loads(data);
+		return toString(this, 0);
 	}
 
 	/**
-	 * loads a template from a reader in the UL4ON serialization format.
-	 * @param reader The Reader object from which to read the template.
-	 * @return The template object.
-	 * @throws IOException if reading from the stream fails
-	 */
-	public static InterpretedTemplate load(Reader reader) throws IOException
-	{
-		return (InterpretedTemplate)Utils.load(reader);
-	}
-
-	/**
-	 * writes the Template object to a string in the UL4ON serialization format.
-	 * @return The string containing the template in serialized form.
+	 * writes the {@code InterpretedCode} object to a string in the UL4ON serialization format.
+	 * @return The string containing the template/function in serialized form.
 	 */
 	public String dumps()
 	{
@@ -350,179 +314,6 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		return keepWhitespace ? text : removeWhitespace(text);
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
-	{
-		context.put(name, new TemplateClosure(this, context.getAllVariables()));
-		return null;
-	}
-
-	/**
-	 * Renders the template.
-	 * @param context   the EvaluationContext.
-	 */
-	public void render(EvaluationContext context) throws IOException
-	{
-		context.pushTemplate(this);
-		try
-		{
-			super.evaluate(context);
-		}
-		catch (BreakException ex)
-		{
-			throw ex;
-		}
-		catch (ContinueException ex)
-		{
-			throw ex;
-		}
-		catch (Exception ex)
-		{
-			if (location == null)
-				throw new TemplateException(ex, this);
-			else
-				throw new TagException(ex, location);
-		}
-		finally
-		{
-			context.popTemplate();
-		}
-	}
-
-	/**
-	 * Renders the template using the passed in variables.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the template code. May be null.
-	 */
-	public void render(EvaluationContext context, Map<String, Object> variables) throws IOException
-	{
-		context.pushVariables(variables);
-		try
-		{
-			render(context);
-		}
-		finally
-		{
-			context.popVariables();
-		}
-	}
-
-	/**
-	 * Renders the template to a java.io.Writer object.
-	 * @param writer    the java.io.Writer object to which the output is written.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the template code. May be null.
-	 */
-	public void render(java.io.Writer writer, Map<String, Object> variables) throws IOException
-	{
-		render(new EvaluationContext(writer, variables));
-	}
-
-	/**
-	 * Renders the template and returns the resulting string.
-	 * @return The render output as a string.
-	 */
-	public String renders(EvaluationContext context)
-	{
-		StringWriter output = new StringWriter();
-		Writer oldWriter = context.setWriter(output);
-		try
-		{
-			render(context);
-		}
-		catch (IOException ex)
-		{
-			// can't happen
-		}
-		finally
-		{
-			context.setWriter(oldWriter);
-		}
-		return output.toString();
-	}
-
-	/**
-	 * Renders the template using the passed in variables and returns the resulting string.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the template code. May be null
-	 * @return The render output as a string.
-	 */
-	public String renders(EvaluationContext context, Map<String, Object> variables)
-	{
-		context.pushVariables(variables);
-		try
-		{
-			return renders(context);
-		}
-		finally
-		{
-			context.popVariables();
-		}
-	}
-
-	/**
-	 * Renders the template and returns the resulting string.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the template code. May be null
-	 * @return The render output as a string.
-	 */
-	public String renders(Map<String, Object> variables)
-	{
-		StringWriter output = new StringWriter();
-		try
-		{
-			render(output, variables);
-		}
-		catch (IOException ex)
-		{
-			// can't happen
-		}
-		return output.toString();
-	}
-
-	private static class RenderRunnable implements Runnable
-	{
-		protected InterpretedTemplate template;
-		protected Writer writer;
-		protected Map<String, Object> variables;
-		
-		public RenderRunnable(InterpretedTemplate template, Writer writer, Map<String, Object> variables)
-		{
-			this.template = template;
-			this.writer = writer;
-			this.variables = variables;
-		}
-
-		@Override
-		public void run()
-		{
-			try
-			{
-				template.render(writer, variables);
-				writer.close();
-			}
-			catch (IOException e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
-	}
-	
-	/**
-	 * Renders the template and returns a Reader object from which the template
-	 * output can be read.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the template code. May be null
-	 * @return The reader from which the template output can be read.
-	 * @throws IOException 
-	 */
-	public Reader reader(Map<String, Object> variables) throws IOException
-	{
-		PipedReader reader = new PipedReader(10);
-		PipedWriter writer = new PipedWriter(reader);
-		new Thread(new RenderRunnable(this, writer, variables)).start();
-		return reader;
-	}
-
 	/**
 	 * Split the template source into tags and literal text.
 	 * @param source The sourcecode of the template
@@ -532,7 +323,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 	 */
 	public static List<Location> tokenizeTags(String source, String startdelim, String enddelim)
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|def|render|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|template|function|return|render|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Location> tags = new LinkedList<Location>();
 		if (source != null)
 		{
@@ -577,33 +368,18 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		return buffer.toString();
 	}
 
-	public String getType()
+	public void finish(Location endlocation)
 	{
-		return "template";
-	}
-
-	public void finish(InterpretedTemplate template, Location endlocation)
-	{
-		super.finish(template, endlocation);
+		super.finish(endlocation);
 		String type = endlocation.getCode().trim();
-		if (type != null && type.length() != 0 && !type.equals("def"))
-			throw new BlockException("def ended by end" + type);
-		source = template.source;
+		String myType = getType();
+		if (type != null && type.length() != 0 && !type.equals(myType))
+			throw new BlockException(myType + " ended by end" + type);
 	}
 
 	public boolean handleLoopControl(String name)
 	{
 		throw new BlockException(name + " outside of for loop");
-	}
-
-	public String javaSource()
-	{
-		return new JavaSource4Template(this).toString();
-	}
-
-	public String javascriptSource()
-	{
-		return new JavascriptSource4Template(this).toString();
 	}
 
 	static
@@ -630,6 +406,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		Utils.register("de.livinglogic.ul4.neg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Neg(null); }});
 		Utils.register("de.livinglogic.ul4.print", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Print(null, null); }});
 		Utils.register("de.livinglogic.ul4.printx", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.PrintX(null, null); }});
+		Utils.register("de.livinglogic.ul4.return", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Return(null, null); }});
 		Utils.register("de.livinglogic.ul4.getitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GetItem(null, null); }});
 		Utils.register("de.livinglogic.ul4.eq", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.EQ(null, null); }});
 		Utils.register("de.livinglogic.ul4.ne", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NE(null, null); }});
@@ -654,10 +431,11 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		Utils.register("de.livinglogic.ul4.floordivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.FloorDivVar(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.truedivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDivVar(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.modvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ModVar(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.callfunc", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallFunc((Function)null); }});
+		Utils.register("de.livinglogic.ul4.callfunc", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallFunc(null); }});
 		Utils.register("de.livinglogic.ul4.callmeth", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMeth(null, (Method)null); }});
 		Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Render(null, null); }});
-		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate((Location)null, null, false, null, null); }});
+		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate(null, null, null, false, null, null); }});
+		Utils.register("de.livinglogic.ul4.function", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedFunction(null, null, null, false, null, null); }});
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
@@ -686,11 +464,6 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		super.loadUL4ON(decoder);
 	}
 
-	public String typeUL4()
-	{
-		return "template";
-	}
-
 	private static Map<String, ValueMaker> valueMakers = null;
 
 	public Map<String, ValueMaker> getValueMakers()
@@ -698,11 +471,11 @@ public class InterpretedTemplate extends Block implements Template, UL4Type
 		if (valueMakers == null)
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).name;}});
-			v.put("keepws", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).keepWhitespace;}});
-			v.put("startdelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).startdelim;}});
-			v.put("enddelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).enddelim;}});
-			v.put("source", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).source;}});
+			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((InterpretedCode)object).name;}});
+			v.put("keepws", new ValueMaker(){public Object getValue(Object object){return ((InterpretedCode)object).keepWhitespace;}});
+			v.put("startdelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedCode)object).startdelim;}});
+			v.put("enddelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedCode)object).enddelim;}});
+			v.put("source", new ValueMaker(){public Object getValue(Object object){return ((InterpretedCode)object).source;}});
 			valueMakers = v;
 		}
 		return valueMakers;

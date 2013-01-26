@@ -54,6 +54,10 @@ public abstract class Tag extends AST
 		{
 			throw ex;
 		}
+		catch (ReturnException ex)
+		{
+			throw ex;
+		}
 		catch (Exception ex)
 		{
 			throw new TagException(ex, location);

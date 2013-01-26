@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class MethodRenderS implements Method
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "renders";
 	}
@@ -19,7 +19,7 @@ public class MethodRenderS implements Method
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs) throws IOException
 	{
 		if (args.length > 0)
-			throw new PositionalArgumentsNotSupportedException(getName());
+			throw new PositionalArgumentsNotSupportedException(nameUL4());
 		return call(context, obj, kwargs);
 	}
 

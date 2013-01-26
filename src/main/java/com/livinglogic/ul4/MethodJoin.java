@@ -13,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class MethodJoin extends NormalMethod
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "join";
 	}

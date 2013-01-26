@@ -13,14 +13,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class FunctionUTCNow extends NormalFunction
+public class FunctionUTCNow extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "utcnow";
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call();
 	}

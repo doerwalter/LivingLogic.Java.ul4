@@ -12,7 +12,7 @@ import java.util.Date;
 
 public class MethodISOFormat extends NormalMethod
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "isoformat";
 	}

@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 
-public class FunctionFromUL4ON extends NormalFunction
+public class FunctionFromUL4ON extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "fromul4on";
 	}
@@ -20,7 +20,7 @@ public class FunctionFromUL4ON extends NormalFunction
 		signature.add("string");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

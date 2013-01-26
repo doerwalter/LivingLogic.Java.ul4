@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 
-public class FunctionIsDefined extends NormalFunction
+public class FunctionIsDefined extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "isdefined";
 	}
@@ -20,7 +20,7 @@ public class FunctionIsDefined extends NormalFunction
 		signature.add("obj");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

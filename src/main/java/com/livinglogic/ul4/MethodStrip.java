@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class MethodStrip extends NormalMethod
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "strip";
 	}

@@ -62,6 +62,10 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 		{
 			throw ex;
 		}
+		catch (ReturnException ex)
+		{
+			throw ex;
+		}
 		catch (Exception ex)
 		{
 			throw new ASTException(ex, this);
@@ -82,11 +86,11 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 	 * This is an extension of the normal {@code toString} method: Returns
 	 * nicely formatted sourcecode for this node formatted for indentation level
 	 * {@code indent}.
-	 * @param template the top level template for which this node should be formatted
+	 * @param code the top level code for which this node should be formatted
 	 * @param indent the indentation level
 	 * @return The formatted sourcecode
 	 */
-	abstract public String toString(InterpretedTemplate template, int indent);
+	abstract public String toString(InterpretedCode code, int indent);
 
 	public String getUL4ONName()
 	{

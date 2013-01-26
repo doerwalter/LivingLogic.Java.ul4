@@ -32,19 +32,19 @@ public class GeneratorExpression extends AST
 		this.condition = condition;
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("(");
-		buffer.append(item.toString(template, indent));
+		buffer.append(item.toString(code, indent));
 		buffer.append(" for ");
 		Utils.formatVarname(buffer, varname);
 		buffer.append(" in ");
-		buffer.append(container.toString(template, indent));
+		buffer.append(container.toString(code, indent));
 		if (condition != null)
 		{
 			buffer.append(" if ");
-			buffer.append(condition.toString(template, indent));
+			buffer.append(condition.toString(code, indent));
 		}
 		buffer.append(")");
 		return buffer.toString();

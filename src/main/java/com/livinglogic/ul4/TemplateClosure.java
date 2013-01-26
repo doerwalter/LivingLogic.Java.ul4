@@ -49,51 +49,40 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 
 	public void render(EvaluationContext context) throws java.io.IOException
 	{
-		context.pushVariables(new HashMap<String, Object>(variables));
+		Map<String, Object> oldVariables = context.setVariables(variables);
 		try
 		{
 			template.render(context);
 		}
 		finally
 		{
-			context.popVariables();
+			context.setVariables(oldVariables);
 		}
 	}
 
-	// The following methods are here, because we can't extend both ObjectAsMap and CompiledTemplate,
-	// so we extend ObjectAsMap and reimplement the methods of CompiledTemplate
 	public void render(EvaluationContext context, Map<String, Object> variables) throws java.io.IOException
 	{
-		context.pushVariables(this.variables);
-
+		Map<String, Object> oldVariables = context.setVariables(new MapChain<String, Object>(variables, this.variables));
 		try
 		{
-			context.pushVariables(variables);
-			try
-			{
-				template.render(context);
-			}
-			finally
-			{
-				context.popVariables();
-			}
+			template.render(context);
 		}
 		finally
 		{
-			context.popVariables();
+			context.setVariables(oldVariables);
 		}
 	}
 
-	public void render(Writer out, Map<String, Object> variables) throws java.io.IOException
+	public void render(Writer writer, Map<String, Object> variables) throws java.io.IOException
 	{
-		render(new EvaluationContext(out, variables));
+		render(new EvaluationContext(writer, variables));
 	}
 
 	public String renders(EvaluationContext context)
 	{
-		StringWriter out = new StringWriter();
+		StringWriter writer = new StringWriter();
 
-		Writer oldWriter = context.setWriter(out);
+		Writer oldWriter = context.setWriter(writer);
 		try
 		{
 			render(context);
@@ -106,20 +95,27 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 		{
 			context.setWriter(oldWriter);
 		}
-		return out.toString();
+		return writer.toString();
 	}
 
 	public String renders(EvaluationContext context, Map<String, Object> variables)
 	{
-		context.pushVariables(variables);
+		StringWriter writer = new StringWriter();
+
+		Writer oldWriter = context.setWriter(writer);
 		try
 		{
-			return renders(context);
+			render(context, variables);
+		}
+		catch (IOException ex)
+		{
+			// Can't happen with a StringWriter!
 		}
 		finally
 		{
-			context.popVariables();
+			context.setWriter(oldWriter);
 		}
+		return writer.toString();
 	}
 
 	public String renders(Map<String, Object> variables)

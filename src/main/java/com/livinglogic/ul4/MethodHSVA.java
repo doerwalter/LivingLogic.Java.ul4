@@ -11,7 +11,7 @@ import java.util.Vector;
 
 public class MethodHSVA extends NormalMethod
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "hsva";
 	}

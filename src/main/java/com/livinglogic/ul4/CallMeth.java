@@ -18,14 +18,10 @@ import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.utils.MapUtils;
 
-public class CallMeth extends AST
+public class CallMeth extends Callable
 {
 	protected Method method;
 	protected AST obj;
-	protected List<AST> args = new LinkedList<AST>();
-	protected List<KeywordArgument> kwargs = new LinkedList<KeywordArgument>();
-	protected AST remainingArgs = null;
-	protected AST remainingKWArgs = null;
 
 	static Map<String, Method> methods = new HashMap<String, Method>();
 
@@ -92,34 +88,14 @@ public class CallMeth extends AST
 		method = getMethod(methname);
 	}
 
-	public void append(AST arg)
-	{
-		args.add(arg);
-	}
-
-	public void append(String name, AST arg)
-	{
-		kwargs.add(new KeywordArgument(name, arg));
-	}
-
-	public void setRemainingArguments(AST arguments)
-	{
-		remainingArgs = arguments;
-	}
-
-	public void setRemainingKeywordArguments(AST arguments)
-	{
-		remainingKWArgs = arguments;
-	}
-
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 
 		buffer.append("callmeth(");
 		buffer.append(obj);
 		buffer.append(", ");
-		buffer.append(FunctionRepr.call(method.getName()));
+		buffer.append(FunctionRepr.call(method.nameUL4()));
 		for (AST arg : args)
 		{
 			buffer.append(", ");
@@ -130,17 +106,17 @@ public class CallMeth extends AST
 			buffer.append(", ");
 			buffer.append(arg.getName());
 			buffer.append("=");
-			buffer.append(arg.getArg().toString(template, indent));
+			buffer.append(arg.getArg().toString(code, indent));
 		}
 		if (remainingArgs != null)
 		{
 			buffer.append(", *");
-			buffer.append(remainingArgs.toString(template, indent));
+			buffer.append(remainingArgs.toString(code, indent));
 		}
 		if (remainingKWArgs != null)
 		{
 			buffer.append(", **");
-			buffer.append(remainingKWArgs.toString(template, indent));
+			buffer.append(remainingKWArgs.toString(code, indent));
 		}
 		buffer.append(")");
 		return buffer.toString();
@@ -160,7 +136,7 @@ public class CallMeth extends AST
 		{
 			Object realRemainingArgs = remainingArgs.decoratedEvaluate(context);
 			if (!(realRemainingArgs instanceof List))
-				throw new RemainingArgumentsException(method.getName());
+				throw new RemainingArgumentsException(method.nameUL4());
 
 			realArgs = new Object[args.size() + remainingArgs.size()];
 
@@ -187,14 +163,14 @@ public class CallMeth extends AST
 		{
 			Object realRemainingKWArgs = remainingKWArgs.decoratedEvaluate(context);
 			if (!(realRemainingKWArgs instanceof Map))
-				throw new RemainingKeywordArgumentsException(method.getName());
+				throw new RemainingKeywordArgumentsException(method.nameUL4());
 			for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)realRemainingKWArgs).entrySet())
 			{
 				Object argumentName = entry.getKey();
 				if (!(argumentName instanceof String))
-					throw new RemainingKeywordArgumentsException(method.getName());
+					throw new RemainingKeywordArgumentsException(method.nameUL4());
 				if (realKWArgs.containsKey(argumentName))
-					throw new DuplicateArgumentException(method.getName(), (String)argumentName);
+					throw new DuplicateArgumentException(method.nameUL4(), (String)argumentName);
 				realKWArgs.put((String)argumentName, entry.getValue());
 			}
 		}
@@ -213,7 +189,7 @@ public class CallMeth extends AST
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(method.getName());
+		encoder.dump(method.nameUL4());
 		encoder.dump(obj);
 		encoder.dump(args);
 		List kwargList = new LinkedList();
@@ -245,7 +221,7 @@ public class CallMeth extends AST
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
 			v.put("obj", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).obj;}});
-			v.put("methname", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).method.getName();}});
+			v.put("methname", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).method.nameUL4();}});
 			v.put("args", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).args;}});
 			v.put("kwargs", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).kwargs;}});
 			valueMakers = v;

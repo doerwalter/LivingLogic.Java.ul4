@@ -41,7 +41,7 @@ abstract class Binary extends AST
 		this.obj2 = obj2;
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		return getType() + "(" + obj1 + ", " + obj2 + ")";
 	}

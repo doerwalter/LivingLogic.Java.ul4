@@ -18,9 +18,9 @@ import java.util.Stack;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-public class FunctionRepr extends NormalFunction
+public class FunctionRepr extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "repr";
 	}
@@ -30,7 +30,7 @@ public class FunctionRepr extends NormalFunction
 		signature.add("obj");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

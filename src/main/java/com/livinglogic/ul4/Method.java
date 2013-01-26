@@ -9,9 +9,9 @@ package com.livinglogic.ul4;
 import java.util.Map;
 import java.io.IOException;
 
-public interface Method
+public interface Method extends UL4Name
 {
-	public String getName();
+	public String nameUL4();
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs) throws IOException;
 }

@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.Collection;
 
-public class FunctionAll extends NormalFunction
+public class FunctionAll extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "all";
 	}
@@ -23,7 +23,7 @@ public class FunctionAll extends NormalFunction
 		signature.add("iterable");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

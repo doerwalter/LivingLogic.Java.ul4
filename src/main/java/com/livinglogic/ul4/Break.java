@@ -23,7 +23,7 @@ class Break extends Tag
 		throw new BreakException();
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < indent; ++i)

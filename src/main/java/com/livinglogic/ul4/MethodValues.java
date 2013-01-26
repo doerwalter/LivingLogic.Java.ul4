@@ -13,7 +13,7 @@ import java.util.Vector;
 
 public class MethodValues extends NormalMethod
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "values";
 	}

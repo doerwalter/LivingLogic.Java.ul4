@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MethodFind extends NormalMethod
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "find";
 	}

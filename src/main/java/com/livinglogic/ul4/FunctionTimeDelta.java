@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 
-public class FunctionTimeDelta extends NormalFunction
+public class FunctionTimeDelta extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "timedelta";
 	}
@@ -22,7 +22,7 @@ public class FunctionTimeDelta extends NormalFunction
 		signature.add("microseconds", 0);
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0], args[1], args[2]);
 	}

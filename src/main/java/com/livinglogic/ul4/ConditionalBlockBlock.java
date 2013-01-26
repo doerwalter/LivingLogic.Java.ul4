@@ -26,11 +26,11 @@ class ConditionalBlockBlock extends Block
 		return "ieie";
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 		for (AST item : content)
-			buffer.append(item.toString(template, indent));
+			buffer.append(item.toString(code, indent));
 		return buffer.toString();
 	}
 
@@ -70,9 +70,9 @@ class ConditionalBlockBlock extends Block
 		content.add(item);
 	}
 
-	public void finish(InterpretedTemplate template, Location endlocation)
+	public void finish(Location endlocation)
 	{
-		super.finish(template, endlocation);
+		super.finish(endlocation);
 		((Block)content.get(content.size()-1)).endlocation = endlocation;
 		String type = endlocation.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("if"))

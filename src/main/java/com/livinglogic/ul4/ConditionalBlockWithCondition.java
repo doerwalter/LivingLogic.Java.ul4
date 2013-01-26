@@ -28,7 +28,7 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 		return FunctionBool.call(condition.decoratedEvaluate(context));
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 
@@ -36,13 +36,13 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 			buffer.append("\t");
 		buffer.append(getType());
 		buffer.append(" (");
-		buffer.append(condition.toString(template, indent));
+		buffer.append(condition.toString(code, indent));
 		buffer.append(")\n");
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("{\n");
 		for (AST item : content)
-			buffer.append(item.toString(template, indent+1));
+			buffer.append(item.toString(code, indent+1));
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("}\n");

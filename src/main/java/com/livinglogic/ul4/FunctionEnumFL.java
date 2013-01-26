@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class FunctionEnumFL extends NormalFunction
+public class FunctionEnumFL extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "enumfl";
 	}
@@ -23,7 +23,7 @@ public class FunctionEnumFL extends NormalFunction
 		signature.add("start", 0);
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0], args[1]);
 	}

@@ -28,6 +28,7 @@ import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.InterpretedTemplate;
+import com.livinglogic.ul4.InterpretedFunction;
 import com.livinglogic.ul4.FunctionDate;
 import com.livinglogic.ul4.KeyException;
 import com.livinglogic.ul4.SyntaxException;
@@ -96,6 +97,49 @@ public class UL4Test
 		String output2 = template2.renders(makeMap(args));
 		if (!output1.equals(expected1) && !output1.equals(expected2))
 			fail("expected <" + expected1 + "> or <" + expected2 + ">, got <" + output2 + ">");
+	}
+
+	private static InterpretedFunction getFunction(String source, String name)
+	{
+		try
+		{
+			InterpretedFunction function = new InterpretedFunction(source, name, false);
+			// System.out.println(function);
+			return function;
+		}
+		catch (RecognitionException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+	}
+
+	private static InterpretedFunction getFunction(String source)
+	{
+		return getFunction(source, null);
+	}
+
+	private static Object getFunctionOutput(String source, Object... args)
+	{
+		InterpretedFunction function = getFunction(source);
+		return function.call(makeMap(args));
+	}
+
+	private static void checkFunctionOutput(Object expected, String source, Object... args)
+	{
+		// Execute the function once by directly compiling and calling it
+		InterpretedFunction function1 = getFunction(source);
+		Object output1 = function1.call(makeMap(args));
+		assertEquals(expected, output1);
+
+		// Recreate the function from the dump of the compiled function
+		InterpretedFunction function2 = InterpretedFunction.loads(function1.dumps());
+
+		// Check that the functions format the same
+		assertEquals(function1.toString(), function2.toString());
+
+		// Check that they have the same output
+		Object output2 = function2.call(makeMap(args));
+		assertEquals(expected, output2);
 	}
 
 	@Test
@@ -469,9 +513,9 @@ public class UL4Test
 	}
 
 	@CauseTest(expectedCause=BlockException.class)
-	public void tag_break_outside_loop_in_def()
+	public void tag_break_outside_loop_in_template()
 	{
-		checkTemplateOutput("", "<def gurk?><?break?><?end def?>");
+		checkTemplateOutput("", "<?template gurk?><?break?><?end template?>");
 	}
 
 	@Test
@@ -493,9 +537,9 @@ public class UL4Test
 	}
 
 	@CauseTest(expectedCause=BlockException.class)
-	public void tag_continue_outside_loop_in_def()
+	public void tag_continue_outside_loop_in_template()
 	{
-		checkTemplateOutput("", "<def gurk?><?continue?><?end def?>");
+		checkTemplateOutput("", "<?template gurk?><?continue?><?end template?>");
 	}
 
 	@Test
@@ -1092,22 +1136,6 @@ public class UL4Test
 		checkTemplateOutput("2 months", "<?print monthdelta(2)?>");
 		checkTemplateOutput("-1 month", "<?print monthdelta(-1)?>");
 		checkTemplateOutput("1 month", "<?print monthdelta(months=1)?>");
-	}
-
-	@Test
-	public void function_vars()
-	{
-		String source = "<?if var in vars()?>yes<?else?>no<?end if?>";
-
-		checkTemplateOutput("yes", source, "var", "spam", "spam", "eggs");
-		checkTemplateOutput("no", source, "var", "nospam", "spam", "eggs");
-		checkTemplateOutput("yes", source, "var", "stack", "spam", "eggs");
-	}
-
-	@CauseTest(expectedCause=TooManyArgumentsException.class)
-	public void function_vars_1_args()
-	{
-		checkTemplateOutput("", "<?print vars(1)?>");
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
@@ -1825,7 +1853,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
-		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print isundefined(repr)?>");
 		checkTemplateOutput("False", "<?print isundefined(obj=data)?>", "data", null);
 	}
 
@@ -1859,6 +1888,7 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", asList());
 		checkTemplateOutput("True", source, "data", makeMap());
 		checkTemplateOutput("True", source, "data", getTemplate(""));
+		checkTemplateOutput("True", "<?print isdefined(repr)?>");
 		checkTemplateOutput("True", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("True", "<?print isdefined(obj=data)?>", "data", null);
 	}
@@ -1893,6 +1923,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print isnone(repr)?>");
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("True", "<?print isnone(obj=data)?>", "data", null);
 	}
@@ -1927,6 +1958,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print isbool(repr)?>");
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("False", "<?print isbool(obj=data)?>", "data", null);
 	}
@@ -1961,6 +1993,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print isint(repr)?>");
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("False", "<?print isint(obj=data)?>", "data", null);
 	}
@@ -1995,6 +2028,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print isfloat(repr)?>");
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("False", "<?print isfloat(obj=data)?>", "data", null);
 	}
@@ -2029,6 +2063,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print isstr(repr)?>");
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("False", "<?print isstr(obj=data)?>", "data", null);
 	}
@@ -2063,6 +2098,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print isdate(repr)?>");
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("False", "<?print isdate(obj=data)?>", "data", null);
 	}
@@ -2097,6 +2133,7 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print islist(repr)?>");
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("False", "<?print islist(obj=data)?>", "data", null);
 	}
@@ -2131,6 +2168,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("True", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print isdict(repr)?>");
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("False", "<?print isdict(obj=data)?>", "data", null);
 	}
@@ -2165,6 +2203,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("True", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print istemplate(repr)?>");
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("False", "<?print istemplate(obj=data)?>", "data", null);
 	}
@@ -2179,6 +2218,41 @@ public class UL4Test
 	public void function_istemplate_2_args()
 	{
 		checkTemplateOutput("", "<?print istemplate(1, 2)?>");
+	}
+
+	@Test
+	public void function_isfunction()
+	{
+		String source = "<?print isfunction(data)?>";
+
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
+		checkTemplateOutput("False", source, "data", null);
+		checkTemplateOutput("False", source, "data", true);
+		checkTemplateOutput("False", source, "data", false);
+		checkTemplateOutput("False", source, "data", 42);
+		checkTemplateOutput("False", source, "data", 4.2);
+		checkTemplateOutput("False", source, "data", "foo");
+		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
+		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeMap());
+		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("True", "<?print isfunction(repr)?>");
+		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print isfunction(obj=data)?>", "data", null);
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	public void function_isfunction_0_args()
+	{
+		checkTemplateOutput("", "<?print isfunction()?>");
+	}
+
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	public void function_isfunction_2_args()
+	{
+		checkTemplateOutput("", "<?print isfunction(1, 2)?>");
 	}
 
 	@Test
@@ -2199,6 +2273,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print iscolor(repr)?>");
 		checkTemplateOutput("True", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("False", "<?print iscolor(obj=data)?>", "data", null);
 	}
@@ -2233,6 +2308,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print istimedelta(repr)?>");
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("False", "<?print istimedelta(obj=data)?>", "data", null);
 	}
@@ -2250,26 +2326,38 @@ public class UL4Test
 	}
 
 	@Test
-	public void function_get()
+	public void function_ismonthdelta()
 	{
-		checkTemplateOutput("", "<?print get('x')?>");
-		checkTemplateOutput("42", "<?print get('x')?>", "x", 42);
-		checkTemplateOutput("17", "<?print get('x', 17)?>");
-		checkTemplateOutput("42", "<?print get('x', 17)?>", "x", 42);
-		checkTemplateOutput("True", "<?print islist(get('stack'))?>");
-		checkTemplateOutput("17", "<?print get(name='x', default=17)?>");
+		String source = "<?print ismonthdelta(data)?>";
+
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
+		checkTemplateOutput("False", source, "data", null);
+		checkTemplateOutput("False", source, "data", true);
+		checkTemplateOutput("False", source, "data", false);
+		checkTemplateOutput("False", source, "data", 42);
+		checkTemplateOutput("False", source, "data", 4.2);
+		checkTemplateOutput("False", source, "data", "foo");
+		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("True", source, "data", new MonthDelta(1));
+		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeMap());
+		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print ismonthdelta(repr)?>");
+		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print ismonthdelta(obj=data)?>", "data", null);
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
-	public void function_get_0_args()
+	public void function_ismonthdelta_0_args()
 	{
-		checkTemplateOutput("", "<?print get()?>");
+		checkTemplateOutput("", "<?print ismonthdelta()?>");
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
-	public void function_get_3_args()
+	public void function_ismonthdelta_2_args()
 	{
-		checkTemplateOutput("", "<?print get(1, 2, 3)?>");
+		checkTemplateOutput("", "<?print ismonthdelta(1, 2)?>");
 	}
 
 	@Test
@@ -2310,84 +2398,84 @@ public class UL4Test
 	{
 		Date t = FunctionDate.call(2011, 1, 25, 13, 34, 56, 987000);
 
-		String source2 = "<?print format(data, format)?>";
-		String source3 = "<?print format(data, format, lang)?>";
-		String source3kw = "<?print format(obj=data, fmt=format, lang=lang)?>";
+		String source2 = "<?print format(data, fmt)?>";
+		String source3 = "<?print format(data, fmt, lang)?>";
+		String source3kw = "<?print format(obj=data, fmt=fmt, lang=lang)?>";
 
-		checkTemplateOutput("2011", source2, "data", t, "format", "%Y");
-		checkTemplateOutput("01", source2, "data", t, "format", "%m");
-		checkTemplateOutput("25", source2, "data", t, "format", "%d");
-		checkTemplateOutput("13", source2, "data", t, "format", "%H");
-		checkTemplateOutput("34", source2, "data", t, "format", "%M");
-		checkTemplateOutput("56", source2, "data", t, "format", "%S");
-		checkTemplateOutput("987000", source2, "data", t, "format", "%f");
-		checkTemplateOutput("Tue", source2, "data", t, "format", "%a");
-		checkTemplateOutput("Tue", source3, "data", t, "format", "%a", "lang", null);
-		checkTemplateOutput("Tue", source3, "data", t, "format", "%a", "lang", "en");
-		checkTemplateOutput("Di", source3, "data", t, "format", "%a", "lang", "de");
-		checkTemplateOutput("Di", source3, "data", t, "format", "%a", "lang", "de_DE");
-		checkTemplateOutput("Tuesday", source2, "data", t, "format", "%A");
-		checkTemplateOutput("Tuesday", source3, "data", t, "format", "%A", "lang", null);
-		checkTemplateOutput("Tuesday", source3, "data", t, "format", "%A", "lang", "en");
-		checkTemplateOutput("Dienstag", source3, "data", t, "format", "%A", "lang", "de");
-		checkTemplateOutput("Dienstag", source3, "data", t, "format", "%A", "lang", "de_DE");
-		checkTemplateOutput("Jan", source2, "data", t, "format", "%b");
-		checkTemplateOutput("Jan", source3, "data", t, "format", "%b", "lang", null);
-		checkTemplateOutput("Jan", source3, "data", t, "format", "%b", "lang", "en");
-		checkTemplateOutput("Jan", source3, "data", t, "format", "%b", "lang", "de");
-		checkTemplateOutput("Jan", source3, "data", t, "format", "%b", "lang", "de_DE");
-		checkTemplateOutput("January", source2, "data", t, "format", "%B");
-		checkTemplateOutput("January", source3, "data", t, "format", "%B", "lang", null);
-		checkTemplateOutput("January", source3, "data", t, "format", "%B", "lang", "en");
-		checkTemplateOutput("Januar", source3, "data", t, "format", "%B", "lang", "de");
-		checkTemplateOutput("Januar", source3, "data", t, "format", "%B", "lang", "de_DE");
-		checkTemplateOutput("01", source2, "data", t, "format", "%I");
-		checkTemplateOutput("025", source2, "data", t, "format", "%j");
-		checkTemplateOutput("PM", source2, "data", t, "format", "%p");
-		checkTemplateOutput("04", source2, "data", t, "format", "%U");
-		checkTemplateOutput("2", source2, "data", t, "format", "%w");
-		checkTemplateOutput("04", source2, "data", t, "format", "%W");
-		checkTemplateOutput("11", source2, "data", t, "format", "%y");
-		checkTemplateOutput("Tue 25 Jan 2011 01:34:56 PM", source2, "data", t, "format", "%c");
-		checkTemplateOutput("01/25/2011", source2, "data", t, "format", "%x");
-		checkTemplateOutput("01/25/2011", source3, "data", t, "format", "%x", "lang", null);
-		checkTemplateOutput("01/25/2011", source3, "data", t, "format", "%x", "lang", "en");
-		checkTemplateOutput("25.01.2011", source3, "data", t, "format", "%x", "lang", "de");
-		checkTemplateOutput("25.01.2011", source3, "data", t, "format", "%x", "lang", "de_DE");
-		checkTemplateOutput("13:34:56", source2, "data", t, "format", "%X");
-		checkTemplateOutput("13:34:56", source3, "data", t, "format", "%X", "lang", null);
-		checkTemplateOutput("13:34:56", source3, "data", t, "format", "%X", "lang", "en");
-		checkTemplateOutput("13:34:56", source3, "data", t, "format", "%X", "lang", "de");
-		checkTemplateOutput("13:34:56", source3, "data", t, "format", "%X", "lang", "de_DE");
-		checkTemplateOutput("%", source2, "format", "%%", "data", t);
-		checkTemplateOutput("2011", source3kw, "data", t, "format", "%Y", "lang", "de_DE");
+		checkTemplateOutput("2011", source2, "data", t, "fmt", "%Y");
+		checkTemplateOutput("01", source2, "data", t, "fmt", "%m");
+		checkTemplateOutput("25", source2, "data", t, "fmt", "%d");
+		checkTemplateOutput("13", source2, "data", t, "fmt", "%H");
+		checkTemplateOutput("34", source2, "data", t, "fmt", "%M");
+		checkTemplateOutput("56", source2, "data", t, "fmt", "%S");
+		checkTemplateOutput("987000", source2, "data", t, "fmt", "%f");
+		checkTemplateOutput("Tue", source2, "data", t, "fmt", "%a");
+		checkTemplateOutput("Tue", source3, "data", t, "fmt", "%a", "lang", null);
+		checkTemplateOutput("Tue", source3, "data", t, "fmt", "%a", "lang", "en");
+		checkTemplateOutput("Di", source3, "data", t, "fmt", "%a", "lang", "de");
+		checkTemplateOutput("Di", source3, "data", t, "fmt", "%a", "lang", "de_DE");
+		checkTemplateOutput("Tuesday", source2, "data", t, "fmt", "%A");
+		checkTemplateOutput("Tuesday", source3, "data", t, "fmt", "%A", "lang", null);
+		checkTemplateOutput("Tuesday", source3, "data", t, "fmt", "%A", "lang", "en");
+		checkTemplateOutput("Dienstag", source3, "data", t, "fmt", "%A", "lang", "de");
+		checkTemplateOutput("Dienstag", source3, "data", t, "fmt", "%A", "lang", "de_DE");
+		checkTemplateOutput("Jan", source2, "data", t, "fmt", "%b");
+		checkTemplateOutput("Jan", source3, "data", t, "fmt", "%b", "lang", null);
+		checkTemplateOutput("Jan", source3, "data", t, "fmt", "%b", "lang", "en");
+		checkTemplateOutput("Jan", source3, "data", t, "fmt", "%b", "lang", "de");
+		checkTemplateOutput("Jan", source3, "data", t, "fmt", "%b", "lang", "de_DE");
+		checkTemplateOutput("January", source2, "data", t, "fmt", "%B");
+		checkTemplateOutput("January", source3, "data", t, "fmt", "%B", "lang", null);
+		checkTemplateOutput("January", source3, "data", t, "fmt", "%B", "lang", "en");
+		checkTemplateOutput("Januar", source3, "data", t, "fmt", "%B", "lang", "de");
+		checkTemplateOutput("Januar", source3, "data", t, "fmt", "%B", "lang", "de_DE");
+		checkTemplateOutput("01", source2, "data", t, "fmt", "%I");
+		checkTemplateOutput("025", source2, "data", t, "fmt", "%j");
+		checkTemplateOutput("PM", source2, "data", t, "fmt", "%p");
+		checkTemplateOutput("04", source2, "data", t, "fmt", "%U");
+		checkTemplateOutput("2", source2, "data", t, "fmt", "%w");
+		checkTemplateOutput("04", source2, "data", t, "fmt", "%W");
+		checkTemplateOutput("11", source2, "data", t, "fmt", "%y");
+		checkTemplateOutput("Tue 25 Jan 2011 01:34:56 PM", source2, "data", t, "fmt", "%c");
+		checkTemplateOutput("01/25/2011", source2, "data", t, "fmt", "%x");
+		checkTemplateOutput("01/25/2011", source3, "data", t, "fmt", "%x", "lang", null);
+		checkTemplateOutput("01/25/2011", source3, "data", t, "fmt", "%x", "lang", "en");
+		checkTemplateOutput("25.01.2011", source3, "data", t, "fmt", "%x", "lang", "de");
+		checkTemplateOutput("25.01.2011", source3, "data", t, "fmt", "%x", "lang", "de_DE");
+		checkTemplateOutput("13:34:56", source2, "data", t, "fmt", "%X");
+		checkTemplateOutput("13:34:56", source3, "data", t, "fmt", "%X", "lang", null);
+		checkTemplateOutput("13:34:56", source3, "data", t, "fmt", "%X", "lang", "en");
+		checkTemplateOutput("13:34:56", source3, "data", t, "fmt", "%X", "lang", "de");
+		checkTemplateOutput("13:34:56", source3, "data", t, "fmt", "%X", "lang", "de_DE");
+		checkTemplateOutput("%", source2, "fmt", "%%", "data", t);
+		checkTemplateOutput("2011", source3kw, "data", t, "fmt", "%Y", "lang", "de_DE");
 	}
 
 	@Test
 	public void function_format_int()
 	{
-		String source2 = "<?print format(data, format)?>";
-		String source3 = "<?print format(data, format, lang)?>";
+		String source2 = "<?print format(data, fmt)?>";
+		String source3 = "<?print format(data, fmt, lang)?>";
 
-		checkTemplateOutput("42", source2, "data", 42, "format", "");
-		checkTemplateOutput("-42", source2, "data", -42, "format", "");
-		checkTemplateOutput("   42", source2, "data", 42, "format", "5");
-		checkTemplateOutput("00042", source2, "data", 42, "format", "05");
-		checkTemplateOutput("-0042", source2, "data", -42, "format", "05");
-		checkTemplateOutput("+0042", source2, "data", 42, "format", "+05");
-		checkTemplateOutput(" +101010", source2, "data", 42, "format", "+8b");
-		checkTemplateOutput(" +0b101010", source2, "data", 42, "format", "+#10b");
-		checkTemplateOutput("52", source2, "data", 42, "format", "o");
-		checkTemplateOutput("+0x2a", source2, "data", 42, "format", "+#x");
-		checkTemplateOutput("+0X2A", source2, "data", 42, "format", "+#X");
-		checkTemplateOutput("42   ", source2, "data", 42, "format", "<5");
-		checkTemplateOutput("   42", source2, "data", 42, "format", ">5");
-		checkTemplateOutput("???42", source2, "data", 42, "format", "?>5");
-		checkTemplateOutput(" 42  ", source2, "data", 42, "format", "^5");
-		checkTemplateOutput(" ??42", source2, "data", 42, "format", "?= 5");
-		checkTemplateOutput(" 0b??101010", source2, "data", 42, "format", "?= #11b");
-		checkTemplateOutput("00001", source2, "data", true, "format", "05");
-		checkTemplateOutput("00042", source2, "data", new BigInteger("42"), "format", "05");
+		checkTemplateOutput("42", source2, "data", 42, "fmt", "");
+		checkTemplateOutput("-42", source2, "data", -42, "fmt", "");
+		checkTemplateOutput("   42", source2, "data", 42, "fmt", "5");
+		checkTemplateOutput("00042", source2, "data", 42, "fmt", "05");
+		checkTemplateOutput("-0042", source2, "data", -42, "fmt", "05");
+		checkTemplateOutput("+0042", source2, "data", 42, "fmt", "+05");
+		checkTemplateOutput(" +101010", source2, "data", 42, "fmt", "+8b");
+		checkTemplateOutput(" +0b101010", source2, "data", 42, "fmt", "+#10b");
+		checkTemplateOutput("52", source2, "data", 42, "fmt", "o");
+		checkTemplateOutput("+0x2a", source2, "data", 42, "fmt", "+#x");
+		checkTemplateOutput("+0X2A", source2, "data", 42, "fmt", "+#X");
+		checkTemplateOutput("42   ", source2, "data", 42, "fmt", "<5");
+		checkTemplateOutput("   42", source2, "data", 42, "fmt", ">5");
+		checkTemplateOutput("???42", source2, "data", 42, "fmt", "?>5");
+		checkTemplateOutput(" 42  ", source2, "data", 42, "fmt", "^5");
+		checkTemplateOutput(" ??42", source2, "data", 42, "fmt", "?= 5");
+		checkTemplateOutput(" 0b??101010", source2, "data", 42, "fmt", "?= #11b");
+		checkTemplateOutput("00001", source2, "data", true, "fmt", "05");
+		checkTemplateOutput("00042", source2, "data", new BigInteger("42"), "fmt", "05");
 	}
 
 	@Test
@@ -2761,26 +2849,26 @@ public class UL4Test
 	@Test
 	public void method_render_localtemplate()
 	{
-		checkTemplateOutput("foo", "<?def lower?><?print x.lower()?><?end def?><?print lower.renders(x='FOO')?>");
+		checkTemplateOutput("foo", "<?template lower?><?print x.lower()?><?end template?><?print lower.renders(x='FOO')?>");
 	}
 
 	@Test
 	public void method_render_nested()
 	{
 		String source = (
-			"<?def outer?>" +
-				"<?def inner?>" +
+			"<?template outer?>" +
+				"<?template inner?>" +
 					"<?code x += 1?>" +
 					"<?code y += 1?>" +
 					"<?print x?>!" +
 					"<?print y?>!" +
-				"<?end def?>" +
+				"<?end template?>" +
 				"<?code x += 1?>" +
 				"<?code y += 1?>" +
 				"<?render inner.render(x=x)?>" +
 				"<?print x?>!" +
 				"<?print y?>!" +
-			"<?end def?>" +
+			"<?end template?>" +
 			"<?code x += 1?>" +
 			"<?code y += 1?>" +
 			"<?render outer.render(x=x)?>" +
@@ -3013,15 +3101,6 @@ public class UL4Test
 	}
 
 	@Test
-	public void stack()
-	{
-		checkTemplateOutput("True", "<?print istemplate(stack[-1])?>");
-		checkTemplateOutput("x", "<?def x?><?print stack[-1].name?><?end def?><?render x.render()?>");
-		checkTemplateOutput("42", "<?code stack = 42?><?print stack?>");
-		checkTemplateOutput("42", "<?code stack = 42?><?def x?><?print stack?><?end def?><?render x.render()?>");
-	}
-
-	@Test
 	public void parse()
 	{
 		checkTemplateOutput("42", "<?print data.Noner?>", "data", makeMap("Noner", 42));
@@ -3076,7 +3155,7 @@ public class UL4Test
 	@Test
 	public void templateattributes_localtemplate()
 	{
-		String source = "<?def lower?><?print t.lower()?><?end def?>";
+		String source = "<?template lower?><?print t.lower()?><?end template?>";
 
 		checkTemplateOutput(source + "<?print lower.source?>", source + "<?print lower.source?>");
 		checkTemplateOutput(source, source + "<?print lower.source[lower.location.starttag:lower.endlocation.endtag]?>");
@@ -3087,10 +3166,47 @@ public class UL4Test
 	@Test
 	public void nestedscopes()
 	{
-		checkTemplateOutput("0;1;2;", "<?for i in range(3)?><?def x?><?print i?>;<?end def?><?render x.render()?><?end for?>");
-		checkTemplateOutput("1;", "<?for i in range(3)?><?if i == 1?><?def x?><?print i?>;<?end def?><?end if?><?end for?><?render x.render()?>");
-		checkTemplateOutput("1", "<?code i = 1?><?def x?><?print i?><?end def?><?code i = 2?><?render x.render()?>");
-		checkTemplateOutput("1", "<?code i = 1?><?def x?><?def y?><?print i?><?end def?><?code i = 2?><?render y.render()?><?end def?><?code i = 3?><?render x.render()?>");
+		checkTemplateOutput("0;1;2;", "<?for i in range(3)?><?template x?><?print i?>;<?end template?><?render x.render()?><?end for?>");
+		checkTemplateOutput("1;", "<?for i in range(3)?><?if i == 1?><?template x?><?print i?>;<?end template?><?end if?><?end for?><?render x.render()?>");
+		checkTemplateOutput("1", "<?code i = 1?><?template x?><?print i?><?end template?><?code i = 2?><?render x.render()?>");
+		checkTemplateOutput("1", "<?code i = 1?><?template x?><?template y?><?print i?><?end template?><?code i = 2?><?render y.render()?><?end template?><?code i = 3?><?render x.render()?>");
+	}
+
+	@Test
+	public void pass_functions()
+	{
+		checkTemplateOutput("&lt;", "<?template x?><?print x('<')?><?end template?><?render x.render(x=xmlescape)?>");
+	}
+
+	@Test
+	public void function()
+	{
+		checkFunctionOutput(42, "<?return 42?>");
+	}
+
+	@Test
+	public void function_value()
+	{
+		checkFunctionOutput(84, "<?return 2*x?>", "x", 42);
+	}
+
+	@Test
+	public void function_multiple_returnvalues()
+	{
+		checkFunctionOutput(84, "<?return 2*x?><?return 3*x?>", "x", 42);
+	}
+
+	@Test
+	public void function_name()
+	{
+		checkFunctionOutput("f", "<?function f?><?return f.name?><?end function?><?return f(f=f)?>");
+	}
+
+	@Test
+	public void function_closure()
+	{
+		checkFunctionOutput(24, "<?code y=3?><?function inner?><?return 2*x*y?><?end function?><?return inner(x=4)?>");
+		checkFunctionOutput(24, "<?function outer?><?code y=3?><?function inner?><?return 2*x*y?><?end function?><?return inner?><?end function?><?return outer()(x=4)?>");
 	}
 
 	private InterpretedTemplate universaltemplate()
@@ -3155,7 +3271,8 @@ public class UL4Test
 			"<?print x.find(1, 2)?>" +
 			"<?print x.find(1, 2, 3)?>" +
 			"<?if x?>gurk<?elif y?>hurz<?else?>hinz<?end if?>" +
-			"<?def x?>foo<?end def?>"
+			"<?template x?>foo<?end template?>" +
+			"<?function x?><?return 42?><?end function?>"
 		);
 	}
 
@@ -3163,18 +3280,6 @@ public class UL4Test
 	public void template_str()
 	{
 		universaltemplate().toString();
-	}
-
-	@Test
-	public void template_javaSource()
-	{
-		universaltemplate().javaSource();
-	}
-
-	@Test
-	public void template_javascriptSource()
-	{
-		universaltemplate().javascriptSource();
 	}
 
 	@Test

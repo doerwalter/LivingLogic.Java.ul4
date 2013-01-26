@@ -9,14 +9,14 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.util.Date;
 
-public class FunctionNow extends NormalFunction
+public class FunctionNow extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "now";
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call();
 	}

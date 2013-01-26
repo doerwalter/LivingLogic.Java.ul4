@@ -16,6 +16,11 @@ public class RemainingArgumentsException extends ArgumentException
 		super("* argument for " + name + "() must be list");
 	}
 
+	public RemainingArgumentsException(Object object)
+	{
+		this(object instanceof UL4Name ? ((UL4Name)object).nameUL4() : Utils.objectType(object));
+	}
+
 	public RemainingArgumentsException(Signature signature)
 	{
 		this(signature.getName());

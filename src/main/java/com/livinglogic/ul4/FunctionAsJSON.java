@@ -18,9 +18,9 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-public class FunctionAsJSON extends NormalFunction
+public class FunctionAsJSON extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "asjson";
 	}
@@ -30,7 +30,7 @@ public class FunctionAsJSON extends NormalFunction
 		signature.add("obj");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}
@@ -134,7 +134,11 @@ public class FunctionAsJSON extends NormalFunction
 		}
 		else if (obj instanceof InterpretedTemplate)
 		{
-			return ((InterpretedTemplate)obj).javascriptSource();
+			return new StringBuilder().append("ul4.Template.loads(").append(((InterpretedTemplate)obj).dumps()).append(")").toString();
+		}
+		else if (obj instanceof InterpretedFunction)
+		{
+			return new StringBuilder().append("ul4.Function.loads(").append(((InterpretedFunction)obj).dumps()).append(")").toString();
 		}
 		return null;
 	}

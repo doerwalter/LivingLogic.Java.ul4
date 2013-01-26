@@ -23,7 +23,7 @@ public class Var extends AST
 		this.name = name;
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		return name;
 	}

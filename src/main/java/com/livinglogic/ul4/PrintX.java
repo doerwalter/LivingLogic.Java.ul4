@@ -21,14 +21,14 @@ public class PrintX extends UnaryTag
 		super(location, obj);
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("printx(");
-		buffer.append(obj.toString(template, indent));
+		buffer.append(obj.toString(code, indent));
 		buffer.append(")\n");
 		return buffer.toString();
 	}

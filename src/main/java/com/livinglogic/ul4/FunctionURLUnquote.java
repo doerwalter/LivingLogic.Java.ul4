@@ -10,9 +10,9 @@ import java.util.List;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-public class FunctionURLUnquote extends NormalFunction
+public class FunctionURLUnquote extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "urlunquote";
 	}
@@ -22,7 +22,7 @@ public class FunctionURLUnquote extends NormalFunction
 		signature.add("string");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

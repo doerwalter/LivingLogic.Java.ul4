@@ -13,7 +13,7 @@ import java.util.Locale;
 
 public class MethodMIMEFormat extends NormalMethod
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "mimeformat";
 	}

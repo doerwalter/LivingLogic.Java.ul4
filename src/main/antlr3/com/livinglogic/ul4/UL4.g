@@ -339,139 +339,75 @@ nestedname returns [Object varname]
 		')' 
 	;
 
-/* Function call */
-expr10 returns [AST node]
-	: a=atom { $node = $a.node; }
-	|
-		/* No arguments */
-		n=name
-		'(' { $node = new CallFunc($n.text); }
-		(
-			/* No arguments */
-		|
-			/* "**" argument only */
-			'**' rkwargs=exprarg { ((CallFunc)$node).setRemainingKeywordArguments($rkwargs.node); }
-			','?
-		|
-			/* "*" argument only (and maybe **) */
-			'*' rargs=exprarg { ((CallFunc)$node).setRemainingArguments($rargs.node); }
-			(
-				','
-				'**' rkwargs=exprarg { ((CallFunc)$node).setRemainingKeywordArguments($rkwargs.node); }
-			)?
-			','?
-		|
-			/* At least one positional argument */
-			a1=exprarg { ((CallFunc)$node).append($a1.node); }
-			(
-				','
-				a2=exprarg { ((CallFunc)$node).append($a2.node); }
-			)*
-			(
-				','
-				an3=name '=' av3=exprarg { ((CallFunc)$node).append($an3.text, $av3.node); }
-			)*
-			(
-				','
-				'*' rargs=exprarg { ((CallFunc)$node).setRemainingArguments($rargs.node); }
-			)?
-			(
-				','
-				'**' rkwargs=exprarg { ((CallFunc)$node).setRemainingKeywordArguments($rkwargs.node); }
-			)?
-			','?
-		|
-			/* Keyword arguments only */
-			an1=name '=' av1=exprarg { ((CallFunc)$node).append($an1.text, $av1.node); }
-			(
-				','
-				an2=name '=' av2=exprarg { ((CallFunc)$node).append($an2.text, $av2.node); }
-			)*
-			(
-				','
-				'*' rargs=exprarg { ((CallFunc)$node).setRemainingArguments($rargs.node); }
-			)?
-			(
-				','
-				'**' rkwargs=exprarg { ((CallFunc)$node).setRemainingKeywordArguments($rkwargs.node); }
-			)?
-			','?
-		)
-		')' 
-	;
-
-
-/* Attribute access, method call, item access, slice access */
+/* Function/method call, attribute access, item access, slice access */
 expr9 returns [AST node]
 	@init
 	{
-		boolean callmeth = false;
 		AST index1 = null;
 		AST index2 = null;
 		boolean slice = false;
 	}
 	:
-		e1=expr10 { $node = $e1.node; }
+		e1=atom { $node = $e1.node; }
 		(
-			/* Attribute access/method call */
+			/* Attribute access */
 			'.'
-			n=name
+			n=name { $node = new GetAttr($node, $n.text); }
+		|
+			/* Function/method call */
+			'(' { $node = ($node instanceof GetAttr) ? ((GetAttr)$node).makeCallMeth() : new CallFunc($node); }
 			(
-				/* Method call */
-				'(' { callmeth = true; $node = new CallMeth($node, $n.text); }
+				/* No arguments */
+			|
+				/* "**" argument only */
+				'**' rkwargs=exprarg { ((Callable)$node).setRemainingKeywordArguments($rkwargs.node); }
+				','?
+			|
+				/* "*" argument only (and maybe **) */
+				'*' rargs=exprarg { ((Callable)$node).setRemainingArguments($rargs.node); }
 				(
-					/* No arguments */
-				|
-					/* "**" argument only */
-					'**' rkwargs=exprarg { ((CallMeth)$node).setRemainingKeywordArguments($rkwargs.node); }
-					','?
-				|
-					/* "*" argument only (and maybe **) */
-					'*' rargs=exprarg { ((CallMeth)$node).setRemainingArguments($rargs.node); }
-					(
-						','
-						'**' rkwargs=exprarg { ((CallMeth)$node).setRemainingKeywordArguments($rkwargs.node); }
-					)?
-					','?
-				|
-					/* At least one positional argument */
-					a1=exprarg { ((CallMeth)$node).append($a1.node); }
-					(
-						','
-						a2=exprarg { ((CallMeth)$node).append($a2.node); }
-					)*
-					(
-						','
-						an3=name '=' av3=exprarg { ((CallMeth)$node).append($an3.text, $av3.node); }
-					)*
-					(
-						','
-						'*' rargs=exprarg { ((CallMeth)$node).setRemainingArguments($rargs.node); }
-					)?
-					(
-						','
-						'**' rkwargs=exprarg { ((CallMeth)$node).setRemainingKeywordArguments($rkwargs.node); }
-					)?
-					','?
-				|
-					/* Keyword arguments only */
-					an1=name '=' av1=exprarg { ((CallMeth)$node).append($an1.text, $av1.node); }
-					(
-						','
-						an2=name '=' av2=exprarg { ((CallMeth)$node).append($an2.text, $av2.node); }
-					)*
-					(
-						','
-						'*' rargs=exprarg { ((CallMeth)$node).setRemainingArguments($rargs.node); }
-					)?
-					(
-						','
-						'**' rkwargs=exprarg { ((CallMeth)$node).setRemainingKeywordArguments($rkwargs.node); }
-					)?
-					','?
-				)
-				')'
-			)? { if (!callmeth) $node = GetAttr.make($node, $n.text); }
+					','
+					'**' rkwargs=exprarg { ((Callable)$node).setRemainingKeywordArguments($rkwargs.node); }
+				)?
+				','?
+			|
+				/* At least one positional argument */
+				a1=exprarg { ((Callable)$node).append($a1.node); }
+				(
+					','
+					a2=exprarg { ((Callable)$node).append($a2.node); }
+				)*
+				(
+					','
+					an3=name '=' av3=exprarg { ((Callable)$node).append($an3.text, $av3.node); }
+				)*
+				(
+					','
+					'*' rargs=exprarg { ((Callable)$node).setRemainingArguments($rargs.node); }
+				)?
+				(
+					','
+					'**' rkwargs=exprarg { ((Callable)$node).setRemainingKeywordArguments($rkwargs.node); }
+				)?
+				','?
+			|
+				/* Keyword arguments only */
+				an1=name '=' av1=exprarg { ((Callable)$node).append($an1.text, $av1.node); }
+				(
+					','
+					an2=name '=' av2=exprarg { ((Callable)$node).append($an2.text, $av2.node); }
+				)*
+				(
+					','
+					'*' rargs=exprarg { ((Callable)$node).setRemainingArguments($rargs.node); }
+				)?
+				(
+					','
+					'**' rkwargs=exprarg { ((Callable)$node).setRemainingKeywordArguments($rkwargs.node); }
+				)?
+				','?
+			)
+			')'
 		|
 			/* Item/slice access */
 			'['

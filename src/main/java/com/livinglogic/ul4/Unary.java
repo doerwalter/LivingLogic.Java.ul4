@@ -34,9 +34,9 @@ abstract class Unary extends AST
 		this.obj = obj;
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
-		return getType() + "(" + obj.toString(template, indent) + ")";
+		return getType() + "(" + obj.toString(code, indent) + ")";
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

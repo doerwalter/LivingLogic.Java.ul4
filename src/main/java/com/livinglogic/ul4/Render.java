@@ -15,14 +15,14 @@ class Render extends UnaryTag
 		super(location, obj);
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("render(");
-		buffer.append(obj.toString(template, indent));
+		buffer.append(obj.toString(code, indent));
 		buffer.append(")\n");
 		return buffer.toString();
 	}
@@ -35,8 +35,7 @@ class Render extends UnaryTag
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
 		Object object = obj.decoratedEvaluate(context);
-		if (object != null)
-			context.write(FunctionStr.call(object));
+		context.write(FunctionStr.call(object)); // This normally outputs nothing, because the content of the render tag normally is a call to the {@code render} method
 		return null;
 	}
 }

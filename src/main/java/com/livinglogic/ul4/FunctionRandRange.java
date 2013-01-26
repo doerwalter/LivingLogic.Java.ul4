@@ -10,15 +10,17 @@ import java.util.Random;
 import java.util.List;
 import java.util.Map;
 
-public class FunctionRandRange implements Function
+public class FunctionRandRange implements UL4Callable
 {
 	public String getName()
 	{
 		return "randrange";
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args, Map<String, Object> kwargs)
 	{
+		if (kwargs.size() != 0)
+			throw new KeywordArgumentsNotSupportedException(this.getName());
 		switch (args.length)
 		{
 			case 1:

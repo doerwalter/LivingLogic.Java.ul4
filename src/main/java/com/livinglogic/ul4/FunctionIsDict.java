@@ -9,9 +9,9 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.util.Map;
 
-public class FunctionIsDict extends NormalFunction
+public class FunctionIsDict extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "isdict";
 	}
@@ -21,7 +21,7 @@ public class FunctionIsDict extends NormalFunction
 		signature.add("obj");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

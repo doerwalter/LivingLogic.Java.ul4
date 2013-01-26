@@ -25,7 +25,7 @@ public class GetAttr extends AST
 		this.attrname = attrname;
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		return "getattr(" + obj + ", " + FunctionRepr.call(attrname) + ")";
 	}
@@ -35,15 +35,9 @@ public class GetAttr extends AST
 		return "getattr";
 	}
 
-	public static AST make(AST obj, String attrname)
+	public CallMeth makeCallMeth()
 	{
-		if (obj instanceof Const)
-		{
-			Object result = call(((Const)obj).value, attrname);
-			if (!(result instanceof Undefined))
-				return new Const(result);
-		}
-		return new GetAttr(obj, attrname);
+		return new CallMeth(obj, attrname);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

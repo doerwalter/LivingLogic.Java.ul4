@@ -9,9 +9,9 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.util.Date;
 
-public class FunctionIsDate extends NormalFunction
+public class FunctionIsDate extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "isdate";
 	}
@@ -21,7 +21,7 @@ public class FunctionIsDate extends NormalFunction
 		signature.add("obj");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

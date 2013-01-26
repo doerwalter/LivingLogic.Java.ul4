@@ -1,3 +1,13 @@
+exp-64:
+-------
+Comments:
+* Implemented UL4 functions.
+* Removed builtin UL4 functions vars and get.
+* Removed JavaSource4Template and JavascriptSource4Template (as this was
+  basically just a call to dumps() anyway).
+* Removed CompiledTemplate.
+
+
 exp-63:
 -------
 Comments:

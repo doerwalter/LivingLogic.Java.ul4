@@ -9,9 +9,9 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.math.BigDecimal;
 
-public class FunctionIsFloat extends NormalFunction
+public class FunctionIsFloat extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "isfloat";
 	}
@@ -21,7 +21,7 @@ public class FunctionIsFloat extends NormalFunction
 		signature.add("obj");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

@@ -16,6 +16,11 @@ public class RemainingKeywordArgumentsException extends ArgumentException
 		super("** argument for " + name + "() must be dict with string keys");
 	}
 
+	public RemainingKeywordArgumentsException(Object object)
+	{
+		this(object instanceof UL4Name ? ((UL4Name)object).nameUL4() : Utils.objectType(object));
+	}
+
 	public RemainingKeywordArgumentsException(Signature signature)
 	{
 		this(signature.getName());

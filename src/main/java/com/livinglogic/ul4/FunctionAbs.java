@@ -10,9 +10,9 @@ import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class FunctionAbs extends NormalFunction
+public class FunctionAbs extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "abs";
 	}
@@ -22,7 +22,7 @@ public class FunctionAbs extends NormalFunction
 		signature.add("number");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

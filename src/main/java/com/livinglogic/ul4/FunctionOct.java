@@ -9,9 +9,9 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.math.BigInteger;
 
-public class FunctionOct extends NormalFunction
+public class FunctionOct extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "oct";
 	}
@@ -21,7 +21,7 @@ public class FunctionOct extends NormalFunction
 		signature.add("number");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

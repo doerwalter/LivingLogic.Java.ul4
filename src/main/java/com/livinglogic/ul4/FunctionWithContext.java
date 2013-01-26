@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
-public abstract class NormalFunction implements Function
+public abstract class FunctionWithContext implements UL4CallableWithContext
 {
 	public abstract String getName();
 
@@ -30,9 +30,9 @@ public abstract class NormalFunction implements Function
 		return signature;
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
 	{
-		return evaluate(context, getSignature().makeArgumentArray(context, args, kwargs));
+		return evaluate(context, getSignature().makeArgumentArray(args, kwargs));
 	}
 
 	public abstract Object evaluate(EvaluationContext context, Object[] args);

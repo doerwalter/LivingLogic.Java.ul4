@@ -10,9 +10,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-public class FunctionCSV extends NormalFunction
+public class FunctionCSV extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "csv";
 	}
@@ -22,7 +22,7 @@ public class FunctionCSV extends NormalFunction
 		signature.add("obj");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

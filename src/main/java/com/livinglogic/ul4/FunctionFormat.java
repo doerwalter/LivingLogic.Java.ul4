@@ -21,9 +21,9 @@ import org.apache.commons.lang.StringUtils;
 
 import com.livinglogic.utils.MapUtils;
 
-public class FunctionFormat extends NormalFunction
+public class FunctionFormat extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "format";
 	}
@@ -35,7 +35,7 @@ public class FunctionFormat extends NormalFunction
 		signature.add("lang", null);
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0], args[1], args[2]);
 	}

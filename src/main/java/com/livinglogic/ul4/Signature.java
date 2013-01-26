@@ -51,7 +51,7 @@ public class Signature implements Iterable<ArgumentDescription>
 		return arguments.containsKey(argName);
 	}
 
-	public Object[] makeArgumentArray(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
+	public Object[] makeArgumentArray(Object[] args, Map<String, Object> kwargs)
 	{
 		Object[] realargs = new Object[size()];
 

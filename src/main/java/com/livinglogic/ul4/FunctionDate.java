@@ -11,9 +11,9 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class FunctionDate extends NormalFunction
+public class FunctionDate extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "date";
 	}
@@ -29,7 +29,7 @@ public class FunctionDate extends NormalFunction
 		signature.add("microsecond", 0);
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
 	}

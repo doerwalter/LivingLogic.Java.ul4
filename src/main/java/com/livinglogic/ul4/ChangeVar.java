@@ -25,13 +25,13 @@ public abstract class ChangeVar extends Tag
 		this.value = value;
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
-		buffer.append(getType() + "(" + FunctionRepr.call(varname) + ", " + value.toString(template, indent) + ")\n");
+		buffer.append(getType() + "(" + FunctionRepr.call(varname) + ", " + value.toString(code, indent) + ")\n");
 		return buffer.toString();
 	}
 

@@ -14,9 +14,9 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.Comparator;
 
-public class FunctionSorted extends NormalFunction
+public class FunctionSorted extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "sorted";
 	}
@@ -65,7 +65,7 @@ public class FunctionSorted extends NormalFunction
 		}
 	};
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

@@ -16,125 +16,23 @@ import static java.util.Arrays.asList;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
-import com.livinglogic.utils.MapUtils;
 
-public class CallFunc extends AST
+public class CallFunc extends Callable
 {
-	protected Function function;
-	protected List<AST> args = new LinkedList<AST>();
-	protected List<KeywordArgument> kwargs = new LinkedList<KeywordArgument>();
-	protected AST remainingArgs = null;
-	protected AST remainingKWArgs = null;
+	protected AST obj;
 
-	private static Map<String, Function> functions = new HashMap<String, Function>();
-
-	static
-	{
-		MapUtils.putMap(
-			functions,
-			"now", new FunctionNow(),
-			"utcnow", new FunctionUTCNow(),
-			"date", new FunctionDate(),
-			"timedelta", new FunctionTimeDelta(),
-			"monthdelta", new FunctionMonthDelta(),
-			"vars", new FunctionVars(),
-			"random", new FunctionRandom(),
-			"xmlescape", new FunctionXMLEscape(),
-			"csv", new FunctionCSV(),
-			"str", new FunctionStr(),
-			"repr", new FunctionRepr(),
-			"int", new FunctionInt(),
-			"float", new FunctionFloat(),
-			"bool", new FunctionBool(),
-			"len", new FunctionLen(),
-			"any", new FunctionAny(),
-			"all", new FunctionAll(),
-			"enumerate", new FunctionEnumerate(),
-			"enumfl", new FunctionEnumFL(),
-			"isfirstlast", new FunctionIsFirstLast(),
-			"isfirst", new FunctionIsFirst(),
-			"islast", new FunctionIsLast(),
-			"isundefined", new FunctionIsUndefined(),
-			"isdefined", new FunctionIsDefined(),
-			"isnone", new FunctionIsNone(),
-			"isstr", new FunctionIsStr(),
-			"isint", new FunctionIsInt(),
-			"isfloat", new FunctionIsFloat(),
-			"isbool", new FunctionIsBool(),
-			"isdate", new FunctionIsDate(),
-			"islist", new FunctionIsList(),
-			"isdict", new FunctionIsDict(),
-			"istemplate", new FunctionIsTemplate(),
-			"iscolor", new FunctionIsColor(),
-			"istimedelta", new FunctionIsTimeDelta(),
-			"ismonthdelta", new FunctionIsMonthDelta(),
-			"chr", new FunctionChr(),
-			"ord", new FunctionOrd(),
-			"hex", new FunctionHex(),
-			"oct", new FunctionOct(),
-			"bin", new FunctionBin(),
-			"abs", new FunctionAbs(),
-			"range", new FunctionRange(),
-			"min", new FunctionMin(),
-			"max", new FunctionMax(),
-			"sorted", new FunctionSorted(),
-			"type", new FunctionType(),
-			"get", new FunctionGet(),
-			"asjson", new FunctionAsJSON(),
-			"fromjson", new FunctionFromJSON(),
-			"asul4on", new FunctionAsUL4ON(),
-			"fromul4on", new FunctionFromUL4ON(),
-			"reversed", new FunctionReversed(),
-			"randrange", new FunctionRandRange(),
-			"randchoice", new FunctionRandChoice(),
-			"format", new FunctionFormat(),
-			"urlquote", new FunctionURLQuote(),
-			"urlunquote", new FunctionURLUnquote(),
-			"zip", new FunctionZip(),
-			"rgb", new FunctionRGB(),
-			"hls", new FunctionHLS(),
-			"hsv", new FunctionHSV()
-		);
-	}
-
-	public CallFunc(Function function)
+	public CallFunc(AST obj)
 	{
 		super();
-		this.function = function;
+		this.obj = obj;
 	}
 
-	public CallFunc(String funcname)
-	{
-		super();
-		function = getFunction(funcname);
-	}
-
-	public void append(AST arg)
-	{
-		args.add(arg);
-	}
-
-	public void append(String name, AST arg)
-	{
-		kwargs.add(new KeywordArgument(name, arg));
-	}
-
-	public void setRemainingArguments(AST arguments)
-	{
-		remainingArgs = arguments;
-	}
-
-	public void setRemainingKeywordArguments(AST arguments)
-	{
-		remainingKWArgs = arguments;
-	}
-
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 
 		buffer.append("callfunc(");
-		buffer.append(FunctionRepr.call(function.getName()));
+		buffer.append(obj.toString(code, indent));
 		for (AST arg : args)
 		{
 			buffer.append(", ");
@@ -145,12 +43,12 @@ public class CallFunc extends AST
 			buffer.append(", ");
 			buffer.append(arg.getName());
 			buffer.append("=");
-			buffer.append(arg.getArg().toString(template, indent));
+			buffer.append(arg.getArg().toString(code, indent));
 		}
 		if (remainingArgs != null)
 		{
 			buffer.append(", *");
-			buffer.append(remainingArgs.toString(template, indent));
+			buffer.append(remainingArgs.toString(code, indent));
 		}
 		if (remainingKWArgs != null)
 		{
@@ -168,12 +66,14 @@ public class CallFunc extends AST
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
+		Object realobj = obj.decoratedEvaluate(context);
+
 		Object[] realArgs;
 		if (remainingArgs != null)
 		{
 			Object realRemainingArgs = remainingArgs.decoratedEvaluate(context);
 			if (!(realRemainingArgs instanceof List))
-				throw new RemainingArgumentsException(function.getName());
+				throw new RemainingArgumentsException(realobj);
 
 			int argsSize = args.size();
 			realArgs = new Object[argsSize + ((List)realRemainingArgs).size()];
@@ -201,33 +101,44 @@ public class CallFunc extends AST
 		{
 			Object realRemainingKWArgs = remainingKWArgs.decoratedEvaluate(context);
 			if (!(realRemainingKWArgs instanceof Map))
-				throw new RemainingKeywordArgumentsException(function.getName());
+				throw new RemainingKeywordArgumentsException(realobj);
 			for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)realRemainingKWArgs).entrySet())
 			{
 				Object argumentName = entry.getKey();
 				if (!(argumentName instanceof String))
-					throw new RemainingKeywordArgumentsException(function.getName());
+					throw new RemainingKeywordArgumentsException(realobj);
 				if (realKWArgs.containsKey(argumentName))
-					throw new DuplicateArgumentException(function.getName(), (String)argumentName);
+					throw new DuplicateArgumentException(realobj, (String)argumentName);
 				realKWArgs.put((String)argumentName, entry.getValue());
 			}
 		}
 
-		return function.evaluate(context, realArgs, realKWArgs);
+		return call(context, realobj, realArgs, realKWArgs);
 	}
 
-	private static Function getFunction(String funcname)
+	public Object call(UL4Callable obj, Object[] args, Map<String, Object> kwargs)
 	{
-		Function function = functions.get(funcname);
-		if (function == null)
-			throw new UnknownFunctionException(funcname);
-		return function;
+		return obj.callUL4(args, kwargs);
+	}
+
+	public Object call(EvaluationContext context, UL4CallableWithContext obj, Object[] args, Map<String, Object> kwargs)
+	{
+		return obj.callUL4(context, args, kwargs);
+	}
+
+	public Object call(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs)
+	{
+		if (obj instanceof UL4Callable)
+			return call((UL4Callable)obj, args, kwargs);
+		else if (obj instanceof UL4CallableWithContext)
+			return call(context, (UL4CallableWithContext)obj, args, kwargs);
+		throw new NotCallableException(obj);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(function.getName());
+		encoder.dump(obj);
 		encoder.dump(args);
 		List kwargList = new LinkedList();
 		for (KeywordArgument arg : kwargs)
@@ -240,7 +151,7 @@ public class CallFunc extends AST
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		function = getFunction((String)decoder.load());
+		obj = (AST)decoder.load();
 		args = (List<AST>)decoder.load();
 		List<List> kwargList = (List<List>)decoder.load();
 		for (List arg : kwargList)
@@ -256,7 +167,7 @@ public class CallFunc extends AST
 		if (valueMakers == null)
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("funcname", new ValueMaker(){public Object getValue(Object object){return ((CallFunc)object).function.getName();}});
+			v.put("obj", new ValueMaker(){public Object getValue(Object object){return ((CallFunc)object).obj;}});
 			v.put("args", new ValueMaker(){public Object getValue(Object object){return ((CallFunc)object).args;}});
 			valueMakers = v;
 		}

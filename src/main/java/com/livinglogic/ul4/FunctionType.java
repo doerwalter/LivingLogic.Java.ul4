@@ -12,9 +12,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class FunctionType extends NormalFunction
+public class FunctionType extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "type";
 	}
@@ -24,7 +24,7 @@ public class FunctionType extends NormalFunction
 		signature.add("obj");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

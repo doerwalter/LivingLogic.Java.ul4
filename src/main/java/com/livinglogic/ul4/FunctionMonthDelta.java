@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 
-public class FunctionMonthDelta extends NormalFunction
+public class FunctionMonthDelta extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "monthdelta";
 	}
@@ -20,7 +20,7 @@ public class FunctionMonthDelta extends NormalFunction
 		signature.add("months", 0);
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

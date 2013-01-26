@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 
-public class FunctionIsColor extends NormalFunction
+public class FunctionIsColor extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "iscolor";
 	}
@@ -20,7 +20,7 @@ public class FunctionIsColor extends NormalFunction
 		signature.add("obj");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

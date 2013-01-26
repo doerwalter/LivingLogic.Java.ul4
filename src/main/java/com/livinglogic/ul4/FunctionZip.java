@@ -11,15 +11,17 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class FunctionZip implements Function
+public class FunctionZip implements UL4Callable
 {
 	public String getName()
 	{
 		return "zip";
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args, Map<String, Object> kwargs)
 	{
+		if (kwargs.size() != 0)
+			throw new KeywordArgumentsNotSupportedException(this.getName());
 		return call(args);
 	}
 

@@ -10,9 +10,9 @@ import java.util.List;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public class FunctionURLQuote extends NormalFunction
+public class FunctionURLQuote extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "urlquote";
 	}
@@ -22,7 +22,7 @@ public class FunctionURLQuote extends NormalFunction
 		signature.add("string");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

@@ -20,22 +20,22 @@ class Text extends Tag
 		super(location);
 	}
 
-	public String getText(Template template)
+	public String getText(InterpretedCode code)
 	{
 		String text = location.getCode();
-		if (template != null)
-			text = template.formatText(text);
+		if (code != null)
+			text = code.formatText(text);
 		return text;
 	}
 
-	public String toString(InterpretedTemplate template, int indent)
+	public String toString(InterpretedCode code, int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 
 		for (int i = 0; i < indent; ++i)
 			buffer.append("\t");
 		buffer.append("text(");
-		buffer.append(FunctionRepr.call(getText(template)));
+		buffer.append(FunctionRepr.call(getText(code)));
 		buffer.append(")\n");
 		return buffer.toString();
 	}
@@ -47,7 +47,7 @@ class Text extends Tag
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.write(getText(context.getTemplate()));
+		context.write(getText(context.getCode()));
 		return null;
 	}
 }

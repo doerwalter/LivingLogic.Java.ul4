@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class MethodRSplit extends NormalMethod
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "rsplit";
 	}

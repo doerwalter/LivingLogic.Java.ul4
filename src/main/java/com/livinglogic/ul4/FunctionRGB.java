@@ -6,9 +6,9 @@
 
 package com.livinglogic.ul4;
 
-public class FunctionRGB extends NormalFunction
+public class FunctionRGB extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "rgb";
 	}
@@ -21,7 +21,7 @@ public class FunctionRGB extends NormalFunction
 		signature.add("a", 1.0);
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0], args[1], args[2], args[3]);
 	}

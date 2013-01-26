@@ -14,17 +14,18 @@ import java.util.Stack;
 
 import static com.livinglogic.utils.MapUtils.makeMap;
 import com.livinglogic.utils.MapChain;
+import com.livinglogic.utils.MapUtils;
 
 /**
  * An {@code EvaluationContext} object is passed around calls to the node method
  * {@link AST#evaluate} and stores an output stream and a map containing the
- * currently defined variables.
+ * currently defined variables as well as other globally available information.
  */
 public class EvaluationContext
 {
 	/**
 	 * The {@code Writer} object where output can be written via {@link #write}.
-	 * May by {@code null}, in which case outputs will be ignored.
+	 * May by {@code null}, in which case output will be ignored.
 	 */
 	protected Writer writer;
 
@@ -34,19 +35,19 @@ public class EvaluationContext
 	protected Map<String, Object> variables;
 
 	/**
-	 * The stack of currently executing templates.
+	 * The currently executing code object
 	 */
-	protected Stack<Template> stack;
+	InterpretedCode code;
 
 	/**
 	 * A {@link com.livinglogic.utils.MapChain} object chaining all variables:
-	 * The user defined ones from {@link #variables} and the one containing
-	 * {@link #stack}
+	 * The user defined ones from {@link #variables} and the map containing the
+	 * global functions.
 	 */
 	protected MapChain<String, Object> allVariables;
 
 	/**
-	 * Create a new {@code EvaluationContext} object. (No variables) will
+	 * Create a new {@code EvaluationContext} object. No variables will
 	 * be available to the template code.
 	 * @param writer The output stream where the template output will be written
 	 */
@@ -67,8 +68,8 @@ public class EvaluationContext
 		if (variables == null)
 			variables = new HashMap<String, Object>();
 		this.variables = variables;
-		this.stack = new Stack<Template>();
-		this.allVariables = new MapChain<String, Object>(variables, makeMap("stack", stack));
+		this.code = null;
+		this.allVariables = new MapChain<String, Object>(variables, functions);
 	}
 
 	/**
@@ -82,31 +83,25 @@ public class EvaluationContext
 	}
 
 	/**
-	 * Push a template onto the stack.
+	 * Set the active code object and return the previously active ones.
 	 */
-	public void pushTemplate(Template template)
+	public InterpretedCode setCode(InterpretedCode code)
 	{
-		stack.push(template);
+		InterpretedCode result = this.code;
+		this.code = code;
+		return result;
 	}
 
 	/**
-	 * Remove the template from the top of the stack and return it.
+	 * Return the currently active code object.
 	 */
-	public Template popTemplate()
+	public InterpretedCode getCode()
 	{
-		return stack.pop();
+		return code;
 	}
 
 	/**
-	 * Return the template at the top of the stack
-	 */
-	public Template getTemplate()
-	{
-		return stack.peek();
-	}
-
-	/**
-	 * Return the map containing the variables local to the template.
+	 * Return the map containing the variables local to the template/function.
 	 */
 	public Map<String, Object> getVariables()
 	{
@@ -122,31 +117,19 @@ public class EvaluationContext
 	}
 
 	/**
-	 * Push a new map containing the template variables in front of the map chain
+	 * Set a new map containing the template variables in front of the map chain
+	 * and return the previous one.
 	 */
-	public void pushVariables(Map<String, Object> variables)
+	public Map<String, Object> setVariables(Map<String, Object> variables)
 	{
 		if (variables == null)
 			variables = new HashMap<String, Object>();
+		Map<String, Object> result = this.variables;
 		this.variables = variables;
-		this.allVariables = new MapChain<String, Object>(variables, allVariables);
+		allVariables.setFirst(variables);
+		return result;
 	}
 
-	/**
-	 * Pop the frontmost map from the map chain and return it
-	 */
-	public Map<String, Object> popVariables()
-	{
-		Map<String, Object> first = allVariables.getFirst();
-		Map<String, Object> second = allVariables.getSecond();
-		if (second instanceof MapChain)
-		{
-			allVariables = (MapChain<String, Object>)second;
-			variables = allVariables.getFirst();
-			return first;
-		}
-		return null;
-	}
 	/**
 	 * Return the {@code Writer} object where template output is written to.
 	 */
@@ -171,6 +154,8 @@ public class EvaluationContext
 	 */
 	public void put(String key, Object value)
 	{
+		if ("self".equals(key))
+			throw new RuntimeException("can't assign to self");
 		variables.put(key, value);
 	}
 
@@ -189,26 +174,81 @@ public class EvaluationContext
 	}
 
 	/**
-	 * Return a template variable or a default value if the variable isn't defined
-	 * @param key The name of the variable
-	 * @param defaultValue Will be returned if the variable named {@code key} is
-	 *                     not defined
-	 */
-	public Object get(String key, Object defaultValue)
-	{
-		Object result = allVariables.get(key);
-
-		if ((result == null) && !allVariables.containsKey(key))
-			return defaultValue;
-		return result;
-	}
-
-	/**
-	 * Delete a template variable
+	 * Delete a variable
 	 * @param key The name of the variable
 	 */
 	public void remove(String key)
 	{
 		variables.remove(key);
+	}
+
+	private static Map<String, Object> functions = new HashMap<String, Object>();
+
+	static
+	{
+		MapUtils.putMap(
+			functions,
+			"now", new FunctionNow(),
+			"utcnow", new FunctionUTCNow(),
+			"date", new FunctionDate(),
+			"timedelta", new FunctionTimeDelta(),
+			"monthdelta", new FunctionMonthDelta(),
+			"random", new FunctionRandom(),
+			"xmlescape", new FunctionXMLEscape(),
+			"csv", new FunctionCSV(),
+			"str", new FunctionStr(),
+			"repr", new FunctionRepr(),
+			"int", new FunctionInt(),
+			"float", new FunctionFloat(),
+			"bool", new FunctionBool(),
+			"len", new FunctionLen(),
+			"any", new FunctionAny(),
+			"all", new FunctionAll(),
+			"enumerate", new FunctionEnumerate(),
+			"enumfl", new FunctionEnumFL(),
+			"isfirstlast", new FunctionIsFirstLast(),
+			"isfirst", new FunctionIsFirst(),
+			"islast", new FunctionIsLast(),
+			"isundefined", new FunctionIsUndefined(),
+			"isdefined", new FunctionIsDefined(),
+			"isnone", new FunctionIsNone(),
+			"isstr", new FunctionIsStr(),
+			"isint", new FunctionIsInt(),
+			"isfloat", new FunctionIsFloat(),
+			"isbool", new FunctionIsBool(),
+			"isdate", new FunctionIsDate(),
+			"islist", new FunctionIsList(),
+			"isdict", new FunctionIsDict(),
+			"istemplate", new FunctionIsTemplate(),
+			"isfunction", new FunctionIsFunction(),
+			"iscolor", new FunctionIsColor(),
+			"istimedelta", new FunctionIsTimeDelta(),
+			"ismonthdelta", new FunctionIsMonthDelta(),
+			"chr", new FunctionChr(),
+			"ord", new FunctionOrd(),
+			"hex", new FunctionHex(),
+			"oct", new FunctionOct(),
+			"bin", new FunctionBin(),
+			"abs", new FunctionAbs(),
+			"range", new FunctionRange(),
+			"min", new FunctionMin(),
+			"max", new FunctionMax(),
+			"sorted", new FunctionSorted(),
+			"type", new FunctionType(),
+			"asjson", new FunctionAsJSON(),
+			"fromjson", new FunctionFromJSON(),
+			"asul4on", new FunctionAsUL4ON(),
+			"fromul4on", new FunctionFromUL4ON(),
+			"reversed", new FunctionReversed(),
+			"randrange", new FunctionRandRange(),
+			"randchoice", new FunctionRandChoice(),
+			"format", new FunctionFormat(),
+			"urlquote", new FunctionURLQuote(),
+			"urlunquote", new FunctionURLUnquote(),
+			"zip", new FunctionZip(),
+			"rgb", new FunctionRGB(),
+			"hls", new FunctionHLS(),
+			"hsv", new FunctionHSV()
+		);
 	}
 }

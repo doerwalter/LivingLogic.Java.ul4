@@ -21,6 +21,11 @@ public class DuplicateArgumentException extends ArgumentException
 		this(name, argumentName, -1);
 	}
 
+	public DuplicateArgumentException(Object object, String argumentName)
+	{
+		this(object instanceof UL4Name ? ((UL4Name)object).nameUL4() : Utils.objectType(object), argumentName);
+	}
+
 	public DuplicateArgumentException(Signature signature, ArgumentDescription argument)
 	{
 		this(signature.getName(), argument.getName(), argument.getPosition());

@@ -15,9 +15,9 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
-public class FunctionStr extends NormalFunction
+public class FunctionStr extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "str";
 	}
@@ -27,7 +27,7 @@ public class FunctionStr extends NormalFunction
 		signature.add("obj", "");
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(args[0]);
 	}

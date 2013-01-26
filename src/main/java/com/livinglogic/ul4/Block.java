@@ -30,7 +30,7 @@ abstract class Block extends Tag
 		content.add(item);
 	}
 
-	public void finish(InterpretedTemplate template, Location endlocation)
+	public void finish(Location endlocation)
 	{
 		this.endlocation = endlocation;
 	}
@@ -58,6 +58,10 @@ abstract class Block extends Tag
 			throw ex;
 		}
 		catch (ContinueException ex)
+		{
+			throw ex;
+		}
+		catch (ReturnException ex)
 		{
 			throw ex;
 		}

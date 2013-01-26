@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class MethodWeek extends NormalMethod
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "week";
 	}
