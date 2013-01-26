@@ -248,6 +248,8 @@ public class Utils
 	{
 		if (varname instanceof String)
 		{
+			if ("self".equals(varname))
+				throw new RuntimeException("can't assign to self");
 			variables.put((String)varname, item);
 		}
 		else
