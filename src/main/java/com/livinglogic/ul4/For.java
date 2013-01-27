@@ -77,7 +77,7 @@ public class For extends Block
 
 		while (iter.hasNext())
 		{
-			Utils.unpackVariable(context.getVariables(), varname, iter.next());
+			context.unpackVariable(varname, iter.next());
 
 			try
 			{

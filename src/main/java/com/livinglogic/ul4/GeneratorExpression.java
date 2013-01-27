@@ -102,7 +102,7 @@ public class GeneratorExpression extends AST
 		{
 			while (iterator.hasNext())
 			{
-				Utils.unpackVariable(context.getVariables(), varname, iterator.next());
+				context.unpackVariable(varname, iterator.next());
 				boolean use;
 				if (condition == null)
 					use = true;

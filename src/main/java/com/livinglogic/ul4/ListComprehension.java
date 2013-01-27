@@ -65,7 +65,7 @@ public class ListComprehension extends AST
 
 		while (iter.hasNext())
 		{
-			Utils.unpackVariable(context.getVariables(), varname, iter.next());
+			context.unpackVariable(varname, iter.next());
 
 			if (condition == null || FunctionBool.call(condition.decoratedEvaluate(context)))
 			{

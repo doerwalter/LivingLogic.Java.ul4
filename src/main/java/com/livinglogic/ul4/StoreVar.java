@@ -59,7 +59,7 @@ public class StoreVar extends Tag
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		Utils.unpackVariable(context.getVariables(), varname, value.decoratedEvaluate(context));
+		context.unpackVariable(varname, value.decoratedEvaluate(context));
 		return null;
 	}
 
