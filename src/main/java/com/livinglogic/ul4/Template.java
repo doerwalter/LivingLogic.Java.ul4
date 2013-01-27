@@ -19,11 +19,7 @@ public interface Template
 {
 	public void render(EvaluationContext context, Map<String, Object> variables) throws java.io.IOException;
 
-	public void render(EvaluationContext context) throws java.io.IOException;
-
 	public String renders(EvaluationContext context, Map<String, Object> variables);
-
-	public String renders(EvaluationContext context);
 
 	public String formatText(String text);
 }
