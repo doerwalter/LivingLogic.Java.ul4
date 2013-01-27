@@ -6,7 +6,7 @@
 
 package com.livinglogic.ul4;
 
-public abstract class Undefined implements UL4Bool, UL4Repr
+public abstract class Undefined implements UL4Bool, UL4Repr, UL4Type
 {
 	public boolean boolUL4()
 	{
@@ -16,5 +16,10 @@ public abstract class Undefined implements UL4Bool, UL4Repr
 	public String reprUL4()
 	{
 		return toString();
+	}
+
+	public String typeUL4()
+	{
+		return "undefined";
 	}
 }

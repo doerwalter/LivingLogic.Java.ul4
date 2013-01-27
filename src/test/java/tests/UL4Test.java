@@ -2643,6 +2643,7 @@ public class UL4Test
 	public void function_type()
 	{
 		String source = "<?print type(data)?>";
+		checkTemplateOutput("undefined", source);
 		checkTemplateOutput("none", source, "data", null);
 		checkTemplateOutput("bool", source, "data", false);
 		checkTemplateOutput("bool", source, "data", true);
@@ -2653,6 +2654,7 @@ public class UL4Test
 		checkTemplateOutput("list", source, "data", asList(1, 2));
 		checkTemplateOutput("dict", source, "data", makeMap(1, 2));
 		checkTemplateOutput("template", source, "data", getTemplate(""));
+		checkTemplateOutput("function", source, "data", getFunction(""));
 		checkTemplateOutput("color", source, "data", new Color(0, 0, 0));
 
 		String sourcekw = "<?print type(obj=data)?>";
