@@ -93,13 +93,12 @@ public class FunctionClosure extends ObjectAsMap implements UL4CallableWithConte
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
 			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((FunctionClosure)object).getFunction().nameUL4();}});
-			// The following attributes will only work if the function really is an InterpretedFunction
-			v.put("location", new ValueMaker(){public Object getValue(Object object){return ((InterpretedFunction)((FunctionClosure)object).getFunction()).getLocation();}});
-			v.put("endlocation", new ValueMaker(){public Object getValue(Object object){return ((InterpretedFunction)((FunctionClosure)object).getFunction()).getEndLocation();}});
-			v.put("content", new ValueMaker(){public Object getValue(Object object){return ((InterpretedFunction)((FunctionClosure)object).getFunction()).getContent();}});
-			v.put("startdelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedFunction)((FunctionClosure)object).getFunction()).getStartDelim();}});
-			v.put("enddelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedFunction)((FunctionClosure)object).getFunction()).getEndDelim();}});
-			v.put("source", new ValueMaker(){public Object getValue(Object object){return ((InterpretedFunction)((FunctionClosure)object).getFunction()).getSource();}});
+			v.put("location", new ValueMaker(){public Object getValue(Object object){return ((FunctionClosure)object).getFunction().getLocation();}});
+			v.put("endlocation", new ValueMaker(){public Object getValue(Object object){return ((FunctionClosure)object).getFunction().getEndLocation();}});
+			v.put("content", new ValueMaker(){public Object getValue(Object object){return ((FunctionClosure)object).getFunction().getContent();}});
+			v.put("startdelim", new ValueMaker(){public Object getValue(Object object){return ((FunctionClosure)object).getFunction().getStartDelim();}});
+			v.put("enddelim", new ValueMaker(){public Object getValue(Object object){return ((FunctionClosure)object).getFunction().getEndDelim();}});
+			v.put("source", new ValueMaker(){public Object getValue(Object object){return ((FunctionClosure)object).getFunction().getSource();}});
 			valueMakers = v;
 		}
 		return valueMakers;
