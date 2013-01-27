@@ -21,7 +21,7 @@ import com.livinglogic.utils.MapChain;
  * @author W. Doerwald
  */
 
-public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
+public class TemplateClosure extends ObjectAsMap implements Template, UL4Name, UL4Type
 {
 	private InterpretedTemplate template;
 	private Map<String, Object> variables;
@@ -37,9 +37,9 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 		return template;
 	}
 
-	public String getName()
+	public String nameUL4()
 	{
-		return template.getName();
+		return template.nameUL4();
 	}
 
 	public String formatText(String text)
@@ -135,7 +135,7 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Type
 		if (valueMakers == null)
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
-			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((TemplateClosure)object).getTemplate().getName();}});
+			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((TemplateClosure)object).getTemplate().nameUL4();}});
 			// The following attributes will only work if the template really is an InterpretedTemplate
 			v.put("location", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)((TemplateClosure)object).getTemplate()).getLocation();}});
 			v.put("endlocation", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)((TemplateClosure)object).getTemplate()).getEndLocation();}});

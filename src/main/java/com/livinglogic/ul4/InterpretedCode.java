@@ -32,7 +32,7 @@ import com.livinglogic.ul4on.ObjectFactory;
 import com.livinglogic.ul4on.UL4ONSerializable;
 import com.livinglogic.ul4on.Utils;
 
-public abstract class InterpretedCode extends Block
+public abstract class InterpretedCode extends Block implements UL4Name
 {
 	/**
 	 * The version number used in the UL4ON dump of the template/function.
@@ -246,7 +246,7 @@ public abstract class InterpretedCode extends Block
 		return parser;
 	}
 
-	public String getName()
+	public String nameUL4()
 	{
 		return name;
 	}

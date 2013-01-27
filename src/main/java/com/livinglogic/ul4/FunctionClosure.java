@@ -21,7 +21,7 @@ import com.livinglogic.utils.MapChain;
  * @author W. Doerwald
  */
 
-public class FunctionClosure extends ObjectAsMap implements UL4CallableWithContext, UL4Type
+public class FunctionClosure extends ObjectAsMap implements UL4CallableWithContext, UL4Name, UL4Type
 {
 	private InterpretedFunction function;
 	private Map<String, Object> variables;
@@ -37,9 +37,9 @@ public class FunctionClosure extends ObjectAsMap implements UL4CallableWithConte
 		return function;
 	}
 
-	public String getName()
+	public String nameUL4()
 	{
-		return function.getName();
+		return function.nameUL4();
 	}
 
 	public String formatText(String text)
@@ -50,7 +50,7 @@ public class FunctionClosure extends ObjectAsMap implements UL4CallableWithConte
 	public Object callUL4(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
 	{
 		if (args.length > 0)
-			throw new PositionalArgumentsNotSupportedException(getName());
+			throw new PositionalArgumentsNotSupportedException(nameUL4());
 		return call(context, kwargs);
 	}
 
@@ -92,7 +92,7 @@ public class FunctionClosure extends ObjectAsMap implements UL4CallableWithConte
 		if (valueMakers == null)
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
-			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((FunctionClosure)object).getFunction().getName();}});
+			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((FunctionClosure)object).getFunction().nameUL4();}});
 			// The following attributes will only work if the function really is an InterpretedFunction
 			v.put("location", new ValueMaker(){public Object getValue(Object object){return ((InterpretedFunction)((FunctionClosure)object).getFunction()).getLocation();}});
 			v.put("endlocation", new ValueMaker(){public Object getValue(Object object){return ((InterpretedFunction)((FunctionClosure)object).getFunction()).getEndLocation();}});

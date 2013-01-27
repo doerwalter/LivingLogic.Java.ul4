@@ -12,7 +12,7 @@ public class CodeException extends RuntimeException
 
 	public CodeException(Throwable cause, InterpretedCode code)
 	{
-		super(code.getName() != null ? "in " + code.getType() + " named " + code.getName() : "in unnamed " + code.getType(), cause);
+		super(code.nameUL4() != null ? "in " + code.getType() + " named " + code.nameUL4() : "in unnamed " + code.getType(), cause);
 		this.code = code;
 	}
 }
