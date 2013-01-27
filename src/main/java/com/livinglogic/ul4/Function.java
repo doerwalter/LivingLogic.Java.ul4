@@ -10,9 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
-public abstract class Function implements UL4Callable, UL4Name
+public abstract class Function implements UL4Callable, UL4Name, UL4Type
 {
 	public abstract String nameUL4();
+
+	public String typeUL4()
+	{
+		return "function";
+	}
 
 	private Signature signature = null;
 
