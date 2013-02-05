@@ -7,6 +7,7 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.Iterator;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
+
+import com.livinglogic.utils.MapChain;
 
 public class GeneratorExpression extends AST
 {
@@ -83,6 +86,7 @@ public class GeneratorExpression extends AST
 		private EvaluationContext context;
 		private Iterator iterator;
 		private boolean hasNextItem;
+		private Map<String, Object> variables;
 
 		public GeneratorExpressionIterator(EvaluationContext context)
 		{
@@ -95,35 +99,44 @@ public class GeneratorExpression extends AST
 			{
 				throw new RuntimeException(ex);
 			}
+			variables = new MapChain<String, Object>(new HashMap<String, Object>(), context.getVariables());
 			fetchNextItem();
 		}
 
 		private void fetchNextItem()
 		{
-			while (iterator.hasNext())
+			Map<String, Object> oldVariables = context.setVariables(variables);
+			try
 			{
-				context.unpackVariable(varname, iterator.next());
-				boolean use;
-				if (condition == null)
-					use = true;
-				else
+				while (iterator.hasNext())
 				{
-					try
+					context.unpackVariable(varname, iterator.next());
+					boolean use;
+					if (condition == null)
+						use = true;
+					else
 					{
-						use = FunctionBool.call(condition.decoratedEvaluate(context));
+						try
+						{
+							use = FunctionBool.call(condition.decoratedEvaluate(context));
+						}
+						catch (IOException ex)
+						{
+							throw new RuntimeException(ex);
+						}
 					}
-					catch (IOException ex)
+					if (use)
 					{
-						throw new RuntimeException(ex);
+						hasNextItem = true;
+						return;
 					}
 				}
-				if (use)
-				{
-					hasNextItem = true;
-					return;
-				}
+				hasNextItem = false;
 			}
-			hasNextItem = false;
+			finally
+			{
+				context.setVariables(oldVariables);
+			}
 		}
 
 		public boolean hasNext()
@@ -134,6 +147,7 @@ public class GeneratorExpression extends AST
 		public Object next()
 		{
 			Object result;
+			Map<String, Object> oldVariables = context.setVariables(variables);
 			try
 			{
 				result = item.decoratedEvaluate(context);
@@ -141,6 +155,10 @@ public class GeneratorExpression extends AST
 			catch (IOException ex)
 			{
 				throw new RuntimeException(ex);
+			}
+			finally
+			{
+				context.setVariables(oldVariables);
 			}
 			fetchNextItem();
 			return result;

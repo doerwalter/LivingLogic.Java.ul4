@@ -66,16 +66,26 @@ public class DictComprehension extends AST
 
 		Iterator iter = Utils.iterator(container);
 
-		while (iter.hasNext())
-		{
-			context.unpackVariable(varname, iter.next());
+		// Store the loop variables into a local map, so they don't leak into the surrounding scope.
+		Map<String, Object> oldVariables = context.pushVariables(null);
 
-			if (condition == null || FunctionBool.call(condition.decoratedEvaluate(context)))
+		try
+		{
+			while (iter.hasNext())
 			{
-				Object key = this.key.decoratedEvaluate(context);
-				Object value = this.value.decoratedEvaluate(context);
-				result.put(key, value);
+				context.unpackVariable(varname, iter.next());
+
+				if (condition == null || FunctionBool.call(condition.decoratedEvaluate(context)))
+				{
+					Object key = this.key.decoratedEvaluate(context);
+					Object value = this.value.decoratedEvaluate(context);
+					result.put(key, value);
+				}
 			}
+		}
+		finally
+		{
+			context.setVariables(oldVariables);
 		}
 		return result;
 	}

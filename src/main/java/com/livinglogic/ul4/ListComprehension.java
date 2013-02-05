@@ -7,6 +7,7 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.Iterator;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
+
+import com.livinglogic.utils.MapChain;
 
 public class ListComprehension extends AST
 {
@@ -63,15 +66,25 @@ public class ListComprehension extends AST
 
 		Iterator iter = Utils.iterator(container);
 
-		while (iter.hasNext())
-		{
-			context.unpackVariable(varname, iter.next());
+		// Store the loop variables into a local map, so they don't leak into the surrounding scope.
+		Map<String, Object> oldVariables = context.pushVariables(null);
 
-			if (condition == null || FunctionBool.call(condition.decoratedEvaluate(context)))
+		try
+		{
+			while (iter.hasNext())
 			{
-				Object item = this.item.decoratedEvaluate(context);
-				result.add(item);
+				context.unpackVariable(varname, iter.next());
+
+				if (condition == null || FunctionBool.call(condition.decoratedEvaluate(context)))
+				{
+					Object item = this.item.decoratedEvaluate(context);
+					result.add(item);
+				}
 			}
+		}
+		finally
+		{
+			context.setVariables(oldVariables);
 		}
 		return result;
 	}
