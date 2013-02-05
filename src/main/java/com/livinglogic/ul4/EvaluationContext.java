@@ -118,8 +118,7 @@ public class EvaluationContext
 	}
 
 	/**
-	 * Set a new map containing the template variables in front of the map chain
-	 * and return the previous one.
+	 * Set a new map containing the template variables and return the previous one.
 	 */
 	public Map<String, Object> setVariables(Map<String, Object> variables)
 	{
@@ -130,6 +129,18 @@ public class EvaluationContext
 		allVariables.setFirst(variables);
 		return result;
 	}
+
+	/**
+	 * Replace the map containing the template variables with a new map that
+	 * deferres non-existant keys to the previous one and return the previous one.
+	 */
+	public Map<String, Object> pushVariables(Map<String, Object> variables)
+	{
+		if (variables == null)
+			variables = new HashMap<String, Object>();
+		return setVariables(new MapChain<String, Object>(variables, getVariables()));
+	}
+
 
 	/**
 	 * Return the {@code Writer} object where template output is written to.
@@ -183,11 +194,13 @@ public class EvaluationContext
 		variables.remove(key);
 	}
 
-	public void unpackVariable(Object varname, Object item)
+	public static void unpackVariable(Map<String, Object> variables, Object varname, Object item)
 	{
 		if (varname instanceof String)
 		{
-			put((String)varname, item);
+			if ("self".equals(varname))
+				throw new RuntimeException("can't assign to self");
+			variables.put((String)varname, item);
 		}
 		else
 		{
@@ -201,7 +214,7 @@ public class EvaluationContext
 				{
 					if (i < varnameCount)
 					{
-						unpackVariable(varnames.get(i), itemIter.next());
+						unpackVariable(variables, varnames.get(i), itemIter.next());
 					}
 					else
 					{
@@ -221,6 +234,11 @@ public class EvaluationContext
 				}
 			}
 		}
+	}
+
+	public void unpackVariable(Object varname, Object item)
+	{
+		unpackVariable(getVariables(), varname, item);
 	}
 
 	private static Map<String, Object> functions = new HashMap<String, Object>();
