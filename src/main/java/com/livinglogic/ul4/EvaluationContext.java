@@ -194,13 +194,11 @@ public class EvaluationContext
 		variables.remove(key);
 	}
 
-	public static void unpackVariable(Map<String, Object> variables, Object varname, Object item)
+	public void unpackVariable(Object varname, Object item)
 	{
 		if (varname instanceof String)
 		{
-			if ("self".equals(varname))
-				throw new RuntimeException("can't assign to self");
-			variables.put((String)varname, item);
+			put((String)varname, item);
 		}
 		else
 		{
@@ -214,7 +212,7 @@ public class EvaluationContext
 				{
 					if (i < varnameCount)
 					{
-						unpackVariable(variables, varnames.get(i), itemIter.next());
+						unpackVariable(varnames.get(i), itemIter.next());
 					}
 					else
 					{
@@ -234,11 +232,6 @@ public class EvaluationContext
 				}
 			}
 		}
-	}
-
-	public void unpackVariable(Object varname, Object item)
-	{
-		unpackVariable(getVariables(), varname, item);
 	}
 
 	private static Map<String, Object> functions = new HashMap<String, Object>();
