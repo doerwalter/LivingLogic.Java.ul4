@@ -23,34 +23,14 @@ public class DictComprehension extends AST
 	protected AST container;
 	protected AST condition;
 
-	public DictComprehension(AST key, AST value, Object varname, AST container, AST condition)
+	public DictComprehension(Location location, int start, int end, AST key, AST value, Object varname, AST container, AST condition)
 	{
-		super();
+		super(location, start, end);
 		this.key = key;
 		this.value = value;
 		this.varname = varname;
 		this.container = container;
 		this.condition = condition;
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("{");
-		buffer.append(key.toString(code, indent));
-		buffer.append(":");
-		buffer.append(value.toString(code, indent));
-		buffer.append(" for ");
-		Utils.formatVarname(buffer, varname);
-		buffer.append(" in ");
-		buffer.append(container.toString(code, indent));
-		if (condition != null)
-		{
-			buffer.append(" if ");
-			buffer.append(condition.toString(code, indent));
-		}
-		buffer.append("}");
-		return buffer.toString();
 	}
 
 	public String getType()

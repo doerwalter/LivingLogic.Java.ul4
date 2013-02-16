@@ -21,42 +21,10 @@ public class CallFunc extends Callable
 {
 	protected AST obj;
 
-	public CallFunc(AST obj)
+	public CallFunc(Location location, int start, int end, AST obj)
 	{
-		super();
+		super(location, start, end);
 		this.obj = obj;
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		StringBuilder buffer = new StringBuilder();
-
-		buffer.append("callfunc(");
-		buffer.append(obj.toString(code, indent));
-		for (AST arg : args)
-		{
-			buffer.append(", ");
-			buffer.append(arg);
-		}
-		for (KeywordArgument arg : kwargs)
-		{
-			buffer.append(", ");
-			buffer.append(arg.getName());
-			buffer.append("=");
-			buffer.append(arg.getArg().toString(code, indent));
-		}
-		if (remainingArgs != null)
-		{
-			buffer.append(", *");
-			buffer.append(remainingArgs.toString(code, indent));
-		}
-		if (remainingKWArgs != null)
-		{
-			buffer.append(", **");
-			buffer.append(remainingKWArgs);
-		}
-		buffer.append(")");
-		return buffer.toString();
 	}
 
 	public String getType()

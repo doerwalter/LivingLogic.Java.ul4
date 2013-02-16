@@ -6,11 +6,11 @@
 
 package com.livinglogic.ul4;
 
-class Break extends Tag
+class Break extends AST
 {
-	public Break(Location location)
+	public Break(Location location, int start, int end)
 	{
-		super(location);
+		super(location, start, end);
 	}
 
 	public String getType()
@@ -23,7 +23,7 @@ class Break extends Tag
 		throw new BreakException();
 	}
 
-	public String toString(InterpretedCode code, int indent)
+	public String toString(int indent)
 	{
 		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < indent; ++i)

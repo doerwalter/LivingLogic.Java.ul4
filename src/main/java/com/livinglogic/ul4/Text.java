@@ -13,31 +13,26 @@ import static com.livinglogic.utils.StringUtils.removeWhitespace;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-class Text extends Tag
+class Text extends AST
 {
-	public Text(Location location)
+	public Text(Location location, int start, int end)
 	{
-		super(location);
+		super(location, start, end);
 	}
 
-	public String getText(InterpretedCode code)
+	public String getText()
 	{
+		InterpretedTemplate template = location.getRoot();
 		String text = location.getCode();
-		if (code != null)
-			text = code.formatText(text);
+		if (template != null)
+			text = template.formatText(text);
 		return text;
 	}
 
-	public String toString(InterpretedCode code, int indent)
+	public void toString(Formatter formatter)
 	{
-		StringBuilder buffer = new StringBuilder();
-
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("text(");
-		buffer.append(FunctionRepr.call(getText(code)));
-		buffer.append(")\n");
-		return buffer.toString();
+		formatter.write("text ");
+		formatter.write(FunctionRepr.call(getText()));
 	}
 
 	public String getType()
@@ -47,7 +42,7 @@ class Text extends Tag
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		context.write(getText(context.getCode()));
+		context.write(getText());
 		return null;
 	}
 }

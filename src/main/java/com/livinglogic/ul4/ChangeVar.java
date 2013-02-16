@@ -13,26 +13,16 @@ import java.util.Map;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public abstract class ChangeVar extends Tag
+public abstract class ChangeVar extends AST
 {
 	protected String varname;
 	protected AST value;
 
-	public ChangeVar(Location location, String varname, AST value)
+	public ChangeVar(Location location, int start, int end, String varname, AST value)
 	{
-		super(location);
+		super(location, start, end);
 		this.varname = varname;
 		this.value = value;
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		StringBuilder buffer = new StringBuilder();
-
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append(getType() + "(" + FunctionRepr.call(varname) + ", " + value.toString(code, indent) + ")\n");
-		return buffer.toString();
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

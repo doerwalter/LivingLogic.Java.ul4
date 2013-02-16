@@ -26,31 +26,13 @@ public class ListComprehension extends AST
 	protected AST container;
 	protected AST condition;
 
-	public ListComprehension(AST item, Object varname, AST container, AST condition)
+	public ListComprehension(Location location, int start, int end, AST item, Object varname, AST container, AST condition)
 	{
-		super();
+		super(location, start, end);
 		this.item = item;
 		this.varname = varname;
 		this.container = container;
 		this.condition = condition;
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("[");
-		buffer.append(item.toString(code, indent));
-		buffer.append(" for ");
-		Utils.formatVarname(buffer, varname);
-		buffer.append(" in ");
-		buffer.append(container.toString(code, indent));
-		if (condition != null)
-		{
-			buffer.append(" if ");
-			buffer.append(condition.toString(code, indent));
-		}
-		buffer.append("]");
-		return buffer.toString();
 	}
 
 	public String getType()

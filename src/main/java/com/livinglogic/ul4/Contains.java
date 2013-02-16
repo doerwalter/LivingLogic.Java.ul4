@@ -12,9 +12,9 @@ import java.util.Map;
 
 public class Contains extends Binary
 {
-	public Contains(AST obj1, AST obj2)
+	public Contains(Location location, int start, int end, AST obj1, AST obj2)
 	{
-		super(obj1, obj2);
+		super(location, start, end, obj1, obj2);
 	}
 
 	public String getType()
@@ -22,15 +22,15 @@ public class Contains extends Binary
 		return "contains";
 	}
 
-	public static AST make(AST obj1, AST obj2)
+	public static AST make(Location location, int start, int end, AST obj1, AST obj2)
 	{
 		if (obj1 instanceof Const && obj2 instanceof Const)
 		{
 			Object result = call(((Const)obj1).value, ((Const)obj2).value);
 			if (!(result instanceof Undefined))
-				return new Const(result);
+				return new Const(location, start, end, result);
 		}
-		return new Contains(obj1, obj2);
+		return new Contains(location, start, end, obj1, obj2);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

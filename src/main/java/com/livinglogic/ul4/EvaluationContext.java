@@ -36,9 +36,9 @@ public class EvaluationContext
 	protected Map<String, Object> variables;
 
 	/**
-	 * The currently executing code object
+	 * The currently executing template object
 	 */
-	InterpretedCode code;
+	InterpretedTemplate template;
 
 	/**
 	 * A {@link com.livinglogic.utils.MapChain} object chaining all variables:
@@ -69,7 +69,7 @@ public class EvaluationContext
 		if (variables == null)
 			variables = new HashMap<String, Object>();
 		this.variables = variables;
-		this.code = null;
+		this.template = null;
 		this.allVariables = new MapChain<String, Object>(variables, functions);
 	}
 
@@ -84,21 +84,21 @@ public class EvaluationContext
 	}
 
 	/**
-	 * Set the active code object and return the previously active ones.
+	 * Set the active template object and return the previously active one.
 	 */
-	public InterpretedCode setCode(InterpretedCode code)
+	public InterpretedTemplate setTemplate(InterpretedTemplate template)
 	{
-		InterpretedCode result = this.code;
-		this.code = code;
+		InterpretedTemplate result = this.template;
+		this.template = template;
 		return result;
 	}
 
 	/**
-	 * Return the currently active code object.
+	 * Return the currently active template object.
 	 */
-	public InterpretedCode getCode()
+	public InterpretedTemplate getTemplate()
 	{
-		return code;
+		return template;
 	}
 
 	/**

@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 class If extends ConditionalBlockWithCondition
 {
-	public If(Location location, AST condition)
+	public If(Location location, int start, int end, AST condition)
 	{
-		super(location, condition);
+		super(location, start, end, condition);
 	}
 
 	public String getType()

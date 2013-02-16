@@ -136,10 +136,6 @@ public class FunctionAsJSON extends Function
 		{
 			return new StringBuilder().append("ul4.Template.loads(").append(((InterpretedTemplate)obj).dumps()).append(")").toString();
 		}
-		else if (obj instanceof InterpretedFunction)
-		{
-			return new StringBuilder().append("ul4.Function.loads(").append(((InterpretedFunction)obj).dumps()).append(")").toString();
-		}
 		return null;
 	}
 }

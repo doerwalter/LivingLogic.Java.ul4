@@ -24,9 +24,9 @@ public abstract class Callable extends AST
 	protected AST remainingArgs = null;
 	protected AST remainingKWArgs = null;
 
-	public Callable()
+	public Callable(Location location, int start, int end)
 	{
-		super();
+		super(location, start, end);
 	}
 
 	public void append(AST arg)

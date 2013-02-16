@@ -21,11 +21,6 @@ public class DictItemKeyValue extends DictItem
 		this.value = value;
 	}
 
-	public String toString(InterpretedCode code, int indent)
-	{
-		return key.toString() + ": " + value.toString(code, indent);
-	}
-
 	public void addTo(EvaluationContext context, Map dict) throws IOException
 	{
 		dict.put(key.decoratedEvaluate(context), value.decoratedEvaluate(context));

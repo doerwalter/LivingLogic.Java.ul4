@@ -28,7 +28,6 @@ import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.InterpretedTemplate;
-import com.livinglogic.ul4.InterpretedFunction;
 import com.livinglogic.ul4.FunctionDate;
 import com.livinglogic.ul4.KeyException;
 import com.livinglogic.ul4.SyntaxException;
@@ -99,46 +98,27 @@ public class UL4Test
 			fail("expected <" + expected1 + "> or <" + expected2 + ">, got <" + output2 + ">");
 	}
 
-	private static InterpretedFunction getFunction(String source, String name)
+	private static Object getTemplateResult(String source, Object... args)
 	{
-		try
-		{
-			InterpretedFunction function = new InterpretedFunction(source, name, false);
-			// System.out.println(function);
-			return function;
-		}
-		catch (RecognitionException ex)
-		{
-			throw new RuntimeException(ex);
-		}
+		InterpretedTemplate template = getTemplate(source);
+		return template.call(makeMap(args));
 	}
 
-	private static InterpretedFunction getFunction(String source)
+	private static void checkTemplateResult(Object expected, String source, Object... args)
 	{
-		return getFunction(source, null);
-	}
-
-	private static Object getFunctionOutput(String source, Object... args)
-	{
-		InterpretedFunction function = getFunction(source);
-		return function.call(makeMap(args));
-	}
-
-	private static void checkFunctionOutput(Object expected, String source, Object... args)
-	{
-		// Execute the function once by directly compiling and calling it
-		InterpretedFunction function1 = getFunction(source);
-		Object output1 = function1.call(makeMap(args));
+		// Execute the template once by directly compiling and calling it
+		InterpretedTemplate template1 = getTemplate(source);
+		Object output1 = template1.call(makeMap(args));
 		assertEquals(expected, output1);
 
-		// Recreate the function from the dump of the compiled function
-		InterpretedFunction function2 = InterpretedFunction.loads(function1.dumps());
+		// Recreate the template from the dump of the compiled template
+		InterpretedTemplate template2 = InterpretedTemplate.loads(template1.dumps());
 
-		// Check that the functions format the same
-		assertEquals(function1.toString(), function2.toString());
+		// Check that the templates format the same
+		assertEquals(template1.toString(), template2.toString());
 
 		// Check that they have the same output
-		Object output2 = function2.call(makeMap(args));
+		Object output2 = template2.call(makeMap(args));
 		assertEquals(expected, output2);
 	}
 
@@ -515,7 +495,7 @@ public class UL4Test
 	@CauseTest(expectedCause=BlockException.class)
 	public void tag_break_outside_loop_in_template()
 	{
-		checkTemplateOutput("", "<?template gurk?><?break?><?end template?>");
+		checkTemplateOutput("", "<?def gurk?><?break?><?end def?>");
 	}
 
 	@Test
@@ -539,7 +519,7 @@ public class UL4Test
 	@CauseTest(expectedCause=BlockException.class)
 	public void tag_continue_outside_loop_in_template()
 	{
-		checkTemplateOutput("", "<?template gurk?><?continue?><?end template?>");
+		checkTemplateOutput("", "<?def gurk?><?continue?><?end def?>");
 	}
 
 	@Test
@@ -2237,7 +2217,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
 		checkTemplateOutput("False", source, "data", makeMap());
-		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("True", source, "data", getTemplate(""));
 		checkTemplateOutput("True", "<?print isfunction(repr)?>");
 		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
 		checkTemplateOutput("False", "<?print isfunction(obj=data)?>", "data", null);
@@ -2654,7 +2634,6 @@ public class UL4Test
 		checkTemplateOutput("list", source, "data", asList(1, 2));
 		checkTemplateOutput("dict", source, "data", makeMap(1, 2));
 		checkTemplateOutput("template", source, "data", getTemplate(""));
-		checkTemplateOutput("function", source, "data", getFunction(""));
 		checkTemplateOutput("color", source, "data", new Color(0, 0, 0));
 
 		String sourcekw = "<?print type(obj=data)?>";
@@ -2832,12 +2811,12 @@ public class UL4Test
 		InterpretedTemplate t1 = getTemplate("<?print prefix?><?print data?><?print suffix?>");
 		InterpretedTemplate t2 = getTemplate("<?print 'foo'?>");
 
-		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t.render(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
+		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?code t.render(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
 		checkTemplateOutput("foo", "<?print t.render()?>", "t", t2);
 		checkTemplateOutput("foo", "<?print t.render \n\t(\n \t)\n\t ?>", "t", t2);
 
-		checkTemplateOutput("42", "<?render globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("<?print value?>")));
-		checkTemplateOutput("", "<?render globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("")));
+		checkTemplateOutput("42", "<?code globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("<?print value?>")));
+		checkTemplateOutput("", "<?code globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("")));
 	}
 
 	@Test
@@ -2845,35 +2824,35 @@ public class UL4Test
 	{
 		InterpretedTemplate t = getTemplate("<?code x += 1?><?print x?>");
 
-		checkTemplateOutput("42,43,42", "<?print x?>,<?render t.render(x=x)?>,<?print x?>", "t", t, "x", 42);
+		checkTemplateOutput("42,43,42", "<?print x?>,<?code t.render(x=x)?>,<?print x?>", "t", t, "x", 42);
 	}
 
 	@Test
 	public void method_render_localtemplate()
 	{
-		checkTemplateOutput("foo", "<?template lower?><?print x.lower()?><?end template?><?print lower.renders(x='FOO')?>");
+		checkTemplateOutput("foo", "<?def lower?><?print x.lower()?><?end def?><?print lower.renders(x='FOO')?>");
 	}
 
 	@Test
 	public void method_render_nested()
 	{
 		String source = (
-			"<?template outer?>" +
-				"<?template inner?>" +
+			"<?def outer?>" +
+				"<?def inner?>" +
 					"<?code x += 1?>" +
 					"<?code y += 1?>" +
 					"<?print x?>!" +
 					"<?print y?>!" +
-				"<?end template?>" +
+				"<?end def?>" +
 				"<?code x += 1?>" +
 				"<?code y += 1?>" +
-				"<?render inner.render(x=x)?>" +
+				"<?code inner.render(x=x)?>" +
 				"<?print x?>!" +
 				"<?print y?>!" +
-			"<?end template?>" +
+			"<?end def?>" +
 			"<?code x += 1?>" +
 			"<?code y += 1?>" +
-			"<?render outer.render(x=x)?>" +
+			"<?code outer.render(x=x)?>" +
 			"<?print x?>!" +
 			"<?print y?>!"
 		);
@@ -3157,7 +3136,7 @@ public class UL4Test
 	@Test
 	public void templateattributes_localtemplate()
 	{
-		String source = "<?template lower?><?print t.lower()?><?end template?>";
+		String source = "<?def lower?><?print t.lower()?><?end def?>";
 
 		checkTemplateOutput(source + "<?print lower.source?>", source + "<?print lower.source?>");
 		checkTemplateOutput(source, source + "<?print lower.source[lower.location.starttag:lower.endlocation.endtag]?>");
@@ -3168,47 +3147,53 @@ public class UL4Test
 	@Test
 	public void nestedscopes()
 	{
-		checkTemplateOutput("0;1;2;", "<?for i in range(3)?><?template x?><?print i?>;<?end template?><?render x.render()?><?end for?>");
-		checkTemplateOutput("1;", "<?for i in range(3)?><?if i == 1?><?template x?><?print i?>;<?end template?><?end if?><?end for?><?render x.render()?>");
-		checkTemplateOutput("1", "<?code i = 1?><?template x?><?print i?><?end template?><?code i = 2?><?render x.render()?>");
-		checkTemplateOutput("1", "<?code i = 1?><?template x?><?template y?><?print i?><?end template?><?code i = 2?><?render y.render()?><?end template?><?code i = 3?><?render x.render()?>");
+		checkTemplateOutput("0;1;2;", "<?for i in range(3)?><?def x?><?print i?>;<?end def?><?code x.render()?><?end for?>");
+		checkTemplateOutput("1;", "<?for i in range(3)?><?if i == 1?><?def x?><?print i?>;<?end def?><?end if?><?end for?><?code x.render()?>");
+		checkTemplateOutput("1", "<?code i = 1?><?def x?><?print i?><?end def?><?code i = 2?><?code x.render()?>");
+		checkTemplateOutput("1", "<?code i = 1?><?def x?><?def y?><?print i?><?end def?><?code i = 2?><?code y.render()?><?end def?><?code i = 3?><?code x.render()?>");
 	}
 
 	@Test
 	public void pass_functions()
 	{
-		checkTemplateOutput("&lt;", "<?template x?><?print x('<')?><?end template?><?render x.render(x=xmlescape)?>");
+		checkTemplateOutput("&lt;", "<?def x?><?print x('<')?><?end def?><?code x.render(x=xmlescape)?>");
 	}
 
 	@Test
 	public void function()
 	{
-		checkFunctionOutput(42, "<?return 42?>");
+		checkTemplateResult(42, "<?return 42?>");
 	}
 
 	@Test
 	public void function_value()
 	{
-		checkFunctionOutput(84, "<?return 2*x?>", "x", 42);
+		checkTemplateResult(84, "<?return 2*x?>", "x", 42);
 	}
 
 	@Test
 	public void function_multiple_returnvalues()
 	{
-		checkFunctionOutput(84, "<?return 2*x?><?return 3*x?>", "x", 42);
+		checkTemplateResult(84, "<?return 2*x?><?return 3*x?>", "x", 42);
 	}
 
 	@Test
 	public void function_name()
 	{
-		checkFunctionOutput("f", "<?function f?><?return f.name?><?end function?><?return f(f=f)?>");
+		checkTemplateResult("f", "<?def f?><?return f.name?><?end def?><?return f(f=f)?>");
 	}
 
 	@Test
 	public void function_closure()
 	{
-		checkFunctionOutput(24, "<?code y=3?><?function inner?><?return 2*x*y?><?end function?><?return inner(x=4)?>");
-		checkFunctionOutput(24, "<?function outer?><?code y=3?><?function inner?><?return 2*x*y?><?end function?><?return inner?><?end function?><?return outer()(x=4)?>");
+		checkTemplateResult(24, "<?code y=3?><?def inner?><?return 2*x*y?><?end def?><?return inner(x=4)?>");
+		checkTemplateResult(24, "<?def outer?><?code y=3?><?def inner?><?return 2*x*y?><?end def?><?return inner?><?end def?><?return outer()(x=4)?>");
+	}
+
+	@Test
+	public void return_in_template()
+	{
+		checkTemplateOutput("gurk", "gurk<?return 42?>hurz");
 	}
 
 	private InterpretedTemplate universaltemplate()
@@ -3273,8 +3258,7 @@ public class UL4Test
 			"<?print x.find(1, 2)?>" +
 			"<?print x.find(1, 2, 3)?>" +
 			"<?if x?>gurk<?elif y?>hurz<?else?>hinz<?end if?>" +
-			"<?template x?>foo<?end template?>" +
-			"<?function x?><?return 42?><?end function?>"
+			"<?def x?>foo<?end def?>"
 		);
 	}
 

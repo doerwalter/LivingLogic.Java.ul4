@@ -10,9 +10,9 @@ import java.io.IOException;
 
 abstract class ConditionalBlock extends Block
 {
-	public ConditionalBlock(Location location)
+	public ConditionalBlock(Location location, int start, int end)
 	{
-		super(location);
+		super(location, start, end);
 	}
 
 	abstract public boolean hasToBeExecuted(EvaluationContext context) throws IOException;

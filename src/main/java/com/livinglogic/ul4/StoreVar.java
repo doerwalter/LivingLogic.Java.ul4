@@ -13,7 +13,7 @@ import java.io.IOException;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class StoreVar extends Tag
+public class StoreVar extends AST
 {
 	/**
 	 * This is either a string or a list of strings/lists
@@ -21,9 +21,9 @@ public class StoreVar extends Tag
 	protected Object varname;
 	protected AST value;
 
-	public StoreVar(Location location, Object varname, AST value)
+	public StoreVar(Location location, int start, int end, Object varname, AST value)
 	{
-		super(location);
+		super(location, start, end);
 		this.varname = varname;
 		this.value = value;
 	}
@@ -31,16 +31,6 @@ public class StoreVar extends Tag
 	public String getType()
 	{
 		return "storevar";
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		StringBuilder buffer = new StringBuilder();
-
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append(getType() + "(" + FunctionRepr.call(varname) + ", " + value.toString(code, indent) + ")\n");
-		return buffer.toString();
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

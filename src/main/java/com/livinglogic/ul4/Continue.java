@@ -6,11 +6,11 @@
 
 package com.livinglogic.ul4;
 
-class Continue extends Tag
+class Continue extends AST
 {
-	public Continue(Location location)
+	public Continue(Location location, int start, int end)
 	{
-		super(location);
+		super(location, start, end);
 	}
 
 	public String getType()
@@ -23,12 +23,8 @@ class Continue extends Tag
 		throw new ContinueException();
 	}
 
-	public String toString(InterpretedCode code, int indent)
+	public String toString(int indent)
 	{
-		StringBuilder buffer = new StringBuilder();
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("continue\n");
-		return buffer.toString();
+		return "continue";
 	}
 }

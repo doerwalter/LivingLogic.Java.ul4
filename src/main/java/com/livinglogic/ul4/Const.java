@@ -17,9 +17,9 @@ public class Const extends AST
 {
 	protected Object value;
 
-	public Const(Object value)
+	public Const(Location location, int start, int end, Object value)
 	{
-		super();
+		super(location, start, end);
 		this.value = value;
 	}
 
@@ -28,7 +28,7 @@ public class Const extends AST
 		return "const";
 	}
 
-	public String toString(InterpretedCode code, int indent)
+	public String toString(int indent)
 	{
 		return FunctionRepr.call(value);
 	}

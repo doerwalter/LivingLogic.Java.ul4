@@ -23,6 +23,11 @@ import com.livinglogic.utils.ObjectAsMap;
 public class Location extends ObjectAsMap implements UL4ONSerializable
 {
 	/**
+	* The template object this location belongs to
+	*/
+	public InterpretedTemplate root;
+
+	/**
 	 * The source code of the UL4 template this location refers to.
 	 *
 	 * For all {@code Location} objects created for a single UL4 template this
@@ -68,14 +73,31 @@ public class Location extends ObjectAsMap implements UL4ONSerializable
 	 * called by {@link InterpretedTemplate#tokenizeTags} when splitting the
 	 * source code of the template into tags and literal text.
 	 */
-	public Location(String source, String type, int starttag, int endtag, int startcode, int endcode)
+	public Location(InterpretedTemplate root, String source, String type, int starttag, int endtag, int startcode, int endcode)
 	{
+		this.root = root;
 		this.source = source;
 		this.type = type;
 		this.starttag = starttag;
 		this.endtag = endtag;
 		this.startcode = startcode;
 		this.endcode = endcode;
+	}
+
+	/**
+	 * Return the {@link InterpretedTemplate} object this {@code Location} belongs to
+	 */
+	public InterpretedTemplate getRoot()
+	{
+		return root;
+	}
+
+	/**
+	 * Return the template source code
+	 */
+	public String getSource()
+	{
+		return source;
 	}
 
 	/**
@@ -93,6 +115,26 @@ public class Location extends ObjectAsMap implements UL4ONSerializable
 	public String getTag()
 	{
 		return source.substring(starttag, endtag);
+	}
+
+	public int getStartTag()
+	{
+		return starttag;
+	}
+
+	public int getEndTag()
+	{
+		return endtag;
+	}
+
+	public int getStartCode()
+	{
+		return startcode;
+	}
+
+	public int getEndCode()
+	{
+		return endcode;
 	}
 
 	/**
@@ -150,6 +192,7 @@ public class Location extends ObjectAsMap implements UL4ONSerializable
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
+		encoder.dump(root);
 		encoder.dump(source);
 		encoder.dump(type);
 		encoder.dump(starttag);
@@ -160,6 +203,7 @@ public class Location extends ObjectAsMap implements UL4ONSerializable
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
+		root = (InterpretedTemplate)decoder.load();
 		source = (String)decoder.load();
 		type = (String)decoder.load();
 		starttag = (Integer)decoder.load();
@@ -175,6 +219,8 @@ public class Location extends ObjectAsMap implements UL4ONSerializable
 		if (valueMakers == null)
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
+			v.put("root", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getRoot();}});
+			v.put("source", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getSource();}});
 			v.put("type", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getType();}});
 			v.put("starttag", new ValueMaker(){public Object getValue(Object object){return ((Location)object).starttag;}});
 			v.put("endtag", new ValueMaker(){public Object getValue(Object object){return ((Location)object).endtag;}});

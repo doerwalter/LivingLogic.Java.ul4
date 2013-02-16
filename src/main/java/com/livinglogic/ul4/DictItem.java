@@ -14,6 +14,4 @@ public abstract class DictItem
 	public abstract void addTo(EvaluationContext context, Map dict) throws IOException;
 
 	public abstract Object object4UL4ON();
-
-	public abstract String toString(InterpretedCode code, int indent);
 }

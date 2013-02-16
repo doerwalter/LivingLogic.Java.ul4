@@ -9,26 +9,20 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 
 /**
- * {@code Print} is an unary Tag node that writes a string version of its
+ * {@code Print} is an unary AST node that writes a string version of its
  * operand to the output stream.
  */
-public class Print extends UnaryTag
+public class Print extends Unary
 {
-	public Print(Location location, AST obj)
+	public Print(Location location, int start, int end, AST obj)
 	{
-		super(location, obj);
+		super(location, start, end, obj);
 	}
 
-	public String toString(InterpretedCode code, int indent)
+	public void toString(Formatter formatter)
 	{
-		StringBuilder buffer = new StringBuilder();
-
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("print(");
-		buffer.append(obj.toString(code, indent));
-		buffer.append(")\n");
-		return buffer.toString();
+		formatter.write("print ");
+		super.toString(formatter);
 	}
 
 	public String getType()

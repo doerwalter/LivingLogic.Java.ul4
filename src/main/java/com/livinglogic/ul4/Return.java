@@ -9,26 +9,20 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 
 /**
- * {@code Return} is an unary Tag node that can only be used inside functions
+ * {@code Return} is an unary AST node that can only be used inside functions
  * and that returns an expression from that function.
  */
-public class Return extends UnaryTag
+public class Return extends Unary
 {
-	public Return(Location location, AST obj)
+	public Return(Location location, int start, int end, AST obj)
 	{
-		super(location, obj);
+		super(location, start, end, obj);
 	}
 
-	public String toString(InterpretedCode code, int indent)
+	public void toString(Formatter formatter)
 	{
-		StringBuilder buffer = new StringBuilder();
-
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("return ");
-		buffer.append(obj.toString(code, indent));
-		buffer.append("\n");
-		return buffer.toString();
+		formatter.write("return ");
+		super.toString(formatter);
 	}
 
 	public String getType()

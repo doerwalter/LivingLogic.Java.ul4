@@ -17,9 +17,9 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 {
 	protected AST condition;
 
-	public ConditionalBlockWithCondition(Location location, AST condition)
+	public ConditionalBlockWithCondition(Location location, int start, int end, AST condition)
 	{
-		super(location);
+		super(location, start, end);
 		this.condition = condition;
 	}
 
@@ -28,25 +28,16 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 		return FunctionBool.call(condition.decoratedEvaluate(context));
 	}
 
-	public String toString(InterpretedCode code, int indent)
+	public void toString(Formatter formatter)
 	{
-		StringBuilder buffer = new StringBuilder();
-
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append(getType());
-		buffer.append(" (");
-		buffer.append(condition.toString(code, indent));
-		buffer.append(")\n");
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("{\n");
-		for (AST item : content)
-			buffer.append(item.toString(code, indent+1));
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("}\n");
-		return buffer.toString();
+		formatter.write(getType());
+		formatter.write(" ");
+		toStringFromSource(formatter);
+		formatter.write(":");
+		formatter.lf();
+		formatter.indent();
+		super.toString(formatter);
+		formatter.dedent();
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

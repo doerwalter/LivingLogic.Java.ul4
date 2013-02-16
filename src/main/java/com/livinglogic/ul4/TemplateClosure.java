@@ -21,7 +21,7 @@ import com.livinglogic.utils.MapChain;
  * @author W. Doerwald
  */
 
-public class TemplateClosure extends ObjectAsMap implements Template, UL4Name, UL4Type
+public class TemplateClosure extends ObjectAsMap implements Template, UL4CallableWithContext, UL4Name, UL4Type
 {
 	private InterpretedTemplate template;
 	private Map<String, Object> variables;
@@ -121,6 +121,32 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Name, U
 	public String renders(Map<String, Object> variables)
 	{
 		return renders(new EvaluationContext(null, variables));
+	}
+
+
+	public Object callUL4(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
+	{
+		if (args.length > 0)
+			throw new PositionalArgumentsNotSupportedException(nameUL4());
+		return call(context, kwargs);
+	}
+
+	public Object call(EvaluationContext context)
+	{
+		Map<String, Object> oldVariables = context.setVariables(variables);
+		try
+		{
+			return template.call(context);
+		}
+		finally
+		{
+			context.setVariables(oldVariables);
+		}
+	}
+
+	public Object call(EvaluationContext context, Map<String, Object> variables)
+	{
+		return template.call(context, new MapChain<String, Object>(variables, this.variables));
 	}
 
 	public String typeUL4()

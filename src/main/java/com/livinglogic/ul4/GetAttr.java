@@ -18,16 +18,11 @@ public class GetAttr extends AST
 	protected AST obj;
 	protected String attrname;
 
-	public GetAttr(AST obj, String attrname)
+	public GetAttr(Location location, int start, int end, AST obj, String attrname)
 	{
-		super();
+		super(location, start, end);
 		this.obj = obj;
 		this.attrname = attrname;
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		return "getattr(" + obj + ", " + FunctionRepr.call(attrname) + ")";
 	}
 
 	public String getType()
@@ -37,7 +32,7 @@ public class GetAttr extends AST
 
 	public CallMeth makeCallMeth()
 	{
-		return new CallMeth(obj, attrname);
+		return new CallMeth(location, start, end, obj, attrname);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

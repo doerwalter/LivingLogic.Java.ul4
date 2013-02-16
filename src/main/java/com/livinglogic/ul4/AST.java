@@ -21,10 +21,29 @@ import com.livinglogic.utils.ObjectAsMap;
 public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 {
 	/**
-	 * Create a new {@code AST} object.
+	 * The source code location where this node appears in.
 	 */
-	public AST()
+	protected Location location = null;
+
+	/**
+	 * The start index of this node in the source
+	 */
+	protected int start;
+
+	/**
+	 * The end index of this node in the source
+	 */
+	protected int end;
+
+	/**
+	 * Create a new {@code AST} object.
+	 * @param location The source code location where this node appears in.
+	 */
+	public AST(Location location, int start, int end)
 	{
+		this.location = location;
+		this.start = start;
+		this.end = end;
 	}
 
 	/**
@@ -79,18 +98,95 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 
 	public String toString()
 	{
-		return toString(null, 0);
+		Formatter formatter = new Formatter();
+		toString(formatter);
+		formatter.finish();
+		return formatter.toString();
 	}
 
 	/**
-	 * This is an extension of the normal {@code toString} method: Returns
-	 * nicely formatted sourcecode for this node formatted for indentation level
-	 * {@code indent}.
-	 * @param code the top level code for which this node should be formatted
-	 * @param indent the indentation level
-	 * @return The formatted sourcecode
+	 * Return the source code location where this node appears in.
 	 */
-	abstract public String toString(InterpretedCode code, int indent);
+	public Location getLocation()
+	{
+		return location;
+	}
+
+	public int getStart()
+	{
+		return start;
+	}
+
+	public int getEnd()
+	{
+		return end;
+	}
+
+	public void setEnd(int end)
+	{
+		this.end = end;
+	}
+
+	protected static class Formatter
+	{
+		private StringBuilder builder = new StringBuilder();
+		private int level = 0;
+		private boolean needsLF = false;
+
+		public Formatter()
+		{
+		}
+
+		public void indent()
+		{
+			++level;
+		}
+
+		public void dedent()
+		{
+			--level;
+		}
+
+		public void lf()
+		{
+			needsLF = true;
+		}
+
+		public void write(String string)
+		{
+			if (needsLF)
+			{
+				builder.append("\n");
+				for (int i = 0; i < level; ++i)
+					builder.append("\t");
+				needsLF = false;
+			}
+			builder.append(string);
+		}
+
+		public void finish()
+		{
+			if (needsLF)
+				builder.append("\n");
+		}
+		public String toString()
+		{
+			return builder.toString();
+		}
+	}
+	/**
+	 * Format this object using a Formatter object.
+	 * @param formmatter the Fomatter object
+	 */
+	public void toString(Formatter formatter)
+	{
+		toStringFromSource(formatter);
+	}
+
+	public void toStringFromSource(Formatter formatter)
+	{
+		formatter.write(location.getSource().substring(start, end));
+	}
 
 	public String getUL4ONName()
 	{
@@ -99,10 +195,16 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
+		encoder.dump(location);
+		encoder.dump(start);
+		encoder.dump(end);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
+		location = (Location)decoder.load();
+		start = (Integer)decoder.load();
+		end = (Integer)decoder.load();
 	}
 
 	private static Map<String, ValueMaker> valueMakers = null;
@@ -113,6 +215,9 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
 			v.put("type", new ValueMaker(){public Object getValue(Object object){return ((AST)object).getType();}});
+			v.put("location", new ValueMaker(){public Object getValue(Object object){return ((AST)object).getLocation();}});
+			v.put("start", new ValueMaker(){public Object getValue(Object object){return ((AST)object).getStart();}});
+			v.put("end", new ValueMaker(){public Object getValue(Object object){return ((AST)object).getEnd();}});
 			valueMakers = v;
 		}
 		return valueMakers;

@@ -10,9 +10,9 @@ import java.io.IOException;
 
 public class MulVar extends ChangeVar
 {
-	public MulVar(Location location, String varname, AST value)
+	public MulVar(Location location, int start, int end, String varname, AST value)
 	{
-		super(location, varname, value);
+		super(location, start, end, varname, value);
 	}
 
 	public String getType()

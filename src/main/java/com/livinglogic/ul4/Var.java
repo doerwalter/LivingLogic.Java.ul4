@@ -17,15 +17,10 @@ public class Var extends AST
 {
 	protected String name;
 
-	public Var(String name)
+	public Var(Location location, int start, int end, String name)
 	{
-		super();
+		super(location, start, end);
 		this.name = name;
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		return name;
 	}
 
 	public String getType()

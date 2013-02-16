@@ -10,9 +10,9 @@ import java.io.IOException;
 
 class Else extends ConditionalBlock
 {
-	public Else(Location location)
+	public Else(Location location, int start, int end)
 	{
-		super(location);
+		super(location, start, end);
 	}
 
 	public String getType()
@@ -25,21 +25,12 @@ class Else extends ConditionalBlock
 		return true;
 	}
 
-	public String toString(InterpretedCode code, int indent)
+	public void toString(Formatter formatter)
 	{
-		StringBuilder buffer = new StringBuilder();
-
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("else\n");
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("{\n");
-		for (AST item : content)
-			buffer.append(item.toString(code, indent+1));
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("}\n");
-		return buffer.toString();
+		formatter.write("else:");
+		formatter.lf();
+		formatter.indent();
+		super.toString(formatter);
+		formatter.dedent();
 	}
 }

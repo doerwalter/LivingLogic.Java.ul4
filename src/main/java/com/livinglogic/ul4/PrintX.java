@@ -9,28 +9,22 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 
 /**
- * {@code PrintX} is an unary Tag node that writes a string version of its
+ * {@code PrintX} is an unary AST node that writes a string version of its
  * operand to the output stream and replaces the characters {@code <}, {@code >},
  * {@code &}, {@code '} and {@code "} with the appropriate XML character
  * entities.
  */
-public class PrintX extends UnaryTag
+public class PrintX extends Unary
 {
-	public PrintX(Location location, AST obj)
+	public PrintX(Location location, int start, int end, AST obj)
 	{
-		super(location, obj);
+		super(location, start, end, obj);
 	}
 
-	public String toString(InterpretedCode code, int indent)
+	public void toString(Formatter formatter)
 	{
-		StringBuilder buffer = new StringBuilder();
-
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("printx(");
-		buffer.append(obj.toString(code, indent));
-		buffer.append(")\n");
-		return buffer.toString();
+		formatter.write("printx ");
+		super.toString(formatter);
 	}
 
 	public String getType()

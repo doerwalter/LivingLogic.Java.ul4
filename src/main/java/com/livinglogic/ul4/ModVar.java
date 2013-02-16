@@ -10,9 +10,9 @@ import java.io.IOException;
 
 public class ModVar extends ChangeVar
 {
-	public ModVar(Location location, String varname, AST value)
+	public ModVar(Location location, int start, int end, String varname, AST value)
 	{
-		super(location, varname, value);
+		super(location, start, end, varname, value);
 	}
 
 	public String getType()

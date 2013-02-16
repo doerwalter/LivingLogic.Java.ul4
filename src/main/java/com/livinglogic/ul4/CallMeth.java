@@ -74,52 +74,18 @@ public class CallMeth extends Callable
 		);
 	}
 
-	public CallMeth(AST obj, Method method)
+	public CallMeth(Location location, int start, int end, AST obj, Method method)
 	{
-		super();
+		super(location, start, end);
 		this.obj = obj;
 		this.method = method;
 	}
 
-	public CallMeth(AST obj, String methname)
+	public CallMeth(Location location, int start, int end, AST obj, String methname)
 	{
-		super();
+		super(location, start, end);
 		this.obj = obj;
 		method = getMethod(methname);
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		StringBuilder buffer = new StringBuilder();
-
-		buffer.append("callmeth(");
-		buffer.append(obj);
-		buffer.append(", ");
-		buffer.append(FunctionRepr.call(method.nameUL4()));
-		for (AST arg : args)
-		{
-			buffer.append(", ");
-			buffer.append(arg);
-		}
-		for (KeywordArgument arg : kwargs)
-		{
-			buffer.append(", ");
-			buffer.append(arg.getName());
-			buffer.append("=");
-			buffer.append(arg.getArg().toString(code, indent));
-		}
-		if (remainingArgs != null)
-		{
-			buffer.append(", *");
-			buffer.append(remainingArgs.toString(code, indent));
-		}
-		if (remainingKWArgs != null)
-		{
-			buffer.append(", **");
-			buffer.append(remainingKWArgs.toString(code, indent));
-		}
-		buffer.append(")");
-		return buffer.toString();
 	}
 
 	public String getType()

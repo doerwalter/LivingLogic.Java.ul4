@@ -22,17 +22,12 @@ public class GetSlice extends AST
 	protected AST index1;
 	protected AST index2;
 
-	public GetSlice(AST obj, AST index1, AST index2)
+	public GetSlice(Location location, int start, int end, AST obj, AST index1, AST index2)
 	{
-		super();
+		super(location, start, end);
 		this.obj = obj;
 		this.index1 = index1;
 		this.index2 = index2;
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		return "getslice(" + obj.toString(code, indent) + ", " + (index1 != null ? index1.toString(code, indent) : "None") + ", " + (index2 != null ? index2.toString(code, indent) : "None") + ")";
 	}
 
 	public String getType()
@@ -40,7 +35,7 @@ public class GetSlice extends AST
 		return "getslice";
 	}
 
-	public static AST make(AST obj, AST index1, AST index2)
+	public static AST make(Location location, int start, int end, AST obj, AST index1, AST index2)
 	{
 		if (obj instanceof Const)
 		{
@@ -50,13 +45,13 @@ public class GetSlice extends AST
 				{
 					Object result = call(((Const)obj).value, null, null);
 					if (!(result instanceof Undefined))
-						return new Const(result);
+						return new Const(location, start, end, result);
 				}
 				else if (index2 instanceof Const)
 				{
 					Object result = call(((Const)obj).value, null, ((Const)index2).value);
 					if (!(result instanceof Undefined))
-						return new Const(result);
+						return new Const(location, start, end, result);
 				}
 			}
 			else if (index1 instanceof Const)
@@ -65,17 +60,17 @@ public class GetSlice extends AST
 				{
 					Object result = call(((Const)obj).value, ((Const)index1).value, null);
 					if (!(result instanceof Undefined))
-						return new Const(result);
+						return new Const(location, start, end, result);
 				}
 				else if (index2 instanceof Const)
 				{
 					Object result = call(((Const)obj).value, ((Const)index1).value, ((Const)index2).value);
 					if (!(result instanceof Undefined))
-						return new Const(result);
+						return new Const(location, start, end, result);
 				}
 			}
 		}
-		return new GetSlice(obj, index1, index2);
+		return new GetSlice(location, start, end, obj, index1, index2);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

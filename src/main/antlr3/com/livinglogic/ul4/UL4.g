@@ -4,6 +4,7 @@ options
 {
 	language=Java;
 	backtrack=true;
+	TokenLabelType=CommonToken;
 }
 
 @header
@@ -28,7 +29,7 @@ options
 
 	public UL4Lexer(Location location, CharStream input)
 	{
-		super(input);
+		this(input);
 		this.location = location;
 	}
 
@@ -46,7 +47,7 @@ options
 
 	public UL4Parser(Location location, TokenStream input)
 	{
-		super(input);
+		this(input);
 		this.location = location;
 	}
 
@@ -55,6 +56,16 @@ options
 	{
 		String message = getErrorMessage(e, tokenNames) + " (at index " + e.index + ")";
 		throw new SyntaxException(message, e);
+	}
+
+	public int getStart(CommonToken token)
+	{
+		return location.startcode + token.getStartIndex();
+	}
+
+	public int getEnd(CommonToken token)
+	{
+		return location.startcode + token.getStopIndex() + 1;
 	}
 }
 
@@ -163,39 +174,39 @@ UNICODE4_ESC
 /* Rules common to all tags */
 
 none returns [AST node]
-	: NONE { $node = new Const(null); }
+	: NONE { $node = new Const(location, getStart($NONE), getEnd($NONE), null); }
 	;
 
 true_ returns [AST node]
-	: TRUE { $node = new Const(true); }
+	: TRUE { $node = new Const(location, getStart($TRUE), getEnd($TRUE), true); }
 	;
 
 false_ returns [AST node]
-	: FALSE { $node = new Const(false); }
+	: FALSE { $node = new Const(location, getStart($FALSE), getEnd($FALSE), false); }
 	;
 
 int_ returns [AST node]
-	: INT { $node = new Const(Utils.parseUL4Int($INT.text)); }
+	: INT { $node = new Const(location, getStart($INT), getEnd($INT), Utils.parseUL4Int($INT.text)); }
 	;
 
 float_ returns [AST node]
-	: FLOAT { $node = new Const(Double.parseDouble($FLOAT.text)); }
+	: FLOAT { $node = new Const(location, getStart($FLOAT), getEnd($FLOAT), Double.parseDouble($FLOAT.text)); }
 	;
 
 string returns [AST node]
-	: STRING { $node = new Const(Utils.unescapeUL4String($STRING.text.substring(1, $STRING.text.length()-1))); }
+	: STRING { $node = new Const(location, getStart($STRING), getEnd($STRING), Utils.unescapeUL4String($STRING.text.substring(1, $STRING.text.length()-1))); }
 	;
 
 date returns [AST node]
-	: DATE { $node = new Const(Utils.isoparse($DATE.text.substring(2, $DATE.text.length()-1))); }
+	: DATE { $node = new Const(location, getStart($DATE), getEnd($DATE), Utils.isoparse($DATE.text.substring(2, $DATE.text.length()-1))); }
 	;
 
 color returns [AST node]
-	: COLOR { $node = new Const(Color.fromrepr($COLOR.text)); }
+	: COLOR { $node = new Const(location, getStart($COLOR), getEnd($COLOR), Color.fromrepr($COLOR.text)); }
 	;
 
 name returns [Var node]
-	: NAME { $node = new Var($NAME.text); }
+	: NAME { $node = new Var(location, getStart($NAME), getEnd($NAME), $NAME.text); }
 	;
 
 literal returns [AST node]
@@ -213,17 +224,17 @@ literal returns [AST node]
 /* List literals */
 list returns [com.livinglogic.ul4.List node]
 	:
-		'['
-		']' { $node = new com.livinglogic.ul4.List(); }
+		open='['
+		close=']' { $node = new com.livinglogic.ul4.List(location, getStart($open), getEnd($close)); }
 	|
-		'[' {$node = new com.livinglogic.ul4.List(); }
+		open='[' {$node = new com.livinglogic.ul4.List(location, getStart($open), -1); }
 		e1=expr1 { $node.append($e1.node); }
 		(
 			','
 			e2=expr1 { $node.append($e2.node); }
 		)*
 		','?
-		']'
+		close=']' { $node.setEnd(getEnd($close)); }
 	;
 
 listcomprehension returns [ListComprehension node]
@@ -232,7 +243,7 @@ listcomprehension returns [ListComprehension node]
 		AST _condition = null;
 	}
 	:
-		'['
+		open='['
 		item=expr1
 		'for'
 		n=nestedname
@@ -242,7 +253,7 @@ listcomprehension returns [ListComprehension node]
 			'if'
 			condition=expr1 { _condition = $condition.node; }
 		)?
-		']' { $node = new ListComprehension($item.node, $n.varname, $container.node, _condition); }
+		close=']' { $node = new ListComprehension(location, getStart($open), getEnd($close), $item.node, $n.varname, $container.node, _condition); }
 	;
 
 /* Dict literal */
@@ -259,17 +270,17 @@ dictitem returns [DictItem node]
 
 dict returns [Dict node]
 	:
-		'{'
-		'}' { $node = new Dict(); }
+		open='{'
+		close='}' { $node = new Dict(location, getStart($open), getEnd($close)); }
 	|
-		'{' { $node = new Dict(); }
+		open='{' { $node = new Dict(location, getStart($open), -1); }
 		i1=dictitem { $node.append($i1.node); }
 		(
 			','
 			i2=dictitem { $node.append($i2.node); }
 		)*
 		','?
-		'}'
+		close='}' { $node.setEnd(getEnd($close)); }
 	;
 
 dictcomprehension returns [DictComprehension node]
@@ -278,7 +289,7 @@ dictcomprehension returns [DictComprehension node]
 		AST _condition = null;
 	}
 	:
-		'{'
+		open='{'
 		key=expr1
 		':'
 		value=expr1
@@ -290,24 +301,25 @@ dictcomprehension returns [DictComprehension node]
 			'if'
 			condition=expr1 { _condition = $condition.node; }
 		)?
-		'}' { $node = new DictComprehension($key.node, $value.node, $n.varname, $container.node, _condition); }
+		close='}' { $node = new DictComprehension(location, getStart($open), getEnd($close), $key.node, $value.node, $n.varname, $container.node, _condition); }
 	;
 
 generatorexpression returns [GeneratorExpression node]
 	@init
 	{
 		AST _condition = null;
+		int _end = -1;
 	}
 	:
 		item=expr1
 		'for'
 		n=nestedname
 		'in'
-		container=expr1
+		container=expr1 { _end = $container.node.getEnd(); }
 		(
 			'if'
-			condition=expr1 { _condition = $condition.node; }
-		)? { $node = new GeneratorExpression($item.node, $n.varname, $container.node, _condition); }
+			condition=expr1 { _condition = $condition.node; _end = $condition.node.getEnd(); }
+		)? { $node = new GeneratorExpression(location, $item.node.getStart(), _end, $item.node, $n.varname, $container.node, _condition); }
 	;
 
 atom returns [AST node]
@@ -352,10 +364,10 @@ expr9 returns [AST node]
 		(
 			/* Attribute access */
 			'.'
-			n=name { $node = new GetAttr($node, $n.text); }
+			n=name { $node = new GetAttr(location, $e1.node.getStart(), $n.node.getEnd(), $node, $n.text); }
 		|
 			/* Function/method call */
-			'(' { $node = ($node instanceof GetAttr) ? ((GetAttr)$node).makeCallMeth() : new CallFunc($node); }
+			'(' { $node = ($node instanceof GetAttr) ? ((GetAttr)$node).makeCallMeth() : new CallFunc(location, $e1.node.getStart(), -1, $node); }
 			(
 				/* No arguments */
 			|
@@ -407,7 +419,7 @@ expr9 returns [AST node]
 				)?
 				','?
 			)
-			')'
+			close=')' { $node.setEnd(getEnd($close)); }
 		|
 			/* Item/slice access */
 			'['
@@ -415,7 +427,7 @@ expr9 returns [AST node]
 				':'
 				(
 					e2=expr1 { index2 = $e2.node; }
-				)? { $node = GetSlice.make($node, null, index2); }
+				)? { $node = GetSlice.make(location, $e1.node.getStart(), -1, $node, null, index2); }
 			|
 				e2=expr1 { index1 = $e2.node; }
 				(
@@ -423,23 +435,18 @@ expr9 returns [AST node]
 					(
 						e3=expr1 { index2 = $e3.node; }
 					)?
-				)? { $node = slice ? GetSlice.make($node, index1, index2) : GetItem.make($node, index1); }
+				)? { $node = slice ? GetSlice.make(location, $e1.node.getStart(), -1, $node, index1, index2) : GetItem.make(location, $e1.node.getStart(), -1, $node, index1); }
 			)
-			']'
+			close=']' { $node.setEnd(getEnd($close)); }
 		)*
 	;
 
 /* Negation */
 expr8 returns [AST node]
-	@init
-	{
-		int count = 0;
-	}
 	:
-		(
-			'-' { ++count; }
-		)*
-		e=expr9 { $node = $e.node; while (count-- != 0) { $node = Neg.make($node); } }
+		e1=expr9 { $node = $e1.node; }
+	|
+		minus='-' e2=expr8 { $node = Neg.make(location, getStart($minus), $e2.node.getEnd(), $e2.node); }
 	;
 
 /* Multiplication, division, modulo */
@@ -460,7 +467,7 @@ expr7 returns [AST node]
 			|
 				'%' { opcode = 3; }
 			)
-			e2=expr8 { switch (opcode) { case 0: $node = Mul.make($node, $e2.node); break; case 1: $node = TrueDiv.make($node, $e2.node); break; case 2: $node = FloorDiv.make($node, $e2.node); break; case 3: $node = Mod.make($node, $e2.node); break; } }
+			e2=expr8 { switch (opcode) { case 0: $node = Mul.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = TrueDiv.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = FloorDiv.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = Mod.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
 		)*
 	;
 
@@ -478,7 +485,7 @@ expr6 returns [AST node]
 			|
 				'-' { add = false; }
 			)
-			e2=expr7 { $node = add ? Add.make($node, $e2.node) : Sub.make($node, $e2.node); }
+			e2=expr7 { $node = add ? Add.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node) : Sub.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
 		)*
 	;
 
@@ -504,7 +511,7 @@ expr5 returns [AST node]
 			|
 				'>=' { opcode = 5; }
 			)
-			e2=expr6 { switch (opcode) { case 0: $node = EQ.make($node, $e2.node); break; case 1: $node = NE.make($node, $e2.node); break; case 2: $node = LT.make($node, $e2.node); break; case 3: $node = LE.make($node, $e2.node); break; case 4: $node = GT.make($node, $e2.node); break; case 5: $node = GE.make($node, $e2.node); break; } }
+			e2=expr6 { switch (opcode) { case 0: $node = EQ.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = NE.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = LT.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = LE.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 4: $node = GT.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 5: $node = GE.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
 		)*
 	;
 
@@ -522,17 +529,16 @@ expr4 returns [AST node]
 				'not' { not = true; }
 			)?
 			'in'
-			e2=expr5 { $node = not ? NotContains.make($node, $e2.node) : Contains.make($node, $e2.node); }
+			e2=expr5 { $node = not ? NotContains.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node) : Contains.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
 		)?
 	;
 
 /* Not operator */
 expr3 returns [AST node]
 	:
-		'not'
-		e=expr4 { $node = Not.make($e.node); }
+		e1=expr4 { $node = $e1.node; }
 	|
-		e=expr4 { $node = $e.node; }
+		n='not' e2=expr3 { $node = Not.make(location, getStart($n), $e2.node.getEnd(), $e2.node); }
 	;
 
 
@@ -542,7 +548,7 @@ expr2 returns [AST node]
 		e1=expr3 { $node = $e1.node; }
 		(
 			'and'
-			e2=expr3 { $node = And.make($node, $e2.node); }
+			e2=expr3 { $node = And.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
 		)*
 	;
 
@@ -552,7 +558,7 @@ expr1 returns [AST node]
 		e1=expr2 { $node = $e1.node; }
 		(
 			'or'
-			e2=expr2 { $node = Or.make($node, $e2.node); }
+			e2=expr2 { $node = Or.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
 		)*
 	;
 
@@ -573,19 +579,20 @@ for_ returns [For node]
 	:
 		n=nestedname
 		'in'
-		e=expr1 { $node = new For(location, $n.varname, $e.node); }
+		e=expr1 { $node = new For(location, location.getStartCode(), $e.node.getEnd(), $n.varname, $e.node); }
 		EOF
 	;
 
 
 /* Additional rules for "code" tag */
 
-stmt returns [Tag node]
-	: nn=nestedname '=' e=expr1 EOF { $node = new StoreVar(location, $nn.varname, $e.node); }
-	| n=name '+=' e=expr1 EOF { $node = new AddVar(location, $n.text, $e.node); }
-	| n=name '-=' e=expr1 EOF { $node = new SubVar(location, $n.text, $e.node); }
-	| n=name '*=' e=expr1 EOF { $node = new MulVar(location, $n.text, $e.node); }
-	| n=name '/=' e=expr1 EOF { $node = new TrueDivVar(location, $n.text, $e.node); }
-	| n=name '//=' e=expr1 EOF { $node = new FloorDivVar(location, $n.text, $e.node); }
-	| n=name '%=' e=expr1 EOF { $node = new ModVar(location, $n.text, $e.node); }
+stmt returns [AST node]
+	: nn=nestedname '=' e=expr1 EOF { $node = new StoreVar(location, location.getStartCode(), $e.node.getEnd(), $nn.varname, $e.node); }
+	| n=name '+=' e=expr1 EOF { $node = new AddVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
+	| n=name '-=' e=expr1 EOF { $node = new SubVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
+	| n=name '*=' e=expr1 EOF { $node = new MulVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
+	| n=name '/=' e=expr1 EOF { $node = new TrueDivVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
+	| n=name '//=' e=expr1 EOF { $node = new FloorDivVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
+	| n=name '%=' e=expr1 EOF { $node = new ModVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
+	| e=expression EOF { $node = $e.node; }
 	;

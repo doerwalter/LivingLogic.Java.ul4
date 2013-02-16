@@ -12,9 +12,9 @@ import java.math.BigInteger;
 
 public class Neg extends Unary
 {
-	public Neg(AST obj)
+	public Neg(Location location, int start, int end, AST obj)
 	{
-		super(obj);
+		super(location, start, end, obj);
 	}
 
 	public String getType()
@@ -22,15 +22,15 @@ public class Neg extends Unary
 		return "neg";
 	}
 
-	public static AST make(AST obj)
+	public static AST make(Location location, int start, int end, AST obj)
 	{
 		if (obj instanceof Const)
 		{
 			Object result = call(((Const)obj).value);
 			if (!(result instanceof Undefined))
-				return new Const(result);
+				return new Const(location, start, end, result);
 		}
-		return new Neg(obj);
+		return new Neg(location, start, end, obj);
 	}
 
 	public Object evaluate(EvaluationContext context) throws IOException

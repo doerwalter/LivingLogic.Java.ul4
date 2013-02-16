@@ -28,15 +28,10 @@ abstract class Unary extends AST
 	 * @param location The source code location where this node appears in.
 	 * @param obj The operand
 	 */
-	public Unary(AST obj)
+	public Unary(Location location, int start, int end, AST obj)
 	{
-		super();
+		super(location, start, end);
 		this.obj = obj;
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		return getType() + "(" + obj.toString(code, indent) + ")";
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

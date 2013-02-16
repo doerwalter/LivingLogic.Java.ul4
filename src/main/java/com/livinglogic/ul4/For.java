@@ -21,9 +21,9 @@ public class For extends Block
 	protected Object varname;
 	protected AST container;
 
-	public For(Location location, Object varname, AST container)
+	public For(Location location, int start, int end, Object varname, AST container)
 	{
-		super(location);
+		super(location, start, end);
 		this.varname = varname;
 		this.container = container;
 	}
@@ -41,27 +41,15 @@ public class For extends Block
 			throw new BlockException("for ended by end" + type);
 	}
 
-	public String toString(InterpretedCode code, int indent)
+	public void toString(Formatter formatter)
 	{
-		StringBuilder buffer = new StringBuilder();
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("for ");
-		Utils.formatVarname(buffer, varname);
-		buffer.append(" in ");
-		buffer.append(container.toString(code, indent));
-		buffer.append("\n");
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("{\n");
-		++indent;
-		for (AST item : content)
-			buffer.append(item.toString(code, indent));
-		--indent;
-		for (int i = 0; i < indent; ++i)
-			buffer.append("\t");
-		buffer.append("}\n");
-		return buffer.toString();
+		formatter.write("for ");
+		toStringFromSource(formatter);
+		formatter.write(":");
+		formatter.lf();
+		formatter.indent();
+		super.toString(formatter);
+		formatter.dedent();
 	}
 
 	public boolean handleLoopControl(String name)

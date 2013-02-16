@@ -17,32 +17,14 @@ public class List extends AST
 {
 	protected java.util.List<AST> items = new LinkedList<AST>();
 
-	public List()
+	public List(Location location, int start, int end)
 	{
-		super();
+		super(location, start, end);
 	}
 
 	public void append(AST item)
 	{
 		items.add(item);
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("[");
-
-		boolean first = true;
-		for (AST item : items)
-		{
-			if (first)
-				first = false;
-			else
-				buffer.append(", ");
-			buffer.append(item.toString(code, indent));
-		}
-		buffer.append("]");
-		return buffer.toString();
 	}
 
 	public String getType()

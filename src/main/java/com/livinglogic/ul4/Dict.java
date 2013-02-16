@@ -18,9 +18,9 @@ public class Dict extends AST
 {
 	protected LinkedList<DictItem> items = new LinkedList<DictItem>();
 
-	public Dict()
+	public Dict(Location location, int start, int end)
 	{
-		super();
+		super(location, start, end);
 	}
 
 	public void append(AST key, AST value)
@@ -36,24 +36,6 @@ public class Dict extends AST
 	public void append(DictItem item)
 	{
 		items.add(item);
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("{");
-
-		boolean first = true;
-		for (DictItem item : items)
-		{
-			if (first)
-				first = false;
-			else
-				buffer.append(", ");
-			buffer.append(item.toString(code, indent));
-		}
-		buffer.append("}");
-		return buffer.toString();
 	}
 
 	public String getType()

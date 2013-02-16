@@ -10,14 +10,14 @@ import java.io.IOException;
 
 class ConditionalBlockBlock extends Block
 {
-	public ConditionalBlockBlock(Location location)
+	public ConditionalBlockBlock(Location location, int start, int end)
 	{
-		super(location);
+		super(location, start, end);
 	}
 
-	public ConditionalBlockBlock(Location location, If block)
+	public ConditionalBlockBlock(Location location, int start, int end, If block)
 	{
-		super(location);
+		super(location, start, end);
 		startNewBlock(block);
 	}
 
@@ -26,20 +26,12 @@ class ConditionalBlockBlock extends Block
 		return "ieie";
 	}
 
-	public String toString(InterpretedCode code, int indent)
-	{
-		StringBuilder buffer = new StringBuilder();
-		for (AST item : content)
-			buffer.append(item.toString(code, indent));
-		return buffer.toString();
-	}
-
 	public boolean handleLoopControl(String name)
 	{
 		return false;
 	}
 
-	public void append(Tag item)
+	public void append(AST item)
 	{
 		((ConditionalBlock)content.get(content.size()-1)).append(item);
 	}
@@ -81,7 +73,7 @@ class ConditionalBlockBlock extends Block
 
 	public Object evaluate(EvaluationContext context) throws IOException
 	{
-		for (Tag item : content)
+		for (AST item : content)
 		{
 			if (((ConditionalBlock)item).hasToBeExecuted(context))
 				return item.decoratedEvaluate(context);

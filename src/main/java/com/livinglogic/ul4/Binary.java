@@ -34,16 +34,11 @@ abstract class Binary extends AST
 	 * @param obj1 The left operand
 	 * @param obj2 The right operand
 	 */
-	public Binary(AST obj1, AST obj2)
+	public Binary(Location location, int start, int end, AST obj1, AST obj2)
 	{
-		super();
+		super(location, start, end);
 		this.obj1 = obj1;
 		this.obj2 = obj2;
-	}
-
-	public String toString(InterpretedCode code, int indent)
-	{
-		return getType() + "(" + obj1 + ", " + obj2 + ")";
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
