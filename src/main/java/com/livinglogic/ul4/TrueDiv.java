@@ -78,6 +78,13 @@ public class TrueDiv extends Binary
 				return ((TimeDelta)arg1).truediv(Utils.toFloat(arg2));
 			else if (arg2 instanceof Double)
 				return ((TimeDelta)arg1).truediv(Utils.toDouble(arg2));
+			else if (arg2 instanceof TimeDelta)
+				return ((TimeDelta)arg1).truediv((TimeDelta)arg2);
+		}
+		else if (arg1 instanceof MonthDelta)
+		{
+			if (arg2 instanceof MonthDelta)
+				return ((MonthDelta)arg1).truediv((MonthDelta)arg2);
 		}
 		throw new ArgumentTypeMismatchException("{} / {}", arg1, arg2);
 	}

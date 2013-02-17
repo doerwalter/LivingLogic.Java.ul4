@@ -170,6 +170,8 @@ public class FloorDiv extends Binary
 				return ((MonthDelta)arg1).floordiv(Utils.toInt(arg2));
 			else if (arg2 instanceof Long)
 				return ((MonthDelta)arg1).floordiv(Utils.toLong(arg2));
+			else if (arg2 instanceof MonthDelta)
+				return ((MonthDelta)arg1).floordiv((MonthDelta)arg2);
 		}
 		throw new ArgumentTypeMismatchException("{} // {}", arg1, arg2);
 	}

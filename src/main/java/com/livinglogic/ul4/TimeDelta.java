@@ -105,7 +105,6 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 		return microseconds;
 	}
 
-
 	public TimeDelta add(TimeDelta other)
 	{
 		return new TimeDelta(
@@ -201,6 +200,25 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 			seconds/divisor,
 			microseconds/divisor
 		);
+	}
+
+	public double truediv(TimeDelta divisor)
+	{
+		double myValue = days;
+		double divisorValue = divisor.getDays();
+		boolean hasSeconds = seconds != 0 || divisor.getSeconds() != 0;
+		boolean hasMicroseconds = microseconds != 0 || divisor.getMicroseconds() != 0;
+		if (hasSeconds || hasMicroseconds)
+		{
+			myValue = myValue*86400+seconds;
+			divisorValue = divisorValue*86400 + divisor.getSeconds();
+			if (hasMicroseconds)
+			{
+				myValue = myValue * 1000000 + microseconds;
+				divisorValue = divisorValue * 1000000 + divisor.getMicroseconds();
+			}
+		}
+		return myValue/divisorValue;
 	}
 
 	public TimeDelta truediv(double divisor)
