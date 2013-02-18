@@ -3082,6 +3082,34 @@ public class UL4Test
 	}
 
 	@Test
+	public void method_append()
+	{
+		checkTemplateOutput("[17, 23, 42]", "<?code l = [17]?><?code l.append(23, 42)?><?print l?>");
+	}
+
+	@Test
+	public void method_insert()
+	{
+		checkTemplateOutput("[1, 2, 3, 4]", "<?code l = [1,4]?><?code l.insert(1, 2, 3)?><?print l?>");
+	}
+
+	@Test
+	public void method_pop()
+	{
+		checkTemplateOutput("42;17;23;", "<?code l = [17, 23, 42]?><?print l.pop()?>;<?print l.pop(-2)?>;<?print l.pop(0)?>;");
+	}
+
+	@Test
+	public void method_update()
+	{
+		checkTemplateOutput("0", "<?code d = {}?><?code d.update()?><?print len(d)?>");
+		checkTemplateOutput("1", "<?code d = {}?><?code d.update([['one', 1]])?><?print d.one?>");
+		checkTemplateOutput("1", "<?code d = {}?><?code d.update({'one': 1})?><?print d.one?>");
+		checkTemplateOutput("1", "<?code d = {}?><?code d.update(one=1)?><?print d.one?>");
+		checkTemplateOutput("1", "<?code d = {}?><?code d.update([['one', 0]], {'one': 0}, one=1)?><?print d.one?>");
+	}
+
+	@Test
 	public void parse()
 	{
 		checkTemplateOutput("42", "<?print data.Noner?>", "data", makeMap("Noner", 42));

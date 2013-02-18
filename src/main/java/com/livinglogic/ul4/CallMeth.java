@@ -74,7 +74,11 @@ public class CallMeth extends Callable
 			"withlum", new MethodWithLum(),
 			"witha", new MethodWithA(),
 			"join", new MethodJoin(),
-			"replace", new MethodReplace()
+			"replace", new MethodReplace(),
+			"append", new MethodAppend(),
+			"insert", new MethodInsert(),
+			"pop", new MethodPop(),
+			"update", new MethodUpdate()
 		);
 	}
 

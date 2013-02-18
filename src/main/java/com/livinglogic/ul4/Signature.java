@@ -9,16 +9,27 @@ package com.livinglogic.ul4;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.Iterator;
+import java.util.ArrayList;
+import static java.util.Arrays.asList;
 
 public class Signature implements Iterable<ArgumentDescription>
 {
 	protected String name;
-	protected Map<String, ArgumentDescription> arguments;
+	protected LinkedHashMap<String, ArgumentDescription> arguments;
+	protected String remainingArguments;
+	protected String remainingKeywordArguments;
 
-	public Signature(String name)
+	public Signature(String name, String remainingArguments, String remainingKeywordArguments)
 	{
 		this.name = name;
 		arguments = new LinkedHashMap<String, ArgumentDescription>();
+		this.remainingArguments = remainingArguments;
+		this.remainingKeywordArguments = remainingKeywordArguments;
+	}
+
+	public Signature(String name)
+	{
+		this(name, null, null);
 	}
 
 	public String getName()
@@ -34,6 +45,16 @@ public class Signature implements Iterable<ArgumentDescription>
 	public void add(String name, Object defaultValue)
 	{
 		arguments.put(name, new ArgumentDescription(name, arguments.size(), defaultValue));
+	}
+
+	public void setRemainingArguments(String remainingArguments)
+	{
+		this.remainingArguments = remainingArguments;
+	}
+
+	public void setRemainingKeywordArguments(String remainingKeywordArguments)
+	{
+		this.remainingKeywordArguments = remainingKeywordArguments;
 	}
 
 	public Iterator<ArgumentDescription> iterator()
@@ -53,7 +74,15 @@ public class Signature implements Iterable<ArgumentDescription>
 
 	public Object[] makeArgumentArray(Object[] args, Map<String, Object> kwargs)
 	{
-		Object[] realargs = new Object[size()];
+		int realSize = size();
+		int remainingArgumentsPos = -1;
+		int remainingKeywordArgumentsPos = -1;
+		if (remainingArguments != null)
+			remainingArgumentsPos = realSize++;
+		if (remainingKeywordArguments != null)
+			remainingKeywordArgumentsPos = realSize++;
+
+		Object[] realargs = new Object[realSize];
 
 		int i = 0;
 		for (ArgumentDescription argDesc : this)
@@ -82,17 +111,41 @@ public class Signature implements Iterable<ArgumentDescription>
 			++i;
 		}
 
-		// Check that we don't have any keyword arguments that we don't support
-		for (String kwargname : kwargs.keySet())
+		// Handle additional positional arguments
+		// if there are any, and we suport a "*" argument, put the remaining arguments into this argument as a list, else complain
+		int expectedArgCount = size();
+		if (remainingArguments != null)
 		{
-			if (!containsArgumentNamed(kwargname))
-				throw new UnsupportedArgumentNameException(this, kwargname);
+			realargs[remainingArgumentsPos] = (args.length > expectedArgCount) ? asList(args).subList(arguments.size(), args.length) : new ArrayList<Object>();
+		}
+		else
+		{
+			if (args.length > expectedArgCount)
+				throw new TooManyArgumentsException(this, args.length);
 		}
 
-		// Check that we don't have more positional arguments than expected
-		int expectedArgCount = size();
-		if (args.length > expectedArgCount)
-			throw new TooManyArgumentsException(this, args.length);
+		// Handle additional keyword arguments
+		// if there are any, and we suport a "**" argument, put the remaining keyword arguments into this argument as a map, else complain
+		if (remainingKeywordArguments != null)
+		{
+			LinkedHashMap<String, Object> realRemainingKeywordArguments = new LinkedHashMap<String, Object>();
+			for (String kwargname : kwargs.keySet())
+			{
+				if (!containsArgumentNamed(kwargname))
+				{
+					realRemainingKeywordArguments.put(kwargname, kwargs.get(kwargname));
+				}
+			}
+			realargs[remainingKeywordArgumentsPos] = realRemainingKeywordArguments;
+		}
+		else
+		{
+			for (String kwargname : kwargs.keySet())
+			{
+				if (!containsArgumentNamed(kwargname))
+					throw new UnsupportedArgumentNameException(this, kwargname);
+			}
+		}
 
 		return realargs;
 	}
