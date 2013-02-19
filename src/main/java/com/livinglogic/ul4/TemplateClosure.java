@@ -30,6 +30,8 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Callabl
 	{
 		this.template = template;
 		this.variables = new HashMap<String, Object>(variables);
+		// The template (i.e. the closure) itself should be visible in the parent variables
+		this.variables.put(template.nameUL4(), this);
 	}
 
 	public InterpretedTemplate getTemplate()
