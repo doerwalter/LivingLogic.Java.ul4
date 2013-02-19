@@ -328,8 +328,8 @@ atom returns [AST node]
 	| e_listcomp=listcomprehension { $node = $e_listcomp.node; }
 	| e_dict=dict { $node = $e_dict.node; }
 	| e_dictcomp=dictcomprehension { $node = $e_dictcomp.node; }
-	| '(' e_genexpr=generatorexpression ')' { $node = $e_genexpr.node; }
-	| '(' e_bracket=expr1 ')' { $node = $e_bracket.node; }
+	| open='(' e_genexpr=generatorexpression close=')' { $node = $e_genexpr.node; $node.setStart(getStart($open)); $node.setEnd(getEnd($close)); }
+	| open='(' e_bracket=expr1 close=')' { $node = $e_bracket.node; $node.setStart(getStart($open)); $node.setEnd(getEnd($close)); }
 	;
 
 /* For variable unpacking in assignments and for loops */

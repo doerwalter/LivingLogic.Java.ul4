@@ -122,6 +122,11 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 		return end;
 	}
 
+	public void setStart(int start)
+	{
+		this.start = start;
+	}
+
 	public void setEnd(int end)
 	{
 		this.end = end;
