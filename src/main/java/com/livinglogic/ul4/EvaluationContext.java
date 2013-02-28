@@ -240,6 +240,8 @@ public class EvaluationContext
 	{
 		MapUtils.putMap(
 			functions,
+			"print", new FunctionPrint(),
+			"printx", new FunctionPrintX(),
 			"now", new FunctionNow(),
 			"utcnow", new FunctionUTCNow(),
 			"date", new FunctionDate(),
