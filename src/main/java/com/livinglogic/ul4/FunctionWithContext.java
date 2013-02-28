@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
-public abstract class FunctionWithContext implements UL4CallableWithContext
+public abstract class FunctionWithContext implements UL4CallableWithContext, UL4Name
 {
-	public abstract String getName();
+	public abstract String nameUL4();
 
 	private Signature signature = null;
 
@@ -24,7 +24,7 @@ public abstract class FunctionWithContext implements UL4CallableWithContext
 	{
 		if (signature == null)
 		{
-			signature = new Signature(getName());
+			signature = new Signature(nameUL4());
 			makeSignature(signature);
 		}
 		return signature;
