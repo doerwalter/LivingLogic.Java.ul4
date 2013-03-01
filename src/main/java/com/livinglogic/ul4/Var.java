@@ -28,7 +28,7 @@ public class Var extends AST
 		return "var";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		return context.get(name);
 	}

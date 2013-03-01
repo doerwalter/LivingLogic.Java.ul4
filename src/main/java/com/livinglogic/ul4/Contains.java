@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public class Contains extends Binary
 		return new Contains(location, start, end, obj1, obj2);
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
 	}

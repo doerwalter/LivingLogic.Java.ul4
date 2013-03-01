@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
@@ -36,7 +35,7 @@ public class Sub extends Binary
 		return new Sub(location, start, end, obj1, obj2);
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
 	}

@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 /**
  * {@code Print} is an unary AST node that writes a string version of its
  * operand to the output stream.
@@ -30,7 +28,7 @@ public class Print extends Unary
 		return "print";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		context.write(FunctionStr.call(obj.decoratedEvaluate(context)));
 		return null;

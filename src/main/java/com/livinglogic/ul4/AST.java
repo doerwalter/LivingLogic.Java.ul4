@@ -58,7 +58,7 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 	 * @param context The context object in which this node has to be evaluated.
 	 * @return The result of evaluating the node.
 	 */
-	abstract public Object evaluate(EvaluationContext context) throws IOException;
+	abstract public Object evaluate(EvaluationContext context);
 
 	/**
 	 * {@code decoratedEvaluate} wraps a call to {@link evaluate} with exception
@@ -67,7 +67,7 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 	 * the call stack, {@code decoratedEvaluate} creates a exception chain
 	 * containing information about the location of the exception.
 	 */
-	public Object decoratedEvaluate(EvaluationContext context) throws IOException
+	public Object decoratedEvaluate(EvaluationContext context)
 	{
 		try
 		{

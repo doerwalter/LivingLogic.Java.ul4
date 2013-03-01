@@ -40,7 +40,7 @@ public class ListComprehension extends AST
 		return "listcomp";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		List result = new ArrayList();
 

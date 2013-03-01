@@ -153,10 +153,19 @@ public class EvaluationContext
 	/**
 	 * Write output
 	 */
-	public void write(String string) throws IOException
+	public void write(String string)
 	{
 		if (writer != null)
-			writer.write(string);
+		{
+			try
+			{
+				writer.write(string);
+			}
+			catch (IOException exc)
+			{
+				throw new RuntimeException(exc);
+			}
+		}
 	}
 
 	/**

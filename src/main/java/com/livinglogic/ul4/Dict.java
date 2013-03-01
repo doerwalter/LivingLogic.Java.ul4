@@ -43,7 +43,7 @@ public class Dict extends AST
 		return "dict";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		Map result = new HashMap(items.size());
 

@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 public class NE extends Binary
 {
 	public NE(Location location, int start, int end, AST obj1, AST obj2)
@@ -31,7 +29,7 @@ public class NE extends Binary
 		return new NE(location, start, end, obj1, obj2);
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
 	}

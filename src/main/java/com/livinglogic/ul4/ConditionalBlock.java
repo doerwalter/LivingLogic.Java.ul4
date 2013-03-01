@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 abstract class ConditionalBlock extends Block
 {
 	public ConditionalBlock(Location location, int start, int end)
@@ -15,7 +13,7 @@ abstract class ConditionalBlock extends Block
 		super(location, start, end);
 	}
 
-	abstract public boolean hasToBeExecuted(EvaluationContext context) throws IOException;
+	abstract public boolean hasToBeExecuted(EvaluationContext context);
 
 	public boolean handleLoopControl(String name)
 	{

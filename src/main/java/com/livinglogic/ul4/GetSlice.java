@@ -73,7 +73,7 @@ public class GetSlice extends AST
 		return new GetSlice(location, start, end, obj, index1, index2);
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		return call(obj.decoratedEvaluate(context), index1 != null ? index1.decoratedEvaluate(context) : null, index2 != null ? index2.decoratedEvaluate(context) : null);
 	}

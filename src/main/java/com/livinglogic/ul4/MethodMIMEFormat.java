@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -18,7 +17,7 @@ public class MethodMIMEFormat extends NormalMethod
 		return "mimeformat";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args)
 	{
 		return call(obj);
 	}

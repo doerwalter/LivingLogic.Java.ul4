@@ -32,7 +32,7 @@ public class List extends AST
 		return "list";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		ArrayList result = new ArrayList(items.size());
 

@@ -32,7 +32,7 @@ public class CallFunc extends Callable
 		return "callfunc";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		Object realobj = obj.decoratedEvaluate(context);
 

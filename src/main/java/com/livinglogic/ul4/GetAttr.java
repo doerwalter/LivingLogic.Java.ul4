@@ -35,7 +35,7 @@ public class GetAttr extends AST
 		return new CallMeth(location, start, end, obj, attrname);
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		return call(obj.decoratedEvaluate(context), attrname);
 	}

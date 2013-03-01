@@ -7,7 +7,6 @@
 package com.livinglogic.ul4;
 
 import java.util.Map;
-import java.io.IOException;
 
 public class MethodRenderS implements Method
 {
@@ -16,7 +15,7 @@ public class MethodRenderS implements Method
 		return "renders";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs)
 	{
 		if (args.length > 0)
 			throw new PositionalArgumentsNotSupportedException(nameUL4());

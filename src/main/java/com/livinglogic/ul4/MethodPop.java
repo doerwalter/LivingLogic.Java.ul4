@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.util.List;
 
 public class MethodPop extends NormalMethod
@@ -21,7 +20,7 @@ public class MethodPop extends NormalMethod
 		signature.add("pos", -1);
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args)
 	{
 		return call(obj, args[0]);
 	}

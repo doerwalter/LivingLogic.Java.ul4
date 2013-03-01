@@ -40,7 +40,7 @@ public class GeneratorExpression extends AST
 		return "genexpr";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		return new GeneratorExpressionIterator(context);
 	}
@@ -73,14 +73,7 @@ public class GeneratorExpression extends AST
 		public GeneratorExpressionIterator(EvaluationContext context)
 		{
 			this.context = context;
-			try
-			{
-				this.iterator = Utils.iterator(container.decoratedEvaluate(context));
-			}
-			catch (IOException ex)
-			{
-				throw new RuntimeException(ex);
-			}
+			this.iterator = Utils.iterator(container.decoratedEvaluate(context));
 			variables = new MapChain<String, Object>(new HashMap<String, Object>(), context.getVariables());
 			fetchNextItem();
 		}
@@ -93,21 +86,7 @@ public class GeneratorExpression extends AST
 				while (iterator.hasNext())
 				{
 					context.unpackVariable(varname, iterator.next());
-					boolean use;
-					if (condition == null)
-						use = true;
-					else
-					{
-						try
-						{
-							use = FunctionBool.call(condition.decoratedEvaluate(context));
-						}
-						catch (IOException ex)
-						{
-							throw new RuntimeException(ex);
-						}
-					}
-					if (use)
+					if (condition == null || FunctionBool.call(condition.decoratedEvaluate(context)))
 					{
 						hasNextItem = true;
 						return;
@@ -133,10 +112,6 @@ public class GeneratorExpression extends AST
 			try
 			{
 				result = item.decoratedEvaluate(context);
-			}
-			catch (IOException ex)
-			{
-				throw new RuntimeException(ex);
 			}
 			finally
 			{

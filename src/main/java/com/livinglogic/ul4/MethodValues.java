@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
@@ -18,7 +17,7 @@ public class MethodValues extends NormalMethod
 		return "values";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args)
 	{
 		return call(obj);
 	}

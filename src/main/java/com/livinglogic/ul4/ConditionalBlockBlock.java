@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 class ConditionalBlockBlock extends Block
 {
 	public ConditionalBlockBlock(Location location, int start, int end)
@@ -71,7 +69,7 @@ class ConditionalBlockBlock extends Block
 			throw new BlockException("if ended by end" + type);
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		for (AST item : content)
 		{

@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.util.List;
 
 public class MethodRFind extends NormalMethod
@@ -23,7 +22,7 @@ public class MethodRFind extends NormalMethod
 		signature.add("end", null);
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args)
 	{
 		return call(obj, args[0], args[1], args[2]);
 	}

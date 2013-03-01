@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 import org.apache.commons.lang.StringUtils;
 
 public class MethodStrip extends NormalMethod
@@ -22,7 +20,7 @@ public class MethodStrip extends NormalMethod
 		signature.add("chars", null);
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args)
 	{
 		return call(obj, args[0]);
 	}

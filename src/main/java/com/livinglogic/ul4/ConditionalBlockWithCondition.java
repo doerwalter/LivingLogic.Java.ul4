@@ -23,7 +23,7 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 		this.condition = condition;
 	}
 
-	public boolean hasToBeExecuted(EvaluationContext context) throws IOException
+	public boolean hasToBeExecuted(EvaluationContext context)
 	{
 		return FunctionBool.call(condition.decoratedEvaluate(context));
 	}

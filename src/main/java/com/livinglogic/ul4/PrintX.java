@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 /**
  * {@code PrintX} is an unary AST node that writes a string version of its
  * operand to the output stream and replaces the characters {@code <}, {@code >},
@@ -32,7 +30,7 @@ public class PrintX extends Unary
 		return "printx";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		context.write(FunctionXMLEscape.call(obj.decoratedEvaluate(context)));
 		return null;

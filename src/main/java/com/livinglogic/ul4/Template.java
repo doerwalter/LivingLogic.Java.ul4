@@ -17,7 +17,7 @@ import java.util.Map;
 
 public interface Template
 {
-	public void render(EvaluationContext context, Map<String, Object> variables) throws java.io.IOException;
+	public void render(EvaluationContext context, Map<String, Object> variables);
 
 	public String renders(EvaluationContext context, Map<String, Object> variables);
 

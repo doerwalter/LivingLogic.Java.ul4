@@ -331,7 +331,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 	 * Renders the template.
 	 * @param context   the EvaluationContext.
 	 */
-	public void render(EvaluationContext context) throws IOException
+	public void render(EvaluationContext context)
 	{
 		InterpretedTemplate oldTemplate = context.setTemplate(this);
 		try
@@ -365,7 +365,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the template code. May be null.
 	 */
-	public void render(EvaluationContext context, Map<String, Object> variables) throws IOException
+	public void render(EvaluationContext context, Map<String, Object> variables)
 	{
 		Map<String, Object> oldVariables = context.setVariables(variables);
 		try
@@ -384,7 +384,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the template code. May be null.
 	 */
-	public void render(java.io.Writer writer, Map<String, Object> variables) throws IOException
+	public void render(java.io.Writer writer, Map<String, Object> variables)
 	{
 		render(new EvaluationContext(writer, variables));
 	}
@@ -400,10 +400,6 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 		try
 		{
 			render(context);
-		}
-		catch (IOException ex)
-		{
-			// can't happen
 		}
 		finally
 		{
@@ -440,14 +436,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 	public String renders(Map<String, Object> variables)
 	{
 		StringWriter output = new StringWriter();
-		try
-		{
-			render(output, variables);
-		}
-		catch (IOException ex)
-		{
-			// can't happen
-		}
+		render(output, variables);
 		return output.toString();
 	}
 
@@ -467,14 +456,14 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 		@Override
 		public void run()
 		{
+			template.render(writer, variables);
 			try
 			{
-				template.render(writer, variables);
 				writer.close();
 			}
-			catch (IOException e)
+			catch (IOException exc)
 			{
-				throw new RuntimeException(e);
+				throw new RuntimeException(exc);
 			}
 		}
 	}
@@ -514,10 +503,6 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 		{
 			super.evaluate(context);
 			return null;
-		}
-		catch (IOException ex)
-		{
-			throw new ReturnException(ex); // can't happen, as a function can't produce any output
 		}
 		catch (BreakException ex)
 		{
@@ -571,7 +556,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 		return call(new EvaluationContext(null, variables));
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		context.put(name, new TemplateClosure(this, context.getVariables()));
 		return null;

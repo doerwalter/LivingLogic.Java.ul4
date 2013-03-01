@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 public class And extends Binary
 {
 	public And(Location location, int start, int end, AST obj1, AST obj2)
@@ -31,7 +29,7 @@ public class And extends Binary
 		return new And(location, start, end, obj1, obj2);
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		Object obj1ev = obj1.decoratedEvaluate(context);
 		if (!FunctionBool.call(obj1ev))

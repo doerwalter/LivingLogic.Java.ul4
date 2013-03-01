@@ -38,7 +38,7 @@ public class DictComprehension extends AST
 		return "dictcomp";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		Map result = new HashMap();
 

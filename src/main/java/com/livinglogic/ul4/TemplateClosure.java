@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.io.Writer;
 import java.io.StringWriter;
 import java.util.Map;
@@ -49,7 +48,7 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Callabl
 		return template.formatText(text);
 	}
 
-	public void render(EvaluationContext context) throws java.io.IOException
+	public void render(EvaluationContext context)
 	{
 		Map<String, Object> oldVariables = context.setVariables(variables);
 		try
@@ -62,7 +61,7 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Callabl
 		}
 	}
 
-	public void render(EvaluationContext context, Map<String, Object> variables) throws java.io.IOException
+	public void render(EvaluationContext context, Map<String, Object> variables)
 	{
 		Map<String, Object> oldVariables = context.setVariables(new MapChain<String, Object>(variables, this.variables));
 		try
@@ -75,7 +74,7 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Callabl
 		}
 	}
 
-	public void render(Writer writer, Map<String, Object> variables) throws java.io.IOException
+	public void render(Writer writer, Map<String, Object> variables)
 	{
 		render(new EvaluationContext(writer, variables));
 	}
@@ -88,10 +87,6 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Callabl
 		try
 		{
 			render(context);
-		}
-		catch (IOException ex)
-		{
-			// Can't happen with a StringWriter!
 		}
 		finally
 		{
@@ -108,10 +103,6 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Callabl
 		try
 		{
 			render(context, variables);
-		}
-		catch (IOException ex)
-		{
-			// Can't happen with a StringWriter!
 		}
 		finally
 		{

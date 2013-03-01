@@ -57,7 +57,7 @@ public class For extends Block
 		return true;
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		Object container = this.container.decoratedEvaluate(context);
 

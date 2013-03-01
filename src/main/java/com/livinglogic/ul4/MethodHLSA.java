@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.util.Vector;
 
 public class MethodHLSA extends NormalMethod
@@ -16,7 +15,7 @@ public class MethodHLSA extends NormalMethod
 		return "hlsa";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args)
 	{
 		return call(obj);
 	}

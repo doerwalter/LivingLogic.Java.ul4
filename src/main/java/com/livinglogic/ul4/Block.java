@@ -47,7 +47,7 @@ abstract class Block extends AST
 
 	abstract public boolean handleLoopControl(String name);
 
-	public Object decoratedEvaluate(EvaluationContext context) throws IOException
+	public Object decoratedEvaluate(EvaluationContext context)
 	{
 		try
 		{
@@ -71,7 +71,7 @@ abstract class Block extends AST
 		}
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		for (AST item : content)
 			item.decoratedEvaluate(context);

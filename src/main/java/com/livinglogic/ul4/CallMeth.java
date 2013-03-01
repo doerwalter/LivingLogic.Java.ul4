@@ -101,7 +101,7 @@ public class CallMeth extends Callable
 		return "callmeth";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		Object obj = this.obj.decoratedEvaluate(context);
 

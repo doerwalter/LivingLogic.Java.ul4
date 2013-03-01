@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 public class FloorDivVar extends ChangeVar
 {
 	public FloorDivVar(Location location, int start, int end, String varname, AST value)
@@ -20,7 +18,7 @@ public class FloorDivVar extends ChangeVar
 		return "floordivvar";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		context.put(varname, FloorDiv.call(context.get(varname), value.decoratedEvaluate(context)));
 		return null;

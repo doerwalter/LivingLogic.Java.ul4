@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 public class TrueDivVar extends ChangeVar
 {
 	public TrueDivVar(Location location, int start, int end, String varname, AST value)
@@ -20,7 +18,7 @@ public class TrueDivVar extends ChangeVar
 		return "truedivvar";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		context.put(varname, TrueDiv.call(context.get(varname), value.decoratedEvaluate(context)));
 		return null;

@@ -47,7 +47,7 @@ public class StoreVar extends AST
 		value = (AST)decoder.load();
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		context.unpackVariable(varname, value.decoratedEvaluate(context));
 		return null;

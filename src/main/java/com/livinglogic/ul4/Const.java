@@ -33,7 +33,7 @@ public class Const extends AST
 		return FunctionRepr.call(value);
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		return value;
 	}

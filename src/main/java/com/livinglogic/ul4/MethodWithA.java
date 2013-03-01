@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 public class MethodWithA extends NormalMethod
 {
 	public String nameUL4()
@@ -20,7 +18,7 @@ public class MethodWithA extends NormalMethod
 		signature.add("a");
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args)
 	{
 		return call(obj, args[0]);
 	}

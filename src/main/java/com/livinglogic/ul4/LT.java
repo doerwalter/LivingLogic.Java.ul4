@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 public class LT extends Binary
 {
 	public LT(Location location, int start, int end, AST obj1, AST obj2)
@@ -31,7 +29,7 @@ public class LT extends Binary
 		return new LT(location, start, end, obj1, obj2);
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
 	}

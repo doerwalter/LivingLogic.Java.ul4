@@ -7,7 +7,6 @@
 package com.livinglogic.ul4;
 
 import java.util.Map;
-import java.io.IOException;
 
 public abstract class NormalMethod implements Method, UL4Name
 {
@@ -29,10 +28,10 @@ public abstract class NormalMethod implements Method, UL4Name
 		return signature;
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs)
 	{
 		return evaluate(context, obj, getSignature().makeArgumentArray(args, kwargs));
 	}
 
-	public abstract Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException;
+	public abstract Object evaluate(EvaluationContext context, Object obj, Object[] args);
 }

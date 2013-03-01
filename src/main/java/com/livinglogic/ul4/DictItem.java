@@ -6,12 +6,11 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.util.Map;
 
 public abstract class DictItem
 {
-	public abstract void addTo(EvaluationContext context, Map dict) throws IOException;
+	public abstract void addTo(EvaluationContext context, Map dict);
 
 	public abstract Object object4UL4ON();
 }

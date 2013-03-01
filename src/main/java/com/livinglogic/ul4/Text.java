@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 import static com.livinglogic.utils.StringUtils.removeWhitespace;
 
 import com.livinglogic.ul4on.Decoder;
@@ -40,7 +38,7 @@ class Text extends AST
 		return "text";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		context.write(getText());
 		return null;

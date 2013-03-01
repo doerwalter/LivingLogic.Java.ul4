@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 class Else extends ConditionalBlock
 {
 	public Else(Location location, int start, int end)
@@ -20,7 +18,7 @@ class Else extends ConditionalBlock
 		return "else";
 	}
 
-	public boolean hasToBeExecuted(EvaluationContext context) throws IOException
+	public boolean hasToBeExecuted(EvaluationContext context)
 	{
 		return true;
 	}

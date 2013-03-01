@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 /**
  * {@code Return} is an unary AST node that can only be used inside functions
  * and that returns an expression from that function.
@@ -30,7 +28,7 @@ public class Return extends Unary
 		return "return";
 	}
 
-	public Object evaluate(EvaluationContext context) throws IOException
+	public Object evaluate(EvaluationContext context)
 	{
 		throw new ReturnException(obj.decoratedEvaluate(context));
 	}

@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,7 +22,7 @@ public class MethodJoin extends NormalMethod
 		signature.add("iterable");
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args)
 	{
 		return call(obj, args[0]);
 	}

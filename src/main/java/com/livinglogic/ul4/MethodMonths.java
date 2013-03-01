@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 public class MethodMonths extends NormalMethod
 {
 	public String nameUL4()
@@ -15,7 +13,7 @@ public class MethodMonths extends NormalMethod
 		return "months";
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args)
 	{
 		return call(obj);
 	}

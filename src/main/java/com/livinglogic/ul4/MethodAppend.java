@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class MethodAppend extends NormalMethod
 		signature.setRemainingArguments("items");
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args)
 	{
 		call(obj, (List<Object>)args[0]);
 		return null;

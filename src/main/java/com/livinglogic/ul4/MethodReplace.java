@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
-
 import org.apache.commons.lang.StringUtils;
 
 public class MethodReplace extends NormalMethod
@@ -24,7 +22,7 @@ public class MethodReplace extends NormalMethod
 		signature.add("count", null);
 	}
 
-	public Object evaluate(EvaluationContext context, Object obj, Object[] args) throws IOException
+	public Object evaluate(EvaluationContext context, Object obj, Object[] args)
 	{
 		return call(obj, args[0], args[1], args[2]);
 	}
