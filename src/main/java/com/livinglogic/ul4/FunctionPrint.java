@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.io.IOException;
 
 public class FunctionPrint extends FunctionWithContext
@@ -22,18 +23,18 @@ public class FunctionPrint extends FunctionWithContext
 
 	public Object evaluate(EvaluationContext context, Object[] args)
 	{
-		return call(context, (Object[])args[0]);
+		return call(context, (List<Object>)args[0]);
 	}
 
-	public static Object call(EvaluationContext context, Object[] values)
+	public static Object call(EvaluationContext context, List<Object> values)
 	{
 		try
 		{
-			for (int i = 0; i < values.length; ++i)
+			for (int i = 0; i < values.size(); ++i)
 			{
 				if (i != 0)
 					context.write(" ");
-				context.write(FunctionStr.call(values[i]));
+				context.write(FunctionStr.call(values.get(i)));
 			}
 			return null;
 		}
