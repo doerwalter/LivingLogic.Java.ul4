@@ -10,28 +10,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Iterator;
 
-public class FunctionMin implements UL4Callable
+public class FunctionMin extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "min";
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	protected void makeSignature(Signature signature)
 	{
-		if (kwargs.size() != 0)
-			throw new KeywordArgumentsNotSupportedException(this.getName());
-		return args.length == 0 ? call() : call(args);
+		signature.setRemainingArguments("args");
+	}
+
+	public Object evaluate(Object[] args)
+	{
+		List<Object> argList = (List<Object>)args[0];
+		return (argList.size() == 0) ? call() : call(argList);
 	}
 
 	public static Object call()
 	{
-		throw new MissingArgumentException("min", "iterable", 0);
+		throw new MissingArgumentException("min", "args", 0);
 	}
 
-	public static Object call(Object[] objs)
+	public static Object call(List<Object> objs)
 	{
-		Iterator iter = Utils.iterator(objs.length == 1 ? objs[0] : objs);
+		Iterator iter = Utils.iterator(objs.size() == 1 ? objs.get(0) : objs);
 
 		Object minValue = null;
 		boolean first = true;

@@ -11,35 +11,38 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class FunctionZip implements UL4Callable
+public class FunctionZip extends Function
 {
-	public String getName()
+	public String nameUL4()
 	{
 		return "zip";
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	protected void makeSignature(Signature signature)
 	{
-		if (kwargs.size() != 0)
-			throw new KeywordArgumentsNotSupportedException(this.getName());
-		return call(args);
+		signature.setRemainingArguments("iterables");
 	}
 
-	public static Object call(Object[] objs)
+	public Object evaluate(Object[] args)
 	{
-		return new ZipIterator(objs);
+		return call((List<Object>)args[0]);
+	}
+
+	public static Iterator call(List<Object> iterables)
+	{
+		return new ZipIterator(iterables);
 	}
 
 	private static class ZipIterator implements Iterator<Vector>
 	{
 		Iterator[] iterators;
 
-		public ZipIterator(Object[] iterators)
+		public ZipIterator(List<Object> iterables)
 		{
-			this.iterators = new Iterator[iterators.length];
+			iterators = new Iterator[iterables.size()];
 			
 			for (int i = 0; i < iterators.length; ++i)
-				this.iterators[i] = Utils.iterator(iterators[i]);
+				this.iterators[i] = Utils.iterator(iterables.get(i));
 		}
 
 		public boolean hasNext()
