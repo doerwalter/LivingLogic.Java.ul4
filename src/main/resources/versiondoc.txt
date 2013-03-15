@@ -1,3 +1,10 @@
+exp-65:
+-------
+Comments:
+* Moved removeWhitespace into InterpretedTemplate, as it's only used there to
+  avoid package name conflicts.
+
+
 exp-64:
 -------
 Comments:

@@ -23,9 +23,8 @@ import java.util.regex.Pattern;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 
-import static com.livinglogic.utils.StringUtils.removeWhitespace;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.ObjectFactory;
@@ -570,6 +569,19 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 	public String typeUL4()
 	{
 		return "template";
+	}
+
+	private static String removeWhitespace(String string)
+	{
+		String[] lines = string.split("\n");
+		StringBuilder buffer = new StringBuilder();
+
+		for (String line : lines)
+		{
+			buffer.append(StringUtils.stripStart(line, null));
+		}
+
+		return buffer.toString();
 	}
 
 	public String formatText(String text)

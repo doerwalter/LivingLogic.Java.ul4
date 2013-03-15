@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.StringUtils.removeWhitespace;
-
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
