@@ -1,3 +1,10 @@
+exp-66:
+-------
+Comments:
+* removeWhitespace no longer removes the initial spaces in a string, but only
+  the whitespace *after* a linefeed.
+
+
 exp-65:
 -------
 Comments:

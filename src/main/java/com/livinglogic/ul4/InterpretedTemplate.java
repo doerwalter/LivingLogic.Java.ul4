@@ -392,6 +392,15 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 	 * Renders the template and returns the resulting string.
 	 * @return The render output as a string.
 	 */
+	public String renders()
+	{
+		return renders(new EvaluationContext(null, null));
+	}
+
+	/**
+	 * Renders the template and returns the resulting string.
+	 * @return The render output as a string.
+	 */
 	public String renders(EvaluationContext context)
 	{
 		StringWriter output = new StringWriter();
@@ -573,12 +582,25 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 
 	private static String removeWhitespace(String string)
 	{
-		String[] lines = string.split("\n");
 		StringBuilder buffer = new StringBuilder();
+		boolean keepWS = true;
 
-		for (String line : lines)
+		for (int i = 0; i < string.length(); ++i)
 		{
-			buffer.append(StringUtils.stripStart(line, null));
+			char c = string.charAt(i);
+
+			if (c == '\n')
+				keepWS = false;
+			else if (Character.isWhitespace(c))
+			{
+				if (keepWS)
+					buffer.append(c);
+			}
+			else
+			{
+				buffer.append(c);
+				keepWS = true;
+			}
 		}
 
 		return buffer.toString();

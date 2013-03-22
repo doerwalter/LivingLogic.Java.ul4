@@ -35,11 +35,11 @@ import com.livinglogic.ul4.SyntaxException;
 @RunWith(CauseTestRunner.class)
 public class UL4Test
 {
-	private static InterpretedTemplate getTemplate(String source, String name)
+	private static InterpretedTemplate getTemplate(String source, String name, boolean keepWhitespace)
 	{
 		try
 		{
-			InterpretedTemplate template = new InterpretedTemplate(source, name, false);
+			InterpretedTemplate template = new InterpretedTemplate(source, name, keepWhitespace);
 			// System.out.println(template);
 			return template;
 		}
@@ -49,9 +49,19 @@ public class UL4Test
 		}
 	}
 
+	private static InterpretedTemplate getTemplate(String source, boolean keepWhitespace)
+	{
+		return getTemplate(source, null, keepWhitespace);
+	}
+
+	private static InterpretedTemplate getTemplate(String source, String name)
+	{
+		return getTemplate(source, name, false);
+	}
+
 	private static InterpretedTemplate getTemplate(String source)
 	{
-		return getTemplate(source, null);
+		return getTemplate(source, null, false);
 	}
 
 	private static String getTemplateOutput(String source, Object... args)
@@ -3222,6 +3232,19 @@ public class UL4Test
 	public void return_in_template()
 	{
 		checkTemplateOutput("gurk", "gurk<?return 42?>hurz");
+	}
+
+	@Test
+	public void keepWhitespace()
+	{
+		InterpretedTemplate template1 = getTemplate("<?if True?> foo<?end if?>");
+		assertEquals(template1.renders(), " foo");
+
+		InterpretedTemplate template2 = getTemplate("<?if True?> foo\n bar<?end if?>");
+		assertEquals(template2.renders(), " foobar");
+
+		InterpretedTemplate template3 = getTemplate("<?if True?>\n foo\n bar<?end if?>");
+		assertEquals(template3.renders(), "foobar");
 	}
 
 	private InterpretedTemplate universaltemplate()
