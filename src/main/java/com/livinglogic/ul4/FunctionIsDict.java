@@ -28,6 +28,6 @@ public class FunctionIsDict extends Function
 
 	public static boolean call(Object obj)
 	{
-		return (null != obj) && (obj instanceof Map) && !(obj instanceof Template);
+		return (null != obj) && (obj instanceof Map) && !FunctionIsTemplate.call(obj);
 	}
 }

@@ -12,17 +12,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import static com.livinglogic.utils.MapUtils.makeMap;
 import com.livinglogic.utils.MapChain;
 import com.livinglogic.utils.MapUtils;
+import com.livinglogic.utils.CloseableRegistry;
 
 /**
  * An {@code EvaluationContext} object is passed around calls to the node method
  * {@link AST#evaluate} and stores an output stream and a map containing the
  * currently defined variables as well as other globally available information.
  */
-public class EvaluationContext
+public class EvaluationContext implements AutoCloseable, CloseableRegistry
 {
 	/**
 	 * The {@code Writer} object where output can be written via {@link #write}.
@@ -48,6 +50,12 @@ public class EvaluationContext
 	protected MapChain<String, Object> allVariables;
 
 	/**
+	 * A list of cleanup tasks that have to be done, when the
+	 * {@code EvaluationContext} is no longer used
+	 */
+	private LinkedList<AutoCloseable> closeables;
+
+	/**
 	 * Create a new {@code EvaluationContext} object. No variables will
 	 * be available to the template code.
 	 * @param writer The output stream where the template output will be written
@@ -71,6 +79,32 @@ public class EvaluationContext
 		this.variables = variables;
 		this.template = null;
 		this.allVariables = new MapChain<String, Object>(variables, functions);
+		this.closeables = new LinkedList<AutoCloseable>();
+	}
+
+	/**
+	 * Call this when the {@code EvaluationContext} is no longer required.
+	 */
+	public void close()
+	{
+		for (AutoCloseable closeable : closeables)
+		{
+			try
+			{
+				closeable.close();
+			}
+			catch (Exception ex)
+			{
+			}
+		}
+	}
+
+	/**
+	 * Call this to register a new cleanup hook.
+	 */
+	public void registerCloseable(AutoCloseable closeable)
+	{
+		closeables.add(closeable);
 	}
 
 	/**
@@ -264,6 +298,7 @@ public class EvaluationContext
 			"int", new FunctionInt(),
 			"float", new FunctionFloat(),
 			"bool", new FunctionBool(),
+			"list", new FunctionList(),
 			"len", new FunctionLen(),
 			"any", new FunctionAny(),
 			"all", new FunctionAll(),

@@ -20,7 +20,7 @@ import com.livinglogic.utils.MapChain;
  * @author W. Doerwald
  */
 
-public class TemplateClosure extends ObjectAsMap implements Template, UL4CallableWithContext, UL4Name, UL4Type
+public class TemplateClosure extends ObjectAsMap implements UL4CallWithContext, UL4MethodCallWithContext, UL4Name, UL4Type
 {
 	private InterpretedTemplate template;
 	private Map<String, Object> variables;
@@ -43,80 +43,6 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Callabl
 		return template.nameUL4();
 	}
 
-	public String formatText(String text)
-	{
-		return template.formatText(text);
-	}
-
-	public void render(EvaluationContext context)
-	{
-		Map<String, Object> oldVariables = context.setVariables(variables);
-		try
-		{
-			template.render(context);
-		}
-		finally
-		{
-			context.setVariables(oldVariables);
-		}
-	}
-
-	public void render(EvaluationContext context, Map<String, Object> variables)
-	{
-		Map<String, Object> oldVariables = context.setVariables(new MapChain<String, Object>(variables, this.variables));
-		try
-		{
-			template.render(context);
-		}
-		finally
-		{
-			context.setVariables(oldVariables);
-		}
-	}
-
-	public void render(Writer writer, Map<String, Object> variables)
-	{
-		render(new EvaluationContext(writer, variables));
-	}
-
-	public String renders(EvaluationContext context)
-	{
-		StringWriter writer = new StringWriter();
-
-		Writer oldWriter = context.setWriter(writer);
-		try
-		{
-			render(context);
-		}
-		finally
-		{
-			context.setWriter(oldWriter);
-		}
-		return writer.toString();
-	}
-
-	public String renders(EvaluationContext context, Map<String, Object> variables)
-	{
-		StringWriter writer = new StringWriter();
-
-		Writer oldWriter = context.setWriter(writer);
-		try
-		{
-			render(context, variables);
-		}
-		finally
-		{
-			context.setWriter(oldWriter);
-		}
-		return writer.toString();
-	}
-
-	public String renders(Map<String, Object> variables)
-	{
-		return renders(new EvaluationContext(null, variables));
-	}
-
-
 	public Object callUL4(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
 	{
 		if (args.length > 0)
@@ -124,22 +50,37 @@ public class TemplateClosure extends ObjectAsMap implements Template, UL4Callabl
 		return call(context, kwargs);
 	}
 
-	public Object call(EvaluationContext context)
+	public Object callMethodUL4(EvaluationContext context, String methodName, Object[] args, Map<String, Object> kwargs)
 	{
-		Map<String, Object> oldVariables = context.setVariables(variables);
-		try
+		switch (methodName)
 		{
-			return template.call(context);
-		}
-		finally
-		{
-			context.setVariables(oldVariables);
+			case "render":
+				if (args.length > 0)
+					throw new PositionalArgumentsNotSupportedException(methodName);
+				render(context, kwargs);
+				return null;
+			case "renders":
+				if (args.length > 0)
+					throw new PositionalArgumentsNotSupportedException(methodName);
+				return renders(context, kwargs);
+			default:
+				throw new UnknownMethodException(methodName);
 		}
 	}
 
 	public Object call(EvaluationContext context, Map<String, Object> variables)
 	{
 		return template.call(context, new MapChain<String, Object>(variables, this.variables));
+	}
+
+	public void render(EvaluationContext context, Map<String, Object> variables)
+	{
+		template.render(context, new MapChain<String, Object>(variables, this.variables));
+	}
+
+	public String renders(EvaluationContext context, Map<String, Object> variables)
+	{
+		return template.renders(context, new MapChain<String, Object>(variables, this.variables));
 	}
 
 	public String typeUL4()

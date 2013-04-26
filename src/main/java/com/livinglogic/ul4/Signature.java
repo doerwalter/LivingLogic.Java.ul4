@@ -19,12 +19,28 @@ public class Signature implements Iterable<ArgumentDescription>
 	protected String remainingArguments;
 	protected String remainingKeywordArguments;
 
-	public Signature(String name, String remainingArguments, String remainingKeywordArguments)
+	public static Object required = new Object();
+
+	public Signature(String name, String remainingArguments, String remainingKeywordArguments, Object... args)
 	{
 		this.name = name;
 		arguments = new LinkedHashMap<String, ArgumentDescription>();
 		this.remainingArguments = remainingArguments;
 		this.remainingKeywordArguments = remainingKeywordArguments;
+
+		String argname = null;
+		for (int i = 0; i < args.length; ++i)
+		{
+			if (i%2 == 0)
+				argname = (String)args[i];
+			else
+			{
+				if (args[i] == required)
+					add(argname);
+				else
+					add(argname, args[i]);
+			}
+		}
 	}
 
 	public Signature(String name)

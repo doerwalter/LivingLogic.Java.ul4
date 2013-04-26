@@ -31,12 +31,13 @@ import com.livinglogic.ul4on.ObjectFactory;
 import com.livinglogic.ul4on.UL4ONSerializable;
 import com.livinglogic.ul4on.Utils;
 
-public class InterpretedTemplate extends Block implements Template, UL4Name, UL4CallableWithContext, UL4Type
+
+public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithContext, UL4MethodCallWithContext, UL4Type
 {
 	/**
 	 * The version number used in the UL4ON dump of the template.
 	 */
-	public static final String VERSION = "24";
+	public static final String VERSION = "25";
 
 	/**
 	 * The name of the template/function (defaults to {@code null})
@@ -385,7 +386,10 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 	 */
 	public void render(java.io.Writer writer, Map<String, Object> variables)
 	{
-		render(new EvaluationContext(writer, variables));
+		try (EvaluationContext context = new EvaluationContext(writer, variables))
+		{
+			render(context);
+		}
 	}
 
 	/**
@@ -394,7 +398,10 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 	 */
 	public String renders()
 	{
-		return renders(new EvaluationContext(null, null));
+		try (EvaluationContext context = new EvaluationContext(null, null))
+		{
+			return renders(context);
+		}
 	}
 
 	/**
@@ -453,7 +460,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 		protected InterpretedTemplate template;
 		protected Writer writer;
 		protected Map<String, Object> variables;
-		
+
 		public RenderRunnable(InterpretedTemplate template, Writer writer, Map<String, Object> variables)
 		{
 			this.template = template;
@@ -475,14 +482,14 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 			}
 		}
 	}
-	
+
 	/**
 	 * Renders the template and returns a Reader object from which the template
 	 * output can be read.
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the template code. May be null
 	 * @return The reader from which the template output can be read.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public Reader reader(Map<String, Object> variables) throws IOException
 	{
@@ -497,6 +504,24 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 		if (args.length > 0)
 			throw new PositionalArgumentsNotSupportedException(name);
 		return call(context, kwargs);
+	}
+
+	public Object callMethodUL4(EvaluationContext context, String methodName, Object[] args, Map<String, Object> kwargs)
+	{
+		switch (methodName)
+		{
+			case "render":
+				if (args.length > 0)
+					throw new PositionalArgumentsNotSupportedException(methodName);
+				render(context, kwargs);
+				return null;
+			case "renders":
+				if (args.length > 0)
+					throw new PositionalArgumentsNotSupportedException(methodName);
+				return renders(kwargs);
+			default:
+				throw new UnknownMethodException(methodName);
+		}
 	}
 
 	/**
@@ -561,7 +586,10 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 	 */
 	public Object call(Map<String, Object> variables)
 	{
-		return call(new EvaluationContext(null, variables));
+		try (EvaluationContext context = new EvaluationContext(null, variables))
+		{
+			return call(context);
+		}
 	}
 
 	public Object evaluate(EvaluationContext context)
@@ -728,7 +756,7 @@ public class InterpretedTemplate extends Block implements Template, UL4Name, UL4
 		Utils.register("de.livinglogic.ul4.truedivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDivVar(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.modvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ModVar(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.callfunc", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallFunc(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.callmeth", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMeth(null, -1, -1, null, (Method)null); }});
+		Utils.register("de.livinglogic.ul4.callmeth", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMeth(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate(null, null, null, false, null, null); }});
 	}
 

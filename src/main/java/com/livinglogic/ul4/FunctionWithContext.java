@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
-public abstract class FunctionWithContext implements UL4CallableWithContext, UL4Name
+public abstract class FunctionWithContext implements UL4CallWithContext, UL4Name
 {
 	public abstract String nameUL4();
 

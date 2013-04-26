@@ -1,3 +1,14 @@
+exp-67:
+-------
+Comments:
+* Java 1.7 is required now.
+* Added function list().
+* Implemented support for custom methods via the interface UL4MethodCall and
+  UL4MethodCallWithContext.
+* Added support for resource cleanup in EvaluationContext.
+* Added utilities for exposing an Oracle database connection to UL4 templates.
+
+
 exp-66:
 -------
 Comments:

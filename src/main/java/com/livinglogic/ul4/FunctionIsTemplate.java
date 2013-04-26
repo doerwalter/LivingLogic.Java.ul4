@@ -27,6 +27,6 @@ public class FunctionIsTemplate extends Function
 
 	public static boolean call(Object obj)
 	{
-		return (null != obj) && (obj instanceof Template);
+		return (null != obj) && (obj instanceof UL4Type) && "template".equals(((UL4Type)obj).typeUL4());
 	}
 }

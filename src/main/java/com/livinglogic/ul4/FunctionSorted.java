@@ -72,36 +72,28 @@ public class FunctionSorted extends Function
 
 	public static Vector call(String obj)
 	{
-		Vector retVal;
-		int length = obj.length();
-		retVal = new Vector(obj.length());
-		for (int i = 0; i < length; i++)
-		{
-			retVal.add(String.valueOf(obj.charAt(i)));
-		}
-		Collections.sort(retVal);
+		Vector retVal = FunctionList.call(obj);
+		Collections.sort(retVal, comparator);
 		return retVal;
 	}
 
 	public static Vector call(Collection obj)
 	{
-		Vector retVal = new Vector(obj);
+		Vector retVal = FunctionList.call(obj);
 		Collections.sort(retVal, comparator);
 		return retVal;
 	}
 
 	public static Vector call(Map obj)
 	{
-		Vector retVal = new Vector(obj.keySet());
+		Vector retVal = FunctionList.call(obj);
 		Collections.sort(retVal, comparator);
 		return retVal;
 	}
 
 	public static Vector call(Iterator obj)
 	{
-		Vector retVal = new Vector();
-		while (obj.hasNext())
-			retVal.add(obj.next());
+		Vector retVal = FunctionList.call(obj);
 		Collections.sort(retVal, comparator);
 		return retVal;
 	}

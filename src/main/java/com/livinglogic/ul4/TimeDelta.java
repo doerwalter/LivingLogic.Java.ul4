@@ -6,12 +6,13 @@
 
 package com.livinglogic.ul4;
 
-import java.text.DecimalFormat;
+import java.util.Map;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.text.DecimalFormat;
 
-public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
+public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs, UL4MethodCall
 {
 	private int days;
 	private int seconds;
@@ -318,5 +319,27 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 	public TimeDelta absUL4()
 	{
 		return days < 0 ? new TimeDelta(-days, -seconds, -microseconds) : this;
+	}
+
+	private Signature signatureDays = new Signature("days", null, null);
+	private Signature signatureSeconds = new Signature("seconds", null, null);
+	private Signature signatureMicroseconds = new Signature("microseconds", null, null);
+
+	public Object callMethodUL4(String methodName, Object[] args, Map<String, Object> kwargs)
+	{
+		switch (methodName)
+		{
+			case "days":
+				args = signatureDays.makeArgumentArray(args, kwargs);
+				return days;
+			case "seconds":
+				args = signatureSeconds.makeArgumentArray(args, kwargs);
+				return seconds;
+			case "microseconds":
+				args = signatureSeconds.makeArgumentArray(args, kwargs);
+				return microseconds;
+			default:
+				throw new UnknownMethodException(methodName);
+		}
 	}
 }

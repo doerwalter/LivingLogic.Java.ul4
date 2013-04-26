@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
-public abstract class Function implements UL4Callable, UL4Name, UL4Type
+public abstract class Function implements UL4Call, UL4Name, UL4Type
 {
 	public abstract String nameUL4();
 

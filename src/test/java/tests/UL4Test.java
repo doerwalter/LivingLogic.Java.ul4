@@ -32,6 +32,7 @@ import com.livinglogic.ul4.FunctionDate;
 import com.livinglogic.ul4.KeyException;
 import com.livinglogic.ul4.SyntaxException;
 
+
 @RunWith(CauseTestRunner.class)
 public class UL4Test
 {
@@ -1427,6 +1428,23 @@ public class UL4Test
 	public void function_float_2_args()
 	{
 		checkTemplateOutput("", "<?print float(1, 2)?>");
+	}
+
+	@Test
+	public void function_list()
+	{
+		checkTemplateOutput("[]", "<?print list()?>");
+		checkTemplateOutput("[1, 2]", "<?print list(data)?>", "data", asList(1, 2));
+		checkTemplateOutput("[\"g\", \"u\", \"r\", \"k\"]", "<?print list(data)?>", "data", "gurk");
+		checkTemplateOutput("[[\"foo\", 42]]", "<?print repr(list(data.items()))?>", "data", makeMap("foo", 42));
+		checkTemplateOutput("[0, 1, 2]", "<?print repr(list(range(3)))?>");
+		checkTemplateOutput("[\"g\", \"u\", \"r\", \"k\"]", "<?print list(iterable=data)?>", "data", "gurk");
+	}
+
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	public void function_list_2_args()
+	{
+		checkTemplateOutput("", "<?print list(1, 2)?>");
 	}
 
 	@Test

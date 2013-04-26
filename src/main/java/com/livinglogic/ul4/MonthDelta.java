@@ -6,12 +6,13 @@
 
 package com.livinglogic.ul4;
 
-import java.text.DecimalFormat;
+import java.util.Map;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.text.DecimalFormat;
 
-public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
+public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs, UL4MethodCall
 {
 	private int months;
 
@@ -145,5 +146,19 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 	public MonthDelta absUL4()
 	{
 		return months < 0 ? new MonthDelta(-months) : this;
+	}
+
+	private Signature signatureMonths = new Signature("months", null, null);
+
+	public Object callMethodUL4(String methodName, Object[] args, Map<String, Object> kwargs)
+	{
+		switch (methodName)
+		{
+			case "months":
+				args = signatureMonths.makeArgumentArray(args, kwargs);
+				return months;
+			default:
+				throw new UnknownMethodException(methodName);
+		}
 	}
 }

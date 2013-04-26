@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.AbstractList;
 
-public class FunctionRange implements UL4Callable
+public class FunctionRange implements UL4Call
 {
 	public String getName()
 	{

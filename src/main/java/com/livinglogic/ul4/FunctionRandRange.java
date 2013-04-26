@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.List;
 import java.util.Map;
 
-public class FunctionRandRange implements UL4Callable
+public class FunctionRandRange implements UL4Call
 {
 	public String getName()
 	{

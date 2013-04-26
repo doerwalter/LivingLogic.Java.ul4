@@ -10,10 +10,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Vector;
+import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-public class Color implements Collection, UL4Repr, UL4Len, UL4Type
+public class Color implements Collection, UL4Repr, UL4Len, UL4Type, UL4MethodCall
 {
 	private char r;
 	private char g;
@@ -652,6 +653,60 @@ public class Color implements Collection, UL4Repr, UL4Len, UL4Type
 				return a;
 			default:
 				throw new ArrayIndexOutOfBoundsException(index);
+		}
+	}
+
+	private Signature signatureR = new Signature("r", null, null);
+	private Signature signatureG = new Signature("g", null, null);
+	private Signature signatureB = new Signature("b", null, null);
+	private Signature signatureA = new Signature("a", null, null);
+	private Signature signatureLum = new Signature("lum", null, null);
+	private Signature signatureHLS = new Signature("hls", null, null);
+	private Signature signatureHLSA = new Signature("hlsa", null, null);
+	private Signature signatureHSV = new Signature("hsv", null, null);
+	private Signature signatureHSVA = new Signature("hsva", null, null);
+	private Signature signatureWithA = new Signature("witha", null, null, "a", Signature.required);
+	private Signature signatureWithLum = new Signature("withlum", null, null, "lum", Signature.required);
+
+	public Object callMethodUL4(String methodName, Object[] args, Map<String, Object> kwargs)
+	{
+		switch (methodName)
+		{
+			case "r":
+				args = signatureR.makeArgumentArray(args, kwargs);
+				return (int)r;
+			case "g":
+				args = signatureG.makeArgumentArray(args, kwargs);
+				return (int)g;
+			case "b":
+				args = signatureB.makeArgumentArray(args, kwargs);
+				return (int)b;
+			case "a":
+				args = signatureA.makeArgumentArray(args, kwargs);
+				return (int)a;
+			case "lum":
+				args = signatureLum.makeArgumentArray(args, kwargs);
+				return lum();
+			case "hls":
+				args = signatureHLS.makeArgumentArray(args, kwargs);
+				return hls();
+			case "hlsa":
+				args = signatureHLSA.makeArgumentArray(args, kwargs);
+				return hlsa();
+			case "hsv":
+				args = signatureHSV.makeArgumentArray(args, kwargs);
+				return hsv();
+			case "hsva":
+				args = signatureHSVA.makeArgumentArray(args, kwargs);
+				return hsva();
+			case "witha":
+				args = signatureWithA.makeArgumentArray(args, kwargs);
+				return witha(Utils.toInt(args[0]));
+			case "withlum":
+				args = signatureWithLum.makeArgumentArray(args, kwargs);
+				return withlum(Utils.toDouble(args[0]));
+			default:
+				throw new UnknownMethodException(methodName);
 		}
 	}
 }

@@ -20,15 +20,15 @@ import com.livinglogic.utils.MapUtils;
 
 public class CallMeth extends Callable
 {
-	protected Method method;
+	protected String methodName;
 	protected AST obj;
 
-	static Map<String, Method> methods = new HashMap<String, Method>();
+	static Map<String, Method> builtinMethods = new HashMap<String, Method>();
 
 	static
 	{
 		MapUtils.putMap(
-			methods,
+			builtinMethods,
 			"split", new MethodSplit(),
 			"rsplit", new MethodRSplit(),
 			"strip", new MethodStrip(),
@@ -41,15 +41,6 @@ public class CallMeth extends Callable
 			"values", new MethodValues(),
 			"isoformat", new MethodISOFormat(),
 			"mimeformat", new MethodMIMEFormat(),
-			"r", new MethodR(),
-			"g", new MethodG(),
-			"b", new MethodB(),
-			"a", new MethodA(),
-			"hls", new MethodHLS(),
-			"hlsa", new MethodHLSA(),
-			"hsv", new MethodHSV(),
-			"hsva", new MethodHSVA(),
-			"lum", new MethodLum(),
 			"day", new MethodDay(),
 			"month", new MethodMonth(),
 			"year", new MethodYear(),
@@ -60,19 +51,11 @@ public class CallMeth extends Callable
 			"week", new MethodWeek(),
 			"weekday", new MethodWeekday(),
 			"yearday", new MethodYearday(),
-			"days", new MethodDays(),
-			"seconds", new MethodSeconds(),
-			"microseconds", new MethodMicroseconds(),
-			"months", new MethodMonths(),
-			"render", new MethodRender(),
-			"renders", new MethodRenderS(),
 			"startswith", new MethodStartsWith(),
 			"endswith", new MethodEndsWith(),
 			"find", new MethodFind(),
 			"rfind", new MethodRFind(),
 			"get", new MethodGet(),
-			"withlum", new MethodWithLum(),
-			"witha", new MethodWithA(),
 			"join", new MethodJoin(),
 			"replace", new MethodReplace(),
 			"append", new MethodAppend(),
@@ -82,18 +65,11 @@ public class CallMeth extends Callable
 		);
 	}
 
-	public CallMeth(Location location, int start, int end, AST obj, Method method)
+	public CallMeth(Location location, int start, int end, AST obj, String methodName)
 	{
 		super(location, start, end);
 		this.obj = obj;
-		this.method = method;
-	}
-
-	public CallMeth(Location location, int start, int end, AST obj, String methname)
-	{
-		super(location, start, end);
-		this.obj = obj;
-		method = getMethod(methname);
+		this.methodName = methodName;
 	}
 
 	public String getType()
@@ -110,7 +86,7 @@ public class CallMeth extends Callable
 		{
 			Object realRemainingArgs = remainingArgs.decoratedEvaluate(context);
 			if (!(realRemainingArgs instanceof List))
-				throw new RemainingArgumentsException(method.nameUL4());
+				throw new RemainingArgumentsException(methodName);
 
 			realArgs = new Object[args.size() + remainingArgs.size()];
 
@@ -137,33 +113,38 @@ public class CallMeth extends Callable
 		{
 			Object realRemainingKWArgs = remainingKWArgs.decoratedEvaluate(context);
 			if (!(realRemainingKWArgs instanceof Map))
-				throw new RemainingKeywordArgumentsException(method.nameUL4());
+				throw new RemainingKeywordArgumentsException(methodName);
 			for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)realRemainingKWArgs).entrySet())
 			{
 				Object argumentName = entry.getKey();
 				if (!(argumentName instanceof String))
-					throw new RemainingKeywordArgumentsException(method.nameUL4());
+					throw new RemainingKeywordArgumentsException(methodName);
 				if (realKWArgs.containsKey(argumentName))
-					throw new DuplicateArgumentException(method.nameUL4(), (String)argumentName);
+					throw new DuplicateArgumentException(methodName, (String)argumentName);
 				realKWArgs.put((String)argumentName, entry.getValue());
 			}
 		}
 
-		return method.evaluate(context, obj, realArgs, realKWArgs);
+		if (obj instanceof UL4MethodCall)
+			return ((UL4MethodCall)obj).callMethodUL4(methodName, realArgs, realKWArgs);
+		else if (obj instanceof UL4MethodCallWithContext)
+			return ((UL4MethodCallWithContext)obj).callMethodUL4(context, methodName, realArgs, realKWArgs);
+		else
+			return getBuiltinMethod(methodName).evaluate(context, obj, realArgs, realKWArgs);
 	}
 
-	private static Method getMethod(String methname)
+	private static Method getBuiltinMethod(String methodName)
 	{
-		Method method = methods.get(methname);
+		Method method = builtinMethods.get(methodName);
 		if (method == null)
-			throw new UnknownMethodException(methname);
+			throw new UnknownMethodException(methodName);
 		return method;
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(method.nameUL4());
+		encoder.dump(methodName);
 		encoder.dump(obj);
 		encoder.dump(args);
 		List kwargList = new LinkedList();
@@ -177,7 +158,7 @@ public class CallMeth extends Callable
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		method = getMethod((String)decoder.load());
+		methodName = (String)decoder.load();
 		obj = (AST)decoder.load();
 		args = (List<AST>)decoder.load();
 		List<List> kwargList = (List<List>)decoder.load();
@@ -195,7 +176,7 @@ public class CallMeth extends Callable
 		{
 			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
 			v.put("obj", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).obj;}});
-			v.put("methname", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).method.nameUL4();}});
+			v.put("methname", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).methodName;}});
 			v.put("args", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).args;}});
 			v.put("kwargs", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).kwargs;}});
 			valueMakers = v;

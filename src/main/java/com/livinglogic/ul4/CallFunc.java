@@ -84,22 +84,22 @@ public class CallFunc extends Callable
 		return call(context, realobj, realArgs, realKWArgs);
 	}
 
-	public Object call(UL4Callable obj, Object[] args, Map<String, Object> kwargs)
+	public Object call(UL4Call obj, Object[] args, Map<String, Object> kwargs)
 	{
 		return obj.callUL4(args, kwargs);
 	}
 
-	public Object call(EvaluationContext context, UL4CallableWithContext obj, Object[] args, Map<String, Object> kwargs)
+	public Object call(EvaluationContext context, UL4CallWithContext obj, Object[] args, Map<String, Object> kwargs)
 	{
 		return obj.callUL4(context, args, kwargs);
 	}
 
 	public Object call(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs)
 	{
-		if (obj instanceof UL4Callable)
-			return call((UL4Callable)obj, args, kwargs);
-		else if (obj instanceof UL4CallableWithContext)
-			return call(context, (UL4CallableWithContext)obj, args, kwargs);
+		if (obj instanceof UL4Call)
+			return call((UL4Call)obj, args, kwargs);
+		else if (obj instanceof UL4CallWithContext)
+			return call(context, (UL4CallWithContext)obj, args, kwargs);
 		throw new NotCallableException(obj);
 	}
 
