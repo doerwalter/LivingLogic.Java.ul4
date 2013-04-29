@@ -18,9 +18,12 @@ public class FunctionZip extends Function
 		return "zip";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.setRemainingArguments("iterables");
+		return new Signature(
+			nameUL4(),
+			"iterables", Signature.remainingArguments
+		);
 	}
 
 	public Object evaluate(Object[] args)
@@ -40,7 +43,7 @@ public class FunctionZip extends Function
 		public ZipIterator(List<Object> iterables)
 		{
 			iterators = new Iterator[iterables.size()];
-			
+		
 			for (int i = 0; i < iterators.length; ++i)
 				this.iterators[i] = Utils.iterator(iterables.get(i));
 		}

@@ -15,12 +15,15 @@ public class FunctionHLS extends Function
 		return "hls";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("h");
-		signature.add("l");
-		signature.add("s");
-		signature.add("a", 1.0);
+		return new Signature(
+			nameUL4(),
+			"h", Signature.required,
+			"l", Signature.required,
+			"s", Signature.required,
+			"a", 1.0
+		);
 	}
 
 	public Object evaluate(Object[] args)

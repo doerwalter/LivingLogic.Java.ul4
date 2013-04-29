@@ -15,9 +15,12 @@ public class MethodPop extends NormalMethod
 		return "pop";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("pos", -1);
+		return new Signature(
+			nameUL4(),
+			"pos", -1
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

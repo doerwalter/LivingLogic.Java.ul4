@@ -17,9 +17,12 @@ public class FunctionAbs extends Function
 		return "abs";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("number");
+		return new Signature(
+			nameUL4(),
+			"number", Signature.required
+		);
 	}
 
 	public Object evaluate(Object[] args)

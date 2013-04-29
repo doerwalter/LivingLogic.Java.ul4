@@ -15,9 +15,12 @@ public class FunctionMonthDelta extends Function
 		return "monthdelta";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("months", 0);
+		return new Signature(
+			nameUL4(),
+			"months", 0
+		);
 	}
 
 	public Object evaluate(Object[] args)

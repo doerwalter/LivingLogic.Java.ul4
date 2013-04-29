@@ -13,12 +13,15 @@ public class FunctionRGB extends Function
 		return "rgb";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("r");
-		signature.add("g");
-		signature.add("b");
-		signature.add("a", 1.0);
+		return new Signature(
+			nameUL4(),
+			"r", Signature.required,
+			"g", Signature.required,
+			"b", Signature.required,
+			"a", 1.0
+		);
 	}
 
 	public Object evaluate(Object[] args)

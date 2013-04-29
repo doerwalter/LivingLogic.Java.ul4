@@ -16,9 +16,12 @@ public class MethodAppend extends NormalMethod
 		return "append";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.setRemainingArguments("items");
+		return new Signature(
+			nameUL4(),
+			"items", Signature.remainingArguments
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

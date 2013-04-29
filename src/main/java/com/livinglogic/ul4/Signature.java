@@ -16,17 +16,22 @@ public class Signature implements Iterable<ArgumentDescription>
 {
 	protected String name;
 	protected LinkedHashMap<String, ArgumentDescription> arguments;
-	protected String remainingArguments;
-	protected String remainingKeywordArguments;
+	protected String remainingArgumentsName;
+	protected String remainingKeywordArgumentsName;
 
+	/**
+	 * Marker objects that specify certain types of arguments.
+	 */
 	public static Object required = new Object();
+	public static Object remainingArguments = new Object();
+	public static Object remainingKeywordArguments = new Object();
 
-	public Signature(String name, String remainingArguments, String remainingKeywordArguments, Object... args)
+	public Signature(String name, Object... args)
 	{
 		this.name = name;
 		arguments = new LinkedHashMap<String, ArgumentDescription>();
-		this.remainingArguments = remainingArguments;
-		this.remainingKeywordArguments = remainingKeywordArguments;
+		this.remainingArgumentsName = null;
+		this.remainingKeywordArgumentsName = null;
 
 		String argname = null;
 		for (int i = 0; i < args.length; ++i)
@@ -37,15 +42,14 @@ public class Signature implements Iterable<ArgumentDescription>
 			{
 				if (args[i] == required)
 					add(argname);
+				else if (args[i] == remainingArguments)
+					this.remainingArgumentsName = argname;
+				else if (args[i] == remainingKeywordArguments)
+					this.remainingKeywordArgumentsName = argname;
 				else
 					add(argname, args[i]);
 			}
 		}
-	}
-
-	public Signature(String name)
-	{
-		this(name, null, null);
 	}
 
 	public String getName()
@@ -61,16 +65,6 @@ public class Signature implements Iterable<ArgumentDescription>
 	public void add(String name, Object defaultValue)
 	{
 		arguments.put(name, new ArgumentDescription(name, arguments.size(), defaultValue));
-	}
-
-	public void setRemainingArguments(String remainingArguments)
-	{
-		this.remainingArguments = remainingArguments;
-	}
-
-	public void setRemainingKeywordArguments(String remainingKeywordArguments)
-	{
-		this.remainingKeywordArguments = remainingKeywordArguments;
 	}
 
 	public Iterator<ArgumentDescription> iterator()
@@ -93,9 +87,9 @@ public class Signature implements Iterable<ArgumentDescription>
 		int realSize = size();
 		int remainingArgumentsPos = -1;
 		int remainingKeywordArgumentsPos = -1;
-		if (remainingArguments != null)
+		if (remainingArgumentsName != null)
 			remainingArgumentsPos = realSize++;
-		if (remainingKeywordArguments != null)
+		if (remainingKeywordArgumentsName != null)
 			remainingKeywordArgumentsPos = realSize++;
 
 		Object[] realargs = new Object[realSize];
@@ -130,7 +124,7 @@ public class Signature implements Iterable<ArgumentDescription>
 		// Handle additional positional arguments
 		// if there are any, and we suport a "*" argument, put the remaining arguments into this argument as a list, else complain
 		int expectedArgCount = size();
-		if (remainingArguments != null)
+		if (remainingArgumentsName != null)
 		{
 			realargs[remainingArgumentsPos] = (args.length > expectedArgCount) ? asList(args).subList(arguments.size(), args.length) : new ArrayList<Object>();
 		}
@@ -142,7 +136,7 @@ public class Signature implements Iterable<ArgumentDescription>
 
 		// Handle additional keyword arguments
 		// if there are any, and we suport a "**" argument, put the remaining keyword arguments into this argument as a map, else complain
-		if (remainingKeywordArguments != null)
+		if (remainingKeywordArgumentsName != null)
 		{
 			LinkedHashMap<String, Object> realRemainingKeywordArguments = new LinkedHashMap<String, Object>();
 			for (String kwargname : kwargs.keySet())

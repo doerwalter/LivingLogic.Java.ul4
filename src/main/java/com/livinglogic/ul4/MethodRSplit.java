@@ -19,10 +19,13 @@ public class MethodRSplit extends NormalMethod
 		return "rsplit";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("sep", null);
-		signature.add("count", null);
+		return new Signature(
+			nameUL4(),
+			"sep", null,
+			"count", null
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

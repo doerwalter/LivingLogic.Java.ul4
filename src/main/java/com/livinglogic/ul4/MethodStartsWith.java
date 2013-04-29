@@ -13,9 +13,12 @@ public class MethodStartsWith extends NormalMethod
 		return "startswith";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("prefix");
+		return new Signature(
+			nameUL4(),
+			"prefix", Signature.required
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

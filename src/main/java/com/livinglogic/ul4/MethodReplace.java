@@ -15,11 +15,14 @@ public class MethodReplace extends NormalMethod
 		return "replace";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("old");
-		signature.add("new");
-		signature.add("count", null);
+		return new Signature(
+			nameUL4(),
+			"old", Signature.required,
+			"new", Signature.required,
+			"count", null
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

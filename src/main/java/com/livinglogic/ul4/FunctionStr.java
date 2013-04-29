@@ -22,9 +22,12 @@ public class FunctionStr extends Function
 		return "str";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("obj", "");
+		return new Signature(
+			nameUL4(),
+			"obj", ""
+		);
 	}
 
 	public Object evaluate(Object[] args)

@@ -15,9 +15,12 @@ public class FunctionIsDefined extends Function
 		return "isdefined";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("obj");
+		return new Signature(
+			nameUL4(),
+			"obj", Signature.required
+		);
 	}
 
 	public Object evaluate(Object[] args)

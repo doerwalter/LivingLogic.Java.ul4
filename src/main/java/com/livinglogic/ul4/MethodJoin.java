@@ -17,9 +17,12 @@ public class MethodJoin extends NormalMethod
 		return "join";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("iterable");
+		return new Signature(
+			nameUL4(),
+			"iterable", Signature.required
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

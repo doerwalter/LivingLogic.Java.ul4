@@ -15,9 +15,12 @@ public class FunctionOrd extends Function
 		return "ord";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("c");
+		return new Signature(
+			nameUL4(),
+			"c", Signature.required
+		);
 	}
 
 	public Object evaluate(Object[] args)

@@ -17,9 +17,12 @@ public class FunctionMax extends Function
 		return "max";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.setRemainingArguments("args");
+		return new Signature(
+			nameUL4(),
+			"args", Signature.remainingArguments
+		);
 	}
 
 	public Object evaluate(Object[] args)

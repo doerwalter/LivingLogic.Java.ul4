@@ -15,12 +15,15 @@ public class FunctionHSV extends Function
 		return "hsv";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("h");
-		signature.add("s");
-		signature.add("v");
-		signature.add("a", 1.0);
+		return new Signature(
+			nameUL4(),
+			"h", Signature.required,
+			"s", Signature.required,
+			"v", Signature.required,
+			"a", 1.0
+		);
 	}
 
 	public Object evaluate(Object[] args)

@@ -15,10 +15,13 @@ public class MethodGet extends NormalMethod
 		return "get";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("key");
-		signature.add("default", null);
+		return new Signature(
+			nameUL4(),
+			"key", Signature.required,
+			"default", null
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

@@ -13,9 +13,12 @@ public class MethodEndsWith extends NormalMethod
 		return "endswith";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("suffix");
+		return new Signature(
+			nameUL4(),
+			"suffix", Signature.required
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

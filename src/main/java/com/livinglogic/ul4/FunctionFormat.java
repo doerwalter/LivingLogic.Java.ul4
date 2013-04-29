@@ -28,11 +28,14 @@ public class FunctionFormat extends Function
 		return "format";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("obj");
-		signature.add("fmt");
-		signature.add("lang", null);
+		return new Signature(
+			nameUL4(),
+			"obj", Signature.required,
+			"fmt", Signature.required,
+			"lang", null
+		);
 	}
 
 	public Object evaluate(Object[] args)

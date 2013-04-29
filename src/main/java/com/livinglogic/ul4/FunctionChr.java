@@ -15,9 +15,12 @@ public class FunctionChr extends Function
 		return "chr";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("i");
+		return new Signature(
+			nameUL4(),
+			"i", Signature.required
+		);
 	}
 
 	public Object evaluate(Object[] args)

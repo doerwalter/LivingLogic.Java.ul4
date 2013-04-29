@@ -18,9 +18,12 @@ public class FunctionFromJSON extends Function
 		return "fromjson";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("string");
+		return new Signature(
+			nameUL4(),
+			"string", Signature.required
+		);
 	}
 
 	public Object evaluate(Object[] args)

@@ -15,11 +15,14 @@ public class FunctionTimeDelta extends Function
 		return "timedelta";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("days", 0);
-		signature.add("seconds", 0);
-		signature.add("microseconds", 0);
+		return new Signature(
+			nameUL4(),
+			"days", 0,
+			"seconds", 0,
+			"microseconds", 0
+		);
 	}
 
 	public Object evaluate(Object[] args)

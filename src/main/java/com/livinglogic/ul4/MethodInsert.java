@@ -16,10 +16,13 @@ public class MethodInsert extends NormalMethod
 		return "insert";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("pos");
-		signature.setRemainingArguments("items");
+		return new Signature(
+			nameUL4(),
+			"pos", Signature.required,
+			"items", Signature.remainingArguments
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

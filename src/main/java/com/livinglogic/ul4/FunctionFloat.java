@@ -17,9 +17,12 @@ public class FunctionFloat extends Function
 		return "float";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("obj", 0.0);
+		return new Signature(
+			nameUL4(),
+			"obj", 0.0
+		);
 	}
 
 	public Object evaluate(Object[] args)

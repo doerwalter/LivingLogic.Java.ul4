@@ -16,9 +16,12 @@ public class FunctionRandChoice extends Function
 		return "randchoice";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("sequence");
+		return new Signature(
+			nameUL4(),
+			"sequence", Signature.required
+		);
 	}
 
 	public Object evaluate(Object[] args)

@@ -18,9 +18,12 @@ public class MethodWeek extends NormalMethod
 		return "week";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("firstweekday", null);
+		return new Signature(
+			nameUL4(),
+			"firstweekday", null
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

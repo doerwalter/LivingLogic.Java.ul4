@@ -15,9 +15,12 @@ public class FunctionPrint extends FunctionWithContext
 		return "print";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.setRemainingArguments("values");
+		return new Signature(
+			nameUL4(),
+			"values", Signature.remainingArguments
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

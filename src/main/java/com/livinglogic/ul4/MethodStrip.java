@@ -15,9 +15,12 @@ public class MethodStrip extends NormalMethod
 		return "strip";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("chars", null);
+		return new Signature(
+			nameUL4(),
+			"chars", null
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

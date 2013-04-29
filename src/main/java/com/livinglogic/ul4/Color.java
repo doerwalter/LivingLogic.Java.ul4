@@ -656,17 +656,17 @@ public class Color implements Collection, UL4Repr, UL4Len, UL4Type, UL4MethodCal
 		}
 	}
 
-	private Signature signatureR = new Signature("r", null, null);
-	private Signature signatureG = new Signature("g", null, null);
-	private Signature signatureB = new Signature("b", null, null);
-	private Signature signatureA = new Signature("a", null, null);
-	private Signature signatureLum = new Signature("lum", null, null);
-	private Signature signatureHLS = new Signature("hls", null, null);
-	private Signature signatureHLSA = new Signature("hlsa", null, null);
-	private Signature signatureHSV = new Signature("hsv", null, null);
-	private Signature signatureHSVA = new Signature("hsva", null, null);
-	private Signature signatureWithA = new Signature("witha", null, null, "a", Signature.required);
-	private Signature signatureWithLum = new Signature("withlum", null, null, "lum", Signature.required);
+	private Signature signatureR = new Signature("r");
+	private Signature signatureG = new Signature("g");
+	private Signature signatureB = new Signature("b");
+	private Signature signatureA = new Signature("a");
+	private Signature signatureLum = new Signature("lum");
+	private Signature signatureHLS = new Signature("hls");
+	private Signature signatureHLSA = new Signature("hlsa");
+	private Signature signatureHSV = new Signature("hsv");
+	private Signature signatureHSVA = new Signature("hsva");
+	private Signature signatureWithA = new Signature("witha", "a", Signature.required);
+	private Signature signatureWithLum = new Signature("withlum", "lum", Signature.required);
 
 	public Object callMethodUL4(String methodName, Object[] args, Map<String, Object> kwargs)
 	{

@@ -15,11 +15,14 @@ public class MethodRFind extends NormalMethod
 		return "rfind";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.add("sub");
-		signature.add("start", null);
-		signature.add("end", null);
+		return new Signature(
+			nameUL4(),
+			"sub", Signature.required,
+			"start", null,
+			"end", null
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

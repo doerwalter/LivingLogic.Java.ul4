@@ -148,7 +148,7 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 		return months < 0 ? new MonthDelta(-months) : this;
 	}
 
-	private Signature signatureMonths = new Signature("months", null, null);
+	private Signature signatureMonths = new Signature("months");
 
 	public Object callMethodUL4(String methodName, Object[] args, Map<String, Object> kwargs)
 	{

@@ -14,17 +14,15 @@ public abstract class NormalMethod implements Method, UL4Name
 
 	private Signature signature = null;
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
+		return new Signature(nameUL4());
 	}
 
 	private Signature getSignature()
 	{
 		if (signature == null)
-		{
-			signature = new Signature(nameUL4());
-			makeSignature(signature);
-		}
+			signature = makeSignature();
 		return signature;
 	}
 

@@ -16,10 +16,13 @@ public class MethodUpdate extends NormalMethod
 		return "update";
 	}
 
-	protected void makeSignature(Signature signature)
+	protected Signature makeSignature()
 	{
-		signature.setRemainingArguments("others");
-		signature.setRemainingKeywordArguments("kwargs");
+		return new Signature(
+			nameUL4(),
+			"others", Signature.remainingArguments,
+			"kwargs", Signature.remainingKeywordArguments
+		);
 	}
 
 	public Object evaluate(EvaluationContext context, Object obj, Object[] args)

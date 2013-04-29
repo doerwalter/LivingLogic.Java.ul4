@@ -321,9 +321,9 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		return days < 0 ? new TimeDelta(-days, -seconds, -microseconds) : this;
 	}
 
-	private Signature signatureDays = new Signature("days", null, null);
-	private Signature signatureSeconds = new Signature("seconds", null, null);
-	private Signature signatureMicroseconds = new Signature("microseconds", null, null);
+	private Signature signatureDays = new Signature("days");
+	private Signature signatureSeconds = new Signature("seconds");
+	private Signature signatureMicroseconds = new Signature("microseconds");
 
 	public Object callMethodUL4(String methodName, Object[] args, Map<String, Object> kwargs)
 	{
