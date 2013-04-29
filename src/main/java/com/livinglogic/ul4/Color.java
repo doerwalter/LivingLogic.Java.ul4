@@ -670,43 +670,62 @@ public class Color implements Collection, UL4Repr, UL4Len, UL4Type, UL4MethodCal
 
 	public Object callMethodUL4(String methodName, Object[] args, Map<String, Object> kwargs)
 	{
-		switch (methodName)
+		if ("r".equals(methodName))
 		{
-			case "r":
-				args = signatureR.makeArgumentArray(args, kwargs);
-				return (int)r;
-			case "g":
-				args = signatureG.makeArgumentArray(args, kwargs);
-				return (int)g;
-			case "b":
-				args = signatureB.makeArgumentArray(args, kwargs);
-				return (int)b;
-			case "a":
-				args = signatureA.makeArgumentArray(args, kwargs);
-				return (int)a;
-			case "lum":
-				args = signatureLum.makeArgumentArray(args, kwargs);
-				return lum();
-			case "hls":
-				args = signatureHLS.makeArgumentArray(args, kwargs);
-				return hls();
-			case "hlsa":
-				args = signatureHLSA.makeArgumentArray(args, kwargs);
-				return hlsa();
-			case "hsv":
-				args = signatureHSV.makeArgumentArray(args, kwargs);
-				return hsv();
-			case "hsva":
-				args = signatureHSVA.makeArgumentArray(args, kwargs);
-				return hsva();
-			case "witha":
-				args = signatureWithA.makeArgumentArray(args, kwargs);
-				return witha(Utils.toInt(args[0]));
-			case "withlum":
-				args = signatureWithLum.makeArgumentArray(args, kwargs);
-				return withlum(Utils.toDouble(args[0]));
-			default:
-				throw new UnknownMethodException(methodName);
+			args = signatureR.makeArgumentArray(args, kwargs);
+			return (int)r;
 		}
+		else if ("g".equals(methodName))
+		{
+			args = signatureG.makeArgumentArray(args, kwargs);
+			return (int)g;
+		}
+		else if ("b".equals(methodName))
+		{
+			args = signatureB.makeArgumentArray(args, kwargs);
+			return (int)b;
+		}
+		else if ("a".equals(methodName))
+		{
+			args = signatureA.makeArgumentArray(args, kwargs);
+			return (int)a;
+		}
+		else if ("lum".equals(methodName))
+		{
+			args = signatureLum.makeArgumentArray(args, kwargs);
+			return lum();
+		}
+		else if ("hls".equals(methodName))
+		{
+			args = signatureHLS.makeArgumentArray(args, kwargs);
+			return hls();
+		}
+		else if ("hlsa".equals(methodName))
+		{
+			args = signatureHLSA.makeArgumentArray(args, kwargs);
+			return hlsa();
+		}
+		else if ("hsv".equals(methodName))
+		{
+			args = signatureHSV.makeArgumentArray(args, kwargs);
+			return hsv();
+		}
+		else if ("hsva".equals(methodName))
+		{
+			args = signatureHSVA.makeArgumentArray(args, kwargs);
+			return hsva();
+		}
+		else if ("witha".equals(methodName))
+		{
+			args = signatureWithA.makeArgumentArray(args, kwargs);
+			return witha(Utils.toInt(args[0]));
+		}
+		else if ("withlum".equals(methodName))
+		{
+			args = signatureWithLum.makeArgumentArray(args, kwargs);
+			return withlum(Utils.toDouble(args[0]));
+		}
+		else
+			throw new UnknownMethodException(methodName);
 	}
 }

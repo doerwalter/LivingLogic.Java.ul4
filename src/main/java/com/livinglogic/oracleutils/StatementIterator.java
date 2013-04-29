@@ -52,7 +52,7 @@ public class StatementIterator implements Iterator<Map<String, Object>>, AutoClo
 		catch (Exception ex)
 		{
 			close();
-			throw ex;
+			throw new RuntimeException(ex);
 		}
 	}
 

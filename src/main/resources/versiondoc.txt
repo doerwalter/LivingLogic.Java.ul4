@@ -1,7 +1,6 @@
 exp-67:
 -------
 Comments:
-* Java 1.7 is required now.
 * Added function list().
 * Implemented support for custom methods via the interface UL4MethodCall and
   UL4MethodCallWithContext.

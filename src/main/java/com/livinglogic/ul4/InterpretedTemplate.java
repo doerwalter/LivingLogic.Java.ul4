@@ -386,9 +386,14 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 	 */
 	public void render(java.io.Writer writer, Map<String, Object> variables)
 	{
-		try (EvaluationContext context = new EvaluationContext(writer, variables))
+		EvaluationContext context = new EvaluationContext(writer, variables);
+		try
 		{
 			render(context);
+		}
+		finally
+		{
+			context.close();
 		}
 	}
 
@@ -398,9 +403,14 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 	 */
 	public String renders()
 	{
-		try (EvaluationContext context = new EvaluationContext(null, null))
+		EvaluationContext context = new EvaluationContext(null, null);
+		try
 		{
 			return renders(context);
+		}
+		finally
+		{
+			context.close();
 		}
 	}
 
@@ -508,20 +518,21 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 
 	public Object callMethodUL4(EvaluationContext context, String methodName, Object[] args, Map<String, Object> kwargs)
 	{
-		switch (methodName)
+		if ("render".equals(methodName))
 		{
-			case "render":
-				if (args.length > 0)
-					throw new PositionalArgumentsNotSupportedException(methodName);
-				render(context, kwargs);
-				return null;
-			case "renders":
-				if (args.length > 0)
-					throw new PositionalArgumentsNotSupportedException(methodName);
-				return renders(kwargs);
-			default:
-				throw new UnknownMethodException(methodName);
+			if (args.length > 0)
+				throw new PositionalArgumentsNotSupportedException(methodName);
+			render(context, kwargs);
+			return null;
 		}
+		else if ("renders".equals(methodName))
+		{
+			if (args.length > 0)
+				throw new PositionalArgumentsNotSupportedException(methodName);
+			return renders(kwargs);
+		}
+		else
+			throw new UnknownMethodException(methodName);
 	}
 
 	/**
@@ -586,9 +597,14 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 	 */
 	public Object call(Map<String, Object> variables)
 	{
-		try (EvaluationContext context = new EvaluationContext(null, variables))
+		EvaluationContext context = new EvaluationContext(null, variables);
+		try
 		{
 			return call(context);
+		}
+		finally
+		{
+			context.close();
 		}
 	}
 

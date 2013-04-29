@@ -50,19 +50,18 @@ public class Connection implements UL4MethodCallWithContext
 		return query(null, query, parameters);
 	}
 
-	Signature querySignature = new Signature("query", null, "parameters", "query", Signature.required);
+	private Signature querySignature = new Signature("query", null, "parameters", "query", Signature.required);
 
 	public Object callMethodUL4(EvaluationContext context, String methodName, Object[] args, Map<String, Object> kwargs)
 	{
-		switch (methodName)
+		if ("query".equals(methodName))
 		{
-			case "query":
-				args = querySignature.makeArgumentArray(args, kwargs);
-				if (!(args[0] instanceof String))
-					throw new UnsupportedOperationException("query must be string, not " + Utils.objectType(args[0]) + "!");
-				return query(context, (String)args[0], (Map<String, Object>)args[1]);
-			default:
-				throw new UnknownMethodException(methodName);
+			args = querySignature.makeArgumentArray(args, kwargs);
+			if (!(args[0] instanceof String))
+				throw new UnsupportedOperationException("query must be string, not " + Utils.objectType(args[0]) + "!");
+			return query(context, (String)args[0], (Map<String, Object>)args[1]);
 		}
+		else
+			throw new UnknownMethodException(methodName);
 	}
 }

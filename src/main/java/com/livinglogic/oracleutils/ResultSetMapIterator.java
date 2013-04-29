@@ -94,13 +94,9 @@ public class ResultSetMapIterator implements Iterator<Map<String, Object>>
 			else
 				nextRecord = null;
 		}
-		catch (SQLException ex)
-		{
-			throw new RuntimeException(ex);
-		}
 		catch (Exception ex)
 		{
-			throw ex;
+			throw new RuntimeException(ex);
 		}
 	}
 }

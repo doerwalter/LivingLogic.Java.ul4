@@ -52,20 +52,21 @@ public class TemplateClosure extends ObjectAsMap implements UL4CallWithContext, 
 
 	public Object callMethodUL4(EvaluationContext context, String methodName, Object[] args, Map<String, Object> kwargs)
 	{
-		switch (methodName)
+		if ("render".equals(methodName))
 		{
-			case "render":
-				if (args.length > 0)
-					throw new PositionalArgumentsNotSupportedException(methodName);
-				render(context, kwargs);
-				return null;
-			case "renders":
-				if (args.length > 0)
-					throw new PositionalArgumentsNotSupportedException(methodName);
-				return renders(context, kwargs);
-			default:
-				throw new UnknownMethodException(methodName);
+			if (args.length > 0)
+				throw new PositionalArgumentsNotSupportedException(methodName);
+			render(context, kwargs);
+			return null;
 		}
+		else if ("renders".equals(methodName))
+		{
+			if (args.length > 0)
+				throw new PositionalArgumentsNotSupportedException(methodName);
+			return renders(context, kwargs);
+		}
+		else
+			throw new UnknownMethodException(methodName);
 	}
 
 	public Object call(EvaluationContext context, Map<String, Object> variables)

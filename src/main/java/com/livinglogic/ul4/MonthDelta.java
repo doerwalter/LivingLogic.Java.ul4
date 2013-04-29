@@ -152,13 +152,12 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 
 	public Object callMethodUL4(String methodName, Object[] args, Map<String, Object> kwargs)
 	{
-		switch (methodName)
+		if ("months".equals(methodName))
 		{
-			case "months":
-				args = signatureMonths.makeArgumentArray(args, kwargs);
-				return months;
-			default:
-				throw new UnknownMethodException(methodName);
+			args = signatureMonths.makeArgumentArray(args, kwargs);
+			return months;
 		}
+		else
+			throw new UnknownMethodException(methodName);
 	}
 }
