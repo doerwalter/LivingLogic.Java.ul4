@@ -6,7 +6,7 @@
 
 package com.livinglogic.oracleutils;
 
-import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.ResultSetMetaData;
@@ -31,10 +31,14 @@ public class Connection implements UL4MethodCallWithContext
 
 	public Iterable<Map<String, Object>> query(CloseableRegistry closeableRegistry, String query, Map<String, Object> parameters)
 	{
-		PreparedStatement stmt;
+		CallableStatement stmt;
 		try
 		{
-			stmt = connection.prepareStatement(query);
+			stmt = connection.prepareCall(query);
+			for (String key : parameters.keySet())
+			{
+				stmt.setObject(key, parameters.get(key));
+			}
 			if (closeableRegistry != null)
 				closeableRegistry.registerCloseable(stmt);
 		}
