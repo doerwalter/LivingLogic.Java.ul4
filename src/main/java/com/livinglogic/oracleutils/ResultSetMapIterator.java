@@ -14,10 +14,7 @@ import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import oracle.sql.DATE;
-import oracle.sql.TIMESTAMP;
-import oracle.sql.TIMESTAMPLTZ;
-import oracle.sql.TIMESTAMPTZ;
+import static java.sql.Types.*;
 
 
 public class ResultSetMapIterator implements Iterator<Map<String, Object>>
@@ -71,21 +68,26 @@ public class ResultSetMapIterator implements Iterator<Map<String, Object>>
 				for (int i = 1; i <= numberOfColumns; ++i)
 				{
 					String key = metaData.getColumnLabel(i);
-					Object value = resultSet.getObject(i);
-
-					if (value instanceof DATE)
+					int type = metaData.getColumnType(i);
+					Object value;
+					if (type == DATE)
 						value = resultSet.getDate(i);
-					else if (value instanceof TIMESTAMP || value instanceof TIMESTAMPLTZ || value instanceof TIMESTAMPTZ)
+					else if (type == TIMESTAMP
+					         // Don't use the constants from oracle.jdbc.OracleTypes, so that we don't require ojdbc.jar
+					         || type == -102 // oracle.jdbc.OracleTypes.TIMESTAMPLTZ
+					         || type == -100 // oracle.jdbc.OracleTypes.TIMESTAMPNS
+					         || type == -101) // oracle.jdbc.OracleTypes.TIMESTAMPTZ
 						value = resultSet.getTimestamp(i);
-					else if (value instanceof Clob)
+					else
 					{
-						Clob clob = (Clob)value;
-						value = clob.getSubString(1L, (int)clob.length());
-					}
-					else if (value instanceof BigDecimal)
-					{
-						if (metaData.getScale(i) <= 0)
-							value = ((BigDecimal)value).toBigInteger();
+						value = resultSet.getObject(i);
+						if (value instanceof Clob)
+							value = ((Clob)value).getSubString(1L, (int)((Clob)value).length());
+						else if (value instanceof BigDecimal)
+						{
+							if (metaData.getScale(i) <= 0)
+								value = ((BigDecimal)value).toBigInteger();
+						}
 					}
 					record.put(key, value);
 				}
