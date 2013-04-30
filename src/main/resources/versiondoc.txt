@@ -1,3 +1,10 @@
+exp-68:
+-------
+Comments:
+* Renamed package com.livinglogic.oracleutils to com.livinglogic.dbutils, since
+  it is no longer Oracle specific.
+
+
 exp-67:
 -------
 Comments:

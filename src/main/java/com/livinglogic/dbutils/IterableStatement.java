@@ -4,7 +4,7 @@
 ** See LICENSE for the license
 */
 
-package com.livinglogic.oracleutils;
+package com.livinglogic.dbutils;
 
 import java.util.Map;
 import java.util.Iterator;
