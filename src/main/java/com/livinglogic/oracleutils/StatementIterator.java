@@ -12,10 +12,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.livinglogic.utils.Closeable;
 import com.livinglogic.utils.CloseableRegistry;
 
 
-public class StatementIterator implements Iterator<Map<String, Object>>, AutoCloseable
+public class StatementIterator implements Iterator<Map<String, Object>>, Closeable
 {
 	private ResultSet resultSet;
 	Iterator<Map<String, Object>> resultSetIterator;
@@ -31,7 +32,7 @@ public class StatementIterator implements Iterator<Map<String, Object>>, AutoClo
 			throw new RuntimeException(ex);
 		}
 		if (closeableRegistry != null)
-			closeableRegistry.registerCloseable(this.resultSet);
+			closeableRegistry.registerCloseable(new Closeable() { public void close() {try { resultSet.close(); } catch (SQLException ex) {} } } );
 		this.resultSetIterator = new ResultSetMapIterator(this.resultSet);
 	}
 

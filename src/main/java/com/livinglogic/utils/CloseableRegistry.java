@@ -8,5 +8,5 @@ package com.livinglogic.utils;
 
 public interface CloseableRegistry
 {
-	public void registerCloseable(AutoCloseable closeable);
+	public void registerCloseable(Closeable closeable);
 }

@@ -18,6 +18,7 @@ import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.UnknownMethodException;
 import com.livinglogic.ul4.Utils;
+import com.livinglogic.utils.Closeable;
 import com.livinglogic.utils.CloseableRegistry;
 
 public class Connection implements UL4MethodCallWithContext
@@ -31,7 +32,7 @@ public class Connection implements UL4MethodCallWithContext
 
 	public Iterable<Map<String, Object>> query(CloseableRegistry closeableRegistry, String query, Map<String, Object> parameters)
 	{
-		CallableStatement stmt;
+		final CallableStatement stmt;
 		try
 		{
 			stmt = connection.prepareCall(query);
@@ -40,7 +41,7 @@ public class Connection implements UL4MethodCallWithContext
 				stmt.setObject(key, parameters.get(key));
 			}
 			if (closeableRegistry != null)
-				closeableRegistry.registerCloseable(stmt);
+				closeableRegistry.registerCloseable(new Closeable() { public void close() {try { stmt.close(); } catch (SQLException ex) {} } } );
 		}
 		catch (SQLException ex)
 		{
