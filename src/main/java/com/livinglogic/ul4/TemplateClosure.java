@@ -10,8 +10,8 @@ import java.io.Writer;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
-import com.livinglogic.utils.ObjectAsMap;
 import com.livinglogic.utils.MapChain;
 
 /**
@@ -20,7 +20,7 @@ import com.livinglogic.utils.MapChain;
  * @author W. Doerwald
  */
 
-public class TemplateClosure extends ObjectAsMap implements UL4CallWithContext, UL4MethodCallWithContext, UL4Name, UL4Type
+public class TemplateClosure implements UL4CallWithContext, UL4MethodCallWithContext, UL4Name, UL4Type, UL4Attributes
 {
 	private InterpretedTemplate template;
 	private Map<String, Object> variables;
@@ -89,23 +89,15 @@ public class TemplateClosure extends ObjectAsMap implements UL4CallWithContext, 
 		return "template";
 	}
 
-	private static Map<String, ValueMaker> valueMakers = null;
+	protected static Set<String> attributes = InterpretedTemplate.attributes;
 
-	public Map<String, ValueMaker> getValueMakers()
+	public Set<String> getAttributeNamesUL4()
 	{
-		if (valueMakers == null)
-		{
-			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
-			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((TemplateClosure)object).getTemplate().nameUL4();}});
-			// The following attributes will only work if the template really is an InterpretedTemplate
-			v.put("location", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)((TemplateClosure)object).getTemplate()).getLocation();}});
-			v.put("endlocation", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)((TemplateClosure)object).getTemplate()).getEndLocation();}});
-			v.put("content", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)((TemplateClosure)object).getTemplate()).getContent();}});
-			v.put("startdelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)((TemplateClosure)object).getTemplate()).getStartDelim();}});
-			v.put("enddelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)((TemplateClosure)object).getTemplate()).getEndDelim();}});
-			v.put("source", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)((TemplateClosure)object).getTemplate()).getSource();}});
-			valueMakers = v;
-		}
-		return valueMakers;
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		return template.getItemStringUL4(key);
 	}
 }

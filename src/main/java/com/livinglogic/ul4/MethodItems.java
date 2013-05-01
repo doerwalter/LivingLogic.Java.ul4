@@ -27,10 +27,17 @@ public class MethodItems extends NormalMethod
 		return new MapItemIterator(obj);
 	}
 
+	public static Object call(UL4Attributes obj)
+	{
+		return new UL4AttributeItemsIterator(obj);
+	}
+
 	public static Object call(Object obj)
 	{
 		if (obj instanceof Map)
 			return call((Map)obj);
+		else if (obj instanceof UL4Attributes)
+			return call((UL4Attributes)obj);
 		throw new ArgumentTypeMismatchException("{}.items()", obj);
 	}
 
@@ -54,6 +61,37 @@ public class MethodItems extends NormalMethod
 			Map.Entry entry = (Map.Entry)iterator.next();
 			retVal.add(entry.getKey());
 			retVal.add(entry.getValue());
+			return retVal;
+		}
+
+		public void remove()
+		{
+			iterator.remove();
+		}
+	}
+
+	private static class UL4AttributeItemsIterator implements Iterator<Vector>
+	{
+		UL4Attributes obj;
+		Iterator<String> iterator;
+
+		public UL4AttributeItemsIterator(UL4Attributes obj)
+		{
+			this.obj = obj;
+			this.iterator = obj.getAttributeNamesUL4().iterator();
+		}
+
+		public boolean hasNext()
+		{
+			return iterator.hasNext();
+		}
+
+		public Vector next()
+		{
+			Vector retVal = new Vector(2);
+			String attributeName = iterator.next();
+			retVal.add(attributeName);
+			retVal.add(obj.getItemStringUL4(attributeName));
 			return retVal;
 		}
 

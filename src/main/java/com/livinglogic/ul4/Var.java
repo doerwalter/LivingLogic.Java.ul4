@@ -9,7 +9,10 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
+import static com.livinglogic.utils.SetUtils.union;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
@@ -45,16 +48,18 @@ public class Var extends AST
 		name = (String)decoder.load();
 	}
 
-	private static Map<String, ValueMaker> valueMakers = null;
+	protected static Set<String> attributes = union(AST.attributes, makeSet("name"));
 
-	public Map<String, ValueMaker> getValueMakers()
+	public Set<String> getAttributeNamesUL4()
 	{
-		if (valueMakers == null)
-		{
-			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((Var)object).name;}});
-			valueMakers = v;
-		}
-		return valueMakers;
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("name".equals(key))
+			return name;
+		else
+			return super.getItemStringUL4(key);
 	}
 }

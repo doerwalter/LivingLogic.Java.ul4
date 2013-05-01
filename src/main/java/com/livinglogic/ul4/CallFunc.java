@@ -11,9 +11,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.LinkedHashMap;
 import static java.util.Arrays.asList;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
+import static com.livinglogic.utils.SetUtils.union;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
@@ -37,37 +40,37 @@ public class CallFunc extends Callable
 		Object realobj = obj.decoratedEvaluate(context);
 
 		Object[] realArgs;
-		if (remainingArgs != null)
+		if (remainingArguments != null)
 		{
-			Object realRemainingArgs = remainingArgs.decoratedEvaluate(context);
-			if (!(realRemainingArgs instanceof List))
+			Object realRemainingArguments = remainingArguments.decoratedEvaluate(context);
+			if (!(realRemainingArguments instanceof List))
 				throw new RemainingArgumentsException(realobj);
 
-			int argsSize = args.size();
-			realArgs = new Object[argsSize + ((List)realRemainingArgs).size()];
+			int argsSize = arguments.size();
+			realArgs = new Object[argsSize + ((List)realRemainingArguments).size()];
 
 			for (int i = 0; i < argsSize; ++i)
-				realArgs[i] = args.get(i).decoratedEvaluate(context);
+				realArgs[i] = arguments.get(i).decoratedEvaluate(context);
 
-			for (int i = 0; i < ((List)realRemainingArgs).size(); ++i)
-				realArgs[argsSize + i] = ((List)realRemainingArgs).get(i);
+			for (int i = 0; i < ((List)realRemainingArguments).size(); ++i)
+				realArgs[argsSize + i] = ((List)realRemainingArguments).get(i);
 		}
 		else
 		{
-			realArgs = new Object[args.size()];
+			realArgs = new Object[arguments.size()];
 
 			for (int i = 0; i < realArgs.length; ++i)
-				realArgs[i] = args.get(i).decoratedEvaluate(context);
+				realArgs[i] = arguments.get(i).decoratedEvaluate(context);
 		}
 
 		Map<String, Object> realKWArgs = new LinkedHashMap<String, Object>();
 
-		for (KeywordArgument arg : kwargs)
+		for (KeywordArgument arg : keywordArguments)
 			realKWArgs.put(arg.getName(), arg.getArg().decoratedEvaluate(context));
 
-		if (remainingKWArgs != null)
+		if (remainingKeywordArguments != null)
 		{
-			Object realRemainingKWArgs = remainingKWArgs.decoratedEvaluate(context);
+			Object realRemainingKWArgs = remainingKeywordArguments.decoratedEvaluate(context);
 			if (!(realRemainingKWArgs instanceof Map))
 				throw new RemainingKeywordArgumentsException(realobj);
 			for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)realRemainingKWArgs).entrySet())
@@ -107,38 +110,39 @@ public class CallFunc extends Callable
 	{
 		super.dumpUL4ON(encoder);
 		encoder.dump(obj);
-		encoder.dump(args);
-		List kwargList = new LinkedList();
-		for (KeywordArgument arg : kwargs)
-			kwargList.add(asList(arg.getName(), arg.getArg()));
-		encoder.dump(kwargList);
-		encoder.dump(remainingArgs);
-		encoder.dump(remainingKWArgs);
+		encoder.dump(arguments);
+		List keywordArgumentList = new LinkedList();
+		for (KeywordArgument arg : keywordArguments)
+			keywordArgumentList.add(asList(arg.getName(), arg.getArg()));
+		encoder.dump(keywordArgumentList);
+		encoder.dump(remainingArguments);
+		encoder.dump(remainingKeywordArguments);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
 		obj = (AST)decoder.load();
-		args = (List<AST>)decoder.load();
-		List<List> kwargList = (List<List>)decoder.load();
-		for (List arg : kwargList)
+		arguments = (List<AST>)decoder.load();
+		List<List> keywordArgumentList = (List<List>)decoder.load();
+		for (List arg : keywordArgumentList)
 			append((String)arg.get(0), (AST)arg.get(1));
-		remainingArgs = (AST)decoder.load();
-		remainingKWArgs = (AST)decoder.load();
+		remainingArguments = (AST)decoder.load();
+		remainingKeywordArguments = (AST)decoder.load();
 	}
 
-	private static Map<String, ValueMaker> valueMakers = null;
+	protected static Set<String> attributes = union(Callable.attributes, makeSet("obj"));
 
-	public Map<String, ValueMaker> getValueMakers()
+	public Set<String> getAttributeNamesUL4()
 	{
-		if (valueMakers == null)
-		{
-			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("obj", new ValueMaker(){public Object getValue(Object object){return ((CallFunc)object).obj;}});
-			v.put("args", new ValueMaker(){public Object getValue(Object object){return ((CallFunc)object).args;}});
-			valueMakers = v;
-		}
-		return valueMakers;
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("obj".equals(key))
+			return obj;
+		else
+			return super.getItemStringUL4(key);
 	}
 }

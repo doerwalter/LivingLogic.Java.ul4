@@ -10,9 +10,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
+import static com.livinglogic.utils.SetUtils.union;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
@@ -131,18 +134,22 @@ public class GetSlice extends AST
 		throw new ArgumentTypeMismatchException("{}[{}:{}]", obj, startIndex, endIndex);
 	}
 
-	private static Map<String, ValueMaker> valueMakers = null;
+	protected static Set<String> attributes = union(AST.attributes, makeSet("obj", "index1", "index2"));
 
-	public Map<String, ValueMaker> getValueMakers()
+	public Set<String> getAttributeNamesUL4()
 	{
-		if (valueMakers == null)
-		{
-			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("obj", new ValueMaker(){public Object getValue(Object object){return ((GetSlice)object).obj;}});
-			v.put("index1", new ValueMaker(){public Object getValue(Object object){return ((GetSlice)object).index1;}});
-			v.put("index2", new ValueMaker(){public Object getValue(Object object){return ((GetSlice)object).index2;}});
-			valueMakers = v;
-		}
-		return valueMakers;
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("obj".equals(key))
+			return obj;
+		else if ("index1".equals(key))
+			return index1;
+		else if ("index2".equals(key))
+			return index2;
+		else
+			return super.getItemStringUL4(key);
 	}
 }

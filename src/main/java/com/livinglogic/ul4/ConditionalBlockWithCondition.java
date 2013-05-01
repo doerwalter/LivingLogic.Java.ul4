@@ -9,7 +9,10 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
+import static com.livinglogic.utils.SetUtils.union;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
@@ -52,16 +55,18 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 		condition = (AST)decoder.load();
 	}
 
-	private static Map<String, ValueMaker> valueMakers = null;
+	protected static Set<String> attributes = union(ConditionalBlock.attributes, makeSet("condition"));
 
-	public Map<String, ValueMaker> getValueMakers()
+	public Set<String> getAttributeNamesUL4()
 	{
-		if (valueMakers == null)
-		{
-			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("condition", new ValueMaker(){public Object getValue(Object object){return ((ConditionalBlockWithCondition)object).condition;}});
-			valueMakers = v;
-		}
-		return valueMakers;
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("condition".equals(key))
+			return condition;
+		else
+			return super.getItemStringUL4(key);
 	}
 }

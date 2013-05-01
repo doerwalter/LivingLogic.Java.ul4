@@ -11,9 +11,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.LinkedHashMap;
 import static java.util.Arrays.asList;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
+import static com.livinglogic.utils.SetUtils.union;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.utils.MapUtils;
@@ -81,37 +84,37 @@ public class CallMeth extends Callable
 	{
 		Object obj = this.obj.decoratedEvaluate(context);
 
-		Object[] realArgs;
-		if (remainingArgs != null)
+		Object[] realArguments;
+		if (remainingArguments != null)
 		{
-			Object realRemainingArgs = remainingArgs.decoratedEvaluate(context);
-			if (!(realRemainingArgs instanceof List))
+			Object realRemainingArguments = remainingArguments.decoratedEvaluate(context);
+			if (!(realRemainingArguments instanceof List))
 				throw new RemainingArgumentsException(methodName);
 
-			realArgs = new Object[args.size() + remainingArgs.size()];
+			realArguments = new Object[arguments.size() + ((List)realRemainingArguments).size()];
 
-			for (int i = 0; i < realArgs.length; ++i)
-				realArgs[i] = args.get(i).decoratedEvaluate(context);
+			for (int i = 0; i < realArguments.length; ++i)
+				realArguments[i] = arguments.get(i).decoratedEvaluate(context);
 
-			for (int i = 0; i < ((List)realRemainingArgs).size(); ++i)
-				realArgs[args.size() + i] = ((List)realRemainingArgs).get(i);
+			for (int i = 0; i < ((List)realRemainingArguments).size(); ++i)
+				realArguments[arguments.size() + i] = ((List)realRemainingArguments).get(i);
 		}
 		else
 		{
-			realArgs = new Object[args.size()];
+			realArguments = new Object[arguments.size()];
 
-			for (int i = 0; i < realArgs.length; ++i)
-				realArgs[i] = args.get(i).decoratedEvaluate(context);
+			for (int i = 0; i < realArguments.length; ++i)
+				realArguments[i] = arguments.get(i).decoratedEvaluate(context);
 		}
 
-		Map<String, Object> realKWArgs = new LinkedHashMap<String, Object>();
+		Map<String, Object> realKeywordArguments = new LinkedHashMap<String, Object>();
 
-		for (KeywordArgument arg : kwargs)
-			realKWArgs.put(arg.getName(), arg.getArg().decoratedEvaluate(context));
+		for (KeywordArgument arg : keywordArguments)
+			realKeywordArguments.put(arg.getName(), arg.getArg().decoratedEvaluate(context));
 
-		if (remainingKWArgs != null)
+		if (remainingKeywordArguments != null)
 		{
-			Object realRemainingKWArgs = remainingKWArgs.decoratedEvaluate(context);
+			Object realRemainingKWArgs = remainingKeywordArguments.decoratedEvaluate(context);
 			if (!(realRemainingKWArgs instanceof Map))
 				throw new RemainingKeywordArgumentsException(methodName);
 			for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)realRemainingKWArgs).entrySet())
@@ -119,18 +122,18 @@ public class CallMeth extends Callable
 				Object argumentName = entry.getKey();
 				if (!(argumentName instanceof String))
 					throw new RemainingKeywordArgumentsException(methodName);
-				if (realKWArgs.containsKey(argumentName))
+				if (realKeywordArguments.containsKey(argumentName))
 					throw new DuplicateArgumentException(methodName, (String)argumentName);
-				realKWArgs.put((String)argumentName, entry.getValue());
+				realKeywordArguments.put((String)argumentName, entry.getValue());
 			}
 		}
 
 		if (obj instanceof UL4MethodCall)
-			return ((UL4MethodCall)obj).callMethodUL4(methodName, realArgs, realKWArgs);
+			return ((UL4MethodCall)obj).callMethodUL4(methodName, realArguments, realKeywordArguments);
 		else if (obj instanceof UL4MethodCallWithContext)
-			return ((UL4MethodCallWithContext)obj).callMethodUL4(context, methodName, realArgs, realKWArgs);
+			return ((UL4MethodCallWithContext)obj).callMethodUL4(context, methodName, realArguments, realKeywordArguments);
 		else
-			return getBuiltinMethod(methodName).evaluate(context, obj, realArgs, realKWArgs);
+			return getBuiltinMethod(methodName).evaluate(context, obj, realArguments, realKeywordArguments);
 	}
 
 	private static Method getBuiltinMethod(String methodName)
@@ -146,13 +149,13 @@ public class CallMeth extends Callable
 		super.dumpUL4ON(encoder);
 		encoder.dump(methodName);
 		encoder.dump(obj);
-		encoder.dump(args);
+		encoder.dump(arguments);
 		List kwargList = new LinkedList();
-		for (KeywordArgument arg : kwargs)
+		for (KeywordArgument arg : keywordArguments)
 			kwargList.add(asList(arg.getName(), arg.getArg()));
 		encoder.dump(kwargList);
-		encoder.dump(remainingArgs);
-		encoder.dump(remainingKWArgs);
+		encoder.dump(remainingArguments);
+		encoder.dump(remainingKeywordArguments);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
@@ -160,27 +163,28 @@ public class CallMeth extends Callable
 		super.loadUL4ON(decoder);
 		methodName = (String)decoder.load();
 		obj = (AST)decoder.load();
-		args = (List<AST>)decoder.load();
-		List<List> kwargList = (List<List>)decoder.load();
-		for (List arg : kwargList)
+		arguments = (List<AST>)decoder.load();
+		List<List> keywordArgumentList = (List<List>)decoder.load();
+		for (List arg : keywordArgumentList)
 			append((String)arg.get(0), (AST)arg.get(1));
-		remainingArgs = (AST)decoder.load();
-		remainingKWArgs = (AST)decoder.load();
+		remainingArguments = (AST)decoder.load();
+		remainingKeywordArguments = (AST)decoder.load();
 	}
 
-	private static Map<String, ValueMaker> valueMakers = null;
+	protected static Set<String> attributes = union(Callable.attributes, makeSet("obj", "methname"));
 
-	public Map<String, ValueMaker> getValueMakers()
+	public Set<String> getAttributeNamesUL4()
 	{
-		if (valueMakers == null)
-		{
-			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("obj", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).obj;}});
-			v.put("methname", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).methodName;}});
-			v.put("args", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).args;}});
-			v.put("kwargs", new ValueMaker(){public Object getValue(Object object){return ((CallMeth)object).kwargs;}});
-			valueMakers = v;
-		}
-		return valueMakers;
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("obj".equals(key))
+			return obj;
+		else if ("methname".equals(key))
+			return methodName;
+		else
+			return super.getItemStringUL4(key);
 	}
 }

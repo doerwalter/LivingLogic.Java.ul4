@@ -237,6 +237,8 @@ public class Utils
 			return ((Iterable)obj).iterator();
 		else if (obj instanceof Map)
 			return ((Map)obj).keySet().iterator();
+		else if (obj instanceof UL4Attributes)
+			return ((UL4Attributes)obj).getAttributeNamesUL4().iterator();
 		else if (obj instanceof Object[])
 			return Arrays.asList((Object[])obj).iterator();
 		else if (obj instanceof Iterator)

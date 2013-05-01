@@ -27,10 +27,44 @@ public class MethodValues extends NormalMethod
 		return obj.values();
 	}
 
+	public static Object call(UL4Attributes obj)
+	{
+		return new UL4AttributeValuesIterator(obj);
+	}
+
 	public static Object call(Object obj)
 	{
 		if (obj instanceof Map)
 			return call((Map)obj);
+		else if (obj instanceof UL4Attributes)
+			return call((UL4Attributes)obj);
 		throw new ArgumentTypeMismatchException("{}.values()", obj);
+	}
+
+	private static class UL4AttributeValuesIterator implements Iterator<Object>
+	{
+		UL4Attributes obj;
+		Iterator<String> iterator;
+
+		public UL4AttributeValuesIterator(UL4Attributes obj)
+		{
+			this.obj = obj;
+			this.iterator = obj.getAttributeNamesUL4().iterator();
+		}
+
+		public boolean hasNext()
+		{
+			return iterator.hasNext();
+		}
+
+		public Object next()
+		{
+			return obj.getItemStringUL4(iterator.next());
+		}
+
+		public void remove()
+		{
+			iterator.remove();
+		}
 	}
 }

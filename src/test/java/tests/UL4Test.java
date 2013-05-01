@@ -2,14 +2,16 @@ package tests;
 
 import static com.livinglogic.ul4on.Utils.dumps;
 import static com.livinglogic.utils.MapUtils.makeMap;
+import static com.livinglogic.utils.SetUtils.makeSet;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Date;
+import java.util.Set;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Date;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
@@ -31,11 +33,38 @@ import com.livinglogic.ul4.InterpretedTemplate;
 import com.livinglogic.ul4.FunctionDate;
 import com.livinglogic.ul4.KeyException;
 import com.livinglogic.ul4.SyntaxException;
+import com.livinglogic.ul4.UL4Attributes;
 
 
 @RunWith(CauseTestRunner.class)
 public class UL4Test
 {
+	private static class Point implements UL4Attributes
+	{
+		int x;
+		int y;
+
+		Point(int x, int y)
+		{
+			this.x = x;
+			this.y = y;
+		}
+
+		public Set<String> getAttributeNamesUL4()
+		{
+			return makeSet("x", "y");
+		}
+
+		public Object getItemStringUL4(String key)
+		{
+			if ("x".equals(key))
+				return x;
+			else if ("y".equals(key))
+				return y;
+			return new UndefinedKey(key);
+		}
+	}
+
 	private static InterpretedTemplate getTemplate(String source, String name, boolean keepWhitespace)
 	{
 		try
@@ -898,6 +927,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "x", "c", "y", makeMap("a", 1, "b", 2));
 		checkTemplateOutput("True", source, "x", 0xff, "y", new Color(0x00, 0x80, 0xff, 0x42));
 		checkTemplateOutput("False", source, "x", 0x23, "y", new Color(0x00, 0x80, 0xff, 0x42));
+		checkTemplateOutput("True", "<?print 'x' in p?>", "p", new Point(17, 23));
+		checkTemplateOutput("False", "<?print 'z' in p?>", "p", new Point(17, 23));
 	}
 
 	@Test
@@ -913,6 +944,8 @@ public class UL4Test
 		checkTemplateOutput("True", source, "x", "c", "y", makeMap("a", 1, "b", 2));
 		checkTemplateOutput("False", source, "x", 0xff, "y", new Color(0x00, 0x80, 0xff, 0x42));
 		checkTemplateOutput("True", source, "x", 0x23, "y", new Color(0x00, 0x80, 0xff, 0x42));
+		checkTemplateOutput("False", "<?print 'x' not in p?>", "p", new Point(17, 23));
+		checkTemplateOutput("True", "<?print 'z' not in p?>", "p", new Point(17, 23));
 	}
 
 	@Test
@@ -1438,6 +1471,7 @@ public class UL4Test
 		checkTemplateOutput("[\"g\", \"u\", \"r\", \"k\"]", "<?print list(data)?>", "data", "gurk");
 		checkTemplateOutput("[[\"foo\", 42]]", "<?print repr(list(data.items()))?>", "data", makeMap("foo", 42));
 		checkTemplateOutput("[0, 1, 2]", "<?print repr(list(range(3)))?>");
+		checkTemplateOutput("[\"x\", \"y\"]", "<?print repr(list(data))?>", "data", new Point(17, 23));
 		checkTemplateOutput("[\"g\", \"u\", \"r\", \"k\"]", "<?print list(iterable=data)?>", "data", "gurk");
 	}
 
@@ -1455,6 +1489,7 @@ public class UL4Test
 		checkTemplateOutput("3", source, "data", "foo");
 		checkTemplateOutput("3", source, "data", asList(1, 2, 3));
 		checkTemplateOutput("3", source, "data", makeMap("a", 1, "b", 2, "c", 3));
+		checkTemplateOutput("2", source, "data", new Point(17, 23));
 		checkTemplateOutput("3", "<?print len(sequence=data)?>", "data", "foo");
 	}
 
@@ -2898,12 +2933,14 @@ public class UL4Test
 	public void method_items()
 	{
 		checkTemplateOutput("a:42;b:17;c:23;", "<?for (key, value) in sorted(data.items())?><?print key?>:<?print value?>;<?end for?>", "data", makeMap("a", 42, "b", 17, "c", 23));
+		checkTemplateOutput("x:17;y:23;", "<?for (key, value) in data.items()?><?print key?>:<?print value?>;<?end for?>", "data", new Point(17, 23));
 	}
 
 	@Test
 	public void method_values()
 	{
 		checkTemplateOutput("17;23;42;", "<?for value in sorted(data.values())?><?print value?>;<?end for?>", "data", makeMap("a", 42, "b", 17, "c", 23));
+		checkTemplateOutput("17;23;", "<?for value in data.values()?><?print value?>;<?end for?>", "data", new Point(17, 23));
 	}
 
 	@Test

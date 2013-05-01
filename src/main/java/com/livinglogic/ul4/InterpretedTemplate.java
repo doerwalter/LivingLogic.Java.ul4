@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,6 +26,8 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.apache.commons.lang.StringUtils;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
+import static com.livinglogic.utils.SetUtils.union;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.ObjectFactory;
@@ -32,7 +35,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 import com.livinglogic.ul4on.Utils;
 
 
-public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithContext, UL4MethodCallWithContext, UL4Type
+public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithContext, UL4MethodCallWithContext, UL4Type, UL4Attributes
 {
 	/**
 	 * The version number used in the UL4ON dump of the template.
@@ -802,20 +805,26 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 		super.loadUL4ON(decoder);
 	}
 
-	private static Map<String, ValueMaker> valueMakers = null;
+	protected static Set<String> attributes = union(Block.attributes, makeSet("name", "keepws", "startdelim", "enddelim", "source"));
 
-	public Map<String, ValueMaker> getValueMakers()
+	public Set<String> getAttributeNamesUL4()
 	{
-		if (valueMakers == null)
-		{
-			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>(super.getValueMakers());
-			v.put("name", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).name;}});
-			v.put("keepws", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).keepWhitespace;}});
-			v.put("startdelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).startdelim;}});
-			v.put("enddelim", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).enddelim;}});
-			v.put("source", new ValueMaker(){public Object getValue(Object object){return ((InterpretedTemplate)object).source;}});
-			valueMakers = v;
-		}
-		return valueMakers;
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("name".equals(key))
+			return name;
+		else if ("keepws".equals(key))
+			return keepWhitespace;
+		else if ("startdelim".equals(key))
+			return startdelim;
+		else if ("enddelim".equals(key))
+			return enddelim;
+		else if ("source".equals(key))
+			return source;
+		else
+			return super.getItemStringUL4(key);
 	}
 }

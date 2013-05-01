@@ -9,18 +9,19 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.UL4ONSerializable;
-import com.livinglogic.utils.ObjectAsMap;
 
 /**
  * A {@code Location} object marks a position in the sourcecode of an UL4
  * template. It marks the position of either a template tag or of the literal
  * text between two template tags.
  */
-public class Location extends ObjectAsMap implements UL4ONSerializable
+public class Location implements UL4ONSerializable, UL4Attributes
 {
 	/**
 	* The template object this location belongs to
@@ -212,24 +213,34 @@ public class Location extends ObjectAsMap implements UL4ONSerializable
 		endcode = (Integer)decoder.load();
 	}
 
-	private static Map<String, ValueMaker> valueMakers = null;
+	private static Set<String> attributes = makeSet("root", "source", "type", "starttag", "endtag", "startcode", "endcode", "tag", "code");
 
-	public Map<String, ValueMaker> getValueMakers()
+	public Set<String> getAttributeNamesUL4()
 	{
-		if (valueMakers == null)
-		{
-			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
-			v.put("root", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getRoot();}});
-			v.put("source", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getSource();}});
-			v.put("type", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getType();}});
-			v.put("starttag", new ValueMaker(){public Object getValue(Object object){return ((Location)object).starttag;}});
-			v.put("endtag", new ValueMaker(){public Object getValue(Object object){return ((Location)object).endtag;}});
-			v.put("startcode", new ValueMaker(){public Object getValue(Object object){return ((Location)object).startcode;}});
-			v.put("endcode", new ValueMaker(){public Object getValue(Object object){return ((Location)object).endcode;}});
-			v.put("tag", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getTag();}});
-			v.put("code", new ValueMaker(){public Object getValue(Object object){return ((Location)object).getCode();}});
-			valueMakers = v;
-		}
-		return valueMakers;
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("root".equals(key))
+			return root;
+		else if ("source".equals(key))
+			return source;
+		else if ("type".equals(key))
+			return type;
+		else if ("starttag".equals(key))
+			return starttag;
+		else if ("endtag".equals(key))
+			return endtag;
+		else if ("startcode".equals(key))
+			return startcode;
+		else if ("endcode".equals(key))
+			return endcode;
+		else if ("tag".equals(key))
+			return getTag();
+		else if ("code".equals(key))
+			return getCode();
+		else
+			return new UndefinedKey(key);
 	}
 }

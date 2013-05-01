@@ -50,12 +50,19 @@ public class FunctionLen extends Function
 		return obj.size();
 	}
 
+	public static int call(UL4Attributes obj)
+	{
+		return obj.getAttributeNamesUL4().size();
+	}
+
 	public static Object call(Object obj)
 	{
 		if (obj instanceof String)
 			return call((String)obj);
 		else if (obj instanceof UL4Len)
 			return call((Map)obj);
+		else if (obj instanceof UL4Attributes)
+			return call((UL4Attributes)obj);
 		else if (obj instanceof Collection)
 			return call((Collection)obj);
 		else if (obj instanceof Map)

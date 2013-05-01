@@ -9,16 +9,17 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.UL4ONSerializable;
-import com.livinglogic.utils.ObjectAsMap;
 
 /**
  * The base class of all nodes in the abstract syntax tree.
  */
-public abstract class AST extends ObjectAsMap implements UL4ONSerializable
+public abstract class AST implements UL4ONSerializable, UL4Attributes
 {
 	/**
 	 * The source code location where this node appears in.
@@ -212,19 +213,24 @@ public abstract class AST extends ObjectAsMap implements UL4ONSerializable
 		end = (Integer)decoder.load();
 	}
 
-	private static Map<String, ValueMaker> valueMakers = null;
+	protected static Set<String> attributes = makeSet("type", "location", "start", "end");
 
-	public Map<String, ValueMaker> getValueMakers()
+	public Set<String> getAttributeNamesUL4()
 	{
-		if (valueMakers == null)
-		{
-			HashMap<String, ValueMaker> v = new HashMap<String, ValueMaker>();
-			v.put("type", new ValueMaker(){public Object getValue(Object object){return ((AST)object).getType();}});
-			v.put("location", new ValueMaker(){public Object getValue(Object object){return ((AST)object).getLocation();}});
-			v.put("start", new ValueMaker(){public Object getValue(Object object){return ((AST)object).getStart();}});
-			v.put("end", new ValueMaker(){public Object getValue(Object object){return ((AST)object).getEnd();}});
-			valueMakers = v;
-		}
-		return valueMakers;
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("type".equals(key))
+			return getType();
+		else if ("location".equals(key))
+			return location;
+		else if ("start".equals(key))
+			return start;
+		else if ("end".equals(key))
+			return end;
+		else
+			return new UndefinedKey(key);
 	}
 }
