@@ -3,6 +3,8 @@ exp-69:
 Comments:
 * Added interface UL4Attributes that extends UL4GetItemString and allows map
   style access to the attributes of an object.
+* Added interfaces UL4MethodCall and UL4MethodCallWithContext that allow
+  implementing arbitrary method calls.
 
 
 exp-68:
