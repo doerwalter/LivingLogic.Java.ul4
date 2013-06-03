@@ -8,19 +8,18 @@ package com.livinglogic.ul4;
 
 import java.util.Iterator;
 
-public abstract class FilteredIterator implements Iterator
+public abstract class FilteredIterator<T> implements Iterator<T>
 {
-	protected Object nextItem;
+	protected T nextItem;
 	protected boolean hasNextItem;
 
 	public FilteredIterator()
 	{
-		fetchNext();
 	}
 
 	abstract protected void fetchNext();
 
-	protected void haveNextItem(Object item)
+	protected void haveNextItem(T item)
 	{
 		hasNextItem = true;
 		nextItem = item;
@@ -37,9 +36,9 @@ public abstract class FilteredIterator implements Iterator
 		return hasNextItem;
 	}
 
-	public Object next()
+	public T next()
 	{
-		Object result = nextItem;
+		T result = nextItem;
 		fetchNext();
 		return result;
 	}

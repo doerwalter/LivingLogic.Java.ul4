@@ -2669,6 +2669,21 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_slice()
+	{
+		String source2 = "<?for i in slice(data[0], data[1])?><?print i?>;<?end for?>";
+		String source3 = "<?for i in slice(data[0], data[1], data[2])?><?print i?>;<?end for?>";
+		String source4 = "<?for i in slice(data[0], data[1], data[2], data[3])?><?print i?>;<?end for?>";
+
+		checkTemplateOutput("g;u;r;k;", source2, "data", asList("gurk", null));
+		checkTemplateOutput("g;u;", source2, "data", asList("gurk", 2));
+		checkTemplateOutput("u;r;", source3, "data", asList("gurk", 1, 3));
+		checkTemplateOutput("u;r;k;", source3, "data", asList("gurk", 1, null));
+		checkTemplateOutput("g;u;", source3, "data", asList("gurk", null, 2));
+		checkTemplateOutput("u;u;", source4, "data", asList("gurkgurk", 1, 6, 4));
+	}
+
+	@Test
 	public void function_zip()
 	{
 		String source2 = "<?for (ix, iy) in zip(x, y)?><?print ix?>-<?print iy?>;<?end for?>";

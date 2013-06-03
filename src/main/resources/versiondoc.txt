@@ -1,3 +1,9 @@
+exp-70:
+-------
+Comments:
+* Implemented function slice().
+
+
 exp-69:
 -------
 Comments:
