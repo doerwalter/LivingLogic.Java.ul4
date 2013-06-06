@@ -85,6 +85,26 @@ public class FunctionAsJSON extends Function
 			buffer.append(")");
 			return buffer.toString();
 		}
+		else if (obj instanceof UL4Attributes)
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.append("{");
+			boolean first = true;
+			Set<String> attributeNames = ((UL4Attributes)obj).getAttributeNamesUL4();
+			for (String attributeName : attributeNames)
+			{
+				if (first)
+					first = false;
+				else
+					sb.append(", ");
+				sb.append(call(attributeName));
+				sb.append(": ");
+				Object value = ((UL4Attributes)obj).getItemStringUL4(attributeName);
+				sb.append(call(value));
+			}
+			sb.append("}");
+			return sb.toString();
+		}
 		else if (obj instanceof Color)
 		{
 			Color c = (Color)obj;

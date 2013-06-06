@@ -1,3 +1,9 @@
+exp-71:
+-------
+Comments:
+* FunctionAsJSON now handles UL4Attributes objects.
+
+
 exp-70:
 -------
 Comments:
