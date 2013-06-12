@@ -6,9 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Random;
-import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class FunctionRandRange implements UL4Call
 {

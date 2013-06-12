@@ -6,11 +6,11 @@
 
 package com.livinglogic.dbutils;
 
-import java.util.Iterator;
-import java.util.Map;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.livinglogic.utils.Closeable;
 import com.livinglogic.utils.CloseableRegistry;

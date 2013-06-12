@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.math.BigInteger;
 
 public class FunctionHex extends Function

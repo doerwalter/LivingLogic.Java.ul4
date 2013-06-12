@@ -7,15 +7,12 @@
 package com.livinglogic.dbutils;
 
 import java.sql.CallableStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.ResultSetMetaData;
 import java.util.Map;
-import java.util.HashMap;
 
-import com.livinglogic.ul4.UL4MethodCallWithContext;
 import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.Signature;
+import com.livinglogic.ul4.UL4MethodCallWithContext;
 import com.livinglogic.ul4.UnknownMethodException;
 import com.livinglogic.ul4.Utils;
 import com.livinglogic.utils.Closeable;

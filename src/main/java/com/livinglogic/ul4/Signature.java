@@ -6,11 +6,12 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.Iterator;
-import java.util.ArrayList;
 import static java.util.Arrays.asList;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Signature implements Iterable<ArgumentDescription>
 {

@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

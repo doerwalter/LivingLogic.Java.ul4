@@ -6,8 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 public class MethodUpdate extends NormalMethod
 {

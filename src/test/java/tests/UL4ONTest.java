@@ -12,11 +12,10 @@ import java.util.Map;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
-import com.livinglogic.ul4.Undefined;
 import com.livinglogic.ul4.Color;
-import com.livinglogic.ul4.TimeDelta;
-import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.InterpretedTemplate;
+import com.livinglogic.ul4.MonthDelta;
+import com.livinglogic.ul4.TimeDelta;
 
 public class UL4ONTest
 {

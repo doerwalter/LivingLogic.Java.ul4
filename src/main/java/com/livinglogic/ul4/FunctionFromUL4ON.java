@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 
 public class FunctionFromUL4ON extends Function
 {

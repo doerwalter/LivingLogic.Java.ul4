@@ -9,16 +9,14 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
-import static com.livinglogic.utils.MapUtils.makeMap;
-import com.livinglogic.utils.MapChain;
-import com.livinglogic.utils.MapUtils;
 import com.livinglogic.utils.Closeable;
 import com.livinglogic.utils.CloseableRegistry;
+import com.livinglogic.utils.MapChain;
+import com.livinglogic.utils.MapUtils;
 
 /**
  * An {@code EvaluationContext} object is passed around calls to the node method

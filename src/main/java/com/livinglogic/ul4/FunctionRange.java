@@ -6,9 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-import java.util.Map;
 import java.util.AbstractList;
+import java.util.Map;
 
 public class FunctionRange implements UL4Call
 {

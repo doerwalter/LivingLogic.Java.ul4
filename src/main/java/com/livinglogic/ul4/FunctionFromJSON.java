@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;

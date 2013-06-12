@@ -6,18 +6,12 @@
 
 package com.livinglogic.ul4;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.LinkedHashMap;
-import static java.util.Arrays.asList;
-
 import static com.livinglogic.utils.SetUtils.makeSet;
 import static com.livinglogic.utils.SetUtils.union;
-import com.livinglogic.ul4on.Decoder;
-import com.livinglogic.ul4on.Encoder;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 public abstract class Callable extends AST
 {

@@ -6,12 +6,11 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import java.math.BigInteger;
-import java.math.BigDecimal;
 
 public class FunctionBool extends Function
 {

@@ -15,10 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.livinglogic.ul4.Undefined;
 import com.livinglogic.ul4.Color;
-import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.MonthDelta;
+import com.livinglogic.ul4.TimeDelta;
 
 /**
  * A {@code Decoder} object wraps a {@code Reader} object and can read any object

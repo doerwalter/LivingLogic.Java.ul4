@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
 import java.util.List;
 
 public class MethodAppend extends NormalMethod

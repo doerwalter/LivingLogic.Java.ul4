@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Vector;
-import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 

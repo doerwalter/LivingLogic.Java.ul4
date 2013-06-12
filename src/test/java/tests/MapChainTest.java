@@ -1,16 +1,15 @@
 package tests;
 
-import java.util.AbstractMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
-
 import static com.livinglogic.utils.MapUtils.makeMap;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
+
+import java.util.AbstractMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

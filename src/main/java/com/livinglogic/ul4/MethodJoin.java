@@ -8,8 +8,6 @@ package com.livinglogic.ul4;
 
 import java.util.Iterator;
 
-import org.apache.commons.lang.StringUtils;
-
 public class MethodJoin extends NormalMethod
 {
 	public String nameUL4()

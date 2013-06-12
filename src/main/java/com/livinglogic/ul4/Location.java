@@ -6,12 +6,11 @@
 
 package com.livinglogic.ul4;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
+
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.UL4ONSerializable;

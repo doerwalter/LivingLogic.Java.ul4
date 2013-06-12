@@ -6,9 +6,9 @@
 
 package com.livinglogic.dbutils;
 
-import java.util.Map;
-import java.util.Iterator;
 import java.sql.PreparedStatement;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.livinglogic.utils.CloseableRegistry;
 

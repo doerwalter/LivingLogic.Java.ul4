@@ -15,10 +15,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.livinglogic.ul4.Undefined;
 import com.livinglogic.ul4.Color;
-import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.MonthDelta;
+import com.livinglogic.ul4.TimeDelta;
 
 /**
  * An {@code Encoder} object wraps a {@code Writer} object and can dump any object

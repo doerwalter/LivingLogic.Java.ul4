@@ -6,15 +6,17 @@
 
 package com.livinglogic.dbutils;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
+import static java.sql.Types.DATE;
+import static java.sql.Types.TIMESTAMP;
+
 import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import static java.sql.Types.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 public class ResultSetMapIterator implements Iterator<Map<String, Object>>

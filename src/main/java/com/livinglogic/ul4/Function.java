@@ -6,9 +6,7 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.util.Map;
-import java.util.LinkedHashMap;
 
 public abstract class Function implements UL4Call, UL4Name, UL4Type
 {

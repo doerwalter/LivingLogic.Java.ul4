@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringEscapeUtils;
 
 public class FunctionCSV extends Function

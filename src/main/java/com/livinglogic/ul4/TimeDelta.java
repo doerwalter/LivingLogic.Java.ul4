@@ -6,11 +6,11 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Map;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Map;
 
 public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs, UL4MethodCall
 {

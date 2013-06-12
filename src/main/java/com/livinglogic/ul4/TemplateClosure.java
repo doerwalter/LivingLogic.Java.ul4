@@ -6,10 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.io.Writer;
-import java.io.StringWriter;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import com.livinglogic.utils.MapChain;

@@ -6,10 +6,9 @@
 
 package com.livinglogic.dbutils;
 
-import java.util.Map;
-import java.util.Iterator;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+import java.util.Iterator;
+import java.util.Map;
 
 
 public class IterableResultSet implements Iterable<Map<String, Object>>

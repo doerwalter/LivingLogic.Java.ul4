@@ -6,13 +6,15 @@
 
 package com.livinglogic.ul4;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
+import static com.livinglogic.utils.SetUtils.union;
+
 import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +26,7 @@ import java.util.regex.Pattern;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.apache.commons.lang.StringUtils;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-import static com.livinglogic.utils.SetUtils.union;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.ObjectFactory;
