@@ -24,6 +24,6 @@ public class UndefinedIndex extends Undefined
 
 	public String toString()
 	{
-		return "undefined object for index " + FunctionRepr.call(index);
+		return "UndefinedIndex(" + FunctionRepr.call(index) + ")";
 	}
 }

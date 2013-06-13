@@ -1,7 +1,13 @@
+exp-75:
+-------
+Comments:
+* Keys in database records are now converted to lower case.
+
+
 exp-74:
 -------
 Comments:
-* Addes support for triple quoted strings.
+* Added support for triple quoted strings.
 
 
 exp-73:

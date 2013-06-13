@@ -69,7 +69,7 @@ public class ResultSetMapIterator implements Iterator<Map<String, Object>>
 
 				for (int i = 1; i <= numberOfColumns; ++i)
 				{
-					String key = metaData.getColumnLabel(i);
+					String key = metaData.getColumnLabel(i).toLowerCase();
 					int type = metaData.getColumnType(i);
 					Object value;
 					if (type == DATE)

@@ -17,6 +17,6 @@ public class UndefinedVariable extends Undefined
 
 	public String toString()
 	{
-		return "undefined variable " + FunctionRepr.call(varname);
+		return "UndefinedVariable(" + FunctionRepr.call(varname) + ")";
 	}
 }

@@ -17,6 +17,6 @@ public class UndefinedKey extends Undefined
 
 	public String toString()
 	{
-		return "undefined object for key " + FunctionRepr.call(key);
+		return "UndefinedKey(" + FunctionRepr.call(key) + ")";
 	}
 }
