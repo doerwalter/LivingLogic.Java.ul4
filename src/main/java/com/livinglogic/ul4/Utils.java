@@ -307,6 +307,15 @@ public class Utils
 		return retVal;
 	}
 
+	private static String savesubstr(String string, int start, int stop)
+	{
+		if (start > string.length())
+			start = string.length();
+		if (stop > string.length())
+			stop = string.length();
+		return string.substring(start, stop);
+	}
+
 	public static String unescapeUL4String(String string)
 	{
 		if (string == null)
@@ -350,11 +359,37 @@ public class Utils
 						output.append('\'');
 						break;
 					case 'x':
-						output.append((char)Integer.parseInt(string.substring(i+1, i+3), 16));
+						int cx;
+						try
+						{
+							cx = Integer.parseInt(string.substring(i+1, i+3), 16);
+						}
+						catch (NumberFormatException ex)
+						{
+							throw new SyntaxException("illegal \\x escape: " + FunctionRepr.call(savesubstr(string, i+1, i+3)), ex);
+						}
+						catch (IndexOutOfBoundsException ex)
+						{
+							throw new SyntaxException("illegal \\x escape: " + FunctionRepr.call(savesubstr(string, i+1, i+3)), ex);
+						}
+						output.append((char)cx);
 						i += 3;
 						break;
 					case 'u':
-						output.append((char)Integer.parseInt(string.substring(i+1, i+5), 16));
+						int cu;
+						try
+						{
+							cu = Integer.parseInt(string.substring(i+1, i+5), 16);
+						}
+						catch (NumberFormatException ex)
+						{
+							throw new SyntaxException("illegal \\u escape: " + FunctionRepr.call(savesubstr(string, i+1, i+5)), ex);
+						}
+						catch (IndexOutOfBoundsException ex)
+						{
+							throw new SyntaxException("illegal \\u escape: " + FunctionRepr.call(savesubstr(string, i+1, i+5)), ex);
+						}
+						output.append((char)cu);
 						i += 5;
 						break;
 					case 'U':

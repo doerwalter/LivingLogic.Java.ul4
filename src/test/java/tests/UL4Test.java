@@ -260,6 +260,8 @@ public class UL4Test
 		checkTemplateOutput("gu\n\r\t\\rk", "<?print 'gu\\n\\r\\t\\\\rk'?>");
 		checkTemplateOutput("gu\r\nrk", "<?print '''gu\r\nrk'''?>");
 		checkTemplateOutput("gu\r\nrk", "<?print \"\"\"gu\r\nrk\"\"\"?>");
+		checkTemplateOutput("gu\r\nrk", "<?print str('''gu\r\nrk''')?>");
+		checkTemplateOutput("gu\r\nrk", "<?print str('''gu\\r\\nrk''')?>");
 		checkTemplateOutput("no", "<?if ''?>yes<?else?>no<?end if?>");
 		checkTemplateOutput("yes", "<?if 'foo'?>yes<?else?>no<?end if?>");
 	}

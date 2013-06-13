@@ -148,8 +148,8 @@ STRING
 	;
 
 STRING3
-	: '"""' ( ESC_SEQ | ~('\\'|'"""') )* '"""'
-	| '\'\'\'' ( ESC_SEQ | ~('\\'|'\'\'\'') )* '\'\'\''
+	: '"""' (options {greedy=false;}:.)* '"""'
+	| '\'\'\'' (options {greedy=false;}:.)* '\'\'\''
 	;
 
 fragment
