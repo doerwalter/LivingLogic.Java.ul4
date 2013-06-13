@@ -1,3 +1,10 @@
+exp-73:
+-------
+Comments:
+* Exception chains for compiler error now have an additional stack level that
+  shows the tag the compile error happened in.
+
+
 exp-72:
 -------
 Comments:

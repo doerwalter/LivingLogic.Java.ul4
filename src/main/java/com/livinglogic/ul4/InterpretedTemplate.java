@@ -234,7 +234,7 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 			}
 			catch (Exception ex)
 			{
-				throw new TemplateException(ex, this);
+				throw new TemplateException(new LocationException(ex, location), this);
 			}
 		}
 		if (stack.size() > 1) // the template itself is still on the stack
