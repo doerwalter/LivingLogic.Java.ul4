@@ -1,3 +1,9 @@
+exp-72:
+-------
+Comments:
+* Fixed a bug in the signature for Connection.query().
+
+
 exp-71:
 -------
 Comments:

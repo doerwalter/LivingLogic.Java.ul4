@@ -55,7 +55,7 @@ public class Connection implements UL4MethodCallWithContext
 	private Signature querySignature = new Signature(
 		"query",
 		"query", Signature.required,
-		"parameters", Signature.remainingArguments
+		"parameters", Signature.remainingKeywordArguments
 	);
 
 	public Object callMethodUL4(EvaluationContext context, String methodName, Object[] args, Map<String, Object> kwargs)
