@@ -168,6 +168,12 @@ public class UL4Test
 	}
 
 	@Test
+	public void whitespace()
+	{
+		checkTemplateOutput("40", "<?print\na\n+\nb\n?>", "a", 17, "b", 23);
+	}
+
+	@Test
 	public void type_none()
 	{
 		checkTemplateOutput("no", "<?if None?>yes<?else?>no<?end if?>");
@@ -252,6 +258,8 @@ public class UL4Test
 		checkTemplateOutput("\u20ac", "<?print \"\\u20ac\"?>");
 		checkTemplateOutput("gu\trk", "<?print 'gu\trk'?>");
 		checkTemplateOutput("gu\n\r\t\\rk", "<?print 'gu\\n\\r\\t\\\\rk'?>");
+		checkTemplateOutput("gu\r\nrk", "<?print '''gu\r\nrk'''?>");
+		checkTemplateOutput("gu\r\nrk", "<?print \"\"\"gu\r\nrk\"\"\"?>");
 		checkTemplateOutput("no", "<?if ''?>yes<?else?>no<?end if?>");
 		checkTemplateOutput("yes", "<?if 'foo'?>yes<?else?>no<?end if?>");
 	}

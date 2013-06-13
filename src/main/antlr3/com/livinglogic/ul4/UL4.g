@@ -147,6 +147,11 @@ STRING
 	| '\'' ( ESC_SEQ | ~('\\'|'\''|'\r'|'\n') )* '\''
 	;
 
+STRING3
+	: '"""' ( ESC_SEQ | ~('\\'|'"""') )* '"""'
+	| '\'\'\'' ( ESC_SEQ | ~('\\'|'\'\'\'') )* '\'\'\''
+	;
+
 fragment
 ESC_SEQ
 	: '\\' ('a'|'b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
@@ -195,6 +200,7 @@ float_ returns [AST node]
 
 string returns [AST node]
 	: STRING { $node = new Const(location, getStart($STRING), getEnd($STRING), Utils.unescapeUL4String($STRING.text.substring(1, $STRING.text.length()-1))); }
+	| STRING3 { $node = new Const(location, getStart($STRING3), getEnd($STRING3), Utils.unescapeUL4String($STRING3.text.substring(3, $STRING3.text.length()-3))); }
 	;
 
 date returns [AST node]
