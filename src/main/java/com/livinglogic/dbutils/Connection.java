@@ -8,6 +8,7 @@ package com.livinglogic.dbutils;
 
 import java.sql.CallableStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import com.livinglogic.ul4.EvaluationContext;
@@ -27,15 +28,22 @@ public class Connection implements UL4MethodCallWithContext
 		this.connection = connection;
 	}
 
-	public Iterable<Map<String, Object>> query(CloseableRegistry closeableRegistry, String query, Map<String, Object> parameters)
+	public Iterable<Map<String, Object>> query(CloseableRegistry closeableRegistry, String query, List args, Map<String, Object> kwargs)
 	{
 		final CallableStatement stmt;
 		try
 		{
 			stmt = connection.prepareCall(query);
-			for (String key : parameters.keySet())
+			int pos = 1;
+			if (args != null)
 			{
-				stmt.setObject(key, parameters.get(key));
+				for (Object arg : args)
+					stmt.setObject(pos++, arg);
+			}
+			if (kwargs != null)
+			{
+				for (String key : kwargs.keySet())
+					stmt.setObject(key, kwargs.get(key));
 			}
 			if (closeableRegistry != null)
 				closeableRegistry.registerCloseable(new Closeable() { public void close() {try { stmt.close(); } catch (SQLException ex) {} } } );
@@ -47,15 +55,16 @@ public class Connection implements UL4MethodCallWithContext
 		return new IterableStatement(closeableRegistry, stmt);
 	}
 
-	public Iterable<Map<String, Object>> query(String query, Map<String, Object> parameters)
+	public Iterable<Map<String, Object>> query(String query, List args, Map<String, Object> kwargs)
 	{
-		return query(null, query, parameters);
+		return query(null, query, args, kwargs);
 	}
 
 	private Signature querySignature = new Signature(
 		"query",
 		"query", Signature.required,
-		"parameters", Signature.remainingKeywordArguments
+		"args", Signature.remainingArguments,
+		"kwargs", Signature.remainingKeywordArguments
 	);
 
 	public Object callMethodUL4(EvaluationContext context, String methodName, Object[] args, Map<String, Object> kwargs)
@@ -65,7 +74,7 @@ public class Connection implements UL4MethodCallWithContext
 			args = querySignature.makeArgumentArray(args, kwargs);
 			if (!(args[0] instanceof String))
 				throw new UnsupportedOperationException("query must be string, not " + Utils.objectType(args[0]) + "!");
-			return query(context, (String)args[0], (Map<String, Object>)args[1]);
+			return query(context, (String)args[0], (List)args[1], (Map<String, Object>)args[2]);
 		}
 		else
 			throw new UnknownMethodException(methodName);

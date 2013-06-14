@@ -1,3 +1,9 @@
+exp-77:
+-------
+Comments:
+* Added support for positional parameters in com.livinglogic.dbutils.Connection.
+
+
 exp-76:
 -------
 Comments:
