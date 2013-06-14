@@ -155,13 +155,13 @@ STRING3
 /** the two '"'? cause a warning -- is there a way to avoid that? */
 fragment
 TRIQUOTE
-	: '"'? '"'? (ESC_SEQ|~('\\'|'"'))+
+	: ('"'|'""')? (ESC_SEQ|~('\\'|'"'))+
 	;
 
 /** the two '\''? cause a warning -- is there a way to avoid that? */
 fragment
 TRIAPOS
-	: '\''? '\''? (ESC_SEQ|~('\\'|'\''))+
+	: ('\''|'\'\'')? (ESC_SEQ|~('\\'|'\''))+
 	;
 
 fragment
