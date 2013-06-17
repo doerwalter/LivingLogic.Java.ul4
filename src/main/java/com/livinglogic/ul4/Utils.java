@@ -109,6 +109,20 @@ public class Utils
 		throw new UnsupportedOperationException("can't convert " + objectType(arg) + " to double!");
 	}
 
+	private static BigInteger intMinValue = new BigInteger(String.valueOf(Integer.MIN_VALUE));
+	private static BigInteger intMaxValue = new BigInteger(String.valueOf(Integer.MAX_VALUE));
+	private static BigInteger longMinValue = new BigInteger(String.valueOf(Long.MIN_VALUE));
+	private static BigInteger longMaxValue = new BigInteger(String.valueOf(Long.MAX_VALUE));
+
+	public static Object narrowBigInteger(BigInteger arg)
+	{
+		if (intMinValue.compareTo(arg) <= 0 && arg.compareTo(intMinValue) <= 0)
+			return arg.intValue();
+		else if (longMinValue.compareTo(arg) <= 0 && arg.compareTo(longMinValue) <= 0)
+			return arg.longValue();
+		return arg;
+	}
+
 	public static int cmp(int arg1, int arg2)
 	{
 		return ((arg1 > arg2) ? 1 : 0) - ((arg1 < arg2) ? 1 : 0);

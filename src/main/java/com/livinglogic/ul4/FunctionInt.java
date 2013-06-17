@@ -57,8 +57,10 @@ public class FunctionInt extends Function
 				}
 			}
 		}
-		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger)
+		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long)
 			return obj;
+		else if (obj instanceof BigInteger)
+			return Utils.narrowBigInteger((BigInteger)obj);
 		else if (obj instanceof Boolean)
 			return ((Boolean)obj).booleanValue() ? NumberUtils.INTEGER_ONE : NumberUtils.INTEGER_ZERO;
 		else if (obj instanceof Float || obj instanceof Double)

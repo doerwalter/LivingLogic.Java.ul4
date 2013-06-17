@@ -2,6 +2,8 @@ exp-78:
 -------
 Comments:
 * int(string) now returns a Long/BigInteger if the value overflows.
+* int() and com.livinglogic.dbutils.Connection now try to convert BigIntegers to
+  a narrower format (Integer/Long) if possible.
 
 
 exp-77:

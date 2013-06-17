@@ -9,6 +9,7 @@ package com.livinglogic.dbutils;
 import static java.sql.Types.DATE;
 import static java.sql.Types.TIMESTAMP;
 
+import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.ResultSet;
@@ -88,8 +89,10 @@ public class ResultSetMapIterator implements Iterator<Map<String, Object>>
 						else if (value instanceof BigDecimal)
 						{
 							if (metaData.getScale(i) <= 0)
-								value = ((BigDecimal)value).toBigInteger();
+								value = Utils.narrowBigInteger(((BigDecimal)value).toBigInteger());
 						}
+						else if (value instanceof BigInteger)
+							value = Utils.narrowBigInteger((BigInteger)value);
 					}
 					record.put(key, value);
 				}
