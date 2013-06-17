@@ -1419,6 +1419,8 @@ public class UL4Test
 		checkTemplateOutput("66", "<?print int(data, 16)?>", "data", "42");
 		checkTemplateOutput("42", "<?print int(obj=data, base=None)?>", "data", "42");
 		checkTemplateOutput("66", "<?print int(obj=data, base=16)?>", "data", "42");
+		checkTemplateOutput("9999999999", "<?print int(data)?>", "data", "9999999999");
+		checkTemplateOutput("999999999999999999999999", "<?print int(data)?>", "data", "999999999999999999999999");
 	}
 
 	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)

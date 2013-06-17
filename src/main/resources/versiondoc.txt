@@ -1,3 +1,9 @@
+exp-78:
+-------
+Comments:
+* int(string) now returns a Long/BigInteger if the value overflows.
+
+
 exp-77:
 -------
 Comments:
