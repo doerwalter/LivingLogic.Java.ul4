@@ -1,3 +1,9 @@
+exp-79:
+-------
+Comments:
+* Fixed a comparison bug in Utils.narrowBigInteger().
+
+
 exp-78:
 -------
 Comments:

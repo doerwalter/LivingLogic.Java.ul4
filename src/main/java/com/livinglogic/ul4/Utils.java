@@ -116,9 +116,9 @@ public class Utils
 
 	public static Object narrowBigInteger(BigInteger arg)
 	{
-		if (intMinValue.compareTo(arg) <= 0 && arg.compareTo(intMinValue) <= 0)
+		if (intMinValue.compareTo(arg) <= 0 && arg.compareTo(intMaxValue) <= 0)
 			return arg.intValue();
-		else if (longMinValue.compareTo(arg) <= 0 && arg.compareTo(longMinValue) <= 0)
+		else if (longMinValue.compareTo(arg) <= 0 && arg.compareTo(longMaxValue) <= 0)
 			return arg.longValue();
 		return arg;
 	}
