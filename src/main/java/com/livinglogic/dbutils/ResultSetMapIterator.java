@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.livinglogic.ul4.Utils;
 
 public class ResultSetMapIterator implements Iterator<Map<String, Object>>
 {
