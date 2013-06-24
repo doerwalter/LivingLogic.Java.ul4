@@ -355,7 +355,7 @@ public class Color implements Collection, UL4Repr, UL4Len, UL4Type, UL4MethodCal
 		return new Color(nr, ng, nb, na);
 	}
 
-	public Vector hls()
+	public Vector<Double> hls()
 	{
 		int maxc = NumberUtils.max((int)r, (int)g, (int)b);
 		int minc = NumberUtils.min((int)r, (int)g, (int)b);
@@ -395,14 +395,14 @@ public class Color implements Collection, UL4Repr, UL4Len, UL4Type, UL4MethodCal
 		return retVal;
 	}
 
-	public Vector hlsa()
+	public Vector<Double> hlsa()
 	{
 		Vector retVal = hls();
 		retVal.add(new Double(a/255.));
 		return retVal;
 	}
 
-	public Vector hsv()
+	public Vector<Double> hsv()
 	{
 		int maxc = NumberUtils.max((int)r, (int)g, (int)b);
 		int minc = NumberUtils.min((int)r, (int)g, (int)b);
@@ -441,7 +441,7 @@ public class Color implements Collection, UL4Repr, UL4Len, UL4Type, UL4MethodCal
 		return retVal;
 	}
 
-	public Vector hsva()
+	public Vector<Double> hsva()
 	{
 		Vector retVal = hsv();
 		retVal.add(new Double(a/255.));
@@ -493,6 +493,23 @@ public class Color implements Collection, UL4Repr, UL4Len, UL4Type, UL4MethodCal
 	public Color witha(int a)
 	{
 		return new Color(r, g, b, a);
+	}
+
+	public Color abslum(double f)
+	{
+		Vector<Double> v = hlsa();
+		return fromhls(v.get(0), v.get(1)+f, v.get(2), v.get(3));
+	}
+
+	public Color rellum(double f)
+	{
+		Vector<Double> v = hlsa();
+		double newlum = v.get(1);
+		if (f > 0)
+			newlum += (1-newlum)*f;
+		else if (f < 0)
+			newlum += newlum*f;
+		return fromhls(v.get(0), newlum, v.get(2), v.get(3));
 	}
 
 	// Collection interface
@@ -667,6 +684,8 @@ public class Color implements Collection, UL4Repr, UL4Len, UL4Type, UL4MethodCal
 	private Signature signatureHSVA = new Signature("hsva");
 	private Signature signatureWithA = new Signature("witha", "a", Signature.required);
 	private Signature signatureWithLum = new Signature("withlum", "lum", Signature.required);
+	private Signature signatureAbsLum = new Signature("abslum", "f", Signature.required);
+	private Signature signatureRelLum = new Signature("rellum", "f", Signature.required);
 
 	public Object callMethodUL4(String methodName, Object[] args, Map<String, Object> kwargs)
 	{
@@ -724,6 +743,16 @@ public class Color implements Collection, UL4Repr, UL4Len, UL4Type, UL4MethodCal
 		{
 			args = signatureWithLum.makeArgumentArray(args, kwargs);
 			return withlum(Utils.toDouble(args[0]));
+		}
+		else if ("abslum".equals(methodName))
+		{
+			args = signatureAbsLum.makeArgumentArray(args, kwargs);
+			return abslum(Utils.toDouble(args[0]));
+		}
+		else if ("rellum".equals(methodName))
+		{
+			args = signatureRelLum.makeArgumentArray(args, kwargs);
+			return rellum(Utils.toDouble(args[0]));
 		}
 		else
 			throw new UnknownMethodException(methodName);

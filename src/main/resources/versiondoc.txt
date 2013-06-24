@@ -1,3 +1,9 @@
+exp-80:
+-------
+Comments:
+* Added methods abslum() and rellum() to Color.
+
+
 exp-79:
 -------
 Comments:
