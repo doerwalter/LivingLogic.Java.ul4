@@ -92,9 +92,10 @@ public class CallMeth extends Callable
 			if (!(realRemainingArguments instanceof List))
 				throw new RemainingArgumentsException(methodName);
 
-			realArguments = new Object[arguments.size() + ((List)realRemainingArguments).size()];
+			int argsSize = arguments.size();
+			realArguments = new Object[argsSize + ((List)realRemainingArguments).size()];
 
-			for (int i = 0; i < realArguments.length; ++i)
+			for (int i = 0; i < argsSize; ++i)
 				realArguments[i] = arguments.get(i).decoratedEvaluate(context);
 
 			for (int i = 0; i < ((List)realRemainingArguments).size(); ++i)
@@ -104,7 +105,7 @@ public class CallMeth extends Callable
 		{
 			realArguments = new Object[arguments.size()];
 
-			for (int i = 0; i < realArguments.length; ++i)
+			for (int i = 0; i < arguments.size(); ++i)
 				realArguments[i] = arguments.get(i).decoratedEvaluate(context);
 		}
 

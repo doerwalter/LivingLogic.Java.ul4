@@ -1,3 +1,9 @@
+exp-81:
+-------
+Comments:
+* Fixed a bug in CallMeth.evaluate(), that surfaced when a * argument was present.
+
+
 exp-80:
 -------
 Comments:

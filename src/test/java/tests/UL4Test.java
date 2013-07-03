@@ -2677,6 +2677,7 @@ public class UL4Test
 		checkTemplateOutput("", source3, "data", asList(0, 10, -2));
 		checkTemplateOutput("10;8;6;4;2;", source3, "data", asList(10, 0, -2));
 		checkTemplateOutput("", source3, "data", asList(10, 0, 2));
+		checkTemplateOutput("0;1;", "<?for i in range(0, *[2, 1])?><?print i?>;<?end for?>");
 	}
 
 	@Test
