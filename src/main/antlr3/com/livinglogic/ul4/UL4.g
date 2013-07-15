@@ -540,7 +540,6 @@ expr4 returns [AST node]
 	:
 		e1=expr5 { $node = $e1.node; }
 		(
-			
 			(
 				'not' { not = true; }
 			)?
