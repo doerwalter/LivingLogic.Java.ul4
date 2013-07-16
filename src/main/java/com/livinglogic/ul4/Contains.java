@@ -8,6 +8,7 @@ package com.livinglogic.ul4;
 
 import java.util.Collection;
 import java.util.Map;
+import static java.util.Arrays.asList;
 
 public class Contains extends Binary
 {
@@ -47,6 +48,11 @@ public class Contains extends Binary
 		return container.contains(obj);
 	}
 
+	public static boolean call(Object obj, Object[] container)
+	{
+		return asList(container).contains(obj);
+	}
+
 	public static boolean call(Object obj, Map container)
 	{
 		return container.containsKey(obj);
@@ -66,6 +72,8 @@ public class Contains extends Binary
 		}
 		else if (container instanceof Collection)
 			return call(obj, (Collection)container);
+		else if (container instanceof Object[])
+			return call(obj, (Object[])container);
 		else if (container instanceof Map)
 			return call(obj, (Map)container);
 		else if (container instanceof UL4Attributes)

@@ -87,6 +87,11 @@ public class FunctionBool extends Function
 		return !obj.isEmpty();
 	}
 
+	public static boolean call(Object[] obj)
+	{
+		return obj.length != 0;
+	}
+
 	public static boolean call(Map obj)
 	{
 		return !obj.isEmpty();
@@ -116,6 +121,8 @@ public class FunctionBool extends Function
 			return call((Date)obj);
 		else if (obj instanceof Collection)
 			return call((Collection)obj);
+		else if (obj instanceof Object[])
+			return call((Object[])obj);
 		else if (obj instanceof Map)
 			return call((Map)obj);
 		return true;

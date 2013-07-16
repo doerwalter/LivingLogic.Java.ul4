@@ -1,3 +1,9 @@
+exp-82:
+-------
+Comments:
+* Object arrays are now supported everywhere List objects are.
+
+
 exp-81:
 -------
 Comments:

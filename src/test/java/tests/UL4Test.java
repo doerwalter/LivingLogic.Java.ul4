@@ -929,6 +929,8 @@ public class UL4Test
 
 		checkTemplateOutput("True", source, "x", 2, "y", asList(1, 2, 3));
 		checkTemplateOutput("False", source, "x", 4, "y", asList(1, 2, 3));
+		checkTemplateOutput("True", source, "x", 2, "y", new Integer[]{1, 2, 3});
+		checkTemplateOutput("False", source, "x", 4, "y", new Integer[]{1, 2, 3});
 		checkTemplateOutput("True", source, "x", "ur", "y", "gurk");
 		checkTemplateOutput("False", source, "x", "un", "y", "gurk");
 		checkTemplateOutput("True", source, "x", "a", "y", makeMap("a", 1, "b", 2));
@@ -946,6 +948,8 @@ public class UL4Test
 
 		checkTemplateOutput("False", source, "x", 2, "y", asList(1, 2, 3));
 		checkTemplateOutput("True", source, "x", 4, "y", asList(1, 2, 3));
+		checkTemplateOutput("False", source, "x", 2, "y", new Integer[]{1, 2, 3});
+		checkTemplateOutput("True", source, "x", 4, "y", new Integer[]{1, 2, 3});
 		checkTemplateOutput("False", source, "x", "ur", "y", "gurk");
 		checkTemplateOutput("True", source, "x", "un", "y", "gurk");
 		checkTemplateOutput("False", source, "x", "a", "y", makeMap("a", 1, "b", 2));
@@ -1279,6 +1283,7 @@ public class UL4Test
 		// no check for float
 		checkTemplateOutput("\"abc\"", "<?print asjson(data)?>", "data", "abc");
 		checkTemplateOutput("[1, 2, 3]", "<?print asjson(data)?>", "data", asList(1, 2, 3));
+		checkTemplateOutput("[1, 2, 3]", "<?print asjson(data)?>", "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("{\"one\": 1}", "<?print asjson(data)?>", "data", makeMap("one", 1));
 		checkTemplateOutput("null", "<?print asjson(obj=data)?>", "data", null);
 	}
@@ -1395,6 +1400,8 @@ public class UL4Test
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", "foo");
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", asList());
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", asList("foo", "bar"));
+		checkTemplateOutput("False", "<?print bool(data)?>", "data", new Integer[]{});
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", makeMap());
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", makeMap("foo", "bar"));
 		checkTemplateOutput("True", "<?print bool(obj=data)?>", "data", true);
@@ -1482,6 +1489,7 @@ public class UL4Test
 		checkTemplateOutput("[\"g\", \"u\", \"r\", \"k\"]", "<?print list(data)?>", "data", "gurk");
 		checkTemplateOutput("[[\"foo\", 42]]", "<?print repr(list(data.items()))?>", "data", makeMap("foo", 42));
 		checkTemplateOutput("[0, 1, 2]", "<?print repr(list(range(3)))?>");
+		checkTemplateOutput("[1, 2, 3]", "<?print list(data)?>", "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("[\"x\", \"y\"]", "<?print repr(list(data))?>", "data", new Point(17, 23));
 		checkTemplateOutput("[\"g\", \"u\", \"r\", \"k\"]", "<?print list(iterable=data)?>", "data", "gurk");
 	}
@@ -1499,6 +1507,7 @@ public class UL4Test
 
 		checkTemplateOutput("3", source, "data", "foo");
 		checkTemplateOutput("3", source, "data", asList(1, 2, 3));
+		checkTemplateOutput("3", source, "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("3", source, "data", makeMap("a", 1, "b", 2, "c", 3));
 		checkTemplateOutput("2", source, "data", new Point(17, 23));
 		checkTemplateOutput("3", "<?print len(sequence=data)?>", "data", "foo");
@@ -2185,6 +2194,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("True", source, "data", asList());
+		checkTemplateOutput("True", source, "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print islist(repr)?>");
@@ -2426,6 +2436,7 @@ public class UL4Test
 		checkTemplateOutput("42.5", source, "data", 42.5);
 		checkTemplateOutput("\"foo\"", source, "data", "foo");
 		checkTemplateOutput("[1, 2, 3]", source, "data", asList(1, 2, 3));
+		checkTemplateOutput("[1, 2, 3]", source, "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("{\"a\": 1}", source, "data", makeMap("a", 1));
 		checkTemplateOutput2("{\"a\": 1, \"b\": 2}", "{\"b\": 2, \"a\": 1}", source, "data", makeMap("a", 1, "b", 2));
 		checkTemplateOutput("@(2011-02-07T12:34:56.123000)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56, 123000));

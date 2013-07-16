@@ -112,6 +112,33 @@ public class FunctionRepr extends Function
 					return "[?]";
 				}
 			}
+			else if (obj instanceof Object[])
+			{
+				if (seen(obj))
+					return "[...]";
+				visited.push(obj);
+				try
+				{
+					StringBuilder sb = new StringBuilder();
+					sb.append("[");
+					boolean first = true;
+					for (Object o : ((Object[])obj))
+					{
+						if (first)
+							first = false;
+						else
+							sb.append(", ");
+						sb.append(toString(o));
+					}
+					sb.append("]");
+					return sb.toString();
+				}
+				catch (Throwable t)
+				{
+					visited.pop();
+					return "[?]";
+				}
+			}
 			else if (obj instanceof Map)
 			{
 				if (seen(obj))

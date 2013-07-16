@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
+import static java.util.Arrays.asList;
+
 
 public class FunctionList extends Function
 {
@@ -49,6 +51,11 @@ public class FunctionList extends Function
 		return new Vector(obj);
 	}
 
+	public static Vector call(Object[] obj)
+	{
+		return new Vector(asList(obj));
+	}
+
 	public static Vector call(Map obj)
 	{
 		return new Vector(obj.keySet());
@@ -73,6 +80,8 @@ public class FunctionList extends Function
 			return call((String)obj);
 		else if (obj instanceof Collection)
 			return call((Collection)obj);
+		else if (obj instanceof Object[])
+			return call((Object[])obj);
 		else if (obj instanceof Map)
 			return call((Map)obj);
 		else if (obj instanceof UL4Attributes)

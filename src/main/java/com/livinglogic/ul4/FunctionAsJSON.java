@@ -135,6 +135,22 @@ public class FunctionAsJSON extends Function
 			sb.append("]");
 			return sb.toString();
 		}
+		else if (obj instanceof Object[])
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.append("[");
+			boolean first = true;
+			for (Object o : (Object[])obj)
+			{
+				if (first)
+					first = false;
+				else
+					sb.append(", ");
+				sb.append(call(o));
+			}
+			sb.append("]");
+			return sb.toString();
+		}
 		else if (obj instanceof Map)
 		{
 			StringBuilder sb = new StringBuilder();

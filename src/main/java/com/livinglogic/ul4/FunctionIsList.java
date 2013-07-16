@@ -29,6 +29,6 @@ public class FunctionIsList extends Function
 
 	public static boolean call(Object obj)
 	{
-		return (null != obj) && (obj instanceof java.util.List) && !(obj instanceof Color);
+		return (null != obj) && (obj instanceof java.util.List || obj instanceof Object[]) && !(obj instanceof Color);
 	}
 }
