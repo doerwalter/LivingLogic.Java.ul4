@@ -6,8 +6,7 @@
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-import static com.livinglogic.utils.SetUtils.union;
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import java.io.IOException;
 import java.util.Set;
@@ -54,7 +53,7 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 		condition = (AST)decoder.load();
 	}
 
-	protected static Set<String> attributes = union(ConditionalBlock.attributes, makeSet("condition"));
+	protected static Set<String> attributes = makeExtendedSet(ConditionalBlock.attributes, "condition");
 
 	public Set<String> getAttributeNamesUL4()
 	{

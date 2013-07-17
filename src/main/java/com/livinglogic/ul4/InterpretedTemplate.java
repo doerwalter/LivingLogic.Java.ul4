@@ -6,8 +6,7 @@
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-import static com.livinglogic.utils.SetUtils.union;
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import java.io.IOException;
 import java.io.PipedReader;
@@ -804,7 +803,7 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 		super.loadUL4ON(decoder);
 	}
 
-	protected static Set<String> attributes = union(Block.attributes, makeSet("name", "keepws", "startdelim", "enddelim", "source"));
+	protected static Set<String> attributes = makeExtendedSet(Block.attributes, "name", "keepws", "startdelim", "enddelim", "source");
 
 	public Set<String> getAttributeNamesUL4()
 	{

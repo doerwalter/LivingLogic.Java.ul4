@@ -1,3 +1,9 @@
+exp-83:
+-------
+Comments:
+* Add method SetUtils.makeExtendedSet().
+* Expose the text of Text nodes to templates.
+
 exp-82:
 -------
 Comments:

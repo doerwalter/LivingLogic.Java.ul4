@@ -6,8 +6,7 @@
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-import static com.livinglogic.utils.SetUtils.union;
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,7 +44,7 @@ public abstract class Callable extends AST
 		remainingKeywordArguments = arguments;
 	}
 
-	protected static Set<String> attributes = union(AST.attributes, makeSet("args", "kwargs", "remargs", "remkwargs"));
+	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "args", "kwargs", "remargs", "remkwargs");
 
 	public Set<String> getAttributeNamesUL4()
 	{

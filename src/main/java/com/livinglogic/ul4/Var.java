@@ -6,8 +6,7 @@
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-import static com.livinglogic.utils.SetUtils.union;
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import java.io.IOException;
 import java.util.Set;
@@ -47,7 +46,7 @@ public class Var extends AST
 		name = (String)decoder.load();
 	}
 
-	protected static Set<String> attributes = union(AST.attributes, makeSet("name"));
+	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "name");
 
 	public Set<String> getAttributeNamesUL4()
 	{

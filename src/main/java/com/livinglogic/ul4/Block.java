@@ -6,8 +6,7 @@
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-import static com.livinglogic.utils.SetUtils.union;
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -111,7 +110,7 @@ abstract class Block extends AST
 		content = (List<AST>)decoder.load();
 	}
 
-	protected static Set<String> attributes = union(AST.attributes, makeSet("endlocation", "content"));
+	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "endlocation", "content");
 
 	public Set<String> getAttributeNamesUL4()
 	{

@@ -6,6 +6,9 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Set;
+
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 class Text extends AST
 {
@@ -38,5 +41,20 @@ class Text extends AST
 	{
 		context.write(getText());
 		return null;
+	}
+
+	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "text");
+
+	public Set<String> getAttributeNamesUL4()
+	{
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("text".equals(key))
+			return getText();
+		else
+			return super.getItemStringUL4(key);
 	}
 }

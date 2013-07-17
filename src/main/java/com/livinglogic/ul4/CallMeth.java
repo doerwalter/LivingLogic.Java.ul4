@@ -6,8 +6,7 @@
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-import static com.livinglogic.utils.SetUtils.union;
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 import static java.util.Arrays.asList;
 
 import java.io.IOException;
@@ -173,7 +172,7 @@ public class CallMeth extends Callable
 		remainingKeywordArguments = (AST)decoder.load();
 	}
 
-	protected static Set<String> attributes = union(Callable.attributes, makeSet("obj", "methname"));
+	protected static Set<String> attributes = makeExtendedSet(Callable.attributes, "obj", "methname");
 
 	public Set<String> getAttributeNamesUL4()
 	{

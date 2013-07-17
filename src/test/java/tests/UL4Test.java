@@ -3265,6 +3265,16 @@ public class UL4Test
 	}
 
 	@Test
+	public void templateattributes_3()
+	{
+		String source = "foo";
+		InterpretedTemplate t = getTemplate(source);
+
+		checkTemplateOutput("text", "<?print template.content[0].type?>", "template", t);
+		checkTemplateOutput("foo", "<?print template.content[0].text?>", "template", t);
+	}
+
+	@Test
 	public void templateattributes_localtemplate()
 	{
 		String source = "<?def lower?><?print t.lower()?><?end def?>";

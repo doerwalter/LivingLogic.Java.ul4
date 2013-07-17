@@ -7,6 +7,7 @@
 package com.livinglogic.utils;
 
 import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -54,5 +55,19 @@ public class SetUtils
 		set.addAll(set1);
 		set.addAll(set2);
 		return set;
+	}
+
+	/**
+	 * Create a copy of a Set, add several new items and return the resulting new Set.
+	 * @param set The set.
+	 * @param objects Items to add to the new set.
+	 * @return A new Set containing all items from Set and objects.
+	 */
+	public static Set makeExtendedSet(Set set, Object... objects)
+	{
+		Set newSet = new HashSet(set);
+		for (Object o : objects)
+			newSet.add(o);
+		return newSet;
 	}
 }

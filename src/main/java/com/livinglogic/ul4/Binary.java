@@ -6,8 +6,7 @@
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-import static com.livinglogic.utils.SetUtils.union;
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import java.io.IOException;
 import java.util.Set;
@@ -57,7 +56,7 @@ abstract class Binary extends AST
 		obj2 = (AST)decoder.load();
 	}
 
-	protected static Set<String> attributes = union(AST.attributes, makeSet("obj1", "obj2"));
+	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "obj1", "obj2");
 
 	public Set<String> getAttributeNamesUL4()
 	{

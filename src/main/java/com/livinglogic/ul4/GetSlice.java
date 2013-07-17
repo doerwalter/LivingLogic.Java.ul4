@@ -6,8 +6,7 @@
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-import static com.livinglogic.utils.SetUtils.union;
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import java.io.IOException;
 import java.util.List;
@@ -133,7 +132,7 @@ public class GetSlice extends AST
 		throw new ArgumentTypeMismatchException("{}[{}:{}]", obj, startIndex, endIndex);
 	}
 
-	protected static Set<String> attributes = union(AST.attributes, makeSet("obj", "index1", "index2"));
+	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "obj", "index1", "index2");
 
 	public Set<String> getAttributeNamesUL4()
 	{
