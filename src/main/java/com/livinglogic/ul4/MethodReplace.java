@@ -32,7 +32,7 @@ public class MethodReplace extends NormalMethod
 
 	public static String call(String obj, String search, String replace)
 	{
-		return StringUtils.replace(obj, search, replace);
+		return obj.replace(search, replace);
 	}
 
 	public static String call(String obj, String search, String replace, int count)
