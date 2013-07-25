@@ -331,6 +331,7 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 			"slice", new FunctionSlice(),
 			"min", new FunctionMin(),
 			"max", new FunctionMax(),
+			"sum", new FunctionSum(),
 			"sorted", new FunctionSorted(),
 			"type", new FunctionType(),
 			"asjson", new FunctionAsJSON(),

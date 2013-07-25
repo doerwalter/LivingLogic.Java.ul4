@@ -2655,6 +2655,21 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_sum()
+	{
+		checkTemplateOutput("0", "<?print sum([])?>");
+		checkTemplateOutput("6", "<?print sum(1, 2, 3)?>");
+		checkTemplateOutput("6", "<?print sum([1, 2, 3])?>");
+		checkTemplateOutput("5050", "<?print sum(range(101))?>");
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	public void function_sum_0_args()
+	{
+		checkTemplateOutput("", "<?print sum()?>");
+	}
+
+	@Test
 	public void function_sorted()
 	{
 		String source = "<?for i in sorted(data)?><?print i?><?end for?>";
