@@ -2658,9 +2658,11 @@ public class UL4Test
 	public void function_sum()
 	{
 		checkTemplateOutput("0", "<?print sum([])?>");
-		checkTemplateOutput("6", "<?print sum(1, 2, 3)?>");
 		checkTemplateOutput("6", "<?print sum([1, 2, 3])?>");
+		checkTemplateOutput("12", "<?print sum([1, 2, 3], 6)?>");
 		checkTemplateOutput("5050", "<?print sum(range(101))?>");
+
+		checkTemplateOutput("12", "<?print sum(iterable=[1, 2, 3], start=6)?>");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)

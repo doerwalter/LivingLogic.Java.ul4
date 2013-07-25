@@ -1,3 +1,9 @@
+exp-85:
+-------
+Comments:
+* Add start argument to FunctionSum.
+
+
 exp-84:
 -------
 Comments:

@@ -20,26 +20,21 @@ public class FunctionSum extends Function
 	{
 		return new Signature(
 			nameUL4(),
-			"args", Signature.remainingArguments
+			"iterable", Signature.required,
+			"start", 0
 		);
 	}
 
 	public Object evaluate(Object[] args)
 	{
-		List<Object> argList = (List<Object>)args[0];
-		return (argList.size() == 0) ? call() : call(argList);
+		return call(args[0], args[1]);
 	}
 
-	public static Object call()
+	public static Object call(Object iterable, Object start)
 	{
-		throw new MissingArgumentException("sum", "args", 0);
-	}
+		Iterator iter = Utils.iterator(iterable);
 
-	public static Object call(List<Object> objs)
-	{
-		Iterator iter = Utils.iterator(objs.size() == 1 ? objs.get(0) : objs);
-
-		Object sum = 0;
+		Object sum = start;
 
 		for (;iter.hasNext();)
 		{
