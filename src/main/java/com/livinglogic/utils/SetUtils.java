@@ -23,9 +23,9 @@ public class SetUtils
 	 * @param set The set where entries are added.
 	 * @param args The objects to be put into the set.
 	 */
-	public static void putSet(Set set, Object... args)
+	public static <T> void putSet(Set<T> set, T... args)
 	{
-		for (Object arg : args)
+		for (T arg : args)
 		{
 			set.add(arg);
 		}
@@ -36,9 +36,9 @@ public class SetUtils
 	 * @param args The object to be put into the set.
 	 * @return A Set containing the variables
 	 */
-	public static Set makeSet(Object... args)
+	public static <T> Set<T> makeSet(T... args)
 	{
-		LinkedHashSet set = new LinkedHashSet();
+		LinkedHashSet<T> set = new LinkedHashSet<T>();
 		putSet(set, args);
 		return set;
 	}
@@ -49,9 +49,9 @@ public class SetUtils
 	 * @param set2 The second set.
 	 * @return A Set all values for the first and second set.
 	 */
-	public static Set union(Set set1, Set set2)
+	public static <T> Set<T> union(Set<T> set1, Set<T> set2)
 	{
-		LinkedHashSet set = new LinkedHashSet();
+		LinkedHashSet<T> set = new LinkedHashSet<T>();
 		set.addAll(set1);
 		set.addAll(set2);
 		return set;
@@ -63,10 +63,10 @@ public class SetUtils
 	 * @param objects Items to add to the new set.
 	 * @return A new Set containing all items from Set and objects.
 	 */
-	public static Set makeExtendedSet(Set set, Object... objects)
+	public static <T> Set<T> makeExtendedSet(Set<T> set, T... objects)
 	{
-		Set newSet = new HashSet(set);
-		for (Object o : objects)
+		Set<T> newSet = new HashSet<T>(set);
+		for (T o : objects)
 			newSet.add(o);
 		return newSet;
 	}
