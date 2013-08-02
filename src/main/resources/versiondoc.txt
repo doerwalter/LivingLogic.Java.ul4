@@ -1,3 +1,12 @@
+exp-87:
+-------
+Comments:
+* Connection.query() has been renamed to Connection.queryargs().
+* Connection.query() now requires at least one positional argument. Arguments
+  alternate between fragments of the SQL query and parameters that will be
+  embedded in the query.
+
+
 exp-86:
 -------
 Comments:
