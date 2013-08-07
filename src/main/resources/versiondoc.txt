@@ -1,3 +1,9 @@
+exp-88:
+-------
+Comments:
+* Added the UL4 functions first() and last().
+
+
 exp-87:
 -------
 Comments:

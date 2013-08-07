@@ -2672,6 +2672,26 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_first()
+	{
+		checkTemplateOutput("g", "<?print first('gurk')?>");
+		checkTemplateOutput("None", "<?print repr(first(''))?>");
+		checkTemplateOutput("x", "<?print first('', 'x')?>");
+
+		checkTemplateOutput("x", "<?print first(iterable='', default='x')?>");
+	}
+
+	@Test
+	public void function_last()
+	{
+		checkTemplateOutput("k", "<?print last('gurk')?>");
+		checkTemplateOutput("None", "<?print repr(last(''))?>");
+		checkTemplateOutput("x", "<?print last('', 'x')?>");
+
+		checkTemplateOutput("x", "<?print last(iterable='', default='x')?>");
+	}
+
+	@Test
 	public void function_sorted()
 	{
 		String source = "<?for i in sorted(data)?><?print i?><?end for?>";
