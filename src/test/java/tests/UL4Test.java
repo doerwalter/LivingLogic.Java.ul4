@@ -3095,6 +3095,21 @@ public class UL4Test
 	}
 
 	@Test
+	public void method_abslum()
+	{
+		checkTemplateOutput("#fff", "<?print #000.abslum(1)?>");
+		checkTemplateOutput("#000", "<?print #fff.abslum(-1)?>");
+	}
+
+	@Test
+	public void method_rellum()
+	{
+		checkTemplateOutput("#000", "<?print #888.rellum(-1)?>");
+		checkTemplateOutput("#888", "<?print #888.rellum(0)?>");
+		checkTemplateOutput("#fff", "<?print #888.rellum(1)?>");
+	}
+
+	@Test
 	public void method_join()
 	{
 		checkTemplateOutput("1,2,3,4", "<?print ','.join('1234')?>");

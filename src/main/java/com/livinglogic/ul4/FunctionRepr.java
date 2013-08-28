@@ -75,11 +75,11 @@ public class FunctionRepr extends Function
 				return ((UL4Repr)obj).reprUL4();
 			else if (obj instanceof Date)
 			{
-				if (MethodMicrosecond.call(obj) != 0)
+				if (BoundDateMethodMicrosecond.call((Date)obj) != 0)
 					return isoReprTimestampMicroFormatter.format(obj);
 				else
 				{
-					if (MethodHour.call(obj) != 0 || MethodMinute.call(obj) != 0 || MethodSecond.call(obj) != 0)
+					if (BoundDateMethodHour.call((Date)obj) != 0 || BoundDateMethodMinute.call((Date)obj) != 0 || BoundDateMethodSecond.call((Date)obj) != 0)
 						return isoReprDateTimeFormatter.format(obj);
 					else
 						return isoReprDateFormatter.format(obj);

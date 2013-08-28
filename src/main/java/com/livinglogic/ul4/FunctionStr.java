@@ -65,7 +65,7 @@ public class FunctionStr extends Function
 			return (String)obj;
 		else if (obj instanceof Date)
 		{
-			if (MethodMicrosecond.call(obj) != 0)
+			if (BoundDateMethodMicrosecond.call((Date)obj) != 0)
 				return strTimestampMicroFormatter.format(obj);
 			else
 				return strDateTimeFormatter.format(obj);

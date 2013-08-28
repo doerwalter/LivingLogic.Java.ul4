@@ -11,17 +11,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.Signature;
-import com.livinglogic.ul4.UL4MethodCallWithContext;
-import com.livinglogic.ul4.UnknownMethodException;
 import com.livinglogic.ul4.ArgumentException;
 import com.livinglogic.ul4.Utils;
+import com.livinglogic.ul4.UL4Attributes;
+import com.livinglogic.ul4.BoundMethodWithContext;
+import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.utils.Closeable;
 import com.livinglogic.utils.CloseableRegistry;
 
-public class Connection implements UL4MethodCallWithContext
+import static com.livinglogic.utils.SetUtils.makeSet;
+
+public class Connection implements UL4Attributes
 {
 	private java.sql.Connection connection;
 
@@ -113,26 +117,61 @@ public class Connection implements UL4MethodCallWithContext
 		return query((CloseableRegistry)null, args);
 	}
 
-	private Signature querySignature = new Signature(
-		"query",
-		"args", Signature.remainingArguments
-	);
-
-	public Object callMethodUL4(EvaluationContext context, String methodName, Object[] args, Map<String, Object> kwargs)
+	private static class BoundMethodQueryArgs extends BoundMethodWithContext<Connection>
 	{
-		if ("queryargs".equals(methodName))
+		private static Signature signature = new Signature("queryargs", "query", Signature.required, "args", Signature.remainingArguments, "kwargs", Signature.remainingKeywordArguments);
+
+		public BoundMethodQueryArgs(Connection object)
 		{
-			args = queryargsSignature.makeArgumentArray(args, kwargs);
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
 			if (!(args[0] instanceof String))
 				throw new UnsupportedOperationException("query must be string, not " + Utils.objectType(args[0]) + "!");
-			return query(context, (String)args[0], (List)args[1], (Map<String, Object>)args[2]);
+			return object.query(context, (String)args[0], (List)args[1], (Map<String, Object>)args[2]);
 		}
-		else if ("query".equals(methodName))
+	}
+
+	private static class BoundMethodQuery extends BoundMethodWithContext<Connection>
+	{
+		private static Signature signature = new Signature("query", "args", Signature.remainingArguments);
+
+		public BoundMethodQuery(Connection object)
 		{
-			args = querySignature.makeArgumentArray(args, kwargs);
-			return query(context, args);
+			super(object);
 		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.query(context, args);
+		}
+	}
+	protected static Set<String> attributes = makeSet("queryargs", "query");
+
+	public Set<String> getAttributeNamesUL4()
+	{
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("queryargs".equals(key))
+			return new BoundMethodQueryArgs(this);
+		else if ("query".equals(key))
+			return new BoundMethodQuery(this);
 		else
-			throw new UnknownMethodException(methodName);
+			return new UndefinedKey(key);
 	}
 }

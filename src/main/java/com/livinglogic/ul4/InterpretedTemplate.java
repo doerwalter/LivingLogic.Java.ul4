@@ -33,7 +33,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 import com.livinglogic.ul4on.Utils;
 
 
-public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithContext, UL4MethodCallWithContext, UL4Type, UL4Attributes
+public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithContext, UL4Type, UL4Attributes
 {
 	/**
 	 * The version number used in the UL4ON dump of the template.
@@ -517,25 +517,6 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 		return call(context, kwargs);
 	}
 
-	public Object callMethodUL4(EvaluationContext context, String methodName, Object[] args, Map<String, Object> kwargs)
-	{
-		if ("render".equals(methodName))
-		{
-			if (args.length > 0)
-				throw new PositionalArgumentsNotSupportedException(methodName);
-			render(context, kwargs);
-			return null;
-		}
-		else if ("renders".equals(methodName))
-		{
-			if (args.length > 0)
-				throw new PositionalArgumentsNotSupportedException(methodName);
-			return renders(kwargs);
-		}
-		else
-			throw new UnknownMethodException(methodName);
-	}
-
 	/**
 	 * Executes the function.
 	 * @param context   the EvaluationContext.
@@ -772,8 +753,7 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 		Utils.register("de.livinglogic.ul4.floordivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.FloorDivVar(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.truedivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDivVar(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.modvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ModVar(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.callfunc", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallFunc(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.callmeth", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallMeth(null, -1, -1, null, null); }});
+		Utils.register("de.livinglogic.ul4.call", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Call(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate(null, null, null, false, null, null); }});
 	}
 
@@ -803,7 +783,48 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 		super.loadUL4ON(decoder);
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(Block.attributes, "name", "keepws", "startdelim", "enddelim", "source");
+	private static class BoundMethodRenderS extends BoundMethodWithContext<InterpretedTemplate>
+	{
+		private static Signature signature = new Signature("renders", "kwargs", Signature.remainingKeywordArguments);
+
+		public BoundMethodRenderS(InterpretedTemplate object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.renders(context, (Map<String, Object>)args[0]);
+		}
+	}
+
+	private static class BoundMethodRender extends BoundMethodWithContext<InterpretedTemplate>
+	{
+		private static Signature signature = new Signature("render", "kwargs", Signature.remainingKeywordArguments);
+
+		public BoundMethodRender(InterpretedTemplate object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			object.render(context, (Map<String, Object>)args[0]);
+			return null;
+		}
+	}
+
+	protected static Set<String> attributes = makeExtendedSet(Block.attributes, "name", "keepws", "startdelim", "enddelim", "source", "render", "renders");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -822,6 +843,10 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 			return enddelim;
 		else if ("source".equals(key))
 			return source;
+		else if ("render".equals(key))
+			return new BoundMethodRender(this);
+		else if ("renders".equals(key))
+			return new BoundMethodRenderS(this);
 		else
 			return super.getItemStringUL4(key);
 	}

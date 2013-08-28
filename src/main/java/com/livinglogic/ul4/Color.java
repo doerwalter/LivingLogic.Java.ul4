@@ -9,12 +9,15 @@ package com.livinglogic.ul4;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-public class Color implements Collection, UL4Repr, UL4Len, UL4Type, UL4MethodCall
+import static com.livinglogic.utils.SetUtils.makeSet;
+
+public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Type
 {
 	private char r;
 	private char g;
@@ -673,88 +676,302 @@ public class Color implements Collection, UL4Repr, UL4Len, UL4Type, UL4MethodCal
 		}
 	}
 
-	private Signature signatureR = new Signature("r");
-	private Signature signatureG = new Signature("g");
-	private Signature signatureB = new Signature("b");
-	private Signature signatureA = new Signature("a");
-	private Signature signatureLum = new Signature("lum");
-	private Signature signatureHLS = new Signature("hls");
-	private Signature signatureHLSA = new Signature("hlsa");
-	private Signature signatureHSV = new Signature("hsv");
-	private Signature signatureHSVA = new Signature("hsva");
-	private Signature signatureWithA = new Signature("witha", "a", Signature.required);
-	private Signature signatureWithLum = new Signature("withlum", "lum", Signature.required);
-	private Signature signatureAbsLum = new Signature("abslum", "f", Signature.required);
-	private Signature signatureRelLum = new Signature("rellum", "f", Signature.required);
-
-	public Object callMethodUL4(String methodName, Object[] args, Map<String, Object> kwargs)
+	private static class BoundMethodR extends BoundMethodWithContext<Color>
 	{
-		if ("r".equals(methodName))
+		private static Signature signature = new Signature("r");
+
+		public BoundMethodR(Color object)
 		{
-			args = signatureR.makeArgumentArray(args, kwargs);
-			return (int)r;
+			super(object);
 		}
-		else if ("g".equals(methodName))
+
+		public Signature getSignature()
 		{
-			args = signatureG.makeArgumentArray(args, kwargs);
-			return (int)g;
+			return signature;
 		}
-		else if ("b".equals(methodName))
+
+		public Object callUL4(EvaluationContext context, Object[] args)
 		{
-			args = signatureB.makeArgumentArray(args, kwargs);
-			return (int)b;
+			return (int)object.r;
 		}
-		else if ("a".equals(methodName))
+	}
+
+	private static class BoundMethodG extends BoundMethodWithContext<Color>
+	{
+		private static Signature signature = new Signature("g");
+
+		public BoundMethodG(Color object)
 		{
-			args = signatureA.makeArgumentArray(args, kwargs);
-			return (int)a;
+			super(object);
 		}
-		else if ("lum".equals(methodName))
+
+		public Signature getSignature()
 		{
-			args = signatureLum.makeArgumentArray(args, kwargs);
-			return lum();
+			return signature;
 		}
-		else if ("hls".equals(methodName))
+
+		public Object callUL4(EvaluationContext context, Object[] args)
 		{
-			args = signatureHLS.makeArgumentArray(args, kwargs);
-			return hls();
+			return (int)object.g;
 		}
-		else if ("hlsa".equals(methodName))
+	}
+
+	private static class BoundMethodB extends BoundMethodWithContext<Color>
+	{
+		private static Signature signature = new Signature("b");
+
+		public BoundMethodB(Color object)
 		{
-			args = signatureHLSA.makeArgumentArray(args, kwargs);
-			return hlsa();
+			super(object);
 		}
-		else if ("hsv".equals(methodName))
+
+		public Signature getSignature()
 		{
-			args = signatureHSV.makeArgumentArray(args, kwargs);
-			return hsv();
+			return signature;
 		}
-		else if ("hsva".equals(methodName))
+
+		public Object callUL4(EvaluationContext context, Object[] args)
 		{
-			args = signatureHSVA.makeArgumentArray(args, kwargs);
-			return hsva();
+			return (int)object.b;
 		}
-		else if ("witha".equals(methodName))
+	}
+
+	private static class BoundMethodA extends BoundMethodWithContext<Color>
+	{
+		private static Signature signature = new Signature("a");
+
+		public BoundMethodA(Color object)
 		{
-			args = signatureWithA.makeArgumentArray(args, kwargs);
-			return witha(Utils.toInt(args[0]));
+			super(object);
 		}
-		else if ("withlum".equals(methodName))
+
+		public Signature getSignature()
 		{
-			args = signatureWithLum.makeArgumentArray(args, kwargs);
-			return withlum(Utils.toDouble(args[0]));
+			return signature;
 		}
-		else if ("abslum".equals(methodName))
+
+		public Object callUL4(EvaluationContext context, Object[] args)
 		{
-			args = signatureAbsLum.makeArgumentArray(args, kwargs);
-			return abslum(Utils.toDouble(args[0]));
+			return (int)object.a;
 		}
-		else if ("rellum".equals(methodName))
+	}
+
+	private static class BoundMethodLum extends BoundMethodWithContext<Color>
+	{
+		private static Signature signature = new Signature("lum");
+
+		public BoundMethodLum(Color object)
 		{
-			args = signatureRelLum.makeArgumentArray(args, kwargs);
-			return rellum(Utils.toDouble(args[0]));
+			super(object);
 		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.lum();
+		}
+	}
+
+	private static class BoundMethodHLS extends BoundMethodWithContext<Color>
+	{
+		private static Signature signature = new Signature("hls");
+
+		public BoundMethodHLS(Color object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.hls();
+		}
+	}
+
+	private static class BoundMethodHLSA extends BoundMethodWithContext<Color>
+	{
+		private static Signature signature = new Signature("hlsa");
+
+		public BoundMethodHLSA(Color object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.hlsa();
+		}
+	}
+
+	private static class BoundMethodHSV extends BoundMethodWithContext<Color>
+	{
+		private static Signature signature = new Signature("hsv");
+
+		public BoundMethodHSV(Color object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.hsv();
+		}
+	}
+
+	private static class BoundMethodHSVA extends BoundMethodWithContext<Color>
+	{
+		private static Signature signature = new Signature("hsva");
+
+		public BoundMethodHSVA(Color object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.hsva();
+		}
+	}
+
+	private static class BoundMethodWithA extends BoundMethodWithContext<Color>
+	{
+		private static Signature signature = new Signature("witha", "a", Signature.required);
+
+		public BoundMethodWithA(Color object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.witha(Utils.toInt(args[0]));
+		}
+	}
+
+	private static class BoundMethodWithLum extends BoundMethodWithContext<Color>
+	{
+		private static Signature signature = new Signature("withlum", "lum", Signature.required);
+
+		public BoundMethodWithLum(Color object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.withlum(Utils.toDouble(args[0]));
+		}
+	}
+
+	private static class BoundMethodAbsLum extends BoundMethodWithContext<Color>
+	{
+		private static Signature signature = new Signature("abslum", "f", Signature.required);
+
+		public BoundMethodAbsLum(Color object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.abslum(Utils.toDouble(args[0]));
+		}
+	}
+
+	private static class BoundMethodRelLum extends BoundMethodWithContext<Color>
+	{
+		private static Signature signature = new Signature("rellum", "f", Signature.required);
+
+		public BoundMethodRelLum(Color object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.rellum(Utils.toDouble(args[0]));
+		}
+	}
+
+	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "lum", "hls", "hlsa", "hsv", "hsva", "witha", "withlum", "abslum", "rellum");
+
+	public Set<String> getAttributeNamesUL4()
+	{
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("r".equals(key))
+			return new BoundMethodR(this);
+		else if ("g".equals(key))
+			return new BoundMethodG(this);
+		else if ("b".equals(key))
+			return new BoundMethodB(this);
+		else if ("a".equals(key))
+			return new BoundMethodA(this);
+		else if ("lum".equals(key))
+			return new BoundMethodLum(this);
+		else if ("hls".equals(key))
+			return new BoundMethodHLS(this);
+		else if ("hlsa".equals(key))
+			return new BoundMethodHLSA(this);
+		else if ("hsv".equals(key))
+			return new BoundMethodHSV(this);
+		else if ("hsva".equals(key))
+			return new BoundMethodHSVA(this);
+		else if ("witha".equals(key))
+			return new BoundMethodWithA(this);
+		else if ("withlum".equals(key))
+			return new BoundMethodWithLum(this);
+		else if ("abslum".equals(key))
+			return new BoundMethodAbsLum(this);
+		else if ("rellum".equals(key))
+			return new BoundMethodRelLum(this);
 		else
-			throw new UnknownMethodException(methodName);
+			return new UndefinedKey(key);
 	}
 }

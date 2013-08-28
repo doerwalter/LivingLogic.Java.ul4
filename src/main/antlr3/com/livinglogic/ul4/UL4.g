@@ -383,55 +383,55 @@ expr9 returns [AST node]
 			n=name { $node = new GetAttr(location, $e1.node.getStart(), $n.node.getEnd(), $node, $n.text); }
 		|
 			/* Function/method call */
-			'(' { $node = ($node instanceof GetAttr) ? ((GetAttr)$node).makeCallMeth() : new CallFunc(location, $e1.node.getStart(), -1, $node); }
+			'(' { $node = new Call(location, $e1.node.getStart(), -1, $node); }
 			(
 				/* No arguments */
 			|
 				/* "**" argument only */
-				'**' rkwargs=exprarg { ((Callable)$node).setRemainingKeywordArguments($rkwargs.node); }
+				'**' rkwargs=exprarg { ((Call)$node).setRemainingKeywordArguments($rkwargs.node); }
 				','?
 			|
 				/* "*" argument only (and maybe **) */
-				'*' rargs=exprarg { ((Callable)$node).setRemainingArguments($rargs.node); }
+				'*' rargs=exprarg { ((Call)$node).setRemainingArguments($rargs.node); }
 				(
 					','
-					'**' rkwargs=exprarg { ((Callable)$node).setRemainingKeywordArguments($rkwargs.node); }
+					'**' rkwargs=exprarg { ((Call)$node).setRemainingKeywordArguments($rkwargs.node); }
 				)?
 				','?
 			|
 				/* At least one positional argument */
-				a1=exprarg { ((Callable)$node).append($a1.node); }
+				a1=exprarg { ((Call)$node).append($a1.node); }
 				(
 					','
-					a2=exprarg { ((Callable)$node).append($a2.node); }
+					a2=exprarg { ((Call)$node).append($a2.node); }
 				)*
 				(
 					','
-					an3=name '=' av3=exprarg { ((Callable)$node).append($an3.text, $av3.node); }
+					an3=name '=' av3=exprarg { ((Call)$node).append($an3.text, $av3.node); }
 				)*
 				(
 					','
-					'*' rargs=exprarg { ((Callable)$node).setRemainingArguments($rargs.node); }
+					'*' rargs=exprarg { ((Call)$node).setRemainingArguments($rargs.node); }
 				)?
 				(
 					','
-					'**' rkwargs=exprarg { ((Callable)$node).setRemainingKeywordArguments($rkwargs.node); }
+					'**' rkwargs=exprarg { ((Call)$node).setRemainingKeywordArguments($rkwargs.node); }
 				)?
 				','?
 			|
 				/* Keyword arguments only */
-				an1=name '=' av1=exprarg { ((Callable)$node).append($an1.text, $av1.node); }
+				an1=name '=' av1=exprarg { ((Call)$node).append($an1.text, $av1.node); }
 				(
 					','
-					an2=name '=' av2=exprarg { ((Callable)$node).append($an2.text, $av2.node); }
+					an2=name '=' av2=exprarg { ((Call)$node).append($an2.text, $av2.node); }
 				)*
 				(
 					','
-					'*' rargs=exprarg { ((Callable)$node).setRemainingArguments($rargs.node); }
+					'*' rargs=exprarg { ((Call)$node).setRemainingArguments($rargs.node); }
 				)?
 				(
 					','
-					'**' rkwargs=exprarg { ((Callable)$node).setRemainingKeywordArguments($rkwargs.node); }
+					'**' rkwargs=exprarg { ((Call)$node).setRemainingKeywordArguments($rkwargs.node); }
 				)?
 				','?
 			)

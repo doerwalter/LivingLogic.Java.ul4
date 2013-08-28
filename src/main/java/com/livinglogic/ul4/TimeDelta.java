@@ -10,9 +10,12 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Set;
 import java.util.Map;
 
-public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs, UL4MethodCall
+import static com.livinglogic.utils.SetUtils.makeSet;
+
+public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs, UL4Attributes
 {
 	private int days;
 	private int seconds;
@@ -344,5 +347,83 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		}
 		else
 			throw new UnknownMethodException(methodName);
+	}
+	private static class BoundMethodDays extends BoundMethodWithContext<TimeDelta>
+	{
+		private static Signature signature = new Signature("days");
+
+		public BoundMethodDays(TimeDelta object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.days;
+		}
+	}
+
+	private static class BoundMethodSeconds extends BoundMethodWithContext<TimeDelta>
+	{
+		private static Signature signature = new Signature("seconds");
+
+		public BoundMethodSeconds(TimeDelta object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.seconds;
+		}
+	}
+
+	private static class BoundMethodMicroseconds extends BoundMethodWithContext<TimeDelta>
+	{
+		private static Signature signature = new Signature("microseconds");
+
+		public BoundMethodMicroseconds(TimeDelta object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.microseconds;
+		}
+	}
+
+	protected static Set<String> attributes = makeSet("days", "seconds", "microseonds");
+
+	public Set<String> getAttributeNamesUL4()
+	{
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("days".equals(key))
+			return new BoundMethodDays(this);
+		else if ("seconds".equals(key))
+			return new BoundMethodSeconds(this);
+		else if ("microseconds".equals(key))
+			return new BoundMethodMicroseconds(this);
+		else
+			return new UndefinedKey(key);
 	}
 }

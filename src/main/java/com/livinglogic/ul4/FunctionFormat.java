@@ -197,13 +197,13 @@ public class FunctionFormat extends Function
 						buffer.append(twodigits.format(calendar.get(Calendar.SECOND)));
 						break;
 					case 'U':
-						buffer.append(twodigits.format(MethodWeek.call(obj, 6)));
+						buffer.append(twodigits.format(BoundDateMethodWeek.call(obj, 6)));
 						break;
 					case 'w':
 						buffer.append(weekdayFormats.get(calendar.get(Calendar.DAY_OF_WEEK)));
 						break;
 					case 'W':
-						buffer.append(twodigits.format(MethodWeek.call(obj, 0)));
+						buffer.append(twodigits.format(BoundDateMethodWeek.call(obj, 0)));
 						break;
 					case 'x':
 					{

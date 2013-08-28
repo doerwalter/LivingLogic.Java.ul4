@@ -9,9 +9,12 @@ package com.livinglogic.ul4;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Set;
 import java.util.Map;
 
-public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs, UL4MethodCall
+import static com.livinglogic.utils.SetUtils.makeSet;
+
+public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs, UL4Attributes
 {
 	private int months;
 
@@ -147,16 +150,38 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 		return months < 0 ? new MonthDelta(-months) : this;
 	}
 
-	private Signature signatureMonths = new Signature("months");
-
-	public Object callMethodUL4(String methodName, Object[] args, Map<String, Object> kwargs)
+	private static class BoundMethodMonths extends BoundMethodWithContext<MonthDelta>
 	{
-		if ("months".equals(methodName))
+		private static Signature signature = new Signature("months");
+
+		public BoundMethodMonths(MonthDelta object)
 		{
-			args = signatureMonths.makeArgumentArray(args, kwargs);
-			return months;
+			super(object);
 		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.months;
+		}
+	}
+
+	protected static Set<String> attributes = makeSet("months");
+
+	public Set<String> getAttributeNamesUL4()
+	{
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		if ("months".equals(key))
+			return new BoundMethodMonths(this);
 		else
-			throw new UnknownMethodException(methodName);
+			return new UndefinedKey(key);
 	}
 }

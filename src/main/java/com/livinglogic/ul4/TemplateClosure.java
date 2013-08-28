@@ -18,7 +18,7 @@ import com.livinglogic.utils.MapChain;
  * @author W. Doerwald
  */
 
-public class TemplateClosure implements UL4CallWithContext, UL4MethodCallWithContext, UL4Name, UL4Type, UL4Attributes
+public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL4Attributes
 {
 	private InterpretedTemplate template;
 	private Map<String, Object> variables;
@@ -48,25 +48,6 @@ public class TemplateClosure implements UL4CallWithContext, UL4MethodCallWithCon
 		return call(context, kwargs);
 	}
 
-	public Object callMethodUL4(EvaluationContext context, String methodName, Object[] args, Map<String, Object> kwargs)
-	{
-		if ("render".equals(methodName))
-		{
-			if (args.length > 0)
-				throw new PositionalArgumentsNotSupportedException(methodName);
-			render(context, kwargs);
-			return null;
-		}
-		else if ("renders".equals(methodName))
-		{
-			if (args.length > 0)
-				throw new PositionalArgumentsNotSupportedException(methodName);
-			return renders(context, kwargs);
-		}
-		else
-			throw new UnknownMethodException(methodName);
-	}
-
 	public Object call(EvaluationContext context, Map<String, Object> variables)
 	{
 		return template.call(context, new MapChain<String, Object>(variables, this.variables));
@@ -87,6 +68,47 @@ public class TemplateClosure implements UL4CallWithContext, UL4MethodCallWithCon
 		return "template";
 	}
 
+	private static class BoundMethodRender extends BoundMethodWithContext<TemplateClosure>
+	{
+		private static Signature signature = new Signature("render", "kwargs", Signature.remainingKeywordArguments);
+
+		public BoundMethodRender(TemplateClosure object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			object.render(context, (Map<String, Object>)args[0]);
+			return null;
+		}
+	}
+
+	private static class BoundMethodRenderS extends BoundMethodWithContext<TemplateClosure>
+	{
+		private static Signature signature = new Signature("renders", "kwargs", Signature.remainingKeywordArguments);
+
+		public BoundMethodRenderS(TemplateClosure object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			return object.renders(context, (Map<String, Object>)args[0]);
+		}
+	}
+
 	protected static Set<String> attributes = InterpretedTemplate.attributes;
 
 	public Set<String> getAttributeNamesUL4()
@@ -96,6 +118,11 @@ public class TemplateClosure implements UL4CallWithContext, UL4MethodCallWithCon
 
 	public Object getItemStringUL4(String key)
 	{
-		return template.getItemStringUL4(key);
+		if ("render".equals(key))
+			return new BoundMethodRender(this);
+		else if ("renders".equals(key))
+			return new BoundMethodRenderS(this);
+		else
+			return template.getItemStringUL4(key);
 	}
 }
