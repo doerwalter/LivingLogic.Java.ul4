@@ -11,7 +11,7 @@ import java.util.List;
 
 public class BoundListMethodFind extends BoundMethod<List>
 {
-	private static Signature signature = new Signature("find", "sub", Signature.required, "start", null, "end", null);
+	private static final Signature signature = new Signature("find", "sub", Signature.required, "start", null, "end", null);
 
 	public BoundListMethodFind(List object)
 	{

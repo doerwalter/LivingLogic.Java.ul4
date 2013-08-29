@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class BoundStringMethodUpper extends BoundMethod<String>
 {
-	private static Signature signature = new Signature("upper");
+	private static final Signature signature = new Signature("upper");
 
 	public BoundStringMethodUpper(String object)
 	{

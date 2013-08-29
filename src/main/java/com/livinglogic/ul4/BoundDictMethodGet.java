@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class BoundDictMethodGet extends BoundMethod<Map>
 {
-	private static Signature signature = new Signature("get", "key", Signature.required, "default", null);
+	private static final Signature signature = new Signature("get", "key", Signature.required, "default", null);
 
 	public BoundDictMethodGet(Map object)
 	{

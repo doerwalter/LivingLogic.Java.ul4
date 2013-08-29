@@ -11,7 +11,7 @@ import java.util.List;
 
 public class BoundListMethodRFind extends BoundMethod<List>
 {
-	private static Signature signature = new Signature("rfind", "sub", Signature.required, "start", null, "end", null);
+	private static final Signature signature = new Signature("rfind", "sub", Signature.required, "start", null, "end", null);
 
 	public BoundListMethodRFind(List object)
 	{

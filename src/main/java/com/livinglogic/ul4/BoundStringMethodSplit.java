@@ -14,7 +14,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class BoundStringMethodSplit extends BoundMethod<String>
 {
-	private static Signature signature = new Signature("split", "sep", null, "count", null);
+	private static final Signature signature = new Signature("split", "sep", null, "count", null);
 
 	public BoundStringMethodSplit(String object)
 	{

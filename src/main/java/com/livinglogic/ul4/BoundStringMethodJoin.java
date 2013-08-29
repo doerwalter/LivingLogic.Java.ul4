@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 public class BoundStringMethodJoin extends BoundMethod<String>
 {
-	private static Signature signature = new Signature("join", "iterable", Signature.required);
+	private static final Signature signature = new Signature("join", "iterable", Signature.required);
 
 	public BoundStringMethodJoin(String object)
 	{

@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class BoundDateMethodMIMEFormat extends BoundMethod<Date>
 {
-	private static Signature signature = new Signature("mimeformat");
+	private static final Signature signature = new Signature("mimeformat");
 
 	public BoundDateMethodMIMEFormat(Date object)
 	{

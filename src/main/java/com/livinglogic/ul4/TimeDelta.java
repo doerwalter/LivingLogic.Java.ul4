@@ -350,7 +350,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 	}
 	private static class BoundMethodDays extends BoundMethodWithContext<TimeDelta>
 	{
-		private static Signature signature = new Signature("days");
+		private static final Signature signature = new Signature("days");
 
 		public BoundMethodDays(TimeDelta object)
 		{
@@ -370,7 +370,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 	private static class BoundMethodSeconds extends BoundMethodWithContext<TimeDelta>
 	{
-		private static Signature signature = new Signature("seconds");
+		private static final Signature signature = new Signature("seconds");
 
 		public BoundMethodSeconds(TimeDelta object)
 		{
@@ -390,7 +390,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 	private static class BoundMethodMicroseconds extends BoundMethodWithContext<TimeDelta>
 	{
-		private static Signature signature = new Signature("microseconds");
+		private static final Signature signature = new Signature("microseconds");
 
 		public BoundMethodMicroseconds(TimeDelta object)
 		{

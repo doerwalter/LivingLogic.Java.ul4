@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class BoundDateMethodYear extends BoundMethod<Date>
 {
-	private static Signature signature = new Signature("year");
+	private static final Signature signature = new Signature("year");
 
 	public BoundDateMethodYear(Date object)
 	{

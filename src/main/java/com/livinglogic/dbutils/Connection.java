@@ -119,7 +119,7 @@ public class Connection implements UL4Attributes
 
 	private static class BoundMethodQueryArgs extends BoundMethodWithContext<Connection>
 	{
-		private static Signature signature = new Signature("queryargs", "query", Signature.required, "args", Signature.remainingArguments, "kwargs", Signature.remainingKeywordArguments);
+		private static final Signature signature = new Signature("queryargs", "query", Signature.required, "args", Signature.remainingArguments, "kwargs", Signature.remainingKeywordArguments);
 
 		public BoundMethodQueryArgs(Connection object)
 		{
@@ -141,7 +141,7 @@ public class Connection implements UL4Attributes
 
 	private static class BoundMethodQuery extends BoundMethodWithContext<Connection>
 	{
-		private static Signature signature = new Signature("query", "args", Signature.remainingArguments);
+		private static final Signature signature = new Signature("query", "args", Signature.remainingArguments);
 
 		public BoundMethodQuery(Connection object)
 		{

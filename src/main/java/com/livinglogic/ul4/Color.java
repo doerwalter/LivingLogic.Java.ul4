@@ -678,7 +678,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodR extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("r");
+		private static final Signature signature = new Signature("r");
 
 		public BoundMethodR(Color object)
 		{
@@ -698,7 +698,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodG extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("g");
+		private static final Signature signature = new Signature("g");
 
 		public BoundMethodG(Color object)
 		{
@@ -718,7 +718,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodB extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("b");
+		private static final Signature signature = new Signature("b");
 
 		public BoundMethodB(Color object)
 		{
@@ -738,7 +738,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodA extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("a");
+		private static final Signature signature = new Signature("a");
 
 		public BoundMethodA(Color object)
 		{
@@ -758,7 +758,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodLum extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("lum");
+		private static final Signature signature = new Signature("lum");
 
 		public BoundMethodLum(Color object)
 		{
@@ -778,7 +778,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodHLS extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("hls");
+		private static final Signature signature = new Signature("hls");
 
 		public BoundMethodHLS(Color object)
 		{
@@ -798,7 +798,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodHLSA extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("hlsa");
+		private static final Signature signature = new Signature("hlsa");
 
 		public BoundMethodHLSA(Color object)
 		{
@@ -818,7 +818,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodHSV extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("hsv");
+		private static final Signature signature = new Signature("hsv");
 
 		public BoundMethodHSV(Color object)
 		{
@@ -838,7 +838,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodHSVA extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("hsva");
+		private static final Signature signature = new Signature("hsva");
 
 		public BoundMethodHSVA(Color object)
 		{
@@ -858,7 +858,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodWithA extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("witha", "a", Signature.required);
+		private static final Signature signature = new Signature("witha", "a", Signature.required);
 
 		public BoundMethodWithA(Color object)
 		{
@@ -878,7 +878,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodWithLum extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("withlum", "lum", Signature.required);
+		private static final Signature signature = new Signature("withlum", "lum", Signature.required);
 
 		public BoundMethodWithLum(Color object)
 		{
@@ -898,7 +898,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodAbsLum extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("abslum", "f", Signature.required);
+		private static final Signature signature = new Signature("abslum", "f", Signature.required);
 
 		public BoundMethodAbsLum(Color object)
 		{
@@ -918,7 +918,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodRelLum extends BoundMethodWithContext<Color>
 	{
-		private static Signature signature = new Signature("rellum", "f", Signature.required);
+		private static final Signature signature = new Signature("rellum", "f", Signature.required);
 
 		public BoundMethodRelLum(Color object)
 		{

@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class BoundStringMethodRStrip extends BoundMethod<String>
 {
-	private static Signature signature = new Signature("rstrip", "chars", null);
+	private static final Signature signature = new Signature("rstrip", "chars", null);
 
 	public BoundStringMethodRStrip(String object)
 	{

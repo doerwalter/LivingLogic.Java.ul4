@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class BoundStringMethodStartsWith extends BoundMethod<String>
 {
-	private static Signature signature = new Signature("startswith", "prefix", Signature.required);
+	private static final Signature signature = new Signature("startswith", "prefix", Signature.required);
 
 	public BoundStringMethodStartsWith(String object)
 	{

@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class BoundDictMethodValues extends BoundMethod<Map>
 {
-	private static Signature signature = new Signature("values");
+	private static final Signature signature = new Signature("values");
 
 	public BoundDictMethodValues(Map object)
 	{

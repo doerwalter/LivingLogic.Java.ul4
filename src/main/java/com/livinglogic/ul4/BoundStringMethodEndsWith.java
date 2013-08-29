@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class BoundStringMethodEndsWith extends BoundMethod<String>
 {
-	private static Signature signature = new Signature("endswith", "suffix", Signature.required);
+	private static final Signature signature = new Signature("endswith", "suffix", Signature.required);
 
 	public BoundStringMethodEndsWith(String object)
 	{

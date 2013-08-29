@@ -785,7 +785,7 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 
 	private static class BoundMethodRenderS extends BoundMethodWithContext<InterpretedTemplate>
 	{
-		private static Signature signature = new Signature("renders", "kwargs", Signature.remainingKeywordArguments);
+		private static final Signature signature = new Signature("renders", "kwargs", Signature.remainingKeywordArguments);
 
 		public BoundMethodRenderS(InterpretedTemplate object)
 		{
@@ -805,7 +805,7 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 
 	private static class BoundMethodRender extends BoundMethodWithContext<InterpretedTemplate>
 	{
-		private static Signature signature = new Signature("render", "kwargs", Signature.remainingKeywordArguments);
+		private static final Signature signature = new Signature("render", "kwargs", Signature.remainingKeywordArguments);
 
 		public BoundMethodRender(InterpretedTemplate object)
 		{

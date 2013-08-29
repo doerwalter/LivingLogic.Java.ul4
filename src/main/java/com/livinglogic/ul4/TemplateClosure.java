@@ -70,7 +70,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 
 	private static class BoundMethodRender extends BoundMethodWithContext<TemplateClosure>
 	{
-		private static Signature signature = new Signature("render", "kwargs", Signature.remainingKeywordArguments);
+		private static final Signature signature = new Signature("render", "kwargs", Signature.remainingKeywordArguments);
 
 		public BoundMethodRender(TemplateClosure object)
 		{
@@ -91,7 +91,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 
 	private static class BoundMethodRenderS extends BoundMethodWithContext<TemplateClosure>
 	{
-		private static Signature signature = new Signature("renders", "kwargs", Signature.remainingKeywordArguments);
+		private static final Signature signature = new Signature("renders", "kwargs", Signature.remainingKeywordArguments);
 
 		public BoundMethodRenderS(TemplateClosure object)
 		{

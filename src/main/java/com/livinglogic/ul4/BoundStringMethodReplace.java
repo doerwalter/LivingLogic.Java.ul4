@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class BoundStringMethodReplace extends BoundMethod<String>
 {
-	private static Signature signature = new Signature("replace", "old", Signature.required, "new", Signature.required, "count", null);
+	private static final Signature signature = new Signature("replace", "old", Signature.required, "new", Signature.required, "count", null);
 
 	public BoundStringMethodReplace(String object)
 	{

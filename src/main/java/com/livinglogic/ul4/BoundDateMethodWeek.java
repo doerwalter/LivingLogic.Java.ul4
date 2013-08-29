@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class BoundDateMethodWeek extends BoundMethod<Date>
 {
-	private static Signature signature = new Signature("week", "firstweekday", null);
+	private static final Signature signature = new Signature("week", "firstweekday", null);
 
 	public BoundDateMethodWeek(Date object)
 	{

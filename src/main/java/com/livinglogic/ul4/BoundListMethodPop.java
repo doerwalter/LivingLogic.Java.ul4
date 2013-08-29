@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class BoundListMethodPop extends BoundMethod<List>
 {
-	private static Signature signature = new Signature("pop", "pos", -1);
+	private static final Signature signature = new Signature("pop", "pos", -1);
 
 	public BoundListMethodPop(List object)
 	{

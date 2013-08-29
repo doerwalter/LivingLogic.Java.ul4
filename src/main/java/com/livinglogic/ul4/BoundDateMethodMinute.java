@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class BoundDateMethodMinute extends BoundMethod<Date>
 {
-	private static Signature signature = new Signature("minute");
+	private static final Signature signature = new Signature("minute");
 
 	public BoundDateMethodMinute(Date object)
 	{

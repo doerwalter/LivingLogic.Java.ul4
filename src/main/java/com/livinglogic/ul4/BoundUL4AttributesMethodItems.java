@@ -12,7 +12,7 @@ import java.util.Vector;
 
 public class BoundUL4AttributesMethodItems extends BoundMethod<UL4Attributes>
 {
-	private static Signature signature = new Signature("items");
+	private static final Signature signature = new Signature("items");
 
 	public BoundUL4AttributesMethodItems(UL4Attributes object)
 	{

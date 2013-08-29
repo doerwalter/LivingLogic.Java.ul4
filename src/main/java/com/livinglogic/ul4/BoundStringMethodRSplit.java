@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class BoundStringMethodRSplit extends BoundMethod<String>
 {
-	private static Signature signature = new Signature("rsplit", "sep", null, "count", null);
+	private static final Signature signature = new Signature("rsplit", "sep", null, "count", null);
 
 	public BoundStringMethodRSplit(String object)
 	{

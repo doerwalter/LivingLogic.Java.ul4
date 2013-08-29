@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class BoundStringMethodLower extends BoundMethod<String>
 {
-	private static Signature signature = new Signature("lower");
+	private static final Signature signature = new Signature("lower");
 
 	public BoundStringMethodLower(String object)
 	{

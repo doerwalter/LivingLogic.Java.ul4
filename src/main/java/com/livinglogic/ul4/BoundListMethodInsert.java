@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class BoundListMethodInsert extends BoundMethod<List>
 {
-	private static Signature signature = new Signature("insert", "pos", Signature.required, "items", Signature.remainingArguments);
+	private static final Signature signature = new Signature("insert", "pos", Signature.required, "items", Signature.remainingArguments);
 
 	public BoundListMethodInsert(List object)
 	{

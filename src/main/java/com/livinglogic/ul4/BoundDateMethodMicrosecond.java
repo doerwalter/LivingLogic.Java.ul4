@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class BoundDateMethodMicrosecond extends BoundMethod<Date>
 {
-	private static Signature signature = new Signature("microsecond");
+	private static final Signature signature = new Signature("microsecond");
 
 	public BoundDateMethodMicrosecond(Date object)
 	{

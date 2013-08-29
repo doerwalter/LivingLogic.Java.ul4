@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class BoundUL4AttributesMethodValues extends BoundMethod<UL4Attributes>
 {
-	private static Signature signature = new Signature("values");
+	private static final Signature signature = new Signature("values");
 
 	public BoundUL4AttributesMethodValues(UL4Attributes object)
 	{

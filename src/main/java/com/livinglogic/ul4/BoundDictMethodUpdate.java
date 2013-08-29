@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class BoundDictMethodUpdate extends BoundMethod<Map>
 {
-	private static Signature signature = new Signature("update", "others", Signature.remainingArguments, "kwargs", Signature.remainingKeywordArguments);
+	private static final Signature signature = new Signature("update", "others", Signature.remainingArguments, "kwargs", Signature.remainingKeywordArguments);
 
 	public BoundDictMethodUpdate(Map object)
 	{

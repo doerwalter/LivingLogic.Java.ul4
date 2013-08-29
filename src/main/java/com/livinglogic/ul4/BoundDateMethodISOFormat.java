@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class BoundDateMethodISOFormat extends BoundMethod<Date>
 {
-	private static Signature signature = new Signature("isoformat");
+	private static final Signature signature = new Signature("isoformat");
 
 	public BoundDateMethodISOFormat(Date object)
 	{

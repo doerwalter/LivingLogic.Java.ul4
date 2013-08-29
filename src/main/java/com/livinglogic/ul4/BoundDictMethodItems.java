@@ -12,7 +12,7 @@ import java.util.Vector;
 
 public class BoundDictMethodItems extends BoundMethod<Map>
 {
-	private static Signature signature = new Signature("items");
+	private static final Signature signature = new Signature("items");
 
 	public BoundDictMethodItems(Map object)
 	{

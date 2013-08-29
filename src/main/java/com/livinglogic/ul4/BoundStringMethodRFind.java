@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class BoundStringMethodRFind extends BoundMethod<String>
 {
-	private static Signature signature = new Signature("rfind", "sub", Signature.required, "start", null, "end", null);
+	private static final Signature signature = new Signature("rfind", "sub", Signature.required, "start", null, "end", null);
 
 	public BoundStringMethodRFind(String object)
 	{

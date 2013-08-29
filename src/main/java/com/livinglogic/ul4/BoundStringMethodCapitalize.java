@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class BoundStringMethodCapitalize extends BoundMethod<String>
 {
-	private static Signature signature = new Signature("capitalize");
+	private static final Signature signature = new Signature("capitalize");
 
 	public BoundStringMethodCapitalize(String object)
 	{
