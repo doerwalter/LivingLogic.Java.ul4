@@ -2840,18 +2840,21 @@ public class UL4Test
 	public void method_upper()
 	{
 		checkTemplateOutput("GURK", "<?print 'gurk'.upper()?>");
+		checkTemplateOutput("GURK", "<?code m = 'gurk'.upper?><?print m()?>");
 	}
 
 	@Test
 	public void method_lower()
 	{
 		checkTemplateOutput("gurk", "<?print 'GURK'.lower()?>");
+		checkTemplateOutput("gurk", "<?code m = 'GURK'.lower?><?print m()?>");
 	}
 
 	@Test
 	public void method_capitalize()
 	{
 		checkTemplateOutput("Gurk", "<?print 'gURK'.capitalize()?>");
+		checkTemplateOutput("Gurk", "<?code m = 'gURK'.capitalize?><?print m()?>");
 	}
 
 	@Test
@@ -2859,6 +2862,7 @@ public class UL4Test
 	{
 		checkTemplateOutput("True", "<?print 'gurkhurz'.startswith('gurk')?>");
 		checkTemplateOutput("False", "<?print 'gurkhurz'.startswith('hurz')?>");
+		checkTemplateOutput("False", "<?code m = 'gurkhurz'.startswith?><?print m('hurz')?>");
 
 		checkTemplateOutput("False", "<?print 'gurkhurz'.startswith(prefix='hurz')?>");
 	}
@@ -2868,6 +2872,7 @@ public class UL4Test
 	{
 		checkTemplateOutput("True", "<?print 'gurkhurz'.endswith('hurz')?>");
 		checkTemplateOutput("False", "<?print 'gurkhurz'.endswith('gurk')?>");
+		checkTemplateOutput("False", "<?code m = 'gurkhurz'.endswith?><?print m('gurk')?>");
 
 		checkTemplateOutput("False", "<?print 'gurkhurz'.endswith(suffix='gurk')?>");
 	}
@@ -2877,6 +2882,7 @@ public class UL4Test
 	{
 		checkTemplateOutput("gurk", "<?print obj.strip()?>", "obj", " \t\r\ngurk \t\r\n");
 		checkTemplateOutput("gurk", "<?print obj.strip('xyz')?>", "obj", "xyzzygurkxyzzy");
+		checkTemplateOutput("gurk", "<?code m = obj.strip?><?print m('xyz')?>", "obj", "xyzzygurkxyzzy");
 
 		checkTemplateOutput("gurk", "<?print obj.strip(chars='xyz')?>", "obj", "xyzzygurkxyzzy");
 	}
@@ -2886,6 +2892,7 @@ public class UL4Test
 	{
 		checkTemplateOutput("gurk \t\r\n", "<?print obj.lstrip()?>", "obj", " \t\r\ngurk \t\r\n");
 		checkTemplateOutput("gurkxyzzy", "<?print obj.lstrip(arg)?>", "obj", "xyzzygurkxyzzy", "arg", "xyz");
+		checkTemplateOutput("gurkxyzzy", "<?code m = obj.lstrip?><?print m(arg)?>", "obj", "xyzzygurkxyzzy", "arg", "xyz");
 
 		checkTemplateOutput("gurkxyzzy", "<?print obj.lstrip(chars=arg)?>", "obj", "xyzzygurkxyzzy", "arg", "xyz");
 	}
@@ -2895,6 +2902,7 @@ public class UL4Test
 	{
 		checkTemplateOutput(" \t\r\ngurk", "<?print obj.rstrip()?>", "obj", " \t\r\ngurk \t\r\n");
 		checkTemplateOutput("xyzzygurk", "<?print obj.rstrip(arg)?>", "obj", "xyzzygurkxyzzy", "arg", "xyz");
+		checkTemplateOutput("xyzzygurk", "<?code m = obj.rstrip?><?print m(arg)?>", "obj", "xyzzygurkxyzzy", "arg", "xyz");
 
 		checkTemplateOutput("xyzzygurk", "<?print obj.rstrip(chars=arg)?>", "obj", "xyzzygurkxyzzy", "arg", "xyz");
 	}
@@ -2907,6 +2915,7 @@ public class UL4Test
 		checkTemplateOutput("()(f)(o)(o)()", "<?for item in obj.split(arg)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
 		checkTemplateOutput("()(f)(o)(o)()", "<?for item in obj.split(arg, None)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
 		checkTemplateOutput("()(f)(oxxoxx)", "<?for item in obj.split(arg, 2)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
+		checkTemplateOutput("()(f)(oxxoxx)", "<?code m = obj.split?><?for item in m(arg, 2)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
 
 		checkTemplateOutput("()(f)(oxxoxx)", "<?for item in obj.split(sep=arg, count=2)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
 	}
@@ -2919,6 +2928,7 @@ public class UL4Test
 		checkTemplateOutput("()(f)(o)(o)()", "<?for item in obj.rsplit(arg)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
 		checkTemplateOutput("()(f)(o)(o)()", "<?for item in obj.rsplit(arg, None)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
 		checkTemplateOutput("(xxfxxo)(o)()", "<?for item in obj.rsplit(arg, 2)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
+		checkTemplateOutput("(xxfxxo)(o)()", "<?code m = obj.rsplit?><?for item in m(arg, 2)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
 
 		checkTemplateOutput("(xxfxxo)(o)()", "<?for item in obj.rsplit(sep=arg, count=2)?>(<?print item?>)<?end for?>", "obj", "xxfxxoxxoxx", "arg", "xx");
 	}
@@ -2929,6 +2939,7 @@ public class UL4Test
 		checkTemplateOutput("goork", "<?print 'gurk'.replace('u', 'oo')?>");
 		checkTemplateOutput("fuuuu", "<?print 'foo'.replace('o', 'uu', None)?>");
 		checkTemplateOutput("fuuo", "<?print 'foo'.replace('o', 'uu', 1)?>");
+		checkTemplateOutput("fuuo", "<?code m = 'foo'.replace?><?print m('o', 'uu', 1)?>");
 		checkTemplateOutput("fuuo", "<?print 'foo'.replace(old='o', new='uu', count=1)?>");
 	}
 
@@ -3002,6 +3013,7 @@ public class UL4Test
 	{
 		Date t = FunctionDate.call(2010, 2, 22, 12, 34, 56);
 		checkTemplateOutput("Mon, 22 Feb 2010 12:34:56 GMT", "<?print data.mimeformat()?>", "data", t);
+		checkTemplateOutput("Mon, 22 Feb 2010 12:34:56 GMT", "<?code m = data.mimeformat?><?print m()?>", "data", t);
 	}
 
 	@Test
@@ -3009,6 +3021,7 @@ public class UL4Test
 	{
 		checkTemplateOutput("a:42;b:17;c:23;", "<?for (key, value) in sorted(data.items())?><?print key?>:<?print value?>;<?end for?>", "data", makeMap("a", 42, "b", 17, "c", 23));
 		checkTemplateOutput("x:17;y:23;", "<?for (key, value) in data.items()?><?print key?>:<?print value?>;<?end for?>", "data", new Point(17, 23));
+		checkTemplateOutput("x:17;y:23;", "<?code m = data.items?><?for (key, value) in m()?><?print key?>:<?print value?>;<?end for?>", "data", new Point(17, 23));
 	}
 
 	@Test
@@ -3016,6 +3029,7 @@ public class UL4Test
 	{
 		checkTemplateOutput("17;23;42;", "<?for value in sorted(data.values())?><?print value?>;<?end for?>", "data", makeMap("a", 42, "b", 17, "c", 23));
 		checkTemplateOutput("17;23;", "<?for value in data.values()?><?print value?>;<?end for?>", "data", new Point(17, 23));
+		checkTemplateOutput("17;23;", "<?code m = data.values?><?for value in m()?><?print value?>;<?end for?>", "data", new Point(17, 23));
 	}
 
 	@Test
@@ -3025,6 +3039,7 @@ public class UL4Test
 		checkTemplateOutput("17", "<?print {'foo': 17}.get('foo', 42)?>");
 		checkTemplateOutput("", "<?print {}.get('foo')?>");
 		checkTemplateOutput("17", "<?print {'foo': 17}.get('foo')?>");
+		checkTemplateOutput("17", "<?code m = {'foo': 17}.get?><?print m('foo')?>");
 
 		checkTemplateOutput("17", "<?print {'foo': 17}.get(key='foo', default=42)?>");
 	}
@@ -3036,6 +3051,10 @@ public class UL4Test
 		checkTemplateOutput("0x22", "<?code c = #123?><?print hex(c.g())?>");
 		checkTemplateOutput("0x33", "<?code c = #123?><?print hex(c.b())?>");
 		checkTemplateOutput("0xff", "<?code c = #123?><?print hex(c.a())?>");
+		checkTemplateOutput("0x11", "<?code c = #123?><?code m = c.r?><?print hex(m())?>");
+		checkTemplateOutput("0x22", "<?code c = #123?><?code m = c.g?><?print hex(m())?>");
+		checkTemplateOutput("0x33", "<?code c = #123?><?code m = c.b?><?print hex(m())?>");
+		checkTemplateOutput("0xff", "<?code c = #123?><?code m = c.a?><?print hex(m())?>");
 	}
 
 	@Test
@@ -3044,6 +3063,7 @@ public class UL4Test
 		checkTemplateOutput("0", "<?code c = #fff?><?print int(c.hls()[0])?>");
 		checkTemplateOutput("1", "<?code c = #fff?><?print int(c.hls()[1])?>");
 		checkTemplateOutput("0", "<?code c = #fff?><?print int(c.hls()[2])?>");
+		checkTemplateOutput("0", "<?code c = #fff?><?code m = c.hls?><?print int(m()[0])?>");
 	}
 
 	@Test
@@ -3053,6 +3073,7 @@ public class UL4Test
 		checkTemplateOutput("1", "<?code c = #fff?><?print int(c.hlsa()[1])?>");
 		checkTemplateOutput("0", "<?code c = #fff?><?print int(c.hlsa()[2])?>");
 		checkTemplateOutput("1", "<?code c = #fff?><?print int(c.hlsa()[3])?>");
+		checkTemplateOutput("0", "<?code c = #fff?><?code m = c.hlsa?><?print int(m()[0])?>");
 	}
 
 	@Test
@@ -3061,6 +3082,7 @@ public class UL4Test
 		checkTemplateOutput("0", "<?code c = #fff?><?print int(c.hsv()[0])?>");
 		checkTemplateOutput("0", "<?code c = #fff?><?print int(c.hsv()[1])?>");
 		checkTemplateOutput("1", "<?code c = #fff?><?print int(c.hsv()[2])?>");
+		checkTemplateOutput("0", "<?code c = #fff?><?code m = c.hsv?><?print int(m()[0])?>");
 	}
 
 	@Test
@@ -3070,18 +3092,21 @@ public class UL4Test
 		checkTemplateOutput("0", "<?code c = #fff?><?print int(c.hsva()[1])?>");
 		checkTemplateOutput("1", "<?code c = #fff?><?print int(c.hsva()[2])?>");
 		checkTemplateOutput("1", "<?code c = #fff?><?print int(c.hsva()[3])?>");
+		checkTemplateOutput("0", "<?code c = #fff?><?code m = c.hsva?><?print int(m()[0])?>");
 	}
 
 	@Test
 	public void method_lum()
 	{
 		checkTemplateOutput("True", "<?print #fff.lum() == 1?>");
+		checkTemplateOutput("True", "<?code m = #fff.lum?><?print m() == 1?>");
 	}
 
 	@Test
 	public void method_withlum()
 	{
 		checkTemplateOutput("#fff", "<?print #000.withlum(1)?>");
+		checkTemplateOutput("#fff", "<?code m = #000.withlum?><?print m(1)?>");
 
 		checkTemplateOutput("#fff", "<?print #000.withlum(lum=1)?>");
 	}
@@ -3090,6 +3115,7 @@ public class UL4Test
 	public void method_witha()
 	{
 		checkTemplateOutput("#0063a82a", "<?print repr(#0063a8.witha(42))?>");
+		checkTemplateOutput("#0063a82a", "<?code m =#0063a8.witha?><?print repr(m(42))?>");
 
 		checkTemplateOutput("#0063a82a", "<?print repr(#0063a8.witha(a=42))?>");
 	}
@@ -3098,6 +3124,7 @@ public class UL4Test
 	public void method_abslum()
 	{
 		checkTemplateOutput("#fff", "<?print #000.abslum(1)?>");
+		checkTemplateOutput("#fff", "<?code m = #000.abslum?><?print m(1)?>");
 		checkTemplateOutput("#000", "<?print #fff.abslum(-1)?>");
 	}
 
@@ -3107,6 +3134,7 @@ public class UL4Test
 		checkTemplateOutput("#000", "<?print #888.rellum(-1)?>");
 		checkTemplateOutput("#888", "<?print #888.rellum(0)?>");
 		checkTemplateOutput("#fff", "<?print #888.rellum(1)?>");
+		checkTemplateOutput("#000", "<?code m = #888.rellum?><?print m(-1)?>");
 	}
 
 	@Test
@@ -3114,6 +3142,7 @@ public class UL4Test
 	{
 		checkTemplateOutput("1,2,3,4", "<?print ','.join('1234')?>");
 		checkTemplateOutput("1,2,3,4", "<?print ','.join(['1', '2', '3', '4'])?>");
+		checkTemplateOutput("1,2,3,4", "<?code m = ','.join?><?print m('1234')?>");
 
 		checkTemplateOutput("1,2,3,4", "<?print ','.join(iterable='1234')?>");
 	}
@@ -3129,6 +3158,7 @@ public class UL4Test
 		checkTemplateOutput("5", "<?print s.find('ur', -4, -1)?>", "s", "gurkgurk");
 		checkTemplateOutput("-1", "<?print s.find('rk', 2, 3)?>", "s", "gurkgurk");
 		checkTemplateOutput("-1", "<?print s.find('rk', 7)?>", "s", "gurkgurk");
+		checkTemplateOutput("-1", "<?code m = s.find?><?print m('ks')?>", "s", "gurkgurk");
 
 		checkTemplateOutput("-1", "<?print l.find('x')?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
 		checkTemplateOutput("2", "<?print l.find('r')?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
@@ -3154,6 +3184,7 @@ public class UL4Test
 		checkTemplateOutput("5", "<?print s.rfind('ur', -4, -1)?>", "s", "gurkgurk");
 		checkTemplateOutput("-1", "<?print s.rfind('rk', 2, 3)?>", "s", "gurkgurk");
 		checkTemplateOutput("-1", "<?print s.rfind('rk', 7)?>", "s", "gurkgurk");
+		checkTemplateOutput("-1", "<?code m = s.rfind?><?print m('ks')?>", "s", "gurkgurk");
 
 		checkTemplateOutput("-1", "<?print l.rfind('x')?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
 		checkTemplateOutput("6", "<?print l.rfind('r')?>", "l", asList("g", "u", "r", "k", "g", "u", "r", "k"));
@@ -3172,6 +3203,7 @@ public class UL4Test
 	public void method_day()
 	{
 		checkTemplateOutput("12", "<?print @(2010-05-12).day()?>");
+		checkTemplateOutput("12", "<?code m = @(2010-05-12).day?><?print m()?>");
 		checkTemplateOutput("12", "<?print d.day()?>", "d", FunctionDate.call(2010, 5, 12));
 	}
 
@@ -3179,6 +3211,7 @@ public class UL4Test
 	public void method_month()
 	{
 		checkTemplateOutput("5", "<?print @(2010-05-12).month()?>");
+		checkTemplateOutput("5", "<?code m = @(2010-05-12).month?><?print m()?>");
 		checkTemplateOutput("5", "<?print d.month()?>", "d", FunctionDate.call(2010, 5, 12));
 	}
 
@@ -3186,6 +3219,7 @@ public class UL4Test
 	public void method_year()
 	{
 		checkTemplateOutput("2010", "<?print @(2010-05-12).year()?>");
+		checkTemplateOutput("2010", "<?code m = @(2010-05-12).year?><?print m()?>");
 		checkTemplateOutput("2010", "<?print d.year()?>", "d", FunctionDate.call(2010, 5, 12));
 	}
 
@@ -3193,6 +3227,7 @@ public class UL4Test
 	public void method_hour()
 	{
 		checkTemplateOutput("16", "<?print @(2010-05-12T16:47:56).hour()?>");
+		checkTemplateOutput("16", "<?code m = @(2010-05-12T16:47:56).hour?><?print m()?>");
 		checkTemplateOutput("16", "<?print d.hour()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56));
 	}
 
@@ -3200,6 +3235,7 @@ public class UL4Test
 	public void method_minute()
 	{
 		checkTemplateOutput("47", "<?print @(2010-05-12T16:47:56).minute()?>");
+		checkTemplateOutput("47", "<?code m = @(2010-05-12T16:47:56).minute?><?print m()?>");
 		checkTemplateOutput("47", "<?print d.minute()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56));
 	}
 
@@ -3207,6 +3243,7 @@ public class UL4Test
 	public void method_second()
 	{
 		checkTemplateOutput("56", "<?print @(2010-05-12T16:47:56).second()?>");
+		checkTemplateOutput("56", "<?code m = @(2010-05-12T16:47:56).second?><?print m()?>");
 		checkTemplateOutput("56", "<?print d.second()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56));
 	}
 
@@ -3214,6 +3251,7 @@ public class UL4Test
 	public void method_microsecond()
 	{
 		checkTemplateOutput("123000", "<?print @(2010-05-12T16:47:56.123000).microsecond()?>");
+		checkTemplateOutput("123000", "<?code m = @(2010-05-12T16:47:56.123000).microsecond?><?print m()?>");
 		checkTemplateOutput("123000", "<?print d.microsecond()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56, 123000));
 	}
 
@@ -3221,6 +3259,7 @@ public class UL4Test
 	public void method_weekday()
 	{
 		checkTemplateOutput("2", "<?print @(2010-05-12).weekday()?>");
+		checkTemplateOutput("2", "<?code m = @(2010-05-12).weekday?><?print m()?>");
 		checkTemplateOutput("2", "<?print d.weekday()?>", "d", FunctionDate.call(2010, 5, 12));
 	}
 
@@ -3228,6 +3267,7 @@ public class UL4Test
 	public void method_yearday()
 	{
 		checkTemplateOutput("1", "<?print @(2010-01-01).yearday()?>");
+		checkTemplateOutput("1", "<?code m = @(2010-01-01).yearday?><?print m()?>");
 		checkTemplateOutput("366", "<?print @(2008-12-31).yearday()?>");
 		checkTemplateOutput("365", "<?print @(2010-12-31).yearday()?>");
 		checkTemplateOutput("132", "<?print @(2010-05-12).yearday()?>");
@@ -3240,18 +3280,21 @@ public class UL4Test
 	public void method_append()
 	{
 		checkTemplateOutput("[17, 23, 42]", "<?code l = [17]?><?code l.append(23, 42)?><?print l?>");
+		checkTemplateOutput("[17, 23, 42]", "<?code l = [17]?><?code m = l.append?><?code m(23, 42)?><?print l?>");
 	}
 
 	@Test
 	public void method_insert()
 	{
 		checkTemplateOutput("[1, 2, 3, 4]", "<?code l = [1,4]?><?code l.insert(1, 2, 3)?><?print l?>");
+		checkTemplateOutput("[1, 2, 3, 4]", "<?code l = [1,4]?><?code m = l.insert?><?code m(1, 2, 3)?><?print l?>");
 	}
 
 	@Test
 	public void method_pop()
 	{
 		checkTemplateOutput("42;17;23;", "<?code l = [17, 23, 42]?><?print l.pop()?>;<?print l.pop(-2)?>;<?print l.pop(0)?>;");
+		checkTemplateOutput("42;17;23;", "<?code l = [17, 23, 42]?><?code m = l.pop?><?print m()?>;<?print m(-2)?>;<?print m(0)?>;");
 	}
 
 	@Test
@@ -3261,6 +3304,7 @@ public class UL4Test
 		checkTemplateOutput("1", "<?code d = {}?><?code d.update([['one', 1]])?><?print d.one?>");
 		checkTemplateOutput("1", "<?code d = {}?><?code d.update({'one': 1})?><?print d.one?>");
 		checkTemplateOutput("1", "<?code d = {}?><?code d.update(one=1)?><?print d.one?>");
+		checkTemplateOutput("1", "<?code d = {}?><?code m = d.update?><?code m(one=1)?><?print d.one?>");
 		checkTemplateOutput("1", "<?code d = {}?><?code d.update([['one', 0]], {'one': 0}, one=1)?><?print d.one?>");
 	}
 
