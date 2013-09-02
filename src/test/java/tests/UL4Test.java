@@ -2949,6 +2949,7 @@ public class UL4Test
 		InterpretedTemplate t1 = getTemplate("(<?print data?>)", "t1");
 
 		checkTemplateOutput("(GURK)", "<?print t.renders(data='gurk').upper()?>", "t", t1);
+		checkTemplateOutput("(GURK)", "<?code m = t.renders?><?print m(data='gurk').upper()?>", "t", t1);
 
 		InterpretedTemplate t2 = getTemplate("(gurk)", "t2");
 		checkTemplateOutput("(GURK)", "<?print t.renders().upper()?>", "t", t2);
@@ -2962,6 +2963,7 @@ public class UL4Test
 
 		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?code t.render(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
 		checkTemplateOutput("foo", "<?print t.render()?>", "t", t2);
+		checkTemplateOutput("foo", "<?code m = t.render?><?code m()?>", "t", t2);
 		checkTemplateOutput("foo", "<?print t.render \n\t(\n \t)\n\t ?>", "t", t2);
 
 		checkTemplateOutput("42", "<?code globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("<?print value?>")));
