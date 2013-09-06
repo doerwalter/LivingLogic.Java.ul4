@@ -244,10 +244,10 @@ list returns [com.livinglogic.ul4.List node]
 		close=']' { $node = new com.livinglogic.ul4.List(location, getStart($open), getEnd($close)); }
 	|
 		open='[' {$node = new com.livinglogic.ul4.List(location, getStart($open), -1); }
-		e1=expr1 { $node.append($e1.node); }
+		e1=expr_or { $node.append($e1.node); }
 		(
 			','
-			e2=expr1 { $node.append($e2.node); }
+			e2=expr_or { $node.append($e2.node); }
 		)*
 		','?
 		close=']' { $node.setEnd(getEnd($close)); }
@@ -260,14 +260,14 @@ listcomprehension returns [ListComprehension node]
 	}
 	:
 		open='['
-		item=expr1
+		item=expr_or
 		'for'
 		n=nestedname
 		'in'
-		container=expr1
+		container=expr_or
 		(
 			'if'
-			condition=expr1 { _condition = $condition.node; }
+			condition=expr_or { _condition = $condition.node; }
 		)?
 		close=']' { $node = new ListComprehension(location, getStart($open), getEnd($close), $item.node, $n.varname, $container.node, _condition); }
 	;
@@ -276,12 +276,12 @@ listcomprehension returns [ListComprehension node]
 fragment
 dictitem returns [DictItem node]
 	:
-		k=expr1
+		k=expr_or
 		':'
-		v=expr1 { $node = new DictItemKeyValue($k.node, $v.node); }
+		v=expr_or { $node = new DictItemKeyValue($k.node, $v.node); }
 	|
 		'**'
-		d=expr1 { $node = new DictItemDict($d.node); }
+		d=expr_or { $node = new DictItemDict($d.node); }
 	;
 
 dict returns [Dict node]
@@ -306,16 +306,16 @@ dictcomprehension returns [DictComprehension node]
 	}
 	:
 		open='{'
-		key=expr1
+		key=expr_or
 		':'
-		value=expr1
+		value=expr_or
 		'for'
 		n=nestedname
 		'in'
-		container=expr1
+		container=expr_or
 		(
 			'if'
-			condition=expr1 { _condition = $condition.node; }
+			condition=expr_or { _condition = $condition.node; }
 		)?
 		close='}' { $node = new DictComprehension(location, getStart($open), getEnd($close), $key.node, $value.node, $n.varname, $container.node, _condition); }
 	;
@@ -327,14 +327,14 @@ generatorexpression returns [GeneratorExpression node]
 		int _end = -1;
 	}
 	:
-		item=expr1
+		item=expr_or
 		'for'
 		n=nestedname
 		'in'
-		container=expr1 { _end = $container.node.getEnd(); }
+		container=expr_or { _end = $container.node.getEnd(); }
 		(
 			'if'
-			condition=expr1 { _condition = $condition.node; _end = $condition.node.getEnd(); }
+			condition=expr_or { _condition = $condition.node; _end = $condition.node.getEnd(); }
 		)? { $node = new GeneratorExpression(location, $item.node.getStart(), _end, $item.node, $n.varname, $container.node, _condition); }
 	;
 
@@ -345,7 +345,7 @@ atom returns [AST node]
 	| e_dict=dict { $node = $e_dict.node; }
 	| e_dictcomp=dictcomprehension { $node = $e_dictcomp.node; }
 	| open='(' e_genexpr=generatorexpression close=')' { $node = $e_genexpr.node; $node.setStart(getStart($open)); $node.setEnd(getEnd($close)); }
-	| open='(' e_bracket=expr1 close=')' { $node = $e_bracket.node; $node.setStart(getStart($open)); $node.setEnd(getEnd($close)); }
+	| open='(' e_bracket=expr_or close=')' { $node = $e_bracket.node; $node.setStart(getStart($open)); $node.setEnd(getEnd($close)); }
 	;
 
 /* For variable unpacking in assignments and for loops */
@@ -368,7 +368,7 @@ nestedname returns [Object varname]
 	;
 
 /* Function/method call, attribute access, item access, slice access */
-expr9 returns [AST node]
+expr_subscript returns [AST node]
 	@init
 	{
 		AST index1 = null;
@@ -442,14 +442,14 @@ expr9 returns [AST node]
 			(
 				':'
 				(
-					e2=expr1 { index2 = $e2.node; }
+					e2=expr_or { index2 = $e2.node; }
 				)? { $node = GetSlice.make(location, $e1.node.getStart(), -1, $node, null, index2); }
 			|
-				e2=expr1 { index1 = $e2.node; }
+				e2=expr_or { index1 = $e2.node; }
 				(
 					':' { slice = true; }
 					(
-						e3=expr1 { index2 = $e3.node; }
+						e3=expr_or { index2 = $e3.node; }
 					)?
 				)? { $node = slice ? GetSlice.make(location, $e1.node.getStart(), -1, $node, index1, index2) : GetItem.make(location, $e1.node.getStart(), -1, $node, index1); }
 			)
@@ -458,21 +458,21 @@ expr9 returns [AST node]
 	;
 
 /* Negation */
-expr8 returns [AST node]
+expr_neg returns [AST node]
 	:
-		e1=expr9 { $node = $e1.node; }
+		e1=expr_subscript { $node = $e1.node; }
 	|
-		minus='-' e2=expr8 { $node = Neg.make(location, getStart($minus), $e2.node.getEnd(), $e2.node); }
+		minus='-' e2=expr_neg { $node = Neg.make(location, getStart($minus), $e2.node.getEnd(), $e2.node); }
 	;
 
 /* Multiplication, division, modulo */
-expr7 returns [AST node]
+expr_mul returns [AST node]
 	@init
 	{
 		int opcode = -1;
 	}
 	:
-		e1=expr8 { $node = $e1.node; }
+		e1=expr_neg { $node = $e1.node; }
 		(
 			(
 				'*' { opcode = 0; }
@@ -483,36 +483,36 @@ expr7 returns [AST node]
 			|
 				'%' { opcode = 3; }
 			)
-			e2=expr8 { switch (opcode) { case 0: $node = Mul.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = TrueDiv.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = FloorDiv.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = Mod.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
+			e2=expr_neg { switch (opcode) { case 0: $node = Mul.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = TrueDiv.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = FloorDiv.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = Mod.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
 		)*
 	;
 
 /* Addition, substraction */
-expr6 returns [AST node]
+expr_add returns [AST node]
 	@init
 	{
 		boolean add = false;
 	}
 	:
-		e1=expr7 { $node = $e1.node; }
+		e1=expr_mul { $node = $e1.node; }
 		(
 			(
 				'+' { add = true; }
 			|
 				'-' { add = false; }
 			)
-			e2=expr7 { $node = add ? Add.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node) : Sub.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_mul { $node = add ? Add.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node) : Sub.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
 		)*
 	;
 
 /* Comparisons */
-expr5 returns [AST node]
+expr_cmp returns [AST node]
 	@init
 	{
 		int opcode = -1;
 	}
 	:
-		e1=expr6 { $node = $e1.node; }
+		e1=expr_add { $node = $e1.node; }
 		(
 			(
 				'==' { opcode = 0; }
@@ -527,64 +527,64 @@ expr5 returns [AST node]
 			|
 				'>=' { opcode = 5; }
 			)
-			e2=expr6 { switch (opcode) { case 0: $node = EQ.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = NE.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = LT.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = LE.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 4: $node = GT.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 5: $node = GE.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
+			e2=expr_add { switch (opcode) { case 0: $node = EQ.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = NE.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = LT.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = LE.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 4: $node = GT.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 5: $node = GE.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
 		)*
 	;
 
 /* "in"/"not in" operator */
-expr4 returns [AST node]
+expr_contain returns [AST node]
 	@init
 	{
 		boolean not = false;
 	}
 	:
-		e1=expr5 { $node = $e1.node; }
+		e1=expr_cmp { $node = $e1.node; }
 		(
 			(
 				'not' { not = true; }
 			)?
 			'in'
-			e2=expr5 { $node = not ? NotContains.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node) : Contains.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_cmp { $node = not ? NotContains.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node) : Contains.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
 		)?
 	;
 
 /* Not operator */
-expr3 returns [AST node]
+expr_not returns [AST node]
 	:
-		e1=expr4 { $node = $e1.node; }
+		e1=expr_contain { $node = $e1.node; }
 	|
-		n='not' e2=expr3 { $node = Not.make(location, getStart($n), $e2.node.getEnd(), $e2.node); }
+		n='not' e2=expr_not { $node = Not.make(location, getStart($n), $e2.node.getEnd(), $e2.node); }
 	;
 
 
 /* And operator */
-expr2 returns [AST node]
+expr_and returns [AST node]
 	:
-		e1=expr3 { $node = $e1.node; }
+		e1=expr_not { $node = $e1.node; }
 		(
 			'and'
-			e2=expr3 { $node = And.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_not { $node = And.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
 		)*
 	;
 
 /* Or operator */
-expr1 returns [AST node]
+expr_or returns [AST node]
 	:
-		e1=expr2 { $node = $e1.node; }
+		e1=expr_and { $node = $e1.node; }
 		(
 			'or'
-			e2=expr2 { $node = Or.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_and { $node = Or.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
 		)*
 	;
 
 exprarg returns [AST node]
 	: ege=generatorexpression { $node = $ege.node; }
-	| e1=expr1 { $node = $e1.node; }
+	| e1=expr_or { $node = $e1.node; }
 	;
 
 expression returns [AST node]
 	: ege=generatorexpression EOF { $node = $ege.node; }
-	| e=expr1 EOF { $node = $e.node; }
+	| e=expr_or EOF { $node = $e.node; }
 	;
 
 
@@ -594,7 +594,7 @@ for_ returns [For node]
 	:
 		n=nestedname
 		'in'
-		e=expr1 { $node = new For(location, location.getStartCode(), $e.node.getEnd(), $n.varname, $e.node); }
+		e=expr_or { $node = new For(location, location.getStartCode(), $e.node.getEnd(), $n.varname, $e.node); }
 		EOF
 	;
 
@@ -602,12 +602,12 @@ for_ returns [For node]
 /* Additional rules for "code" tag */
 
 stmt returns [AST node]
-	: nn=nestedname '=' e=expr1 EOF { $node = new StoreVar(location, location.getStartCode(), $e.node.getEnd(), $nn.varname, $e.node); }
-	| n=name '+=' e=expr1 EOF { $node = new AddVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
-	| n=name '-=' e=expr1 EOF { $node = new SubVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
-	| n=name '*=' e=expr1 EOF { $node = new MulVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
-	| n=name '/=' e=expr1 EOF { $node = new TrueDivVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
-	| n=name '//=' e=expr1 EOF { $node = new FloorDivVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
-	| n=name '%=' e=expr1 EOF { $node = new ModVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
+	: nn=nestedname '=' e=expr_or EOF { $node = new StoreVar(location, location.getStartCode(), $e.node.getEnd(), $nn.varname, $e.node); }
+	| n=name '+=' e=expr_or EOF { $node = new AddVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
+	| n=name '-=' e=expr_or EOF { $node = new SubVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
+	| n=name '*=' e=expr_or EOF { $node = new MulVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
+	| n=name '/=' e=expr_or EOF { $node = new TrueDivVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
+	| n=name '//=' e=expr_or EOF { $node = new FloorDivVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
+	| n=name '%=' e=expr_or EOF { $node = new ModVar(location, location.getStartCode(), $e.node.getEnd(), $n.text, $e.node); }
 	| e=expression EOF { $node = $e.node; }
 	;
