@@ -38,7 +38,7 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 	/**
 	 * The version number used in the UL4ON dump of the template.
 	 */
-	public static final String VERSION = "25";
+	public static final String VERSION = "26";
 
 	/**
 	 * The name of the template/function (defaults to {@code null})
