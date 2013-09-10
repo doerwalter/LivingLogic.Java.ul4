@@ -592,7 +592,7 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 
 	public Object evaluate(EvaluationContext context)
 	{
-		context.put(name, new TemplateClosure(this, context.getVariables()));
+		context.set(name, new TemplateClosure(this, context.getVariables()));
 		return null;
 	}
 
@@ -746,7 +746,7 @@ public class InterpretedTemplate extends Block implements UL4Name, UL4CallWithCo
 		Utils.register("de.livinglogic.ul4.or", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Or(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.and", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.And(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.mod", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Mod(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.storevar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.StoreVar(null, -1, -1, null, null); }});
+		Utils.register("de.livinglogic.ul4.setvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SetVar(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.addvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AddVar(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.subvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SubVar(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.mulvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.MulVar(null, -1, -1, null, null); }});

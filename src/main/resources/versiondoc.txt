@@ -1,3 +1,9 @@
+exp-90:
+-------
+Comments:
+* Add support for attribute, item and slice assignment.
+
+
 exp-89:
 -------
 Comments:

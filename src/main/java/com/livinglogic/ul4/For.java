@@ -64,7 +64,8 @@ public class For extends Block
 
 		while (iter.hasNext())
 		{
-			context.unpackVariable(varname, iter.next());
+			for (Utils.LValueValue lvv : Utils.unpackVariable(varname, iter.next()))
+				lvv.getLValue().evaluateSet(context, lvv.getValue());
 
 			try
 			{

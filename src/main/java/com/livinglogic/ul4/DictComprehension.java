@@ -52,7 +52,8 @@ public class DictComprehension extends AST
 		{
 			while (iter.hasNext())
 			{
-				context.unpackVariable(varname, iter.next());
+				for (Utils.LValueValue lvv : Utils.unpackVariable(varname, iter.next()))
+					lvv.getLValue().evaluateSet(context, lvv.getValue());
 
 				if (condition == null || FunctionBool.call(condition.decoratedEvaluate(context)))
 				{

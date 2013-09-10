@@ -14,7 +14,7 @@ import java.util.Set;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class Var extends AST
+public class Var extends AST implements LValue
 {
 	protected String name;
 
@@ -32,6 +32,41 @@ public class Var extends AST
 	public Object evaluate(EvaluationContext context)
 	{
 		return context.get(name);
+	}
+
+	public void evaluateSet(EvaluationContext context, Object value)
+	{
+		context.set(name, value);
+	}
+
+	public void evaluateAdd(EvaluationContext context, Object value)
+	{
+		context.set(name, Add.call(context.get(name), value));
+	}
+
+	public void evaluateSub(EvaluationContext context, Object value)
+	{
+		context.set(name, Sub.call(context.get(name), value));
+	}
+
+	public void evaluateMul(EvaluationContext context, Object value)
+	{
+		context.set(name, Mul.call(context.get(name), value));
+	}
+
+	public void evaluateFloorDiv(EvaluationContext context, Object value)
+	{
+		context.set(name, FloorDiv.call(context.get(name), value));
+	}
+
+	public void evaluateTrueDiv(EvaluationContext context, Object value)
+	{
+		context.set(name, TrueDiv.call(context.get(name), value));
+	}
+
+	public void evaluateMod(EvaluationContext context, Object value)
+	{
+		context.set(name, Mod.call(context.get(name), value));
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

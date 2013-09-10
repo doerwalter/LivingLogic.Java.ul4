@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -479,5 +480,70 @@ public class Utils
 			}
 			buffer.append(")");
 		}
+	}
+
+	public static class LValueValue
+	{
+		private final LValue lvalue;
+		private final Object value;
+
+		public LValueValue(LValue lvalue, Object value)
+		{
+			this.lvalue = lvalue;
+			this.value = value;
+		}
+
+		public LValue getLValue()
+		{
+			return lvalue;
+		}
+
+		public Object getValue()
+		{
+			return value;
+		}
+	}
+
+	public static List<LValueValue> unpackVariable(Object lvalue, Object item)
+	{
+		List<LValueValue> result = new ArrayList<LValueValue>();
+
+		if (lvalue instanceof LValue)
+		{
+			result.add(new LValueValue((LValue)lvalue, item));
+		}
+		else
+		{
+			Iterator<Object> itemIter = Utils.iterator(item);
+			java.util.List lvalues = (java.util.List)lvalue;
+			int lvalueCount = lvalues.size();
+
+			for (int i = 0;;++i)
+			{
+				if (itemIter.hasNext())
+				{
+					if (i < lvalueCount)
+					{
+						result.addAll(unpackVariable(lvalues.get(i), itemIter.next()));
+					}
+					else
+					{
+						throw new UnpackingException("mismatched for loop unpacking: " + lvalueCount + " varnames, >" + i + " items");
+					}
+				}
+				else
+				{
+					if (i < lvalueCount)
+					{
+						throw new UnpackingException("mismatched for loop unpacking: " + lvalueCount + "+ varnames, " + i + " items");
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+		}
+		return result;
 	}
 }

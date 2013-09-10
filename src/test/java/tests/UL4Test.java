@@ -3311,6 +3311,91 @@ public class UL4Test
 	}
 
 	@Test
+	public void set_lvalue()
+	{
+		checkTemplateOutput("bar", "<?code d = {}?><?code d.foo = 'bar'?><?print d.foo?>");
+		checkTemplateOutput("bar", "<?code d = {}?><?code d['foo'] = 'bar'?><?print d['foo']?>");
+		checkTemplateOutput("bar", "<?code d = ['bar']?><?code d[0] = 'bar'?><?print d[0]?>");
+		checkTemplateOutput("baz", "<?code d = {'foo': {}}?><?code d.foo.bar = 'baz'?><?print d.foo.bar?>");
+		checkTemplateOutput("baz", "<?code d = {'foo': {}}?><?code d.foo['bar'] = 'baz'?><?print d.foo['bar']?>");
+		checkTemplateOutput("baz", "<?code d = {'foo': ['bar']}?><?code d.foo[0] = 'baz'?><?print d.foo[0]?>");
+		checkTemplateOutput("baz", "<?code d = ['bar']?><?def f?><?return d?><?end def?><?code f()[0] = 'baz'?><?print d[0]?>");
+	}
+
+	@Test
+	public void add_lvalue()
+	{
+		checkTemplateOutput("barbaz", "<?code d = {'foo': 'bar'}?><?code d.foo += 'baz'?><?print d.foo?>");
+		checkTemplateOutput("barbaz", "<?code d = {'foo': 'bar'}?><?code d['foo'] += 'baz'?><?print d['foo']?>");
+		checkTemplateOutput("barbaz", "<?code d = ['bar']?><?code d[0] += 'baz'?><?print d[0]?>");
+		checkTemplateOutput("barbaz", "<?code d = {'foo': {'bar' : 'bar'}}?><?code d.foo.bar += 'baz'?><?print d.foo.bar?>");
+		checkTemplateOutput("barbaz", "<?code d = {'foo': {'bar' : 'bar'}}?><?code d.foo['bar'] += 'baz'?><?print d.foo['bar']?>");
+		checkTemplateOutput("barbaz", "<?code d = {'foo': ['bar']}?><?code d.foo[0] += 'baz'?><?print d.foo[0]?>");
+		checkTemplateOutput("barbaz", "<?code d = ['bar']?><?def f?><?return d?><?end def?><?code f()[0] += 'baz'?><?print d[0]?>");
+	}
+
+	@Test
+	public void sub_lvalue()
+	{
+		checkTemplateOutput("6", "<?code d = {'foo': 23}?><?code d.foo -= 17?><?print d.foo?>");
+		checkTemplateOutput("6", "<?code d = {'foo': 23}?><?code d['foo'] -= 17?><?print d['foo']?>");
+		checkTemplateOutput("6", "<?code d = [23]?><?code d[0] -= 17?><?print d[0]?>");
+		checkTemplateOutput("6", "<?code d = {'foo': {'bar' : 23}}?><?code d.foo.bar -= 17?><?print d.foo.bar?>");
+		checkTemplateOutput("6", "<?code d = {'foo': {'bar' : 23}}?><?code d.foo['bar'] -= 17?><?print d.foo['bar']?>");
+		checkTemplateOutput("6", "<?code d = {'foo': [23]}?><?code d.foo[0] -= 17?><?print d.foo[0]?>");
+		checkTemplateOutput("6", "<?code d = [23]?><?def f?><?return d?><?end def?><?code f()[0] -= 17?><?print d[0]?>");
+	}
+
+	@Test
+	public void mul_lvalue()
+	{
+		checkTemplateOutput("42", "<?code d = {'foo': 6}?><?code d.foo *= 7?><?print d.foo?>");
+		checkTemplateOutput("42", "<?code d = {'foo': 6}?><?code d['foo'] *= 7?><?print d['foo']?>");
+		checkTemplateOutput("42", "<?code d = [6]?><?code d[0] *= 7?><?print d[0]?>");
+		checkTemplateOutput("42", "<?code d = {'foo': {'bar' : 6}}?><?code d.foo.bar *= 7?><?print d.foo.bar?>");
+		checkTemplateOutput("42", "<?code d = {'foo': {'bar' : 6}}?><?code d.foo['bar'] *= 7?><?print d.foo['bar']?>");
+		checkTemplateOutput("42", "<?code d = {'foo': [6]}?><?code d.foo[0] *= 7?><?print d.foo[0]?>");
+		checkTemplateOutput("42", "<?code d = [6]?><?def f?><?return d?><?end def?><?code f()[0] *= 7?><?print d[0]?>");
+	}
+
+	@Test
+	public void floordiv_lvalue()
+	{
+		checkTemplateOutput("2", "<?code d = {'foo': 5}?><?code d.foo //= 2?><?print d.foo?>");
+		checkTemplateOutput("2", "<?code d = {'foo': 5}?><?code d['foo'] //= 2?><?print d['foo']?>");
+		checkTemplateOutput("2", "<?code d = [5]?><?code d[0] //= 2?><?print d[0]?>");
+		checkTemplateOutput("2", "<?code d = {'foo': {'bar' : 5}}?><?code d.foo.bar //= 2?><?print d.foo.bar?>");
+		checkTemplateOutput("2", "<?code d = {'foo': {'bar' : 5}}?><?code d.foo['bar'] //= 2?><?print d.foo['bar']?>");
+		checkTemplateOutput("2", "<?code d = {'foo': [5]}?><?code d.foo[0] //= 2?><?print d.foo[0]?>");
+		checkTemplateOutput("2", "<?code d = [5]?><?def f?><?return d?><?end def?><?code f()[0] //= 2?><?print d[0]?>");
+	}
+
+	@Test
+	public void truediv_lvalue()
+	{
+		checkTemplateOutput("2.5", "<?code d = {'foo': 5}?><?code d.foo /= 2?><?print d.foo?>");
+		checkTemplateOutput("2.5", "<?code d = {'foo': 5}?><?code d['foo'] /= 2?><?print d['foo']?>");
+		checkTemplateOutput("2.5", "<?code d = [5]?><?code d[0] /= 2?><?print d[0]?>");
+		checkTemplateOutput("2.5", "<?code d = {'foo': {'bar' : 5}}?><?code d.foo.bar /= 2?><?print d.foo.bar?>");
+		checkTemplateOutput("2.5", "<?code d = {'foo': {'bar' : 5}}?><?code d.foo['bar'] /= 2?><?print d.foo['bar']?>");
+		checkTemplateOutput("2.5", "<?code d = {'foo': [5]}?><?code d.foo[0] /= 2?><?print d.foo[0]?>");
+		checkTemplateOutput("2.5", "<?code d = [5]?><?def f?><?return d?><?end def?><?code f()[0] /= 2?><?print d[0]?>");
+	}
+
+	@Test
+	public void mod_lvalue()
+	{
+		checkTemplateOutput("1", "<?code d = {'foo': 5}?><?code d.foo %= 2?><?print d.foo?>");
+		checkTemplateOutput("1", "<?code d = {'foo': 5}?><?code d['foo'] %= 2?><?print d['foo']?>");
+		checkTemplateOutput("1", "<?code d = [5]?><?code d[0] %= 2?><?print d[0]?>");
+		checkTemplateOutput("1", "<?code d = {'foo': {'bar' : 5}}?><?code d.foo.bar %= 2?><?print d.foo.bar?>");
+		checkTemplateOutput("1", "<?code d = {'foo': {'bar' : 5}}?><?code d.foo['bar'] %= 2?><?print d.foo['bar']?>");
+		checkTemplateOutput("1", "<?code d = {'foo': [5]}?><?code d.foo[0] %= 2?><?print d.foo[0]?>");
+		checkTemplateOutput("1", "<?code d = [5]?><?def f?><?return d?><?end def?><?code f()[0] %= 2?><?print d[0]?>");
+	}
+
+
+	@Test
 	public void parse()
 	{
 		checkTemplateOutput("42", "<?print data.Noner?>", "data", makeMap("Noner", 42));

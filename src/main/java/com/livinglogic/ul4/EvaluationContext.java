@@ -206,7 +206,7 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	 * @param key The name of the variable
 	 * @param value The value of the variable
 	 */
-	public void put(String key, Object value)
+	public void set(String key, Object value)
 	{
 		if ("self".equals(key))
 			throw new RuntimeException("can't assign to self");
@@ -234,46 +234,6 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	public void remove(String key)
 	{
 		variables.remove(key);
-	}
-
-	public void unpackVariable(Object varname, Object item)
-	{
-		if (varname instanceof String)
-		{
-			put((String)varname, item);
-		}
-		else
-		{
-			Iterator<Object> itemIter = Utils.iterator(item);
-			java.util.List varnames = (java.util.List)varname;
-			int varnameCount = varnames.size();
-
-			for (int i = 0;;++i)
-			{
-				if (itemIter.hasNext())
-				{
-					if (i < varnameCount)
-					{
-						unpackVariable(varnames.get(i), itemIter.next());
-					}
-					else
-					{
-						throw new UnpackingException("mismatched for loop unpacking: " + varnameCount + " varnames, >" + i + " items");
-					}
-				}
-				else
-				{
-					if (i < varnameCount)
-					{
-						throw new UnpackingException("mismatched for loop unpacking: " + varnameCount + "+ varnames, " + i + " items");
-					}
-					else
-					{
-						break;
-					}
-				}
-			}
-		}
 	}
 
 	private static Map<String, Object> functions = new HashMap<String, Object>();

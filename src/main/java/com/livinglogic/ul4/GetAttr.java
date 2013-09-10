@@ -17,7 +17,7 @@ import java.util.Date;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class GetAttr extends AST
+public class GetAttr extends AST implements LValue
 {
 	protected AST obj;
 	protected String attrname;
@@ -37,6 +37,41 @@ public class GetAttr extends AST
 	public Object evaluate(EvaluationContext context)
 	{
 		return call(obj.decoratedEvaluate(context), attrname);
+	}
+
+	public void evaluateSet(EvaluationContext context, Object value)
+	{
+		callSet(obj.decoratedEvaluate(context), attrname, value);
+	}
+
+	public void evaluateAdd(EvaluationContext context, Object value)
+	{
+		callAdd(obj.decoratedEvaluate(context), attrname, value);
+	}
+
+	public void evaluateSub(EvaluationContext context, Object value)
+	{
+		callSub(obj.decoratedEvaluate(context), attrname, value);
+	}
+
+	public void evaluateMul(EvaluationContext context, Object value)
+	{
+		callMul(obj.decoratedEvaluate(context), attrname, value);
+	}
+
+	public void evaluateFloorDiv(EvaluationContext context, Object value)
+	{
+		callFloorDiv(obj.decoratedEvaluate(context), attrname, value);
+	}
+
+	public void evaluateTrueDiv(EvaluationContext context, Object value)
+	{
+		callTrueDiv(obj.decoratedEvaluate(context), attrname, value);
+	}
+
+	public void evaluateMod(EvaluationContext context, Object value)
+	{
+		callMod(obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public static Object call(UL4GetItem obj, String attrname)
@@ -178,6 +213,202 @@ public class GetAttr extends AST
 		throw new ArgumentTypeMismatchException("{}[{}]", obj, attrname);
 	}
 
+	public static void callSet(UL4SetItem obj, String attrname, Object value)
+	{
+		obj.setItemUL4(attrname, value);
+	}
+
+	public static void callSet(UL4SetItemString obj, String attrname, Object value)
+	{
+		obj.setItemStringUL4(attrname, value);
+	}
+
+	public static void callSet(Map obj, String attrname, Object value)
+	{
+		obj.put(attrname, value);
+	}
+
+	public static void callSet(Object obj, String attrname, Object value)
+	{
+		if (obj instanceof UL4SetItemString)
+			callSet((UL4SetItemString)obj, attrname, value);
+		else if (obj instanceof UL4SetItem)
+			callSet((UL4SetItem)obj, attrname, value);
+		else if (obj instanceof Map)
+			callSet((Map)obj, attrname, value);
+		else
+			throw new ArgumentTypeMismatchException("{}[{}] = {}", obj, attrname, value);
+	}
+
+	public static void callAdd(UL4GetSetItem obj, String attrname, Object value)
+	{
+		obj.setItemUL4(attrname, Add.call(obj.getItemUL4(attrname), value));
+	}
+
+	public static void callAdd(UL4GetSetItemString obj, String attrname, Object value)
+	{
+		obj.setItemStringUL4(attrname, Add.call(obj.getItemStringUL4(attrname), value));
+	}
+
+	public static void callAdd(Map obj, String attrname, Object value)
+	{
+		obj.put(attrname, Add.call(call(obj, attrname), value));
+	}
+
+	public static void callAdd(Object obj, String attrname, Object value)
+	{
+		if (obj instanceof UL4GetSetItemString)
+			callAdd((UL4GetSetItemString)obj, attrname, value);
+		else if (obj instanceof UL4SetItem)
+			callAdd((UL4SetItem)obj, attrname, value);
+		else if (obj instanceof Map)
+			callAdd((Map)obj, attrname, value);
+		else
+			throw new ArgumentTypeMismatchException("{}[{}] += {}", obj, attrname, value);
+	}
+
+	public static void callSub(UL4GetSetItem obj, String attrname, Object value)
+	{
+		obj.setItemUL4(attrname, Sub.call(obj.getItemUL4(attrname), value));
+	}
+
+	public static void callSub(UL4GetSetItemString obj, String attrname, Object value)
+	{
+		obj.setItemStringUL4(attrname, Sub.call(obj.getItemStringUL4(attrname), value));
+	}
+
+	public static void callSub(Map obj, String attrname, Object value)
+	{
+		obj.put(attrname, Sub.call(call(obj, attrname), value));
+	}
+
+	public static void callSub(Object obj, String attrname, Object value)
+	{
+		if (obj instanceof UL4GetSetItemString)
+			callSub((UL4GetSetItemString)obj, attrname, value);
+		else if (obj instanceof UL4SetItem)
+			callSub((UL4SetItem)obj, attrname, value);
+		else if (obj instanceof Map)
+			callSub((Map)obj, attrname, value);
+		else
+			throw new ArgumentTypeMismatchException("{}[{}] -= {}", obj, attrname, value);
+	}
+
+	public static void callMul(UL4GetSetItem obj, String attrname, Object value)
+	{
+		obj.setItemUL4(attrname, Mul.call(obj.getItemUL4(attrname), value));
+	}
+
+	public static void callMul(UL4GetSetItemString obj, String attrname, Object value)
+	{
+		obj.setItemStringUL4(attrname, Mul.call(obj.getItemStringUL4(attrname), value));
+	}
+
+	public static void callMul(Map obj, String attrname, Object value)
+	{
+		obj.put(attrname, Mul.call(call(obj, attrname), value));
+	}
+
+	public static void callMul(Object obj, String attrname, Object value)
+	{
+		if (obj instanceof UL4GetSetItemString)
+			callMul((UL4GetSetItemString)obj, attrname, value);
+		else if (obj instanceof UL4SetItem)
+			callMul((UL4SetItem)obj, attrname, value);
+		else if (obj instanceof Map)
+			callMul((Map)obj, attrname, value);
+		else
+			throw new ArgumentTypeMismatchException("{}[{}] *= {}", obj, attrname, value);
+	}
+
+	public static void callFloorDiv(UL4GetSetItem obj, String attrname, Object value)
+	{
+		obj.setItemUL4(attrname, FloorDiv.call(obj.getItemUL4(attrname), value));
+	}
+
+	public static void callFloorDiv(UL4GetSetItemString obj, String attrname, Object value)
+	{
+		obj.setItemStringUL4(attrname, FloorDiv.call(obj.getItemStringUL4(attrname), value));
+	}
+
+	public static void callFloorDiv(Map obj, String attrname, Object value)
+	{
+		obj.put(attrname, FloorDiv.call(call(obj, attrname), value));
+	}
+
+	public static void callFloorDiv(Object obj, String attrname, Object value)
+	{
+		if (obj instanceof UL4GetSetItemString)
+			callFloorDiv((UL4GetSetItemString)obj, attrname, value);
+		else if (obj instanceof UL4SetItem)
+			callFloorDiv((UL4SetItem)obj, attrname, value);
+		else if (obj instanceof Map)
+			callFloorDiv((Map)obj, attrname, value);
+		else
+			throw new ArgumentTypeMismatchException("{}[{}] //= {}", obj, attrname, value);
+	}
+
+	public static void callTrueDiv(UL4GetSetItem obj, String attrname, Object value)
+	{
+		obj.setItemUL4(attrname, TrueDiv.call(obj.getItemUL4(attrname), value));
+	}
+
+	public static void callTrueDiv(UL4GetSetItemString obj, String attrname, Object value)
+	{
+		obj.setItemStringUL4(attrname, TrueDiv.call(obj.getItemStringUL4(attrname), value));
+	}
+
+	public static void callTrueDiv(Map obj, String attrname, Object value)
+	{
+		obj.put(attrname, TrueDiv.call(call(obj, attrname), value));
+	}
+
+	public static void callTrueDiv(Object obj, String attrname, Object value)
+	{
+		if (obj instanceof UL4GetSetItemString)
+			callTrueDiv((UL4GetSetItemString)obj, attrname, value);
+		else if (obj instanceof UL4SetItem)
+			callTrueDiv((UL4SetItem)obj, attrname, value);
+		else if (obj instanceof Map)
+			callTrueDiv((Map)obj, attrname, value);
+		else
+			throw new ArgumentTypeMismatchException("{}[{}] /= {}", obj, attrname, value);
+	}
+
+	public static void callMod(UL4GetSetItem obj, String attrname, Object value)
+	{
+		obj.setItemUL4(attrname, Mod.call(obj.getItemUL4(attrname), value));
+	}
+
+	public static void callMod(UL4Attributes obj, String attrname, Object value)
+	{
+
+	}
+
+	public static void callMod(UL4GetSetItemString obj, String attrname, Object value)
+	{
+		obj.setItemStringUL4(attrname, Mod.call(obj.getItemStringUL4(attrname), value));
+	}
+
+	public static void callMod(Map obj, String attrname, Object value)
+	{
+		obj.put(attrname, Mod.call(call(obj, attrname), value));
+	}
+
+	public static void callMod(Object obj, String attrname, Object value)
+	{
+		if (obj instanceof UL4Attributes) // test this before UL4SetItemString
+			callMod((UL4Attributes)obj, attrname, value);
+		else if (obj instanceof UL4GetSetItemString)
+			callMod((UL4GetSetItemString)obj, attrname, value);
+		else if (obj instanceof UL4SetItem)
+			callMod((UL4SetItem)obj, attrname, value);
+		else if (obj instanceof Map)
+			callMod((Map)obj, attrname, value);
+		else
+			throw new ArgumentTypeMismatchException("{}[{}] %= {}", obj, attrname, value);
+	}
+
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
@@ -209,40 +440,3 @@ public class GetAttr extends AST
 			return super.getItemStringUL4(key);
 	}
 }
-
-		// MapUtils.putMap(
-		// 	builtinMethods,
-		// 	"split", new MethodSplit(),
-		// 	"rsplit", new MethodRSplit(),
-		// 	"strip", new MethodStrip(),
-		// 	"lstrip", new MethodLStrip(),
-		// 	"rstrip", new MethodRStrip(),
-		// 	"upper", new MethodUpper(),
-		// 	"lower", new MethodLower(),
-		// 	"capitalize", new MethodCapitalize(),
-		// 	"items", new MethodItems(),
-		// 	"values", new MethodValues(),
-		// 	"isoformat", new MethodISOFormat(),
-		// 	"mimeformat", new MethodMIMEFormat(),
-		// 	"day", new MethodDay(),
-		// 	"month", new MethodMonth(),
-		// 	"year", new MethodYear(),
-		// 	"hour", new MethodHour(),
-		// 	"minute", new MethodMinute(),
-		// 	"second", new MethodSecond(),
-		// 	"microsecond", new MethodMicrosecond(),
-		// 	"week", new MethodWeek(),
-		// 	"weekday", new MethodWeekday(),
-		// 	"yearday", new MethodYearday(),
-		// 	"startswith", new MethodStartsWith(),
-		// 	"endswith", new MethodEndsWith(),
-		// 	"find", new MethodFind(),
-		// 	"rfind", new MethodRFind(),
-		// 	"get", new MethodGet(),
-		// 	"join", new MethodJoin(),
-		// 	"replace", new MethodReplace(),
-		// 	"append", new MethodAppend(),
-		// 	"insert", new MethodInsert(),
-		// 	"pop", new MethodPop(),
-		// 	"update", new MethodUpdate()
-		// );

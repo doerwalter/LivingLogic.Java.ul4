@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class ModVar extends ChangeVar
 {
-	public ModVar(Location location, int start, int end, String varname, AST value)
+	public ModVar(Location location, int start, int end, LValue lvalue, AST value)
 	{
-		super(location, start, end, varname, value);
+		super(location, start, end, lvalue, value);
 	}
 
 	public String getType()
@@ -20,7 +20,7 @@ public class ModVar extends ChangeVar
 
 	public Object evaluate(EvaluationContext context)
 	{
-		context.put(varname, Mod.call(context.get(varname), value.decoratedEvaluate(context)));
+		lvalue.evaluateMod(context, value.decoratedEvaluate(context));
 		return null;
 	}
 }

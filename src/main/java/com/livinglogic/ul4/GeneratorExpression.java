@@ -81,7 +81,9 @@ public class GeneratorExpression extends AST
 			{
 				while (iterator.hasNext())
 				{
-					context.unpackVariable(varname, iterator.next());
+					for (Utils.LValueValue lvv : Utils.unpackVariable(varname, iterator.next()))
+						lvv.getLValue().evaluateSet(context, lvv.getValue());
+
 					if (condition == null || FunctionBool.call(condition.decoratedEvaluate(context)))
 					{
 						hasNextItem = true;

@@ -14,47 +14,50 @@ import java.util.Set;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class StoreVar extends AST
+public class SetVar extends AST
 {
 	/**
 	 * This is either a string or a list of strings/lists
 	 */
-	protected Object varname;
+	protected Object lvalue;
 	protected AST value;
 
-	public StoreVar(Location location, int start, int end, Object varname, AST value)
+	public SetVar(Location location, int start, int end, Object lvalue, AST value)
 	{
 		super(location, start, end);
-		this.varname = varname;
+		this.lvalue = lvalue;
 		this.value = value;
 	}
 
 	public String getType()
 	{
-		return "storevar";
+		return "setvar";
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(varname);
+		encoder.dump(lvalue);
 		encoder.dump(value);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		varname = decoder.load();
+		lvalue = decoder.load();
 		value = (AST)decoder.load();
 	}
 
 	public Object evaluate(EvaluationContext context)
 	{
-		context.unpackVariable(varname, value.decoratedEvaluate(context));
+		for (Utils.LValueValue lvv : Utils.unpackVariable(lvalue, value.decoratedEvaluate(context)))
+		{
+			lvv.getLValue().evaluateSet(context, lvv.getValue());
+		}
 		return null;
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "varname", "value");
+	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "lvalue", "value");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -63,8 +66,8 @@ public class StoreVar extends AST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("varname".equals(key))
-			return varname;
+		if ("lvalue".equals(key))
+			return lvalue;
 		else if ("value".equals(key))
 			return value;
 		else

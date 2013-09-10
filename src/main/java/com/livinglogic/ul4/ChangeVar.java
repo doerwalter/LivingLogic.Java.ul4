@@ -16,31 +16,31 @@ import com.livinglogic.ul4on.Encoder;
 
 public abstract class ChangeVar extends AST
 {
-	protected String varname;
+	protected LValue lvalue;
 	protected AST value;
 
-	public ChangeVar(Location location, int start, int end, String varname, AST value)
+	public ChangeVar(Location location, int start, int end, LValue lvalue, AST value)
 	{
 		super(location, start, end);
-		this.varname = varname;
+		this.lvalue = lvalue;
 		this.value = value;
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(varname);
+		encoder.dump(lvalue);
 		encoder.dump(value);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		varname = (String)decoder.load();
+		lvalue = (LValue)decoder.load();
 		value = (AST)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "varname", "value");
+	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "lvalue", "value");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -49,8 +49,8 @@ public abstract class ChangeVar extends AST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("varname".equals(key))
-			return varname;
+		if ("lvalue".equals(key))
+			return lvalue;
 		else if ("value".equals(key))
 			return value;
 		else
