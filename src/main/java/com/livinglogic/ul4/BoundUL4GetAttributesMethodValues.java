@@ -12,11 +12,11 @@ import java.util.Map;
 import java.util.List;
 import java.util.Map;
 
-public class BoundUL4AttributesMethodValues extends BoundMethod<UL4Attributes>
+public class BoundUL4GetAttributesMethodValues extends BoundMethod<UL4GetAttributes>
 {
 	private static final Signature signature = new Signature("values");
 
-	public BoundUL4AttributesMethodValues(UL4Attributes object)
+	public BoundUL4GetAttributesMethodValues(UL4GetAttributes object)
 	{
 		super(object);
 	}
@@ -26,9 +26,9 @@ public class BoundUL4AttributesMethodValues extends BoundMethod<UL4Attributes>
 		return signature;
 	}
 
-	public static Object call(UL4Attributes object)
+	public static Object call(UL4GetAttributes object)
 	{
-		return new UL4AttributeValuesIterator(object);
+		return new UL4GetAttributeValuesIterator(object);
 	}
 
 	public Object callUL4(Object[] args, Map<String, Object> kwargs)
@@ -38,12 +38,12 @@ public class BoundUL4AttributesMethodValues extends BoundMethod<UL4Attributes>
 		return call(object);
 	}
 
-	private static class UL4AttributeValuesIterator implements Iterator<Object>
+	private static class UL4GetAttributeValuesIterator implements Iterator<Object>
 	{
-		UL4Attributes object;
+		UL4GetAttributes object;
 		Iterator<String> iterator;
 
-		public UL4AttributeValuesIterator(UL4Attributes object)
+		public UL4GetAttributeValuesIterator(UL4GetAttributes object)
 		{
 			this.object = object;
 			this.iterator = object.getAttributeNamesUL4().iterator();

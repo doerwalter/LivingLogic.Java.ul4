@@ -30,14 +30,14 @@ import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.SyntaxException;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.TooManyArgumentsException;
-import com.livinglogic.ul4.UL4Attributes;
+import com.livinglogic.ul4.UL4GetAttributes;
 import com.livinglogic.ul4.UndefinedKey;
 
 
 @RunWith(CauseTestRunner.class)
 public class UL4Test
 {
-	private static class Point implements UL4Attributes
+	private static class Point implements UL4GetAttributes
 	{
 		int x;
 		int y;

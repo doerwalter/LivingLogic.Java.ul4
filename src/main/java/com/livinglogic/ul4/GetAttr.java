@@ -79,20 +79,22 @@ public class GetAttr extends AST implements LValue
 		return obj.getItemUL4(attrname);
 	}
 
-	public static Object call(UL4Attributes obj, String attrname)
+	public static Object call(UL4GetAttributes obj, String attrname)
 	{
 		if ("items".equals(attrname))
-			return new BoundUL4AttributesMethodItems(obj);
+			return new BoundUL4GetAttributesMethodItems(obj);
 		else if ("values".equals(attrname))
-			return new BoundUL4AttributesMethodValues(obj);
+			return new BoundUL4GetAttributesMethodValues(obj);
 		else if ("get".equals(attrname))
-			return new BoundUL4AttributesMethodGet(obj);
+			return new BoundUL4GetItemStringMethodGet(obj);
 
 		return obj.getItemStringUL4(attrname);
 	}
 
 	public static Object call(UL4GetItemString obj, String attrname)
 	{
+		if ("get".equals(attrname))
+			return new BoundUL4GetItemStringMethodGet(obj);
 		return obj.getItemStringUL4(attrname);
 	}
 
@@ -196,8 +198,8 @@ public class GetAttr extends AST implements LValue
 
 	public static Object call(Object obj, String attrname)
 	{
-		if (obj instanceof UL4Attributes) // test this before UL4GetItemString
-			return call((UL4Attributes)obj, attrname);
+		if (obj instanceof UL4GetAttributes) // test this before UL4GetItemString
+			return call((UL4GetAttributes)obj, attrname);
 		else if (obj instanceof UL4GetItemString)
 			return call((UL4GetItemString)obj, attrname);
 		else if (obj instanceof UL4GetItem)

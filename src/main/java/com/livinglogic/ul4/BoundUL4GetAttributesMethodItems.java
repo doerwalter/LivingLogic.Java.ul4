@@ -10,11 +10,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
-public class BoundUL4AttributesMethodItems extends BoundMethod<UL4Attributes>
+public class BoundUL4GetAttributesMethodItems extends BoundMethod<UL4GetAttributes>
 {
 	private static final Signature signature = new Signature("items");
 
-	public BoundUL4AttributesMethodItems(UL4Attributes object)
+	public BoundUL4GetAttributesMethodItems(UL4GetAttributes object)
 	{
 		super(object);
 	}
@@ -24,7 +24,7 @@ public class BoundUL4AttributesMethodItems extends BoundMethod<UL4Attributes>
 		return signature;
 	}
 
-	public static Object call(UL4Attributes object)
+	public static Object call(UL4GetAttributes object)
 	{
 		return new UL4AttributeItemsIterator(object);
 	}
@@ -38,10 +38,10 @@ public class BoundUL4AttributesMethodItems extends BoundMethod<UL4Attributes>
 
 	private static class UL4AttributeItemsIterator implements Iterator<Vector>
 	{
-		UL4Attributes object;
+		UL4GetAttributes object;
 		Iterator<String> iterator;
 
-		public UL4AttributeItemsIterator(UL4Attributes object)
+		public UL4AttributeItemsIterator(UL4GetAttributes object)
 		{
 			this.object = object;
 			this.iterator = object.getAttributeNamesUL4().iterator();

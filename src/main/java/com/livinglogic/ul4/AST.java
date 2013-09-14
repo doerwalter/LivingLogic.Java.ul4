@@ -18,7 +18,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 /**
  * The base class of all nodes in the abstract syntax tree.
  */
-public abstract class AST implements UL4ONSerializable, UL4Attributes
+public abstract class AST implements UL4ONSerializable, UL4GetAttributes
 {
 	/**
 	 * The source code location where this node appears in.

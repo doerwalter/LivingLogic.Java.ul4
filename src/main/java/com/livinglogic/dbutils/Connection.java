@@ -17,7 +17,7 @@ import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.ArgumentException;
 import com.livinglogic.ul4.Utils;
-import com.livinglogic.ul4.UL4Attributes;
+import com.livinglogic.ul4.UL4GetAttributes;
 import com.livinglogic.ul4.BoundMethodWithContext;
 import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.utils.Closeable;
@@ -25,7 +25,7 @@ import com.livinglogic.utils.CloseableRegistry;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Connection implements UL4Attributes
+public class Connection implements UL4GetAttributes
 {
 	private java.sql.Connection connection;
 

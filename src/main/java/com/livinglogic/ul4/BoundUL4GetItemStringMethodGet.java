@@ -8,11 +8,11 @@ package com.livinglogic.ul4;
 
 import java.util.Map;
 
-public class BoundUL4AttributesMethodGet extends BoundMethod<UL4Attributes>
+public class BoundUL4GetItemStringMethodGet extends BoundMethod<UL4GetItemString>
 {
 	private static final Signature signature = new Signature("get", "key", Signature.required, "default", null);
 
-	public BoundUL4AttributesMethodGet(UL4Attributes object)
+	public BoundUL4GetItemStringMethodGet(UL4GetItemString object)
 	{
 		super(object);
 	}
@@ -22,7 +22,7 @@ public class BoundUL4AttributesMethodGet extends BoundMethod<UL4Attributes>
 		return signature;
 	}
 
-	public static Object call(UL4Attributes object, Object key, Object defaultValue)
+	public static Object call(UL4GetItemString object, Object key, Object defaultValue)
 	{
 		if (key instanceof String)
 		{
