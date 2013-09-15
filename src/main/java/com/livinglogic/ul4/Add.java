@@ -8,6 +8,8 @@ package com.livinglogic.ul4;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Add extends Binary
@@ -73,6 +75,16 @@ public class Add extends Binary
 	public static Object call(String arg1, String arg2)
 	{
 		return arg1 + arg2;
+	}
+
+	public static Object call(List arg1, List arg2)
+	{
+		ArrayList result = new ArrayList(arg1.size() + arg2.size());
+
+		result.addAll(arg1);
+		result.addAll(arg2);
+
+		return result;
 	}
 
 	public static TimeDelta call(TimeDelta arg1, TimeDelta arg2)

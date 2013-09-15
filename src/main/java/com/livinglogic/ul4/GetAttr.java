@@ -244,17 +244,17 @@ public class GetAttr extends AST implements LValue
 
 	public static void callAdd(UL4GetSetItem obj, String attrname, Object value)
 	{
-		obj.setItemUL4(attrname, Add.call(obj.getItemUL4(attrname), value));
+		obj.setItemUL4(attrname, IAdd.call(obj.getItemUL4(attrname), value));
 	}
 
 	public static void callAdd(UL4GetSetItemString obj, String attrname, Object value)
 	{
-		obj.setItemStringUL4(attrname, Add.call(obj.getItemStringUL4(attrname), value));
+		obj.setItemStringUL4(attrname, IAdd.call(obj.getItemStringUL4(attrname), value));
 	}
 
 	public static void callAdd(Map obj, String attrname, Object value)
 	{
-		obj.put(attrname, Add.call(call(obj, attrname), value));
+		obj.put(attrname, IAdd.call(call(obj, attrname), value));
 	}
 
 	public static void callAdd(Object obj, String attrname, Object value)
