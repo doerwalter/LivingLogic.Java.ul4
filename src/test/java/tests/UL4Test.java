@@ -361,6 +361,7 @@ public class UL4Test
 		checkTemplateOutput("18", source, "x", 17, "y", true);
 		checkTemplateOutput("23", source, "x", false, "y", 23);
 		checkTemplateOutput("24", source, "x", true, "y", 23);
+		checkTemplateOutput("[1, 2, 3, 4]", source, "x", asList(1, 2), "y", asList(3, 4));
 	}
 
 	@Test
@@ -628,6 +629,7 @@ public class UL4Test
 		checkTemplateOutput("24", source, "x", true, "y", 23);
 		checkTemplateOutput("22.0", source, "x", -1.0, "y", 23);
 		checkTemplateOutput("foobar", source, "x", "foo", "y", "bar");
+		checkTemplateOutput("[1, 2, 3, 4][1, 2][3, 4]", "<?code z = x + y?><?print z?><?print x?><?print y?>", "x", asList(1, 2), "y", asList(3, 4));
 		checkTemplateOutput("2012-10-18 00:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(1));
 		checkTemplateOutput("2013-10-17 00:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(365));
 		checkTemplateOutput("2012-10-17 12:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 12*60*60));
@@ -3332,6 +3334,7 @@ public class UL4Test
 		checkTemplateOutput("barbaz", "<?code d = {'foo': {'bar' : 'bar'}}?><?code d.foo['bar'] += 'baz'?><?print d.foo['bar']?>");
 		checkTemplateOutput("barbaz", "<?code d = {'foo': ['bar']}?><?code d.foo[0] += 'baz'?><?print d.foo[0]?>");
 		checkTemplateOutput("barbaz", "<?code d = ['bar']?><?def f?><?return d?><?end def?><?code f()[0] += 'baz'?><?print d[0]?>");
+		checkTemplateOutput("[1, 2, 3, 4][1, 2, 3, 4]", "<?code d = {'foo': [1, 2]}?><?code l = d.foo?><?code d.foo += [3, 4]?><?print d.foo?><?print l?>");
 	}
 
 	@Test

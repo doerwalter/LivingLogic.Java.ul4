@@ -223,6 +223,8 @@ public class Add extends Binary
 		}
 		else if (arg1 instanceof String && arg2 instanceof String)
 			return call((String)arg1, (String)arg2);
+		else if (arg1 instanceof List && arg2 instanceof List)
+			return call((List)arg1, (List)arg2);
 		throw new ArgumentTypeMismatchException("{} + {}", arg1, arg2);
 	}
 }
