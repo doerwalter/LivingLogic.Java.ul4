@@ -86,7 +86,11 @@ public class FunctionAsJSON extends Function
 		}
 		else if (obj instanceof InterpretedTemplate)
 		{
-			return new StringBuilder().append("ul4.Template.loads(").append(((InterpretedTemplate)obj).dumps()).append(")").toString();
+			return new StringBuilder().append("ul4.Template.loads(\"").append(((InterpretedTemplate)obj).dumps()).append("\")").toString();
+		}
+		else if (obj instanceof TemplateClosure)
+		{
+			return new StringBuilder().append("ul4.Template.loads(\"").append(((TemplateClosure)obj).getTemplate().dumps()).append("\")").toString();
 		}
 		else if (obj instanceof UL4Attributes)
 		{

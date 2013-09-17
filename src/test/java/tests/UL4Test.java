@@ -1281,6 +1281,7 @@ public class UL4Test
 		checkTemplateOutput("[1, 2, 3]", "<?print asjson(data)?>", "data", asList(1, 2, 3));
 		checkTemplateOutput("{\"one\": 1}", "<?print asjson(data)?>", "data", makeMap("one", 1));
 		checkTemplateOutput("null", "<?print asjson(obj=data)?>", "data", null);
+		checkTemplateOutput("null", "<?def x?><?end def?><?print asjson(x)?>");
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
