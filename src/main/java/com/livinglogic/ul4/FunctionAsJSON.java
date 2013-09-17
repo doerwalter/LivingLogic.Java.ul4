@@ -84,6 +84,10 @@ public class FunctionAsJSON extends Function
 			buffer.append(")");
 			return buffer.toString();
 		}
+		else if (obj instanceof InterpretedTemplate)
+		{
+			return new StringBuilder().append("ul4.Template.loads(").append(((InterpretedTemplate)obj).dumps()).append(")").toString();
+		}
 		else if (obj instanceof UL4Attributes)
 		{
 			StringBuilder sb = new StringBuilder();
@@ -153,10 +157,6 @@ public class FunctionAsJSON extends Function
 			}
 			sb.append("}");
 			return sb.toString();
-		}
-		else if (obj instanceof InterpretedTemplate)
-		{
-			return new StringBuilder().append("ul4.Template.loads(").append(((InterpretedTemplate)obj).dumps()).append(")").toString();
 		}
 		return null;
 	}
