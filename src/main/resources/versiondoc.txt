@@ -56,6 +56,12 @@ Comments:
 * Object arrays are now supported everywhere List objects are.
 
 
+exp-81-1:
+---------
+Comments:
+* Fixed JSON output of templates.
+
+
 exp-81:
 -------
 Comments:
