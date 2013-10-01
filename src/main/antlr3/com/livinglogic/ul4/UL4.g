@@ -364,7 +364,7 @@ nestedlvalue returns [Object lvalue]
 			n3=nestedlvalue { ((ArrayList)$lvalue).add($n3.lvalue); }
 		)*
 		','?
-		')' 
+		')'
 	;
 
 
@@ -381,7 +381,7 @@ expr_subscript returns [AST node]
 		(
 			/* Attribute access */
 			'.'
-			n=name { $node = new GetAttr(location, $e1.node.getStart(), $n.node.getEnd(), $node, $n.text); }
+			n=name { $node = new Attr(location, $e1.node.getStart(), $n.node.getEnd(), $node, $n.text); }
 		|
 			/* Function/method call */
 			'(' { $node = new Call(location, $e1.node.getStart(), -1, $node); }
@@ -444,7 +444,7 @@ expr_subscript returns [AST node]
 				':'
 				(
 					e2=expr_or { index2 = $e2.node; }
-				)? { $node = GetSlice.make(location, $e1.node.getStart(), -1, $node, null, index2); }
+				)? { $node = Slice.make(location, $e1.node.getStart(), -1, $node, null, index2); }
 			|
 				e2=expr_or { index1 = $e2.node; }
 				(
@@ -452,7 +452,7 @@ expr_subscript returns [AST node]
 					(
 						e3=expr_or { index2 = $e3.node; }
 					)?
-				)? { $node = slice ? GetSlice.make(location, $e1.node.getStart(), -1, $node, index1, index2) : GetItem.make(location, $e1.node.getStart(), -1, $node, index1); }
+				)? { $node = slice ? Slice.make(location, $e1.node.getStart(), -1, $node, index1, index2) : Item.make(location, $e1.node.getStart(), -1, $node, index1); }
 			)
 			close=']' { $node.setEnd(getEnd($close)); }
 		)*

@@ -17,13 +17,13 @@ import org.apache.commons.lang.StringUtils;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class GetSlice extends AST
+public class Slice extends AST
 {
 	protected AST obj;
 	protected AST index1;
 	protected AST index2;
 
-	public GetSlice(Location location, int start, int end, AST obj, AST index1, AST index2)
+	public Slice(Location location, int start, int end, AST obj, AST index1, AST index2)
 	{
 		super(location, start, end);
 		this.obj = obj;
@@ -33,7 +33,7 @@ public class GetSlice extends AST
 
 	public String getType()
 	{
-		return "getslice";
+		return "slice";
 	}
 
 	public static AST make(Location location, int start, int end, AST obj, AST index1, AST index2)
@@ -71,7 +71,7 @@ public class GetSlice extends AST
 				}
 			}
 		}
-		return new GetSlice(location, start, end, obj, index1, index2);
+		return new Slice(location, start, end, obj, index1, index2);
 	}
 
 	public Object evaluate(EvaluationContext context)

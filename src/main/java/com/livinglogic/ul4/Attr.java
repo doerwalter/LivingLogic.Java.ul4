@@ -17,12 +17,12 @@ import java.util.Date;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class GetAttr extends AST implements LValue
+public class Attr extends AST implements LValue
 {
 	protected AST obj;
 	protected String attrname;
 
-	public GetAttr(Location location, int start, int end, AST obj, String attrname)
+	public Attr(Location location, int start, int end, AST obj, String attrname)
 	{
 		super(location, start, end);
 		this.obj = obj;
@@ -31,7 +31,7 @@ public class GetAttr extends AST implements LValue
 
 	public String getType()
 	{
-		return "getattr";
+		return "attr";
 	}
 
 	public Object evaluate(EvaluationContext context)

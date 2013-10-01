@@ -9,16 +9,16 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.util.Map;
 
-public class GetItem extends Binary implements LValue
+public class Item extends Binary implements LValue
 {
-	public GetItem(Location location, int start, int end, AST obj1, AST obj2)
+	public Item(Location location, int start, int end, AST obj1, AST obj2)
 	{
 		super(location, start, end, obj1, obj2);
 	}
 
 	public String getType()
 	{
-		return "getitem";
+		return "item";
 	}
 
 	public static AST make(Location location, int start, int end, AST obj1, AST obj2)
@@ -29,7 +29,7 @@ public class GetItem extends Binary implements LValue
 			if (!(result instanceof Undefined))
 				return new Const(location, start, end, result);
 		}
-		return new GetItem(location, start, end, obj1, obj2);
+		return new Item(location, start, end, obj1, obj2);
 	}
 
 	public Object evaluate(EvaluationContext context)
