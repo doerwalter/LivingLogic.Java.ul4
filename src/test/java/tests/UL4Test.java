@@ -1034,6 +1034,14 @@ public class UL4Test
 	}
 
 	@Test
+	public void operator_setslice()
+	{
+		checkTemplateOutput("[1, -2, -3, 4]", "<?code x = [1, 2, 3, 4]?><?code x[1:3] = [-2, -3]?><?print x?>");
+		checkTemplateOutput("[1, -1, -4, -9, 4]", "<?code x = [1, 2, 3, 4]?><?code x[1:-1] = (-i*i for i in range(1, 4))?><?print x?>");
+		checkTemplateOutput("[-1, -4, -9]", "<?code x = [1, 2, 3, 4]?><?code x[:] = (-i*i for i in range(1, 4))?><?print x?>");
+	}
+
+	@Test
 	public void nested()
 	{
 		String sc = "4";

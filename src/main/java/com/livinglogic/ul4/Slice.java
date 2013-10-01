@@ -11,13 +11,14 @@ import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class Slice extends AST
+public class Slice extends AST implements LValue
 {
 	protected AST obj;
 	protected AST index1;
@@ -79,6 +80,41 @@ public class Slice extends AST
 		return call(obj.decoratedEvaluate(context), index1 != null ? index1.decoratedEvaluate(context) : null, index2 != null ? index2.decoratedEvaluate(context) : null);
 	}
 
+	public void evaluateSet(EvaluationContext context, Object value)
+	{
+		callSet(obj.decoratedEvaluate(context), index1 != null ? index1.decoratedEvaluate(context) : null, index2 != null ? index2.decoratedEvaluate(context) : null, value);
+	}
+
+	public void evaluateAdd(EvaluationContext context, Object value)
+	{
+		throw new UnsupportedOperationException("augmented slice assignment not supported");
+	}
+
+	public void evaluateSub(EvaluationContext context, Object value)
+	{
+		throw new UnsupportedOperationException("augmented slice assignment not supported");
+	}
+
+	public void evaluateMul(EvaluationContext context, Object value)
+	{
+		throw new UnsupportedOperationException("augmented slice assignment not supported");
+	}
+
+	public void evaluateFloorDiv(EvaluationContext context, Object value)
+	{
+		throw new UnsupportedOperationException("augmented slice assignment not supported");
+	}
+
+	public void evaluateTrueDiv(EvaluationContext context, Object value)
+	{
+		throw new UnsupportedOperationException("augmented slice assignment not supported");
+	}
+
+	public void evaluateMod(EvaluationContext context, Object value)
+	{
+		throw new UnsupportedOperationException("augmented slice assignment not supported");
+	}
+
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
@@ -98,21 +134,21 @@ public class Slice extends AST
 	public static Object call(List obj, int startIndex, int endIndex)
 	{
 		int size = obj.size();
-		int start = Utils.getSliceStartPos(size, startIndex);
-		int end = Utils.getSliceEndPos(size, endIndex);
-		if (end < start)
-			end = start;
-		return obj.subList(start, end);
+		startIndex = Utils.getSliceStartPos(size, startIndex);
+		endIndex = Utils.getSliceEndPos(size, endIndex);
+		if (endIndex < startIndex)
+			endIndex = startIndex;
+		return obj.subList(startIndex, endIndex);
 	}
 
 	public static Object call(String obj, int startIndex, int endIndex)
 	{
 		int size = obj.length();
-		int start = Utils.getSliceStartPos(size, startIndex);
-		int end = Utils.getSliceEndPos(size, endIndex);
-		if (end < start)
-			end = start;
-		return StringUtils.substring(obj, start, end);
+		startIndex = Utils.getSliceStartPos(size, startIndex);
+		endIndex = Utils.getSliceEndPos(size, endIndex);
+		if (endIndex < startIndex)
+			endIndex = startIndex;
+		return StringUtils.substring(obj, startIndex, endIndex);
 	}
 
 	public static Object call(Object obj, Object startIndex, Object endIndex)
@@ -130,6 +166,31 @@ public class Slice extends AST
 			return call((String)obj, start, end);
 		}
 		throw new ArgumentTypeMismatchException("{}[{}:{}]", obj, startIndex, endIndex);
+	}
+
+	public static void callSet(List obj, int startIndex, int endIndex, Iterator iterator)
+	{
+		int size = obj.size();
+		startIndex = Utils.getSliceStartPos(size, startIndex);
+		endIndex = Utils.getSliceEndPos(size, endIndex);
+		if (endIndex < startIndex)
+			endIndex = startIndex;
+		while (startIndex < endIndex--)
+			obj.remove(startIndex);
+		while (iterator.hasNext())
+			obj.add(startIndex++, iterator.next());
+	}
+
+	public static void callSet(Object obj, Object startIndex, Object endIndex, Object value)
+	{
+		if (obj instanceof List)
+		{
+			int start = startIndex != null ? Utils.toInt(startIndex) : 0;
+			int end = endIndex != null ? Utils.toInt(endIndex) : ((List)obj).size();
+			callSet((List)obj, start, end, Utils.iterator(value));
+		}
+		else
+			throw new ArgumentTypeMismatchException("{}[{}:{}] = {}", obj, startIndex, endIndex, value);
 	}
 
 	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "obj", "index1", "index2");
