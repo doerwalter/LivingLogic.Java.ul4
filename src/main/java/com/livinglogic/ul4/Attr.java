@@ -298,17 +298,17 @@ public class Attr extends AST implements LValue
 
 	public static void callMul(UL4GetSetItem obj, String attrname, Object value)
 	{
-		obj.setItemUL4(attrname, Mul.call(obj.getItemUL4(attrname), value));
+		obj.setItemUL4(attrname, IMul.call(obj.getItemUL4(attrname), value));
 	}
 
 	public static void callMul(UL4GetSetItemString obj, String attrname, Object value)
 	{
-		obj.setItemStringUL4(attrname, Mul.call(obj.getItemStringUL4(attrname), value));
+		obj.setItemStringUL4(attrname, IMul.call(obj.getItemStringUL4(attrname), value));
 	}
 
 	public static void callMul(Map obj, String attrname, Object value)
 	{
-		obj.put(attrname, Mul.call(call(obj, attrname), value));
+		obj.put(attrname, IMul.call(call(obj, attrname), value));
 	}
 
 	public static void callMul(Object obj, String attrname, Object value)

@@ -257,22 +257,22 @@ public class Item extends Binary implements LValue
 	{
 		if (0 > index)
 			index += obj.size();
-		obj.set(index, Mul.call(obj.get(index), value));
+		obj.set(index, IMul.call(obj.get(index), value));
 	}
 
 	public static void callMul(UL4GetSetItem obj, Object key, Object value)
 	{
-		obj.setItemUL4(key, Mul.call(obj.getItemUL4(key), value));
+		obj.setItemUL4(key, IMul.call(obj.getItemUL4(key), value));
 	}
 
 	public static void callMul(UL4GetSetItemString obj, String key, Object value)
 	{
-		obj.setItemStringUL4(key, Mul.call(obj.getItemStringUL4(key), value));
+		obj.setItemStringUL4(key, IMul.call(obj.getItemStringUL4(key), value));
 	}
 
 	public static void callMul(Map obj, Object index, Object value)
 	{
-		obj.put(index, Mul.call(call(obj, index), value));
+		obj.put(index, IMul.call(call(obj, index), value));
 	}
 
 	public static void callMul(Object obj, Object index, Object value)
