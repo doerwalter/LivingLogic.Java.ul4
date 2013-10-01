@@ -124,6 +124,22 @@ public class Utils
 		return arg;
 	}
 
+	public static int narrowBigIntegerToInt(BigInteger arg)
+	{
+		if (intMinValue.compareTo(arg) <= 0 && arg.compareTo(intMaxValue) <= 0)
+			return arg.intValue();
+		else
+			throw new IllegalArgumentException("BigInteger value exceeds int");
+	}
+
+	public static int narrowLongToInt(long arg)
+	{
+		if (Integer.MIN_VALUE <= arg && arg <= Integer.MAX_VALUE)
+			return (int)arg;
+		else
+			throw new IllegalArgumentException("long value exceeds int");
+	}
+
 	public static int cmp(int arg1, int arg2)
 	{
 		return ((arg1 > arg2) ? 1 : 0) - ((arg1 < arg2) ? 1 : 0);

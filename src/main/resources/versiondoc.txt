@@ -7,8 +7,8 @@ Comments:
 exp-89:
 -------
 Comments:
-* Added bound methods. Instead of implement UL4MethodCall/UL4MethodCallWithContext, simply
-  return BoundMethod objects from getItemStringUL4().
+* Added bound methods. Instead of implementing UL4MethodCall/UL4MethodCallWithContext,
+  simply return BoundMethod objects from getItemStringUL4().
 
 
 exp-88:
