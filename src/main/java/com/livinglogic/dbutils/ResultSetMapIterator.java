@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.apache.commons.collections.map.CaseInsensitiveMap;
 
 import com.livinglogic.ul4.Utils;
 
@@ -67,11 +68,11 @@ public class ResultSetMapIterator implements Iterator<Map<String, Object>>
 		{
 			if (resultSet.next())
 			{
-				Map<String, Object> record = new HashMap<String, Object>();
+				Map<String, Object> record = new CaseInsensitiveMap();
 
 				for (int i = 1; i <= numberOfColumns; ++i)
 				{
-					String key = metaData.getColumnLabel(i).toLowerCase();
+					String key = metaData.getColumnLabel(i);
 					int type = metaData.getColumnType(i);
 					Object value;
 					if (type == DATE)

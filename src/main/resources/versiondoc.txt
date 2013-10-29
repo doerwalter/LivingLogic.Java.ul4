@@ -1,3 +1,11 @@
+exp-91:
+-------
+Comments:
+* com.livinglogic.dbutils.ResultSetMapIterator now returns the records as a
+  org.apache.commons.collections.map.CaseInsensitiveMap, i.e. keys are case
+  insensitive.
+
+
 exp-90:
 -------
 Comments:
