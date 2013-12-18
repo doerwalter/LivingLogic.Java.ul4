@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 
 public class FunctionIsList extends Function
 {
@@ -29,6 +30,6 @@ public class FunctionIsList extends Function
 
 	public static boolean call(Object obj)
 	{
-		return (null != obj) && (obj instanceof java.util.List || obj instanceof Object[]) && !(obj instanceof Color);
+		return (null != obj) && (obj instanceof List || obj instanceof Object[]) && !(obj instanceof Color);
 	}
 }

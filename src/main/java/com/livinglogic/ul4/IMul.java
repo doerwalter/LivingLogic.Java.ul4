@@ -33,6 +33,6 @@ public class IMul
 			else if (arg2 instanceof BigInteger)
 				return call((List)arg1, Utils.narrowBigIntegerToInt((BigInteger)arg2));
 		}
-		return Mul.call(arg1, arg2);
+		return MulAST.call(arg1, arg2);
 	}
 }

@@ -21,6 +21,6 @@ public class IAdd
 	{
 		if (arg1 instanceof List && arg2 instanceof List)
 			return call((List)arg1, (List)arg2);
-		return Add.call(arg1, arg2);
+		return AddAST.call(arg1, arg2);
 	}
 }

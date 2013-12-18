@@ -45,7 +45,7 @@ public class FunctionMax extends Function
 		for (;iter.hasNext();)
 		{
 			Object testValue = iter.next();
-			if (first || GT.call(testValue, maxValue))
+			if (first || GTAST.call(testValue, maxValue))
 				maxValue = testValue;
 			first = false;
 		}

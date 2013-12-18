@@ -38,7 +38,7 @@ public class FunctionSum extends Function
 
 		for (;iter.hasNext();)
 		{
-			sum = Add.call(sum, iter.next());
+			sum = AddAST.call(sum, iter.next());
 		}
 		return sum;
 	}

@@ -531,7 +531,7 @@ public class Utils
 		else
 		{
 			Iterator<Object> itemIter = Utils.iterator(item);
-			java.util.List lvalues = (java.util.List)lvalue;
+			List lvalues = (List)lvalue;
 			int lvalueCount = lvalues.size();
 
 			for (int i = 0;;++i)

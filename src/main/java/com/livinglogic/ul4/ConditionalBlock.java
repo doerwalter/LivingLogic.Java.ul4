@@ -6,7 +6,7 @@
 
 package com.livinglogic.ul4;
 
-abstract class ConditionalBlock extends Block
+abstract class ConditionalBlock extends BlockAST
 {
 	public ConditionalBlock(Location location, int start, int end)
 	{

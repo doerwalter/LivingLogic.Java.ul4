@@ -45,7 +45,7 @@ public class FunctionMin extends Function
 		for (;iter.hasNext();)
 		{
 			Object testValue = iter.next();
-			if (first || LT.call(testValue, minValue))
+			if (first || LTAST.call(testValue, minValue))
 				minValue = testValue;
 			first = false;
 		}

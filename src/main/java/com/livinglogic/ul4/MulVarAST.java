@@ -6,21 +6,21 @@
 
 package com.livinglogic.ul4;
 
-public class AddVar extends ChangeVarAST
+public class MulVarAST extends ChangeVarAST
 {
-	public AddVar(Location location, int start, int end, LValue lvalue, AST value)
+	public MulVarAST(Location location, int start, int end, LValue lvalue, AST value)
 	{
 		super(location, start, end, lvalue, value);
 	}
 
 	public String getType()
 	{
-		return "addvar";
+		return "mulvar";
 	}
 
 	public Object evaluate(EvaluationContext context)
 	{
-		lvalue.evaluateAdd(context, value.decoratedEvaluate(context));
+		lvalue.evaluateMul(context, value.decoratedEvaluate(context));
 		return null;
 	}
 }
