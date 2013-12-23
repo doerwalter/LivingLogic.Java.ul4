@@ -992,6 +992,15 @@ public class UL4Test
 	}
 
 	@Test
+	public void expression_if()
+	{
+		String source = "<?print x if y else z?>";
+
+		checkTemplateOutput("23", source, "x", 17, "y", false, "z", 23);
+		checkTemplateOutput("17", source, "x", 17, "y", true, "z", 23);
+	}
+
+	@Test
 	public void operator_getitem()
 	{
 		checkTemplateOutput("u", "<?print 'gurk'[1]?>");

@@ -244,10 +244,10 @@ list returns [com.livinglogic.ul4.List node]
 		close=']' { $node = new com.livinglogic.ul4.List(location, getStart($open), getEnd($close)); }
 	|
 		open='[' {$node = new com.livinglogic.ul4.List(location, getStart($open), -1); }
-		e1=expr_or { $node.append($e1.node); }
+		e1=expr_if { $node.append($e1.node); }
 		(
 			','
-			e2=expr_or { $node.append($e2.node); }
+			e2=expr_if { $node.append($e2.node); }
 		)*
 		','?
 		close=']' { $node.setEnd(getEnd($close)); }
@@ -260,14 +260,14 @@ listcomprehension returns [ListComprehension node]
 	}
 	:
 		open='['
-		item=expr_or
+		item=expr_if
 		'for'
 		n=nestedlvalue
 		'in'
-		container=expr_or
+		container=expr_if
 		(
 			'if'
-			condition=expr_or { _condition = $condition.node; }
+			condition=expr_if { _condition = $condition.node; }
 		)?
 		close=']' { $node = new ListComprehension(location, getStart($open), getEnd($close), $item.node, $n.lvalue, $container.node, _condition); }
 	;
@@ -276,12 +276,12 @@ listcomprehension returns [ListComprehension node]
 fragment
 dictitem returns [DictItem node]
 	:
-		k=expr_or
+		k=expr_if
 		':'
-		v=expr_or { $node = new DictItemKeyValue($k.node, $v.node); }
+		v=expr_if { $node = new DictItemKeyValue($k.node, $v.node); }
 	|
 		'**'
-		d=expr_or { $node = new DictItemDict($d.node); }
+		d=expr_if { $node = new DictItemDict($d.node); }
 	;
 
 dict returns [Dict node]
@@ -306,16 +306,16 @@ dictcomprehension returns [DictComprehension node]
 	}
 	:
 		open='{'
-		key=expr_or
+		key=expr_if
 		':'
-		value=expr_or
+		value=expr_if
 		'for'
 		n=nestedlvalue
 		'in'
-		container=expr_or
+		container=expr_if
 		(
 			'if'
-			condition=expr_or { _condition = $condition.node; }
+			condition=expr_if { _condition = $condition.node; }
 		)?
 		close='}' { $node = new DictComprehension(location, getStart($open), getEnd($close), $key.node, $value.node, $n.lvalue, $container.node, _condition); }
 	;
@@ -327,14 +327,14 @@ generatorexpression returns [GeneratorExpression node]
 		int _end = -1;
 	}
 	:
-		item=expr_or
+		item=expr_if
 		'for'
 		n=nestedlvalue
 		'in'
-		container=expr_or { _end = $container.node.getEnd(); }
+		container=expr_if { _end = $container.node.getEnd(); }
 		(
 			'if'
-			condition=expr_or { _condition = $condition.node; _end = $condition.node.getEnd(); }
+			condition=expr_if { _condition = $condition.node; _end = $condition.node.getEnd(); }
 		)? { $node = new GeneratorExpression(location, $item.node.getStart(), _end, $item.node, $n.lvalue, $container.node, _condition); }
 	;
 
@@ -345,7 +345,7 @@ atom returns [AST node]
 	| e_dict=dict { $node = $e_dict.node; }
 	| e_dictcomp=dictcomprehension { $node = $e_dictcomp.node; }
 	| open='(' e_genexpr=generatorexpression close=')' { $node = $e_genexpr.node; $node.setStart(getStart($open)); $node.setEnd(getEnd($close)); }
-	| open='(' e_bracket=expr_or close=')' { $node = $e_bracket.node; $node.setStart(getStart($open)); $node.setEnd(getEnd($close)); }
+	| open='(' e_bracket=expr_if close=')' { $node = $e_bracket.node; $node.setStart(getStart($open)); $node.setEnd(getEnd($close)); }
 	;
 
 /* For variable unpacking in assignments and for loops */
@@ -443,14 +443,14 @@ expr_subscript returns [AST node]
 			(
 				':'
 				(
-					e2=expr_or { index2 = $e2.node; }
+					e2=expr_if { index2 = $e2.node; }
 				)? { $node = Slice.make(location, $e1.node.getStart(), -1, $node, null, index2); }
 			|
-				e2=expr_or { index1 = $e2.node; }
+				e2=expr_if { index1 = $e2.node; }
 				(
 					':' { slice = true; }
 					(
-						e3=expr_or { index2 = $e3.node; }
+						e3=expr_if { index2 = $e3.node; }
 					)?
 				)? { $node = slice ? Slice.make(location, $e1.node.getStart(), -1, $node, index1, index2) : Item.make(location, $e1.node.getStart(), -1, $node, index1); }
 			)
@@ -578,14 +578,26 @@ expr_or returns [AST node]
 		)*
 	;
 
+/* If expression operator */
+expr_if returns [AST node]
+	:
+		e1=expr_or { $node = $e1.node; }
+		(
+			'if'
+			e2=expr_or
+			'else'
+			e3=expr_or { $node = IfExpression.make(location, $e1.node.getStart(), $e3.node.getEnd(), $e1.node, $e2.node, $e3.node); }
+		)?
+	;
+
 exprarg returns [AST node]
 	: ege=generatorexpression { $node = $ege.node; }
-	| e1=expr_or { $node = $e1.node; }
+	| e1=expr_if { $node = $e1.node; }
 	;
 
 expression returns [AST node]
 	: ege=generatorexpression EOF { $node = $ege.node; }
-	| e=expr_or EOF { $node = $e.node; }
+	| e=expr_if EOF { $node = $e.node; }
 	;
 
 
@@ -595,7 +607,7 @@ for_ returns [For node]
 	:
 		n=nestedlvalue
 		'in'
-		e=expr_or { $node = new For(location, location.getStartCode(), $e.node.getEnd(), $n.lvalue, $e.node); }
+		e=expr_if { $node = new For(location, location.getStartCode(), $e.node.getEnd(), $n.lvalue, $e.node); }
 		EOF
 	;
 
@@ -603,12 +615,12 @@ for_ returns [For node]
 /* Additional rules for "code" tag */
 
 stmt returns [AST node]
-	: nn=nestedlvalue '=' e=expr_or EOF { $node = new SetVar(location, location.getStartCode(), $e.node.getEnd(), $nn.lvalue, $e.node); }
-	| n=expr_subscript '+=' e=expr_or EOF { if ($n.node instanceof LValue) $node = new AddVar(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '-=' e=expr_or EOF { if ($n.node instanceof LValue) $node = new SubVar(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '*=' e=expr_or EOF { if ($n.node instanceof LValue) $node = new MulVar(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '//=' e=expr_or EOF { if ($n.node instanceof LValue) $node = new FloorDivVar(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '/=' e=expr_or EOF { if ($n.node instanceof LValue) $node = new TrueDivVar(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '%=' e=expr_or EOF { if ($n.node instanceof LValue) $node = new ModVar(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	: nn=nestedlvalue '=' e=expr_if EOF { $node = new SetVar(location, location.getStartCode(), $e.node.getEnd(), $nn.lvalue, $e.node); }
+	| n=expr_subscript '+=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new AddVar(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '-=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new SubVar(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '*=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new MulVar(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '//=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new FloorDivVar(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '/=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new TrueDivVar(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '%=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ModVar(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
 	| e=expression EOF { $node = $e.node; }
 	;
