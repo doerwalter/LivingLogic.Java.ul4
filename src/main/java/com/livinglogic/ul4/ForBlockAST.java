@@ -12,7 +12,7 @@ import java.util.Iterator;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class ForAST extends BlockAST
+public class ForBlockAST extends BlockAST
 {
 	/**
 	 * This is either a string or a list of strings/lists
@@ -20,7 +20,7 @@ public class ForAST extends BlockAST
 	protected Object varname;
 	protected AST container;
 
-	public ForAST(Location location, int start, int end, Object varname, AST container)
+	public ForBlockAST(Location location, int start, int end, Object varname, AST container)
 	{
 		super(location, start, end);
 		this.varname = varname;
@@ -29,7 +29,7 @@ public class ForAST extends BlockAST
 
 	public String getType()
 	{
-		return "for";
+		return "forblock";
 	}
 
 	public void finish(Location endlocation)

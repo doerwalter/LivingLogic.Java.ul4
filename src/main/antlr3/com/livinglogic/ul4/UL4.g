@@ -586,7 +586,7 @@ expr_if returns [AST node]
 			'if'
 			e2=expr_or
 			'else'
-			e3=expr_or { $node = IfExpressionAST.make(location, $e1.node.getStart(), $e3.node.getEnd(), $e1.node, $e2.node, $e3.node); }
+			e3=expr_or { $node = IfAST.make(location, $e1.node.getStart(), $e3.node.getEnd(), $e1.node, $e2.node, $e3.node); }
 		)?
 	;
 
@@ -603,11 +603,11 @@ expression returns [AST node]
 
 /* Additional rules for "for" tag */
 
-for_ returns [ForAST node]
+for_ returns [ForBlockAST node]
 	:
 		n=nestedlvalue
 		'in'
-		e=expr_if { $node = new ForAST(location, location.getStartCode(), $e.node.getEnd(), $n.lvalue, $e.node); }
+		e=expr_if { $node = new ForBlockAST(location, location.getStartCode(), $e.node.getEnd(), $n.lvalue, $e.node); }
 		EOF
 	;
 

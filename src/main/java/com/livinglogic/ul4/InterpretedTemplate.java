@@ -38,7 +38,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * The version number used in the UL4ON dump of the template.
 	 */
-	public static final String VERSION = "26";
+	public static final String VERSION = "27";
 
 	/**
 	 * The name of the template/function (defaults to {@code null})
@@ -155,7 +155,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				else if (type.equals("if"))
 				{
 					UL4Parser parser = getParser(location);
-					ConditionalBlocks node = new ConditionalBlocks(location, location.getStartCode(), location.getEndCode(), new IfAST(location, location.getStartCode(), location.getEndCode(), parser.expression()));
+					ConditionalBlocks node = new ConditionalBlocks(location, location.getStartCode(), location.getEndCode(), new IfBlockAST(location, location.getStartCode(), location.getEndCode(), parser.expression()));
 					innerBlock.append(node);
 					stack.push(node);
 				}
@@ -164,7 +164,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					if (innerBlock instanceof ConditionalBlocks)
 					{
 						UL4Parser parser = getParser(location);
-						((ConditionalBlocks)innerBlock).startNewBlock(new ElIfAST(location, location.getStartCode(), location.getEndCode(), parser.expression()));
+						((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(location, location.getStartCode(), location.getEndCode(), parser.expression()));
 					}
 					else
 						throw new BlockException("elif doesn't match any if");
@@ -173,7 +173,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				{
 					if (innerBlock instanceof ConditionalBlocks)
 					{
-						((ConditionalBlocks)innerBlock).startNewBlock(new ElseAST(location, location.getStartCode(), location.getEndCode()));
+						((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(location, location.getStartCode(), location.getEndCode()));
 					}
 					else
 						throw new BlockException("else doesn't match any if");
@@ -715,17 +715,17 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		Utils.register("de.livinglogic.ul4.dictcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DictComprehensionAST(null, -1, -1, null, null, null, null, null); }});
 		Utils.register("de.livinglogic.ul4.genexpr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GeneratorExpressionAST(null, -1, -1, null, null, null, null); }});
 		Utils.register("de.livinglogic.ul4.var", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.VarAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.ieie", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConditionalBlocks(null, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.if", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IfAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.elif", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElIfAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.else", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElseAST(null, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.for", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ForAST(null, -1, -1, null, null); }});
+		Utils.register("de.livinglogic.ul4.condblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConditionalBlocks(null, -1, -1); }});
+		Utils.register("de.livinglogic.ul4.ifblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IfBlockAST(null, -1, -1, null); }});
+		Utils.register("de.livinglogic.ul4.elifblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElIfBlockAST(null, -1, -1, null); }});
+		Utils.register("de.livinglogic.ul4.elseblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElseBlockAST(null, -1, -1); }});
+		Utils.register("de.livinglogic.ul4.forblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ForBlockAST(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.break", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BreakAST(null, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.continue", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ContinueAST(null, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.attr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AttrAST(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.slice", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SliceAST(null, -1, -1, null, null, null); }});
 		Utils.register("de.livinglogic.ul4.not", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NotAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.ifexpr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IfExpressionAST(null, -1, -1, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.if", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IfAST(null, -1, -1, null, null, null); }});
 		Utils.register("de.livinglogic.ul4.neg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NegAST(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.print", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.PrintAST(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.printx", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.PrintXAST(null, -1, -1, null); }});

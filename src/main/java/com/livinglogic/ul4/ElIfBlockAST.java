@@ -6,15 +6,15 @@
 
 package com.livinglogic.ul4;
 
-class ElIfAST extends ConditionalBlockWithCondition
+class ElIfBlockAST extends ConditionalBlockWithCondition
 {
-	public ElIfAST(Location location, int start, int end, AST condition)
+	public ElIfBlockAST(Location location, int start, int end, AST condition)
 	{
 		super(location, start, end, condition);
 	}
 
 	public String getType()
 	{
-		return "elif";
+		return "elifblock";
 	}
 }

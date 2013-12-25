@@ -6,16 +6,16 @@
 
 package com.livinglogic.ul4;
 
-class ElseAST extends ConditionalBlock
+class ElseBlockAST extends ConditionalBlock
 {
-	public ElseAST(Location location, int start, int end)
+	public ElseBlockAST(Location location, int start, int end)
 	{
 		super(location, start, end);
 	}
 
 	public String getType()
 	{
-		return "else";
+		return "elseblock";
 	}
 
 	public boolean hasToBeExecuted(EvaluationContext context)

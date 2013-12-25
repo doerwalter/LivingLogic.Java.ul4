@@ -13,7 +13,7 @@ class ConditionalBlocks extends BlockAST
 		super(location, start, end);
 	}
 
-	public ConditionalBlocks(Location location, int start, int end, IfAST block)
+	public ConditionalBlocks(Location location, int start, int end, IfBlockAST block)
 	{
 		super(location, start, end);
 		startNewBlock(block);
@@ -21,7 +21,7 @@ class ConditionalBlocks extends BlockAST
 
 	public String getType()
 	{
-		return "ieie";
+		return "condblock";
 	}
 
 	public boolean handleLoopControl(String name)
@@ -36,25 +36,25 @@ class ConditionalBlocks extends BlockAST
 
 	public void startNewBlock(ConditionalBlock item)
 	{
-		if (item instanceof IfAST)
+		if (item instanceof IfBlockAST)
 		{
 			if (content.size() != 0)
 				throw new BlockException("if must be first in if/elif/else chain");
 		}
-		else if (item instanceof ElIfAST)
+		else if (item instanceof ElIfBlockAST)
 		{
 			if (content.size() == 0)
 				throw new BlockException("elif can't be first in if/elif/else chain");
 			AST last = content.get(content.size()-1);
-			if (last instanceof ElseAST)
+			if (last instanceof ElseBlockAST)
 				throw new BlockException("elif can't follow else in if/elif/else chain");
 		}
-		else if (item instanceof ElseAST)
+		else if (item instanceof ElseBlockAST)
 		{
 			if (content.size() == 0)
 				throw new BlockException("else can't be first in if/elif/else chain");
 			AST last = (BlockAST)content.get(content.size()-1);
-			if (last instanceof ElseAST)
+			if (last instanceof ElseBlockAST)
 				throw new BlockException("duplicate else in if/elif/else chain");
 		}
 		content.add(item);
