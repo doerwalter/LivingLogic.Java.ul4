@@ -506,6 +506,24 @@ expr_add returns [AST node]
 		)*
 	;
 
+/* Binary shift */
+expr_bitshift returns [AST node]
+	@init
+	{
+		boolean left = false;
+	}
+	:
+		e1=expr_add { $node = $e1.node; }
+		(
+			(
+				'<<' { left = true; }
+			|
+				'>>' { left = false; }
+			)
+			e2=expr_add { $node = left ? ShiftLeftAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node) : ShiftRightAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+		)*
+	;
+
 /* Comparisons */
 expr_cmp returns [AST node]
 	@init
@@ -513,7 +531,7 @@ expr_cmp returns [AST node]
 		int opcode = -1;
 	}
 	:
-		e1=expr_add { $node = $e1.node; }
+		e1=expr_bitshift { $node = $e1.node; }
 		(
 			(
 				'==' { opcode = 0; }
@@ -528,7 +546,7 @@ expr_cmp returns [AST node]
 			|
 				'>=' { opcode = 5; }
 			)
-			e2=expr_add { switch (opcode) { case 0: $node = EQAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = NEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = LTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = LEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 4: $node = GTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 5: $node = GEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
+			e2=expr_bitshift { switch (opcode) { case 0: $node = EQAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = NEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = LTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = LEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 4: $node = GTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 5: $node = GEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
 		)*
 	;
 
@@ -622,5 +640,7 @@ stmt returns [AST node]
 	| n=expr_subscript '//=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new FloorDivVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
 	| n=expr_subscript '/=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new TrueDivVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
 	| n=expr_subscript '%=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ModVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '<<=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ShiftLeftVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '>>=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ShiftRightVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
 	| e=expression EOF { $node = $e.node; }
 	;

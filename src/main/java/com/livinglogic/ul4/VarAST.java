@@ -69,6 +69,16 @@ public class VarAST extends AST implements LValue
 		context.set(name, ModAST.call(context.get(name), value));
 	}
 
+	public void evaluateShiftLeft(EvaluationContext context, Object value)
+	{
+		context.set(name, ShiftLeftAST.call(context.get(name), value));
+	}
+
+	public void evaluateShiftRight(EvaluationContext context, Object value)
+	{
+		context.set(name, ShiftRightAST.call(context.get(name), value));
+	}
+
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
