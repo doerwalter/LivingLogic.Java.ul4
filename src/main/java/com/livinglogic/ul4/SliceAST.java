@@ -115,6 +115,16 @@ public class SliceAST extends AST implements LValue
 		throw new UnsupportedOperationException("augmented slice assignment not supported");
 	}
 
+	public void evaluateShiftLeft(EvaluationContext context, Object value)
+	{
+		throw new UnsupportedOperationException("augmented slice left shift not supported");
+	}
+
+	public void evaluateShiftRight(EvaluationContext context, Object value)
+	{
+		throw new UnsupportedOperationException("augmented slice right shift not supported");
+	}
+
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);

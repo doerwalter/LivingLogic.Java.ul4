@@ -72,6 +72,16 @@ public class ItemAST extends BinaryAST implements LValue
 		callMod(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
+	public void evaluateShiftLeft(EvaluationContext context, Object value)
+	{
+		callShiftLeft(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+	}
+
+	public void evaluateShiftRight(EvaluationContext context, Object value)
+	{
+		callShiftRight(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+	}
+
 	public static Object call(String obj, int index)
 	{
 		if (0 > index)
@@ -395,5 +405,59 @@ public class ItemAST extends BinaryAST implements LValue
 			callMod((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] %= {}", obj, index, value);
+	}
+
+	public static void callShiftLeft(UL4GetSetItem obj, Object key, Object value)
+	{
+		obj.setItemUL4(key, ShiftLeftAST.call(obj.getItemUL4(key), value));
+	}
+
+	public static void callShiftLeft(UL4GetSetItemString obj, String key, Object value)
+	{
+		obj.setItemStringUL4(key, ShiftLeftAST.call(obj.getItemStringUL4(key), value));
+	}
+
+	public static void callShiftLeft(Map obj, Object index, Object value)
+	{
+		obj.put(index, ShiftLeftAST.call(call(obj, index), value));
+	}
+
+	public static void callShiftLeft(Object obj, Object index, Object value)
+	{
+		if (obj instanceof UL4GetSetItem)
+			callShiftLeft((UL4GetSetItem)obj, index, value);
+		if (obj instanceof UL4GetSetItemString && index instanceof String)
+			callShiftLeft((UL4GetSetItemString)obj, (String)index, value);
+		else if (obj instanceof Map)
+			callShiftLeft((Map)obj, index, value);
+		else
+			throw new ArgumentTypeMismatchException("{}[{}] <<= {}", obj, index, value);
+	}
+
+	public static void callShiftRight(UL4GetSetItem obj, Object key, Object value)
+	{
+		obj.setItemUL4(key, ShiftRightAST.call(obj.getItemUL4(key), value));
+	}
+
+	public static void callShiftRight(UL4GetSetItemString obj, String key, Object value)
+	{
+		obj.setItemStringUL4(key, ShiftRightAST.call(obj.getItemStringUL4(key), value));
+	}
+
+	public static void callShiftRight(Map obj, Object index, Object value)
+	{
+		obj.put(index, ShiftRightAST.call(call(obj, index), value));
+	}
+
+	public static void callShiftRight(Object obj, Object index, Object value)
+	{
+		if (obj instanceof UL4GetSetItem)
+			callShiftRight((UL4GetSetItem)obj, index, value);
+		if (obj instanceof UL4GetSetItemString && index instanceof String)
+			callShiftRight((UL4GetSetItemString)obj, (String)index, value);
+		else if (obj instanceof Map)
+			callShiftRight((Map)obj, index, value);
+		else
+			throw new ArgumentTypeMismatchException("{}[{}] >>= {}", obj, index, value);
 	}
 }

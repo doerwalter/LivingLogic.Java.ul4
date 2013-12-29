@@ -340,17 +340,17 @@ public class UL4Test
 	}
 
 	@Test
-	public void tag_storevar()
+	public void storevar()
 	{
-		// checkTemplateOutput("42", "<?code x = 42?><?print x?>");
-		// checkTemplateOutput("xyzzy", "<?code x = 'xyzzy'?><?print x?>");
+		checkTemplateOutput("42", "<?code x = 42?><?print x?>");
+		checkTemplateOutput("xyzzy", "<?code x = 'xyzzy'?><?print x?>");
 		checkTemplateOutput("42", "<?code (x,) = [42]?><?print x?>");
-		// checkTemplateOutput("17,23", "<?code (x,y) = [17, 23]?><?print x?>,<?print y?>");
-		// checkTemplateOutput("17,23,37,42,105", "<?code ((v, w), (x,), (y,), z) = [[17, 23], [37], [42], 105]?><?print v?>,<?print w?>,<?print x?>,<?print y?>,<?print z?>");
+		checkTemplateOutput("17,23", "<?code (x,y) = [17, 23]?><?print x?>,<?print y?>");
+		checkTemplateOutput("17,23,37,42,105", "<?code ((v, w), (x,), (y,), z) = [[17, 23], [37], [42], 105]?><?print v?>,<?print w?>,<?print x?>,<?print y?>,<?print z?>");
 	}
 
 	@Test
-	public void tag_addvar()
+	public void addvar()
 	{
 		String source = "<?code x += y?><?print x?>";
 		checkTemplateOutput("40", source, "x", 17, "y", 23);
@@ -365,7 +365,7 @@ public class UL4Test
 	}
 
 	@Test
-	public void tag_subvar()
+	public void subvar()
 	{
 		String source = "<?code x -= y?><?print x?>";
 		checkTemplateOutput("-6", source, "x", 17, "y", 23);
@@ -379,7 +379,7 @@ public class UL4Test
 	}
 
 	@Test
-	public void tag_mulvar()
+	public void mulvar()
 	{
 		String source = "<?code x *= y?><?print x?>";
 		checkTemplateOutput("391", source, "x", 17, "y", 23);
@@ -399,7 +399,7 @@ public class UL4Test
 	}
 
 	@Test
-	public void tag_floordivvar()
+	public void floordivvar()
 	{
 		String source = "<?code x //= y?><?print x?>";
 		checkTemplateOutput("2", source, "x", 5, "y", 2);
@@ -415,7 +415,7 @@ public class UL4Test
 	}
 
 	@Test
-	public void tag_truedivvar()
+	public void truedivvar()
 	{
 		String source = "<?code x /= y?><?print x?>";
 		checkTemplateOutput("2.5", source, "x", 5, "y", 2);
@@ -432,7 +432,7 @@ public class UL4Test
 
 
 	@Test
-	public void tag_modvar()
+	public void modvar()
 	{
 		String source = "<?code x %= y?><?print x?>";
 		checkTemplateOutput("4", source, "x", 1729, "y", 23);
@@ -445,6 +445,36 @@ public class UL4Test
 		checkTemplateOutput("-1.5", source, "x", -6.5, "y", -2.5);
 		checkTemplateOutput("1", source, "x", true, "y", 23);
 		checkTemplateOutput("0", source, "x", false, "y", 23);
+	}
+
+	@Test
+	public void leftshiftvar()
+	{
+		String source = "<?code x <<= y?><?print x?>";
+
+		checkTemplateOutput("1", source, "x", true, "y", false);
+		checkTemplateOutput("2", source, "x", true, "y", true);
+		checkTemplateOutput("0", source, "x", 1, "y", -1);
+		checkTemplateOutput("2147483648", source, "x", 1, "y", 31);
+		checkTemplateOutput("4294967296", source, "x", 1, "y", 32);
+		checkTemplateOutput("9223372036854775808", source, "x", 1, "y", 63);
+		checkTemplateOutput("18446744073709551616", source, "x", 1, "y", 64);
+		checkTemplateOutput("340282366920938463463374607431768211456", source, "x", 1, "y", 128);
+	}
+
+	@Test
+	public void rightshiftvar()
+	{
+		String source = "<?code x >>= y?><?print x?>";
+
+		checkTemplateOutput("1", source, "x", true, "y", false);
+		checkTemplateOutput("0", source, "x", true, "y", true);
+		checkTemplateOutput("2", source, "x", 1, "y", -1);
+		checkTemplateOutput("2147483648", source, "x", 1, "y", -31);
+		checkTemplateOutput("1", source, "x", 2147483648L, "y", 31);
+		checkTemplateOutput("0", source, "x", 1, "y", 32);
+		checkTemplateOutput("-1", source, "x", -1, "y", 10);
+		checkTemplateOutput("-1", source, "x", -4, "y", 10);
 	}
 
 	@Test
@@ -786,6 +816,42 @@ public class UL4Test
 		checkTemplateOutput("0.5", source, "x", 5.5, "y", 2.5);
 		// This checks constant folding
 		checkTemplateOutput("6", "<?print 23 % 17?>");
+	}
+
+	@Test
+	public void operator_leftshift()
+	{
+		String source = "<?print x << y?>";
+
+		checkTemplateOutput("1", source, "x", true, "y", false);
+		checkTemplateOutput("2", source, "x", true, "y", true);
+		checkTemplateOutput("0", source, "x", 1, "y", -1);
+		checkTemplateOutput("2147483648", source, "x", 1, "y", 31);
+		checkTemplateOutput("4294967296", source, "x", 1, "y", 32);
+		checkTemplateOutput("9223372036854775808", source, "x", 1, "y", 63);
+		checkTemplateOutput("18446744073709551616", source, "x", 1, "y", 64);
+		checkTemplateOutput("340282366920938463463374607431768211456", source, "x", 1, "y", 128);
+		// This checks constant folding
+		checkTemplateOutput("16", "<?print 1 << 4?>");
+		checkTemplateOutput("2", "<?print True << True?>");
+	}
+
+	@Test
+	public void operator_rightshift()
+	{
+		String source = "<?print x >> y?>";
+
+		checkTemplateOutput("1", source, "x", true, "y", false);
+		checkTemplateOutput("0", source, "x", true, "y", true);
+		checkTemplateOutput("2", source, "x", 1, "y", -1);
+		checkTemplateOutput("2147483648", source, "x", 1, "y", -31);
+		checkTemplateOutput("1", source, "x", 2147483648L, "y", 31);
+		checkTemplateOutput("0", source, "x", 1, "y", 32);
+		checkTemplateOutput("-1", source, "x", -1, "y", 10);
+		checkTemplateOutput("-1", source, "x", -4, "y", 10);
+		// This checks constant folding
+		checkTemplateOutput("1", "<?print 16 >> 4?>");
+		checkTemplateOutput("0", "<?print True >> True?>");
 	}
 
 	@Test

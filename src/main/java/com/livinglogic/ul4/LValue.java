@@ -15,4 +15,6 @@ interface LValue
 	public void evaluateFloorDiv(EvaluationContext context, Object value);
 	public void evaluateTrueDiv(EvaluationContext context, Object value);
 	public void evaluateMod(EvaluationContext context, Object value);
+	public void evaluateShiftLeft(EvaluationContext context, Object value);
+	public void evaluateShiftRight(EvaluationContext context, Object value);
 }

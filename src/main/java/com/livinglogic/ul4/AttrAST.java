@@ -74,6 +74,16 @@ public class AttrAST extends AST implements LValue
 		callMod(obj.decoratedEvaluate(context), attrname, value);
 	}
 
+	public void evaluateShiftLeft(EvaluationContext context, Object value)
+	{
+		callShiftLeft(obj.decoratedEvaluate(context), attrname, value);
+	}
+
+	public void evaluateShiftRight(EvaluationContext context, Object value)
+	{
+		callShiftRight(obj.decoratedEvaluate(context), attrname, value);
+	}
+
 	public static Object call(UL4GetItem obj, String attrname)
 	{
 		return obj.getItemUL4(attrname);
@@ -212,7 +222,7 @@ public class AttrAST extends AST implements LValue
 			return call((String)obj, attrname);
 		else if (obj instanceof Date)
 			return call((Date)obj, attrname);
-		throw new ArgumentTypeMismatchException("{}[{}]", obj, attrname);
+		throw new ArgumentTypeMismatchException("{}.{}", obj, attrname);
 	}
 
 	public static void callSet(UL4SetItem obj, String attrname, Object value)
@@ -239,7 +249,7 @@ public class AttrAST extends AST implements LValue
 		else if (obj instanceof Map)
 			callSet((Map)obj, attrname, value);
 		else
-			throw new ArgumentTypeMismatchException("{}[{}] = {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{}.{} = {}", obj, attrname, value);
 	}
 
 	public static void callAdd(UL4GetSetItem obj, String attrname, Object value)
@@ -266,7 +276,7 @@ public class AttrAST extends AST implements LValue
 		else if (obj instanceof Map)
 			callAdd((Map)obj, attrname, value);
 		else
-			throw new ArgumentTypeMismatchException("{}[{}] += {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{}.{} += {}", obj, attrname, value);
 	}
 
 	public static void callSub(UL4GetSetItem obj, String attrname, Object value)
@@ -293,7 +303,7 @@ public class AttrAST extends AST implements LValue
 		else if (obj instanceof Map)
 			callSub((Map)obj, attrname, value);
 		else
-			throw new ArgumentTypeMismatchException("{}[{}] -= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{}.{} -= {}", obj, attrname, value);
 	}
 
 	public static void callMul(UL4GetSetItem obj, String attrname, Object value)
@@ -320,7 +330,7 @@ public class AttrAST extends AST implements LValue
 		else if (obj instanceof Map)
 			callMul((Map)obj, attrname, value);
 		else
-			throw new ArgumentTypeMismatchException("{}[{}] *= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{}.{} *= {}", obj, attrname, value);
 	}
 
 	public static void callFloorDiv(UL4GetSetItem obj, String attrname, Object value)
@@ -347,7 +357,7 @@ public class AttrAST extends AST implements LValue
 		else if (obj instanceof Map)
 			callFloorDiv((Map)obj, attrname, value);
 		else
-			throw new ArgumentTypeMismatchException("{}[{}] //= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{}.{} //= {}", obj, attrname, value);
 	}
 
 	public static void callTrueDiv(UL4GetSetItem obj, String attrname, Object value)
@@ -374,17 +384,12 @@ public class AttrAST extends AST implements LValue
 		else if (obj instanceof Map)
 			callTrueDiv((Map)obj, attrname, value);
 		else
-			throw new ArgumentTypeMismatchException("{}[{}] /= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{}.{} /= {}", obj, attrname, value);
 	}
 
 	public static void callMod(UL4GetSetItem obj, String attrname, Object value)
 	{
 		obj.setItemUL4(attrname, ModAST.call(obj.getItemUL4(attrname), value));
-	}
-
-	public static void callMod(UL4Attributes obj, String attrname, Object value)
-	{
-
 	}
 
 	public static void callMod(UL4GetSetItemString obj, String attrname, Object value)
@@ -399,16 +404,68 @@ public class AttrAST extends AST implements LValue
 
 	public static void callMod(Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4Attributes) // test this before UL4SetItemString
-			callMod((UL4Attributes)obj, attrname, value);
-		else if (obj instanceof UL4GetSetItemString)
+		if (obj instanceof UL4GetSetItemString)
 			callMod((UL4GetSetItemString)obj, attrname, value);
 		else if (obj instanceof UL4SetItem)
 			callMod((UL4SetItem)obj, attrname, value);
 		else if (obj instanceof Map)
 			callMod((Map)obj, attrname, value);
 		else
-			throw new ArgumentTypeMismatchException("{}[{}] %= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{}.{} %= {}", obj, attrname, value);
+	}
+
+	public static void callShiftLeft(UL4GetSetItem obj, String attrname, Object value)
+	{
+		obj.setItemUL4(attrname, ShiftLeftAST.call(obj.getItemUL4(attrname), value));
+	}
+
+	public static void callShiftLeft(UL4GetSetItemString obj, String attrname, Object value)
+	{
+		obj.setItemStringUL4(attrname, ShiftLeftAST.call(obj.getItemStringUL4(attrname), value));
+	}
+
+	public static void callShiftLeft(Map obj, String attrname, Object value)
+	{
+		obj.put(attrname, ShiftLeftAST.call(call(obj, attrname), value));
+	}
+
+	public static void callShiftLeft(Object obj, String attrname, Object value)
+	{
+		if (obj instanceof UL4GetSetItemString)
+			callShiftLeft((UL4GetSetItemString)obj, attrname, value);
+		else if (obj instanceof UL4SetItem)
+			callShiftLeft((UL4SetItem)obj, attrname, value);
+		else if (obj instanceof Map)
+			callShiftLeft((Map)obj, attrname, value);
+		else
+			throw new ArgumentTypeMismatchException("{}.{} <<= {}", obj, attrname, value);
+	}
+
+	public static void callShiftRight(UL4GetSetItem obj, String attrname, Object value)
+	{
+		obj.setItemUL4(attrname, ShiftRightAST.call(obj.getItemUL4(attrname), value));
+	}
+
+	public static void callShiftRight(UL4GetSetItemString obj, String attrname, Object value)
+	{
+		obj.setItemStringUL4(attrname, ShiftRightAST.call(obj.getItemStringUL4(attrname), value));
+	}
+
+	public static void callShiftRight(Map obj, String attrname, Object value)
+	{
+		obj.put(attrname, ShiftRightAST.call(call(obj, attrname), value));
+	}
+
+	public static void callShiftRight(Object obj, String attrname, Object value)
+	{
+		if (obj instanceof UL4GetSetItemString)
+			callShiftRight((UL4GetSetItemString)obj, attrname, value);
+		else if (obj instanceof UL4SetItem)
+			callShiftRight((UL4SetItem)obj, attrname, value);
+		else if (obj instanceof Map)
+			callShiftRight((Map)obj, attrname, value);
+		else
+			throw new ArgumentTypeMismatchException("{}.{} >>= {}", obj, attrname, value);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
