@@ -730,6 +730,20 @@ public class UL4Test
 	}
 
 	@Test
+	public void operator_bitnot()
+	{
+		String source = "<?print ~x?>";
+
+		checkTemplateOutput("-1", source, "x", false);
+		checkTemplateOutput("-2", source, "x", true);
+		checkTemplateOutput("-1", source, "x", 0);
+		checkTemplateOutput("-256", source, "x", 255);
+		checkTemplateOutput("-4294967297", source, "x", 1L << 32);
+		checkTemplateOutput("-4611686018427387905", source, "x", 4611686018427387904L);
+		checkTemplateOutput("-18446744073709551617", source, "x", new BigInteger("18446744073709551616"));
+	}
+
+	@Test
 	public void operator_mul()
 	{
 		String source = "<?print x * y?>";
