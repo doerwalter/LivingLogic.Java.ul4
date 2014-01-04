@@ -17,7 +17,7 @@ public class BitNotAST extends UnaryAST
 
 	public String getType()
 	{
-		return "not";
+		return "bitnot";
 	}
 
 	public static AST make(Location location, int start, int end, AST obj)
