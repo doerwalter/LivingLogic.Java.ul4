@@ -458,12 +458,14 @@ expr_subscript returns [AST node]
 		)*
 	;
 
-/* Negation */
-expr_neg returns [AST node]
+/* Negation/bitwise not */
+expr_unary returns [AST node]
 	:
 		e1=expr_subscript { $node = $e1.node; }
 	|
-		minus='-' e2=expr_neg { $node = NegAST.make(location, getStart($minus), $e2.node.getEnd(), $e2.node); }
+		minus='-' e2=expr_unary { $node = NegAST.make(location, getStart($minus), $e2.node.getEnd(), $e2.node); }
+	|
+		bitnot='~' e2=expr_unary { $node = BitNotAST.make(location, getStart($bitnot), $e2.node.getEnd(), $e2.node); }
 	;
 
 /* Multiplication, division, modulo */
@@ -473,7 +475,7 @@ expr_mul returns [AST node]
 		int opcode = -1;
 	}
 	:
-		e1=expr_neg { $node = $e1.node; }
+		e1=expr_unary { $node = $e1.node; }
 		(
 			(
 				'*' { opcode = 0; }
@@ -484,7 +486,7 @@ expr_mul returns [AST node]
 			|
 				'%' { opcode = 3; }
 			)
-			e2=expr_neg { switch (opcode) { case 0: $node = MulAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = TrueDivAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = FloorDivAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = ModAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
+			e2=expr_unary { switch (opcode) { case 0: $node = MulAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = TrueDivAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = FloorDivAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = ModAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
 		)*
 	;
 
@@ -574,7 +576,6 @@ expr_not returns [AST node]
 	|
 		n='not' e2=expr_not { $node = NotAST.make(location, getStart($n), $e2.node.getEnd(), $e2.node); }
 	;
-
 
 /* And operator */
 expr_and returns [AST node]
