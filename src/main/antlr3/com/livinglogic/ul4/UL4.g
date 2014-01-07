@@ -466,6 +466,8 @@ expr_unary returns [AST node]
 		minus='-' e2=expr_unary { $node = NegAST.make(location, getStart($minus), $e2.node.getEnd(), $e2.node); }
 	|
 		bitnot='~' e2=expr_unary { $node = BitNotAST.make(location, getStart($bitnot), $e2.node.getEnd(), $e2.node); }
+	|
+		n='not' e2=expr_unary { $node = NotAST.make(location, getStart($n), $e2.node.getEnd(), $e2.node); }
 	;
 
 /* Multiplication, division, modulo */
@@ -569,21 +571,13 @@ expr_contain returns [AST node]
 		)?
 	;
 
-/* Not operator */
-expr_not returns [AST node]
-	:
-		e1=expr_contain { $node = $e1.node; }
-	|
-		n='not' e2=expr_not { $node = NotAST.make(location, getStart($n), $e2.node.getEnd(), $e2.node); }
-	;
-
 /* And operator */
 expr_and returns [AST node]
 	:
-		e1=expr_not { $node = $e1.node; }
+		e1=expr_contain { $node = $e1.node; }
 		(
 			'and'
-			e2=expr_not { $node = AndAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_contain { $node = AndAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
 		)*
 	;
 
