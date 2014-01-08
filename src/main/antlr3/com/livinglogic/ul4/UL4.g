@@ -528,6 +528,36 @@ expr_bitshift returns [AST node]
 		)*
 	;
 
+/* Bitwise and */
+expr_bitand returns [AST node]
+	:
+		e1=expr_bitshift { $node = $e1.node; }
+		(
+			'&'
+			e2=expr_bitshift { $node = BitAndAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+		)*
+	;
+
+/* Bitwise exclusive or */
+expr_bitxor returns [AST node]
+	:
+		e1=expr_bitand { $node = $e1.node; }
+		(
+			'^'
+			e2=expr_bitand { $node = BitXOrAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+		)*
+	;
+
+/* Bitwise or */
+expr_bitor returns [AST node]
+	:
+		e1=expr_bitxor { $node = $e1.node; }
+		(
+			'|'
+			e2=expr_bitxor { $node = BitOrAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+		)*
+	;
+
 /* Comparisons */
 expr_cmp returns [AST node]
 	@init
@@ -535,7 +565,7 @@ expr_cmp returns [AST node]
 		int opcode = -1;
 	}
 	:
-		e1=expr_bitshift { $node = $e1.node; }
+		e1=expr_bitor { $node = $e1.node; }
 		(
 			(
 				'==' { opcode = 0; }
@@ -550,7 +580,7 @@ expr_cmp returns [AST node]
 			|
 				'>=' { opcode = 5; }
 			)
-			e2=expr_bitshift { switch (opcode) { case 0: $node = EQAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = NEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = LTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = LEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 4: $node = GTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 5: $node = GEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
+			e2=expr_bitor { switch (opcode) { case 0: $node = EQAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = NEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = LTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = LEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 4: $node = GTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 5: $node = GEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
 		)*
 	;
 

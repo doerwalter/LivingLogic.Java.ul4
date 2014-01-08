@@ -869,6 +869,57 @@ public class UL4Test
 	}
 
 	@Test
+	public void operator_bitand()
+	{
+		String source = "<?print x & y?>";
+
+		checkTemplateOutput("2", "<?print 3 & 6?>");
+		checkTemplateOutput("1", "<?print True & True?>");
+		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("0", source, "x", false, "y", true);
+		checkTemplateOutput("1", source, "x", true, "y", true);
+		checkTemplateOutput("1", source, "x", 3, "y", true);
+		checkTemplateOutput("12", source, "x", 15, "y", 60);
+		checkTemplateOutput("0", source, "x", 255, "y", 256);
+		checkTemplateOutput("0", source, "x", 255, "y", -256);
+		checkTemplateOutput("1", source, "x", 255, "y", -255);
+	}
+
+	@Test
+	public void operator_bitxor()
+	{
+		String source = "<?print x ^ y?>";
+
+		checkTemplateOutput("5", "<?print 3 ^ 6?>");
+		checkTemplateOutput("0", "<?print True ^ True?>");
+		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("1", source, "x", false, "y", true);
+		checkTemplateOutput("0", source, "x", true, "y", true);
+		checkTemplateOutput("2", source, "x", 3, "y", true);
+		checkTemplateOutput("51", source, "x", 15, "y", 60);
+		checkTemplateOutput("511", source, "x", 255, "y", 256);
+		checkTemplateOutput("-1", source, "x", 255, "y", -256);
+		checkTemplateOutput("-2", source, "x", 255, "y", -255);
+	}
+
+	@Test
+	public void operator_bitor()
+	{
+		String source = "<?print x | y?>";
+
+		checkTemplateOutput("7", "<?print 3 | 6?>");
+		checkTemplateOutput("1", "<?print False | True?>");
+		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("1", source, "x", false, "y", true);
+		checkTemplateOutput("1", source, "x", true, "y", true);
+		checkTemplateOutput("3", source, "x", 3, "y", true);
+		checkTemplateOutput("63", source, "x", 15, "y", 60);
+		checkTemplateOutput("511", source, "x", 255, "y", 256);
+		checkTemplateOutput("-1", source, "x", 255, "y", -256);
+		checkTemplateOutput("-1", source, "x", 255, "y", -255);
+	}
+
+	@Test
 	public void operator_eq()
 	{
 		String source = "<?print x == y?>";
