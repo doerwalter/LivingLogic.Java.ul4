@@ -478,6 +478,51 @@ public class UL4Test
 	}
 
 	@Test
+	public void bitandvar()
+	{
+		String source = "<?code x &= y?><?print x?>";
+
+		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("0", source, "x", false, "y", true);
+		checkTemplateOutput("1", source, "x", true, "y", true);
+		checkTemplateOutput("1", source, "x", 3, "y", true);
+		checkTemplateOutput("12", source, "x", 15, "y", 60);
+		checkTemplateOutput("0", source, "x", 255, "y", 256);
+		checkTemplateOutput("0", source, "x", 255, "y", -256);
+		checkTemplateOutput("1", source, "x", 255, "y", -255);
+	}
+
+	@Test
+	public void bitxorvar()
+	{
+		String source = "<?code x ^= y?><?print x?>";
+
+		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("1", source, "x", false, "y", true);
+		checkTemplateOutput("0", source, "x", true, "y", true);
+		checkTemplateOutput("2", source, "x", 3, "y", true);
+		checkTemplateOutput("51", source, "x", 15, "y", 60);
+		checkTemplateOutput("511", source, "x", 255, "y", 256);
+		checkTemplateOutput("-1", source, "x", 255, "y", -256);
+		checkTemplateOutput("-2", source, "x", 255, "y", -255);
+	}
+
+	@Test
+	public void bitorvar()
+	{
+		String source = "<?code x |= y?><?print x?>";
+
+		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("1", source, "x", false, "y", true);
+		checkTemplateOutput("1", source, "x", true, "y", true);
+		checkTemplateOutput("3", source, "x", 3, "y", true);
+		checkTemplateOutput("63", source, "x", 15, "y", 60);
+		checkTemplateOutput("511", source, "x", 255, "y", 256);
+		checkTemplateOutput("-1", source, "x", 255, "y", -256);
+		checkTemplateOutput("-1", source, "x", 255, "y", -255);
+	}
+
+	@Test
 	public void tag_for_string()
 	{
 		String source = "<?for c in data?>(<?print c?>)<?end for?>";

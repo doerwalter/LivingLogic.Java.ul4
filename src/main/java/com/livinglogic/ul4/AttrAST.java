@@ -84,6 +84,21 @@ public class AttrAST extends AST implements LValue
 		callShiftRight(obj.decoratedEvaluate(context), attrname, value);
 	}
 
+	public void evaluateBitAnd(EvaluationContext context, Object value)
+	{
+		callBitAnd(obj.decoratedEvaluate(context), attrname, value);
+	}
+
+	public void evaluateBitXOr(EvaluationContext context, Object value)
+	{
+		callBitXOr(obj.decoratedEvaluate(context), attrname, value);
+	}
+
+	public void evaluateBitOr(EvaluationContext context, Object value)
+	{
+		callBitOr(obj.decoratedEvaluate(context), attrname, value);
+	}
+
 	public static Object call(UL4GetItem obj, String attrname)
 	{
 		return obj.getItemUL4(attrname);
@@ -466,6 +481,87 @@ public class AttrAST extends AST implements LValue
 			callShiftRight((Map)obj, attrname, value);
 		else
 			throw new ArgumentTypeMismatchException("{}.{} >>= {}", obj, attrname, value);
+	}
+
+	public static void callBitAnd(UL4GetSetItem obj, String attrname, Object value)
+	{
+		obj.setItemUL4(attrname, BitAndAST.call(obj.getItemUL4(attrname), value));
+	}
+
+	public static void callBitAnd(UL4GetSetItemString obj, String attrname, Object value)
+	{
+		obj.setItemStringUL4(attrname, BitAndAST.call(obj.getItemStringUL4(attrname), value));
+	}
+
+	public static void callBitAnd(Map obj, String attrname, Object value)
+	{
+		obj.put(attrname, BitAndAST.call(call(obj, attrname), value));
+	}
+
+	public static void callBitAnd(Object obj, String attrname, Object value)
+	{
+		if (obj instanceof UL4GetSetItemString)
+			callBitAnd((UL4GetSetItemString)obj, attrname, value);
+		else if (obj instanceof UL4SetItem)
+			callBitAnd((UL4SetItem)obj, attrname, value);
+		else if (obj instanceof Map)
+			callBitAnd((Map)obj, attrname, value);
+		else
+			throw new ArgumentTypeMismatchException("{}.{} &= {}", obj, attrname, value);
+	}
+
+	public static void callBitXOr(UL4GetSetItem obj, String attrname, Object value)
+	{
+		obj.setItemUL4(attrname, BitXOrAST.call(obj.getItemUL4(attrname), value));
+	}
+
+	public static void callBitXOr(UL4GetSetItemString obj, String attrname, Object value)
+	{
+		obj.setItemStringUL4(attrname, BitXOrAST.call(obj.getItemStringUL4(attrname), value));
+	}
+
+	public static void callBitXOr(Map obj, String attrname, Object value)
+	{
+		obj.put(attrname, BitXOrAST.call(call(obj, attrname), value));
+	}
+
+	public static void callBitXOr(Object obj, String attrname, Object value)
+	{
+		if (obj instanceof UL4GetSetItemString)
+			callBitXOr((UL4GetSetItemString)obj, attrname, value);
+		else if (obj instanceof UL4SetItem)
+			callBitXOr((UL4SetItem)obj, attrname, value);
+		else if (obj instanceof Map)
+			callBitXOr((Map)obj, attrname, value);
+		else
+			throw new ArgumentTypeMismatchException("{}.{} ^= {}", obj, attrname, value);
+	}
+
+	public static void callBitOr(UL4GetSetItem obj, String attrname, Object value)
+	{
+		obj.setItemUL4(attrname, BitOrAST.call(obj.getItemUL4(attrname), value));
+	}
+
+	public static void callBitOr(UL4GetSetItemString obj, String attrname, Object value)
+	{
+		obj.setItemStringUL4(attrname, BitOrAST.call(obj.getItemStringUL4(attrname), value));
+	}
+
+	public static void callBitOr(Map obj, String attrname, Object value)
+	{
+		obj.put(attrname, BitOrAST.call(call(obj, attrname), value));
+	}
+
+	public static void callBitOr(Object obj, String attrname, Object value)
+	{
+		if (obj instanceof UL4GetSetItemString)
+			callBitOr((UL4GetSetItemString)obj, attrname, value);
+		else if (obj instanceof UL4SetItem)
+			callBitOr((UL4SetItem)obj, attrname, value);
+		else if (obj instanceof Map)
+			callBitOr((Map)obj, attrname, value);
+		else
+			throw new ArgumentTypeMismatchException("{}.{} |= {}", obj, attrname, value);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

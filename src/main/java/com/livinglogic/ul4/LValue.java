@@ -17,4 +17,7 @@ interface LValue
 	public void evaluateMod(EvaluationContext context, Object value);
 	public void evaluateShiftLeft(EvaluationContext context, Object value);
 	public void evaluateShiftRight(EvaluationContext context, Object value);
+	public void evaluateBitAnd(EvaluationContext context, Object value);
+	public void evaluateBitXOr(EvaluationContext context, Object value);
+	public void evaluateBitOr(EvaluationContext context, Object value);
 }

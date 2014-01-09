@@ -125,6 +125,21 @@ public class SliceAST extends AST implements LValue
 		throw new UnsupportedOperationException("augmented slice right shift not supported");
 	}
 
+	public void evaluateBitAnd(EvaluationContext context, Object value)
+	{
+		throw new UnsupportedOperationException("augmented slice bitwise and not supported");
+	}
+
+	public void evaluateBitXOr(EvaluationContext context, Object value)
+	{
+		throw new UnsupportedOperationException("augmented slice bitwise exclusive or not supported");
+	}
+
+	public void evaluateBitOr(EvaluationContext context, Object value)
+	{
+		throw new UnsupportedOperationException("augmented slice bitwise or not supported");
+	}
+
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);

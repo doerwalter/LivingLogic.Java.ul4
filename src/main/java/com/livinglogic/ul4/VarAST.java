@@ -79,6 +79,21 @@ public class VarAST extends AST implements LValue
 		context.set(name, ShiftRightAST.call(context.get(name), value));
 	}
 
+	public void evaluateBitAnd(EvaluationContext context, Object value)
+	{
+		context.set(name, BitAndAST.call(context.get(name), value));
+	}
+
+	public void evaluateBitXOr(EvaluationContext context, Object value)
+	{
+		context.set(name, BitXOrAST.call(context.get(name), value));
+	}
+
+	public void evaluateBitOr(EvaluationContext context, Object value)
+	{
+		context.set(name, BitOrAST.call(context.get(name), value));
+	}
+
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
