@@ -1,3 +1,10 @@
+exp-92:
+-------
+Comments:
+* The bitwise operators &, |, ^, ~, << and >> (and their agumented counterparts
+  &=, |=, ^=, <<= and >>=) have been added.
+
+
 exp-91:
 -------
 Comments:
