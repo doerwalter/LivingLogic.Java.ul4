@@ -28,3 +28,12 @@ The Python documentation contains more info on UL4_ and on UL4ON_.
 
 .. _UL4: http://www.livinglogic.de/Python/ul4c/Howto.html
 .. _UL4ON: http://www.livinglogic.de/Python/ul4on/index.html
+
+
+Authors
+=======
+
+* Walter Dörwald
+* Andreas Gaßner
+* Alexamder Lamm
+* Thoralf Hänsel
