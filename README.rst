@@ -35,5 +35,5 @@ Authors
 
 * Walter Dörwald
 * Andreas Gaßner
-* Alexamder Lamm
+* Alexander Lamm
 * Thoralf Hänsel
