@@ -3,6 +3,7 @@ exp-92:
 Comments:
 * The bitwise operators &, |, ^, ~, << and >> (and their agumented assigment
   counterparts &=, |=, ^=, <<= and >>=) have been added.
+* If expressions have been added.
 
 
 exp-91:
