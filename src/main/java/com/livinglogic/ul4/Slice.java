@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Slice implements UL4Attributes, UL4Repr
+public class Slice implements UL4Attributes, UL4Repr, Comparable<Slice>
 {
 	protected boolean hasStart;
 	protected boolean hasStop;
@@ -25,6 +25,16 @@ public class Slice implements UL4Attributes, UL4Repr
 		this.stop = stop;
 	}
 
+	public Object getStart()
+	{
+		return hasStart ? start : null;
+	}
+
+	public Object getStop()
+	{
+		return hasStop ? stop : null;
+	}
+
 	public int getStartIndex(int containerSize)
 	{
 		return hasStart ? Utils.getSliceStartPos(containerSize, start) : 0;
@@ -33,6 +43,40 @@ public class Slice implements UL4Attributes, UL4Repr
 	public int getStopIndex(int containerSize)
 	{
 		return hasStop ? Utils.getSliceEndPos(containerSize, stop) : containerSize;
+	}
+
+	public boolean equals(Object other)
+	{
+		if (!(other instanceof Slice))
+			return false;
+		Slice slice = (Slice)other;
+		if (hasStart != slice.hasStart)
+			return false;
+		if (hasStart && (start != slice.start))
+			return false;
+		if (hasStop != slice.hasStop)
+			return false;
+		if (hasStop && (stop != slice.stop))
+			return false;
+		return true;
+	}
+
+	public int compareTo(Slice other)
+	{
+		int result;
+
+		result = Utils.cmp(hasStart, other.hasStart);
+		if (result == 0 && hasStart)
+			result = Utils.cmp(start, other.start);
+
+		if (result == 0)
+		{
+			result = Utils.cmp(hasStop, other.hasStop);
+			if (result == 0 && hasStop)
+				result = Utils.cmp(stop, other.stop);
+		}
+
+		return result;
 	}
 
 	public String reprUL4()
@@ -64,9 +108,9 @@ public class Slice implements UL4Attributes, UL4Repr
 	public Object getItemStringUL4(String key)
 	{
 		if ("start".equals(key))
-			return hasStart ? start : null;
+			return getStart();
 		else if ("stop".equals(key))
-			return hasStop ? stop : null;
+			return getStop();
 		else
 			return new UndefinedKey(key);
 	}
