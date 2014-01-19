@@ -8,6 +8,7 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 public class ItemAST extends BinaryAST implements LValue
 {
@@ -106,6 +107,16 @@ public class ItemAST extends BinaryAST implements LValue
 		return obj.substring(index, index+1);
 	}
 
+	public static Object call(String obj, Slice slice)
+	{
+		int size = obj.length();
+		int startIndex = slice.getStartIndex(size);
+		int stopIndex = slice.getStopIndex(size);
+		if (stopIndex < startIndex)
+			stopIndex = startIndex;
+		return obj.substring(startIndex, stopIndex);
+	}
+
 	public static Object call(List obj, int index)
 	{
 		if (0 > index)
@@ -114,6 +125,17 @@ public class ItemAST extends BinaryAST implements LValue
 			return new UndefinedIndex(index);
 		return obj.get(index);
 	}
+
+	public static Object call(List obj, Slice slice)
+	{
+		int size = obj.size();
+		int startIndex = slice.getStartIndex(size);
+		int endIndex = slice.getStopIndex(size);
+		if (endIndex < startIndex)
+			endIndex = startIndex;
+		return obj.subList(startIndex, endIndex);
+	}
+
 
 	public static Object call(UL4GetItem obj, Object key)
 	{
@@ -156,8 +178,13 @@ public class ItemAST extends BinaryAST implements LValue
 			return call((UL4GetItem)obj, index);
 		else if (obj instanceof Map)
 			return call((Map)obj, index);
-		else if (index instanceof String)
-			return call(obj, (String)index);
+		else if (index instanceof Slice)
+		{
+			if (obj instanceof String)
+				return call((String)obj, (Slice)index);
+			else if (obj instanceof List)
+				return call((List)obj, (Slice)index);
+		}
 		else if (index instanceof Boolean || index instanceof Number)
 		{
 			if (obj instanceof String)
@@ -175,6 +202,20 @@ public class ItemAST extends BinaryAST implements LValue
 		if (0 > index)
 			index += obj.size();
 		obj.set(index, value);
+	}
+
+	public static void callSet(List obj, Slice slice, Object value)
+	{
+		int size = obj.size();
+		int startIndex = slice.getStartIndex(size);
+		int stopIndex = slice.getStopIndex(size);
+		Iterator iterator = Utils.iterator(value);
+		if (stopIndex < startIndex)
+			stopIndex = startIndex;
+		while (startIndex < stopIndex--)
+			obj.remove(startIndex);
+		while (iterator.hasNext())
+			obj.add(startIndex++, iterator.next());
 	}
 
 	public static void callSet(UL4SetItem obj, Object key, Object value)
@@ -200,8 +241,11 @@ public class ItemAST extends BinaryAST implements LValue
 			callSet((UL4SetItemString)obj, (String)index, value);
 		else if (obj instanceof Map)
 			callSet((Map)obj, index, value);
-		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
-			callSet((List)obj, Utils.toInt(index), value);
+		else if (obj instanceof List)
+			if (index instanceof Slice)
+				callSet((List)obj, (Slice)index, value);
+			else if (index instanceof Boolean || index instanceof Number)
+				callSet((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] = {}", obj, index, value);
 	}

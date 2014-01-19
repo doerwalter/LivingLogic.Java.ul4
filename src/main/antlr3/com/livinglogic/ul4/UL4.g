@@ -368,6 +368,30 @@ nestedlvalue returns [Object lvalue]
 	;
 
 
+/* Slice/item expression */
+index returns [AST node]
+	@init
+	{
+		AST startIndex = null;
+		AST stopIndex = null;
+		int endPos = -1;
+		boolean slice = false;
+	}
+	:
+		colon=':' { endPos = getEnd($colon); }
+		(
+			e=expr_if { stopIndex = $e.node; endPos = $e.node.getEnd(); }
+		)? { $node = new SliceAST(location, getStart($colon), endPos, null, stopIndex); }
+	|
+		e=expr_if { startIndex = $e.node; endPos = $e.node.getEnd(); }
+		(
+			colon=':' { slice = true; endPos = getEnd($colon); }
+			(
+				e2=expr_if { stopIndex = $e2.node; endPos = $e2.node.getEnd(); }
+			)?
+		)? { $node = slice ? new SliceAST(location, $e.node.getStart(), endPos, startIndex, stopIndex) : $e.node; }
+	;
+
 /* Function/method call, attribute access, item access, slice access */
 expr_subscript returns [AST node]
 	@init
@@ -440,20 +464,7 @@ expr_subscript returns [AST node]
 		|
 			/* Item/slice access */
 			'['
-			(
-				':'
-				(
-					e2=expr_if { index2 = $e2.node; }
-				)? { $node = SliceAST.make(location, $e1.node.getStart(), -1, $node, null, index2); }
-			|
-				e2=expr_if { index1 = $e2.node; }
-				(
-					':' { slice = true; }
-					(
-						e3=expr_if { index2 = $e3.node; }
-					)?
-				)? { $node = slice ? SliceAST.make(location, $e1.node.getStart(), -1, $node, index1, index2) : ItemAST.make(location, $e1.node.getStart(), -1, $node, index1); }
-			)
+			e2=index { $node = ItemAST.make(location, $e1.node.getStart(), -1, $node, $e2.node); }
 			close=']' { $node.setEnd(getEnd($close)); }
 		)*
 	;
