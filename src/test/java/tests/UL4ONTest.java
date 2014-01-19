@@ -16,6 +16,7 @@ import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.InterpretedTemplate;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
+import com.livinglogic.ul4.Slice;
 
 public class UL4ONTest
 {
@@ -67,6 +68,10 @@ public class UL4ONTest
 		checkRoundtrip(new Date());
 		checkRoundtrip(new TimeDelta(-1, 1, 1));
 		checkRoundtrip(new MonthDelta(-1));
+		checkRoundtrip(new Slice(false, false, -1, -1));
+		checkRoundtrip(new Slice(false, true, -1, 3));
+		checkRoundtrip(new Slice(true, false, 1, -1));
+		checkRoundtrip(new Slice(true, true, 1, 3));
 		checkRoundtrip(asList(1, 2, 3));
 		checkRoundtrip(makeMap("eins", 1, "zwei", 2, "drei", 3));
 		checkRoundtrip(template);

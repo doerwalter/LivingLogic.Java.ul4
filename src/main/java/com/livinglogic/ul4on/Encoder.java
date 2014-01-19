@@ -18,6 +18,7 @@ import java.util.Map;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
+import com.livinglogic.ul4.Slice;
 
 /**
  * An {@code Encoder} object wraps a {@code Writer} object and can dump any object
@@ -107,6 +108,12 @@ public class Encoder
 			{
 				record(obj);
 				writer.write("C" + ((Color)obj).dump());
+			}
+			else if (obj instanceof Slice)
+			{
+				Object start = ((Slice)obj).getStart();
+				Object stop = ((Slice)obj).getStop();
+				writer.write("r" + (start != null ? start : "") + "|" + (stop != null ? stop : "") + "|");
 			}
 			else if (obj instanceof UL4ONSerializable) // check this before Collection and Map
 			{

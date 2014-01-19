@@ -18,6 +18,7 @@ import java.util.Map;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
+import com.livinglogic.ul4.Slice;
 
 /**
  * A {@code Decoder} object wraps a {@code Reader} object and can read any object
@@ -216,6 +217,19 @@ public class Decoder
 				}
 			}
 		}
+		else if (typecode == 'r' || typecode == 'R')
+		{
+			Object start = readInt();
+			Object stop = readInt();
+			boolean hasStart = (start != null);
+			boolean hasStop = (stop != null);
+			int startIndex = hasStart ? com.livinglogic.ul4.Utils.toInt(start) : -1;
+			int stopIndex = hasStop ? com.livinglogic.ul4.Utils.toInt(stop) : -1;
+			Slice result = new Slice(hasStart, hasStop, startIndex, stopIndex);
+			if (typecode == 'R')
+				loading(result);
+			return result;
+		}
 		else if (typecode == 'o' || typecode == 'O')
 		{
 			int oldpos = -1;
@@ -255,7 +269,10 @@ public class Decoder
 		{
 			int c = reader.read();
 			if (c == '|')
-				return com.livinglogic.ul4.Utils.parseUL4Int(buffer.toString());
+			{
+				String s = buffer.toString();
+				return s.length() != 0 ? com.livinglogic.ul4.Utils.parseUL4Int(s) : null;
+			}
 			buffer.append((char)c);
 		}
 	}
