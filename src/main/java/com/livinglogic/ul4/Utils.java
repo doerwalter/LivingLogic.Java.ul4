@@ -140,6 +140,11 @@ public class Utils
 			throw new IllegalArgumentException("long value exceeds int");
 	}
 
+	public static int cmp(boolean arg1, boolean arg2)
+	{
+		return (arg1 ? 1 : 0) - (arg2 ? 1 : 0);
+	}
+
 	public static int cmp(int arg1, int arg2)
 	{
 		return ((arg1 > arg2) ? 1 : 0) - ((arg1 < arg2) ? 1 : 0);
