@@ -26,7 +26,7 @@
 		</developer>
 	</developers>
 	<scm>
-		<url>http://hg.livinglogic.de/LivingLogic.Java.ul4/</url>
+		<url>https://github.com/LivingLogic/LivingLogic.Java.ul4</url>
 	</scm>
 	<distributionManagement>
 		<repository>
