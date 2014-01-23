@@ -1,3 +1,8 @@
+exp-93-1:
+---------
+* Fixed version number.
+
+
 exp-93:
 ------
 * Slices are now handled by passing Slice objects as the index in Item.
