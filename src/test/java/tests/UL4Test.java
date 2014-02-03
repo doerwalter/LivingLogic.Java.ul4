@@ -3716,6 +3716,12 @@ public class UL4Test
 		checkTemplateOutput("gurk", "gurk<?return 42?>hurz");
 	}
 
+	@CauseTest(expectedCause=StackOverflowError.class)
+	public void endless_recursion()
+	{
+		checkTemplateOutput("", "<?def f?><?for child in container?><?code f(f=f, container=container)?><?end for?><?end def?><?code x = []?><?code x.append(x)?><?code f(f=f, container=x)?>");
+	}
+
 	@Test
 	public void keepWhitespace()
 	{
