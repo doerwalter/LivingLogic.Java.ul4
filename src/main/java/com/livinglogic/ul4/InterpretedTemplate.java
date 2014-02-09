@@ -38,7 +38,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * The version number used in the UL4ON dump of the template.
 	 */
-	public static final String VERSION = "27";
+	public static final String VERSION = "28";
 
 	/**
 	 * The name of the template/function (defaults to {@code null})
@@ -192,6 +192,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				{
 					UL4Parser parser = getParser(location);
 					BlockAST node = parser.for_();
+					innerBlock.append(node);
+					stack.push(node);
+				}
+				else if (type.equals("while"))
+				{
+					UL4Parser parser = getParser(location);
+					WhileBlockAST node = new WhileBlockAST(location, location.getStartCode(), location.getEndCode(), parser.expression());
 					innerBlock.append(node);
 					stack.push(node);
 				}
@@ -646,7 +653,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public List<Location> tokenizeTags(String source, String startdelim, String enddelim)
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|if|elif|else|end|break|continue|def|return|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Location> tags = new LinkedList<Location>();
 		if (source != null)
 		{
@@ -701,7 +708,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	public boolean handleLoopControl(String name)
 	{
-		throw new BlockException(name + " outside of for loop");
+		throw new BlockException(name + " outside of for/while loop");
 	}
 
 	static
@@ -720,6 +727,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		Utils.register("de.livinglogic.ul4.elifblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElIfBlockAST(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.elseblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElseBlockAST(null, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.forblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ForBlockAST(null, -1, -1, null, null); }});
+		Utils.register("de.livinglogic.ul4.whileblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.WhileBlockAST(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.break", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BreakAST(null, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.continue", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ContinueAST(null, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.attr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AttrAST(null, -1, -1, null, null); }});

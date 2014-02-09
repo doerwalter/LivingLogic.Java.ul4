@@ -46,6 +46,13 @@ abstract class BlockAST extends AST
 		return content;
 	}
 
+	/**
+	 * Return whether this block can handle a <code>break</code> oder <code>continue</code> tag (<code>true</code>)
+	 * or whether the decision should be delegated to the parent block (<code>false</code>).
+	 * Returns <code>true</code> for <code>for</code> and <code>while</code> blocks and
+	 * <code>false</code> for <code>if</code>/<code>elif</code>/<code>else</code>.
+	 * For <code>InterpretedTemplate</code> an exception is thrown.
+	 */
 	abstract public boolean handleLoopControl(String name);
 
 	public Object decoratedEvaluate(EvaluationContext context)

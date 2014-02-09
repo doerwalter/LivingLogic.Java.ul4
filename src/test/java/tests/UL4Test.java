@@ -647,6 +647,13 @@ public class UL4Test
 	}
 
 	@Test
+	public void tag_while()
+	{
+		checkTemplateOutput("17", "<?code x = 17?><?while False?><?code x = 23?><?end while?><?print x?>");
+		checkTemplateOutput("23", "<?code x = 17?><?while x < 23?><?code x += 1?><?end while?><?print x?>");
+	}
+
+	@Test
 	public void tag_if()
 	{
 		checkTemplateOutput("42", "<?if data?><?print data?><?end if?>", "data", 42);
