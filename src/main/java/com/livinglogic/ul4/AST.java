@@ -71,6 +71,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttributes
 	{
 		try
 		{
+			context.tick();
 			return evaluate(context);
 		}
 		catch (BreakException ex)

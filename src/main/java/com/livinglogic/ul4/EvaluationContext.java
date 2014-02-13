@@ -55,13 +55,19 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	private LinkedList<Closeable> closeables;
 
 	/**
+	 * The maximum number of "ticks" (i.e. AST evaluations) that are allowed
+	 * using this {@code EvaluationContext} object. This can be use to limmit
+	 * the runtime of a template. If negative the runtime is unlimited.
+	 */
+	private int ticks = -1;
+	/**
 	 * Create a new {@code EvaluationContext} object. No variables will
 	 * be available to the template code.
 	 * @param writer The output stream where the template output will be written
 	 */
 	public EvaluationContext(Writer writer)
 	{
-		this(writer, null);
+		this(writer, null, -1);
 	}
 
 	/**
@@ -72,6 +78,18 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	 */
 	public EvaluationContext(Writer writer, Map<String, Object> variables)
 	{
+		this(writer, variables, -1);
+	}
+	/**
+	 * Create a new {@code EvaluationContext} object
+	 * @param writer The output stream where the template output will be written
+	 * @param variables The template variables that will be available to the
+	 *                  template code (or {@code null} for no variables)
+	 * @param ticks The maximum number of ticks (AST evaluations allowed for
+	 *              templates using this {@code EvaluationContext}.
+	 */
+	public EvaluationContext(Writer writer, Map<String, Object> variables, int ticks)
+	{
 		this.writer = writer;
 		if (variables == null)
 			variables = new HashMap<String, Object>();
@@ -79,8 +97,16 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 		this.template = null;
 		this.allVariables = new MapChain<String, Object>(variables, functions);
 		this.closeables = new LinkedList<Closeable>();
+		this.ticks = ticks;
 	}
 
+	protected void tick()
+	{
+		if (ticks >= 0 && --ticks <= 0)
+		{
+			throw new RuntimeExceededException();
+		}
+	}
 	/**
 	 * Call this when the {@code EvaluationContext} is no longer required.
 	 */

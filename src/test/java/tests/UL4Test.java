@@ -21,17 +21,19 @@ import org.junit.runner.RunWith;
 
 import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
+import com.livinglogic.ul4.MissingArgumentException;
+import com.livinglogic.ul4.TooManyArgumentsException;
+import com.livinglogic.ul4.RuntimeExceededException;
 import com.livinglogic.ul4.BlockException;
+import com.livinglogic.ul4.SyntaxException;
+import com.livinglogic.ul4.EvaluationContext;
+import com.livinglogic.ul4.InterpretedTemplate;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.FunctionDate;
-import com.livinglogic.ul4.InterpretedTemplate;
-import com.livinglogic.ul4.MissingArgumentException;
 import com.livinglogic.ul4.MonthDelta;
-import com.livinglogic.ul4.SyntaxException;
 import com.livinglogic.ul4.TimeDelta;
-import com.livinglogic.ul4.TooManyArgumentsException;
-import com.livinglogic.ul4.UL4GetAttributes;
 import com.livinglogic.ul4.UndefinedKey;
+import com.livinglogic.ul4.UL4GetAttributes;
 
 
 @RunWith(CauseTestRunner.class)
@@ -94,25 +96,51 @@ public class UL4Test
 
 	private static String getTemplateOutput(String source, Object... args)
 	{
-		InterpretedTemplate template = getTemplate(source);
-		return template.renders(makeMap(args));
+		return getTemplateOutput(getTemplate(source), args);
+	}
+
+	private static String getTemplateOutput(InterpretedTemplate template, Object... args)
+	{
+		return getTemplateOutput(template, -1, args);
+	}
+
+	private static String getTemplateOutput(InterpretedTemplate template, int ticks, Object... args)
+	{
+		EvaluationContext context = new EvaluationContext(null, makeMap(args), ticks);
+		return template.renders(context);
 	}
 
 	private static void checkTemplateOutput(String expected, String source, Object... args)
 	{
-		// Render the template once by directly compiling and rendering it
-		InterpretedTemplate template1 = getTemplate(source);
-		String output1 = template1.renders(makeMap(args));
+		checkTemplateOutputLimit(expected, getTemplate(source), -1, args);
+	}
+
+	private static void checkTemplateOutputLimit(String expected, String source, int ticks, Object... args)
+	{
+		checkTemplateOutputLimit(expected, getTemplate(source), ticks, args);
+	}
+
+	private static void checkTemplateOutput(String expected, InterpretedTemplate template, Object... args)
+	{
+		checkTemplateOutput(expected, template, -1, args);
+	}
+
+	private static void checkTemplateOutputLimit(String expected, InterpretedTemplate template, int ticks, Object... args)
+	{
+		// Render the template once directly
+		EvaluationContext context1 = new EvaluationContext(null, makeMap(args), ticks);
+		String output1 = template.renders(context1);
 		assertEquals(expected, output1);
 
 		// Recreate the template from the dump of the compiled template
-		InterpretedTemplate template2 = InterpretedTemplate.loads(template1.dumps());
+		InterpretedTemplate template2 = InterpretedTemplate.loads(template.dumps());
 
 		// Check that the templates format the same
-		assertEquals(template1.toString(), template2.toString());
+		assertEquals(template.toString(), template2.toString());
 
 		// Check that they have the same output
-		String output2 = template2.renders(makeMap(args));
+		EvaluationContext context2 = new EvaluationContext(null, makeMap(args), ticks);
+		String output2 = template2.renders(context2);
 		assertEquals(expected, output2);
 	}
 
@@ -130,7 +158,7 @@ public class UL4Test
 		// Check that the templates format the same
 		assertEquals(template1.toString(), template2.toString());
 
-		// Check that theyhave the same output
+		// Check that they have the same output
 		String output2 = template2.renders(makeMap(args));
 		if (!output1.equals(expected1) && !output1.equals(expected2))
 			fail("expected <" + expected1 + "> or <" + expected2 + ">, got <" + output2 + ">");
@@ -3727,6 +3755,12 @@ public class UL4Test
 	public void endless_recursion()
 	{
 		checkTemplateOutput("", "<?def f?><?for child in container?><?code f(f=f, container=container)?><?end for?><?end def?><?code x = []?><?code x.append(x)?><?code f(f=f, container=x)?>");
+	}
+
+	@CauseTest(expectedCause=RuntimeExceededException.class)
+	public void runtime_limit()
+	{
+		checkTemplateOutputLimit("", "<?while True?><?end while?>", 10);
 	}
 
 	@Test

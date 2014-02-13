@@ -1,3 +1,10 @@
+exp-94:
+-------
+* Added while loop.
+* The maximum runtime of templates can now be limited by using an
+  EvaluationContext object with a tick value > 0.
+
+
 exp-93-1:
 ---------
 * Fixed version number.
