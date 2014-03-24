@@ -1011,6 +1011,10 @@ public class UL4Test
 		checkTemplateOutput("False", source, "x", 17, "y", 23);
 		checkTemplateOutput("True", source, "x", 17, "y", 17);
 		checkTemplateOutput("True", source, "x", 17, "y", 17.0);
+		// Check mixed type comparisons
+		checkTemplateOutput("False", source, "x", null, "y", 42);
+		checkTemplateOutput("False", source, "x", 42, "y", "foo");
+		checkTemplateOutput("False", source, "x", "foo", "y", new Date());
 		// This checks constant folding
 		checkTemplateOutput("False", "<?print 17 == 23?>");
 		checkTemplateOutput("True", "<?print 17 == 17.?>");
@@ -1028,6 +1032,10 @@ public class UL4Test
 		checkTemplateOutput("True", source, "x", 17, "y", 23);
 		checkTemplateOutput("False", source, "x", 17, "y", 17);
 		checkTemplateOutput("False", source, "x", 17, "y", 17.0);
+		// Check mixed type comparisons
+		checkTemplateOutput("True", source, "x", null, "y", 42);
+		checkTemplateOutput("True", source, "x", 42, "y", "foo");
+		checkTemplateOutput("True", source, "x", "foo", "y", new Date());
 		// This checks constant folding
 		checkTemplateOutput("True", "<?print 17 != 23?>");
 		checkTemplateOutput("False", "<?print 17 != 17.?>");

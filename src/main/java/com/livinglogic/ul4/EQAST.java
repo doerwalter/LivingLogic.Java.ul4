@@ -36,8 +36,6 @@ public class EQAST extends BinaryAST
 
 	public static boolean call(Object obj1, Object obj2)
 	{
-		if (null != obj1 && null != obj2)
-			return Utils.cmp(obj1, obj2, "==") == 0;
-		return (null == obj1) == (null == obj2);
+		return Utils.eq(obj1, obj2);
 	}
 }

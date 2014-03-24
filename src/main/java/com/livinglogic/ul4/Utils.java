@@ -258,6 +258,102 @@ public class Utils
 		throw new ArgumentTypeMismatchException("{} " + op + " {}", arg1, arg2);
 	}
 
+	public static boolean eq(Object arg1, Object arg2)
+	{
+		if ((arg1 == null) || (arg2 == null))
+		{
+			return arg1 == arg2;
+		}
+		else if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return toInt(arg1) == toInt(arg2);
+			else if (arg2 instanceof Long)
+				return toLong(arg1) == toLong(arg2);
+			else if (arg2 instanceof Float)
+				return toFloat(arg1) == toFloat(arg2);
+			else if (arg2 instanceof Double)
+				return toDouble(arg1) == toDouble(arg2);
+			else if (arg2 instanceof BigInteger)
+				return toBigInteger(toInt(arg1)).equals(arg2);
+			else if (arg2 instanceof BigDecimal)
+				return new BigDecimal(toDouble(arg1)).equals(arg2);
+			else
+				return false;
+		}
+		else if (arg1 instanceof Long)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return toLong(arg1) == toLong(arg2);
+			else if (arg2 instanceof Float)
+				return toFloat(arg1) == toFloat(arg2);
+			else if (arg2 instanceof Double)
+				return toDouble(arg1) == toDouble(arg2);
+			else if (arg2 instanceof BigInteger)
+				return toBigInteger(toLong(arg1)).equals(arg2);
+			else if (arg2 instanceof BigDecimal)
+				return new BigDecimal(toDouble(arg1)).equals(arg2);
+			else
+				return false;
+		}
+		else if (arg1 instanceof Float)
+		{
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float)
+				return toFloat(arg1) == toFloat(arg2);
+			else if (arg2 instanceof Double)
+				return toDouble(arg1) == (((Double)arg2).doubleValue());
+			else if (arg2 instanceof BigInteger)
+				return new BigDecimal(toDouble(arg1)).equals(new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return new BigDecimal(toDouble(arg1)).equals(arg2);
+			else
+				return false;
+		}
+		else if (arg1 instanceof Double)
+		{
+			double value1 = (((Double)arg1).doubleValue());
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
+				return value1 == toDouble(arg2);
+			else if (arg2 instanceof BigInteger)
+				return new BigDecimal(value1).equals(new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return new BigDecimal(value1).equals(arg2);
+		}
+		else if (arg1 instanceof BigInteger)
+		{
+			BigInteger value1 = (BigInteger)arg1;
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return value1.equals(toBigInteger(toInt(arg2)));
+			else if (arg2 instanceof Long)
+				return value1.equals(toBigInteger(toLong(arg2)));
+			else if (arg2 instanceof Float)
+				return new BigDecimal(value1).equals(new BigDecimal(((Float)arg2).doubleValue()));
+			else if (arg2 instanceof Double)
+				return new BigDecimal(value1).equals(new BigDecimal(((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return value1.equals((BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return new BigDecimal(value1).equals((BigDecimal)arg2);
+		}
+		else if (arg1 instanceof BigDecimal)
+		{
+			BigDecimal value1 = (BigDecimal)arg1;
+			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
+				return value1.equals(new BigDecimal(Integer.toString(toInt(arg2))));
+			else if (arg2 instanceof Long)
+				return value1.equals(new BigDecimal(Long.toString(toLong(arg2))));
+			else if (arg2 instanceof Float)
+				return value1.equals(new BigDecimal(((Float)arg2).doubleValue()));
+			else if (arg2 instanceof Double)
+				return value1.equals(new BigDecimal(((Double)arg2).doubleValue()));
+			else if (arg2 instanceof BigInteger)
+				return value1.equals(new BigDecimal((BigInteger)arg2));
+			else if (arg2 instanceof BigDecimal)
+				return value1.equals(arg2);
+		}
+		return arg1.equals(arg2);
+	}
+
 	public static Iterator iterator(Object obj)
 	{
 		if (obj instanceof String)
