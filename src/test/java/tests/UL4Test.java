@@ -1004,6 +1004,8 @@ public class UL4Test
 	{
 		String source = "<?print x == y?>";
 
+		checkTemplateOutput("True", source, "x", null, "y", null);
+		checkTemplateOutput("False", source, "x", null, "y", 42);
 		checkTemplateOutput("False", source, "x", false, "y", true);
 		checkTemplateOutput("True", source, "x", true, "y", true);
 		checkTemplateOutput("True", source, "x", 1, "y", true);
@@ -1025,6 +1027,8 @@ public class UL4Test
 	{
 		String source = "<?print x != y?>";
 
+		checkTemplateOutput("False", source, "x", null, "y", null);
+		checkTemplateOutput("True", source, "x", null, "y", 42);
 		checkTemplateOutput("True", source, "x", false, "y", true);
 		checkTemplateOutput("False", source, "x", true, "y", true);
 		checkTemplateOutput("False", source, "x", 1, "y", true);
