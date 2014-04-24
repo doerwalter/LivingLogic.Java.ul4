@@ -104,9 +104,9 @@ public class UL4Test
 		return getTemplateOutput(template, -1, args);
 	}
 
-	private static String getTemplateOutput(InterpretedTemplate template, int ticks, Object... args)
+	private static String getTemplateOutput(InterpretedTemplate template, long milliseconds, Object... args)
 	{
-		EvaluationContext context = new EvaluationContext(null, makeMap(args), ticks);
+		EvaluationContext context = new EvaluationContext(null, makeMap(args), milliseconds);
 		return template.renders(context);
 	}
 
@@ -115,9 +115,9 @@ public class UL4Test
 		checkTemplateOutputLimit(expected, getTemplate(source), -1, args);
 	}
 
-	private static void checkTemplateOutputLimit(String expected, String source, int ticks, Object... args)
+	private static void checkTemplateOutputLimit(String expected, String source, long milliseconds, Object... args)
 	{
-		checkTemplateOutputLimit(expected, getTemplate(source), ticks, args);
+		checkTemplateOutputLimit(expected, getTemplate(source), milliseconds, args);
 	}
 
 	private static void checkTemplateOutput(String expected, InterpretedTemplate template, Object... args)
@@ -125,10 +125,10 @@ public class UL4Test
 		checkTemplateOutput(expected, template, -1, args);
 	}
 
-	private static void checkTemplateOutputLimit(String expected, InterpretedTemplate template, int ticks, Object... args)
+	private static void checkTemplateOutputLimit(String expected, InterpretedTemplate template, long milliseconds, Object... args)
 	{
 		// Render the template once directly
-		EvaluationContext context1 = new EvaluationContext(null, makeMap(args), ticks);
+		EvaluationContext context1 = new EvaluationContext(null, makeMap(args), milliseconds);
 		String output1 = template.renders(context1);
 		assertEquals(expected, output1);
 
@@ -139,7 +139,7 @@ public class UL4Test
 		assertEquals(template.toString(), template2.toString());
 
 		// Check that they have the same output
-		EvaluationContext context2 = new EvaluationContext(null, makeMap(args), ticks);
+		EvaluationContext context2 = new EvaluationContext(null, makeMap(args), milliseconds);
 		String output2 = template2.renders(context2);
 		assertEquals(expected, output2);
 	}

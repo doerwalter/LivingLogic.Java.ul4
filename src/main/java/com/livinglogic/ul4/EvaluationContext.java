@@ -55,11 +55,12 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	private LinkedList<Closeable> closeables;
 
 	/**
-	 * The maximum number of "ticks" (i.e. AST evaluations) that are allowed
-	 * using this {@code EvaluationContext} object. This can be use to limmit
+	 * The maximum number of milliseconds of runtime that are allowed
+	 * using this {@code EvaluationContext} object. This can be use to limit
 	 * the runtime of a template. If negative the runtime is unlimited.
 	 */
-	private int ticks = -1;
+	private long milliseconds = -1;
+	private long startMilliseconds;
 	/**
 	 * Create a new {@code EvaluationContext} object. No variables will
 	 * be available to the template code.
@@ -85,10 +86,10 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	 * @param writer The output stream where the template output will be written
 	 * @param variables The template variables that will be available to the
 	 *                  template code (or {@code null} for no variables)
-	 * @param ticks The maximum number of ticks (AST evaluations allowed for
+	 * @param milliseconds The maximum number of milliseconds allowed for
 	 *              templates using this {@code EvaluationContext}.
 	 */
-	public EvaluationContext(Writer writer, Map<String, Object> variables, int ticks)
+	public EvaluationContext(Writer writer, Map<String, Object> variables, long milliseconds)
 	{
 		this.writer = writer;
 		if (variables == null)
@@ -97,12 +98,13 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 		this.template = null;
 		this.allVariables = new MapChain<String, Object>(variables, functions);
 		this.closeables = new LinkedList<Closeable>();
-		this.ticks = ticks;
+		this.milliseconds = milliseconds;
+		this.startMilliseconds = System.currentTimeMillis();
 	}
 
 	protected void tick()
 	{
-		if (ticks >= 0 && --ticks <= 0)
+		if (milliseconds >= 0 && System.currentTimeMillis() > startMilliseconds + milliseconds)
 		{
 			throw new RuntimeExceededException();
 		}
