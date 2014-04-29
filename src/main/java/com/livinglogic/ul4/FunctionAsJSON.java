@@ -53,9 +53,10 @@ public class FunctionAsJSON extends Function
 			return result;
 		}
 		else if (obj instanceof String)
+			// We're using StringEscapeUtils.escapeJava() here, which is the same as escapeJavaScript, except that it doesn't escape ' (which is illegal in JSON strings according to json.org)
 			return new StringBuilder()
 				.append("\"")
-				.append(StringEscapeUtils.escapeJavaScript(((String)obj)))
+				.append(StringEscapeUtils.escapeJava(((String)obj)))
 				.append("\"")
 				.toString();
 		else if (obj instanceof Date)

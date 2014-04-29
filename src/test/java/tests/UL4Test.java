@@ -1278,6 +1278,8 @@ public class UL4Test
 		checkTemplateOutput("42", "<?print asjson(data)?>", "data", 42);
 		// no check for float
 		checkTemplateOutput("\"abc\"", "<?print asjson(data)?>", "data", "abc");
+		checkTemplateOutput("\"'\"", "<?print asjson(data)?>", "data", "'");
+		checkTemplateOutput("\"\\\"\"", "<?print asjson(data)?>", "data", "\"");
 		checkTemplateOutput("[1, 2, 3]", "<?print asjson(data)?>", "data", asList(1, 2, 3));
 		checkTemplateOutput("{\"one\": 1}", "<?print asjson(data)?>", "data", makeMap("one", 1));
 		checkTemplateOutput("null", "<?print asjson(obj=data)?>", "data", null);

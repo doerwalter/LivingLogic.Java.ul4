@@ -1,3 +1,10 @@
+exp-81-3:
+---------
+Comments:
+* Fixed FunctionJSON.call(): ' may not be escaped in JSON strings according to
+  json.org (and jQuery).
+
+
 exp-81-2:
 ---------
 Comments:
