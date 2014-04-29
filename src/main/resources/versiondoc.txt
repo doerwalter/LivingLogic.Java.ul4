@@ -3,6 +3,7 @@ exp-94:
 * Added while loop.
 * The maximum runtime of templates can now be limited by using an
   EvaluationContext object with a tick value > 0.
+* Merged in exp-81-3 which fixes '-escaping in JSON strings.
 
 
 exp-93-1:
@@ -83,10 +84,18 @@ Comments:
 * Add method SetUtils.makeExtendedSet().
 * Expose the text of Text nodes to templates.
 
+
 exp-82:
 -------
 Comments:
 * Object arrays are now supported everywhere List objects are.
+
+
+exp-81-3:
+---------
+Comments:
+* Fixed FunctionJSON.call(): ' may not be escaped in JSON strings according to
+  json.org (and jQuery).
 
 
 exp-81-2:
