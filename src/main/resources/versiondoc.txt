@@ -2,7 +2,7 @@ exp-94:
 -------
 * Added while loop.
 * The maximum runtime of templates can now be limited by using an
-  EvaluationContext object with a tick value > 0.
+  EvaluationContext object with a milliseconds value > 0.
 * Merged in exp-81-3 which fixes '-escaping in JSON strings.
 
 
