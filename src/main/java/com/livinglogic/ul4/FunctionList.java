@@ -66,6 +66,11 @@ public class FunctionList extends Function
 		return new Vector(obj.getAttributeNamesUL4());
 	}
 
+	public static Vector call(Iterable obj)
+	{
+		return call(obj.iterator());
+	}
+
 	public static Vector call(Iterator obj)
 	{
 		Vector retVal = new Vector();
@@ -86,6 +91,8 @@ public class FunctionList extends Function
 			return call((Map)obj);
 		else if (obj instanceof UL4Attributes)
 			return call((UL4Attributes)obj);
+		else if (obj instanceof Iterable)
+			return call((Iterable)obj);
 		else if (obj instanceof Iterator)
 			return call((Iterator)obj);
 		throw new ArgumentTypeMismatchException("list({})", obj);

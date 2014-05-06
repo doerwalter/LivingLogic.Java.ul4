@@ -1,3 +1,8 @@
+exp-94-1:
+---------
+* Added support for list(Iterable).
+
+
 exp-94:
 -------
 * Added while loop.

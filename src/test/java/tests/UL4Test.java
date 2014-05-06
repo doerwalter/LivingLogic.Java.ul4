@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Set;
+import java.util.Iterator;
 
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
@@ -62,6 +63,14 @@ public class UL4Test
 			else if ("y".equals(key))
 				return y;
 			return new UndefinedKey(key);
+		}
+	}
+
+	private static class Iterate implements Iterable
+	{
+		public Iterator iterator()
+		{
+			return asList(1, 2, 3).iterator();
 		}
 	}
 
@@ -1736,6 +1745,7 @@ public class UL4Test
 		checkTemplateOutput("[1, 2, 3]", "<?print list(data)?>", "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("[\"x\", \"y\"]", "<?print repr(list(data))?>", "data", new Point(17, 23));
 		checkTemplateOutput("[\"g\", \"u\", \"r\", \"k\"]", "<?print list(iterable=data)?>", "data", "gurk");
+		checkTemplateOutput("[1, 2, 3]", "<?print list(data)?>", "data", new Iterate());
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
