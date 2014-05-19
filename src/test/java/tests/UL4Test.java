@@ -3091,6 +3091,48 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_round()
+	{
+		checkTemplateOutput("True", "<?print round(42) == 42?>");
+		checkTemplateOutput("True", "<?print round(42, 1) == 42?>");
+		checkTemplateOutput("True", "<?print round(42, -1) == 40?>");
+
+		checkTemplateOutput("True", "<?print round(42.4) == 42?>");
+		checkTemplateOutput("True", "<?print round(42.6) == 43?>");
+		checkTemplateOutput("True", "<?print round(-42.4) == -42?>");
+		checkTemplateOutput("True", "<?print round(-42.6) == -43?>");
+		checkTemplateOutput("int", "<?print type(round(42.5))?>");
+
+		checkTemplateOutput("True", "<?print round(42.4, -1) == 40?>");
+		checkTemplateOutput("True", "<?print round(46.2, -1) == 50?>");
+		checkTemplateOutput("True", "<?print round(-42.4, -1) == -40?>");
+		checkTemplateOutput("True", "<?print round(-46.2, -1) == -50?>");
+		checkTemplateOutput("int", "<?print type(round(42.5, -1))?>");
+
+		checkTemplateOutput("True", "<?print round(42.987, 1) == 43.0?>");
+		checkTemplateOutput("True", "<?print round(42.123, 1) == 42.1?>");
+		checkTemplateOutput("True", "<?print round(-42.987, 1) == -43.0?>");
+		checkTemplateOutput("True", "<?print round(-42.123, 1) == -42.1?>");
+		checkTemplateOutput("True", "<?print round(42.589, 2) == 42.59?>");
+		checkTemplateOutput("True", "<?print round(42.123, 2) == 42.12?>");
+		checkTemplateOutput("True", "<?print round(-42.589, 2) == -42.59?>");
+		checkTemplateOutput("True", "<?print round(-42.123, 2) == -42.12?>");
+		checkTemplateOutput("float", "<?print type(round(42.5, 1))?>");
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	public void function_round_0_args()
+	{
+		checkTemplateOutput("", "<?print round()?>");
+	}
+
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	public void function_round_3_args()
+	{
+		checkTemplateOutput("", "<?print round(1, 2, 3)?>");
+	}
+
+	@Test
 	public void method_upper()
 	{
 		checkTemplateOutput("GURK", "<?print 'gurk'.upper()?>");

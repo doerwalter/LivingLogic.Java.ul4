@@ -337,7 +337,8 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 			"zip", new FunctionZip(),
 			"rgb", new FunctionRGB(),
 			"hls", new FunctionHLS(),
-			"hsv", new FunctionHSV()
+			"hsv", new FunctionHSV(),
+			"round", new FunctionRound()
 		);
 	}
 }
