@@ -1,3 +1,8 @@
+exp-95:
+-------
+* Fixed comparison of involving BigDecimal objects to ignore the scaled.
+
+
 exp-94-1:
 ---------
 * Added support for list(Iterable).

@@ -277,7 +277,7 @@ public class Utils
 			else if (arg2 instanceof BigInteger)
 				return toBigInteger(toInt(arg1)).equals(arg2);
 			else if (arg2 instanceof BigDecimal)
-				return new BigDecimal(toDouble(arg1)).equals(arg2);
+				return new BigDecimal(toDouble(arg1)).compareTo((BigDecimal)arg2) == 0; // We don't want ``equals``, as this would required the same scale on both numbers, for them to be equal=
 			else
 				return false;
 		}
@@ -292,7 +292,7 @@ public class Utils
 			else if (arg2 instanceof BigInteger)
 				return toBigInteger(toLong(arg1)).equals(arg2);
 			else if (arg2 instanceof BigDecimal)
-				return new BigDecimal(toDouble(arg1)).equals(arg2);
+				return new BigDecimal(toDouble(arg1)).compareTo((BigDecimal)arg2) == 0;
 			else
 				return false;
 		}
@@ -303,9 +303,9 @@ public class Utils
 			else if (arg2 instanceof Double)
 				return toDouble(arg1) == (((Double)arg2).doubleValue());
 			else if (arg2 instanceof BigInteger)
-				return new BigDecimal(toDouble(arg1)).equals(new BigDecimal((BigInteger)arg2));
+				return new BigDecimal(toDouble(arg1)).compareTo(new BigDecimal((BigInteger)arg2)) == 0;
 			else if (arg2 instanceof BigDecimal)
-				return new BigDecimal(toDouble(arg1)).equals(arg2);
+				return new BigDecimal(toDouble(arg1)).compareTo((BigDecimal)arg2) == 0;
 			else
 				return false;
 		}
@@ -315,9 +315,9 @@ public class Utils
 			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
 				return value1 == toDouble(arg2);
 			else if (arg2 instanceof BigInteger)
-				return new BigDecimal(value1).equals(new BigDecimal((BigInteger)arg2));
+				return new BigDecimal(value1).compareTo(new BigDecimal((BigInteger)arg2)) == 0;
 			else if (arg2 instanceof BigDecimal)
-				return new BigDecimal(value1).equals(arg2);
+				return new BigDecimal(value1).compareTo((BigDecimal)arg2) == 0;
 		}
 		else if (arg1 instanceof BigInteger)
 		{
@@ -327,29 +327,29 @@ public class Utils
 			else if (arg2 instanceof Long)
 				return value1.equals(toBigInteger(toLong(arg2)));
 			else if (arg2 instanceof Float)
-				return new BigDecimal(value1).equals(new BigDecimal(((Float)arg2).doubleValue()));
+				return new BigDecimal(value1).compareTo(new BigDecimal(((Float)arg2).doubleValue())) == 0;
 			else if (arg2 instanceof Double)
-				return new BigDecimal(value1).equals(new BigDecimal(((Double)arg2).doubleValue()));
+				return new BigDecimal(value1).compareTo(new BigDecimal(((Double)arg2).doubleValue())) == 0;
 			else if (arg2 instanceof BigInteger)
 				return value1.equals((BigInteger)arg2);
 			else if (arg2 instanceof BigDecimal)
-				return new BigDecimal(value1).equals((BigDecimal)arg2);
+				return new BigDecimal(value1).compareTo((BigDecimal)arg2) == 0;
 		}
 		else if (arg1 instanceof BigDecimal)
 		{
 			BigDecimal value1 = (BigDecimal)arg1;
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return value1.equals(new BigDecimal(Integer.toString(toInt(arg2))));
+				return value1.compareTo(new BigDecimal(Integer.toString(toInt(arg2)))) == 0;
 			else if (arg2 instanceof Long)
-				return value1.equals(new BigDecimal(Long.toString(toLong(arg2))));
+				return value1.compareTo(new BigDecimal(Long.toString(toLong(arg2)))) == 0;
 			else if (arg2 instanceof Float)
-				return value1.equals(new BigDecimal(((Float)arg2).doubleValue()));
+				return value1.compareTo(new BigDecimal(((Float)arg2).doubleValue())) == 0;
 			else if (arg2 instanceof Double)
-				return value1.equals(new BigDecimal(((Double)arg2).doubleValue()));
+				return value1.compareTo(new BigDecimal(((Double)arg2).doubleValue())) == 0;
 			else if (arg2 instanceof BigInteger)
-				return value1.equals(new BigDecimal((BigInteger)arg2));
+				return value1.compareTo(new BigDecimal((BigInteger)arg2)) == 0;
 			else if (arg2 instanceof BigDecimal)
-				return value1.equals(arg2);
+				return value1.compareTo((BigDecimal)arg2) == 0;
 		}
 		return arg1.equals(arg2);
 	}
