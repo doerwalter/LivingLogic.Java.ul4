@@ -140,6 +140,22 @@ public class Utils
 			throw new IllegalArgumentException("long value exceeds int");
 	}
 
+	public static BigInteger powerOfTen(int exponent)
+	{
+		if (exponent == 0)
+			return BigInteger.ONE;
+		else if (exponent == 1)
+			return BigInteger.TEN;
+		else
+		{
+			StringBuilder buffer = new StringBuilder(exponent+1);
+			buffer.append("1");
+			for (; exponent > 0;--exponent)
+				buffer.append("0");
+			return new BigInteger(buffer.toString());
+		}
+	}
+
 	public static int cmp(boolean arg1, boolean arg2)
 	{
 		return (arg1 ? 1 : 0) - (arg2 ? 1 : 0);
