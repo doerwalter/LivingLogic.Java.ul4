@@ -1,6 +1,6 @@
 exp-95:
 -------
-* Fixed comparison of involving BigDecimal objects to ignore the scaled.
+* Fixed comparisons involving BigDecimal objects to ignore the scale.
 
 
 exp-94-1:
