@@ -34,10 +34,8 @@ public class BoundStringMethodLStrip extends BoundMethod<String>
 		return StringUtils.stripStart(object, chars);
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		if (args[0] == null)
 			return call(object);
 		else if (args[0] instanceof String)

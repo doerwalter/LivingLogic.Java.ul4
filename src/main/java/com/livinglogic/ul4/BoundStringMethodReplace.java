@@ -33,10 +33,8 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 		return StringUtils.replace(object, search, replace, count);
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		if (!(args[0] instanceof String) || !(args[1] instanceof String))
 			throw new ArgumentTypeMismatchException("{}.replace({}, {})", object, args[0], args[1]);
 

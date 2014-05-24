@@ -46,10 +46,8 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 		object.putAll(kwargs);
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		call(object, (List<Object>)args[0], (Map<String, Object>)args[1]);
 		return null;
 	}

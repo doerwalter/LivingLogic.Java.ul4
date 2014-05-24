@@ -28,10 +28,8 @@ public class BoundListMethodAppend extends BoundMethod<List>
 		object.addAll(items);
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		call(object, (List<Object>)args[0]);
 		return null;
 	}

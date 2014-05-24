@@ -31,10 +31,8 @@ public class BoundUL4GetAttributesMethodValues extends BoundMethod<UL4GetAttribu
 		return new UL4GetAttributeValuesIterator(object);
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		return call(object);
 	}
 

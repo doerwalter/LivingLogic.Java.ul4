@@ -27,10 +27,8 @@ public class BoundStringMethodStartsWith extends BoundMethod<String>
 		return object.startsWith(suffix);
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		if (args[0] instanceof String)
 			return call(object, (String)args[0]);
 		throw new ArgumentTypeMismatchException("{}.startswith({})", object, args[0]);

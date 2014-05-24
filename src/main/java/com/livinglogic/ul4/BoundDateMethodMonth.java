@@ -32,10 +32,8 @@ public class BoundDateMethodMonth extends BoundMethod<Date>
 		return calendar.get(Calendar.MONTH)+1;
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		return call(object);
 	}
 }
