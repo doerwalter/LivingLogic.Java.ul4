@@ -1,6 +1,8 @@
 exp-95:
 -------
 * Fixed comparisons involving BigDecimal objects to ignore the scale.
+* Moved the code that registers the UL4 AST object for UL4ON into a static
+  method register4UL4ON().
 
 
 exp-94-1:
