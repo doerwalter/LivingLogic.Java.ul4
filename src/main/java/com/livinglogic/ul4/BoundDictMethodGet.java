@@ -30,10 +30,8 @@ public class BoundDictMethodGet extends BoundMethod<Map>
 		return result;
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		return call(object, args[0], args[1]);
 	}
 }

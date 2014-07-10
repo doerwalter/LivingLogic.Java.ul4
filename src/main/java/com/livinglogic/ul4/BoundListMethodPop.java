@@ -30,10 +30,8 @@ public class BoundListMethodPop extends BoundMethod<List>
 		return obj.remove(pos);
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		return call(object, Utils.toInt(args[0]));
 	}
 }

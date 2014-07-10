@@ -87,10 +87,8 @@ public class BoundStringMethodRSplit extends BoundMethod<String>
 		return result;
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		Object separator = args[0];
 		Object maxsplit = args[1];
 

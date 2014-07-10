@@ -27,9 +27,8 @@ public class BoundStringMethodCapitalize extends BoundMethod<String>
 		return String.valueOf(Character.toTitleCase(object.charAt(0))) + object.substring(1).toLowerCase();
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
 		return call(object);
 	}
 }

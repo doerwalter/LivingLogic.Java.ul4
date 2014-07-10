@@ -48,10 +48,8 @@ public class BoundListMethodRFind extends BoundMethod<List>
 		return pos;
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		int startIndex = args[1] != null ? Utils.toInt(args[1]) : 0;
 		int endIndex = args[2] != null ? Utils.toInt(args[2]) : object.size();
 

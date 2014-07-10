@@ -27,9 +27,8 @@ public class BoundStringMethodLower extends BoundMethod<String>
 		return object.toLowerCase();
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
 		return call(object);
 	}
 }

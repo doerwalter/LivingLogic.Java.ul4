@@ -35,10 +35,8 @@ public class BoundDateMethodWeek extends BoundMethod<Date>
 		return yearday/7;
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		return call(object, args[0] == null ? 0 : Utils.toInt(args[0]));
 	}
 }

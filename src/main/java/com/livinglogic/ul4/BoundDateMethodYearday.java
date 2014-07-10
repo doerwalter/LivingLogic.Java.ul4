@@ -32,10 +32,8 @@ public class BoundDateMethodYearday extends BoundMethod<Date>
 		return calendar.get(Calendar.DAY_OF_YEAR);
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		return call(object);
 	}
 }

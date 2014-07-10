@@ -35,10 +35,8 @@ public class BoundUL4GetItemStringMethodGet extends BoundMethod<UL4GetItemString
 			return defaultValue;
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		return call(object, args[0], args[1]);
 	}
 }

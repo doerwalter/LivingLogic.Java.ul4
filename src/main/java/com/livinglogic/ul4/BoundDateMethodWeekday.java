@@ -47,10 +47,8 @@ public class BoundDateMethodWeekday extends BoundMethod<Date>
 		return weekdays.get(calendar.get(Calendar.DAY_OF_WEEK));
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		return call(object);
 	}
 }

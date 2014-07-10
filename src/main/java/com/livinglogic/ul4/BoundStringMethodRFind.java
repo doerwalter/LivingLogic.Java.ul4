@@ -49,10 +49,8 @@ public class BoundStringMethodRFind extends BoundMethod<String>
 		return result;
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(Object[] args)
 	{
-		args = signature.makeArgumentArray(args, kwargs);
-
 		if (args[0] instanceof String)
 		{
 			int startIndex = args[1] != null ? Utils.toInt(args[1]) : 0;

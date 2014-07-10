@@ -6,6 +6,9 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
+
+
 public abstract class BoundMethod<T> implements UL4Call, UL4Name, UL4Repr
 {
 	protected T object = null;
@@ -21,6 +24,13 @@ public abstract class BoundMethod<T> implements UL4Call, UL4Name, UL4Repr
 	{
 		return getSignature().getName();
 	}
+
+	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	{
+		return callUL4(getSignature().makeArgumentArray(args, kwargs));
+	}
+
+	public abstract Object callUL4(Object[] args);
 
 	public String reprUL4()
 	{
