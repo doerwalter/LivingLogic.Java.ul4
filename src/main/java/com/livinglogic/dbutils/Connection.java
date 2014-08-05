@@ -135,7 +135,7 @@ public class Connection implements UL4GetAttributes
 		{
 			if (!(args[0] instanceof String))
 				throw new UnsupportedOperationException("query must be string, not " + Utils.objectType(args[0]) + "!");
-			return object.query(context, (String)args[0], (List)args[1], (Map<String, Object>)args[2]);
+			return object.queryargs(context, (String)args[0], (List)args[1], (Map<String, Object>)args[2]);
 		}
 	}
 

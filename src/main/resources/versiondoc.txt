@@ -1,3 +1,9 @@
+exp-95-1:
+-------
+* Fixed UL4 implementation of queryargs() method in
+  com.livinglogic.dbutils.Connection.
+
+
 exp-95:
 -------
 * Fixed comparisons involving BigDecimal objects to ignore the scale.
