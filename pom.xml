@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.livinglogic</groupId>
 	<artifactId>ul4</artifactId>
-	<version>0.95.1</version>
+	<version>0.95.2</version>
 	<packaging>jar</packaging>
 	<name>UL4</name>
 	<description>Java implementation of the UL4 templating language</description>

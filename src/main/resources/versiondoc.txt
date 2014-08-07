@@ -1,3 +1,9 @@
+exp-95-2:
+-------
+* Speed up FunctionAsJSON: Instead of creating many temporary strings, the code
+  now formats the complete object into a StringBuilder.
+
+
 exp-95-1:
 -------
 * Fixed UL4 implementation of queryargs() method in

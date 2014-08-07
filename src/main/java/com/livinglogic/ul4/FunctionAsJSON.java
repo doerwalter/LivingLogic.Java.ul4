@@ -37,34 +37,32 @@ public class FunctionAsJSON extends Function
 		return call(args[0]);
 	}
 
-	public static String call(Object obj)
+	private static void call(StringBuilder builder, Object obj)
 	{
 		if (obj == null)
-			return "null";
+			builder.append("null");
 		else if (obj instanceof Boolean)
-			return ((Boolean)obj).booleanValue() ? "true" : "false";
+			builder.append(((Boolean)obj).booleanValue() ? "true" : "false");
 		else if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Long || obj instanceof BigInteger || obj instanceof Double || obj instanceof Float)
-			return obj.toString();
+			builder.append(obj.toString());
 		else if (obj instanceof BigDecimal)
 		{
 			String result = obj.toString();
+			builder.append(result);
 			if (result.indexOf('.') < 0 || result.indexOf('E') < 0 || result.indexOf('e') < 0)
-				result += ".0";
-			return result;
+				builder.append(".0");
 		}
 		else if (obj instanceof String)
-			// We're using StringEscapeUtils.escapeJava() here, which is the same as escapeJavaScript, except that it doesn't escape ' (which is illegal in JSON strings according to json.org)
-			return new StringBuilder()
+			builder
 				.append("\"")
+				// We're using StringEscapeUtils.escapeJava() here, which is the same as escapeJavaScript, except that it doesn't escape ' (which is illegal in JSON strings according to json.org)
 				.append(StringEscapeUtils.escapeJava(((String)obj)))
-				.append("\"")
-				.toString();
+				.append("\"");
 		else if (obj instanceof Date)
 		{
 			Calendar calendar = new GregorianCalendar();
 			calendar.setTime((Date)obj);
-			StringBuilder buffer = new StringBuilder();
-			buffer
+			builder
 				.append("new Date(")
 				.append(calendar.get(Calendar.YEAR))
 				.append(", ")
@@ -80,25 +78,27 @@ public class FunctionAsJSON extends Function
 			int milliSeconds = calendar.get(Calendar.MILLISECOND);
 			if (milliSeconds != 0)
 			{
-				buffer.append(", ").append(milliSeconds);
+				builder.append(", ").append(milliSeconds);
 			}
-			buffer.append(")");
-			return buffer.toString();
+			builder.append(")");
 		}
 		else if (obj instanceof InterpretedTemplate)
 		{
-			String dump = StringEscapeUtils.escapeJavaScript(((InterpretedTemplate)obj).dumps());
-			return new StringBuilder().append("ul4.Template.loads(\"").append(dump).append("\")").toString();
+			builder
+				.append("ul4.Template.loads(\"")
+				.append(StringEscapeUtils.escapeJavaScript(((InterpretedTemplate)obj).dumps()))
+				.append("\")");
 		}
 		else if (obj instanceof TemplateClosure)
 		{
-			String dump = StringEscapeUtils.escapeJavaScript(((TemplateClosure)obj).getTemplate().dumps());
-			return new StringBuilder().append("ul4.Template.loads(\"").append(dump).append("\")").toString();
+			builder
+				.append("ul4.Template.loads(\"")
+				.append(StringEscapeUtils.escapeJavaScript(((TemplateClosure)obj).getTemplate().dumps()))
+				.append("\")");
 		}
 		else if (obj instanceof UL4Attributes)
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.append("{");
+			builder.append("{");
 			boolean first = true;
 			Set<String> attributeNames = ((UL4Attributes)obj).getAttributeNamesUL4();
 			for (String attributeName : attributeNames)
@@ -106,19 +106,18 @@ public class FunctionAsJSON extends Function
 				if (first)
 					first = false;
 				else
-					sb.append(", ");
-				sb.append(call(attributeName));
-				sb.append(": ");
+					builder.append(", ");
+				call(builder, attributeName);
+				builder.append(": ");
 				Object value = ((UL4Attributes)obj).getItemStringUL4(attributeName);
-				sb.append(call(value));
+				call(builder, value);
 			}
-			sb.append("}");
-			return sb.toString();
+			builder.append("}");
 		}
 		else if (obj instanceof Color)
 		{
 			Color c = (Color)obj;
-			return new StringBuilder()
+			builder
 				.append("ul4.Color.create(")
 				.append(c.getR())
 				.append(", ")
@@ -127,45 +126,39 @@ public class FunctionAsJSON extends Function
 				.append(c.getB())
 				.append(", ")
 				.append(c.getA())
-				.append(")")
-				.toString();
+				.append(")");
 		}
 		else if (obj instanceof Collection)
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.append("[");
+			builder.append("[");
 			boolean first = true;
 			for (Object o : (Collection)obj)
 			{
 				if (first)
 					first = false;
 				else
-					sb.append(", ");
-				sb.append(call(o));
+					builder.append(", ");
+				call(builder, o);
 			}
-			sb.append("]");
-			return sb.toString();
+			builder.append("]");
 		}
 		else if (obj instanceof Object[])
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.append("[");
+			builder.append("[");
 			boolean first = true;
 			for (Object o : (Object[])obj)
 			{
 				if (first)
 					first = false;
 				else
-					sb.append(", ");
-				sb.append(call(o));
+					builder.append(", ");
+				call(builder, o);
 			}
-			sb.append("]");
-			return sb.toString();
+			builder.append("]");
 		}
 		else if (obj instanceof Map)
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.append("{");
+			builder.append("{");
 			boolean first = true;
 			Set<Map.Entry> entrySet = ((Map)obj).entrySet();
 			for (Map.Entry entry : entrySet)
@@ -173,14 +166,19 @@ public class FunctionAsJSON extends Function
 				if (first)
 					first = false;
 				else
-					sb.append(", ");
-				sb.append(call(entry.getKey()));
-				sb.append(": ");
-				sb.append(call(entry.getValue()));
+					builder.append(", ");
+				call(builder, entry.getKey());
+				builder.append(": ");
+				call(builder, entry.getValue());
 			}
-			sb.append("}");
-			return sb.toString();
+			builder.append("}");
 		}
-		return null;
+	}
+
+	public static String call(Object obj)
+	{
+		StringBuilder builder = new StringBuilder();
+		call(builder, obj);
+		return builder.toString();
 	}
 }
