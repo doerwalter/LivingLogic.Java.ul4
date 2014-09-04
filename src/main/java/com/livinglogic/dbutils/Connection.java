@@ -70,7 +70,6 @@ public class Connection implements UL4GetAttributes
 	{
 		StringBuilder query = new StringBuilder();
 		ArrayList<Object> parameters = new ArrayList<Object>(args.length/2);
-		int pos = 0;
 		int i = 0;
 		for (Object arg : args)
 		{
@@ -92,7 +91,7 @@ public class Connection implements UL4GetAttributes
 		try
 		{
 			stmt = connection.prepareCall(query.toString());
-			pos = 1;
+			int pos = 1;
 			for (Object parameter : parameters)
 				stmt.setObject(pos++, parameter);
 			if (closeableRegistry != null)
