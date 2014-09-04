@@ -66,13 +66,6 @@ public class Connection implements UL4GetAttributes
 		return queryargs(null, query, args, kwargs);
 	}
 
-	private Signature queryargsSignature = new Signature(
-		"queryargs",
-		"query", Signature.required,
-		"args", Signature.remainingArguments,
-		"kwargs", Signature.remainingKeywordArguments
-	);
-
 	public Iterable<Map<String, Object>> query(CloseableRegistry closeableRegistry, Object... args)
 	{
 		StringBuilder query = new StringBuilder();
