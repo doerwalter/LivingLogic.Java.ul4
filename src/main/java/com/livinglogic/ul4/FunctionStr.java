@@ -57,7 +57,7 @@ public class FunctionStr extends Function
 		else if (obj instanceof BigDecimal)
 		{
 			String result = obj.toString();
-			if (result.indexOf('.') < 0 || result.indexOf('E') < 0 || result.indexOf('e') < 0)
+			if (result.indexOf('.') < 0 && result.indexOf('E') < 0 && result.indexOf('e') < 0)
 				result += ".0";
 			return result;
 		}
