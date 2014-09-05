@@ -13,6 +13,6 @@ public class ReadonlyException extends RuntimeException
 {
 	public ReadonlyException(Object key)
 	{
-		super("Attribute '" + key + "' is readonly!");
+		super("Attribute '" + key + "' can't be set!");
 	}
 }

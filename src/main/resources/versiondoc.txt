@@ -1,3 +1,14 @@
+exp-96:
+-------
+* com.livinglogic.dbutils.Connection now has a new method execute() for\
+  executing database code that doesn't return a ResultSet.
+* com.livinglogic.dbutils.Connection has new methods int(), number(), str(),
+  clob() and date() that returns variable objects that can be used in query(),
+  queryargs() and execute() to receive out parameters. The value returned is
+  available in the value attribute.
+* com.livinglogic.dbutils.Connection.queryargs() no longer supports keyword
+  arguments.
+
 exp-95-2:
 -------
 * Speed up FunctionAsJSON: Instead of creating many temporary strings, the code

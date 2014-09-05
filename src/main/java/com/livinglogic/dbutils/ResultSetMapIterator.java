@@ -101,7 +101,10 @@ public class ResultSetMapIterator implements Iterator<Map<String, Object>>
 				nextRecord = record;
 			}
 			else
+			{
 				nextRecord = null;
+				resultSet.close();
+			}
 		}
 		catch (Exception ex)
 		{

@@ -8,6 +8,6 @@ package com.livinglogic.ul4;
 
 import java.util.Set;
 
-public interface UL4GetSetAttributes extends UL4GetAttributes, UL4GetItemString
+public interface UL4GetSetAttributes extends UL4GetAttributes, UL4SetItemString
 {
 }

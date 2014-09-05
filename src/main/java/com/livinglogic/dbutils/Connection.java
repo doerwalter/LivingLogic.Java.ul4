@@ -6,12 +6,14 @@
 
 package com.livinglogic.dbutils;
 
-import java.sql.CallableStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Iterator;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.Signature;
@@ -19,9 +21,11 @@ import com.livinglogic.ul4.ArgumentException;
 import com.livinglogic.ul4.Utils;
 import com.livinglogic.ul4.UL4GetAttributes;
 import com.livinglogic.ul4.BoundMethodWithContext;
+import com.livinglogic.ul4.BoundMethod;
 import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.utils.Closeable;
 import com.livinglogic.utils.CloseableRegistry;
+import com.livinglogic.dbutils.IntVar;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
@@ -34,42 +38,42 @@ public class Connection implements UL4GetAttributes
 		this.connection = connection;
 	}
 
-	public Iterable<Map<String, Object>> queryargs(CloseableRegistry closeableRegistry, String query, List args, Map<String, Object> kwargs)
+	public Iterator<Map<String, Object>> queryargs(CloseableRegistry closeableRegistry, String query, List args)
 	{
-		final CallableStatement stmt;
+		final CallableStatement statement;
+		final ResultSet resultSet;
 		try
 		{
-			stmt = connection.prepareCall(query);
-			int pos = 1;
-			if (args != null)
-			{
-				for (Object arg : args)
-					stmt.setObject(pos++, arg);
-			}
-			if (kwargs != null)
-			{
-				for (String key : kwargs.keySet())
-					stmt.setObject(key, kwargs.get(key));
-			}
+			statement = connection.prepareCall(query);
+
+			registerParameters(statement, args);
+
 			if (closeableRegistry != null)
-				closeableRegistry.registerCloseable(new Closeable() { public void close() {try { stmt.close(); } catch (SQLException ex) {} } } );
+				closeableRegistry.registerCloseable(new Closeable() { public void close() {try { statement.close(); } catch (SQLException ex) {} } } );
+
+			resultSet = statement.executeQuery();
+
+			if (closeableRegistry != null)
+				closeableRegistry.registerCloseable(new Closeable() { public void close() {try { resultSet.close(); } catch (SQLException ex) {} } } );
+
+			fetchParameters(statement, args);
 		}
 		catch (SQLException ex)
 		{
 			throw new RuntimeException(ex);
 		}
-		return new IterableStatement(closeableRegistry, stmt);
+		return new ResultSetMapIterator(resultSet);
 	}
 
-	public Iterable<Map<String, Object>> queryargs(String query, List args, Map<String, Object> kwargs)
+	public Iterator<Map<String, Object>> queryargs(String query, List args)
 	{
-		return queryargs(null, query, args, kwargs);
+		return queryargs(null, query, args);
 	}
 
-	public Iterable<Map<String, Object>> query(CloseableRegistry closeableRegistry, Object... args)
+	public Iterator<Map<String, Object>> query(CloseableRegistry closeableRegistry, List args)
 	{
 		StringBuilder query = new StringBuilder();
-		ArrayList<Object> parameters = new ArrayList<Object>(args.length/2);
+		ArrayList<Object> parameters = new ArrayList<Object>(args.size()/2);
 		int i = 0;
 		for (Object arg : args)
 		{
@@ -87,31 +91,114 @@ public class Connection implements UL4GetAttributes
 			++i;
 		}
 
-		final CallableStatement stmt;
+		final CallableStatement statement;
+		final ResultSet resultSet;
 		try
 		{
-			stmt = connection.prepareCall(query.toString());
-			int pos = 1;
-			for (Object parameter : parameters)
-				stmt.setObject(pos++, parameter);
+			statement = connection.prepareCall(query.toString());
+
 			if (closeableRegistry != null)
-				closeableRegistry.registerCloseable(new Closeable() { public void close() {try { stmt.close(); } catch (SQLException ex) {} } } );
+				closeableRegistry.registerCloseable(new Closeable() { public void close() {try { statement.close(); } catch (SQLException ex) {} } } );
+
+			registerParameters(statement, parameters);
+
+			resultSet = statement.executeQuery();
+
+			if (closeableRegistry != null)
+				closeableRegistry.registerCloseable(new Closeable() { public void close() {try { resultSet.close(); } catch (SQLException ex) {} } } );
+
+			fetchParameters(statement, parameters);
+
+			return new ResultSetMapIterator(resultSet);
 		}
 		catch (SQLException ex)
 		{
 			throw new RuntimeException(ex);
 		}
-		return new IterableStatement(closeableRegistry, stmt);
 	}
 
-	public Iterable<Map<String, Object>> query(Object... args)
+	public Iterator<Map<String, Object>> query(List args)
 	{
 		return query((CloseableRegistry)null, args);
 	}
 
+	public void execute(CloseableRegistry closeableRegistry, List args)
+	{
+		StringBuilder query = new StringBuilder();
+		ArrayList<Object> parameters = new ArrayList<Object>(args.size()/2);
+		int i = 0;
+		for (Object arg : args)
+		{
+			if (i % 2 == 0)
+			{
+				if (!(arg instanceof String))
+					throw new ArgumentException("query part must be string, not " + Utils.objectType(arg));
+				query.append((String)arg);
+			}
+			else
+			{
+				query.append("?");
+				parameters.add(arg);
+			}
+			++i;
+		}
+
+		final CallableStatement statement;
+		try
+		{
+			statement = connection.prepareCall(query.toString());
+			try
+			{
+				registerParameters(statement, parameters);
+
+				statement.execute();
+
+				fetchParameters(statement, parameters);
+			}
+			finally
+			{
+				statement.close();
+			}
+		}
+		catch (SQLException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+	}
+
+	private static void registerParameters(CallableStatement statement, List parameters) throws SQLException
+	{
+		if (parameters != null)
+		{
+			int pos = 1;
+			for (Object parameter : parameters)
+			{
+				if (parameter instanceof Var)
+					((Var)parameter).register(statement, pos);
+				else
+					statement.setObject(pos, parameter);
+				++pos;
+			}
+		}
+	}
+
+	private static void fetchParameters(CallableStatement statement, List parameters) throws SQLException
+	{
+		if (parameters != null)
+		{
+			int pos = 1;
+			for (Object parameter : parameters)
+			{
+				if (parameter instanceof Var)
+					((Var)parameter).fetch(statement, pos);
+				++pos;
+			}
+		}
+	}
+
 	private static class BoundMethodQueryArgs extends BoundMethodWithContext<Connection>
 	{
-		private static final Signature signature = new Signature("queryargs", "query", Signature.required, "args", Signature.remainingArguments, "kwargs", Signature.remainingKeywordArguments);
+		private static final Signature signature = new Signature("queryargs", "query", Signature.required, "args", Signature.remainingArguments);
 
 		public BoundMethodQueryArgs(Connection object)
 		{
@@ -127,7 +214,7 @@ public class Connection implements UL4GetAttributes
 		{
 			if (!(args[0] instanceof String))
 				throw new UnsupportedOperationException("query must be string, not " + Utils.objectType(args[0]) + "!");
-			return object.queryargs(context, (String)args[0], (List)args[1], (Map<String, Object>)args[2]);
+			return object.queryargs(context, (String)args[0], (List)args[1]);
 		}
 	}
 
@@ -147,10 +234,32 @@ public class Connection implements UL4GetAttributes
 
 		public Object callUL4(EvaluationContext context, Object[] args)
 		{
-			return object.query(context, args);
+			return object.query(context, (List)args[0]);
 		}
 	}
-	protected static Set<String> attributes = makeSet("queryargs", "query");
+
+	private static class BoundMethodExecute extends BoundMethodWithContext<Connection>
+	{
+		private static final Signature signature = new Signature("execute", "args", Signature.remainingArguments);
+
+		public BoundMethodExecute(Connection object)
+		{
+			super(object);
+		}
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object callUL4(EvaluationContext context, Object[] args)
+		{
+			object.execute(context, (List)args[0]);
+			return null;
+		}
+	}
+
+	protected static Set<String> attributes = makeSet("queryargs", "query", "execute", "int", "number", "str", "clob", "date");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -163,6 +272,18 @@ public class Connection implements UL4GetAttributes
 			return new BoundMethodQueryArgs(this);
 		else if ("query".equals(key))
 			return new BoundMethodQuery(this);
+		else if ("execute".equals(key))
+			return new BoundMethodExecute(this);
+		else if ("int".equals(key))
+			return IntVar.function;
+		else if ("number".equals(key))
+			return NumberVar.function;
+		else if ("str".equals(key))
+			return StrVar.function;
+		else if ("clob".equals(key))
+			return CLOBVar.function;
+		else if ("date".equals(key))
+			return DateVar.function;
 		else
 			return new UndefinedKey(key);
 	}

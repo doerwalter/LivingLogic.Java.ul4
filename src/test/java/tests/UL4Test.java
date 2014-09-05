@@ -15,10 +15,14 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.Set;
 import java.util.Iterator;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
@@ -35,7 +39,7 @@ import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.ul4.UL4GetAttributes;
-
+import com.livinglogic.dbutils.Connection;
 
 @RunWith(CauseTestRunner.class)
 public class UL4Test
@@ -195,6 +199,27 @@ public class UL4Test
 		// Check that they have the same output
 		Object output2 = template2.call(makeMap(args));
 		assertEquals(expected, output2);
+	}
+
+	public com.livinglogic.dbutils.Connection getDatabaseConnection()
+	{
+		String env = System.getenv("LL_JAVA_TEST_CONNECT");
+		if (env == null)
+			throw new RuntimeException("Environment variable LL_JAVA_TEST_CONNECT required: format 'oracle.jdbc.driver.OracleDriver jdbc:oracle:thin:@host:1521:sid username password'");
+		String[] connectionInfo = StringUtils.splitByWholeSeparator(env, null);
+		try
+		{
+			Class.forName(connectionInfo[0]);
+			return new Connection(java.sql.DriverManager.getConnection(connectionInfo[1], connectionInfo[2], connectionInfo[3]));
+		}
+		catch (ClassNotFoundException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+		catch (SQLException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 
 	@Test
@@ -3954,5 +3979,118 @@ public class UL4Test
 			expected.append(li);
 
 		assertEquals(buffer.toString(), expected.toString());
+	}
+
+	@Test
+	public void db_query() throws Exception
+	{
+		String source = 
+			"<?code db.execute('create table ul4test(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" + 
+			"<?code db.execute('insert into ul4test values(1, ', 'first', ', ', 10000*'first', ')')?>\n" + 
+			"<?code db.execute('insert into ul4test values(2, ', 'second', ', ', 10000*'second', ')')?>\n" + 
+			"<?for row in db.query('select * from ul4test order by ul4_int')?>\n" + 
+				"<?print row.ul4_int?>|\n" +
+				"<?print row.ul4_char?>|\n" +
+				"<?print row.ul4_clob?>|\n" +
+			"<?end for?>\n" +
+			"<?code db.execute('drop table ul4test')?>\n"
+		;
+
+		Connection db = getDatabaseConnection();
+
+		if (db != null)
+		{
+			checkTemplateOutput(
+				"1|first|" + StringUtils.repeat("first", 10000) + "|2|second|" + StringUtils.repeat("second", 10000) + "|",
+				source,
+				"db",
+				db
+			);
+		}
+	}
+
+	@Test
+	public void db_execute_function() throws Exception
+	{
+		String source = 
+			"<?code db.execute('create or replace function ul4test(p_arg integer) return integer as begin return 2*p_arg; end;')?>\n" + 
+			"<?code vin = db.int(42)?>\n" + 
+			"<?code vout = db.int()?>\n" + 
+			"<?code db.execute('begin ', vout, ' := ul4test(', vin, '); end;')?>\n" + 
+			"<?print vout.value?>" +
+			"<?code db.execute('drop function ul4test')?>\n"
+		;
+
+		Connection db = getDatabaseConnection();
+
+		if (db != null)
+			checkTemplateOutput("84", source, "db", db);
+	}
+
+	@Test
+	public void db_execute_procedure_out() throws Exception
+	{
+		String source = 
+			"<?code db.execute('''\n" +
+			" create or replace procedure ul4test(p_intarg out integer, p_numberarg out number, p_strarg out varchar2, p_clobarg out clob, p_datearg out timestamp)" +
+			" as\n" +
+			" begin\n" +
+			"  p_intarg := 42;\n" +
+			"  p_numberarg := 42.5;\n" +
+			"  p_strarg := 'foo';\n" +
+			"  dbms_lob.createtemporary(p_clobarg, true);\n" +
+			"  for i in 1..100000 loop\n" +
+			"   dbms_lob.writeappend(p_clobarg, 3, 'foo');\n" +
+			"  end loop;\n" + 
+			"  p_datearg := to_date('05.10.2014 16:17:18', 'DD.MM.YYYY HH24:MI:SS');\n" + 
+			" end;\n" + 
+			"''')?>\n" + 
+			"<?code vint = db.int()?>\n" + 
+			"<?code vnumber = db.number(42.5)?>\n" + 
+			"<?code vstr = db.str()?>\n" + 
+			"<?code vclob = db.clob()?>\n" + 
+			"<?code vdate = db.date()?>\n" + 
+			"<?code db.execute('call ul4test(', vint, ', ', vnumber, ', ', vstr, ', ', vclob, ', ', vdate, ')')?>\n" + 
+			"<?print vint.value?>|<?print vnumber.value?>|<?print vstr.value?>|<?print vclob.value?>|<?print vdate.value?>" +
+			"<?code db.execute('drop procedure ul4test')?>\n"
+		;
+
+		Connection db = getDatabaseConnection();
+
+		if (db != null)
+			checkTemplateOutput("42|42.5|foo|" + StringUtils.repeat("foo", 100000) + "|2014-10-05 16:17:18", source, "db", db);
+	}
+
+	@Test
+	public void db_execute_procedure_inout() throws Exception
+	{
+		String source = 
+			"<?code db.execute('''\n" +
+			" create or replace procedure ul4test(p_intarg in out integer, p_numberarg in out number, p_strarg in out varchar2, p_clobarg in out nocopy clob, p_datearg in out timestamp)\n" +
+			" as\n" +
+			" begin\n" +
+			"  p_intarg := 2*p_intarg;\n" +
+			"  p_numberarg := 2*p_numberarg;\n" +
+			"  p_strarg := upper(p_strarg);\n" +
+			"  for i in 0..99999 loop\n" +
+			"   dbms_lob.write(p_clobarg, 3, 3*i+1, upper(dbms_lob.substr(p_clobarg, 3, 3*i+1)));\n" +
+			"  end loop;\n" + 
+			"  p_datearg := p_datearg + 1 + 1/24 + 1/24/60 + 1/24/60/60;\n" + 
+			" end;\n" +
+			"''')?>\n" + 
+			"<?code vint = db.int(42)?>\n" + 
+			"<?code vnumber = db.number(42.25)?>\n" + 
+			"<?code vstr = db.str('foo')?>\n" + 
+			"<?code vclob = db.clob(100000*'foo')?>\n" + 
+			"<?code vdate = db.date(@(2014-10-05T16:17:18))?>\n" + 
+			"<?code db.execute('call ul4test(', vint, ', ', vnumber, ', ', vstr, ', ', vclob, ', ', vdate, ')')?>\n" + 
+			"<?print vint.value?>|<?print vnumber.value?>|<?print vstr.value?>|<?print vclob.value?>|<?print vdate.value?>" +
+			"<?code db.execute('drop procedure ul4test')?>\n"
+		;
+
+		Connection db = getDatabaseConnection();
+
+		if (db != null)
+			checkTemplateOutput("84|84.5|FOO|" + StringUtils.repeat("FOO", 100000) + "|2014-10-06 17:18:19", source, "db", db);
 	}
 }
