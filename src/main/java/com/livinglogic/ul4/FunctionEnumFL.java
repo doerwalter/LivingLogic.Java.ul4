@@ -16,7 +16,7 @@ public class FunctionEnumFL extends Function
 		return "enumfl";
 	}
 
-	private Signature signature = new Signature("enumfl", "iterable", Signature.required, "start", 0);
+	private static final Signature signature = new Signature("iterable", Signature.required, "start", 0);
 
 	public Signature getSignature()
 	{

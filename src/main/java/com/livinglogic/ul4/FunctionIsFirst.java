@@ -16,7 +16,7 @@ public class FunctionIsFirst extends Function
 		return "isfirst";
 	}
 
-	private Signature signature = new Signature("isfirst", "iterable", Signature.required);
+	private static final Signature signature = new Signature("iterable", Signature.required);
 
 	public Signature getSignature()
 	{

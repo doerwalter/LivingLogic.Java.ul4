@@ -15,7 +15,6 @@ import java.util.Map;
 
 public class Signature implements Iterable<ArgumentDescription>
 {
-	protected String name;
 	protected LinkedHashMap<String, ArgumentDescription> arguments;
 	protected String remainingArgumentsName;
 	protected String remainingKeywordArgumentsName;
@@ -27,9 +26,8 @@ public class Signature implements Iterable<ArgumentDescription>
 	public static Object remainingArguments = new Object();
 	public static Object remainingKeywordArguments = new Object();
 
-	public Signature(String name, Object... args)
+	public Signature(Object... args)
 	{
-		this.name = name;
 		arguments = new LinkedHashMap<String, ArgumentDescription>();
 		this.remainingArgumentsName = null;
 		this.remainingKeywordArgumentsName = null;
@@ -51,11 +49,6 @@ public class Signature implements Iterable<ArgumentDescription>
 					add(argname, args[i]);
 			}
 		}
-	}
-
-	public String getName()
-	{
-		return name;
 	}
 
 	public void add(String name)
@@ -83,7 +76,7 @@ public class Signature implements Iterable<ArgumentDescription>
 		return arguments.containsKey(argName);
 	}
 
-	public Object[] makeArgumentArray(Object[] args, Map<String, Object> kwargs)
+	public Object[] makeArgumentArray(UL4Name object, Object[] args, Map<String, Object> kwargs)
 	{
 		int realSize = size();
 		int remainingArgumentsPos = -1;
@@ -105,7 +98,7 @@ public class Signature implements Iterable<ArgumentDescription>
 			{
 				if (i < args.length)
 					// argument has been specified as a positional argument too
-					throw new DuplicateArgumentException(this, argDesc);
+					throw new DuplicateArgumentException(object, argDesc);
 				realargs[i] = argValue;
 			}
 			else
@@ -117,7 +110,7 @@ public class Signature implements Iterable<ArgumentDescription>
 					// we have a default value for this argument
 					realargs[i] = argDesc.getDefaultValue();
 				else
-					throw new MissingArgumentException(this, argDesc);
+					throw new MissingArgumentException(object, argDesc);
 			}
 			++i;
 		}
@@ -132,7 +125,7 @@ public class Signature implements Iterable<ArgumentDescription>
 		else
 		{
 			if (args.length > expectedArgCount)
-				throw new TooManyArgumentsException(this, args.length);
+				throw new TooManyArgumentsException(object, this, args.length);
 		}
 
 		// Handle additional keyword arguments
@@ -154,7 +147,7 @@ public class Signature implements Iterable<ArgumentDescription>
 			for (String kwargname : kwargs.keySet())
 			{
 				if (!containsArgumentNamed(kwargname))
-					throw new UnsupportedArgumentNameException(this, kwargname);
+					throw new UnsupportedArgumentNameException(object, kwargname);
 			}
 		}
 

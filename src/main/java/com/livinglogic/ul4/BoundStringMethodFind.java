@@ -10,12 +10,17 @@ import java.util.Map;
 
 public class BoundStringMethodFind extends BoundMethod<String>
 {
-	private static final Signature signature = new Signature("find", "sub", Signature.required, "start", null, "end", null);
-
 	public BoundStringMethodFind(String object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "str.find";
+	}
+
+	private static final Signature signature = new Signature("sub", Signature.required, "start", null, "end", null);
 
 	public Signature getSignature()
 	{
@@ -43,7 +48,7 @@ public class BoundStringMethodFind extends BoundMethod<String>
 		return result;
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		if (args[0] instanceof String)
 		{

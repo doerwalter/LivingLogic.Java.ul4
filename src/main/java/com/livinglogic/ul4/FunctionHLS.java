@@ -14,7 +14,7 @@ public class FunctionHLS extends Function
 		return "hls";
 	}
 
-	private static Signature signature = new Signature("color.hls", "h", Signature.required, "l", Signature.required, "s", Signature.required, "a", 1.0);
+	private static final Signature signature = new Signature("h", Signature.required, "l", Signature.required, "s", Signature.required, "a", 1.0);
 
 	public Signature getSignature()
 	{

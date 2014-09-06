@@ -14,16 +14,14 @@ import java.util.Map;
 
 public class BoundDateMethodWeekday extends BoundMethod<Date>
 {
-	private static final Signature signature = new Signature("weekday");
-
 	public BoundDateMethodWeekday(Date object)
 	{
 		super(object);
 	}
 
-	public Signature getSignature()
+	public String nameUL4()
 	{
-		return signature;
+		return "date.weekday";
 	}
 
 	private static HashMap<Integer, Integer> weekdays;
@@ -47,7 +45,7 @@ public class BoundDateMethodWeekday extends BoundMethod<Date>
 		return weekdays.get(calendar.get(Calendar.DAY_OF_WEEK));
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object);
 	}

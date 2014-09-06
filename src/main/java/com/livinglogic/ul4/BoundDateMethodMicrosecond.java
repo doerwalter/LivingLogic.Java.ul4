@@ -13,16 +13,14 @@ import java.util.Map;
 
 public class BoundDateMethodMicrosecond extends BoundMethod<Date>
 {
-	private static final Signature signature = new Signature("microsecond");
-
 	public BoundDateMethodMicrosecond(Date object)
 	{
 		super(object);
 	}
 
-	public Signature getSignature()
+	public String nameUL4()
 	{
-		return signature;
+		return "date.microsecond";
 	}
 
 	public static int call(Date obj)
@@ -32,7 +30,7 @@ public class BoundDateMethodMicrosecond extends BoundMethod<Date>
 		return calendar.get(Calendar.MILLISECOND)*1000;
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object);
 	}

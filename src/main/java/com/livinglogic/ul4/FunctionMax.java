@@ -16,7 +16,7 @@ public class FunctionMax extends Function
 		return "max";
 	}
 
-	private Signature signature = new Signature("max", "args", Signature.remainingArguments);
+	private static final Signature signature = new Signature("args", Signature.remainingArguments);
 
 	public Signature getSignature()
 	{

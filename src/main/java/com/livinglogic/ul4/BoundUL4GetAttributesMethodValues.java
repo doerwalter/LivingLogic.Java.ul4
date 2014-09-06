@@ -14,16 +14,14 @@ import java.util.Map;
 
 public class BoundUL4GetAttributesMethodValues extends BoundMethod<UL4GetAttributes>
 {
-	private static final Signature signature = new Signature("values");
-
 	public BoundUL4GetAttributesMethodValues(UL4GetAttributes object)
 	{
 		super(object);
 	}
 
-	public Signature getSignature()
+	public String nameUL4()
 	{
-		return signature;
+		return "object.values";
 	}
 
 	public static Object call(UL4GetAttributes object)
@@ -31,7 +29,7 @@ public class BoundUL4GetAttributesMethodValues extends BoundMethod<UL4GetAttribu
 		return new UL4GetAttributeValuesIterator(object);
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object);
 	}

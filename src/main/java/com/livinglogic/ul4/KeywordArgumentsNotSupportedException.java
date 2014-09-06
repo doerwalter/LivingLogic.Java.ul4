@@ -16,8 +16,8 @@ public class KeywordArgumentsNotSupportedException extends ArgumentException
 		super(name + "() doesn't support keyword arguments");
 	}
 
-	public KeywordArgumentsNotSupportedException(Signature signature)
+	public KeywordArgumentsNotSupportedException(UL4Name object)
 	{
-		this(signature.getName());
+		this(object.nameUL4());
 	}
 }

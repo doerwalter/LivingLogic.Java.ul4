@@ -11,12 +11,17 @@ import java.util.Map;
 
 public class BoundListMethodAppend extends BoundMethod<List>
 {
-	private static final Signature signature = new Signature("append", "items", Signature.remainingArguments);
-
 	public BoundListMethodAppend(List object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "list.append";
+	}
+
+	private static final Signature signature = new Signature("items", Signature.remainingArguments);
 
 	public Signature getSignature()
 	{
@@ -28,7 +33,7 @@ public class BoundListMethodAppend extends BoundMethod<List>
 		object.addAll(items);
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		call(object, (List<Object>)args[0]);
 		return null;

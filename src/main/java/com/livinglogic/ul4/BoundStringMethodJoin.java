@@ -11,12 +11,17 @@ import java.util.Iterator;
 
 public class BoundStringMethodJoin extends BoundMethod<String>
 {
-	private static final Signature signature = new Signature("join", "iterable", Signature.required);
-
 	public BoundStringMethodJoin(String object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "str.join";
+	}
+
+	private static final Signature signature = new Signature("iterable", Signature.required);
 
 	public Signature getSignature()
 	{
@@ -43,7 +48,7 @@ public class BoundStringMethodJoin extends BoundMethod<String>
 		return call(object, Utils.iterator(iterable));
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object, args[0]);
 	}

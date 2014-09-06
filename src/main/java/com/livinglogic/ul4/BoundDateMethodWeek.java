@@ -11,12 +11,17 @@ import java.util.Map;
 
 public class BoundDateMethodWeek extends BoundMethod<Date>
 {
-	private static final Signature signature = new Signature("week", "firstweekday", null);
-
 	public BoundDateMethodWeek(Date object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "date.week";
+	}
+
+	private static final Signature signature = new Signature("firstweekday", null);
 
 	public Signature getSignature()
 	{
@@ -35,7 +40,7 @@ public class BoundDateMethodWeek extends BoundMethod<Date>
 		return yearday/7;
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object, args[0] == null ? 0 : Utils.toInt(args[0]));
 	}

@@ -13,16 +13,14 @@ import java.util.Map;
 
 public class BoundDateMethodSecond extends BoundMethod<Date>
 {
-	private static final Signature signature = new Signature("second");
-
 	public BoundDateMethodSecond(Date object)
 	{
 		super(object);
 	}
 
-	public Signature getSignature()
+	public String nameUL4()
 	{
-		return signature;
+		return "date.second";
 	}
 
 	public static int call(Date obj)
@@ -32,7 +30,7 @@ public class BoundDateMethodSecond extends BoundMethod<Date>
 		return calendar.get(Calendar.SECOND);
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object);
 	}

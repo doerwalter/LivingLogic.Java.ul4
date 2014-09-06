@@ -17,11 +17,16 @@ public abstract class Function implements UL4Call, UL4Name, UL4Type, UL4Repr
 		return "function";
 	}
 
-	protected abstract Signature getSignature();
+	private static final Signature signature = new Signature(); // default signature: no arguments
+
+	protected Signature getSignature()
+	{
+		return signature;
+	}
 
 	public Object callUL4(Object[] args, Map<String, Object> kwargs)
 	{
-		return evaluate(getSignature().makeArgumentArray(args, kwargs));
+		return evaluate(getSignature().makeArgumentArray(this, args, kwargs));
 	}
 
 	public abstract Object evaluate(Object[] args);

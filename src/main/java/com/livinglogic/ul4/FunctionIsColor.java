@@ -14,7 +14,7 @@ public class FunctionIsColor extends Function
 		return "iscolor";
 	}
 
-	private Signature signature = new Signature("round", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

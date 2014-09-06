@@ -10,16 +10,14 @@ import java.util.Map;
 
 public class BoundStringMethodLower extends BoundMethod<String>
 {
-	private static final Signature signature = new Signature("lower");
-
 	public BoundStringMethodLower(String object)
 	{
 		super(object);
 	}
 
-	public Signature getSignature()
+	public String nameUL4()
 	{
-		return signature;
+		return "str.lower";
 	}
 
 	public static String call(String object)
@@ -27,7 +25,7 @@ public class BoundStringMethodLower extends BoundMethod<String>
 		return object.toLowerCase();
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object);
 	}

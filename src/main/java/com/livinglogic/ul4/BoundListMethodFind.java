@@ -11,12 +11,17 @@ import java.util.List;
 
 public class BoundListMethodFind extends BoundMethod<List>
 {
-	private static final Signature signature = new Signature("find", "sub", Signature.required, "start", null, "end", null);
-
 	public BoundListMethodFind(List object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "list.find";
+	}
+
+	private static final Signature signature = new Signature("sub", Signature.required, "start", null, "end", null);
 
 	public Signature getSignature()
 	{
@@ -51,7 +56,7 @@ public class BoundListMethodFind extends BoundMethod<List>
 		return pos;
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		int startIndex = args[1] != null ? Utils.toInt(args[1]) : 0;
 		int endIndex = args[2] != null ? Utils.toInt(args[2]) : object.size();

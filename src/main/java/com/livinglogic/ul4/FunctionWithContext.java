@@ -17,11 +17,16 @@ public abstract class FunctionWithContext implements UL4CallWithContext, UL4Name
 		return "function";
 	}
 
-	public abstract Signature getSignature();
+	private static final Signature signature = new Signature(); // default signature: no arguments
+
+	protected Signature getSignature()
+	{
+		return signature;
+	}
 
 	public Object callUL4(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
 	{
-		return evaluate(context, getSignature().makeArgumentArray(args, kwargs));
+		return evaluate(context, getSignature().makeArgumentArray(this, args, kwargs));
 	}
 
 	public abstract Object evaluate(EvaluationContext context, Object[] args);

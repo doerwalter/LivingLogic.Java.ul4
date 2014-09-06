@@ -16,7 +16,7 @@ public class FunctionRandChoice extends Function
 		return "randchoice";
 	}
 
-	private static Signature signature = new Signature("randchoice", "sequence", Signature.required);
+	private static final Signature signature = new Signature("sequence", Signature.required);
 
 	public Signature getSignature()
 	{

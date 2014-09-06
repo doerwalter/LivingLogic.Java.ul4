@@ -54,10 +54,10 @@ public class StrVar extends Var
 	{
 		public String nameUL4()
 		{
-			return "str";
+			return "connection.str";
 		}
 
-		private Signature signature = new Signature("str", "value", noValue);
+		private static final Signature signature = new Signature("value", noValue);
 
 		public Signature getSignature()
 		{

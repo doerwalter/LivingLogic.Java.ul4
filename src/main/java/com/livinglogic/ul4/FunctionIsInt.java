@@ -15,7 +15,7 @@ public class FunctionIsInt extends Function
 		return "isint";
 	}
 
-	private Signature signature = new Signature("isint", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

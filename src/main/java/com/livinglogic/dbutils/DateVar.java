@@ -67,7 +67,7 @@ public class DateVar extends Var
 			return "connection.date";
 		}
 
-		private Signature signature = new Signature("connection.date", "value", noValue);
+		private static final Signature signature = new Signature("value", noValue);
 
 		public Signature getSignature()
 		{

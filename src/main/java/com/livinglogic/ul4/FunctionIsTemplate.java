@@ -14,7 +14,7 @@ public class FunctionIsTemplate extends Function
 		return "istemplate";
 	}
 
-	private Signature signature = new Signature("istemplate", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

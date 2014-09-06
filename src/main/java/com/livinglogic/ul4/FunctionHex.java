@@ -15,7 +15,7 @@ public class FunctionHex extends Function
 		return "hex";
 	}
 
-	private Signature signature = new Signature("hex", "number", Signature.required);
+	private static final Signature signature = new Signature("number", Signature.required);
 
 	public Signature getSignature()
 	{

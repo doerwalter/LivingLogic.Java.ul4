@@ -16,7 +16,7 @@ public class FunctionLast extends Function
 		return "last";
 	}
 
-	private Signature signature = new Signature("last", "iterable", Signature.required, "default", null);
+	private static final Signature signature = new Signature("iterable", Signature.required, "default", null);
 
 	public Signature getSignature()
 	{

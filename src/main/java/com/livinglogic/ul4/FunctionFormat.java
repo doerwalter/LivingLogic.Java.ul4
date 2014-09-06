@@ -27,7 +27,7 @@ public class FunctionFormat extends Function
 		return "format";
 	}
 
-	private Signature signature = new Signature("format", "obj", Signature.required, "fmt", Signature.required, "lang", null);
+	private static final Signature signature = new Signature("obj", Signature.required, "fmt", Signature.required, "lang", null);
 
 	public Signature getSignature()
 	{

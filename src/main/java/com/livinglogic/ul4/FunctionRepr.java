@@ -24,7 +24,7 @@ public class FunctionRepr extends Function
 		return "repr";
 	}
 
-	private Signature signature = new Signature("repr", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

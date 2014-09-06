@@ -14,7 +14,7 @@ public class FunctionIsFunction extends Function
 		return "isfunction";
 	}
 
-	private Signature signature = new Signature("isfunction", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

@@ -13,16 +13,14 @@ import java.util.Map;
 
 public class BoundDateMethodMIMEFormat extends BoundMethod<Date>
 {
-	private static final Signature signature = new Signature("mimeformat");
-
 	public BoundDateMethodMIMEFormat(Date object)
 	{
 		super(object);
 	}
 
-	public Signature getSignature()
+	public String nameUL4()
 	{
-		return signature;
+		return "date.mimeformat";
 	}
 
 	private static SimpleDateFormat mimeDateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", new Locale("en"));
@@ -32,7 +30,7 @@ public class BoundDateMethodMIMEFormat extends BoundMethod<Date>
 		return mimeDateFormatter.format(obj);
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object);
 	}

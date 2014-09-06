@@ -16,7 +16,7 @@ public class FunctionURLQuote extends Function
 		return "urlquote";
 	}
 
-	private Signature signature = new Signature("urlquote", "string", Signature.required);
+	private static final Signature signature = new Signature("string", Signature.required);
 
 	public Signature getSignature()
 	{

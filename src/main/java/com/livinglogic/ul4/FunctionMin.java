@@ -16,7 +16,7 @@ public class FunctionMin extends Function
 		return "min";
 	}
 
-	private Signature signature = new Signature("min", "args", Signature.remainingArguments);
+	private static final Signature signature = new Signature("args", Signature.remainingArguments);
 
 	public Signature getSignature()
 	{

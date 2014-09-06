@@ -18,7 +18,7 @@ public class FunctionAny extends Function
 		return "any";
 	}
 
-	private Signature signature = new Signature("any", "iterable", Signature.required);
+	private static final Signature signature = new Signature("iterable", Signature.required);
 
 	public Signature getSignature()
 	{

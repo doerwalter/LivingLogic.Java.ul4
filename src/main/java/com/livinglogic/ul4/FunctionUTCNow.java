@@ -19,13 +19,6 @@ public class FunctionUTCNow extends Function
 		return "utcnow";
 	}
 
-	private static Signature signature = new Signature("utcnow");
-
-	public Signature getSignature()
-	{
-		return signature;
-	}
-
 	public Object evaluate(Object[] args)
 	{
 		return call();

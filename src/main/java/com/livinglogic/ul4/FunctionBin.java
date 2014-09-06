@@ -15,7 +15,7 @@ public class FunctionBin extends Function
 		return "bin";
 	}
 
-	private Signature signature = new Signature("bin", "number", Signature.required);
+	private static final Signature signature = new Signature("number", Signature.required);
 
 	public Signature getSignature()
 	{

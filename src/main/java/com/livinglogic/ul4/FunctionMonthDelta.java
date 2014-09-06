@@ -14,7 +14,7 @@ public class FunctionMonthDelta extends Function
 		return "monthdelta";
 	}
 
-	private Signature signature = new Signature("monthdelta", "months", 0);
+	private static final Signature signature = new Signature("months", 0);
 
 	public Signature getSignature()
 	{

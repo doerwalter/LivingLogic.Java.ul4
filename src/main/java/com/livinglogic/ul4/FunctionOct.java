@@ -15,7 +15,7 @@ public class FunctionOct extends Function
 		return "oct";
 	}
 
-	private Signature signature = new Signature("oct", "number", Signature.required);
+	private static final Signature signature = new Signature("number", Signature.required);
 
 	public Signature getSignature()
 	{

@@ -19,7 +19,7 @@ public class FunctionType extends Function
 		return "type";
 	}
 
-	private Signature signature = new Signature("type", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

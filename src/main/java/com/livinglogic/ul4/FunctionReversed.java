@@ -17,7 +17,7 @@ public class FunctionReversed extends Function
 		return "reversed";
 	}
 
-	private Signature signature = new Signature("reversed", "sequence", Signature.required);
+	private static final Signature signature = new Signature("sequence", Signature.required);
 
 	public Signature getSignature()
 	{

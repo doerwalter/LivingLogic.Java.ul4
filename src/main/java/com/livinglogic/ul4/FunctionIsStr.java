@@ -14,7 +14,7 @@ public class FunctionIsStr extends Function
 		return "isstr";
 	}
 
-	private Signature signature = new Signature("isstr", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

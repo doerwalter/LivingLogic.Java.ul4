@@ -14,12 +14,17 @@ import org.apache.commons.lang.StringUtils;
 
 public class BoundStringMethodSplit extends BoundMethod<String>
 {
-	private static final Signature signature = new Signature("split", "sep", null, "count", null);
-
 	public BoundStringMethodSplit(String object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "str.split";
+	}
+
+	private static final Signature signature = new Signature("sep", null, "count", null);
 
 	public Signature getSignature()
 	{
@@ -45,7 +50,7 @@ public class BoundStringMethodSplit extends BoundMethod<String>
 		return Arrays.asList(StringUtils.splitByWholeSeparatorPreserveAllTokens(object, separator, maxsplit+1));
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		Object separator = args[0];
 		Object maxsplit = args[1];

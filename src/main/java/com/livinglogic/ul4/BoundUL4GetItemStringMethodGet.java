@@ -10,12 +10,17 @@ import java.util.Map;
 
 public class BoundUL4GetItemStringMethodGet extends BoundMethod<UL4GetItemString>
 {
-	private static final Signature signature = new Signature("get", "key", Signature.required, "default", null);
-
 	public BoundUL4GetItemStringMethodGet(UL4GetItemString object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "object.get";
+	}
+
+	private static final Signature signature = new Signature("key", Signature.required, "default", null);
 
 	public Signature getSignature()
 	{
@@ -35,7 +40,7 @@ public class BoundUL4GetItemStringMethodGet extends BoundMethod<UL4GetItemString
 			return defaultValue;
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object, args[0], args[1]);
 	}

@@ -16,7 +16,7 @@ public class FunctionEnumerate extends Function
 		return "enumerate";
 	}
 
-	private Signature signature = new Signature("enumerate", "iterable", Signature.required, "start", 0);
+	private static final Signature signature = new Signature("iterable", Signature.required, "start", 0);
 
 	public Signature getSignature()
 	{

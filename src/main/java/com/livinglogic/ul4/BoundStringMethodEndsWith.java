@@ -10,12 +10,17 @@ import java.util.Map;
 
 public class BoundStringMethodEndsWith extends BoundMethod<String>
 {
-	private static final Signature signature = new Signature("endswith", "suffix", Signature.required);
-
 	public BoundStringMethodEndsWith(String object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "str.endswith";
+	}
+
+	private static final Signature signature = new Signature("suffix", Signature.required);
 
 	public Signature getSignature()
 	{
@@ -27,7 +32,7 @@ public class BoundStringMethodEndsWith extends BoundMethod<String>
 		return object.endsWith(suffix);
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		if (args[0] instanceof String)
 			return call(object, (String)args[0]);

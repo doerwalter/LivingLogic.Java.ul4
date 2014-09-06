@@ -16,7 +16,7 @@ public class FunctionLen extends Function
 		return "len";
 	}
 
-	private Signature signature = new Signature("len", "sequence", Signature.required);
+	private static final Signature signature = new Signature("sequence", Signature.required);
 
 	public Signature getSignature()
 	{

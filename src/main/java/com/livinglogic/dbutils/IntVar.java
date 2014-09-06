@@ -60,7 +60,7 @@ public class IntVar extends Var
 			return "connection.int";
 		}
 
-		private Signature signature = new Signature("connection.int", "value", noValue);
+		private static final Signature signature = new Signature("value", noValue);
 
 		public Signature getSignature()
 		{

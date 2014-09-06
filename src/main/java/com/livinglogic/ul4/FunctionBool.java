@@ -19,7 +19,7 @@ public class FunctionBool extends Function
 		return "bool";
 	}
 
-	private Signature signature = new Signature("bool", "obj", false);
+	private static final Signature signature = new Signature("obj", false);
 
 	public Signature getSignature()
 	{

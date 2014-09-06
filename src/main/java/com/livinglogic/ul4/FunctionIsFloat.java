@@ -15,7 +15,7 @@ public class FunctionIsFloat extends Function
 		return "isfloat";
 	}
 
-	private Signature signature = new Signature("isfloat", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

@@ -14,7 +14,7 @@ public class FunctionAsUL4ON extends Function
 		return "asul4on";
 	}
 
-	private Signature signature = new Signature("asul4on", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

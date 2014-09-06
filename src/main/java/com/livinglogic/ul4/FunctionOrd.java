@@ -14,7 +14,7 @@ public class FunctionOrd extends Function
 		return "ord";
 	}
 
-	private Signature signature = new Signature("ord", "c", Signature.required);
+	private static final Signature signature = new Signature("c", Signature.required);
 
 	public Signature getSignature()
 	{

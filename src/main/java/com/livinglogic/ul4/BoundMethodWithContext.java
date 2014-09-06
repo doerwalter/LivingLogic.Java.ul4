@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 import java.util.Map;
 
-public abstract class BoundMethodWithContext<T> implements UL4CallWithContext, UL4Name, UL4Repr
+public abstract class BoundMethodWithContext<T> extends FunctionWithContext
 {
 	protected T object = null;
 
@@ -16,20 +16,6 @@ public abstract class BoundMethodWithContext<T> implements UL4CallWithContext, U
 	{
 		this.object = object;
 	}
-
-	public abstract Signature getSignature();
-
-	public String nameUL4()
-	{
-		return getSignature().getName();
-	}
-
-	public Object callUL4(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
-	{
-		return callUL4(context, getSignature().makeArgumentArray(args, kwargs));
-	}
-
-	public abstract Object callUL4(EvaluationContext context, Object[] args);
 
 	public String reprUL4()
 	{

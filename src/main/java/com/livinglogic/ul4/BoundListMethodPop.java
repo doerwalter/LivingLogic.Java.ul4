@@ -11,12 +11,17 @@ import java.util.Map;
 
 public class BoundListMethodPop extends BoundMethod<List>
 {
-	private static final Signature signature = new Signature("pop", "pos", -1);
-
 	public BoundListMethodPop(List object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "list.pop";
+	}
+
+	private static final Signature signature = new Signature("pos", -1);
 
 	public Signature getSignature()
 	{
@@ -30,7 +35,7 @@ public class BoundListMethodPop extends BoundMethod<List>
 		return obj.remove(pos);
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object, Utils.toInt(args[0]));
 	}

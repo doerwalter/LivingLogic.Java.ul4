@@ -20,7 +20,7 @@ public class FunctionSorted extends Function
 		return "sorted";
 	}
 
-	private Signature signature = new Signature("sorted", "iterable", Signature.required);
+	private static final Signature signature = new Signature("iterable", Signature.required);
 
 	public Signature getSignature()
 	{

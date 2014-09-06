@@ -13,7 +13,7 @@ public class FunctionRGB extends Function
 		return "rgb";
 	}
 
-	private static Signature signature = new Signature("color.rgb", "r", Signature.required, "g", Signature.required, "b", Signature.required, "a", 1.0);
+	private static final Signature signature = new Signature("r", Signature.required, "g", Signature.required, "b", Signature.required, "a", 1.0);
 
 	public Signature getSignature()
 	{

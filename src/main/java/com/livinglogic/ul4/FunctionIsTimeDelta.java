@@ -14,7 +14,7 @@ public class FunctionIsTimeDelta extends Function
 		return "istimedelta";
 	}
 
-	private Signature signature = new Signature("istimedelta", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

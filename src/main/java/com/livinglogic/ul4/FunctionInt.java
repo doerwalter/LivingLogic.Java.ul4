@@ -18,7 +18,7 @@ public class FunctionInt extends Function
 		return "int";
 	}
 
-	private Signature signature = new Signature("int", "obj", 0, "base", null);
+	private static final Signature signature = new Signature("obj", 0, "base", null);
 
 	public Signature getSignature()
 	{

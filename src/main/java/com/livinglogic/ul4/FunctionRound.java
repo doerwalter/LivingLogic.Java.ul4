@@ -17,7 +17,7 @@ public class FunctionRound extends Function
 		return "round";
 	}
 
-	private Signature signature = new Signature("round", "x", Signature.required, "digits", 0);
+	private static final Signature signature = new Signature("x", Signature.required, "digits", 0);
 
 	public Signature getSignature()
 	{

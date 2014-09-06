@@ -14,16 +14,14 @@ import java.util.Map;
 
 public class BoundDictMethodValues extends BoundMethod<Map>
 {
-	private static final Signature signature = new Signature("values");
-
 	public BoundDictMethodValues(Map object)
 	{
 		super(object);
 	}
 
-	public Signature getSignature()
+	public String nameUL4()
 	{
-		return signature;
+		return "dict.values";
 	}
 
 	public static Object call(Map object)
@@ -31,7 +29,7 @@ public class BoundDictMethodValues extends BoundMethod<Map>
 		return object.values();
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object);
 	}

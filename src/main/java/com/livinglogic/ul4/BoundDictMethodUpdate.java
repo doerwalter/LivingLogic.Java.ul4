@@ -11,12 +11,17 @@ import java.util.Map;
 
 public class BoundDictMethodUpdate extends BoundMethod<Map>
 {
-	private static final Signature signature = new Signature("update", "others", Signature.remainingArguments, "kwargs", Signature.remainingKeywordArguments);
-
 	public BoundDictMethodUpdate(Map object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "dict.update";
+	}
+
+	private static final Signature signature = new Signature("others", Signature.remainingArguments, "kwargs", Signature.remainingKeywordArguments);
 
 	public Signature getSignature()
 	{
@@ -46,7 +51,7 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 		object.putAll(kwargs);
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		call(object, (List<Object>)args[0], (Map<String, Object>)args[1]);
 		return null;

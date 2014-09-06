@@ -10,12 +10,17 @@ import java.util.Map;
 
 public class BoundStringMethodStartsWith extends BoundMethod<String>
 {
-	private static final Signature signature = new Signature("startswith", "prefix", Signature.required);
-
 	public BoundStringMethodStartsWith(String object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "str.startswith";
+	}
+
+	private static final Signature signature = new Signature("prefix", Signature.required);
 
 	public Signature getSignature()
 	{
@@ -27,7 +32,7 @@ public class BoundStringMethodStartsWith extends BoundMethod<String>
 		return object.startsWith(suffix);
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		if (args[0] instanceof String)
 			return call(object, (String)args[0]);

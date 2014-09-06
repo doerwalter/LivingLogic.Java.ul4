@@ -324,45 +324,19 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		return days < 0 ? new TimeDelta(-days, -seconds, -microseconds) : this;
 	}
 
-	private Signature signatureDays = new Signature("days");
-	private Signature signatureSeconds = new Signature("seconds");
-	private Signature signatureMicroseconds = new Signature("microseconds");
-
-	public Object callMethodUL4(String methodName, Object[] args, Map<String, Object> kwargs)
-	{
-		if ("days".equals(methodName))
-		{
-			args = signatureDays.makeArgumentArray(args, kwargs);
-			return days;
-		}
-		else if ("seconds".equals(methodName))
-		{
-			args = signatureSeconds.makeArgumentArray(args, kwargs);
-			return seconds;
-		}
-		else if ("microseconds".equals(methodName))
-		{
-			args = signatureSeconds.makeArgumentArray(args, kwargs);
-			return microseconds;
-		}
-		else
-			throw new UnknownMethodException(methodName);
-	}
 	private static class BoundMethodDays extends BoundMethodWithContext<TimeDelta>
 	{
-		private static final Signature signature = new Signature("days");
-
 		public BoundMethodDays(TimeDelta object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "timedelta.days";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.days;
 		}
@@ -370,19 +344,17 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 	private static class BoundMethodSeconds extends BoundMethodWithContext<TimeDelta>
 	{
-		private static final Signature signature = new Signature("seconds");
-
 		public BoundMethodSeconds(TimeDelta object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "timedelta.seconds";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.seconds;
 		}
@@ -390,19 +362,17 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 	private static class BoundMethodMicroseconds extends BoundMethodWithContext<TimeDelta>
 	{
-		private static final Signature signature = new Signature("microseconds");
-
 		public BoundMethodMicroseconds(TimeDelta object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "timedelta.microseconds";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.microseconds;
 		}

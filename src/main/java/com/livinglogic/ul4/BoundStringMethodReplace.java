@@ -11,12 +11,17 @@ import java.util.Map;
 
 public class BoundStringMethodReplace extends BoundMethod<String>
 {
-	private static final Signature signature = new Signature("replace", "old", Signature.required, "new", Signature.required, "count", null);
-
 	public BoundStringMethodReplace(String object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "str.replace";
+	}
+
+	private static final Signature signature = new Signature("old", Signature.required, "new", Signature.required, "count", null);
 
 	public Signature getSignature()
 	{
@@ -33,7 +38,7 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 		return StringUtils.replace(object, search, replace, count);
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		if (!(args[0] instanceof String) || !(args[1] instanceof String))
 			throw new ArgumentTypeMismatchException("{}.replace({}, {})", object, args[0], args[1]);

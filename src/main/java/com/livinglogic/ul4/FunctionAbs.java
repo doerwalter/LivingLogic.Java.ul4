@@ -16,7 +16,7 @@ public class FunctionAbs extends Function
 		return "abs";
 	}
 
-	private Signature signature = new Signature("abs", "number", Signature.required);
+	private static final Signature signature = new Signature("number", Signature.required);
 
 	public Signature getSignature()
 	{

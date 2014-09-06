@@ -16,7 +16,7 @@ public class FunctionSum extends Function
 		return "sum";
 	}
 
-	private Signature signature = new Signature("sum", "iterable", Signature.required, "start", 0);
+	private static final Signature signature = new Signature("iterable", Signature.required, "start", 0);
 
 	public Signature getSignature()
 	{

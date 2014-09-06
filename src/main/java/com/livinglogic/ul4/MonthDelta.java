@@ -152,19 +152,17 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 
 	private static class BoundMethodMonths extends BoundMethodWithContext<MonthDelta>
 	{
-		private static final Signature signature = new Signature("months");
-
 		public BoundMethodMonths(MonthDelta object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "monthdelta.months";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.months;
 		}

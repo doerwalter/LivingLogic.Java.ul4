@@ -14,7 +14,7 @@ public class FunctionTimeDelta extends Function
 		return "timedelta";
 	}
 
-	private Signature signature = new Signature("timedelta", "days", 0, "seconds", 0, "microseconds", 0);
+	private static final Signature signature = new Signature("days", 0, "seconds", 0, "microseconds", 0);
 
 	public Signature getSignature()
 	{

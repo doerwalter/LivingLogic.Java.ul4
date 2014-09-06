@@ -198,19 +198,24 @@ public class Connection implements UL4GetAttributes
 
 	private static class BoundMethodQueryArgs extends BoundMethodWithContext<Connection>
 	{
-		private static final Signature signature = new Signature("queryargs", "query", Signature.required, "args", Signature.remainingArguments);
-
 		public BoundMethodQueryArgs(Connection object)
 		{
 			super(object);
 		}
+
+		public String nameUL4()
+		{
+			return "connection.queryargs";
+		}
+
+		private static final Signature signature = new Signature("query", Signature.required, "args", Signature.remainingArguments);
 
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			if (!(args[0] instanceof String))
 				throw new UnsupportedOperationException("query must be string, not " + Utils.objectType(args[0]) + "!");
@@ -220,19 +225,24 @@ public class Connection implements UL4GetAttributes
 
 	private static class BoundMethodQuery extends BoundMethodWithContext<Connection>
 	{
-		private static final Signature signature = new Signature("query", "args", Signature.remainingArguments);
-
 		public BoundMethodQuery(Connection object)
 		{
 			super(object);
 		}
+
+		public String nameUL4()
+		{
+			return "connection.query";
+		}
+
+		private static final Signature signature = new Signature("args", Signature.remainingArguments);
 
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.query(context, (List)args[0]);
 		}
@@ -240,19 +250,24 @@ public class Connection implements UL4GetAttributes
 
 	private static class BoundMethodExecute extends BoundMethodWithContext<Connection>
 	{
-		private static final Signature signature = new Signature("execute", "args", Signature.remainingArguments);
-
 		public BoundMethodExecute(Connection object)
 		{
 			super(object);
 		}
+
+		public String nameUL4()
+		{
+			return "connection.execute";
+		}
+
+		private static final Signature signature = new Signature("args", Signature.remainingArguments);
 
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			object.execute(context, (List)args[0]);
 			return null;

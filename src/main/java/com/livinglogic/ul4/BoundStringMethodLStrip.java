@@ -12,12 +12,17 @@ import org.apache.commons.lang.StringUtils;
 
 public class BoundStringMethodLStrip extends BoundMethod<String>
 {
-	private static final Signature signature = new Signature("lstrip", "chars", null);
-
 	public BoundStringMethodLStrip(String object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "str.lstrip";
+	}
+
+	private static final Signature signature = new Signature("chars", null);
 
 	public Signature getSignature()
 	{
@@ -34,7 +39,7 @@ public class BoundStringMethodLStrip extends BoundMethod<String>
 		return StringUtils.stripStart(object, chars);
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		if (args[0] == null)
 			return call(object);

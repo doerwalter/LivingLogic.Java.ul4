@@ -10,16 +10,14 @@ import java.util.Map;
 
 public class BoundStringMethodCapitalize extends BoundMethod<String>
 {
-	private static final Signature signature = new Signature("capitalize");
-
 	public BoundStringMethodCapitalize(String object)
 	{
 		super(object);
 	}
 
-	public Signature getSignature()
+	public String nameUL4()
 	{
-		return signature;
+		return "str.capitalize";
 	}
 
 	public static String call(String object)
@@ -27,7 +25,7 @@ public class BoundStringMethodCapitalize extends BoundMethod<String>
 		return String.valueOf(Character.toTitleCase(object.charAt(0))) + object.substring(1).toLowerCase();
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object);
 	}

@@ -10,16 +10,14 @@ import java.util.Map;
 
 public class BoundStringMethodUpper extends BoundMethod<String>
 {
-	private static final Signature signature = new Signature("upper");
-
 	public BoundStringMethodUpper(String object)
 	{
 		super(object);
 	}
 
-	public Signature getSignature()
+	public String nameUL4()
 	{
-		return signature;
+		return "str.upper";
 	}
 
 	public static String call(String object)
@@ -27,7 +25,7 @@ public class BoundStringMethodUpper extends BoundMethod<String>
 		return object.toUpperCase();
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object);
 	}

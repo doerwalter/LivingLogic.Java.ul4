@@ -14,7 +14,7 @@ public class FunctionIsBool extends Function
 		return "isbool";
 	}
 
-	private Signature signature = new Signature("isbool", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

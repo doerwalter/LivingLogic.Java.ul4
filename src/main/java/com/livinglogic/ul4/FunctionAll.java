@@ -18,7 +18,7 @@ public class FunctionAll extends Function
 		return "all";
 	}
 
-	private Signature signature = new Signature("all", "iterable", Signature.required);
+	private static final Signature signature = new Signature("iterable", Signature.required);
 
 	public Signature getSignature()
 	{

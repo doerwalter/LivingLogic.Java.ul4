@@ -14,7 +14,7 @@ public class FunctionXMLEscape extends Function
 		return "xmlescape";
 	}
 
-	private Signature signature = new Signature("xmlescape", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

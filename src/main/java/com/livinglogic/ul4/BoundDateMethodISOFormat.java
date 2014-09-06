@@ -12,16 +12,14 @@ import java.util.Map;
 
 public class BoundDateMethodISOFormat extends BoundMethod<Date>
 {
-	private static final Signature signature = new Signature("isoformat");
-
 	public BoundDateMethodISOFormat(Date object)
 	{
 		super(object);
 	}
 
-	public Signature getSignature()
+	public String nameUL4()
 	{
-		return signature;
+		return "date.isoformat";
 	}
 
 	private static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -41,7 +39,7 @@ public class BoundDateMethodISOFormat extends BoundMethod<Date>
 		}
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object);
 	}

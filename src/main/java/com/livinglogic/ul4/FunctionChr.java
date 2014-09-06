@@ -14,7 +14,7 @@ public class FunctionChr extends Function
 		return "chr";
 	}
 
-	private Signature signature = new Signature("chr", "i", Signature.required);
+	private static final Signature signature = new Signature("i", Signature.required);
 
 	public Signature getSignature()
 	{

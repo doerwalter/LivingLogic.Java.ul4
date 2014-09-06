@@ -678,19 +678,17 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodR extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("r");
-
 		public BoundMethodR(Color object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "color.r";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return (int)object.r;
 		}
@@ -698,19 +696,17 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodG extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("g");
-
 		public BoundMethodG(Color object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "color.g";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return (int)object.g;
 		}
@@ -718,19 +714,17 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodB extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("b");
-
 		public BoundMethodB(Color object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "color.b";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return (int)object.b;
 		}
@@ -738,19 +732,17 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodA extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("a");
-
 		public BoundMethodA(Color object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "color.a";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return (int)object.a;
 		}
@@ -758,19 +750,17 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodLum extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("lum");
-
 		public BoundMethodLum(Color object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "color.lum";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.lum();
 		}
@@ -778,19 +768,17 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodHLS extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("hls");
-
 		public BoundMethodHLS(Color object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "color.hls";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.hls();
 		}
@@ -798,19 +786,17 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodHLSA extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("hlsa");
-
 		public BoundMethodHLSA(Color object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "color.hlsa";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.hlsa();
 		}
@@ -818,19 +804,17 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodHSV extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("hsv");
-
 		public BoundMethodHSV(Color object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "color.hsv";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.hsv();
 		}
@@ -838,19 +822,17 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodHSVA extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("hsva");
-
 		public BoundMethodHSVA(Color object)
 		{
 			super(object);
 		}
 
-		public Signature getSignature()
+		public String nameUL4()
 		{
-			return signature;
+			return "color.hsva";
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.hsva();
 		}
@@ -858,19 +840,24 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodWithA extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("witha", "a", Signature.required);
-
 		public BoundMethodWithA(Color object)
 		{
 			super(object);
 		}
+
+		public String nameUL4()
+		{
+			return "color.witha";
+		}
+
+		private static final Signature signature = new Signature("a", Signature.required);
 
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.witha(Utils.toInt(args[0]));
 		}
@@ -878,19 +865,24 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodWithLum extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("withlum", "lum", Signature.required);
-
 		public BoundMethodWithLum(Color object)
 		{
 			super(object);
 		}
+
+		public String nameUL4()
+		{
+			return "color.withlum";
+		}
+
+		private static final Signature signature = new Signature("lum", Signature.required);
 
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.withlum(Utils.toDouble(args[0]));
 		}
@@ -898,19 +890,24 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodAbsLum extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("abslum", "f", Signature.required);
-
 		public BoundMethodAbsLum(Color object)
 		{
 			super(object);
 		}
+
+		public String nameUL4()
+		{
+			return "color.abslum";
+		}
+
+		private static final Signature signature = new Signature("f", Signature.required);
 
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.abslum(Utils.toDouble(args[0]));
 		}
@@ -918,19 +915,24 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 
 	private static class BoundMethodRelLum extends BoundMethodWithContext<Color>
 	{
-		private static final Signature signature = new Signature("rellum", "f", Signature.required);
-
 		public BoundMethodRelLum(Color object)
 		{
 			super(object);
 		}
+
+		public String nameUL4()
+		{
+			return "color.rellum";
+		}
+
+		private static final Signature signature = new Signature("f", Signature.required);
 
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
-		public Object callUL4(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, Object[] args)
 		{
 			return object.rellum(Utils.toDouble(args[0]));
 		}

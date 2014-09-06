@@ -61,7 +61,7 @@ public class CLOBVar extends Var
 			return "connection.clob";
 		}
 
-		private Signature signature = new Signature("connection.clob", "value", noValue);
+		private static final Signature signature = new Signature("value", noValue);
 
 		public Signature getSignature()
 		{

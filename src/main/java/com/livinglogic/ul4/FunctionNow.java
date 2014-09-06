@@ -15,13 +15,6 @@ public class FunctionNow extends Function
 		return "now";
 	}
 
-	private static Signature signature = new Signature("now");
-
-	public Signature getSignature()
-	{
-		return signature;
-	}
-
 	public Object evaluate(Object[] args)
 	{
 		return call();

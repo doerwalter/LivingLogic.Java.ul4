@@ -10,12 +10,17 @@ import java.util.Map;
 
 public class BoundDictMethodGet extends BoundMethod<Map>
 {
-	private static final Signature signature = new Signature("get", "key", Signature.required, "default", null);
-
 	public BoundDictMethodGet(Map object)
 	{
 		super(object);
 	}
+
+	public String nameUL4()
+	{
+		return "dict.get";
+	}
+
+	private static final Signature signature = new Signature("key", Signature.required, "default", null);
 
 	public Signature getSignature()
 	{
@@ -30,7 +35,7 @@ public class BoundDictMethodGet extends BoundMethod<Map>
 		return result;
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object, args[0], args[1]);
 	}

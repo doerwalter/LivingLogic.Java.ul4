@@ -12,16 +12,14 @@ import java.util.Vector;
 
 public class BoundDictMethodItems extends BoundMethod<Map>
 {
-	private static final Signature signature = new Signature("items");
-
 	public BoundDictMethodItems(Map object)
 	{
 		super(object);
 	}
 
-	public Signature getSignature()
+	public String nameUL4()
 	{
-		return signature;
+		return "dict.items";
 	}
 
 	public static Object call(Map object)
@@ -29,7 +27,7 @@ public class BoundDictMethodItems extends BoundMethod<Map>
 		return new MapItemIterator(object);
 	}
 
-	public Object callUL4(Object[] args)
+	public Object evaluate(Object[] args)
 	{
 		return call(object);
 	}

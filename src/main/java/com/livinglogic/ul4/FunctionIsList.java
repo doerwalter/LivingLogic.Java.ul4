@@ -15,7 +15,7 @@ public class FunctionIsList extends Function
 		return "islist";
 	}
 
-	private Signature signature = new Signature("islist", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{

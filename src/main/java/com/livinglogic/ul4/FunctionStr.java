@@ -20,7 +20,7 @@ public class FunctionStr extends Function
 		return "str";
 	}
 
-	private Signature signature = new Signature("str", "obj", null);
+	private static final Signature signature = new Signature("obj", null);
 
 	public Signature getSignature()
 	{

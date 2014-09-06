@@ -21,7 +21,7 @@ public class FunctionList extends Function
 		return "list";
 	}
 
-	private Signature signature = new Signature("list", "iterable", Collections.EMPTY_LIST);
+	private static final Signature signature = new Signature("iterable", Collections.EMPTY_LIST);
 
 	public Signature getSignature()
 	{

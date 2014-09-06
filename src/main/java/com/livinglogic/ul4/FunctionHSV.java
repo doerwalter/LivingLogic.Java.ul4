@@ -14,7 +14,7 @@ public class FunctionHSV extends Function
 		return "hsv";
 	}
 
-	private Signature signature = new Signature("hsv", "h", Signature.required, "s", Signature.required, "v", Signature.required, "a", 1.0);
+	private static final Signature signature = new Signature("h", Signature.required, "s", Signature.required, "v", Signature.required, "a", 1.0);
 
 	public Signature getSignature()
 	{

@@ -17,7 +17,7 @@ public class FunctionFromJSON extends Function
 		return "fromjson";
 	}
 
-	private Signature signature = new Signature("fromjson", "string", Signature.required);
+	private static final Signature signature = new Signature("string", Signature.required);
 
 	public Signature getSignature()
 	{

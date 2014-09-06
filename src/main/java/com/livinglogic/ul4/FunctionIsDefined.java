@@ -14,7 +14,7 @@ public class FunctionIsDefined extends Function
 		return "isdefined";
 	}
 
-	private Signature signature = new Signature("isdefined", "obj", Signature.required);
+	private static final Signature signature = new Signature("obj", Signature.required);
 
 	public Signature getSignature()
 	{
