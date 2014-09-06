@@ -16,12 +16,11 @@ public class FunctionURLUnquote extends Function
 		return "urlunquote";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("urlunquote", "string", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"string", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

@@ -15,12 +15,11 @@ public class FunctionIsFloat extends Function
 		return "isfloat";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("isfloat", "obj", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"obj", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

@@ -8,23 +8,16 @@ package com.livinglogic.ul4;
 
 import java.util.Map;
 
-public abstract class FunctionWithContext implements UL4CallWithContext, UL4Name
+public abstract class FunctionWithContext implements UL4CallWithContext, UL4Name, UL4Type, UL4Repr
 {
 	public abstract String nameUL4();
 
-	private Signature signature = null;
-
-	protected Signature makeSignature()
+	public String typeUL4()
 	{
-		return new Signature(nameUL4());
+		return "function";
 	}
 
-	private Signature getSignature()
-	{
-		if (signature == null)
-			signature = makeSignature();
-		return signature;
-	}
+	public abstract Signature getSignature();
 
 	public Object callUL4(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
 	{
@@ -32,4 +25,15 @@ public abstract class FunctionWithContext implements UL4CallWithContext, UL4Name
 	}
 
 	public abstract Object evaluate(EvaluationContext context, Object[] args);
+
+	public String reprUL4()
+	{
+		StringBuilder builder = new StringBuilder();
+
+		builder.append("<function ");
+		builder.append(nameUL4());
+		builder.append(">");
+
+		return builder.toString();
+	}
 }

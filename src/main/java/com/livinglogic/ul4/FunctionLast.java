@@ -16,13 +16,11 @@ public class FunctionLast extends Function
 		return "last";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("last", "iterable", Signature.required, "default", null);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"iterable", Signature.required,
-			"default", null
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

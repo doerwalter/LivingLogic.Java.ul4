@@ -14,15 +14,11 @@ public class FunctionHLS extends Function
 		return "hls";
 	}
 
-	protected Signature makeSignature()
+	private static Signature signature = new Signature("color.hls", "h", Signature.required, "l", Signature.required, "s", Signature.required, "a", 1.0);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"h", Signature.required,
-			"l", Signature.required,
-			"s", Signature.required,
-			"a", 1.0
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

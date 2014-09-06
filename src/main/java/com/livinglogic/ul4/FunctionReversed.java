@@ -17,12 +17,11 @@ public class FunctionReversed extends Function
 		return "reversed";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("reversed", "sequence", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"sequence", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

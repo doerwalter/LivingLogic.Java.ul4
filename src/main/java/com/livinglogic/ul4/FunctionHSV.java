@@ -14,15 +14,11 @@ public class FunctionHSV extends Function
 		return "hsv";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("hsv", "h", Signature.required, "s", Signature.required, "v", Signature.required, "a", 1.0);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"h", Signature.required,
-			"s", Signature.required,
-			"v", Signature.required,
-			"a", 1.0
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

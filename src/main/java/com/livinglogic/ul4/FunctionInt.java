@@ -18,13 +18,11 @@ public class FunctionInt extends Function
 		return "int";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("int", "obj", 0, "base", null);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"obj", 0,
-			"base", null
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

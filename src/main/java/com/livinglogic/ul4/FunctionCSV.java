@@ -15,12 +15,11 @@ public class FunctionCSV extends Function
 		return "csv";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("csv", "obj", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"obj", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

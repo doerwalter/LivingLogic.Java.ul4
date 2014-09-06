@@ -14,12 +14,11 @@ public class FunctionIsMonthDelta extends Function
 		return "ismonthdelta";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("ismonthdelta", "obj", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"obj", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

@@ -58,15 +58,14 @@ public class CLOBVar extends Var
 	{
 		public String nameUL4()
 		{
-			return "clob";
+			return "connection.clob";
 		}
 
-		protected Signature makeSignature()
+		private Signature signature = new Signature("connection.clob", "value", noValue);
+
+		public Signature getSignature()
 		{
-			return new Signature(
-				nameUL4(),
-				"value", noValue
-			);
+			return signature;
 		}
 
 		public Object evaluate(Object[] args)

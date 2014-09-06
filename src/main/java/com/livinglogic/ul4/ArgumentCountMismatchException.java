@@ -7,7 +7,7 @@
 package com.livinglogic.ul4;
 
 /**
- * Thrown by implementions of {@link Function} or {@link Method} when the
+ * Thrown by implementions of {@link Function} or {@link BoundMethod} when the
  * function/method cannot handle the number of arguments provided.
  */
 public class ArgumentCountMismatchException extends UnsupportedOperationException

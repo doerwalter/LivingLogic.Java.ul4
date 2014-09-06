@@ -15,12 +15,11 @@ public class FunctionIsDate extends Function
 		return "isdate";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("isdate", "obj", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"obj", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

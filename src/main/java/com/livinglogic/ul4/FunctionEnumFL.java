@@ -16,13 +16,11 @@ public class FunctionEnumFL extends Function
 		return "enumfl";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("enumfl", "iterable", Signature.required, "start", 0);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"iterable", Signature.required,
-			"start", 0
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

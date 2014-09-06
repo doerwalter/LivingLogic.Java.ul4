@@ -15,12 +15,11 @@ public class FunctionBin extends Function
 		return "bin";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("bin", "number", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"number", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

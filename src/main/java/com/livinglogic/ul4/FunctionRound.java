@@ -17,13 +17,11 @@ public class FunctionRound extends Function
 		return "round";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("round", "x", Signature.required, "digits", 0);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"x", Signature.required,
-			"digits", 0
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

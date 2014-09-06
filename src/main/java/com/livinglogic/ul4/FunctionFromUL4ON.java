@@ -14,12 +14,11 @@ public class FunctionFromUL4ON extends Function
 		return "fromul4on";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("fromul4on", "string", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"string", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

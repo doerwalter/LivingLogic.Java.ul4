@@ -14,12 +14,11 @@ public class FunctionIsNone extends Function
 		return "isnone";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("isnone", "obj", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"obj", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

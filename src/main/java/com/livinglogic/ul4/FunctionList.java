@@ -21,12 +21,11 @@ public class FunctionList extends Function
 		return "list";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("list", "iterable", Collections.EMPTY_LIST);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"iterable", Collections.EMPTY_LIST
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

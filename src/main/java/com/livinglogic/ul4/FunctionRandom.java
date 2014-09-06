@@ -15,6 +15,13 @@ public class FunctionRandom extends Function
 		return "random";
 	}
 
+	private static Signature signature = new Signature("random");
+
+	public Signature getSignature()
+	{
+		return signature;
+	}
+
 	public Object evaluate(Object[] args)
 	{
 		return call();

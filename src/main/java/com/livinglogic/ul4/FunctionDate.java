@@ -17,18 +17,11 @@ public class FunctionDate extends Function
 		return "date";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("date", "year", Signature.required, "month", Signature.required, "day", Signature.required, "hour", 0, "minute", 0, "second", 0, "microsecond", 0);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"year", Signature.required,
-			"month", Signature.required,
-			"day", Signature.required,
-			"hour", 0,
-			"minute", 0,
-			"second", 0,
-			"microsecond", 0
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

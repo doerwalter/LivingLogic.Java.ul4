@@ -18,12 +18,11 @@ public class FunctionAny extends Function
 		return "any";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("any", "iterable", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"iterable", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

@@ -16,12 +16,11 @@ public class FunctionFloat extends Function
 		return "float";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("float", "obj", 0.0);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"obj", 0.0
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

@@ -16,13 +16,11 @@ public class FunctionSum extends Function
 		return "sum";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("sum", "iterable", Signature.required, "start", 0);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"iterable", Signature.required,
-			"start", 0
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

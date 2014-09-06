@@ -20,12 +20,11 @@ public class FunctionSorted extends Function
 		return "sorted";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("sorted", "iterable", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"iterable", Signature.required
-		);
+		return signature;
 	}
 
 	private static Comparator comparator = new Comparator()

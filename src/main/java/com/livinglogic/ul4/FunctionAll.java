@@ -18,12 +18,11 @@ public class FunctionAll extends Function
 		return "all";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("all", "iterable", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"iterable", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

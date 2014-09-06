@@ -16,12 +16,11 @@ public class FunctionAbs extends Function
 		return "abs";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("abs", "number", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"number", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

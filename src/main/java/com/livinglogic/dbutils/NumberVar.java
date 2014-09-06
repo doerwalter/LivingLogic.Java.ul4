@@ -57,12 +57,11 @@ public class NumberVar extends Var
 			return "number";
 		}
 
-		protected Signature makeSignature()
+		private static Signature signature = new Signature("connection.number", "value", noValue);
+
+		public Signature getSignature()
 		{
-			return new Signature(
-				nameUL4(),
-				"value", noValue
-			);
+			return signature;
 		}
 
 		public Object evaluate(Object[] args)

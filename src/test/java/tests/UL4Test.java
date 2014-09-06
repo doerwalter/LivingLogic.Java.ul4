@@ -205,7 +205,8 @@ public class UL4Test
 	{
 		String env = System.getenv("LL_JAVA_TEST_CONNECT");
 		if (env == null)
-			throw new RuntimeException("Environment variable LL_JAVA_TEST_CONNECT required: format 'oracle.jdbc.driver.OracleDriver jdbc:oracle:thin:@host:1521:sid username password'");
+			return null;
+
 		String[] connectionInfo = StringUtils.splitByWholeSeparator(env, null);
 		try
 		{

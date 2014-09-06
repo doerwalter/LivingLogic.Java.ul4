@@ -16,12 +16,11 @@ public class FunctionURLQuote extends Function
 		return "urlquote";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("urlquote", "string", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"string", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

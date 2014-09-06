@@ -17,12 +17,11 @@ public class FunctionZip extends Function
 		return "zip";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("zip", "iterables", Signature.remainingArguments);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"iterables", Signature.remainingArguments
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

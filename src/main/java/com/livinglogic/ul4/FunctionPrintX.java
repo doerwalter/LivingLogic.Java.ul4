@@ -15,12 +15,11 @@ public class FunctionPrintX extends FunctionWithContext
 		return "printx";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("printx", "values", Signature.remainingArguments);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"values", Signature.remainingArguments
-		);
+		return signature;
 	}
 
 	public Object evaluate(EvaluationContext context, Object[] args)

@@ -16,12 +16,11 @@ public class FunctionLen extends Function
 		return "len";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("len", "sequence", Signature.required);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"sequence", Signature.required
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

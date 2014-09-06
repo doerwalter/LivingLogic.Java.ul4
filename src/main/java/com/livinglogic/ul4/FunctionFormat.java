@@ -27,14 +27,11 @@ public class FunctionFormat extends Function
 		return "format";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("format", "obj", Signature.required, "fmt", Signature.required, "lang", null);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"obj", Signature.required,
-			"fmt", Signature.required,
-			"lang", null
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

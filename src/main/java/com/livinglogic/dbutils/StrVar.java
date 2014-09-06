@@ -57,12 +57,11 @@ public class StrVar extends Var
 			return "str";
 		}
 
-		protected Signature makeSignature()
+		private Signature signature = new Signature("str", "value", noValue);
+
+		public Signature getSignature()
 		{
-			return new Signature(
-				nameUL4(),
-				"value", noValue
-			);
+			return signature;
 		}
 
 		public Object evaluate(Object[] args)

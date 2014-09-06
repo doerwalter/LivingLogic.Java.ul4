@@ -16,12 +16,11 @@ public class FunctionMin extends Function
 		return "min";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("min", "args", Signature.remainingArguments);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"args", Signature.remainingArguments
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

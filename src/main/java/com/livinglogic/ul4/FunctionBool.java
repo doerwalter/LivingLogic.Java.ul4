@@ -19,12 +19,11 @@ public class FunctionBool extends Function
 		return "bool";
 	}
 
-	protected Signature makeSignature()
+	private Signature signature = new Signature("bool", "obj", false);
+
+	public Signature getSignature()
 	{
-		return new Signature(
-			nameUL4(),
-			"obj", false
-		);
+		return signature;
 	}
 
 	public Object evaluate(Object[] args)

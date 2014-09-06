@@ -64,15 +64,14 @@ public class DateVar extends Var
 	{
 		public String nameUL4()
 		{
-			return "date";
+			return "connection.date";
 		}
 
-		protected Signature makeSignature()
+		private Signature signature = new Signature("connection.date", "value", noValue);
+
+		public Signature getSignature()
 		{
-			return new Signature(
-				nameUL4(),
-				"value", noValue
-			);
+			return signature;
 		}
 
 		public Object evaluate(Object[] args)
