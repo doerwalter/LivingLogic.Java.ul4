@@ -3986,10 +3986,12 @@ public class UL4Test
 	public void db_query() throws Exception
 	{
 		String source = 
-			"<?code db.execute('create table ul4test(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" + 
-			"<?code db.execute('insert into ul4test values(1, ', 'first', ', ', 10000*'first', ')')?>\n" + 
-			"<?code db.execute('insert into ul4test values(2, ', 'second', ', ', 10000*'second', ')')?>\n" + 
-			"<?for row in db.query('select * from ul4test order by ul4_int')?>\n" + 
+			"<?code db.execute('create table ul4test(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" +
+			"<?code db.execute('insert into ul4test values(1, ', 'first', ', ', 10000*'first', ')')?>\n" +
+			"<?code db.execute('insert into ul4test values(2, ', 'second', ', ', 10000*'second', ')')?>\n" +
+			"<?code db.execute('insert into ul4test values(3, ', 'third', ', ', 10000*'third', ')')?>\n" +
+			"<?code vin = db.int(2)?>\n" +
+			"<?for row in db.query('select * from ul4test where ul4_int <= ', vin, ' order by ul4_int')?>\n" +
 				"<?print row.ul4_int?>|\n" +
 				"<?print row.ul4_char?>|\n" +
 				"<?print row.ul4_clob?>|\n" +
