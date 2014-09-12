@@ -431,6 +431,10 @@ expr_subscript returns [AST node]
 					','
 					'*' rargs=exprarg { ((CallAST)$node).setRemainingArguments($rargs.node); }
 				)?
+				/* Python allows keyword arguments after the '*' argument, but we don't.
+				 * To allow it we would have to track the order of the arguments that get passed, so that we can guarantee that they get
+				 * evaluated from left to right
+				 */
 				(
 					','
 					'**' rkwargs=exprarg { ((CallAST)$node).setRemainingKeywordArguments($rkwargs.node); }
