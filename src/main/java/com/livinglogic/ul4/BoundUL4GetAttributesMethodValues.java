@@ -6,10 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 
 public class BoundUL4GetAttributesMethodValues extends BoundMethod<UL4GetAttributes>
@@ -29,7 +27,7 @@ public class BoundUL4GetAttributesMethodValues extends BoundMethod<UL4GetAttribu
 		return new UL4GetAttributeValuesIterator(object);
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
 		return call(object);
 	}

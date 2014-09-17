@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,12 +40,14 @@ public class BoundStringMethodStrip extends BoundMethod<String>
 		return StringUtils.strip(object, chars);
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		if (args[0] == null)
+		Object arg = args.get(0);
+
+		if (arg == null)
 			return call(object);
-		else if (args[0] instanceof String)
-			return call(object, (String)args[0]);
-		throw new ArgumentTypeMismatchException("{}.strip({})", object, args[0]);
+		else if (arg instanceof String)
+			return call(object, (String)arg);
+		throw new ArgumentTypeMismatchException("{}.strip({})", object, arg);
 	}
 }

@@ -6,6 +6,7 @@
 
 package com.livinglogic.dbutils;
 
+import java.util.List;
 import java.math.BigInteger;
 
 import java.sql.CallableStatement;
@@ -67,9 +68,9 @@ public class IntVar extends Var
 			return signature;
 		}
 
-		public Object evaluate(Object[] args)
+		public Object evaluate(List<Object> args)
 		{
-			return new IntVar(args[0]);
+			return new IntVar(args.get(0));
 		}
 	}
 

@@ -6,8 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.Iterator;
 
 public class FunctionMin extends Function
 {
@@ -23,9 +23,9 @@ public class FunctionMin extends Function
 		return signature;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		List<Object> argList = (List<Object>)args[0];
+		List<Object> argList = (List<Object>)args.get(0);
 		return (argList.size() == 0) ? call() : call(argList);
 	}
 

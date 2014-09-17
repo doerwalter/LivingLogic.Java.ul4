@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -24,9 +25,9 @@ public class FunctionDate extends Function
 		return signature;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+		return call(args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5), args.get(6));
 	}
 
 	public static Date call(int year, int month, int day)

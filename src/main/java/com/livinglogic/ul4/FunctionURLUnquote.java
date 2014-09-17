@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -23,9 +24,9 @@ public class FunctionURLUnquote extends Function
 		return signature;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(args[0]);
+		return call(args.get(0));
 	}
 
 	public static Object call(String obj)

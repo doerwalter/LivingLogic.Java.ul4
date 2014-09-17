@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 
 public class FunctionXMLEscape extends Function
 {
@@ -21,9 +22,9 @@ public class FunctionXMLEscape extends Function
 		return signature;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(args[0]);
+		return call(args.get(0));
 	}
 
 	public static String call(Object obj)

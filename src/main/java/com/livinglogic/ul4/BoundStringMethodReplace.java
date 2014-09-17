@@ -6,8 +6,10 @@
 
 package com.livinglogic.ul4;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 public class BoundStringMethodReplace extends BoundMethod<String>
 {
@@ -38,14 +40,18 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 		return StringUtils.replace(object, search, replace, count);
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		if (!(args[0] instanceof String) || !(args[1] instanceof String))
-			throw new ArgumentTypeMismatchException("{}.replace({}, {})", object, args[0], args[1]);
+		Object arg1 = args.get(0);
+		Object arg2 = args.get(1);
+		Object arg3 = args.get(2);
 
-		if (args[2] == null)
-			return call(object, (String)args[0], (String)args[1]);
+		if (!(arg1 instanceof String) || !(arg2 instanceof String))
+			throw new ArgumentTypeMismatchException("{}.replace({}, {})", object, arg1, arg2);
+
+		if (arg3 == null)
+			return call(object, (String)arg1, (String)arg2);
 		else
-			return call(object, (String)args[0], (String)args[1], Utils.toInt(args[2]));
+			return call(object, (String)arg1, (String)arg2, Utils.toInt(arg3));
 	}
 }

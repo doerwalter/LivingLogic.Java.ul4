@@ -8,6 +8,7 @@ package com.livinglogic.ul4;
 
 import static java.util.Arrays.asList;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -76,17 +77,9 @@ public class Signature implements Iterable<ArgumentDescription>
 		return arguments.containsKey(argName);
 	}
 
-	public Object[] makeArgumentArray(UL4Name object, Object[] args, Map<String, Object> kwargs)
+	public List<Object> makeArgumentList(UL4Name object, List<Object> args, Map<String, Object> kwargs)
 	{
-		int realSize = size();
-		int remainingArgumentsPos = -1;
-		int remainingKeywordArgumentsPos = -1;
-		if (remainingArgumentsName != null)
-			remainingArgumentsPos = realSize++;
-		if (remainingKeywordArgumentsName != null)
-			remainingKeywordArgumentsPos = realSize++;
-
-		Object[] realargs = new Object[realSize];
+		List<Object> realargs = new ArrayList<Object>(size());
 
 		int i = 0;
 		for (ArgumentDescription argDesc : this)
@@ -96,19 +89,19 @@ public class Signature implements Iterable<ArgumentDescription>
 			// argument has been specified via keyword
 			if (argValue != null || kwargs.containsKey(argName))
 			{
-				if (i < args.length)
+				if (i < args.size())
 					// argument has been specified as a positional argument too
 					throw new DuplicateArgumentException(object, argDesc);
-				realargs[i] = argValue;
+				realargs.add(argValue);
 			}
 			else
 			{
-				if (i < args.length)
+				if (i < args.size())
 					// argument has been specified as a positional argument
-					realargs[i] = args[i];
+					realargs.add(args.get(i));
 				else if (argDesc.hasDefaultValue())
 					// we have a default value for this argument
-					realargs[i] = argDesc.getDefaultValue();
+					realargs.add(argDesc.getDefaultValue());
 				else
 					throw new MissingArgumentException(object, argDesc);
 			}
@@ -120,12 +113,12 @@ public class Signature implements Iterable<ArgumentDescription>
 		int expectedArgCount = size();
 		if (remainingArgumentsName != null)
 		{
-			realargs[remainingArgumentsPos] = (args.length > expectedArgCount) ? asList(args).subList(arguments.size(), args.length) : new ArrayList<Object>();
+			realargs.add((args.size() > expectedArgCount) ? args.subList(arguments.size(), args.size()) : new ArrayList<Object>());
 		}
 		else
 		{
-			if (args.length > expectedArgCount)
-				throw new TooManyArgumentsException(object, this, args.length);
+			if (args.size() > expectedArgCount)
+				throw new TooManyArgumentsException(object, this, args.size());
 		}
 
 		// Handle additional keyword arguments
@@ -140,7 +133,7 @@ public class Signature implements Iterable<ArgumentDescription>
 					realRemainingKeywordArguments.put(kwargname, kwargs.get(kwargname));
 				}
 			}
-			realargs[remainingKeywordArgumentsPos] = realRemainingKeywordArguments;
+			realargs.add(realRemainingKeywordArguments);
 		}
 		else
 		{

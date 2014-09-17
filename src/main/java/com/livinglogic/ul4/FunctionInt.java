@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -25,9 +26,9 @@ public class FunctionInt extends Function
 		return signature;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(args[0], args[1]);
+		return call(args.get(0), args.get(1));
 	}
 
 	public static int call()

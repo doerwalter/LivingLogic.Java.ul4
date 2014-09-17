@@ -6,6 +6,7 @@
 
 package com.livinglogic.dbutils;
 
+import java.util.List;
 import java.util.Date;
 
 import java.sql.CallableStatement;
@@ -74,9 +75,9 @@ public class DateVar extends Var
 			return signature;
 		}
 
-		public Object evaluate(Object[] args)
+		public Object evaluate(List<Object> args)
 		{
-			return new DateVar(args[0]);
+			return new DateVar(args.get(0));
 		}
 	}
 

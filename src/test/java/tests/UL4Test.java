@@ -1415,6 +1415,9 @@ public class UL4Test
 		checkTemplateOutput("@(2012-10-06T12:34:56)", "<?print repr(date(2012, 10, 6, 12, 34, 56))?>");
 		checkTemplateOutput("@(2012-10-06T12:34:56.987000)", "<?print repr(date(2012, 10, 6, 12, 34, 56, 987000))?>");
 		checkTemplateOutput("@(2012-10-06T12:34:56.987000)", "<?print repr(date(year=2012, month=10, day=6, hour=12, minute=34, second=56, microsecond=987000))?>");
+
+		// date() is the best candidate for testing a mixture of the argument passing methods
+		checkTemplateOutput("@(2012-10-06T12:34:56)", "<?print repr(date(2012, 10, 6, hour=12, **{'minute': 34, 'second': 56}))?>");
 	}
 
 	@Test

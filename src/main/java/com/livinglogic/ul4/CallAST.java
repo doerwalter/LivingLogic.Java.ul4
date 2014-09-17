@@ -9,9 +9,10 @@ package com.livinglogic.ul4;
 import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Set;
 import static java.util.Arrays.asList;
 import java.io.IOException;
@@ -22,10 +23,7 @@ import com.livinglogic.ul4on.Encoder;
 public class CallAST extends AST
 {
 	protected AST obj;
-	protected List<AST> arguments = new LinkedList<AST>();
-	protected List<KeywordArgument> keywordArguments = new LinkedList<KeywordArgument>();
-	protected AST remainingArguments = null;
-	protected AST remainingKeywordArguments = null;
+	protected List<Argument> arguments = new LinkedList<Argument>();
 
 	public CallAST(Location location, int start, int end, AST obj)
 	{
@@ -38,89 +36,50 @@ public class CallAST extends AST
 		return "call";
 	}
 
-	public void append(AST arg)
+	public void appendArgument(AST arg)
 	{
-		arguments.add(arg);
+		arguments.add(new Argument(arg));
 	}
 
-	public void append(String name, AST arg)
+	public void appendKeywordArgument(String name, AST arg)
 	{
-		keywordArguments.add(new KeywordArgument(name, arg));
+		arguments.add(new KeywordArgument(name, arg));
 	}
 
-	public void setRemainingArguments(AST arguments)
+	public void appendRemainingArguments(AST arg)
 	{
-		remainingArguments = arguments;
+		arguments.add(new RemainingArguments(arg));
 	}
 
-	public void setRemainingKeywordArguments(AST arguments)
+	public void appendRemainingKeywordArguments(AST arg)
 	{
-		remainingKeywordArguments = arguments;
+		arguments.add(new RemainingKeywordArguments(arg));
 	}
 
 	public Object evaluate(EvaluationContext context)
 	{
-		Object realobj = obj.decoratedEvaluate(context);
+		Object realObject = obj.decoratedEvaluate(context);
 
-		Object[] realArgs;
-		if (remainingArguments != null)
-		{
-			Object realRemainingArguments = remainingArguments.decoratedEvaluate(context);
-			if (!(realRemainingArguments instanceof List))
-				throw new RemainingArgumentsException(realobj);
+		List<Object> realArguments = new ArrayList<Object>();
+		Map<String, Object> realKeywordArguments = new HashMap<String, Object>();
 
-			int argsSize = arguments.size();
-			realArgs = new Object[argsSize + ((List)realRemainingArguments).size()];
+		for (Argument argument : arguments)
+			argument.addToCallArguments(context, realObject, realArguments, realKeywordArguments);
 
-			for (int i = 0; i < argsSize; ++i)
-				realArgs[i] = arguments.get(i).decoratedEvaluate(context);
-
-			for (int i = 0; i < ((List)realRemainingArguments).size(); ++i)
-				realArgs[argsSize + i] = ((List)realRemainingArguments).get(i);
-		}
-		else
-		{
-			realArgs = new Object[arguments.size()];
-
-			for (int i = 0; i < realArgs.length; ++i)
-				realArgs[i] = arguments.get(i).decoratedEvaluate(context);
-		}
-
-		Map<String, Object> realKWArgs = new LinkedHashMap<String, Object>();
-
-		for (KeywordArgument arg : keywordArguments)
-			realKWArgs.put(arg.getName(), arg.getArg().decoratedEvaluate(context));
-
-		if (remainingKeywordArguments != null)
-		{
-			Object realRemainingKWArgs = remainingKeywordArguments.decoratedEvaluate(context);
-			if (!(realRemainingKWArgs instanceof Map))
-				throw new RemainingKeywordArgumentsException(realobj);
-			for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)realRemainingKWArgs).entrySet())
-			{
-				Object argumentName = entry.getKey();
-				if (!(argumentName instanceof String))
-					throw new RemainingKeywordArgumentsException(realobj);
-				if (realKWArgs.containsKey(argumentName))
-					throw new DuplicateArgumentException(realobj, (String)argumentName);
-				realKWArgs.put((String)argumentName, entry.getValue());
-			}
-		}
-
-		return call(context, realobj, realArgs, realKWArgs);
+		return call(context, realObject, realArguments, realKeywordArguments);
 	}
 
-	public Object call(UL4Call obj, Object[] args, Map<String, Object> kwargs)
+	public Object call(UL4Call obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		return obj.callUL4(args, kwargs);
 	}
 
-	public Object call(EvaluationContext context, UL4CallWithContext obj, Object[] args, Map<String, Object> kwargs)
+	public Object call(EvaluationContext context, UL4CallWithContext obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		return obj.callUL4(context, args, kwargs);
 	}
 
-	public Object call(EvaluationContext context, Object obj, Object[] args, Map<String, Object> kwargs)
+	public Object call(EvaluationContext context, Object obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		if (obj instanceof UL4Call)
 			return call((UL4Call)obj, args, kwargs);
@@ -133,28 +92,33 @@ public class CallAST extends AST
 	{
 		super.dumpUL4ON(encoder);
 		encoder.dump(obj);
-		encoder.dump(arguments);
-		List keywordArgumentList = new LinkedList();
-		for (KeywordArgument arg : keywordArguments)
-			keywordArgumentList.add(asList(arg.getName(), arg.getArg()));
-		encoder.dump(keywordArgumentList);
-		encoder.dump(remainingArguments);
-		encoder.dump(remainingKeywordArguments);
+		List argumentList = new LinkedList();
+		for (Argument arg : arguments)
+			argumentList.add(asList(arg.getName(), arg.getArg()));
+		encoder.dump(argumentList);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
 		obj = (AST)decoder.load();
-		arguments = (List<AST>)decoder.load();
-		List<List> keywordArgumentList = (List<List>)decoder.load();
-		for (List arg : keywordArgumentList)
-			append((String)arg.get(0), (AST)arg.get(1));
-		remainingArguments = (AST)decoder.load();
-		remainingKeywordArguments = (AST)decoder.load();
+		List<List> argumentList = (List<List>)decoder.load();
+		for (List namearg : argumentList)
+		{
+			String name = (String)namearg.get(0);
+			AST arg = (AST)namearg.get(1);
+			if (name == null)
+				appendArgument(arg);
+			else if (name.equals("*"))
+				appendRemainingArguments(arg);
+			else if (name.equals("**"))
+				appendRemainingKeywordArguments(arg);
+			else
+				appendKeywordArgument(name, arg);
+		}
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "obj", "args", "kwargs", "remargs", "remkwargs");
+	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "obj", "args");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -167,12 +131,6 @@ public class CallAST extends AST
 			return obj;
 		else if ("args".equals(key))
 			return arguments;
-		else if ("kwargs".equals(key))
-			return keywordArguments;
-		else if ("remargs".equals(key))
-			return remainingArguments;
-		else if ("remkwargs".equals(key))
-			return remainingKeywordArguments;
 		else
 			return super.getItemStringUL4(key);
 	}

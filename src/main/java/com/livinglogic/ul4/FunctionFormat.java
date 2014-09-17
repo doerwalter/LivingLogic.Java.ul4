@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -34,9 +35,9 @@ public class FunctionFormat extends Function
 		return signature;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(args[0], args[1], args[2]);
+		return call(args.get(0), args.get(1), args.get(2));
 	}
 
 	private static HashMap<Integer, String> weekdayFormats;

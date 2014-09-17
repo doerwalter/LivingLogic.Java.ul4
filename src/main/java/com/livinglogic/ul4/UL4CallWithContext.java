@@ -6,9 +6,10 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UL4CallWithContext
 {
-	Object callUL4(EvaluationContext context, Object[] args, Map<String, Object> kwargs);
+	Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs);
 }

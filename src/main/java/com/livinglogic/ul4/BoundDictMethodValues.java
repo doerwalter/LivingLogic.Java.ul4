@@ -6,11 +6,9 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 public class BoundDictMethodValues extends BoundMethod<Map>
 {
@@ -29,8 +27,8 @@ public class BoundDictMethodValues extends BoundMethod<Map>
 		return object.values();
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(object);
+		return call((Map)object);
 	}
 }

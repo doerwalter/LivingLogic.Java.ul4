@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Map;
 
 public class BoundStringMethodEndsWith extends BoundMethod<String>
@@ -32,10 +33,10 @@ public class BoundStringMethodEndsWith extends BoundMethod<String>
 		return object.endsWith(suffix);
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		if (args[0] instanceof String)
-			return call(object, (String)args[0]);
-		throw new ArgumentTypeMismatchException("{}.endswith({})", object, args[0]);
+		if (args.get(0) instanceof String)
+			return call(object, (String)args.get(0));
+		throw new ArgumentTypeMismatchException("{}.endswith({})", object, args.get(0));
 	}
 }

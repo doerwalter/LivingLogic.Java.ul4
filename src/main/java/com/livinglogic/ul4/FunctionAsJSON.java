@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -31,9 +32,9 @@ public class FunctionAsJSON extends Function
 		return signature;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(args[0]);
+		return call(args.get(0));
 	}
 
 	private static void call(StringBuilder builder, Object obj)

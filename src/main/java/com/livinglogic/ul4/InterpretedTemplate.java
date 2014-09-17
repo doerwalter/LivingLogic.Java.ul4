@@ -8,6 +8,10 @@ package com.livinglogic.ul4;
 
 import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
@@ -15,10 +19,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -517,9 +517,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return reader;
 	}
 
-	public Object callUL4(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		if (args.length > 0)
+		if (args.size() > 0)
 			throw new PositionalArgumentsNotSupportedException(name);
 		return call(context, kwargs);
 	}
@@ -827,9 +827,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, List<Object> args)
 		{
-			return object.renders(context, (Map<String, Object>)args[0]);
+			return object.renders(context, (Map<String, Object>)args.get(0));
 		}
 	}
 
@@ -852,9 +852,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, List<Object> args)
 		{
-			object.render(context, (Map<String, Object>)args[0]);
+			object.render(context, (Map<String, Object>)args.get(0));
 			return null;
 		}
 	}

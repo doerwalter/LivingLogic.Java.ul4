@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -676,7 +677,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 		}
 	}
 
-	private static class BoundMethodR extends BoundMethodWithContext<Color>
+	private static class BoundMethodR extends BoundMethod<Color>
 	{
 		public BoundMethodR(Color object)
 		{
@@ -688,13 +689,13 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.r";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return (int)object.r;
 		}
 	}
 
-	private static class BoundMethodG extends BoundMethodWithContext<Color>
+	private static class BoundMethodG extends BoundMethod<Color>
 	{
 		public BoundMethodG(Color object)
 		{
@@ -706,13 +707,13 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.g";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return (int)object.g;
 		}
 	}
 
-	private static class BoundMethodB extends BoundMethodWithContext<Color>
+	private static class BoundMethodB extends BoundMethod<Color>
 	{
 		public BoundMethodB(Color object)
 		{
@@ -724,13 +725,13 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.b";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return (int)object.b;
 		}
 	}
 
-	private static class BoundMethodA extends BoundMethodWithContext<Color>
+	private static class BoundMethodA extends BoundMethod<Color>
 	{
 		public BoundMethodA(Color object)
 		{
@@ -742,13 +743,13 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.a";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return (int)object.a;
 		}
 	}
 
-	private static class BoundMethodLum extends BoundMethodWithContext<Color>
+	private static class BoundMethodLum extends BoundMethod<Color>
 	{
 		public BoundMethodLum(Color object)
 		{
@@ -760,13 +761,13 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.lum";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return object.lum();
 		}
 	}
 
-	private static class BoundMethodHLS extends BoundMethodWithContext<Color>
+	private static class BoundMethodHLS extends BoundMethod<Color>
 	{
 		public BoundMethodHLS(Color object)
 		{
@@ -778,13 +779,13 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.hls";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return object.hls();
 		}
 	}
 
-	private static class BoundMethodHLSA extends BoundMethodWithContext<Color>
+	private static class BoundMethodHLSA extends BoundMethod<Color>
 	{
 		public BoundMethodHLSA(Color object)
 		{
@@ -796,13 +797,13 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.hlsa";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return object.hlsa();
 		}
 	}
 
-	private static class BoundMethodHSV extends BoundMethodWithContext<Color>
+	private static class BoundMethodHSV extends BoundMethod<Color>
 	{
 		public BoundMethodHSV(Color object)
 		{
@@ -814,13 +815,13 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.hsv";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return object.hsv();
 		}
 	}
 
-	private static class BoundMethodHSVA extends BoundMethodWithContext<Color>
+	private static class BoundMethodHSVA extends BoundMethod<Color>
 	{
 		public BoundMethodHSVA(Color object)
 		{
@@ -832,13 +833,13 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.hsva";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return object.hsva();
 		}
 	}
 
-	private static class BoundMethodWithA extends BoundMethodWithContext<Color>
+	private static class BoundMethodWithA extends BoundMethod<Color>
 	{
 		public BoundMethodWithA(Color object)
 		{
@@ -857,13 +858,13 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
-			return object.witha(Utils.toInt(args[0]));
+			return object.witha(Utils.toInt(args.get(0)));
 		}
 	}
 
-	private static class BoundMethodWithLum extends BoundMethodWithContext<Color>
+	private static class BoundMethodWithLum extends BoundMethod<Color>
 	{
 		public BoundMethodWithLum(Color object)
 		{
@@ -882,13 +883,13 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
-			return object.withlum(Utils.toDouble(args[0]));
+			return object.withlum(Utils.toDouble(args.get(0)));
 		}
 	}
 
-	private static class BoundMethodAbsLum extends BoundMethodWithContext<Color>
+	private static class BoundMethodAbsLum extends BoundMethod<Color>
 	{
 		public BoundMethodAbsLum(Color object)
 		{
@@ -907,13 +908,13 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
-			return object.abslum(Utils.toDouble(args[0]));
+			return object.abslum(Utils.toDouble(args.get(0)));
 		}
 	}
 
-	private static class BoundMethodRelLum extends BoundMethodWithContext<Color>
+	private static class BoundMethodRelLum extends BoundMethod<Color>
 	{
 		public BoundMethodRelLum(Color object)
 		{
@@ -932,9 +933,9 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
-			return object.rellum(Utils.toDouble(args[0]));
+			return object.rellum(Utils.toDouble(args.get(0)));
 		}
 	}
 

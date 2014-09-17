@@ -25,9 +25,9 @@ public class FunctionAll extends Function
 		return signature;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(args[0]);
+		return call(args.get(0));
 	}
 
 	public static boolean call(String obj)

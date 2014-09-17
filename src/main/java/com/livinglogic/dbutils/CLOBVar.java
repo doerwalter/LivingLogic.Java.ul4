@@ -6,6 +6,8 @@
 
 package com.livinglogic.dbutils;
 
+import java.util.List;
+
 import java.sql.CallableStatement;
 import java.sql.Types;
 import java.sql.Clob;
@@ -68,9 +70,9 @@ public class CLOBVar extends Var
 			return signature;
 		}
 
-		public Object evaluate(Object[] args)
+		public Object evaluate(List<Object> args)
 		{
-			return new CLOBVar(args[0]);
+			return new CLOBVar(args.get(0));
 		}
 	}
 

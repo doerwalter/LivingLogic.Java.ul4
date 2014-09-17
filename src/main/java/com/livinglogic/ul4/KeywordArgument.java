@@ -6,15 +6,17 @@
 
 package com.livinglogic.ul4;
 
-public class KeywordArgument
+import java.util.List;
+import java.util.Map;
+
+public class KeywordArgument extends Argument
 {
 	protected String name;
-	protected AST arg;
 
 	public KeywordArgument(String name, AST arg)
 	{
+		super(arg);
 		this.name = name;
-		this.arg = arg;
 	}
 
 	public String toString()
@@ -27,8 +29,10 @@ public class KeywordArgument
 		return name;
 	}
 
-	public AST getArg()
+	public void addToCallArguments(EvaluationContext context, Object object, List<Object> arguments, Map<String, Object> keywordArguments)
 	{
-		return arg;
+		if (keywordArguments.containsKey(name))
+			throw new DuplicateArgumentException(object, name);
+		keywordArguments.put(name, arg.decoratedEvaluate(context));
 	}
 }

@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -16,20 +17,20 @@ public class FunctionSlice implements UL4Call
 		return "slice";
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(List<Object> args, Map<String, Object> kwargs)
 	{
 		if (kwargs.size() != 0)
 			throw new KeywordArgumentsNotSupportedException(this.getName());
-		switch (args.length)
+		switch (args.size())
 		{
 			case 2:
-				return call(args[0], args[1]);
+				return call(args.get(0), args.get(1));
 			case 3:
-				return call(args[0], args[1], args[2]);
+				return call(args.get(0), args.get(1), args.get(2));
 			case 4:
-				return call(args[0], args[1], args[2], args[3]);
+				return call(args.get(0), args.get(1), args.get(2), args.get(3));
 			default:
-				throw new ArgumentCountMismatchException("function", "slice", args.length, 2, 4);
+				throw new ArgumentCountMismatchException("function", "slice", args.size(), 2, 4);
 		}
 	}
 

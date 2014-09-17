@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -41,9 +42,9 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 		return template.nameUL4();
 	}
 
-	public Object callUL4(EvaluationContext context, Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		if (args.length > 0)
+		if (args.size() > 0)
 			throw new PositionalArgumentsNotSupportedException(nameUL4());
 		return call(context, kwargs);
 	}
@@ -87,9 +88,9 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, List<Object> args)
 		{
-			object.render(context, (Map<String, Object>)args[0]);
+			object.render(context, (Map<String, Object>)args.get(0));
 			return null;
 		}
 	}
@@ -113,9 +114,9 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, List<Object> args)
 		{
-			return object.renders(context, (Map<String, Object>)args[0]);
+			return object.renders(context, (Map<String, Object>)args.get(0));
 		}
 	}
 

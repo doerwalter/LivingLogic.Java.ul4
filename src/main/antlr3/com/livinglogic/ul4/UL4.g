@@ -406,30 +406,30 @@ expr_subscript returns [AST node]
 				/* No arguments */
 			|
 				/* "**" argument only */
-				'**' rkwargs=exprarg { ((CallAST)$node).setRemainingKeywordArguments($rkwargs.node); }
+				'**' rkwargs=exprarg { ((CallAST)$node).appendRemainingKeywordArguments($rkwargs.node); }
 				','?
 			|
 				/* "*" argument only (and maybe **) */
-				'*' rargs=exprarg { ((CallAST)$node).setRemainingArguments($rargs.node); }
+				'*' rargs=exprarg { ((CallAST)$node).appendRemainingArguments($rargs.node); }
 				(
 					','
-					'**' rkwargs=exprarg { ((CallAST)$node).setRemainingKeywordArguments($rkwargs.node); }
+					'**' rkwargs=exprarg { ((CallAST)$node).appendRemainingKeywordArguments($rkwargs.node); }
 				)?
 				','?
 			|
 				/* At least one positional argument */
-				a1=exprarg { ((CallAST)$node).append($a1.node); }
+				a1=exprarg { ((CallAST)$node).appendArgument($a1.node); }
 				(
 					','
-					a2=exprarg { ((CallAST)$node).append($a2.node); }
+					a2=exprarg { ((CallAST)$node).appendArgument($a2.node); }
 				)*
 				(
 					','
-					an3=name '=' av3=exprarg { ((CallAST)$node).append($an3.text, $av3.node); }
+					an3=name '=' av3=exprarg { ((CallAST)$node).appendKeywordArgument($an3.text, $av3.node); }
 				)*
 				(
 					','
-					'*' rargs=exprarg { ((CallAST)$node).setRemainingArguments($rargs.node); }
+					'*' rargs=exprarg { ((CallAST)$node).appendRemainingArguments($rargs.node); }
 				)?
 				/* Python allows keyword arguments after the '*' argument, but we don't.
 				 * To allow it we would have to track the order of the arguments that get passed, so that we can guarantee that they get
@@ -437,23 +437,23 @@ expr_subscript returns [AST node]
 				 */
 				(
 					','
-					'**' rkwargs=exprarg { ((CallAST)$node).setRemainingKeywordArguments($rkwargs.node); }
+					'**' rkwargs=exprarg { ((CallAST)$node).appendRemainingKeywordArguments($rkwargs.node); }
 				)?
 				','?
 			|
 				/* Keyword arguments only */
-				an1=name '=' av1=exprarg { ((CallAST)$node).append($an1.text, $av1.node); }
+				an1=name '=' av1=exprarg { ((CallAST)$node).appendKeywordArgument($an1.text, $av1.node); }
 				(
 					','
-					an2=name '=' av2=exprarg { ((CallAST)$node).append($an2.text, $av2.node); }
+					an2=name '=' av2=exprarg { ((CallAST)$node).appendKeywordArgument($an2.text, $av2.node); }
 				)*
 				(
 					','
-					'*' rargs=exprarg { ((CallAST)$node).setRemainingArguments($rargs.node); }
+					'*' rargs=exprarg { ((CallAST)$node).appendRemainingArguments($rargs.node); }
 				)?
 				(
 					','
-					'**' rkwargs=exprarg { ((CallAST)$node).setRemainingKeywordArguments($rkwargs.node); }
+					'**' rkwargs=exprarg { ((CallAST)$node).appendRemainingKeywordArguments($rkwargs.node); }
 				)?
 				','?
 			)

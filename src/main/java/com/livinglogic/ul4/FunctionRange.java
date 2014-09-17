@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.AbstractList;
 import java.util.Map;
 
@@ -16,20 +17,20 @@ public class FunctionRange implements UL4Call
 		return "range";
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(List<Object> args, Map<String, Object> kwargs)
 	{
 		if (kwargs.size() != 0)
 			throw new KeywordArgumentsNotSupportedException(this.getName());
-		switch (args.length)
+		switch (args.size())
 		{
 			case 1:
-				return call(args[0]);
+				return call(args.get(0));
 			case 2:
-				return call(args[0], args[1]);
+				return call(args.get(0), args.get(1));
 			case 3:
-				return call(args[0], args[1], args[2]);
+				return call(args.get(0), args.get(1), args.get(2));
 			default:
-				throw new ArgumentCountMismatchException("function", "range", args.length, 1, 3);
+				throw new ArgumentCountMismatchException("function", "range", args.size(), 1, 3);
 		}
 	}
 

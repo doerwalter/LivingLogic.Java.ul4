@@ -6,8 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class FunctionReversed extends Function
@@ -24,9 +24,9 @@ public class FunctionReversed extends Function
 		return signature;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(args[0]);
+		return call(args.get(0));
 	}
 
 	public static Iterator call(Object obj)

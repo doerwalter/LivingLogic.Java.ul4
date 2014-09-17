@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -30,7 +31,7 @@ public class BoundDateMethodMIMEFormat extends BoundMethod<Date>
 		return mimeDateFormatter.format(obj);
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
 		return call(object);
 	}

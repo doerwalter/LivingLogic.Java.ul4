@@ -6,8 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.Iterator;
 
 public class FunctionSum extends Function
 {
@@ -23,9 +23,9 @@ public class FunctionSum extends Function
 		return signature;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(args[0], args[1]);
+		return call(args.get(0), args.get(1));
 	}
 
 	public static Object call(Object iterable, Object start)

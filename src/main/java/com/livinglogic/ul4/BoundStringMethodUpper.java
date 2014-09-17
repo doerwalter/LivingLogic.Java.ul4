@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Map;
 
 public class BoundStringMethodUpper extends BoundMethod<String>
@@ -25,7 +26,7 @@ public class BoundStringMethodUpper extends BoundMethod<String>
 		return object.toUpperCase();
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
 		return call(object);
 	}

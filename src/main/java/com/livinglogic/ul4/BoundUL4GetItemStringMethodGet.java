@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Map;
 
 public class BoundUL4GetItemStringMethodGet extends BoundMethod<UL4GetItemString>
@@ -40,8 +41,8 @@ public class BoundUL4GetItemStringMethodGet extends BoundMethod<UL4GetItemString
 			return defaultValue;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(object, args[0], args[1]);
+		return call(object, args.get(0), args.get(1));
 	}
 }

@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Date;
 import java.util.Map;
 
@@ -40,8 +41,9 @@ public class BoundDateMethodWeek extends BoundMethod<Date>
 		return yearday/7;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(object, args[0] == null ? 0 : Utils.toInt(args[0]));
+		Object arg = args.get(0);
+		return call(object, arg == null ? 0 : Utils.toInt(arg));
 	}
 }

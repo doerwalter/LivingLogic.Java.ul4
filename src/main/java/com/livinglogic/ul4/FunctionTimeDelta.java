@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 
 public class FunctionTimeDelta extends Function
 {
@@ -21,9 +22,9 @@ public class FunctionTimeDelta extends Function
 		return signature;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(args[0], args[1], args[2]);
+		return call(args.get(0), args.get(1), args.get(2));
 	}
 
 	public static TimeDelta call()

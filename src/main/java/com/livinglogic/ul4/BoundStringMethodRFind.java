@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Map;
 
 public class BoundStringMethodRFind extends BoundMethod<String>
@@ -54,14 +55,14 @@ public class BoundStringMethodRFind extends BoundMethod<String>
 		return result;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		if (args[0] instanceof String)
+		if (args.get(0) instanceof String)
 		{
-			int startIndex = args[1] != null ? Utils.toInt(args[1]) : 0;
-			int endIndex = args[2] != null ? Utils.toInt(args[2]) : object.length();
-			return call(object, (String)args[0], startIndex, endIndex);
+			int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
+			int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : object.length();
+			return call(object, (String)args.get(0), startIndex, endIndex);
 		}
-		throw new ArgumentTypeMismatchException("{}.rfind({}, {}, {})", object, args[0], args[1], args[2]);
+		throw new ArgumentTypeMismatchException("{}.rfind({}, {}, {})", object, args.get(0), args.get(1), args.get(2));
 	}
 }

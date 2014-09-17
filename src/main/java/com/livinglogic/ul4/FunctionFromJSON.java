@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -24,9 +25,9 @@ public class FunctionFromJSON extends Function
 		return signature;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(args[0]);
+		return call(args.get(0));
 	}
 
 	public static Object call(String obj)

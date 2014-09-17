@@ -22,9 +22,9 @@ public class FunctionPrintX extends FunctionWithContext
 		return signature;
 	}
 
-	public Object evaluate(EvaluationContext context, Object[] args)
+	public Object evaluate(EvaluationContext context, List<Object> args)
 	{
-		return call(context, (List<Object>)args[0]);
+		return call(context, (List<Object>)args.get(0));
 	}
 
 	public static Object call(EvaluationContext context, List<Object> values)

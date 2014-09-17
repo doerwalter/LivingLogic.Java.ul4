@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Date;
 
 public class FunctionNow extends Function
@@ -15,7 +16,7 @@ public class FunctionNow extends Function
 		return "now";
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
 		return call();
 	}

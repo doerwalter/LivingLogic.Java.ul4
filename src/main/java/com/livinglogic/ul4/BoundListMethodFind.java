@@ -56,11 +56,11 @@ public class BoundListMethodFind extends BoundMethod<List>
 		return pos;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		int startIndex = args[1] != null ? Utils.toInt(args[1]) : 0;
-		int endIndex = args[2] != null ? Utils.toInt(args[2]) : object.size();
+		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
+		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : object.size();
 
-		return call(object, args[0], startIndex, endIndex);
+		return call(object, args.get(0), startIndex, endIndex);
 	}
 }

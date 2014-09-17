@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Map;
 
 public class BoundStringMethodCapitalize extends BoundMethod<String>
@@ -25,7 +26,7 @@ public class BoundStringMethodCapitalize extends BoundMethod<String>
 		return String.valueOf(Character.toTitleCase(object.charAt(0))) + object.substring(1).toLowerCase();
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
 		return call(object);
 	}

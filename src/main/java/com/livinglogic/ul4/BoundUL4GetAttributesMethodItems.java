@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
@@ -27,7 +28,7 @@ public class BoundUL4GetAttributesMethodItems extends BoundMethod<UL4GetAttribut
 		return new UL4AttributeItemsIterator(object);
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
 		return call(object);
 	}

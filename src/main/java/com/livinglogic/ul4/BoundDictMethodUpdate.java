@@ -51,9 +51,9 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 		object.putAll(kwargs);
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		call(object, (List<Object>)args[0], (Map<String, Object>)args[1]);
+		call(object, (List<Object>)args.get(0), (Map<String, Object>)args.get(1));
 		return null;
 	}
 }

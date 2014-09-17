@@ -6,12 +6,13 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
+import java.util.Set;
+import java.util.Map;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Set;
-import java.util.Map;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
@@ -324,7 +325,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		return days < 0 ? new TimeDelta(-days, -seconds, -microseconds) : this;
 	}
 
-	private static class BoundMethodDays extends BoundMethodWithContext<TimeDelta>
+	private static class BoundMethodDays extends BoundMethod<TimeDelta>
 	{
 		public BoundMethodDays(TimeDelta object)
 		{
@@ -336,13 +337,13 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 			return "timedelta.days";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return object.days;
 		}
 	}
 
-	private static class BoundMethodSeconds extends BoundMethodWithContext<TimeDelta>
+	private static class BoundMethodSeconds extends BoundMethod<TimeDelta>
 	{
 		public BoundMethodSeconds(TimeDelta object)
 		{
@@ -354,13 +355,13 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 			return "timedelta.seconds";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return object.seconds;
 		}
 	}
 
-	private static class BoundMethodMicroseconds extends BoundMethodWithContext<TimeDelta>
+	private static class BoundMethodMicroseconds extends BoundMethod<TimeDelta>
 	{
 		public BoundMethodMicroseconds(TimeDelta object)
 		{
@@ -372,7 +373,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 			return "timedelta.microseconds";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return object.microseconds;
 		}

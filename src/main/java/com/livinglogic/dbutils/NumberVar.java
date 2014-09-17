@@ -6,6 +6,8 @@
 
 package com.livinglogic.dbutils;
 
+import java.util.List;
+
 import java.sql.CallableStatement;
 import java.sql.Types;
 import java.sql.SQLException;
@@ -64,9 +66,9 @@ public class NumberVar extends Var
 			return signature;
 		}
 
-		public Object evaluate(Object[] args)
+		public Object evaluate(List<Object> args)
 		{
-			return new NumberVar(args[0]);
+			return new NumberVar(args.get(0));
 		}
 	}
 

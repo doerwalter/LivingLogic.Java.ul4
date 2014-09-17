@@ -215,11 +215,11 @@ public class Connection implements UL4GetAttributes
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, List<Object> args)
 		{
-			if (!(args[0] instanceof String))
-				throw new UnsupportedOperationException("query must be string, not " + Utils.objectType(args[0]) + "!");
-			return object.queryargs(context, (String)args[0], (List)args[1]);
+			if (!(args.get(0) instanceof String))
+				throw new UnsupportedOperationException("query must be string, not " + Utils.objectType(args.get(0)) + "!");
+			return object.queryargs(context, (String)args.get(0), (List)args.get(1));
 		}
 	}
 
@@ -242,9 +242,9 @@ public class Connection implements UL4GetAttributes
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, List<Object> args)
 		{
-			return object.query(context, (List)args[0]);
+			return object.query(context, (List)args.get(0));
 		}
 	}
 
@@ -267,9 +267,9 @@ public class Connection implements UL4GetAttributes
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(EvaluationContext context, List<Object> args)
 		{
-			object.execute(context, (List)args[0]);
+			object.execute(context, (List)args.get(0));
 			return null;
 		}
 	}

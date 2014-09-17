@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Map;
 
 public abstract class Function implements UL4Call, UL4Name, UL4Type, UL4Repr
@@ -24,12 +25,12 @@ public abstract class Function implements UL4Call, UL4Name, UL4Type, UL4Repr
 		return signature;
 	}
 
-	public Object callUL4(Object[] args, Map<String, Object> kwargs)
+	public Object callUL4(List<Object> args, Map<String, Object> kwargs)
 	{
-		return evaluate(getSignature().makeArgumentArray(this, args, kwargs));
+		return evaluate(getSignature().makeArgumentList(this, args, kwargs));
 	}
 
-	public abstract Object evaluate(Object[] args);
+	public abstract Object evaluate(List<Object> args);
 
 	public String reprUL4()
 	{

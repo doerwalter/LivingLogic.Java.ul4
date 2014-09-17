@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Iterator;
 
@@ -48,8 +49,8 @@ public class BoundStringMethodJoin extends BoundMethod<String>
 		return call(object, Utils.iterator(iterable));
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(object, args[0]);
+		return call(object, args.get(0));
 	}
 }

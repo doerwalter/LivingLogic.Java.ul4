@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Map;
 
 public class BoundDictMethodGet extends BoundMethod<Map>
@@ -35,8 +36,8 @@ public class BoundDictMethodGet extends BoundMethod<Map>
 		return result;
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		return call(object, args[0], args[1]);
+		return call(object, args.get(0), args.get(1));
 	}
 }

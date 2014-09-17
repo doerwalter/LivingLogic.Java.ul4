@@ -35,9 +35,9 @@ public class BoundListMethodInsert extends BoundMethod<List>
 		object.addAll(pos, items);
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		call(object, Utils.toInt(args[0]), (List<Object>)args[1]);
+		call(object, Utils.toInt(args.get(0)), (List<Object>)args.get(1));
 		return null;
 	}
 }

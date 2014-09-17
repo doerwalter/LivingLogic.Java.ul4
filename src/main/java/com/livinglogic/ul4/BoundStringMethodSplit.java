@@ -6,9 +6,9 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -50,10 +50,10 @@ public class BoundStringMethodSplit extends BoundMethod<String>
 		return Arrays.asList(StringUtils.splitByWholeSeparatorPreserveAllTokens(object, separator, maxsplit+1));
 	}
 
-	public Object evaluate(Object[] args)
+	public Object evaluate(List<Object> args)
 	{
-		Object separator = args[0];
-		Object maxsplit = args[1];
+		Object separator = args.get(0);
+		Object maxsplit = args.get(1);
 
 		if (maxsplit == null)
 		{

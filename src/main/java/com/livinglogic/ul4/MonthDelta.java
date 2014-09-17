@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -150,7 +151,7 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 		return months < 0 ? new MonthDelta(-months) : this;
 	}
 
-	private static class BoundMethodMonths extends BoundMethodWithContext<MonthDelta>
+	private static class BoundMethodMonths extends BoundMethod<MonthDelta>
 	{
 		public BoundMethodMonths(MonthDelta object)
 		{
@@ -162,7 +163,7 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 			return "monthdelta.months";
 		}
 
-		public Object evaluate(EvaluationContext context, Object[] args)
+		public Object evaluate(List<Object> args)
 		{
 			return object.months;
 		}
