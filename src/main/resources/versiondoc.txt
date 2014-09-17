@@ -8,6 +8,8 @@ exp-96:
   available in the value attribute.
 * com.livinglogic.dbutils.Connection.queryargs() no longer supports keyword
   arguments.
+* A problem with the evaluation order of arguments in calls has been fixed.
+
 
 exp-95-2:
 -------
