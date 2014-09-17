@@ -89,10 +89,7 @@ public class ResultSetMapIterator implements Iterator<Map<String, Object>>
 						if (value instanceof Clob)
 							value = ((Clob)value).getSubString(1L, (int)((Clob)value).length());
 						else if (value instanceof BigDecimal)
-						{
-							if (metaData.getScale(i) <= 0)
-								value = Utils.narrowBigInteger(((BigDecimal)value).toBigInteger());
-						}
+							value = Utils.narrowBigDecimal((BigDecimal)value);
 						else if (value instanceof BigInteger)
 							value = Utils.narrowBigInteger((BigInteger)value);
 					}

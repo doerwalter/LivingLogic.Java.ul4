@@ -4096,4 +4096,16 @@ public class UL4Test
 		if (db != null)
 			checkTemplateOutput("84|84.5|FOO|" + StringUtils.repeat("FOO", 100000) + "|2014-10-06 17:18:19", source, "db", db);
 	}
+
+	@Test
+	public void db_query_scale() throws Exception
+	{
+		// Check that number that are not table field don't get truncated to integer because the database doesn't know their scale
+		String source = "<?for row in db.query('select 0.5 as x from dual')?><?print row.x > 0?><?end for?>";
+
+		Connection db = getDatabaseConnection();
+
+		if (db != null)
+			checkTemplateOutput("True", source, "db", db);
+	}
 }

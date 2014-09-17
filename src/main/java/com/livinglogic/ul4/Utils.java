@@ -115,6 +115,32 @@ public class Utils
 	private static BigInteger longMinValue = new BigInteger(String.valueOf(Long.MIN_VALUE));
 	private static BigInteger longMaxValue = new BigInteger(String.valueOf(Long.MAX_VALUE));
 
+	public static Object narrowBigDecimal(BigDecimal arg)
+	{
+		try
+		{
+			return arg.intValueExact();
+		}
+		catch (ArithmeticException ex1)
+		{
+			try
+			{
+				return arg.longValueExact();
+			}
+			catch (ArithmeticException ex2)
+			{
+				try
+				{
+					return arg.toBigIntegerExact();
+				}
+				catch (ArithmeticException ex3)
+				{
+					return arg;
+				}
+			}
+		}
+	}
+
 	public static Object narrowBigInteger(BigInteger arg)
 	{
 		if (intMinValue.compareTo(arg) <= 0 && arg.compareTo(intMaxValue) <= 0)
