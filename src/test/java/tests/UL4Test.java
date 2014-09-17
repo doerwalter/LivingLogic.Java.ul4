@@ -4100,7 +4100,7 @@ public class UL4Test
 	@Test
 	public void db_query_scale() throws Exception
 	{
-		// Check that number that are not table field don't get truncated to integer because the database doesn't know their scale
+		// Check that numbers that are not table fields don't get truncated to integer because the database doesn't know their scale
 		String source = "<?for row in db.query('select 0.5 as x from dual')?><?print row.x > 0?><?end for?>";
 
 		Connection db = getDatabaseConnection();
