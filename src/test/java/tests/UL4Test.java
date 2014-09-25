@@ -3891,6 +3891,14 @@ public class UL4Test
 		assertEquals(template3.renders(), "foobar");
 	}
 
+	@Test
+	public void keywordEvaluationOrder()
+	{
+		// Test that expressions for keyword arguments are evaluated in the order they are given
+		checkTemplateOutput("12;", "<?def t?><?print x?>;<?print y?><?end def?><?code t.render(x=print(1), y=print(2))?>");
+		checkTemplateOutput("21;", "<?def t?><?print x?>;<?print y?><?end def?><?code t.render(y=print(2), x=print(1))?>");
+	}
+
 	private InterpretedTemplate universaltemplate()
 	{
 		return getTemplate(
