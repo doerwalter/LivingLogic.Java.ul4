@@ -1,3 +1,10 @@
+exp-96-1:
+---------
+* Fixed the precedence of the boolean ``not`` operator: Now it has a lower
+  precedence than the comparison operators. i.e. ``not x in y`` is parsed
+  as ``not (x in y)``.
+
+
 exp-96:
 -------
 * com.livinglogic.dbutils.Connection now has a new method execute() for

@@ -3899,6 +3899,13 @@ public class UL4Test
 		checkTemplateOutput("21;", "<?def t?><?print x?>;<?print y?><?end def?><?code t.render(y=print(2), x=print(1))?>");
 	}
 
+	@Test
+	public void notContainmentPrecedence()
+	{
+		// Check that ``not x in y`` is parsed as ``not (x in y)``
+		checkTemplateOutput("True", "<?print not 'x' in 'gurk'?>");
+	}
+
 	private InterpretedTemplate universaltemplate()
 	{
 		return getTemplate(

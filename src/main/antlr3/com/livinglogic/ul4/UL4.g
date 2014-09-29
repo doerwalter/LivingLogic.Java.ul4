@@ -479,8 +479,6 @@ expr_unary returns [AST node]
 		minus='-' e2=expr_unary { $node = NegAST.make(location, getStart($minus), $e2.node.getEnd(), $e2.node); }
 	|
 		bitnot='~' e2=expr_unary { $node = BitNotAST.make(location, getStart($bitnot), $e2.node.getEnd(), $e2.node); }
-	|
-		n='not' e2=expr_unary { $node = NotAST.make(location, getStart($n), $e2.node.getEnd(), $e2.node); }
 	;
 
 /* Multiplication, division, modulo */
@@ -592,35 +590,42 @@ expr_cmp returns [AST node]
 				'>' { opcode = 4; }
 			|
 				'>=' { opcode = 5; }
+			|
+				'in' { opcode = 6; }
+			|
+				'not' 'in' { opcode = 7; }
 			)
-			e2=expr_bitor { switch (opcode) { case 0: $node = EQAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = NEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = LTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = LEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 4: $node = GTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 5: $node = GEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
+			e2=expr_bitor {
+				switch (opcode)
+					{
+						case 0: $node = EQAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
+						case 1: $node = NEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
+						case 2: $node = LTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
+						case 3: $node = LEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
+						case 4: $node = GTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
+						case 5: $node = GEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
+						case 6: $node = ContainsAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
+						case 7: $node = NotContainsAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
+					}
+			}
 		)*
 	;
 
-/* "in"/"not in" operator */
-expr_contain returns [AST node]
-	@init
-	{
-		boolean not = false;
-	}
+/* Boolean not operator */
+expr_not returns [AST node]
 	:
 		e1=expr_cmp { $node = $e1.node; }
-		(
-			(
-				'not' { not = true; }
-			)?
-			'in'
-			e2=expr_cmp { $node = not ? NotContainsAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node) : ContainsAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
-		)?
+	|
+		n='not' e2=expr_not { $node = NotAST.make(location, getStart($n), $e2.node.getEnd(), $e2.node); }
 	;
 
 /* And operator */
 expr_and returns [AST node]
 	:
-		e1=expr_contain { $node = $e1.node; }
+		e1=expr_not { $node = $e1.node; }
 		(
 			'and'
-			e2=expr_contain { $node = AndAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_not { $node = AndAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
 		)*
 	;
 
