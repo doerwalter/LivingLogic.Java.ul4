@@ -87,7 +87,17 @@ public class ResultSetMapIterator implements Iterator<Map<String, Object>>
 					{
 						value = resultSet.getObject(i);
 						if (value instanceof Clob)
-							value = ((Clob)value).getSubString(1L, (int)((Clob)value).length());
+						{
+							String stringValue = ((Clob)value).getSubString(1L, (int)((Clob)value).length());
+							try
+							{
+								((Clob)value).free();
+							}
+							catch (SQLException ex)
+							{
+							}
+							value = stringValue;
+						}
 						else if (value instanceof BigDecimal)
 							value = Utils.narrowBigDecimal((BigDecimal)value);
 						else if (value instanceof BigInteger)
