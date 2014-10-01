@@ -52,8 +52,18 @@ public class CLOBVar extends Var
 	{
 		Object newValue = statement.getObject(position);
 		if (newValue instanceof Clob)
-			newValue = ((Clob)newValue).getSubString(1L, (int)((Clob)newValue).length());
-		value = newValue;
+		{
+			value = ((Clob)newValue).getSubString(1L, (int)((Clob)newValue).length())
+			try
+			{
+				((Clob)newValue).free();
+			}
+			catch (SQLException ex)
+			{
+			}
+		}
+		else
+			value = newValue;
 	}
 
 	private static class FunctionCLOB extends Function
