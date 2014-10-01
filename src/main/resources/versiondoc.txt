@@ -1,3 +1,8 @@
+exp-96-4:
+---------
+* Fixed typo in CLOBVar.fetch().
+
+
 exp-96-3:
 ---------
 * Free CLOBs in CLOBVar.fetch().

@@ -53,7 +53,7 @@ public class CLOBVar extends Var
 		Object newValue = statement.getObject(position);
 		if (newValue instanceof Clob)
 		{
-			value = ((Clob)newValue).getSubString(1L, (int)((Clob)newValue).length())
+			value = ((Clob)newValue).getSubString(1L, (int)((Clob)newValue).length());
 			try
 			{
 				((Clob)newValue).free();
