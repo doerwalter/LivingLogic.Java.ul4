@@ -1,3 +1,8 @@
+exp-96-5:
+---------
+* Only create an exception object in BoundDictMethodUpdate.call() when necessary.
+
+
 exp-96-4:
 ---------
 * Fixed typo in CLOBVar.fetch().

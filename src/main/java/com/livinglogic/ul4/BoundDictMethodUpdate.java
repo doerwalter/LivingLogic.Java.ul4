@@ -30,7 +30,7 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 
 	public static void call(Map object, List<Object> others, Map<String, Object> kwargs)
 	{
-		ArgumentException exc = new ArgumentException("positional arguments for update() method must be dicts or lists of (key, value) pairs");
+		String exceptionMessage = "positional arguments for update() method must be dicts or lists of (key, value) pairs";
 		for (Object other : others)
 		{
 			if (other instanceof Map)
@@ -42,11 +42,11 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 					if (item instanceof List && ((List)item).size()==2)
 						object.put(((List)item).get(0), ((List)item).get(1));
 					else
-						throw exc;
+						throw new ArgumentException(exceptionMessage);
 				}
 			}
 			else
-				throw exc;
+				throw new ArgumentException(exceptionMessage);
 		}
 		object.putAll(kwargs);
 	}
