@@ -32,14 +32,10 @@ public abstract class Function implements UL4Call, UL4Name, UL4Type, UL4Repr
 
 	public abstract Object evaluate(List<Object> args);
 
-	public String reprUL4()
+	public void reprUL4(UL4Repr.Formatter formatter)
 	{
-		StringBuilder builder = new StringBuilder();
-
-		builder.append("<function ");
-		builder.append(nameUL4());
-		builder.append(">");
-
-		return builder.toString();
+		formatter.append("<function ");
+		formatter.append(nameUL4());
+		formatter.append(">");
 	}
 }

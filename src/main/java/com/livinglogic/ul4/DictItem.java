@@ -6,11 +6,27 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Arrays;
 import java.util.Map;
 
-public abstract class DictItem
+public class DictItem
 {
-	public abstract void addTo(EvaluationContext context, Map dict);
+	protected AST key;
+	protected AST value;
 
-	public abstract Object object4UL4ON();
+	public DictItem(AST key, AST value)
+	{
+		this.key = key;
+		this.value = value;
+	}
+
+	public void addTo(EvaluationContext context, Map dict)
+	{
+		dict.put(key.decoratedEvaluate(context), value.decoratedEvaluate(context));
+	}
+
+	public Object object4UL4ON()
+	{
+		return Arrays.asList(key, value);
+	}
 }

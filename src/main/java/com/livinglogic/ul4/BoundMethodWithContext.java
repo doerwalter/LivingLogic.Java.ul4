@@ -17,16 +17,12 @@ public abstract class BoundMethodWithContext<T> extends FunctionWithContext
 		this.object = object;
 	}
 
-	public String reprUL4()
+	public void reprUL4(UL4Repr.Formatter formatter)
 	{
-		StringBuilder builder = new StringBuilder();
-
-		builder.append("<method ");
-		builder.append(nameUL4());
-		builder.append(" of ");
-		builder.append(Utils.objectType(object));
-		builder.append(" object>");
-
-		return builder.toString();
+		formatter.append("<method ");
+		formatter.append(nameUL4());
+		formatter.append(" of ");
+		formatter.append(Utils.objectType(object));
+		formatter.append(" object>");
 	}
 }

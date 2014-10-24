@@ -7,20 +7,13 @@
 package com.livinglogic.ul4;
 
 import java.util.List;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
-public class FunctionRepr extends Function
+public class FunctionIsSet extends Function
 {
 	public String nameUL4()
 	{
-		return "repr";
+		return "isset";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
@@ -35,8 +28,8 @@ public class FunctionRepr extends Function
 		return call(args.get(0));
 	}
 
-	public static String call(Object obj)
+	public static boolean call(Object obj)
 	{
-		return new UL4Repr.Formatter(obj).toString();
+		return (null != obj) && (obj instanceof Set);
 	}
 }

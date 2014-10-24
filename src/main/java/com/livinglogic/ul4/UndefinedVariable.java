@@ -15,6 +15,13 @@ public class UndefinedVariable extends Undefined
 		this.varname = varname;
 	}
 
+	public void reprUL4(UL4Repr.Formatter formatter)
+	{
+		formatter.append("UndefinedVariable(");
+		formatter.visit(varname);
+		formatter.append(")");
+	}
+
 	public String toString()
 	{
 		return "UndefinedVariable(" + FunctionRepr.call(varname) + ")";

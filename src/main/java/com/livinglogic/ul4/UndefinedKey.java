@@ -15,6 +15,13 @@ public class UndefinedKey extends Undefined
 		this.key = key;
 	}
 
+	public void reprUL4(UL4Repr.Formatter formatter)
+	{
+		formatter.append("UndefinedKey(");
+		formatter.visit(key);
+		formatter.append(")");
+	}
+
 	public String toString()
 	{
 		return "UndefinedKey(" + FunctionRepr.call(key) + ")";

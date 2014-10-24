@@ -243,45 +243,42 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 		}
 	}
 
-	public String reprUL4()
+	public void reprUL4(UL4Repr.Formatter formatter)
 	{
-		StringBuilder buffer = new StringBuilder(9);
-
-		buffer.append("#");
+		formatter.append("#");
 		if (((r>>4) == (r&0xf)) && ((g>>4) == (g&0xf)) && ((b>>4) == (b&0xf)) && ((a>>4) == (a&0xf)))
 		{
-			buffer.append(Integer.toHexString(r>>4));
-			buffer.append(Integer.toHexString(g>>4));
-			buffer.append(Integer.toHexString(b>>4));
+			formatter.append(Integer.toHexString(r>>4));
+			formatter.append(Integer.toHexString(g>>4));
+			formatter.append(Integer.toHexString(b>>4));
 			if (a != 255)
-				buffer.append(Integer.toHexString(a>>4));
+				formatter.append(Integer.toHexString(a>>4));
 		}
 		else
 		{
 			String sr = Integer.toHexString(r);
 			if (sr.length() < 2)
-				buffer.append("0");
-			buffer.append(sr);
+				formatter.append("0");
+			formatter.append(sr);
 
 			String sg = Integer.toHexString(g);
 			if (sg.length() < 2)
-				buffer.append("0");
-			buffer.append(sg);
+				formatter.append("0");
+			formatter.append(sg);
 
 			String sb = Integer.toHexString(b);
 			if (sb.length() < 2)
-				buffer.append("0");
-			buffer.append(sb);
+				formatter.append("0");
+			formatter.append(sb);
 
 			if (a != 255)
 			{
 				String sa = Integer.toHexString(a);
 				if (sa.length() < 2)
-					buffer.append("0");
-				buffer.append(sa);
+					formatter.append("0");
+				formatter.append(sa);
 			}
 		}
-		return buffer.toString();
 	}
 
 	public String dump()

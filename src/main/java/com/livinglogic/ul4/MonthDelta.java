@@ -119,15 +119,12 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 		return months != 0;
 	}
 
-	public String reprUL4()
+	public void reprUL4(UL4Repr.Formatter formatter)
 	{
-		StringBuilder buffer = new StringBuilder();
-
-		buffer.append("monthdelta(");
+		formatter.append("monthdelta(");
 		if (months != 0)
-			buffer.append(months);
-		buffer.append(")");
-		return buffer.toString();
+			formatter.visit(months);
+		formatter.append(")");
 	}
 
 	public String toString()

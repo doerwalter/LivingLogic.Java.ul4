@@ -26,12 +26,7 @@ public class DictAST extends AST
 
 	public void append(AST key, AST value)
 	{
-		items.add(new DictItemKeyValue(key, value));
-	}
-
-	public void append(AST dict)
-	{
-		items.add(new DictItemDict(dict));
+		items.add(new DictItem(key, value));
 	}
 
 	public void append(DictItem item)
@@ -69,10 +64,7 @@ public class DictAST extends AST
 		items = new LinkedList<DictItem>();
 		for (List item : itemList)
 		{
-			if (item.size() == 2)
-				items.add(new DictItemKeyValue((AST)item.get(0), (AST)item.get(1)));
-			else
-				items.add(new DictItemDict((AST)item.get(0)));
+			items.add(new DictItem((AST)item.get(0), (AST)item.get(1)));
 		}
 	}
 }

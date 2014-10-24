@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
@@ -121,6 +122,16 @@ public class Encoder
 				writer.write("O");
 				dump(((UL4ONSerializable)obj).getUL4ONName());
 				((UL4ONSerializable)obj).dumpUL4ON(this);
+			}
+			else if (obj instanceof Set)
+			{
+				record(obj);
+				writer.write("Y");
+				for (Object item: (Set<Object>)obj)
+				{
+					dump(item);
+				}
+				writer.write("}");
 			}
 			else if (obj instanceof Collection)
 			{

@@ -204,7 +204,7 @@ public class UL4Test
 	public com.livinglogic.dbutils.Connection getDatabaseConnection()
 	{
 		String env = System.getenv("LL_JAVA_TEST_CONNECT");
-		if (env == null)
+		if (env == null || env.equals(""))
 			return null;
 
 		String[] connectionInfo = StringUtils.splitByWholeSeparator(env, null);
@@ -371,16 +371,28 @@ public class UL4Test
 	}
 
 	@Test
+	public void type_set()
+	{
+		checkTemplateOutput("1!", "<?for item in {1}?><?print item?>!<?end for?>");
+		checkTemplateOutput("no", "<?if {/}?>yes<?else?>no<?end if?>");
+		checkTemplateOutput("yes", "<?if {1}?>yes<?else?>no<?end if?>");
+	}
+
+	@Test
+	public void type_setcomprehension()
+	{
+		checkTemplateOutput("{2}", "<?code d = {2*i for i in range(2) if i%2}?><?print d?>");
+		checkTemplateOutput("{2}", "<?code d = {2*i for i in [1]}?><?print d?>");
+	}
+
+	@Test
 	public void type_dict()
 	{
 		checkTemplateOutput("", "<?for (key, value) in {}.items()?><?print key?>:<?print value?>!<?end for?>");
 		checkTemplateOutput("1:2!", "<?for (key, value) in {1:2}.items()?><?print key?>:<?print value?>!<?end for?>");
 		checkTemplateOutput("1:2!", "<?for (key, value) in {1:2,}.items()?><?print key?>:<?print value?>!<?end for?>");
 		// With duplicate keys, later ones simply overwrite earlier ones
-		checkTemplateOutput("1:3!", "<?for (key, value) in {1:2, 1: 3}.items()?><?print key?>:<?print value?>!<?end for?>");
-		// Test **
-		checkTemplateOutput("1:2!", "<?for (key, value) in {**{1:2}}.items()?><?print key?>:<?print value?>!<?end for?>");
-		checkTemplateOutput("1:4!", "<?for (key, value) in {1:1, **{1:2}, 1:3, **{1:4}}.items()?><?print key?>:<?print value?>!<?end for?>");
+		checkTemplateOutput("1:3!", "<?for (key, value) in {1:2, 1:3}.items()?><?print key?>:<?print value?>!<?end for?>");
 		checkTemplateOutput("no", "<?if {}?>yes<?else?>no<?end if?>");
 		checkTemplateOutput("yes", "<?if {1:2}?>yes<?else?>no<?end if?>");
 	}
@@ -2197,8 +2209,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
-		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print isundefined(repr)?>");
 		checkTemplateOutput("False", "<?print isundefined(obj=data)?>", "data", null);
@@ -2232,6 +2244,7 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", new TimeDelta(1));
 		checkTemplateOutput("True", source, "data", new MonthDelta(1));
 		checkTemplateOutput("True", source, "data", asList());
+		checkTemplateOutput("True", source, "data", makeSet());
 		checkTemplateOutput("True", source, "data", makeMap());
 		checkTemplateOutput("True", source, "data", getTemplate(""));
 		checkTemplateOutput("True", "<?print isdefined(repr)?>");
@@ -2267,6 +2280,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print isnone(repr)?>");
@@ -2302,6 +2316,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print isbool(repr)?>");
@@ -2337,6 +2352,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print isint(repr)?>");
@@ -2372,6 +2388,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print isfloat(repr)?>");
@@ -2407,6 +2424,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print isstr(repr)?>");
@@ -2442,6 +2460,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print isdate(repr)?>");
@@ -2478,6 +2497,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("True", source, "data", asList());
 		checkTemplateOutput("True", source, "data", new Integer[]{1, 2, 3});
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print islist(repr)?>");
@@ -2498,6 +2518,43 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_isset()
+	{
+		String source = "<?print isset(data)?>";
+
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
+		checkTemplateOutput("False", source, "data", null);
+		checkTemplateOutput("False", source, "data", true);
+		checkTemplateOutput("False", source, "data", false);
+		checkTemplateOutput("False", source, "data", 42);
+		checkTemplateOutput("False", source, "data", 4.2);
+		checkTemplateOutput("False", source, "data", "foo");
+		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
+		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", new Integer[]{1, 2, 3});
+		checkTemplateOutput("False", source, "data", makeMap());
+		checkTemplateOutput("True", source, "data", makeSet());
+		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print isset(repr)?>");
+		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print isset(obj=data)?>", "data", null);
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	public void function_isset_0_args()
+	{
+		checkTemplateOutput("", "<?print isset()?>");
+	}
+
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	public void function_isset_2_args()
+	{
+		checkTemplateOutput("", "<?print isset(1, 2)?>");
+	}
+
+	@Test
 	public void function_isdict()
 	{
 		String source = "<?print isdict(data)?>";
@@ -2513,6 +2570,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("True", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print isdict(repr)?>");
@@ -2548,6 +2606,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("True", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print istemplate(repr)?>");
@@ -2583,6 +2642,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("True", source, "data", getTemplate(""));
 		checkTemplateOutput("True", "<?print isfunction(repr)?>");
@@ -2618,6 +2678,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print iscolor(repr)?>");
@@ -2653,6 +2714,7 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print istimedelta(repr)?>");
@@ -2688,6 +2750,7 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("True", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
 		checkTemplateOutput("False", source, "data", makeMap());
 		checkTemplateOutput("False", source, "data", getTemplate(""));
 		checkTemplateOutput("False", "<?print ismonthdelta(repr)?>");
@@ -2712,16 +2775,24 @@ public class UL4Test
 	{
 		String source = "<?print repr(data)?>";
 
+		java.util.List list = new java.util.ArrayList();
+		list.add(list);
+
 		checkTemplateOutput("None", source, "data", null);
 		checkTemplateOutput("True", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
 		checkTemplateOutput("42", source, "data", 42);
 		checkTemplateOutput("42.5", source, "data", 42.5);
 		checkTemplateOutput("\"foo\"", source, "data", "foo");
+		checkTemplateOutput("[]", source, "data", asList());
 		checkTemplateOutput("[1, 2, 3]", source, "data", asList(1, 2, 3));
+		checkTemplateOutput("[...]", source, "data", list);
 		checkTemplateOutput("[1, 2, 3]", source, "data", new Integer[]{1, 2, 3});
+		checkTemplateOutput("{}", source, "data", makeMap());
 		checkTemplateOutput("{\"a\": 1}", source, "data", makeMap("a", 1));
 		checkTemplateOutput2("{\"a\": 1, \"b\": 2}", "{\"b\": 2, \"a\": 1}", source, "data", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("{/}", source, "data", makeSet());
+		checkTemplateOutput("{1}", source, "data", makeSet(1));
 		checkTemplateOutput("@(2011-02-07T12:34:56.123000)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56, 123000));
 		checkTemplateOutput("@(2011-02-07T12:34:56)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56));
 		checkTemplateOutput("@(2011-02-07)", source, "data", FunctionDate.call(2011, 2, 7));
@@ -3054,6 +3125,7 @@ public class UL4Test
 		checkTemplateOutput("date", source, "data", new Date());
 		checkTemplateOutput("list", source, "data", asList(1, 2));
 		checkTemplateOutput("dict", source, "data", makeMap(1, 2));
+		checkTemplateOutput("set", source, "data", makeSet(1, 2));
 		checkTemplateOutput("template", source, "data", getTemplate(""));
 		checkTemplateOutput("color", source, "data", new Color(0, 0, 0));
 
@@ -3925,7 +3997,6 @@ public class UL4Test
 			"<?code x = #0063a8?>" +
 			"<?code x = [42]?>" +
 			"<?code x = {'fortytwo': 42}?>" +
-			"<?code x = {**{'fortytwo': 42}}?>" +
 			"<?code x = y?>" +
 			"<?code x += 42?>" +
 			"<?code x -= 42?>" +

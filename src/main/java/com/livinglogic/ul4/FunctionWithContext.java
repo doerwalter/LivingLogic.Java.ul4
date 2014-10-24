@@ -32,14 +32,10 @@ public abstract class FunctionWithContext implements UL4CallWithContext, UL4Name
 
 	public abstract Object evaluate(EvaluationContext context, List<Object> args);
 
-	public String reprUL4()
+	public void reprUL4(UL4Repr.Formatter formatter)
 	{
-		StringBuilder builder = new StringBuilder();
-
-		builder.append("<function ");
-		builder.append(nameUL4());
-		builder.append(">");
-
-		return builder.toString();
+		formatter.append("<function ");
+		formatter.append(nameUL4());
+		formatter.append(">");
 	}
 }

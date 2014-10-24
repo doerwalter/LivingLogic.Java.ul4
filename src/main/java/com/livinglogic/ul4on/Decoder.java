@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
@@ -214,6 +216,25 @@ public class Decoder
 						key = oldKey;
 
 					result.put(key, value);
+				}
+			}
+		}
+		else if (typecode == 'y' || typecode == 'Y')
+		{
+			Set result = new HashSet();
+
+			if (typecode == 'Y')
+				loading(result);
+
+			while (true)
+			{
+				typecode = reader.read();
+				if (typecode == '}')
+					return result;
+				else
+				{
+					Object item = load(typecode);
+					result.add(item);
 				}
 			}
 		}

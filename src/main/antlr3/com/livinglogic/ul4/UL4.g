@@ -272,16 +272,49 @@ listcomprehension returns [ListComprehensionAST node]
 		close=']' { $node = new ListComprehensionAST(location, getStart($open), getEnd($close), $item.node, $n.lvalue, $container.node, _condition); }
 	;
 
+/* Set literals */
+set returns [SetAST node]
+	:
+		open='{'
+		'/'
+		close='}' { $node = new SetAST(location, getStart($open), getEnd($close)); }
+	|
+		open='{' {$node = new SetAST(location, getStart($open), -1); }
+		e1=expr_if { $node.append($e1.node); }
+		(
+			','
+			e2=expr_if { $node.append($e2.node); }
+		)*
+		','?
+		close='}' { $node.setEnd(getEnd($close)); }
+	;
+
+setcomprehension returns [SetComprehensionAST node]
+	@init
+	{
+		AST _condition = null;
+	}
+	:
+		open='{'
+		item=expr_if
+		'for'
+		n=nestedlvalue
+		'in'
+		container=expr_if
+		(
+			'if'
+			condition=expr_if { _condition = $condition.node; }
+		)?
+		close='}' { $node = new SetComprehensionAST(location, getStart($open), getEnd($close), $item.node, $n.lvalue, $container.node, _condition); }
+	;
+
 /* Dict literal */
 fragment
 dictitem returns [DictItem node]
 	:
 		k=expr_if
 		':'
-		v=expr_if { $node = new DictItemKeyValue($k.node, $v.node); }
-	|
-		'**'
-		d=expr_if { $node = new DictItemDict($d.node); }
+		v=expr_if { $node = new DictItem($k.node, $v.node); }
 	;
 
 dict returns [DictAST node]
@@ -342,6 +375,8 @@ atom returns [AST node]
 	: e_literal=literal { $node = $e_literal.node; }
 	| e_list=list { $node = $e_list.node; }
 	| e_listcomp=listcomprehension { $node = $e_listcomp.node; }
+	| e_set=set { $node = $e_set.node; }
+	| e_setcomp=setcomprehension { $node = $e_setcomp.node; }
 	| e_dict=dict { $node = $e_dict.node; }
 	| e_dictcomp=dictcomprehension { $node = $e_dictcomp.node; }
 	| open='(' e_genexpr=generatorexpression close=')' { $node = $e_genexpr.node; $node.setStart(getStart($open)); $node.setEnd(getEnd($close)); }

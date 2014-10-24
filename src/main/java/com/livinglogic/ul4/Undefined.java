@@ -13,11 +13,6 @@ public abstract class Undefined implements UL4Bool, UL4Repr, UL4Type
 		return false;
 	}
 
-	public String reprUL4()
-	{
-		return toString();
-	}
-
 	public String typeUL4()
 	{
 		return "undefined";

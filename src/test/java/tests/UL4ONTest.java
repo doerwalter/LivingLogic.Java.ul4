@@ -3,6 +3,7 @@ package tests;
 import static com.livinglogic.ul4on.Utils.dumps;
 import static com.livinglogic.ul4on.Utils.loads;
 import static com.livinglogic.utils.MapUtils.makeMap;
+import static com.livinglogic.utils.SetUtils.makeSet;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
@@ -74,6 +75,8 @@ public class UL4ONTest
 		checkRoundtrip(new Slice(true, true, 1, 3));
 		checkRoundtrip(asList(1, 2, 3));
 		checkRoundtrip(makeMap("eins", 1, "zwei", 2, "drei", 3));
+		checkRoundtrip(makeSet());
+		checkRoundtrip(makeSet(1, 2, 3));
 		checkRoundtrip(template);
 		checkRoundtrip(asList(asList(1, 2, 3), asList(4, 5, 6), asList(7, 8, 9)));
 	}

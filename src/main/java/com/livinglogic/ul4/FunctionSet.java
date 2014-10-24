@@ -8,6 +8,8 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -15,11 +17,11 @@ import java.util.Vector;
 import static java.util.Arrays.asList;
 
 
-public class FunctionList extends Function
+public class FunctionSet extends Function
 {
 	public String nameUL4()
 	{
-		return "list";
+		return "set";
 	}
 
 	private static final Signature signature = new Signature("iterable", Collections.EMPTY_LIST);
@@ -34,11 +36,10 @@ public class FunctionList extends Function
 		return call(args.get(0));
 	}
 
-	public static Vector call(String obj)
+	public static Set call(String obj)
 	{
-		Vector result;
 		int length = obj.length();
-		result = new Vector(obj.length());
+		Set result = new HashSet(length);
 		for (int i = 0; i < length; i++)
 		{
 			result.add(String.valueOf(obj.charAt(i)));
@@ -46,40 +47,40 @@ public class FunctionList extends Function
 		return result;
 	}
 
-	public static Vector call(Collection obj)
+	public static Set call(Collection obj)
 	{
-		return new Vector(obj);
+		return new HashSet(obj);
 	}
 
-	public static Vector call(Object[] obj)
+	public static Set call(Object[] obj)
 	{
-		return new Vector(asList(obj));
+		return new HashSet(asList(obj));
 	}
 
-	public static Vector call(Map obj)
+	public static Set call(Map obj)
 	{
-		return new Vector(obj.keySet());
+		return obj.keySet();
 	}
 
-	public static Vector call(UL4Attributes obj)
+	public static Set call(UL4Attributes obj)
 	{
-		return new Vector(obj.getAttributeNamesUL4());
+		return obj.getAttributeNamesUL4();
 	}
 
-	public static Vector call(Iterable obj)
+	public static Set call(Iterable obj)
 	{
 		return call(obj.iterator());
 	}
 
-	public static Vector call(Iterator obj)
+	public static Set call(Iterator obj)
 	{
-		Vector retVal = new Vector();
+		Set result = new HashSet();
 		while (obj.hasNext())
-			retVal.add(obj.next());
-		return retVal;
+			result.add(obj.next());
+		return result;
 	}
 
-	public static Vector call(Object obj)
+	public static Set call(Object obj)
 	{
 		if (obj instanceof String)
 			return call((String)obj);
@@ -95,6 +96,6 @@ public class FunctionList extends Function
 			return call((Iterable)obj);
 		else if (obj instanceof Iterator)
 			return call((Iterator)obj);
-		throw new ArgumentTypeMismatchException("list({})", obj);
+		throw new ArgumentTypeMismatchException("set({})", obj);
 	}
 }

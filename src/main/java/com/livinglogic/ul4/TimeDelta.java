@@ -258,27 +258,24 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		return days != 0 || seconds != 0 || microseconds != 0;
 	}
 
-	public String reprUL4()
+	public void reprUL4(UL4Repr.Formatter formatter)
 	{
-		StringBuilder buffer = new StringBuilder();
-
-		buffer.append("timedelta(");
+		formatter.append("timedelta(");
 		if (days != 0 || seconds != 0 || microseconds != 0)
 		{
-			buffer.append(days);
+			formatter.visit(days);
 			if (seconds != 0 || microseconds != 0)
 			{
-				buffer.append(", ");
-				buffer.append(seconds);
+				formatter.append(", ");
+				formatter.visit(seconds);
 				if (microseconds != 0)
 				{
-					buffer.append(", ");
-					buffer.append(microseconds);
+					formatter.append(", ");
+					formatter.visit(microseconds);
 				}
 			}
 		}
-		buffer.append(")");
-		return buffer.toString();
+		formatter.append(")");
 	}
 
 	private static DecimalFormat twodigits = new DecimalFormat("00");

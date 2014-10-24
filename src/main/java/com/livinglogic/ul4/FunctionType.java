@@ -8,6 +8,7 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Date;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -49,6 +50,8 @@ public class FunctionType extends Function
 			return ((UL4Type)obj).typeUL4();
 		else if (obj instanceof List)
 			return "list";
+		else if (obj instanceof Set)
+			return "set";
 		else if (obj instanceof Map)
 			return "dict";
 		else

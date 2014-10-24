@@ -79,23 +79,13 @@ public class Slice implements UL4Attributes, UL4Repr, Comparable<Slice>
 		return result;
 	}
 
-	public String reprUL4()
+	public void reprUL4(UL4Repr.Formatter formatter)
 	{
-		StringBuilder builder = new StringBuilder();
-
-		builder.append("slice(");
-		if (hasStart)
-			builder.append(start);
-		else
-			builder.append("None");
-		builder.append(", ");
-		if (hasStop)
-			builder.append(stop);
-		else
-			builder.append("None");
-		builder.append(")");
-
-		return builder.toString();
+		formatter.append("slice(");
+		formatter.visit(getStart());
+		formatter.append(", ");
+		formatter.visit(getStop());
+		formatter.append(")");
 	}
 
 	protected static Set<String> attributes = makeSet("start", "stop");
