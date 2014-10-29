@@ -18,6 +18,12 @@ import java.text.SimpleDateFormat;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+/**
+ * Interface for implementing support for the UL4 function <code>repr</code>
+ * in Java classes.
+ *
+ * @author W. Doerwald
+ */
 public interface UL4Repr
 {
 	void reprUL4(Formatter formatter);
