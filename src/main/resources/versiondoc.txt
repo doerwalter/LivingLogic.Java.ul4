@@ -1,7 +1,7 @@
 exp-97:
 -------
 * Implement support for sets in UL4 and UL4ON.
-* Enhance FunctionRepr: New cycles will be detected automatically even for
+* Enhance FunctionRepr: Now cycles will be detected automatically even for
   classes that implement reprUL4() themselves.
 
 exp-96-5:
