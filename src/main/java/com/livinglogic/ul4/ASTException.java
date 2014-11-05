@@ -12,7 +12,7 @@ public class ASTException extends RuntimeException
 
 	public ASTException(Throwable cause, AST node)
 	{
-		super("in " + node.getType() + " in tag " + node.getLocation(), cause);
+		super("in " + node.getType() + " in " + node.getLocation(), cause);
 		this.node = node;
 	}
 }
