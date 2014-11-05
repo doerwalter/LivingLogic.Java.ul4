@@ -6,9 +6,12 @@ import static com.livinglogic.utils.MapUtils.makeMap;
 import static com.livinglogic.utils.SetUtils.makeSet;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
@@ -79,5 +82,17 @@ public class UL4ONTest
 		checkRoundtrip(makeSet(1, 2, 3));
 		checkRoundtrip(template);
 		checkRoundtrip(asList(asList(1, 2, 3), asList(4, 5, 6), asList(7, 8, 9)));
+	}
+
+	@Test
+	public void recursion()
+	{
+		List l1 = new ArrayList();
+		l1.add(l1);
+
+		List l2 = (List)loads(dumps(l1));
+
+		assertEquals(l2.size(), 1);
+		assertTrue(l2.get(0) == l2);
 	}
 }

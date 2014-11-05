@@ -1,3 +1,9 @@
+exp-98:
+-------
+* UL4ON now uses an IdentityHashMap for recording serialized objects. This
+  allows to serialize object loops
+
+
 exp-97:
 -------
 * Implement support for sets in UL4 and UL4ON.

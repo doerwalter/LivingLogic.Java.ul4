@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,7 +37,7 @@ public class Encoder
 	 * index that specifies at which position in the list of unique objects that
 	 * have been output before this object is.
 	 */
-	private Map<Object, Integer> object2id = new HashMap<Object, Integer>();
+	private Map<Object, Integer> object2id = new IdentityHashMap<Object, Integer>();
 
 	/**
 	 * Create an {@code Encoder} object for writing serialized UL4ON output
