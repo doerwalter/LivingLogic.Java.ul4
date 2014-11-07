@@ -16,11 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
+import java.math.BigInteger;
 
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.Slice;
+import com.livinglogic.ul4.FunctionDate;
 
 /**
  * A {@code Decoder} object wraps a {@code Reader} object and can read any object
@@ -73,6 +75,48 @@ public class Decoder
 	}
 
 	/**
+	 * For loading custom object or immutable objects that have attributes we have a problem:
+	 * We have to record the object we're loading *now*, so that it is available for backreferences.
+	 * However until we've read the UL4ON name of the class (for custom object) or the attributes
+	 * of the object (for immutable objects with attributes), we can't create the object.
+	 * So we push ``None`` to the backreference list for now and put the right object in this spot,
+	 * once we've created it (via {@code endFakeLoading}). This shouldn't lead to problems,
+	 * because during the time the backreference is wrong, only the class name is read,
+	 * so our object won't be referenced. For immutable objects the attributes normally
+	 * don't reference the object itself.
+	*/
+	private int beginFakeLoading()
+	{
+		int oldpos = objects.size();
+		loading(null);
+		return oldpos;
+	}
+
+	/**
+	 * Fixes backreferences in object list
+	 */
+	private void endFakeLoading(int oldpos, Object value)
+	{
+		objects.set(oldpos, value);
+	}
+
+	/**
+	 * Read the next not-whitespace character
+	 */
+	private char nextChar() throws IOException
+	{
+		while (true)
+		{
+			int c = reader.read();
+			if (c == -1)
+				throw new RuntimeException("broken stream: unexpected eof");
+
+			if (!Character.isWhitespace(c))
+				return (char)c;
+		}
+	}
+
+	/**
 	 * Read an object from {@link #reader} and return it.
 	 * @param typecode The typecode from a previous read or -2 if the typecode
 	 *                 has to be read from the {@link #reader}.
@@ -80,7 +124,7 @@ public class Decoder
 	private Object load(int typecode) throws IOException
 	{
 		if (typecode == -2)
-			typecode = reader.read();
+			typecode = nextChar();
 
 		if (typecode == '^')
 		{
@@ -96,85 +140,128 @@ public class Decoder
 		else if (typecode == 'b' || typecode == 'B')
 		{
 			int data = reader.read();
-			Boolean value;
+			Boolean result;
 			if (data == 'T')
-				value = true;
+				result = true;
 			else if (data == 'F')
-				value = false;
+				result = false;
 			else
 				throw new RuntimeException("broken stream: expected 'T' or 'F', got '\\u" + Integer.toHexString(data) + "'");
 			if (typecode == 'B')
-				loading(value);
-			return value;
+				loading(result);
+			return result;
 		}
 		else if (typecode == 'i' || typecode == 'I')
 		{
-			Object value = readInt();
+			StringBuilder buffer = new StringBuilder();
+			Object result = null;
+			while (true)
+			{
+				int c = reader.read();
+				if (c == '-' || Character.isDigit(c))
+					buffer.append((char)c);
+				else
+				{
+					String string = buffer.toString();
+					try
+					{
+						result = Integer.parseInt(string);
+					}
+					catch (NumberFormatException ex1)
+					{
+						try
+						{
+							result = Long.parseLong(string);
+						}
+						catch (NumberFormatException ex2)
+						{
+							result = new BigInteger(string);
+						}
+					}
+					break;
+				}
+			}
 			if (typecode == 'I')
-				loading(value);
-			return value;
+				loading(result);
+			return result;
 		}
 		else if (typecode == 'f' || typecode == 'F')
 		{
-			double value = readFloat();
+			double result = readFloat();
 			if (typecode == 'F')
-				loading(value);
-			return value;
+				loading(result);
+			return result;
 		}
 		else if (typecode == 's' || typecode == 'S')
 		{
-			int count = (Integer)readInt();
-			char[] chars = new char[count];
-			reader.read(chars);
-			String value = new String(chars);
+			String result = Utils.parseUL4StringFromReader(reader);
 			if (typecode == 'S')
-				loading(value);
-			return value;
+				loading(result);
+			return result;
 		}
 		else if (typecode == 'c' || typecode == 'C')
 		{
-			char[] chars = new char[8];
-			reader.read(chars);
-			Color value = Color.fromdump(new String(chars));
+			int oldpos = -1;
 			if (typecode == 'C')
-				loading(value);
-			return value;
+				oldpos = beginFakeLoading();
+
+			int r = (Integer)load(-2);
+			int g = (Integer)load(-2);
+			int b = (Integer)load(-2);
+			int a = (Integer)load(-2);
+			Color result = new Color(r, g, b, a);
+
+			if (typecode == 'C')
+				endFakeLoading(oldpos, result);
+			return result;
 		}
 		else if (typecode == 'z' || typecode == 'Z')
 		{
-			char[] chars = new char[20];
-			reader.read(chars);
-			Date value;
-			try
-			{
-				value = Utils.dateFormat.parse(new String(chars).substring(0, 17));
-			}
-			catch (ParseException e)
-			{
-				// can happen with broken data
-				throw new RuntimeException(e);
-			}
+			int oldpos = -1;
 			if (typecode == 'Z')
-				loading(value);
-			return value;
+				oldpos = beginFakeLoading();
+
+			int year = (Integer)load(-2);
+			int month = (Integer)load(-2);
+			int day = (Integer)load(-2);
+			int hour = (Integer)load(-2);
+			int minute = (Integer)load(-2);
+			int second = (Integer)load(-2);
+			int microsecond = (Integer)load(-2);
+			Date result = FunctionDate.call(year, month, day, hour, minute, second, microsecond);
+
+			if (typecode == 'Z')
+				endFakeLoading(oldpos, result);
+
+			return result;
 		}
 		else if (typecode == 't' || typecode == 'T')
 		{
-			int days = (Integer)readInt();
-			int seconds = (Integer)readInt();
-			int microseconds = (Integer)readInt();
-			TimeDelta value = new TimeDelta(days, seconds, microseconds);
+			int oldpos = -1;
 			if (typecode == 'T')
-				loading(value);
-			return value;
+				oldpos = beginFakeLoading();
+
+			int days = (Integer)load(-2);
+			int seconds = (Integer)load(-2);
+			int microseconds = (Integer)load(-2);
+			TimeDelta result = new TimeDelta(days, seconds, microseconds);
+
+			if (typecode == 'T')
+				endFakeLoading(oldpos, result);
+			return result;
 		}
 		else if (typecode == 'm' || typecode == 'M')
 		{
-			int months = (Integer)readInt();
-			MonthDelta value = new MonthDelta(months);
+			int oldpos = -1;
 			if (typecode == 'M')
-				loading(value);
-			return value;
+				oldpos = beginFakeLoading();
+
+			int months = (Integer)load(-2);
+			MonthDelta result = new MonthDelta(months);
+
+			if (typecode == 'M')
+				endFakeLoading(oldpos, result);
+			return result;
 		}
 		else if (typecode == 'l' || typecode == 'L')
 		{
@@ -185,7 +272,7 @@ public class Decoder
 			
 			while (true)
 			{
-				typecode = reader.read();
+				typecode = nextChar();
 				if (typecode == ']')
 					return result;
 				else
@@ -201,19 +288,22 @@ public class Decoder
 
 			while (true)
 			{
-				typecode = reader.read();
+				typecode = nextChar();
 				if (typecode == '}')
 					return result;
 				else
 				{
 					Object key = load(typecode);
 					Object value = load(-2);
-					Object oldKey = keys.get(key);
+					if (key instanceof String)
+					{
+						Object oldKey = keys.get(key);
 
-					if (oldKey == null)
-						keys.put(key, key);
-					else
-						key = oldKey;
+						if (oldKey == null)
+							keys.put(key, key);
+						else
+							key = oldKey;
+					}
 
 					result.put(key, value);
 				}
@@ -228,7 +318,7 @@ public class Decoder
 
 			while (true)
 			{
-				typecode = reader.read();
+				typecode = nextChar();
 				if (typecode == '}')
 					return result;
 				else
@@ -240,61 +330,64 @@ public class Decoder
 		}
 		else if (typecode == 'r' || typecode == 'R')
 		{
-			Object start = readInt();
-			Object stop = readInt();
+			int oldpos = -1;
+			if (typecode == 'R')
+				oldpos = beginFakeLoading();
+
+			Object start = load(-2);
+			Object stop = load(-2);
 			boolean hasStart = (start != null);
 			boolean hasStop = (stop != null);
 			int startIndex = hasStart ? com.livinglogic.ul4.Utils.toInt(start) : -1;
 			int stopIndex = hasStop ? com.livinglogic.ul4.Utils.toInt(stop) : -1;
 			Slice result = new Slice(hasStart, hasStop, startIndex, stopIndex);
 			if (typecode == 'R')
-				loading(result);
+				endFakeLoading(oldpos, result);
 			return result;
 		}
 		else if (typecode == 'o' || typecode == 'O')
 		{
 			int oldpos = -1;
 			if (typecode == 'O')
-			{
-				// We have a problem here:
-				// We have to record the object we're loading *now*, so that it is available for backreferences.
-				// However until we've read the UL4ON name of the class, we can't create the object.
-				// So we push null to the backreference list for now and put the right object in this spot
-				// once we've created it (This shouldn't be a problem, because during the time the backreference
-				// is wrong, only the class name is read, so our object won't be referenced).
-				oldpos = objects.size();
-				loading(null);
-			}
+				oldpos = beginFakeLoading();
+
 			String name = (String)load(-2);
 
 			ObjectFactory factory = Utils.registry.get(name);
 
 			if (factory == null)
 				throw new RuntimeException("can't load object of type " + name);
-			UL4ONSerializable value = factory.create();
-			// Fix object in backreference list
-			if (oldpos != -1)
-				objects.set(oldpos, value);
-			value.loadUL4ON(this);
-			return value;
+			UL4ONSerializable result = factory.create();
+
+			if (typecode == 'O')
+				endFakeLoading(oldpos, result);
+
+			result.loadUL4ON(this);
+
+			int nextTypecode = nextChar();
+
+			if (nextTypecode != ')')
+				throw new RuntimeException("broken stream : object terminator ')' expected, got '\\u" + Integer.toHexString(nextTypecode) + "'");
+
+			return result;
 		}
 		else
 			throw new RuntimeException("broken stream: unknown typecode '\\u" + Integer.toHexString(typecode) + "'");
 	}
 
-	private Object readInt() throws IOException
+	private int readInt() throws IOException
 	{
 		StringBuilder buffer = new StringBuilder();
 		
 		while (true)
 		{
 			int c = reader.read();
-			if (c == '|')
+			if (c == '-' || Character.isDigit(c))
+				buffer.append((char)c);
+			else
 			{
-				String s = buffer.toString();
-				return s.length() != 0 ? com.livinglogic.ul4.Utils.parseUL4Int(s) : null;
+				return Integer.parseInt(buffer.toString());
 			}
-			buffer.append((char)c);
 		}
 	}
 
@@ -305,9 +398,10 @@ public class Decoder
 		while (true)
 		{
 			int c = reader.read();
-			if (c == '|')
+			if (c == '-' || c == '+' || Character.isDigit(c) || c == '.' || c == 'e' || c == 'E')
+				buffer.append((char)c);
+			else
 				return Double.valueOf(buffer.toString());
-			buffer.append((char)c);
 		}
 	}
 }

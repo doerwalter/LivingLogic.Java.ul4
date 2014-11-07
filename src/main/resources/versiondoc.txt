@@ -1,8 +1,8 @@
 exp-98:
 -------
 * UL4ON now uses an IdentityHashMap for recording serialized objects. This
-  allows to serialize object loops
-
+  allows to serialize object loops.
+* Updated UL4ON to the more human readable version from XIST 5.12.
 
 exp-97:
 -------

@@ -742,34 +742,34 @@ public class UL4Test
 		checkTemplateOutput("no", source, "data", 0);
 	}
 
-	// // FIXME: Doesn't work, because of chained exceptions, needs to be split into n tests
-	// // @Test(expected=BlockException)
-	// // public void block_errors()
-	// // {
-	// // 	checkTemplateOutput("", "<?for x in data?>"); // "BlockError: block unclosed"
-	// // 	checkTemplateOutput("", "<?for x in data?><?end if?>"); // "BlockError: endif doesn't match any if"
-	// // 	checkTemplateOutput("", "<?end?>"); // "BlockError: not in any block"
-	// // 	checkTemplateOutput("", "<?end for?>"); // "BlockError: not in any block"
-	// // 	checkTemplateOutput("", "<?end if?>"); // "BlockError: not in any block"
-	// // 	checkTemplateOutput("", "<?else?>"); // "BlockError: else doesn't match any if"
-	// // 	checkTemplateOutput("", "<?if data?>"); // "BlockError: block unclosed"
-	// // 	checkTemplateOutput("", "<?if data?><?else?>"); // "BlockError: block unclosed"
-	// // 	checkTemplateOutput("", "<?if data?><?else?><?else?>"); // "BlockError: duplicate else"
-	// // 	checkTemplateOutput("", "<?if data?><?else?><?elif data?>"); // "BlockError: else already seen in elif"
-	// // 	checkTemplateOutput("", "<?if data?><?elif data?><?elif data?><?else?><?elif data?>"); // "BlockError: else already seen in elif"
-	// // }
+	// FIXME: Doesn't work, because of chained exceptions, needs to be split into n tests
+	// @Test(expected=BlockException)
+	// public void block_errors()
+	// {
+	// 	checkTemplateOutput("", "<?for x in data?>"); // "BlockError: block unclosed"
+	// 	checkTemplateOutput("", "<?for x in data?><?end if?>"); // "BlockError: endif doesn't match any if"
+	// 	checkTemplateOutput("", "<?end?>"); // "BlockError: not in any block"
+	// 	checkTemplateOutput("", "<?end for?>"); // "BlockError: not in any block"
+	// 	checkTemplateOutput("", "<?end if?>"); // "BlockError: not in any block"
+	// 	checkTemplateOutput("", "<?else?>"); // "BlockError: else doesn't match any if"
+	// 	checkTemplateOutput("", "<?if data?>"); // "BlockError: block unclosed"
+	// 	checkTemplateOutput("", "<?if data?><?else?>"); // "BlockError: block unclosed"
+	// 	checkTemplateOutput("", "<?if data?><?else?><?else?>"); // "BlockError: duplicate else"
+	// 	checkTemplateOutput("", "<?if data?><?else?><?elif data?>"); // "BlockError: else already seen in elif"
+	// 	checkTemplateOutput("", "<?if data?><?elif data?><?elif data?><?else?><?elif data?>"); // "BlockError: else already seen in elif"
+	// }
 
 
-	// // FIXME: Doesn't work, because of chained exceptions, needs to be split into n tests
-	// // @Test(expected=BlockException)
-	// // public void empty()
-	// // {
-	// // 	checkTemplateOutput("", "<?print?>"); // "expression required"
-	// // 	checkTemplateOutput("", "<?if?>"); // "expression required"
-	// // 	checkTemplateOutput("", "<?if x?><?elif?><?end if?>"); // "expression required"
-	// // 	checkTemplateOutput("", "<?for?>"); // "loop expression required"
-	// // 	checkTemplateOutput("", "<?code?>"); // "statement required"
-	// // }
+	// FIXME: Doesn't work, because of chained exceptions, needs to be split into n tests
+	// @Test(expected=BlockException)
+	// public void empty()
+	// {
+	// 	checkTemplateOutput("", "<?print?>"); // "expression required"
+	// 	checkTemplateOutput("", "<?if?>"); // "expression required"
+	// 	checkTemplateOutput("", "<?if x?><?elif?><?end if?>"); // "expression required"
+	// 	checkTemplateOutput("", "<?for?>"); // "loop expression required"
+	// 	checkTemplateOutput("", "<?code?>"); // "statement required"
+	// }
 
 	@Test
 	public void operator_add()

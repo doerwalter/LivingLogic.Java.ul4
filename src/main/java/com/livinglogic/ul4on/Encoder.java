@@ -20,6 +20,14 @@ import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.Slice;
+import com.livinglogic.ul4.FunctionRepr;
+import com.livinglogic.ul4.BoundDateMethodYear;
+import com.livinglogic.ul4.BoundDateMethodMonth;
+import com.livinglogic.ul4.BoundDateMethodDay;
+import com.livinglogic.ul4.BoundDateMethodHour;
+import com.livinglogic.ul4.BoundDateMethodMinute;
+import com.livinglogic.ul4.BoundDateMethodSecond;
+import com.livinglogic.ul4.BoundDateMethodMicrosecond;
 
 /**
  * An {@code Encoder} object wraps a {@code Writer} object and can dump any object
@@ -33,6 +41,23 @@ public class Encoder
 	private Writer writer = null;
 
 	/**
+	 * {@code indent} specifies which string should be used for indentation
+	 * when pretty printing (<code>null</code> means no pretty printing).
+	 */
+	private String indent = null;
+
+	/**
+	 * {@code level} specifies the indentation level when pretty printing.
+	 */
+	private int level = 0;
+
+	/**
+	 * {@code first} specifies wether any output has been written or not.
+	 */
+	private boolean first = true;
+
+
+	/**
 	 * A {@code Map} that maps certain objects that have been output before to an
 	 * index that specifies at which position in the list of unique objects that
 	 * have been output before this object is.
@@ -43,9 +68,21 @@ public class Encoder
 	 * Create an {@code Encoder} object for writing serialized UL4ON output
 	 * to the {@code Writer} {@code writer}
 	 */
-	public Encoder(Writer writer)
+	public Encoder(Writer writer, String indent)
 	{
 		this.writer = writer;
+		this.indent = indent;
+		this.level = 0;
+		this.first = true;
+	}
+
+	/**
+	 * Create an {@code Encoder} object for writing serialized UL4ON output
+	 * to the {@code Writer} {@code writer}
+	 */
+	public Encoder(Writer writer)
+	{
+		this(writer, null);
 	}
 
 	/**
@@ -55,6 +92,40 @@ public class Encoder
 	private void record(Object obj)
 	{
 		object2id.put(obj, object2id.size());
+	}
+
+	private void line(String line, Object... additionalObjs) throws IOException
+	{
+		// Write indentation/separator
+		if (indent != null)
+		{
+			for (int i = 0; i < level; ++i)
+				writer.write(indent);
+		}
+		else
+		{
+			if (!first)
+				writer.write(" ");
+		}
+		first = false;
+
+		writer.write(line);
+
+		String oldindent = indent;
+		try
+		{
+			indent = null;
+
+			for (Object obj : additionalObjs)
+				dump(obj);
+		}
+		finally
+		{
+			indent = oldindent;
+		}
+
+		if (indent != null)
+			writer.write("\n");
 	}
 
 	/**
@@ -70,87 +141,94 @@ public class Encoder
 		{
 			// Yes -> output a backreference
 			String indexStr = index.toString();
-			writer.write("^" + indexStr + "|");
+			line("^" + indexStr);
 		}
 		else
 		{
 			// No -> write the real object
 			if (obj == null)
-				writer.write("n");
+				line("n");
 			else if (obj instanceof Boolean)
-				writer.write(((Boolean)obj).booleanValue() ? "bT" : "bF");
+				line(((Boolean)obj).booleanValue() ? "bT" : "bF");
 			else if (obj instanceof Integer || obj instanceof Long || obj instanceof Byte || obj instanceof Short || obj instanceof BigInteger)
-				writer.write("i" + obj.toString() + "|");
+				line("i" + obj.toString());
 			else if (obj instanceof Float || obj instanceof Double || obj instanceof BigDecimal)
-				writer.write("f" + obj.toString() + "|");
+				line("f" + obj.toString());
 			else if (obj instanceof String)
 			{
 				record(obj);
-				writer.write("S" + ((String)obj).length() + "|");
-				writer.write((String)obj);
+				line("S" + FunctionRepr.call((String)obj));
 			}
 			else if (obj instanceof Date)
 			{
 				record(obj);
-				writer.write("Z" + Utils.dateFormat.format((Date)obj) + "000");
+				Date date = (Date)obj;
+				line("Z", BoundDateMethodYear.call(date), BoundDateMethodMonth.call(date), BoundDateMethodDay.call(date), BoundDateMethodHour.call(date), BoundDateMethodMinute.call(date), BoundDateMethodSecond.call(date), BoundDateMethodMicrosecond.call(date));
 			}
 			else if (obj instanceof TimeDelta)
 			{
 				record(obj);
 				TimeDelta td = (TimeDelta)obj;
-				writer.write("T" + td.getDays() + "|" + td.getSeconds() + "|" + td.getMicroseconds() + "|");
+				line("T", td.getDays(), td.getSeconds(), td.getMicroseconds());
 			}
 			else if (obj instanceof MonthDelta)
 			{
 				record(obj);
-				writer.write("M" + ((MonthDelta)obj).getMonths() + "|");
+				line("M", ((MonthDelta)obj).getMonths());
 			}
 			else if (obj instanceof Color)
 			{
 				record(obj);
-				writer.write("C" + ((Color)obj).dump());
+				Color color = (Color)obj;
+				line("C", color.getR(), color.getG(), color.getB(), color.getA());
 			}
 			else if (obj instanceof Slice)
 			{
-				Object start = ((Slice)obj).getStart();
-				Object stop = ((Slice)obj).getStop();
-				writer.write("r" + (start != null ? start : "") + "|" + (stop != null ? stop : "") + "|");
+				line("r", ((Slice)obj).getStart(), ((Slice)obj).getStop());
 			}
 			else if (obj instanceof UL4ONSerializable) // check this before Collection and Map
 			{
 				record(obj);
-				writer.write("O");
-				dump(((UL4ONSerializable)obj).getUL4ONName());
+				line("O", ((UL4ONSerializable)obj).getUL4ONName());
+				++level;
 				((UL4ONSerializable)obj).dumpUL4ON(this);
+				--level;
+				line(")");
 			}
 			else if (obj instanceof Set)
 			{
 				record(obj);
-				writer.write("Y");
+				line("Y");
+				++level;
 				for (Object item: (Set<Object>)obj)
 				{
 					dump(item);
 				}
-				writer.write("}");
+				--level;
+				line("}");
 			}
 			else if (obj instanceof Collection)
 			{
 				record(obj);
-				writer.write("L");
+				line("L");
+				++level;
 				for (Object o: (Collection)obj)
 					dump(o);
-				writer.write("]");
+				--level;
+				line("]");
 			}
 			else if (obj instanceof Map)
 			{
 				record(obj);
-				writer.write("D");
+				line("D");
+				++level;
 				for (Map.Entry entry: ((Map<Object, Object>)obj).entrySet())
 				{
 					dump(entry.getKey());
 					dump(entry.getValue());
 				}
-				writer.write("}");
+				--level;
+				line("}");
 			}
 			else
 			{

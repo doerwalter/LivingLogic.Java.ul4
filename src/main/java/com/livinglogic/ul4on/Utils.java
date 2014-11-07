@@ -16,6 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.livinglogic.ul4.FunctionRepr;
+import com.livinglogic.ul4.SyntaxException;
+
 /**
  * Utility class for reading and writing the UL4ON object serialization format.
  *
@@ -62,8 +65,19 @@ public class Utils
 	 */
 	public static String dumps(Object data)
 	{
+		return dumps(data, null);
+	}
+
+	/**
+	 * Return the serialized UL4ON output of the object {@code data}.
+	 * @param data the object to be dumped.
+	 * @param indent how to indent the output for pretty printing ({@code null} disables pretty printing).
+	 * @return the serialized object
+	 */
+	public static String dumps(Object data, String indent)
+	{
 		StringWriter writer = new StringWriter();
-		Encoder encoder = new Encoder(writer);
+		Encoder encoder = new Encoder(writer, indent);
 		try
 		{
 			encoder.dump(data);
@@ -120,5 +134,112 @@ public class Utils
 	public static Object load(Clob clob) throws IOException, SQLException
 	{
 		return load(clob.getCharacterStream());
+	}
+
+	private static String readChars(Reader reader, int count) throws IOException
+	{
+		StringBuilder result = new StringBuilder();
+
+		while (count-- != 0)
+		{
+			int c = reader.read();
+			if (c == -1)
+				throw new RuntimeException("broken stream: unexpected eof");
+			result.append((char)c);
+		}
+		return result.toString();
+	}
+
+	public static String parseUL4StringFromReader(Reader reader) throws IOException
+	{
+		String eofMessage = "broken stream: unexpected eof";
+
+		StringBuilder result = new StringBuilder();
+
+		int delimiter = reader.read();
+		if (delimiter == -1)
+			throw new RuntimeException(eofMessage);
+
+		for (;;)
+		{
+			int c = reader.read();
+
+			if (c == -1)
+				throw new RuntimeException(eofMessage);
+			if (c == delimiter)
+				return result.toString();
+			else if (c == '\\')
+			{
+				int c2 = reader.read();
+
+				switch (c2)
+				{
+					case -1:
+						throw new RuntimeException(eofMessage);
+					case '\\':
+						result.append('\\');
+						break;
+					case 'n':
+						result.append('\n');
+						break;
+					case 'r':
+						result.append('\r');
+						break;
+					case 't':
+						result.append('\t');
+						break;
+					case 'f':
+						result.append('\f');
+						break;
+					case 'b':
+						result.append('\b');
+						break;
+					case 'a':
+						result.append('\u0007');
+						break;
+					case '"':
+						result.append('"');
+						break;
+					case '\'':
+						result.append('\'');
+						break;
+					case 'x':
+						int cx;
+						String xChars = readChars(reader, 2);
+						try
+						{
+							cx = Integer.parseInt(xChars, 16);
+						}
+						catch (NumberFormatException ex)
+						{
+							throw new SyntaxException("illegal \\x escape: " + FunctionRepr.call(xChars), ex);
+						}
+						result.append((char)cx);
+						break;
+					case 'u':
+						int cu;
+						String uChars = readChars(reader, 4);
+						try
+						{
+							cu = Integer.parseInt(uChars, 16);
+						}
+						catch (NumberFormatException ex)
+						{
+							throw new SyntaxException("illegal \\u escape: " + FunctionRepr.call(uChars), ex);
+						}
+						result.append((char)cu);
+						break;
+					case 'U':
+						throw new RuntimeException("\\U escapes are not supported");
+					default:
+						result.append(c);
+						result.append(c2);
+				}
+			}
+			else
+			{
+				result.append((char)c);
+			}
+		}
 	}
 }
