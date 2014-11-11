@@ -27,7 +27,11 @@ public abstract class Function implements UL4Call, UL4Name, UL4Type, UL4Repr
 
 	public Object callUL4(List<Object> args, Map<String, Object> kwargs)
 	{
-		return evaluate(getSignature().makeArgumentList(this, args, kwargs));
+		Signature signature = getSignature();
+		List<Object> arguments = signature.makeArgumentList(this, args, kwargs);
+		Object result = evaluate(arguments);
+		signature.cleanup(arguments);
+		return result;
 	}
 
 	public abstract Object evaluate(List<Object> args);

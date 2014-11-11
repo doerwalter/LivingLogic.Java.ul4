@@ -146,4 +146,24 @@ public class Signature implements Iterable<ArgumentDescription>
 
 		return realargs;
 	}
+
+	/**
+	 * "Destroys" an argument list to simplify the work the Java GC has to do
+	 */
+	public void cleanup(List<Object> variables)
+	{
+		if (remainingKeywordArgumentsName != null)
+		{
+			int pos = variables.size()-1;
+			Map<String, Object> kwargs = (Map<String, Object>)variables.get(pos);
+			kwargs.clear();
+		}
+		if (remainingArgumentsName != null)
+		{
+			int pos = variables.size()-(remainingKeywordArgumentsName != null ? 2 : 1);
+			List<Object> args = (List<Object>)variables.get(pos);
+			args.clear();
+		}
+		variables.clear();
+	}
 }

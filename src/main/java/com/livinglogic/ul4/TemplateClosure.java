@@ -28,8 +28,6 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 	{
 		this.template = template;
 		this.variables = new HashMap<String, Object>(variables);
-		// The template (i.e. the closure) itself should be visible in the parent variables
-		this.variables.put(template.nameUL4(), this);
 	}
 
 	public InterpretedTemplate getTemplate()

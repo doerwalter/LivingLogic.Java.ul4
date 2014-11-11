@@ -1,14 +1,25 @@
+exp-99:
+-------
+* Calling Function and FunctionWithContent objects now destroys the intermediate
+  list objects that get created. This should help the Java GC clean up unused
+  objects.
+* A TemplateClosure no longer can reference itself via the variables from its
+  parents.
+
+
 exp-98:
 -------
 * UL4ON now uses an IdentityHashMap for recording serialized objects. This
   allows to serialize object loops.
 * Updated UL4ON to the more human readable version from XIST 5.12.
 
+
 exp-97:
 -------
 * Implement support for sets in UL4 and UL4ON.
 * Enhance FunctionRepr: Now cycles will be detected automatically even for
   classes that implement reprUL4() themselves.
+
 
 exp-96-5:
 ---------
