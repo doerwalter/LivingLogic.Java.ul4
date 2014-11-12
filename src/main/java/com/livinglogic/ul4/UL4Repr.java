@@ -97,7 +97,6 @@ public interface UL4Repr
 					}
 					catch (Throwable t)
 					{
-						visited.pop();
 						append("???");
 					}
 					visited.pop();
