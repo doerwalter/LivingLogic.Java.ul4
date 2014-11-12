@@ -30,16 +30,17 @@ public interface UL4Repr
 
 	public static class Formatter
 	{
-		private Stack<Object> visited = new Stack<Object>();
-		private StringBuilder buffer = new StringBuilder();
+		private Stack<Object> visited;
+		private StringBuilder buffer;
 
 		private static SimpleDateFormat isoReprDateFormatter = new SimpleDateFormat("@'('yyyy-MM-dd')'");
 		private static SimpleDateFormat isoReprDateTimeFormatter = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm:ss')'");
 		private static SimpleDateFormat isoReprTimestampMicroFormatter = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm:ss.SSS'000)'");
 
-		public Formatter(Object object)
+		public Formatter()
 		{
-			visit(object);
+			visited = new Stack<Object>();
+			buffer = new StringBuilder();
 		}
 
 		public void append(String string)
@@ -47,7 +48,7 @@ public interface UL4Repr
 			buffer.append(string);
 		}
 
-		public void visit(Object object)
+		public Formatter visit(Object object)
 		{
 			if (object == null)
 				append("None");
@@ -102,6 +103,7 @@ public interface UL4Repr
 					visited.pop();
 				}
 			}
+			return this;
 		}
 
 		private void visitDate(Date object)

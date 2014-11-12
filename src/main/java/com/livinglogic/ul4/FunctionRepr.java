@@ -30,13 +30,13 @@ public class FunctionRepr extends Function
 		return signature;
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
 	}
 
 	public static String call(Object obj)
 	{
-		return new UL4Repr.Formatter(obj).toString();
+		return new UL4Repr.Formatter().visit(obj).toString();
 	}
 }

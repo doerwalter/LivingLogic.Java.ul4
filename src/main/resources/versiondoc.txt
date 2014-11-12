@@ -5,6 +5,11 @@ exp-99:
   objects.
 * A TemplateClosure no longer can reference itself via the variables from its
   parents.
+* UL4Repr.Formatter no longer calls the visit method in the constructor. This
+  makes it possible to subclass UL4Repr.Formatter for special output. To use the
+  Formatter use the following code:
+
+    new UL4Repr.Formatter().visit(obj).toString()
 
 
 exp-98:
