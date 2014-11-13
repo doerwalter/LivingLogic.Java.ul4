@@ -35,7 +35,7 @@ public class BoundListMethodPop extends BoundMethod<List>
 		return obj.remove(pos);
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object, Utils.toInt(args.get(0)));
 	}

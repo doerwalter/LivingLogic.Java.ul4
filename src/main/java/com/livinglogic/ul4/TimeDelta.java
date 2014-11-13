@@ -334,7 +334,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 			return "timedelta.days";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.days;
 		}
@@ -352,7 +352,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 			return "timedelta.seconds";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.seconds;
 		}
@@ -370,7 +370,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 			return "timedelta.microseconds";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.microseconds;
 		}

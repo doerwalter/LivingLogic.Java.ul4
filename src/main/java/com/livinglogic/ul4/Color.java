@@ -686,7 +686,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.r";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return (int)object.r;
 		}
@@ -704,7 +704,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.g";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return (int)object.g;
 		}
@@ -722,7 +722,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.b";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return (int)object.b;
 		}
@@ -740,7 +740,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.a";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return (int)object.a;
 		}
@@ -758,7 +758,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.lum";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.lum();
 		}
@@ -776,7 +776,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.hls";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.hls();
 		}
@@ -794,7 +794,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.hlsa";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.hlsa();
 		}
@@ -812,7 +812,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.hsv";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.hsv();
 		}
@@ -830,7 +830,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return "color.hsva";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.hsva();
 		}
@@ -855,7 +855,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return signature;
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.witha(Utils.toInt(args.get(0)));
 		}
@@ -880,7 +880,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return signature;
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.withlum(Utils.toDouble(args.get(0)));
 		}
@@ -905,7 +905,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return signature;
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.abslum(Utils.toDouble(args.get(0)));
 		}
@@ -930,7 +930,7 @@ public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Typ
 			return signature;
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.rellum(Utils.toDouble(args.get(0)));
 		}

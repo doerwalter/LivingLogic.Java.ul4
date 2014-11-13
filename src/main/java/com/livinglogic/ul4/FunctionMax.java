@@ -23,7 +23,7 @@ public class FunctionMax extends Function
 		return signature;
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		List<Object> argList = (List<Object>)args.get(0);
 		return (argList.size() == 0) ? call() : call(argList);

@@ -16,7 +16,7 @@ public class FunctionRandom extends Function
 		return "random";
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call();
 	}

@@ -26,6 +26,7 @@ import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.utils.Closeable;
 import com.livinglogic.utils.CloseableRegistry;
 import com.livinglogic.dbutils.IntVar;
+import com.livinglogic.ul4.BoundArguments;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
@@ -215,7 +216,7 @@ public class Connection implements UL4GetAttributes
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, List<Object> args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			if (!(args.get(0) instanceof String))
 				throw new UnsupportedOperationException("query must be string, not " + Utils.objectType(args.get(0)) + "!");
@@ -242,7 +243,7 @@ public class Connection implements UL4GetAttributes
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, List<Object> args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.query(context, (List)args.get(0));
 		}
@@ -267,7 +268,7 @@ public class Connection implements UL4GetAttributes
 			return signature;
 		}
 
-		public Object evaluate(EvaluationContext context, List<Object> args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			object.execute(context, (List)args.get(0));
 			return null;

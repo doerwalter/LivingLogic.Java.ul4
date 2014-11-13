@@ -25,7 +25,7 @@ public class FunctionFromJSON extends Function
 		return signature;
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
 	}

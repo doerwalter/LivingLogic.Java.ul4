@@ -27,7 +27,7 @@ public class BoundDictMethodValues extends BoundMethod<Map>
 		return object.values();
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call((Map)object);
 	}

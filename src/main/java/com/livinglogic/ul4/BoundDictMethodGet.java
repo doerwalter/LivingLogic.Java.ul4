@@ -36,7 +36,7 @@ public class BoundDictMethodGet extends BoundMethod<Map>
 		return result;
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object, args.get(0), args.get(1));
 	}

@@ -28,7 +28,7 @@ public class BoundUL4GetAttributesMethodItems extends BoundMethod<UL4GetAttribut
 		return new UL4AttributeItemsIterator(object);
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

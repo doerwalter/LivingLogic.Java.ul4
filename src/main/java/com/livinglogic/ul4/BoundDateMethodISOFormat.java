@@ -40,7 +40,7 @@ public class BoundDateMethodISOFormat extends BoundMethod<Date>
 		}
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

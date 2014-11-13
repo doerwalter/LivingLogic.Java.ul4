@@ -31,7 +31,7 @@ public class BoundDateMethodHour extends BoundMethod<Date>
 		return calendar.get(Calendar.HOUR_OF_DAY);
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

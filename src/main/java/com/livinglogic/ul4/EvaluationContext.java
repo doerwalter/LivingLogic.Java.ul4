@@ -56,11 +56,12 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 
 	/**
 	 * The maximum number of milliseconds of runtime that are allowed
-	 * using this {@code EvaluationContext} object. This can be use to limit
+	 * using this {@code EvaluationContext} object. This can be used to limit
 	 * the runtime of a template. If negative the runtime is unlimited.
 	 */
 	private long milliseconds = -1;
 	private long startMilliseconds;
+
 	/**
 	 * Create a new {@code EvaluationContext} object. No variables will
 	 * be available to the template code.
@@ -68,19 +69,9 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	 */
 	public EvaluationContext(Writer writer)
 	{
-		this(writer, null, -1);
+		this(writer, -1);
 	}
 
-	/**
-	 * Create a new {@code EvaluationContext} object
-	 * @param writer The output stream where the template output will be written
-	 * @param variables The template variables that will be available to the
-	 *                  template code (or {@code null} for no variables)
-	 */
-	public EvaluationContext(Writer writer, Map<String, Object> variables)
-	{
-		this(writer, variables, -1);
-	}
 	/**
 	 * Create a new {@code EvaluationContext} object
 	 * @param writer The output stream where the template output will be written
@@ -89,17 +80,15 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	 * @param milliseconds The maximum number of milliseconds allowed for
 	 *              templates using this {@code EvaluationContext}.
 	 */
-	public EvaluationContext(Writer writer, Map<String, Object> variables, long milliseconds)
+	public EvaluationContext(Writer writer, long milliseconds)
 	{
 		this.writer = writer;
-		if (variables == null)
-			variables = new HashMap<String, Object>();
-		this.variables = variables;
-		this.template = null;
-		this.allVariables = new MapChain<String, Object>(variables, functions);
-		this.closeables = new LinkedList<Closeable>();
+		variables = new HashMap<String, Object>();
+		template = null;
+		allVariables = new MapChain<String, Object>(variables, functions);
+		closeables = new LinkedList<Closeable>();
 		this.milliseconds = milliseconds;
-		this.startMilliseconds = System.currentTimeMillis();
+		startMilliseconds = System.currentTimeMillis();
 	}
 
 	protected void tick()
@@ -109,6 +98,7 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 			throw new RuntimeExceededException();
 		}
 	}
+
 	/**
 	 * Call this when the {@code EvaluationContext} is no longer required.
 	 */
@@ -193,7 +183,7 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 
 	/**
 	 * Replace the map containing the template variables with a new map that
-	 * deferres non-existant keys to the previous one and return the previous one.
+	 * defers non-existant keys to the previous one and return the previous one.
 	 */
 	public Map<String, Object> pushVariables(Map<String, Object> variables)
 	{

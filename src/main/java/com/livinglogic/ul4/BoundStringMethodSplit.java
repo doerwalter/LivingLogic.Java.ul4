@@ -50,7 +50,7 @@ public class BoundStringMethodSplit extends BoundMethod<String>
 		return Arrays.asList(StringUtils.splitByWholeSeparatorPreserveAllTokens(object, separator, maxsplit+1));
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		Object separator = args.get(0);
 		Object maxsplit = args.get(1);

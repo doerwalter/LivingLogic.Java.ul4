@@ -49,7 +49,7 @@ public class BoundStringMethodFind extends BoundMethod<String>
 		return result;
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		if (args.get(0) instanceof String)
 		{

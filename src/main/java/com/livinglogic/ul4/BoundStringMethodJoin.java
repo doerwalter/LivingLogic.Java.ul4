@@ -49,7 +49,7 @@ public class BoundStringMethodJoin extends BoundMethod<String>
 		return call(object, Utils.iterator(iterable));
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object, args.get(0));
 	}

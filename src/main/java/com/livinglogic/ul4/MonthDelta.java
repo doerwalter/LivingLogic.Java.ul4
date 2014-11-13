@@ -160,7 +160,7 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 			return "monthdelta.months";
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return object.months;
 		}

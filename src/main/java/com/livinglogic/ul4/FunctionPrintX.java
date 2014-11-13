@@ -7,6 +7,7 @@
 package com.livinglogic.ul4;
 
 import java.util.List;
+import com.livinglogic.ul4.BoundArguments;
 
 public class FunctionPrintX extends FunctionWithContext
 {
@@ -22,7 +23,7 @@ public class FunctionPrintX extends FunctionWithContext
 		return signature;
 	}
 
-	public Object evaluate(EvaluationContext context, List<Object> args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(context, (List<Object>)args.get(0));
 	}

@@ -92,7 +92,7 @@ public class BoundStringMethodRSplit extends BoundMethod<String>
 		return result;
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		Object separator = args.get(0);
 		Object maxsplit = args.get(1);

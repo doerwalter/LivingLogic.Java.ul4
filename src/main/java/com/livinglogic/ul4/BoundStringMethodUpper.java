@@ -26,7 +26,7 @@ public class BoundStringMethodUpper extends BoundMethod<String>
 		return object.toUpperCase();
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

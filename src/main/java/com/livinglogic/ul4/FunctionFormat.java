@@ -35,7 +35,7 @@ public class FunctionFormat extends Function
 		return signature;
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0), args.get(1), args.get(2));
 	}

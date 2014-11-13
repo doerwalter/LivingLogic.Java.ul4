@@ -20,7 +20,7 @@ public class FunctionUTCNow extends Function
 		return "utcnow";
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call();
 	}

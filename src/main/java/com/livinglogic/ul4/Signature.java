@@ -17,6 +17,7 @@ import java.util.Map;
 public class Signature implements Iterable<ArgumentDescription>
 {
 	protected LinkedHashMap<String, ArgumentDescription> arguments;
+	protected List<String> argumentNames;
 	protected String remainingArgumentsName;
 	protected String remainingKeywordArgumentsName;
 
@@ -30,6 +31,7 @@ public class Signature implements Iterable<ArgumentDescription>
 	public Signature(Object... args)
 	{
 		arguments = new LinkedHashMap<String, ArgumentDescription>();
+		argumentNames = null;
 		this.remainingArgumentsName = null;
 		this.remainingKeywordArgumentsName = null;
 
@@ -52,14 +54,29 @@ public class Signature implements Iterable<ArgumentDescription>
 		}
 	}
 
-	public void add(String name)
+	private void add(String name)
 	{
 		arguments.put(name, new ArgumentDescription(name, arguments.size()));
 	}
 
-	public void add(String name, Object defaultValue)
+	private void add(String name, Object defaultValue)
 	{
 		arguments.put(name, new ArgumentDescription(name, arguments.size(), defaultValue));
+	}
+
+	public List<String> getArgumentNames()
+	{
+		if (argumentNames == null)
+		{
+			argumentNames = new ArrayList<String>(arguments.size() + (remainingArgumentsName != null ? 1 : 0) + (remainingKeywordArgumentsName != null ? 1 : 0));
+			for (String argumentName : arguments.keySet())
+				argumentNames.add(argumentName);
+			if (remainingArgumentsName != null)
+				argumentNames.add(remainingArgumentsName);
+			if (remainingKeywordArgumentsName != null)
+				argumentNames.add(remainingKeywordArgumentsName);
+		}
+		return argumentNames;
 	}
 
 	public Iterator<ArgumentDescription> iterator()
@@ -75,95 +92,5 @@ public class Signature implements Iterable<ArgumentDescription>
 	public boolean containsArgumentNamed(String argName)
 	{
 		return arguments.containsKey(argName);
-	}
-
-	public List<Object> makeArgumentList(UL4Name object, List<Object> args, Map<String, Object> kwargs)
-	{
-		List<Object> realargs = new ArrayList<Object>(size());
-
-		int i = 0;
-		for (ArgumentDescription argDesc : this)
-		{
-			String argName = argDesc.getName();
-			Object argValue = kwargs.get(argName);
-			// argument has been specified via keyword
-			if (argValue != null || kwargs.containsKey(argName))
-			{
-				if (i < args.size())
-					// argument has been specified as a positional argument too
-					throw new DuplicateArgumentException(object, argDesc);
-				realargs.add(argValue);
-			}
-			else
-			{
-				if (i < args.size())
-					// argument has been specified as a positional argument
-					realargs.add(args.get(i));
-				else if (argDesc.hasDefaultValue())
-					// we have a default value for this argument
-					realargs.add(argDesc.getDefaultValue());
-				else
-					throw new MissingArgumentException(object, argDesc);
-			}
-			++i;
-		}
-
-		// Handle additional positional arguments
-		// if there are any, and we suport a "*" argument, put the remaining arguments into this argument as a list, else complain
-		int expectedArgCount = size();
-		if (remainingArgumentsName != null)
-		{
-			realargs.add((args.size() > expectedArgCount) ? args.subList(arguments.size(), args.size()) : new ArrayList<Object>());
-		}
-		else
-		{
-			if (args.size() > expectedArgCount)
-				throw new TooManyArgumentsException(object, this, args.size());
-		}
-
-		// Handle additional keyword arguments
-		// if there are any, and we suport a "**" argument, put the remaining keyword arguments into this argument as a map, else complain
-		if (remainingKeywordArgumentsName != null)
-		{
-			LinkedHashMap<String, Object> realRemainingKeywordArguments = new LinkedHashMap<String, Object>();
-			for (String kwargname : kwargs.keySet())
-			{
-				if (!containsArgumentNamed(kwargname))
-				{
-					realRemainingKeywordArguments.put(kwargname, kwargs.get(kwargname));
-				}
-			}
-			realargs.add(realRemainingKeywordArguments);
-		}
-		else
-		{
-			for (String kwargname : kwargs.keySet())
-			{
-				if (!containsArgumentNamed(kwargname))
-					throw new UnsupportedArgumentNameException(object, kwargname);
-			}
-		}
-
-		return realargs;
-	}
-
-	/**
-	 * "Destroys" an argument list to simplify the work the Java GC has to do
-	 */
-	public void cleanup(List<Object> variables)
-	{
-		if (remainingKeywordArgumentsName != null)
-		{
-			int pos = variables.size()-1;
-			Map<String, Object> kwargs = (Map<String, Object>)variables.get(pos);
-			kwargs.clear();
-		}
-		if (remainingArgumentsName != null)
-		{
-			int pos = variables.size()-(remainingKeywordArgumentsName != null ? 2 : 1);
-			List<Object> args = (List<Object>)variables.get(pos);
-			args.clear();
-		}
-		variables.clear();
 	}
 }

@@ -33,7 +33,7 @@ public class BoundStringMethodStartsWith extends BoundMethod<String>
 		return object.startsWith(suffix);
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		Object arg = args.get(0);
 

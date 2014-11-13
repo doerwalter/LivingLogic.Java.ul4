@@ -16,7 +16,7 @@ public class FunctionNow extends Function
 		return "now";
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call();
 	}

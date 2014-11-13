@@ -7,7 +7,7 @@ public class ExpectCauseException extends Statement
 	private Statement fNext;
 	private final Class<? extends Throwable> fExpected;
 
-	public ExpectCauseException( Statement next, Class<? extends Throwable> expected )
+	public ExpectCauseException(Statement next, Class<? extends Throwable> expected)
 	{
 		fNext= next;
 		fExpected= expected;
@@ -37,7 +37,7 @@ public class ExpectCauseException extends Statement
 			}
 			if (!found)
 			{
-				String message = "Unexpected exception cause, expected<"
+				String message = "Unexpected exception cause, expected <"
 				                 + fExpected.getName() + "> but not found in cause chain, got <" + original + ">";
 				throw new Exception(message, original);
 			}

@@ -31,7 +31,7 @@ public class BoundDateMethodMinute extends BoundMethod<Date>
 		return calendar.get(Calendar.MINUTE);
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

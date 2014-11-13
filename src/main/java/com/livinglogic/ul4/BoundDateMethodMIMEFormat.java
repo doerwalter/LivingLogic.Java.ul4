@@ -31,7 +31,7 @@ public class BoundDateMethodMIMEFormat extends BoundMethod<Date>
 		return mimeDateFormatter.format(obj);
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

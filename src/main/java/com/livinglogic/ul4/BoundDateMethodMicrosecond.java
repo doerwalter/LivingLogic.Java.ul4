@@ -31,7 +31,7 @@ public class BoundDateMethodMicrosecond extends BoundMethod<Date>
 		return calendar.get(Calendar.MILLISECOND)*1000;
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

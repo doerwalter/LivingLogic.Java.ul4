@@ -41,7 +41,7 @@ public class BoundUL4GetItemStringMethodGet extends BoundMethod<UL4GetItemString
 			return defaultValue;
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object, args.get(0), args.get(1));
 	}

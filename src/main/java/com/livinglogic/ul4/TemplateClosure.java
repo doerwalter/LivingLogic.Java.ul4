@@ -42,9 +42,17 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		if (args.size() > 0)
-			throw new PositionalArgumentsNotSupportedException(nameUL4());
-		return call(context, kwargs);
+		BoundArguments arguments = new BoundArguments(template.signature, template, args, kwargs);
+		Object result = null;
+		try
+		{
+			result = call(context, arguments.byName());
+		}
+		finally
+		{
+			arguments.cleanup();
+		}
+		return result;
 	}
 
 	public Object call(EvaluationContext context, Map<String, Object> variables)
@@ -54,7 +62,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 
 	public void render(EvaluationContext context, Map<String, Object> variables)
 	{
-		template.render(context, new MapChain<String, Object>(variables, this.variables));
+		template.render(context, null, new MapChain<String, Object>(variables, this.variables));
 	}
 
 	public String renders(EvaluationContext context, Map<String, Object> variables)
@@ -76,19 +84,18 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 
 		public String nameUL4()
 		{
-			return "template.render";
+			String name = object.nameUL4();
+			return (name != null ? name : "template") + ".render";
 		}
-
-		private static final Signature signature = new Signature("kwargs", Signature.remainingKeywordArguments);
 
 		public Signature getSignature()
 		{
-			return signature;
+			return object.template.getSignature();
 		}
 
-		public Object evaluate(EvaluationContext context, List<Object> args)
+		public Object evaluate(EvaluationContext context, BoundArguments arguments)
 		{
-			object.render(context, (Map<String, Object>)args.get(0));
+			object.render(context, arguments.byName());
 			return null;
 		}
 	}
@@ -102,19 +109,18 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 
 		public String nameUL4()
 		{
-			return "template.renders";
+			String name = object.nameUL4();
+			return (name != null ? name : "template") + ".renders";
 		}
-
-		private static final Signature signature = new Signature("kwargs", Signature.remainingKeywordArguments);
 
 		public Signature getSignature()
 		{
-			return signature;
+			return object.template.getSignature();
 		}
 
-		public Object evaluate(EvaluationContext context, List<Object> args)
+		public Object evaluate(EvaluationContext context, BoundArguments arguments)
 		{
-			return object.renders(context, (Map<String, Object>)args.get(0));
+			return object.renders(context, arguments.byName());
 		}
 	}
 

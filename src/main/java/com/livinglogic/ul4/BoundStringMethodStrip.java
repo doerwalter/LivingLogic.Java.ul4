@@ -40,7 +40,7 @@ public class BoundStringMethodStrip extends BoundMethod<String>
 		return StringUtils.strip(object, chars);
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		Object arg = args.get(0);
 

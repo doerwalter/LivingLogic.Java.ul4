@@ -53,7 +53,7 @@ public class BoundListMethodRFind extends BoundMethod<List>
 		return pos;
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
 		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : object.size();

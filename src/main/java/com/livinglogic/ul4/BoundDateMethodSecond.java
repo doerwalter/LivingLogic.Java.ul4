@@ -31,7 +31,7 @@ public class BoundDateMethodSecond extends BoundMethod<Date>
 		return calendar.get(Calendar.SECOND);
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

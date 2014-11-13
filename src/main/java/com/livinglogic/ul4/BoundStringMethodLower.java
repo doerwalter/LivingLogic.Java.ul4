@@ -26,7 +26,7 @@ public class BoundStringMethodLower extends BoundMethod<String>
 		return object.toLowerCase();
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

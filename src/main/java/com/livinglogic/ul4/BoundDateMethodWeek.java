@@ -41,7 +41,7 @@ public class BoundDateMethodWeek extends BoundMethod<Date>
 		return yearday/7;
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		Object arg = args.get(0);
 		return call(object, arg == null ? 0 : Utils.toInt(arg));

@@ -28,7 +28,7 @@ public class BoundDictMethodItems extends BoundMethod<Map>
 		return new MapItemIterator(object);
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

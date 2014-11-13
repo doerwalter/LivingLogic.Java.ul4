@@ -31,7 +31,7 @@ public class BoundDateMethodMonth extends BoundMethod<Date>
 		return calendar.get(Calendar.MONTH)+1;
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

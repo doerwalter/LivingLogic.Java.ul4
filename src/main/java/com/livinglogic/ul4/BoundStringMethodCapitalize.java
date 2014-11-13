@@ -26,7 +26,7 @@ public class BoundStringMethodCapitalize extends BoundMethod<String>
 		return String.valueOf(Character.toTitleCase(object.charAt(0))) + object.substring(1).toLowerCase();
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

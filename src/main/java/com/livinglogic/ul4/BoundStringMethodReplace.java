@@ -40,7 +40,7 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 		return StringUtils.replace(object, search, replace, count);
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		Object arg1 = args.get(0);
 		Object arg2 = args.get(1);

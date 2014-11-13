@@ -39,6 +39,7 @@ import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.ul4.UL4GetAttributes;
+import com.livinglogic.ul4.Signature;
 import com.livinglogic.dbutils.Connection;
 
 @RunWith(CauseTestRunner.class)
@@ -78,11 +79,11 @@ public class UL4Test
 		}
 	}
 
-	private static InterpretedTemplate getTemplate(String source, String name, boolean keepWhitespace)
+	private static InterpretedTemplate getTemplate(String source, String name, boolean keepWhitespace, Signature signature)
 	{
 		try
 		{
-			InterpretedTemplate template = new InterpretedTemplate(source, name, keepWhitespace);
+			InterpretedTemplate template = new InterpretedTemplate(source, name, keepWhitespace, signature);
 			// System.out.println(template);
 			return template;
 		}
@@ -92,19 +93,24 @@ public class UL4Test
 		}
 	}
 
+	private static InterpretedTemplate getTemplate(String source, String name, boolean keepWhitespace)
+	{
+		return getTemplate(source, null, keepWhitespace, null);
+	}
+
 	private static InterpretedTemplate getTemplate(String source, boolean keepWhitespace)
 	{
-		return getTemplate(source, null, keepWhitespace);
+		return getTemplate(source, null, keepWhitespace, null);
 	}
 
 	private static InterpretedTemplate getTemplate(String source, String name)
 	{
-		return getTemplate(source, name, false);
+		return getTemplate(source, name, false, null);
 	}
 
 	private static InterpretedTemplate getTemplate(String source)
 	{
-		return getTemplate(source, null, false);
+		return getTemplate(source, null, false, null);
 	}
 
 	private static String getTemplateOutput(String source, Object... args)
@@ -119,8 +125,8 @@ public class UL4Test
 
 	private static String getTemplateOutput(InterpretedTemplate template, long milliseconds, Object... args)
 	{
-		EvaluationContext context = new EvaluationContext(null, makeMap(args), milliseconds);
-		return template.renders(context);
+		EvaluationContext context = new EvaluationContext(null, milliseconds);
+		return template.renders(context, makeMap(args));
 	}
 
 	private static void checkTemplateOutput(String expected, String source, Object... args)
@@ -141,8 +147,8 @@ public class UL4Test
 	private static void checkTemplateOutputLimit(String expected, InterpretedTemplate template, long milliseconds, Object... args)
 	{
 		// Render the template once directly
-		EvaluationContext context1 = new EvaluationContext(null, makeMap(args), milliseconds);
-		String output1 = template.renders(context1);
+		EvaluationContext context1 = new EvaluationContext(null, milliseconds);
+		String output1 = template.renders(context1, makeMap(args));
 		assertEquals(expected, output1);
 
 		// Recreate the template from the dump of the compiled template
@@ -152,8 +158,8 @@ public class UL4Test
 		assertEquals(template.toString(), template2.toString());
 
 		// Check that they have the same output
-		EvaluationContext context2 = new EvaluationContext(null, makeMap(args), milliseconds);
-		String output2 = template2.renders(context2);
+		EvaluationContext context2 = new EvaluationContext(null, milliseconds);
+		String output2 = template2.renders(context2, makeMap(args));
 		assertEquals(expected, output2);
 	}
 
@@ -4196,5 +4202,33 @@ public class UL4Test
 
 		if (db != null)
 			checkTemplateOutput("True", source, "db", db);
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	// @Test
+	public void function_signature_directcall() throws Exception
+	{
+		InterpretedTemplate function = getTemplate("<?return x?>", "func_with_sig", false, new Signature("x", Signature.required));
+
+		function.call();
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	// @Test
+	public void function_signature_templatecall() throws Exception
+	{
+		InterpretedTemplate function = getTemplate("<?return x?>", "func_with_sig", false, new Signature("x", Signature.required));
+		InterpretedTemplate template = getTemplate("<?print func_with_sig()?>", "t", false);
+
+		template.renders(makeMap("func_with_sig", function));
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	// @Test
+	public void template_signature_templatecall() throws Exception
+	{
+		InterpretedTemplate template = getTemplate("<?print x?>", "t", false, new Signature("x", Signature.required));
+
+		checkTemplateOutput("42", "<?code t.renders()?>", "t", template);
 	}
 }

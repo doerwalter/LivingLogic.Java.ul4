@@ -31,7 +31,7 @@ public class BoundDateMethodYearday extends BoundMethod<Date>
 		return calendar.get(Calendar.DAY_OF_YEAR);
 	}
 
-	public Object evaluate(List<Object> args)
+	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
 	}

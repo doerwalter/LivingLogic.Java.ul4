@@ -13,7 +13,7 @@ public class MissingArgumentException extends ArgumentException
 {
 	public MissingArgumentException(String name, String argumentName, int argumentPosition)
 	{
-		super("required " + name + "() argument " + FunctionRepr.call(argumentName) + " (position " + argumentPosition + ") missing");
+		super(name + "(): required argument " + argumentName + " (position " + argumentPosition + ") missing");
 	}
 
 	public MissingArgumentException(UL4Name object, String argumentName, int argumentPosition)

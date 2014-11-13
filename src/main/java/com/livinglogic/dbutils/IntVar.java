@@ -17,6 +17,7 @@ import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.Function;
 import com.livinglogic.ul4.Utils;
+import com.livinglogic.ul4.BoundArguments;
 
 public class IntVar extends Var
 {
@@ -68,7 +69,7 @@ public class IntVar extends Var
 			return signature;
 		}
 
-		public Object evaluate(List<Object> args)
+		public Object evaluate(BoundArguments args)
 		{
 			return new IntVar(args.get(0));
 		}
