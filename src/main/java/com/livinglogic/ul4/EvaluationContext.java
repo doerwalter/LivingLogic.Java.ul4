@@ -233,8 +233,6 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	 */
 	public void set(String key, Object value)
 	{
-		if ("self".equals(key))
-			throw new RuntimeException("can't assign to self");
 		variables.put(key, value);
 	}
 
