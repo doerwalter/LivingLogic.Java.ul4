@@ -63,8 +63,15 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	private long startMilliseconds;
 
 	/**
-	 * Create a new {@code EvaluationContext} object. No variables will
-	 * be available to the template code.
+	 * Create a new {@code EvaluationContext} object.
+	 */
+	public EvaluationContext()
+	{
+		this(null, -1);
+	}
+
+	/**
+	 * Create a new {@code EvaluationContext} object.
 	 * @param writer The output stream where the template output will be written
 	 */
 	public EvaluationContext(Writer writer)
@@ -73,10 +80,18 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	}
 
 	/**
-	 * Create a new {@code EvaluationContext} object
+	 * Create a new {@code EvaluationContext} object.
+	 * @param milliseconds The maximum number of milliseconds allowed for
+	 *              templates using this {@code EvaluationContext}.
+	 */
+	public EvaluationContext(long milliseconds)
+	{
+		this(null, milliseconds);
+	}
+
+	/**
+	 * Create a new {@code EvaluationContext} object.
 	 * @param writer The output stream where the template output will be written
-	 * @param variables The template variables that will be available to the
-	 *                  template code (or {@code null} for no variables)
 	 * @param milliseconds The maximum number of milliseconds allowed for
 	 *              templates using this {@code EvaluationContext}.
 	 */
@@ -158,14 +173,6 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	public Map<String, Object> getVariables()
 	{
 		return variables;
-	}
-
-	/**
-	 * Return the map containing the all variables.
-	 */
-	public Map<String, Object> getAllVariables()
-	{
-		return allVariables;
 	}
 
 	/**
