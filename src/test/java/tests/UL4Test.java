@@ -83,7 +83,7 @@ public class UL4Test
 	{
 		try
 		{
-			InterpretedTemplate template = new InterpretedTemplate(source, name, keepWhitespace, signature);
+			InterpretedTemplate template = new InterpretedTemplate(source, name, keepWhitespace, null, null, signature);
 			// System.out.println(template);
 			return template;
 		}
@@ -3909,7 +3909,7 @@ public class UL4Test
 	@Test
 	public void nestedscopes()
 	{
-		checkTemplateOutput("0;1;2;", "<?for i in range(3)?><?def x?><?print i?>;<?end def?><?code x.render()?><?end for?>");
+		checkTemplateOutput("0;1;2;", "<?for i in range(3)?><?def x?><?print repr(i)?>;<?end def?><?code x.render()?><?end for?>");
 		checkTemplateOutput("1;", "<?for i in range(3)?><?if i == 1?><?def x?><?print i?>;<?end def?><?end if?><?end for?><?code x.render()?>");
 		checkTemplateOutput("1", "<?code i = 1?><?def x?><?print i?><?end def?><?code i = 2?><?code x.render()?>");
 		checkTemplateOutput("1", "<?code i = 1?><?def x?><?def y?><?print i?><?end def?><?code i = 2?><?code y.render()?><?end def?><?code i = 3?><?code x.render()?>");
@@ -4273,5 +4273,17 @@ public class UL4Test
 		InterpretedTemplate template = getTemplate("<?print x?>", "t", false, new Signature("x", 42));
 
 		checkTemplateOutput("42", template);
+	}
+
+	@Test
+	public void function_subcall_default() throws Exception
+	{
+		checkTemplateOutput("42", "<?def f(x=17, y=23)?><?return x+y?><?end def?><?print f(y=25)?>");
+	}
+
+	@Test
+	public void function_subcall_remainingkwargs() throws Exception
+	{
+		checkTemplateOutput("x: 17, y: 23", "<?def f(**kwargs)?><?return ', '.join(key + ': ' + str(value) for (key, value) in sorted(kwargs.items()))?><?end def?><?print f(x=17, y=23)?>");
 	}
 }

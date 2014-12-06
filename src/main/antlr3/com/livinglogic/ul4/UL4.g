@@ -790,3 +790,15 @@ signature returns [SignatureAST node]
 	)
 	close=')' { $node.setEnd(getEnd($close)); }
 ;
+
+
+/* Additional rules for "def" tag */
+
+definition returns [Definition node]
+	:
+		n=name { { $node = new Definition($n.text, null); } }
+		(
+			sig=signature { $node.setSignature($signature.node); }
+		)?
+		EOF
+	;

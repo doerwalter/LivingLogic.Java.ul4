@@ -64,89 +64,66 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public String enddelim = "?>";
 
 	/**
-	 * The signature of the template ({@code null} mean that all variables are allowed)
+	 * The signature of the template if it is a top level template  ({@code null} mean that all variables are allowed)
 	 */
 	public Signature signature = null;
+
+	/**
+	 * The signature of the template if it is a subtemplate ({@code null} mean that all variables are allowed)
+	 */
+	public SignatureAST signatureAST = null;
 
 	/**
 	 * The template/function source (of the top-level template, i.e. subtemplates always get the full source).
 	 */
 	public String source = null;
 
-	public InterpretedTemplate(String source) throws RecognitionException
+	/**
+	 * Used for deserializing an UL4ON dump (of top level and sub templates). Doesn't compile any source
+	 */
+	private InterpretedTemplate()
 	{
-		this(source, null, true, null, null, (Signature)null);
+		super(null, 0, 0);
+		this.source = null;
+		this.name = null;
+		this.keepWhitespace = false;
+		this.startdelim = startdelim != null ? startdelim : "<?";
+		this.enddelim = enddelim != null ? enddelim : "?>";
+		this.signature = null;
+		this.signatureAST = null;
 	}
 
-	public InterpretedTemplate(String source, Signature signature) throws RecognitionException
-	{
-		this(source, null, true, null, null, signature);
-	}
-
-	public InterpretedTemplate(String source, boolean keepWhitespace) throws RecognitionException
-	{
-		this(source, null, keepWhitespace, null, null, (Signature)null);
-	}
-
-	public InterpretedTemplate(String source, boolean keepWhitespace, Signature signature) throws RecognitionException
-	{
-		this(source, null, keepWhitespace, null, null, signature);
-	}
-
-	public InterpretedTemplate(String source, String name) throws RecognitionException
-	{
-		this(source, name, true, null, null, (Signature)null);
-	}
-
-	public InterpretedTemplate(String source, String name, Signature signature) throws RecognitionException
-	{
-		this(source, name, true, null, null, signature);
-	}
-
-	public InterpretedTemplate(String source, String name, boolean keepWhitespace) throws RecognitionException
-	{
-		this(source, name, keepWhitespace, null, null, (Signature)null);
-	}
-
-	public InterpretedTemplate(String source, String name, boolean keepWhitespace, Signature signature) throws RecognitionException
-	{
-		this(source, name, keepWhitespace, null, null, signature);
-	}
-
-	public InterpretedTemplate(String source, String startdelim, String enddelim) throws RecognitionException
-	{
-		this(source, null, true, startdelim, enddelim, (Signature)null);
-	}
-
-	public InterpretedTemplate(String source, String startdelim, String enddelim, Signature signature) throws RecognitionException
-	{
-		this(source, null, true, startdelim, enddelim, signature);
-	}
-
-	public InterpretedTemplate(String source, boolean keepWhitespace, String startdelim, String enddelim) throws RecognitionException
-	{
-		this(source, null, keepWhitespace, startdelim, enddelim, (Signature)null);
-	}
-
-	public InterpretedTemplate(String source, boolean keepWhitespace, String startdelim, String enddelim, Signature signature) throws RecognitionException
-	{
-		this(source, null, keepWhitespace, startdelim, enddelim, signature);
-	}
-
+	/**
+	 * Create of toplevel template without a signature
+	 */
 	public InterpretedTemplate(String source, String name, boolean keepWhitespace, String startdelim, String enddelim) throws RecognitionException
 	{
-		this(null, source, name, keepWhitespace, startdelim, enddelim, (Signature)null);
-	}
-
-	public InterpretedTemplate(String source, String name, boolean keepWhitespace, String startdelim, String enddelim, Signature signature) throws RecognitionException
-	{
-		this(null, source, name, keepWhitespace, startdelim, enddelim, signature);
+		super(null, 0, 0);
+		this.source = source;
+		this.name = name;
+		this.keepWhitespace = keepWhitespace;
+		this.startdelim = startdelim != null ? startdelim : "<?";
+		this.enddelim = enddelim != null ? enddelim : "?>";
+		this.signature = null;
+		this.signatureAST = null;
 		compile();
 	}
 
+	/**
+	 * Create of toplevel template with a specified signature
+	 */
+	public InterpretedTemplate(String source, String name, boolean keepWhitespace, String startdelim, String enddelim, Signature signature) throws RecognitionException
+	{
+		this(source, name, keepWhitespace, startdelim, enddelim);
+		this.signature = signature;
+	}
+
+	/**
+	 * Create of toplevel template with a signature compiled from a string
+	 */
 	public InterpretedTemplate(String source, String name, boolean keepWhitespace, String startdelim, String enddelim, String signature) throws RecognitionException
 	{
-		this(null, source, name, keepWhitespace, startdelim, enddelim, (Signature)null);
+		this(source, name, keepWhitespace, startdelim, enddelim);
 		if (signature != null)
 		{
 			UL4Parser parser = getSignatureParser(signature);
@@ -155,21 +132,21 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			Signature sig = ast.evaluate(context);
 			this.signature = sig;
 		}
-		compile();
 	}
 
 	/**
-	 * Creates an {@code InterpretedTemplate} object. The content will be filled later through a call to {@link #compile)
+	 * Creates an {@code InterpretedTemplate} object. Used for subtemplates.
 	 */
-	public InterpretedTemplate(Location location, String source, String name, boolean keepWhitespace, String startdelim, String enddelim, Signature signature)
+	private InterpretedTemplate(Location location, String name, boolean keepWhitespace, String startdelim, String enddelim, SignatureAST signature)
 	{
 		super(location, 0, 0);
-		this.source = source;
+		this.source = location.getSource();
 		this.name = name;
 		this.keepWhitespace = keepWhitespace;
 		this.startdelim = startdelim != null ? startdelim : "<?";
 		this.enddelim = enddelim != null ? enddelim : "?>";
-		this.signature = signature;
+		this.signature = null;
+		this.signatureAST = signature;
 	}
 
 	protected void compile() throws RecognitionException
@@ -284,8 +261,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				}
 				else if (type.equals("def"))
 				{
+					UL4Parser parser = getParser(location);
+					Definition definition = parser.definition();
 					// Copy over all the attributes, however passing a {@link Location} will prevent compilation
-					InterpretedTemplate subtemplate = new InterpretedTemplate(location, source, location.getCode(), keepWhitespace, startdelim, enddelim, null);
+					InterpretedTemplate subtemplate = new InterpretedTemplate(location, definition.getName(), keepWhitespace, startdelim, enddelim, definition.getSignature());
 					innerBlock.append(subtemplate);
 					stack.push(subtemplate);
 				}
@@ -549,7 +528,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		{
 			context.setTemplate(oldTemplate);
 
-			if (oldWriter != null)
+			if (writer != null)
 				context.setWriter(oldWriter);
 
 			context.setVariables(oldVariables);
@@ -686,7 +665,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 *                  available to the function code. May be null.
 	 * @return the return value of the function
 	 */
-	private Object callBound(EvaluationContext context, Map<String, Object> variables)
+	public Object callBound(EvaluationContext context, Map<String, Object> variables)
 	{
 		boolean contextIsLocal = (context == null);
 
@@ -736,7 +715,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	public Object evaluate(EvaluationContext context)
 	{
-		context.set(name, new TemplateClosure(this, context.getVariables()));
+		context.set(name, new TemplateClosure(this, context));
 		return null;
 	}
 
@@ -913,7 +892,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		Utils.register("de.livinglogic.ul4.bitxorvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitXOrVarAST(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.bitorvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitOrVarAST(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.call", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate(null, null, null, false, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate(); }});
+		Utils.register("de.livinglogic.ul4.signature", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SignatureAST(null, -1, -1); }});
 	}
 
 	static
@@ -937,10 +917,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	private void dumpSignatureUL4ON(Encoder encoder) throws IOException
 	{
-		List paramsDump = null;
-
 		if (signature != null)
 		{
+			List paramsDump = null;
 			paramsDump = new LinkedList();
 			for (ArgumentDescription argdesc : signature)
 			{
@@ -956,8 +935,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				paramsDump.add("*" + signature.remainingParametersName);
 			if (signature.remainingKeywordParametersName != null)
 				paramsDump.add("**" + signature.remainingKeywordParametersName);
+			encoder.dump(paramsDump);
 		}
-		encoder.dump(paramsDump);
+		else
+			encoder.dump(signatureAST);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
@@ -984,7 +965,15 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		Signature signature;
 
 		if (paramsDump == null)
+		{
 			this.signature = null;
+			this.signatureAST = null;
+		}
+		else if (paramsDump instanceof SignatureAST)
+		{
+			this.signature = null;
+			this.signatureAST = (SignatureAST)paramsDump;
+		}
 		else
 		{
 			signature = new Signature();
@@ -1014,6 +1003,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				}
 			}
 			this.signature = signature;
+			this.signatureAST = null;
 		}
 	}
 

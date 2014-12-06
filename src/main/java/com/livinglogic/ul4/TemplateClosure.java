@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.io.Writer;
+import java.io.StringWriter;
 
 import com.livinglogic.utils.MapChain;
 
@@ -23,11 +25,13 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 {
 	private InterpretedTemplate template;
 	private Map<String, Object> variables;
+	private Signature signature;
 
-	public TemplateClosure(InterpretedTemplate template, Map<String, Object> variables)
+	public TemplateClosure(InterpretedTemplate template, EvaluationContext context)
 	{
 		this.template = template;
-		this.variables = new HashMap<String, Object>(variables);
+		this.variables = new HashMap<String, Object>(context.getVariables()); // Make a shallow copy of the variables in their current state
+		signature = template.signatureAST != null ? template.signatureAST.evaluate(context) : null;
 	}
 
 	public InterpretedTemplate getTemplate()
@@ -42,7 +46,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		BoundArguments arguments = new BoundArguments(template.signature, template, args, kwargs);
+		BoundArguments arguments = new BoundArguments(signature, template, args, kwargs);
 		Object result = null;
 		try
 		{
@@ -55,19 +59,21 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 		return result;
 	}
 
-	public Object call(EvaluationContext context, Map<String, Object> variables)
+	private Object call(EvaluationContext context, Map<String, Object> variables)
 	{
-		return template.call(context, new MapChain<String, Object>(variables, this.variables));
+		return template.callBound(context, new MapChain<String, Object>(variables, this.variables));
 	}
 
-	public void render(EvaluationContext context, Map<String, Object> variables)
+	private void render(EvaluationContext context, Map<String, Object> variables)
 	{
-		template.render(context, null, new MapChain<String, Object>(variables, this.variables));
+		template.renderBound(context, null, new MapChain<String, Object>(variables, this.variables));
 	}
 
-	public String renders(EvaluationContext context, Map<String, Object> variables)
+	private String renders(EvaluationContext context, Map<String, Object> variables)
 	{
-		return template.renders(context, new MapChain<String, Object>(variables, this.variables));
+		Writer writer = new StringWriter();
+		template.renderBound(context, writer, new MapChain<String, Object>(variables, this.variables));
+		return writer.toString();
 	}
 
 	public String typeUL4()
@@ -115,7 +121,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 
 		public Signature getSignature()
 		{
-			return object.template.getSignature();
+			return object.signature;
 		}
 
 		public Object evaluate(EvaluationContext context, BoundArguments arguments)
