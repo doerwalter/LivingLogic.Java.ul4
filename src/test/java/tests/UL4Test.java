@@ -93,24 +93,38 @@ public class UL4Test
 		}
 	}
 
+	private static InterpretedTemplate getTemplate(String source, String name, boolean keepWhitespace, String signature)
+	{
+		try
+		{
+			InterpretedTemplate template = new InterpretedTemplate(source, name, keepWhitespace, null, null, signature);
+			// System.out.println(template);
+			return template;
+		}
+		catch (RecognitionException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+	}
+
 	private static InterpretedTemplate getTemplate(String source, String name, boolean keepWhitespace)
 	{
-		return getTemplate(source, null, keepWhitespace, null);
+		return getTemplate(source, name, keepWhitespace, (Signature)null);
 	}
 
 	private static InterpretedTemplate getTemplate(String source, boolean keepWhitespace)
 	{
-		return getTemplate(source, null, keepWhitespace, null);
+		return getTemplate(source, null, keepWhitespace, (Signature)null);
 	}
 
 	private static InterpretedTemplate getTemplate(String source, String name)
 	{
-		return getTemplate(source, name, false, null);
+		return getTemplate(source, name, false, (Signature)null);
 	}
 
 	private static InterpretedTemplate getTemplate(String source)
 	{
-		return getTemplate(source, null, false, null);
+		return getTemplate(source, null, false, (Signature)null);
 	}
 
 	private static String getTemplateOutput(String source, Object... args)
@@ -141,7 +155,7 @@ public class UL4Test
 
 	private static void checkTemplateOutput(String expected, InterpretedTemplate template, Object... args)
 	{
-		checkTemplateOutput(expected, template, -1, args);
+		checkTemplateOutputLimit(expected, template, -1, args);
 	}
 
 	private static void checkTemplateOutputLimit(String expected, InterpretedTemplate template, long milliseconds, Object... args)
@@ -4205,7 +4219,6 @@ public class UL4Test
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
-	// @Test
 	public void function_signature_directcall() throws Exception
 	{
 		InterpretedTemplate function = getTemplate("<?return x?>", "func_with_sig", false, new Signature("x", Signature.required));
@@ -4214,7 +4227,30 @@ public class UL4Test
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
-	// @Test
+	public void function_stringsignature_directcall() throws Exception
+	{
+		InterpretedTemplate function = getTemplate("<?return x?>", "func_with_sig", false, "x");
+
+		function.call();
+	}
+
+	@Test
+	public void function_stringsignature_directcall_default() throws Exception
+	{
+		InterpretedTemplate function = getTemplate("<?return x+y?>", "func_with_sig", false, "x=17, y=23");
+
+		assertEquals(42, function.call(makeMap("y", 25)));
+	}
+
+	@Test
+	public void function_stringsignature_directcall_remainingkwargs() throws Exception
+	{
+		InterpretedTemplate function = getTemplate("<?return ', '.join(key + ': ' + str(value) for (key, value) in sorted(kwargs.items()))?>", "func_with_sig", false, "**kwargs");
+
+		assertEquals("x: 17, y: 23", function.call(makeMap("y", 23, "x", 17)));
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_signature_templatecall() throws Exception
 	{
 		InterpretedTemplate function = getTemplate("<?return x?>", "func_with_sig", false, new Signature("x", Signature.required));
@@ -4224,11 +4260,18 @@ public class UL4Test
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
-	// @Test
-	public void template_signature_templatecall() throws Exception
+	public void template_signature_directcall() throws Exception
 	{
 		InterpretedTemplate template = getTemplate("<?print x?>", "t", false, new Signature("x", Signature.required));
 
-		checkTemplateOutput("42", "<?code t.renders()?>", "t", template);
+		checkTemplateOutput("42", template);
+	}
+
+	@Test
+	public void template_signature_directcall_default() throws Exception
+	{
+		InterpretedTemplate template = getTemplate("<?print x?>", "t", false, new Signature("x", 42));
+
+		checkTemplateOutput("42", template);
 	}
 }

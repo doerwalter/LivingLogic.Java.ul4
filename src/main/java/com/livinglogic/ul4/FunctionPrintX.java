@@ -16,7 +16,7 @@ public class FunctionPrintX extends FunctionWithContext
 		return "printx";
 	}
 
-	private static final Signature signature = new Signature("values", Signature.remainingArguments);
+	private static final Signature signature = new Signature("values", Signature.remainingParameters);
 
 	public Signature getSignature()
 	{

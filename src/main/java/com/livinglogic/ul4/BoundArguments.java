@@ -34,7 +34,7 @@ public class BoundArguments
 		}
 		else
 		{
-			int size = signature.size() + (signature.remainingArgumentsName != null ? 1 : 0) + (signature.remainingKeywordArgumentsName != null ? 1 : 0);
+			int size = signature.size() + (signature.remainingParametersName != null ? 1 : 0) + (signature.remainingKeywordParametersName != null ? 1 : 0);
 			argumentsByPosition = new ArrayList<Object>(size);
 			argumentsByName = null; // will be created on demand
 
@@ -70,7 +70,7 @@ public class BoundArguments
 			// Handle additional positional arguments
 			// if there are any, and we suport a "*" argument, put the remaining arguments into this argument as a list, else complain
 			int expectedArgCount = signature.size();
-			if (signature.remainingArgumentsName != null)
+			if (signature.remainingParametersName != null)
 			{
 				add(argsize > expectedArgCount ? args.subList(signature.size(), argsize) : new ArrayList<Object>());
 			}
@@ -84,12 +84,12 @@ public class BoundArguments
 			// if there are any, and we suport a "**" argument, put the remaining keyword arguments into this argument as a map, else complain
 			if (kwargs != null)
 			{
-				if (signature.remainingKeywordArgumentsName != null)
+				if (signature.remainingKeywordParametersName != null)
 				{
 					LinkedHashMap<String, Object> realRemainingKeywordArguments = new LinkedHashMap<String, Object>();
 					for (String kwargname : kwargs.keySet())
 					{
-						if (!signature.containsArgumentNamed(kwargname))
+						if (!signature.containsParameterNamed(kwargname))
 						{
 							realRemainingKeywordArguments.put(kwargname, kwargs.get(kwargname));
 						}
@@ -100,7 +100,7 @@ public class BoundArguments
 				{
 					for (String kwargname : kwargs.keySet())
 					{
-						if (!signature.containsArgumentNamed(kwargname))
+						if (!signature.containsParameterNamed(kwargname))
 							throw new UnsupportedArgumentNameException(object, kwargname);
 					}
 				}
@@ -119,10 +119,10 @@ public class BoundArguments
 		{
 			argumentsByName = new LinkedHashMap<String, Object>(argumentsByPosition.size());
 
-			List<String> argumentNames = signature.getArgumentNames();
+			List<String> parameterNames = signature.getParameterNames();
 
-			for (int i = 0; i < argumentNames.size(); ++i)
-				argumentsByName.put(argumentNames.get(i), argumentsByPosition.get(i));
+			for (int i = 0; i < parameterNames.size(); ++i)
+				argumentsByName.put(parameterNames.get(i), argumentsByPosition.get(i));
 		}
 	}
 
@@ -156,14 +156,14 @@ public class BoundArguments
 	{
 		if (signature != null)
 		{
-			if (signature.remainingKeywordArgumentsName != null)
+			if (signature.remainingKeywordParametersName != null)
 			{
 				Map<String, Object> kwargs = (Map<String, Object>)get(argumentsByPosition.size() - 1);
 				kwargs.clear();
 			}
-			if (signature.remainingArgumentsName != null)
+			if (signature.remainingParametersName != null)
 			{
-				List<Object> args = (List<Object>)get(argumentsByPosition.size() - (signature.remainingKeywordArgumentsName != null ? 2 : 1));
+				List<Object> args = (List<Object>)get(argumentsByPosition.size() - (signature.remainingKeywordParametersName != null ? 2 : 1));
 				args.clear();
 			}
 			argumentsByPosition.clear();

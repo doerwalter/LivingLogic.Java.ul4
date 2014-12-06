@@ -209,7 +209,7 @@ public class Connection implements UL4GetAttributes
 			return "connection.queryargs";
 		}
 
-		private static final Signature signature = new Signature("query", Signature.required, "args", Signature.remainingArguments);
+		private static final Signature signature = new Signature("query", Signature.required, "args", Signature.remainingParameters);
 
 		public Signature getSignature()
 		{
@@ -236,7 +236,7 @@ public class Connection implements UL4GetAttributes
 			return "connection.query";
 		}
 
-		private static final Signature signature = new Signature("args", Signature.remainingArguments);
+		private static final Signature signature = new Signature("args", Signature.remainingParameters);
 
 		public Signature getSignature()
 		{
@@ -261,7 +261,7 @@ public class Connection implements UL4GetAttributes
 			return "connection.execute";
 		}
 
-		private static final Signature signature = new Signature("args", Signature.remainingArguments);
+		private static final Signature signature = new Signature("args", Signature.remainingParameters);
 
 		public Signature getSignature()
 		{

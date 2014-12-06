@@ -22,6 +22,8 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.Arrays.asList;
+
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -73,7 +75,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	public InterpretedTemplate(String source) throws RecognitionException
 	{
-		this(source, null, true, null, null, null);
+		this(source, null, true, null, null, (Signature)null);
 	}
 
 	public InterpretedTemplate(String source, Signature signature) throws RecognitionException
@@ -83,7 +85,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	public InterpretedTemplate(String source, boolean keepWhitespace) throws RecognitionException
 	{
-		this(source, null, keepWhitespace, null, null, null);
+		this(source, null, keepWhitespace, null, null, (Signature)null);
 	}
 
 	public InterpretedTemplate(String source, boolean keepWhitespace, Signature signature) throws RecognitionException
@@ -93,7 +95,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	public InterpretedTemplate(String source, String name) throws RecognitionException
 	{
-		this(source, name, true, null, null, null);
+		this(source, name, true, null, null, (Signature)null);
 	}
 
 	public InterpretedTemplate(String source, String name, Signature signature) throws RecognitionException
@@ -103,7 +105,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	public InterpretedTemplate(String source, String name, boolean keepWhitespace) throws RecognitionException
 	{
-		this(source, name, keepWhitespace, null, null, null);
+		this(source, name, keepWhitespace, null, null, (Signature)null);
 	}
 
 	public InterpretedTemplate(String source, String name, boolean keepWhitespace, Signature signature) throws RecognitionException
@@ -113,7 +115,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	public InterpretedTemplate(String source, String startdelim, String enddelim) throws RecognitionException
 	{
-		this(source, null, true, startdelim, enddelim, null);
+		this(source, null, true, startdelim, enddelim, (Signature)null);
 	}
 
 	public InterpretedTemplate(String source, String startdelim, String enddelim, Signature signature) throws RecognitionException
@@ -123,7 +125,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	public InterpretedTemplate(String source, boolean keepWhitespace, String startdelim, String enddelim) throws RecognitionException
 	{
-		this(source, null, keepWhitespace, startdelim, enddelim, null);
+		this(source, null, keepWhitespace, startdelim, enddelim, (Signature)null);
 	}
 
 	public InterpretedTemplate(String source, boolean keepWhitespace, String startdelim, String enddelim, Signature signature) throws RecognitionException
@@ -133,12 +135,26 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	public InterpretedTemplate(String source, String name, boolean keepWhitespace, String startdelim, String enddelim) throws RecognitionException
 	{
-		this(null, source, name, keepWhitespace, startdelim, enddelim, null);
+		this(null, source, name, keepWhitespace, startdelim, enddelim, (Signature)null);
 	}
 
 	public InterpretedTemplate(String source, String name, boolean keepWhitespace, String startdelim, String enddelim, Signature signature) throws RecognitionException
 	{
 		this(null, source, name, keepWhitespace, startdelim, enddelim, signature);
+		compile();
+	}
+
+	public InterpretedTemplate(String source, String name, boolean keepWhitespace, String startdelim, String enddelim, String signature) throws RecognitionException
+	{
+		this(null, source, name, keepWhitespace, startdelim, enddelim, (Signature)null);
+		if (signature != null)
+		{
+			UL4Parser parser = getSignatureParser(signature);
+			SignatureAST ast = parser.signature();
+			EvaluationContext context = new EvaluationContext();
+			Signature sig = ast.evaluate(context);
+			this.signature = sig;
+		}
 		compile();
 	}
 
@@ -291,12 +307,19 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 	}
 
-	private UL4Parser getParser(Location location)
+	private UL4Parser getSignatureParser(String signature)
+	{
+		signature = "(" + signature + ")";
+		Location location = new Location(this, signature, "signature", 0, signature.length(), 0, signature.length());
+		return getParser(location, signature);
+	}
+
+	private static UL4Parser getParser(Location location)
 	{
 		return getParser(location, location.getCode());
 	}
 
-	private UL4Parser getParser(Location location, String source)
+	private static UL4Parser getParser(Location location, String source)
 	{
 		ANTLRStringStream input = new ANTLRStringStream(source);
 		UL4Lexer lexer = new UL4Lexer(location, input);
@@ -906,7 +929,35 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		encoder.dump(keepWhitespace);
 		encoder.dump(startdelim);
 		encoder.dump(enddelim);
+
+		dumpSignatureUL4ON(encoder);
+
 		super.dumpUL4ON(encoder);
+	}
+
+	private void dumpSignatureUL4ON(Encoder encoder) throws IOException
+	{
+		List paramsDump = null;
+
+		if (signature != null)
+		{
+			paramsDump = new LinkedList();
+			for (ArgumentDescription argdesc : signature)
+			{
+				if (argdesc.hasDefaultValue())
+				{
+					paramsDump.add(argdesc.getName() + "=");
+					paramsDump.add(argdesc.getDefaultValue());
+				}
+				else
+					paramsDump.add(argdesc.getName());
+			}
+			if (signature.remainingParametersName != null)
+				paramsDump.add("*" + signature.remainingParametersName);
+			if (signature.remainingKeywordParametersName != null)
+				paramsDump.add("**" + signature.remainingKeywordParametersName);
+		}
+		encoder.dump(paramsDump);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
@@ -921,7 +972,49 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		keepWhitespace = (Boolean)decoder.load();
 		startdelim = (String)decoder.load();
 		enddelim = (String)decoder.load();
+
+		loadSignatureUL4ON(decoder);
+
 		super.loadUL4ON(decoder);
+	}
+
+	private void loadSignatureUL4ON(Decoder decoder) throws IOException
+	{
+		Object paramsDump = decoder.load();
+		Signature signature;
+
+		if (paramsDump == null)
+			this.signature = null;
+		else
+		{
+			signature = new Signature();
+			boolean nextDefault = false;
+			String paramName = null;
+			for (Object param : (List)paramsDump)
+			{
+				if (nextDefault)
+				{
+					signature.add(paramName, param);
+					nextDefault = false;
+				}
+				else
+				{
+					paramName = (String)param;
+					if (paramName.endsWith("="))
+					{
+						paramName = paramName.substring(0, paramName.length()-1);
+						nextDefault = true;
+					}
+					else if (paramName.startsWith("**"))
+						signature.setRemainingKeywordParameters(paramName.substring(2));
+					else if (paramName.startsWith("*"))
+						signature.setRemainingParameters(paramName.substring(1));
+					else
+						signature.add(paramName);
+				}
+			}
+			this.signature = signature;
+		}
 	}
 
 	private static class BoundMethodRenderS extends BoundMethodWithContext<InterpretedTemplate>

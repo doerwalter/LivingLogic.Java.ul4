@@ -21,7 +21,7 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 		return "dict.update";
 	}
 
-	private static final Signature signature = new Signature("others", Signature.remainingArguments, "kwargs", Signature.remainingKeywordArguments);
+	private static final Signature signature = new Signature("others", Signature.remainingParameters, "kwargs", Signature.remainingKeywordParameters);
 
 	public Signature getSignature()
 	{

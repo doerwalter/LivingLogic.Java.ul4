@@ -725,3 +725,68 @@ stmt returns [AST node]
 	| n=expr_subscript '|=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitOrVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
 	| e=expression EOF { $node = $e.node; }
 	;
+
+
+/* Used for parsing signatures */
+signature returns [SignatureAST node]
+	:
+	open='(' { $node = new SignatureAST(location, getStart($open), -1); }
+	(
+		/* No paramteers */
+	|
+		/* "**" parameter only */
+		'**' rkwargsname=name { $node.setRemainingKeywordArguments($rkwargsname.text); }
+		','?
+	|
+		/* "*" parameter only (and maybe **) */
+		'*' rargsname=name { $node.setRemainingArguments($rargsname.text); }
+		(
+			','
+			'**' rkwargsname=name { $node.setRemainingKeywordArguments($rkwargsname.text); }
+		)?
+		','?
+	|
+		/* All parameters have a default */
+		aname1=name
+		'='
+		adefault1=exprarg { $node.add($aname1.text, $adefault1.node); }
+		(
+			','
+			aname2=name
+			'='
+			adefault2=exprarg { $node.add($aname2.text, $adefault2.node); }
+		)*
+		(
+			','
+			'*' rargsname=name { $node.setRemainingArguments($rargsname.text); }
+		)?
+		(
+			','
+			'**' rkwargsname=name { $node.setRemainingKeywordArguments($rkwargsname.text); }
+		)?
+		','?
+	|
+		/* At least one parameter without a default */
+		aname1=name { $node.add($aname1.text); }
+		(
+			','
+			aname2=name { $node.add($aname2.text); }
+		)*
+		(
+			','
+			aname3=name
+			'='
+			adefault3=exprarg { $node.add($aname3.text, $adefault3.node); }
+		)*
+		(
+			','
+			'*' rargsname=name { $node.setRemainingArguments($rargsname.text); }
+		)?
+		(
+			','
+			'**' rkwargsname=name { $node.setRemainingKeywordArguments($rkwargsname.text); }
+		)?
+		','?
+	)
+	close=')' { $node.setEnd(getEnd($close)); }
+;

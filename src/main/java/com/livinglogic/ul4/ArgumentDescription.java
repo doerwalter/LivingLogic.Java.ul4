@@ -48,4 +48,12 @@ public class ArgumentDescription
 	{
 		return defaultValue;
 	}
+
+	public String toString()
+	{
+		if (hasDefaultValue)
+			return name + "=" + FunctionRepr.call(defaultValue);
+		else
+			return name;
+	}
 }

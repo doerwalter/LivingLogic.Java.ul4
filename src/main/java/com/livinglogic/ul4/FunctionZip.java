@@ -17,7 +17,7 @@ public class FunctionZip extends Function
 		return "zip";
 	}
 
-	private static final Signature signature = new Signature("iterables", Signature.remainingArguments);
+	private static final Signature signature = new Signature("iterables", Signature.remainingParameters);
 
 	public Signature getSignature()
 	{

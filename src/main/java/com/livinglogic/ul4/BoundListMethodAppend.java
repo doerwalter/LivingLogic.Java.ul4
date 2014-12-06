@@ -21,7 +21,7 @@ public class BoundListMethodAppend extends BoundMethod<List>
 		return "list.append";
 	}
 
-	private static final Signature signature = new Signature("items", Signature.remainingArguments);
+	private static final Signature signature = new Signature("items", Signature.remainingParameters);
 
 	public Signature getSignature()
 	{
