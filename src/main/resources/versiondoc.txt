@@ -12,7 +12,8 @@ exp-99:
     new UL4Repr.Formatter().visit(obj).toString()
 
 * An InterpretedTemplate can now have a signature. Calling or rendering the
-  template will now check the variables passed in against the signature.
+  template will now check the variables passed in against the signature. This
+  also works for subtemplates.
 
 
 exp-98:
