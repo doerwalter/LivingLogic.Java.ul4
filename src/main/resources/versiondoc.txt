@@ -14,6 +14,8 @@ exp-99:
 * An InterpretedTemplate can now have a signature. Calling or rendering the
   template will now check the variables passed in against the signature. This
   also works for subtemplates.
+* List slices now return new independent lists instead of views into the
+  original one.
 
 
 exp-98:

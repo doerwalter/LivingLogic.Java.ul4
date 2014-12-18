@@ -7,6 +7,7 @@
 package com.livinglogic.ul4;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Iterator;
 
@@ -133,7 +134,7 @@ public class ItemAST extends BinaryAST implements LValue
 		int endIndex = slice.getStopIndex(size);
 		if (endIndex < startIndex)
 			endIndex = startIndex;
-		return obj.subList(startIndex, endIndex);
+		return new ArrayList(obj.subList(startIndex, endIndex));
 	}
 
 
