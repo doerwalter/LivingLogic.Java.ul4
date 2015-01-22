@@ -14,7 +14,7 @@ import java.util.Set;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class SetVarAST extends AST
+public class SetVarAST extends CodeAST
 {
 	/**
 	 * This is either a string or a list of strings/lists
@@ -22,9 +22,9 @@ public class SetVarAST extends AST
 	protected Object lvalue;
 	protected AST value;
 
-	public SetVarAST(Location location, int start, int end, Object lvalue, AST value)
+	public SetVarAST(Tag tag, int start, int end, Object lvalue, AST value)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.lvalue = lvalue;
 		this.value = value;
 	}

@@ -11,9 +11,9 @@ import java.math.BigInteger;
 
 public class NegAST extends UnaryAST
 {
-	public NegAST(Location location, int start, int end, AST obj)
+	public NegAST(Tag tag, int start, int end, AST obj)
 	{
-		super(location, start, end, obj);
+		super(tag, start, end, obj);
 	}
 
 	public String getType()
@@ -21,15 +21,15 @@ public class NegAST extends UnaryAST
 		return "neg";
 	}
 
-	public static AST make(Location location, int start, int end, AST obj)
+	public static AST make(Tag tag, int start, int end, AST obj)
 	{
 		if (obj instanceof ConstAST)
 		{
 			Object result = call(((ConstAST)obj).value);
 			if (!(result instanceof Undefined))
-				return new ConstAST(location, start, end, result);
+				return new ConstAST(tag, start, end, result);
 		}
-		return new NegAST(location, start, end, obj);
+		return new NegAST(tag, start, end, obj);
 	}
 
 	public Object evaluate(EvaluationContext context)

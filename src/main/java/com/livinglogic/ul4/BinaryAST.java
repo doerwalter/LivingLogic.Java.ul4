@@ -17,7 +17,7 @@ import com.livinglogic.ul4on.Encoder;
 /**
  * The base class of all nodes that model binary operations.
  */
-abstract class BinaryAST extends AST
+abstract class BinaryAST extends CodeAST
 {
 	/**
 	 * The AST node for the left operand.
@@ -35,9 +35,9 @@ abstract class BinaryAST extends AST
 	 * @param obj1 The left operand
 	 * @param obj2 The right operand
 	 */
-	public BinaryAST(Location location, int start, int end, AST obj1, AST obj2)
+	public BinaryAST(Tag tag, int start, int end, AST obj1, AST obj2)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.obj1 = obj1;
 		this.obj2 = obj2;
 	}

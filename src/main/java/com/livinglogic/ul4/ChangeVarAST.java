@@ -14,14 +14,14 @@ import java.util.Set;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public abstract class ChangeVarAST extends AST
+public abstract class ChangeVarAST extends CodeAST
 {
 	protected LValue lvalue;
 	protected AST value;
 
-	public ChangeVarAST(Location location, int start, int end, LValue lvalue, AST value)
+	public ChangeVarAST(Tag tag, int start, int end, LValue lvalue, AST value)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.lvalue = lvalue;
 		this.value = value;
 	}

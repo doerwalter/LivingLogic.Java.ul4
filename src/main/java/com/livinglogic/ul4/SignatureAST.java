@@ -20,15 +20,15 @@ import java.io.IOException;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class SignatureAST extends AST
+public class SignatureAST extends CodeAST
 {
 	protected List<Parameter> parameters;
 	protected String remainingParametersName;
 	protected String remainingKeywordParametersName;
 
-	public SignatureAST(Location location, int start, int end)
+	public SignatureAST(Tag tag, int start, int end)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		parameters = new LinkedList<Parameter>();
 		remainingParametersName = null;
 		remainingKeywordParametersName = null;

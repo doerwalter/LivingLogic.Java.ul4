@@ -18,9 +18,9 @@ public class WhileBlockAST extends BlockAST
 {
 	protected AST condition;
 
-	public WhileBlockAST(Location location, int start, int end, AST condition)
+	public WhileBlockAST(Tag tag, int start, int end, AST condition)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.condition = condition;
 	}
 
@@ -29,10 +29,10 @@ public class WhileBlockAST extends BlockAST
 		return "whileblock";
 	}
 
-	public void finish(Location endlocation)
+	public void finish(Tag endtag)
 	{
-		super.finish(endlocation);
-		String type = endlocation.getCode().trim();
+		super.finish(endtag);
+		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("while"))
 			throw new BlockException("while ended by end" + type);
 	}

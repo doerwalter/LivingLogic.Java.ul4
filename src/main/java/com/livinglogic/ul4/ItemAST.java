@@ -13,9 +13,9 @@ import java.util.Iterator;
 
 public class ItemAST extends BinaryAST implements LValue
 {
-	public ItemAST(Location location, int start, int end, AST obj1, AST obj2)
+	public ItemAST(Tag tag, int start, int end, AST obj1, AST obj2)
 	{
-		super(location, start, end, obj1, obj2);
+		super(tag, start, end, obj1, obj2);
 	}
 
 	public String getType()
@@ -23,15 +23,15 @@ public class ItemAST extends BinaryAST implements LValue
 		return "item";
 	}
 
-	public static AST make(Location location, int start, int end, AST obj1, AST obj2)
+	public static AST make(Tag tag, int start, int end, AST obj1, AST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{
 			Object result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
 			if (!(result instanceof Undefined))
-				return new ConstAST(location, start, end, result);
+				return new ConstAST(tag, start, end, result);
 		}
-		return new ItemAST(location, start, end, obj1, obj2);
+		return new ItemAST(tag, start, end, obj1, obj2);
 	}
 
 	public Object evaluate(EvaluationContext context)

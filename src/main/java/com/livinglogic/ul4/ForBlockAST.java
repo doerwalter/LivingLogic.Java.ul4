@@ -20,9 +20,9 @@ public class ForBlockAST extends BlockAST
 	protected Object varname;
 	protected AST container;
 
-	public ForBlockAST(Location location, int start, int end, Object varname, AST container)
+	public ForBlockAST(Tag tag, int start, int end, Object varname, AST container)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.varname = varname;
 		this.container = container;
 	}
@@ -32,10 +32,10 @@ public class ForBlockAST extends BlockAST
 		return "forblock";
 	}
 
-	public void finish(Location endlocation)
+	public void finish(Tag endtag)
 	{
-		super.finish(endlocation);
-		String type = endlocation.getCode().trim();
+		super.finish(endtag);
+		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("for"))
 			throw new BlockException("for ended by end" + type);
 	}

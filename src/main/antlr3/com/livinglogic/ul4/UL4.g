@@ -25,12 +25,12 @@ options
 
 @lexer::members
 {
-	private Location location;
+	private Tag tag;
 
-	public UL4Lexer(Location location, CharStream input)
+	public UL4Lexer(Tag tag, CharStream input)
 	{
 		this(input);
-		this.location = location;
+		this.tag = tag;
 	}
 
 	@Override
@@ -43,12 +43,12 @@ options
 
 @parser::members
 {
-	private Location location;
+	private Tag tag;
 
-	public UL4Parser(Location location, TokenStream input)
+	public UL4Parser(Tag tag, TokenStream input)
 	{
 		this(input);
-		this.location = location;
+		this.tag = tag;
 	}
 
 	@Override
@@ -58,14 +58,14 @@ options
 		throw new SyntaxException(message, e);
 	}
 
-	public int getStart(CommonToken token)
+	public int getStartPos(CommonToken token)
 	{
-		return location.startcode + token.getStartIndex();
+		return tag.startPosCode + token.getStartIndex();
 	}
 
-	public int getEnd(CommonToken token)
+	public int getEndPos(CommonToken token)
 	{
-		return location.startcode + token.getStopIndex() + 1;
+		return tag.startPosCode + token.getStopIndex() + 1;
 	}
 }
 
@@ -189,40 +189,40 @@ UNICODE4_ESC
 /* Rules common to all tags */
 
 none returns [ConstAST node]
-	: NONE { $node = new ConstAST(location, getStart($NONE), getEnd($NONE), null); }
+	: NONE { $node = new ConstAST(tag, getStartPos($NONE), getEndPos($NONE), null); }
 	;
 
 true_ returns [ConstAST node]
-	: TRUE { $node = new ConstAST(location, getStart($TRUE), getEnd($TRUE), true); }
+	: TRUE { $node = new ConstAST(tag, getStartPos($TRUE), getEndPos($TRUE), true); }
 	;
 
 false_ returns [ConstAST node]
-	: FALSE { $node = new ConstAST(location, getStart($FALSE), getEnd($FALSE), false); }
+	: FALSE { $node = new ConstAST(tag, getStartPos($FALSE), getEndPos($FALSE), false); }
 	;
 
 int_ returns [ConstAST node]
-	: INT { $node = new ConstAST(location, getStart($INT), getEnd($INT), Utils.parseUL4Int($INT.text)); }
+	: INT { $node = new ConstAST(tag, getStartPos($INT), getEndPos($INT), Utils.parseUL4Int($INT.text)); }
 	;
 
 float_ returns [ConstAST node]
-	: FLOAT { $node = new ConstAST(location, getStart($FLOAT), getEnd($FLOAT), Double.parseDouble($FLOAT.text)); }
+	: FLOAT { $node = new ConstAST(tag, getStartPos($FLOAT), getEndPos($FLOAT), Double.parseDouble($FLOAT.text)); }
 	;
 
 string returns [ConstAST node]
-	: STRING { $node = new ConstAST(location, getStart($STRING), getEnd($STRING), Utils.unescapeUL4String($STRING.text.substring(1, $STRING.text.length()-1))); }
-	| STRING3 { $node = new ConstAST(location, getStart($STRING3), getEnd($STRING3), Utils.unescapeUL4String($STRING3.text.substring(3, $STRING3.text.length()-3))); }
+	: STRING { $node = new ConstAST(tag, getStartPos($STRING), getEndPos($STRING), Utils.unescapeUL4String($STRING.text.substring(1, $STRING.text.length()-1))); }
+	| STRING3 { $node = new ConstAST(tag, getStartPos($STRING3), getEndPos($STRING3), Utils.unescapeUL4String($STRING3.text.substring(3, $STRING3.text.length()-3))); }
 	;
 
 date returns [ConstAST node]
-	: DATE { $node = new ConstAST(location, getStart($DATE), getEnd($DATE), Utils.isoparse($DATE.text.substring(2, $DATE.text.length()-1))); }
+	: DATE { $node = new ConstAST(tag, getStartPos($DATE), getEndPos($DATE), Utils.isoparse($DATE.text.substring(2, $DATE.text.length()-1))); }
 	;
 
 color returns [ConstAST node]
-	: COLOR { $node = new ConstAST(location, getStart($COLOR), getEnd($COLOR), Color.fromrepr($COLOR.text)); }
+	: COLOR { $node = new ConstAST(tag, getStartPos($COLOR), getEndPos($COLOR), Color.fromrepr($COLOR.text)); }
 	;
 
 name returns [VarAST node]
-	: NAME { $node = new VarAST(location, getStart($NAME), getEnd($NAME), $NAME.text); }
+	: NAME { $node = new VarAST(tag, getStartPos($NAME), getEndPos($NAME), $NAME.text); }
 	;
 
 literal returns [AST node]
@@ -241,16 +241,16 @@ literal returns [AST node]
 list returns [ListAST node]
 	:
 		open='['
-		close=']' { $node = new ListAST(location, getStart($open), getEnd($close)); }
+		close=']' { $node = new ListAST(tag, getStartPos($open), getEndPos($close)); }
 	|
-		open='[' {$node = new ListAST(location, getStart($open), -1); }
+		open='[' {$node = new ListAST(tag, getStartPos($open), -1); }
 		e1=expr_if { $node.append($e1.node); }
 		(
 			','
 			e2=expr_if { $node.append($e2.node); }
 		)*
 		','?
-		close=']' { $node.setEnd(getEnd($close)); }
+		close=']' { $node.setEndPos(getEndPos($close)); }
 	;
 
 listcomprehension returns [ListComprehensionAST node]
@@ -269,7 +269,7 @@ listcomprehension returns [ListComprehensionAST node]
 			'if'
 			condition=expr_if { _condition = $condition.node; }
 		)?
-		close=']' { $node = new ListComprehensionAST(location, getStart($open), getEnd($close), $item.node, $n.lvalue, $container.node, _condition); }
+		close=']' { $node = new ListComprehensionAST(tag, getStartPos($open), getEndPos($close), $item.node, $n.lvalue, $container.node, _condition); }
 	;
 
 /* Set literals */
@@ -277,16 +277,16 @@ set returns [SetAST node]
 	:
 		open='{'
 		'/'
-		close='}' { $node = new SetAST(location, getStart($open), getEnd($close)); }
+		close='}' { $node = new SetAST(tag, getStartPos($open), getEndPos($close)); }
 	|
-		open='{' {$node = new SetAST(location, getStart($open), -1); }
+		open='{' {$node = new SetAST(tag, getStartPos($open), -1); }
 		e1=expr_if { $node.append($e1.node); }
 		(
 			','
 			e2=expr_if { $node.append($e2.node); }
 		)*
 		','?
-		close='}' { $node.setEnd(getEnd($close)); }
+		close='}' { $node.setEndPos(getEndPos($close)); }
 	;
 
 setcomprehension returns [SetComprehensionAST node]
@@ -305,7 +305,7 @@ setcomprehension returns [SetComprehensionAST node]
 			'if'
 			condition=expr_if { _condition = $condition.node; }
 		)?
-		close='}' { $node = new SetComprehensionAST(location, getStart($open), getEnd($close), $item.node, $n.lvalue, $container.node, _condition); }
+		close='}' { $node = new SetComprehensionAST(tag, getStartPos($open), getEndPos($close), $item.node, $n.lvalue, $container.node, _condition); }
 	;
 
 /* Dict literal */
@@ -320,16 +320,16 @@ dictitem returns [DictItem node]
 dict returns [DictAST node]
 	:
 		open='{'
-		close='}' { $node = new DictAST(location, getStart($open), getEnd($close)); }
+		close='}' { $node = new DictAST(tag, getStartPos($open), getEndPos($close)); }
 	|
-		open='{' { $node = new DictAST(location, getStart($open), -1); }
+		open='{' { $node = new DictAST(tag, getStartPos($open), -1); }
 		i1=dictitem { $node.append($i1.node); }
 		(
 			','
 			i2=dictitem { $node.append($i2.node); }
 		)*
 		','?
-		close='}' { $node.setEnd(getEnd($close)); }
+		close='}' { $node.setEndPos(getEndPos($close)); }
 	;
 
 dictcomprehension returns [DictComprehensionAST node]
@@ -350,7 +350,7 @@ dictcomprehension returns [DictComprehensionAST node]
 			'if'
 			condition=expr_if { _condition = $condition.node; }
 		)?
-		close='}' { $node = new DictComprehensionAST(location, getStart($open), getEnd($close), $key.node, $value.node, $n.lvalue, $container.node, _condition); }
+		close='}' { $node = new DictComprehensionAST(tag, getStartPos($open), getEndPos($close), $key.node, $value.node, $n.lvalue, $container.node, _condition); }
 	;
 
 generatorexpression returns [GeneratorExpressionAST node]
@@ -364,11 +364,11 @@ generatorexpression returns [GeneratorExpressionAST node]
 		'for'
 		n=nestedlvalue
 		'in'
-		container=expr_if { _end = $container.node.getEnd(); }
+		container=expr_if { _end = $container.node.getEndPos(); }
 		(
 			'if'
-			condition=expr_if { _condition = $condition.node; _end = $condition.node.getEnd(); }
-		)? { $node = new GeneratorExpressionAST(location, $item.node.getStart(), _end, $item.node, $n.lvalue, $container.node, _condition); }
+			condition=expr_if { _condition = $condition.node; _end = $condition.node.getEndPos(); }
+		)? { $node = new GeneratorExpressionAST(tag, $item.node.getStartPos(), _end, $item.node, $n.lvalue, $container.node, _condition); }
 	;
 
 atom returns [AST node]
@@ -379,8 +379,8 @@ atom returns [AST node]
 	| e_setcomp=setcomprehension { $node = $e_setcomp.node; }
 	| e_dict=dict { $node = $e_dict.node; }
 	| e_dictcomp=dictcomprehension { $node = $e_dictcomp.node; }
-	| open='(' e_genexpr=generatorexpression close=')' { $node = $e_genexpr.node; $node.setStart(getStart($open)); $node.setEnd(getEnd($close)); }
-	| open='(' e_bracket=expr_if close=')' { $node = $e_bracket.node; $node.setStart(getStart($open)); $node.setEnd(getEnd($close)); }
+	| open='(' e_genexpr=generatorexpression close=')' { $node = $e_genexpr.node; $node.setStartPos(getStartPos($open)); $node.setEndPos(getEndPos($close)); }
+	| open='(' e_bracket=expr_if close=')' { $node = $e_bracket.node; $node.setStartPos(getStartPos($open)); $node.setEndPos(getEndPos($close)); }
 	;
 
 /* For variable unpacking in assignments and for loops */
@@ -404,7 +404,7 @@ nestedlvalue returns [Object lvalue]
 
 
 /* Slice expression */
-slice returns [AST node]
+slice returns [SliceAST node]
 	@init
 	{
 		AST startIndex = null;
@@ -414,16 +414,16 @@ slice returns [AST node]
 	}
 	:
 		(
-			e1=expr_if { startIndex = $e1.node; startPos = $e1.node.getStart(); }
+			e1=expr_if { startIndex = $e1.node; startPos = $e1.node.getStartPos(); }
 		)?
 		colon=':' {
 			if (startPos == -1)
-				startPos = getStart($colon);
-			endPos = getEnd($colon);
+				startPos = getStartPos($colon);
+			endPos = getEndPos($colon);
 		}
 		(
-			e2=expr_if { stopIndex = $e2.node; endPos = $e2.node.getEnd(); }
-		)? { $node = new SliceAST(location, startPos, endPos, startIndex, stopIndex); }
+			e2=expr_if { stopIndex = $e2.node; endPos = $e2.node.getEndPos(); }
+		)? { $node = new SliceAST(tag, startPos, endPos, startIndex, stopIndex); }
 	;
 
 /* Function/method call, attribute access, item access, slice access */
@@ -433,10 +433,10 @@ expr_subscript returns [AST node]
 		(
 			/* Attribute access */
 			'.'
-			n=name { $node = new AttrAST(location, $e1.node.getStart(), $n.node.getEnd(), $node, $n.text); }
+			n=name { $node = new AttrAST(tag, $e1.node.getStartPos(), $n.node.getEndPos(), $node, $n.text); }
 		|
 			/* Function/method call */
-			'(' { $node = new CallAST(location, $e1.node.getStart(), -1, $node); }
+			'(' { $node = new CallAST(tag, $e1.node.getStartPos(), -1, $node); }
 			(
 				/* No arguments */
 			|
@@ -492,17 +492,17 @@ expr_subscript returns [AST node]
 				)?
 				','?
 			)
-			close=')' { $node.setEnd(getEnd($close)); }
+			close=')' { $node.setEndPos(getEndPos($close)); }
 		|
 			/* Item access */
 			'['
 			e2=expr_if
-			close=']' { $node = ItemAST.make(location, $e1.node.getStart(), getEnd($close), $node, $e2.node); }
+			close=']' { $node = ItemAST.make(tag, $e1.node.getStartPos(), getEndPos($close), $node, $e2.node); }
 		|
 			/* Slice access */
 			'['
 			e2=slice
-			close=']' { $node = ItemAST.make(location, $e1.node.getStart(), getEnd($close), $node, $e2.node); }
+			close=']' { $node = ItemAST.make(tag, $e1.node.getStartPos(), getEndPos($close), $node, $e2.node); }
 		)*
 	;
 
@@ -511,9 +511,9 @@ expr_unary returns [AST node]
 	:
 		e1=expr_subscript { $node = $e1.node; }
 	|
-		minus='-' e2=expr_unary { $node = NegAST.make(location, getStart($minus), $e2.node.getEnd(), $e2.node); }
+		minus='-' e2=expr_unary { $node = NegAST.make(tag, getStartPos($minus), $e2.node.getEndPos(), $e2.node); }
 	|
-		bitnot='~' e2=expr_unary { $node = BitNotAST.make(location, getStart($bitnot), $e2.node.getEnd(), $e2.node); }
+		bitnot='~' e2=expr_unary { $node = BitNotAST.make(tag, getStartPos($bitnot), $e2.node.getEndPos(), $e2.node); }
 	;
 
 /* Multiplication, division, modulo */
@@ -534,7 +534,7 @@ expr_mul returns [AST node]
 			|
 				'%' { opcode = 3; }
 			)
-			e2=expr_unary { switch (opcode) { case 0: $node = MulAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 1: $node = TrueDivAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 2: $node = FloorDivAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; case 3: $node = ModAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break; } }
+			e2=expr_unary { switch (opcode) { case 0: $node = MulAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break; case 1: $node = TrueDivAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break; case 2: $node = FloorDivAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break; case 3: $node = ModAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break; } }
 		)*
 	;
 
@@ -552,7 +552,7 @@ expr_add returns [AST node]
 			|
 				'-' { add = false; }
 			)
-			e2=expr_mul { $node = add ? AddAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node) : SubAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_mul { $node = add ? AddAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node) : SubAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); }
 		)*
 	;
 
@@ -570,7 +570,7 @@ expr_bitshift returns [AST node]
 			|
 				'>>' { left = false; }
 			)
-			e2=expr_add { $node = left ? ShiftLeftAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node) : ShiftRightAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_add { $node = left ? ShiftLeftAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node) : ShiftRightAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); }
 		)*
 	;
 
@@ -580,7 +580,7 @@ expr_bitand returns [AST node]
 		e1=expr_bitshift { $node = $e1.node; }
 		(
 			'&'
-			e2=expr_bitshift { $node = BitAndAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_bitshift { $node = BitAndAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); }
 		)*
 	;
 
@@ -590,7 +590,7 @@ expr_bitxor returns [AST node]
 		e1=expr_bitand { $node = $e1.node; }
 		(
 			'^'
-			e2=expr_bitand { $node = BitXOrAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_bitand { $node = BitXOrAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); }
 		)*
 	;
 
@@ -600,7 +600,7 @@ expr_bitor returns [AST node]
 		e1=expr_bitxor { $node = $e1.node; }
 		(
 			'|'
-			e2=expr_bitxor { $node = BitOrAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_bitxor { $node = BitOrAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); }
 		)*
 	;
 
@@ -633,14 +633,14 @@ expr_cmp returns [AST node]
 			e2=expr_bitor {
 				switch (opcode)
 					{
-						case 0: $node = EQAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
-						case 1: $node = NEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
-						case 2: $node = LTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
-						case 3: $node = LEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
-						case 4: $node = GTAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
-						case 5: $node = GEAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
-						case 6: $node = ContainsAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
-						case 7: $node = NotContainsAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); break;
+						case 0: $node = EQAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
+						case 1: $node = NEAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
+						case 2: $node = LTAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
+						case 3: $node = LEAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
+						case 4: $node = GTAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
+						case 5: $node = GEAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
+						case 6: $node = ContainsAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
+						case 7: $node = NotContainsAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
 					}
 			}
 		)*
@@ -651,7 +651,7 @@ expr_not returns [AST node]
 	:
 		e1=expr_cmp { $node = $e1.node; }
 	|
-		n='not' e2=expr_not { $node = NotAST.make(location, getStart($n), $e2.node.getEnd(), $e2.node); }
+		n='not' e2=expr_not { $node = NotAST.make(tag, getStartPos($n), $e2.node.getEndPos(), $e2.node); }
 	;
 
 /* And operator */
@@ -660,7 +660,7 @@ expr_and returns [AST node]
 		e1=expr_not { $node = $e1.node; }
 		(
 			'and'
-			e2=expr_not { $node = AndAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_not { $node = AndAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); }
 		)*
 	;
 
@@ -670,7 +670,7 @@ expr_or returns [AST node]
 		e1=expr_and { $node = $e1.node; }
 		(
 			'or'
-			e2=expr_and { $node = OrAST.make(location, $node.getStart(), $e2.node.getEnd(), $node, $e2.node); }
+			e2=expr_and { $node = OrAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); }
 		)*
 	;
 
@@ -682,7 +682,7 @@ expr_if returns [AST node]
 			'if'
 			e2=expr_or
 			'else'
-			e3=expr_or { $node = IfAST.make(location, $e1.node.getStart(), $e3.node.getEnd(), $e1.node, $e2.node, $e3.node); }
+			e3=expr_or { $node = IfAST.make(tag, $e1.node.getStartPos(), $e3.node.getEndPos(), $e1.node, $e2.node, $e3.node); }
 		)?
 	;
 
@@ -703,7 +703,7 @@ for_ returns [ForBlockAST node]
 	:
 		n=nestedlvalue
 		'in'
-		e=expr_if { $node = new ForBlockAST(location, location.getStartCode(), $e.node.getEnd(), $n.lvalue, $e.node); }
+		e=expr_if { $node = new ForBlockAST(tag, tag.getStartCode(), $e.node.getEndPos(), $n.lvalue, $e.node); }
 		EOF
 	;
 
@@ -711,18 +711,18 @@ for_ returns [ForBlockAST node]
 /* Additional rules for "code" tag */
 
 stmt returns [AST node]
-	: nn=nestedlvalue '=' e=expr_if EOF { $node = new SetVarAST(location, location.getStartCode(), $e.node.getEnd(), $nn.lvalue, $e.node); }
-	| n=expr_subscript '+=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new AddVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '-=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new SubVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '*=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new MulVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '//=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new FloorDivVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '/=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new TrueDivVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '%=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ModVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '<<=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ShiftLeftVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '>>=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ShiftRightVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '&=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitAndVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '^=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitXOrVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '|=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitOrVarAST(location, location.getStartCode(), $e.node.getEnd(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	: nn=nestedlvalue '=' e=expr_if EOF { $node = new SetVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), $nn.lvalue, $e.node); }
+	| n=expr_subscript '+=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new AddVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '-=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new SubVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '*=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new MulVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '//=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new FloorDivVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '/=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new TrueDivVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '%=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ModVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '<<=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ShiftLeftVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '>>=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ShiftRightVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '&=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitAndVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '^=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitXOrVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '|=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitOrVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
 	| e=expression EOF { $node = $e.node; }
 	;
 
@@ -730,7 +730,7 @@ stmt returns [AST node]
 /* Used for parsing signatures */
 signature returns [SignatureAST node]
 	:
-	open='(' { $node = new SignatureAST(location, getStart($open), -1); }
+	open='(' { $node = new SignatureAST(tag, getStartPos($open), -1); }
 	(
 		/* No paramteers */
 	|
@@ -788,7 +788,7 @@ signature returns [SignatureAST node]
 		)?
 		','?
 	)
-	close=')' { $node.setEnd(getEnd($close)); }
+	close=')' { $node.setEndPos(getEndPos($close)); }
 ;
 
 

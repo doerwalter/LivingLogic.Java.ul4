@@ -17,7 +17,7 @@ import com.livinglogic.ul4on.Encoder;
 /**
  * The base class of all nodes that model unary operations.
  */
-abstract class UnaryAST extends AST
+abstract class UnaryAST extends CodeAST
 {
 	/**
 	 * The operand of the unary operation
@@ -26,12 +26,12 @@ abstract class UnaryAST extends AST
 
 	/**
 	 * Create a new {@code UnaryAST} object
-	 * @param location The source code location where this node appears in.
+	 * @param tag The tag where this node appears in.
 	 * @param obj The operand
 	 */
-	public UnaryAST(Location location, int start, int end, AST obj)
+	public UnaryAST(Tag tag, int start, int end, AST obj)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.obj = obj;
 	}
 

@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 abstract class ConditionalBlock extends BlockAST
 {
-	public ConditionalBlock(Location location, int start, int end)
+	public ConditionalBlock(Tag tag, int start, int end)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 	}
 
 	abstract public boolean hasToBeExecuted(EvaluationContext context);

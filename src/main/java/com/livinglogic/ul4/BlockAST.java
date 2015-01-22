@@ -16,14 +16,14 @@ import java.util.Set;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-abstract class BlockAST extends AST
+abstract class BlockAST extends CodeAST
 {
 	protected List<AST> content = new LinkedList<AST>();
-	protected Location endlocation = null;
+	protected Tag endtag = null;
 
-	public BlockAST(Location location, int start, int end)
+	public BlockAST(Tag tag, int start, int end)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 	}
 
 	public void append(AST item)
@@ -31,14 +31,14 @@ abstract class BlockAST extends AST
 		content.add(item);
 	}
 
-	public void finish(Location endlocation)
+	public void finish(Tag endtag)
 	{
-		this.endlocation = endlocation;
+		this.endtag = endtag;
 	}
 
-	public Location getEndLocation()
+	public Tag getEndTag()
 	{
-		return endlocation;
+		return endtag;
 	}
 
 	public List<AST> getContent()
@@ -106,18 +106,18 @@ abstract class BlockAST extends AST
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(endlocation);
+		encoder.dump(endtag);
 		encoder.dump(content);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		endlocation = (Location)decoder.load();
+		endtag = (Tag)decoder.load();
 		content = (List<AST>)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "endlocation", "content");
+	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "endtag", "content");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -126,8 +126,8 @@ abstract class BlockAST extends AST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("endlocation".equals(key))
-			return endlocation;
+		if ("endtag".equals(key))
+			return endtag;
 		else if ("content".equals(key))
 			return content;
 		else

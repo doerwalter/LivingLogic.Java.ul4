@@ -14,7 +14,7 @@ import java.util.Map;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class DictComprehensionAST extends AST
+public class DictComprehensionAST extends CodeAST
 {
 	protected AST key;
 	protected AST value;
@@ -22,9 +22,9 @@ public class DictComprehensionAST extends AST
 	protected AST container;
 	protected AST condition;
 
-	public DictComprehensionAST(Location location, int start, int end, AST key, AST value, Object varname, AST container, AST condition)
+	public DictComprehensionAST(Tag tag, int start, int end, AST key, AST value, Object varname, AST container, AST condition)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.key = key;
 		this.value = value;
 		this.varname = varname;

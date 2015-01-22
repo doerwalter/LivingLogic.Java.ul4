@@ -15,13 +15,13 @@ import java.util.Map;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class DictAST extends AST
+public class DictAST extends CodeAST
 {
 	protected LinkedList<DictItem> items = new LinkedList<DictItem>();
 
-	public DictAST(Location location, int start, int end)
+	public DictAST(Tag tag, int start, int end)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 	}
 
 	public void append(AST key, AST value)

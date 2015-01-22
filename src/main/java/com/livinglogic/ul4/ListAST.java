@@ -14,13 +14,13 @@ import java.util.LinkedList;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class ListAST extends AST
+public class ListAST extends CodeAST
 {
 	protected List<AST> items = new LinkedList<AST>();
 
-	public ListAST(Location location, int start, int end)
+	public ListAST(Tag tag, int start, int end)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 	}
 
 	public void append(AST item)

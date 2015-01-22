@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class ModVarAST extends ChangeVarAST
 {
-	public ModVarAST(Location location, int start, int end, LValue lvalue, AST value)
+	public ModVarAST(Tag tag, int start, int end, LValue lvalue, AST value)
 	{
-		super(location, start, end, lvalue, value);
+		super(tag, start, end, lvalue, value);
 	}
 
 	public String getType()

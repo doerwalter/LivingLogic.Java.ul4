@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class NotAST extends UnaryAST
 {
-	public NotAST(Location location, int start, int end, AST obj)
+	public NotAST(Tag tag, int start, int end, AST obj)
 	{
-		super(location, start, end, obj);
+		super(tag, start, end, obj);
 	}
 
 	public String getType()
@@ -18,15 +18,15 @@ public class NotAST extends UnaryAST
 		return "not";
 	}
 
-	public static AST make(Location location, int start, int end, AST obj)
+	public static AST make(Tag tag, int start, int end, AST obj)
 	{
 		if (obj instanceof ConstAST)
 		{
 			Object result = call(((ConstAST)obj).value);
 			if (!(result instanceof Undefined))
-				return new ConstAST(location, start, end, result);
+				return new ConstAST(tag, start, end, result);
 		}
-		return new NotAST(location, start, end, obj);
+		return new NotAST(tag, start, end, obj);
 	}
 
 	public Object evaluate(EvaluationContext context)

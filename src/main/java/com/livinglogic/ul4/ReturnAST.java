@@ -12,9 +12,9 @@ package com.livinglogic.ul4;
  */
 public class ReturnAST extends UnaryAST
 {
-	public ReturnAST(Location location, int start, int end, AST obj)
+	public ReturnAST(Tag tag, int start, int end, AST obj)
 	{
-		super(location, start, end, obj);
+		super(tag, start, end, obj);
 	}
 
 	public void toString(Formatter formatter)

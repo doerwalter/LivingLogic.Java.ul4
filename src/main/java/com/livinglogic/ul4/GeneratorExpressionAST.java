@@ -15,16 +15,16 @@ import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.utils.MapChain;
 
-public class GeneratorExpressionAST extends AST
+public class GeneratorExpressionAST extends CodeAST
 {
 	protected AST item;
 	protected Object varname;
 	protected AST container;
 	protected AST condition;
 
-	public GeneratorExpressionAST(Location location, int start, int end, AST item, Object varname, AST container, AST condition)
+	public GeneratorExpressionAST(Tag tag, int start, int end, AST item, Object varname, AST container, AST condition)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.item = item;
 		this.varname = varname;
 		this.container = container;

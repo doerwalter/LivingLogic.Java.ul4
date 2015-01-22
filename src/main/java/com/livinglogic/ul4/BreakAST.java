@@ -6,11 +6,11 @@
 
 package com.livinglogic.ul4;
 
-class BreakAST extends AST
+class BreakAST extends CodeAST
 {
-	public BreakAST(Location location, int start, int end)
+	public BreakAST(Tag tag, int start, int end)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 	}
 
 	public String getType()

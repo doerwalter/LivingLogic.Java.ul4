@@ -15,16 +15,16 @@ import java.util.Map;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class ListComprehensionAST extends AST
+public class ListComprehensionAST extends CodeAST
 {
 	protected AST item;
 	protected Object varname;
 	protected AST container;
 	protected AST condition;
 
-	public ListComprehensionAST(Location location, int start, int end, AST item, Object varname, AST container, AST condition)
+	public ListComprehensionAST(Tag tag, int start, int end, AST item, Object varname, AST container, AST condition)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.item = item;
 		this.varname = varname;
 		this.container = container;

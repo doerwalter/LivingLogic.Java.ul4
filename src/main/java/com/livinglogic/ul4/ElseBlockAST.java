@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 class ElseBlockAST extends ConditionalBlock
 {
-	public ElseBlockAST(Location location, int start, int end)
+	public ElseBlockAST(Tag tag, int start, int end)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 	}
 
 	public String getType()

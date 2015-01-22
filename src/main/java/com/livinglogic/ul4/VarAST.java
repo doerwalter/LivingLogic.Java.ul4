@@ -14,13 +14,13 @@ import java.util.Set;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class VarAST extends AST implements LValue
+public class VarAST extends CodeAST implements LValue
 {
 	protected String name;
 
-	public VarAST(Location location, int start, int end, String name)
+	public VarAST(Tag tag, int start, int end, String name)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.name = name;
 	}
 

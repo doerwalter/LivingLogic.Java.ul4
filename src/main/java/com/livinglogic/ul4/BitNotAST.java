@@ -10,9 +10,9 @@ import java.math.BigInteger;
 
 public class BitNotAST extends UnaryAST
 {
-	public BitNotAST(Location location, int start, int end, AST obj)
+	public BitNotAST(Tag tag, int start, int end, AST obj)
 	{
-		super(location, start, end, obj);
+		super(tag, start, end, obj);
 	}
 
 	public String getType()
@@ -20,15 +20,15 @@ public class BitNotAST extends UnaryAST
 		return "bitnot";
 	}
 
-	public static AST make(Location location, int start, int end, AST obj)
+	public static AST make(Tag tag, int start, int end, AST obj)
 	{
 		if (obj instanceof ConstAST)
 		{
 			Object result = call(((ConstAST)obj).value);
 			if (!(result instanceof Undefined))
-				return new ConstAST(location, start, end, result);
+				return new ConstAST(tag, start, end, result);
 		}
-		return new BitNotAST(location, start, end, obj);
+		return new BitNotAST(tag, start, end, obj);
 	}
 
 	public Object evaluate(EvaluationContext context)

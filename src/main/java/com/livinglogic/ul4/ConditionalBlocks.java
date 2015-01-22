@@ -8,14 +8,14 @@ package com.livinglogic.ul4;
 
 class ConditionalBlocks extends BlockAST
 {
-	public ConditionalBlocks(Location location, int start, int end)
+	public ConditionalBlocks(Tag tag, int start, int end)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 	}
 
-	public ConditionalBlocks(Location location, int start, int end, IfBlockAST block)
+	public ConditionalBlocks(Tag tag, int start, int end, IfBlockAST block)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		startNewBlock(block);
 	}
 
@@ -60,11 +60,11 @@ class ConditionalBlocks extends BlockAST
 		content.add(item);
 	}
 
-	public void finish(Location endlocation)
+	public void finish(Tag endtag)
 	{
-		super.finish(endlocation);
-		((BlockAST)content.get(content.size()-1)).endlocation = endlocation;
-		String type = endlocation.getCode().trim();
+		super.finish(endtag);
+		((BlockAST)content.get(content.size()-1)).endtag = endtag;
+		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("if"))
 			throw new BlockException("if ended by end" + type);
 	}

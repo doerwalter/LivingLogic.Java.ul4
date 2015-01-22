@@ -12,18 +12,18 @@ import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 class TextAST extends AST
 {
-	public TextAST(Location location, int start, int end)
+	protected String source;
+
+	public TextAST(String source, int startPos, int endPos)
 	{
-		super(location, start, end);
+		super(startPos, endPos);
+		this.source = source;
 	}
 
+	@Override
 	public String getText()
 	{
-		InterpretedTemplate template = location.getRoot();
-		String text = location.getCode();
-		if (template != null)
-			text = template.formatText(text);
-		return text;
+		return source.substring(startPos, endPos);
 	}
 
 	public void toString(Formatter formatter)

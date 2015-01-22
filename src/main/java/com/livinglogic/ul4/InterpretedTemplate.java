@@ -137,10 +137,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * Creates an {@code InterpretedTemplate} object. Used for subtemplates.
 	 */
-	private InterpretedTemplate(Location location, String name, boolean keepWhitespace, String startdelim, String enddelim, SignatureAST signature)
+	private InterpretedTemplate(Tag tag, String name, boolean keepWhitespace, String startdelim, String enddelim, SignatureAST signature)
 	{
-		super(location, 0, 0);
-		this.source = location.getSource();
+		super(tag, 0, 0);
+		this.source = tag.getSource();
 		this.name = name;
 		this.keepWhitespace = keepWhitespace;
 		this.startdelim = startdelim != null ? startdelim : "<?";
@@ -154,124 +154,128 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		if (source == null)
 			return;
 
-		List<Location> tags = tokenizeTags(source, startdelim, enddelim);
+		List<Object> tagtexts = tokenizeTags(source, startdelim, enddelim);
 
 		// Stack of currently active blocks
 		Stack<BlockAST> stack = new Stack<BlockAST>();
 		stack.push(this);
 
-		for (Location location : tags)
+		for (Object tagtext : tagtexts)
 		{
 			try
 			{
 				BlockAST innerBlock = stack.peek();
-				String type = location.getType();
-				// FIXME: use a switch in Java 7
-				if (type == null)
+				if (tagtext instanceof TextAST)
 				{
-					innerBlock.append(new TextAST(location, location.getStartCode(), location.getEndCode()));
-				}
-				else if (type.equals("print"))
-				{
-					UL4Parser parser = getParser(location);
-					innerBlock.append(new PrintAST(location, location.getStartCode(), location.getEndCode(), parser.expression()));
-				}
-				else if (type.equals("printx"))
-				{
-					UL4Parser parser = getParser(location);
-					innerBlock.append(new PrintXAST(location, location.getStartCode(), location.getEndCode(), parser.expression()));
-				}
-				else if (type.equals("code"))
-				{
-					UL4Parser parser = getParser(location);
-					innerBlock.append(parser.stmt());
-				}
-				else if (type.equals("if"))
-				{
-					UL4Parser parser = getParser(location);
-					ConditionalBlocks node = new ConditionalBlocks(location, location.getStartCode(), location.getEndCode(), new IfBlockAST(location, location.getStartCode(), location.getEndCode(), parser.expression()));
-					innerBlock.append(node);
-					stack.push(node);
-				}
-				else if (type.equals("elif"))
-				{
-					if (innerBlock instanceof ConditionalBlocks)
-					{
-						UL4Parser parser = getParser(location);
-						((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(location, location.getStartCode(), location.getEndCode(), parser.expression()));
-					}
-					else
-						throw new BlockException("elif doesn't match any if");
-				}
-				else if (type.equals("else"))
-				{
-					if (innerBlock instanceof ConditionalBlocks)
-					{
-						((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(location, location.getStartCode(), location.getEndCode()));
-					}
-					else
-						throw new BlockException("else doesn't match any if");
-				}
-				else if (type.equals("end"))
-				{
-					if (stack.size() > 1)
-					{
-						innerBlock.finish(location);
-						stack.pop();
-					}
-					else
-						throw new BlockException("not in any block");
-				}
-				else if (type.equals("for"))
-				{
-					UL4Parser parser = getParser(location);
-					BlockAST node = parser.for_();
-					innerBlock.append(node);
-					stack.push(node);
-				}
-				else if (type.equals("while"))
-				{
-					UL4Parser parser = getParser(location);
-					WhileBlockAST node = new WhileBlockAST(location, location.getStartCode(), location.getEndCode(), parser.expression());
-					innerBlock.append(node);
-					stack.push(node);
-				}
-				else if (type.equals("break"))
-				{
-					for (int i = stack.size()-1; i >= 0; --i)
-					{
-						if (stack.get(i).handleLoopControl("break"))
-							break;
-					}
-					innerBlock.append(new BreakAST(location, location.getStartCode(), location.getEndCode()));
-				}
-				else if (type.equals("continue"))
-				{
-					for (int i = stack.size()-1; i >= 0; --i)
-					{
-						if (stack.get(i).handleLoopControl("continue"))
-							break;
-					}
-					innerBlock.append(new ContinueAST(location, location.getStartCode(), location.getEndCode()));
-				}
-				else if (type.equals("return"))
-				{
-					UL4Parser parser = getParser(location);
-					innerBlock.append(new ReturnAST(location, location.getStartCode(), location.getEndCode(), parser.expression()));
-				}
-				else if (type.equals("def"))
-				{
-					UL4Parser parser = getParser(location);
-					Definition definition = parser.definition();
-					// Copy over all the attributes, however passing a {@link Location} will prevent compilation
-					InterpretedTemplate subtemplate = new InterpretedTemplate(location, definition.getName(), keepWhitespace, startdelim, enddelim, definition.getSignature());
-					innerBlock.append(subtemplate);
-					stack.push(subtemplate);
+					innerBlock.append((TextAST)tagtext);
 				}
 				else
 				{
-					// Can't happen
-					throw new RuntimeException("unknown tag " + type);
+					com.livinglogic.ul4.Tag tagx = (com.livinglogic.ul4.Tag)tagtext;
+					String tagtype = tagx.getTag();
+					// FIXME: use a switch in Java 7
+					if (tagtype.equals("print"))
+					{
+						UL4Parser parser = getParser(tag);
+						innerBlock.append(new PrintAST(tag, tag.getStartCode(), tag.getEndCode(), parser.expression()));
+					}
+					else if (tagtype.equals("printx"))
+					{
+						UL4Parser parser = getParser(tag);
+						innerBlock.append(new PrintXAST(tag, tag.getStartCode(), tag.getEndCode(), parser.expression()));
+					}
+					else if (tagtype.equals("code"))
+					{
+						UL4Parser parser = getParser(tag);
+						innerBlock.append(parser.stmt());
+					}
+					else if (tagtype.equals("if"))
+					{
+						UL4Parser parser = getParser(tag);
+						ConditionalBlocks node = new ConditionalBlocks(tag, tag.getStartCode(), tag.getEndCode(), new IfBlockAST(tag, tag.getStartCode(), tag.getEndCode(), parser.expression()));
+						innerBlock.append(node);
+						stack.push(node);
+					}
+					else if (tagtype.equals("elif"))
+					{
+						if (innerBlock instanceof ConditionalBlocks)
+						{
+							UL4Parser parser = getParser(tag);
+							((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(tag, tag.getStartCode(), tag.getEndCode(), parser.expression()));
+						}
+						else
+							throw new BlockException("elif doesn't match any if");
+					}
+					else if (tagtype.equals("else"))
+					{
+						if (innerBlock instanceof ConditionalBlocks)
+						{
+							((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(tag, tag.getStartCode(), tag.getEndCode()));
+						}
+						else
+							throw new BlockException("else doesn't match any if");
+					}
+					else if (tagtype.equals("end"))
+					{
+						if (stack.size() > 1)
+						{
+							innerBlock.finish(tag);
+							stack.pop();
+						}
+						else
+							throw new BlockException("not in any block");
+					}
+					else if (tagtype.equals("for"))
+					{
+						UL4Parser parser = getParser(tag);
+						BlockAST node = parser.for_();
+						innerBlock.append(node);
+						stack.push(node);
+					}
+					else if (tagtype.equals("while"))
+					{
+						UL4Parser parser = getParser(tag);
+						WhileBlockAST node = new WhileBlockAST(tag, tag.getStartCode(), tag.getEndCode(), parser.expression());
+						innerBlock.append(node);
+						stack.push(node);
+					}
+					else if (tagtype.equals("break"))
+					{
+						for (int i = stack.size()-1; i >= 0; --i)
+						{
+							if (stack.get(i).handleLoopControl("break"))
+								break;
+						}
+						innerBlock.append(new BreakAST(tag, tag.getStartCode(), tag.getEndCode()));
+					}
+					else if (tagtype.equals("continue"))
+					{
+						for (int i = stack.size()-1; i >= 0; --i)
+						{
+							if (stack.get(i).handleLoopControl("continue"))
+								break;
+						}
+						innerBlock.append(new ContinueAST(tag, tag.getStartCode(), tag.getEndCode()));
+					}
+					else if (tagtype.equals("return"))
+					{
+						UL4Parser parser = getParser(tag);
+						innerBlock.append(new ReturnAST(tag, tag.getStartCode(), tag.getEndCode(), parser.expression()));
+					}
+					else if (tagtype.equals("def"))
+					{
+						UL4Parser parser = getParser(tag);
+						Definition definition = parser.definition();
+						// Copy over all the attributes, however passing a {@link Location} will prevent compilation
+						InterpretedTemplate subtemplate = new InterpretedTemplate(tag, definition.getName(), keepWhitespace, startdelim, enddelim, definition.getSignature());
+						innerBlock.append(subtemplate);
+						stack.push(subtemplate);
+					}
+					else
+					{
+						// Can't happen
+						throw new RuntimeException("unknown tag " + tagtype);
+					}
 				}
 			}
 			catch (Exception ex)
@@ -289,21 +293,21 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	private UL4Parser getSignatureParser(String signature)
 	{
 		signature = "(" + signature + ")";
-		Location location = new Location(this, signature, "signature", 0, signature.length(), 0, signature.length());
-		return getParser(location, signature);
+		Tag tag = new Tag(signature, "signature", 0, signature.length(), 0, signature.length());
+		return getParser(tag, signature);
 	}
 
-	private static UL4Parser getParser(Location location)
+	private static UL4Parser getParser(Tag tag)
 	{
-		return getParser(location, location.getCode());
+		return getParser(tag, tag.getCode());
 	}
 
-	private static UL4Parser getParser(Location location, String source)
+	private static UL4Parser getParser(Tag tag, String source)
 	{
 		ANTLRStringStream input = new ANTLRStringStream(source);
-		UL4Lexer lexer = new UL4Lexer(location, input);
+		UL4Lexer lexer = new UL4Lexer(tag, input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		UL4Parser parser = new UL4Parser(location, tokens);
+		UL4Parser parser = new UL4Parser(tag, tokens);
 		return parser;
 	}
 
@@ -765,12 +769,12 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 * @param source The sourcecode of the template
 	 * @param startdelim The start delimiter for template tags (usually {@code "<?"})
 	 * @param enddelim The end delimiter for template tags (usually {@code "?>"})
-	 * @return A list of {@link Location} objects
+	 * @return A list of {@link Tag} or {@link TextAST} objects
 	 */
-	public List<Location> tokenizeTags(String source, String startdelim, String enddelim)
+	public List<Object> tokenizeTags(String source, String startdelim, String enddelim)
 	{
 		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
-		LinkedList<Location> tags = new LinkedList<Location>();
+		LinkedList<Object> tags = new LinkedList<Object>();
 		if (source != null)
 		{
 			Matcher matcher = tagPattern.matcher(source);
@@ -783,17 +787,17 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				start = matcher.start();
 				end = start + matcher.group().length();
 				if (pos != start)
-					tags.add(new Location(this, source, null, pos, start, pos, start));
+					tags.add(new TextAST(source, pos, start));
 				int codestart = matcher.start(3);
 				int codeend = codestart + matcher.group(3).length();
 				String type = matcher.group(1);
 				if (!type.equals("note"))
-					tags.add(new Location(this, source, matcher.group(1), start, end, codestart, codeend));
+					tags.add(new Tag(source, matcher.group(1), start, end, codestart, codeend));
 				pos = end;
 			}
 			end = source.length();
 			if (pos != end)
-				tags.add(new Location(this, source, null, pos, end, pos, end));
+				tags.add(new TextAST(source, end, pos, end));
 		}
 		return tags;
 	}

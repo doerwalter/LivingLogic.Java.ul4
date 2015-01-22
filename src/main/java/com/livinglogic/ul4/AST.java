@@ -21,30 +21,27 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 public abstract class AST implements UL4ONSerializable, UL4GetAttributes
 {
 	/**
-	 * The source code location where this node appears in.
-	 */
-	protected Location location = null;
-
-	/**
 	 * The start index of this node in the source
 	 */
-	protected int start;
+	protected int startPos;
 
 	/**
 	 * The end index of this node in the source
 	 */
-	protected int end;
+	protected int endPos;
 
 	/**
 	 * Create a new {@code AST} object.
-	 * @param location The source code location where this node appears in.
+	 * @param startPos The start offset in the template source, where the source for this object is located.
+	 * @param endPos The end offset in the template source, where the source for this object is located.
 	 */
-	public AST(Location location, int start, int end)
+	public AST(int startPos, int endPos)
 	{
-		this.location = location;
-		this.start = start;
-		this.end = end;
+		this.startPos = startPos;
+		this.endPos = endPos;
 	}
+
+	abstract public String getText();
 
 	/**
 	 * Evaluate this node and return the resulting object.
@@ -105,32 +102,24 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttributes
 		return formatter.toString();
 	}
 
-	/**
-	 * Return the source code location where this node appears in.
-	 */
-	public Location getLocation()
+	public int getStartPos()
 	{
-		return location;
+		return startPos;
 	}
 
-	public int getStart()
+	public int getEndPos()
 	{
-		return start;
+		return endPos;
 	}
 
-	public int getEnd()
+	public void setStartPos(int startPos)
 	{
-		return end;
+		this.startPos = startPos;
 	}
 
-	public void setStart(int start)
+	public void setEndPos(int endPos)
 	{
-		this.start = start;
-	}
-
-	public void setEnd(int end)
-	{
-		this.end = end;
+		this.endPos = endPos;
 	}
 
 	protected static class Formatter
@@ -191,7 +180,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttributes
 
 	public void toStringFromSource(Formatter formatter)
 	{
-		formatter.write(location.getSource().substring(start, end));
+		formatter.write(getText());
 	}
 
 	public String getUL4ONName()
@@ -201,19 +190,17 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttributes
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
-		encoder.dump(location);
-		encoder.dump(start);
-		encoder.dump(end);
+		encoder.dump(startPos);
+		encoder.dump(endPos);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
-		location = (Location)decoder.load();
-		start = (Integer)decoder.load();
-		end = (Integer)decoder.load();
+		startPos = (Integer)decoder.load();
+		endPos = (Integer)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeSet("type", "location", "start", "end");
+	protected static Set<String> attributes = makeSet("type", "startpos", "endpos");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -224,12 +211,10 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttributes
 	{
 		if ("type".equals(key))
 			return getType();
-		else if ("location".equals(key))
-			return location;
-		else if ("start".equals(key))
-			return start;
-		else if ("end".equals(key))
-			return end;
+		else if ("startpos".equals(key))
+			return startPos;
+		else if ("endpos".equals(key))
+			return endPos;
 		else
 			return new UndefinedKey(key);
 	}

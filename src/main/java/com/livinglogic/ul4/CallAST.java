@@ -20,14 +20,14 @@ import java.io.IOException;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class CallAST extends AST
+public class CallAST extends CodeAST
 {
 	protected AST obj;
 	protected List<Argument> arguments = new LinkedList<Argument>();
 
-	public CallAST(Location location, int start, int end, AST obj)
+	public CallAST(Tag tag, int start, int end, AST obj)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.obj = obj;
 	}
 

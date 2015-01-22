@@ -18,9 +18,9 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 {
 	protected AST condition;
 
-	public ConditionalBlockWithCondition(Location location, int start, int end, AST condition)
+	public ConditionalBlockWithCondition(Tag tag, int start, int end, AST condition)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.condition = condition;
 	}
 

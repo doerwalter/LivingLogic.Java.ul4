@@ -15,15 +15,15 @@ import java.io.IOException;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class IfAST extends AST
+public class IfAST extends CodeAST
 {
 	private AST objIf;
 	private AST objCond;
 	private AST objElse;
 
-	public IfAST(Location location, int start, int end, AST objIf, AST objCond, AST objElse)
+	public IfAST(Tag tag, int start, int end, AST objIf, AST objCond, AST objElse)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.objIf = objIf;
 		this.objCond = objCond;
 		this.objElse = objElse;
@@ -34,7 +34,7 @@ public class IfAST extends AST
 		return "if";
 	}
 
-	public static AST make(Location location, int start, int end, AST objIf, AST objCond, AST objElse)
+	public static AST make(Tag tag, int start, int end, AST objIf, AST objCond, AST objElse)
 	{
 		if (objCond instanceof ConstAST)
 		{
@@ -43,7 +43,7 @@ public class IfAST extends AST
 			if (!(cond instanceof Undefined))
 				return FunctionBool.call(cond) ? objIf : objElse;
 		}
-		return new IfAST(location, start, end, objIf, objCond, objElse);
+		return new IfAST(tag, start, end, objIf, objCond, objElse);
 	}
 
 	public Object evaluate(EvaluationContext context)

@@ -17,14 +17,14 @@ import java.util.Date;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class AttrAST extends AST implements LValue
+public class AttrAST extends CodeAST implements LValue
 {
 	protected AST obj;
 	protected String attrname;
 
-	public AttrAST(Location location, int start, int end, AST obj, String attrname)
+	public AttrAST(Tag tag, int start, int end, AST obj, String attrname)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.obj = obj;
 		this.attrname = attrname;
 	}

@@ -14,13 +14,13 @@ import java.util.Set;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-public class ConstAST extends AST
+public class ConstAST extends CodeAST
 {
 	protected Object value;
 
-	public ConstAST(Location location, int start, int end, Object value)
+	public ConstAST(Tag tag, int start, int end, Object value)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 		this.value = value;
 	}
 

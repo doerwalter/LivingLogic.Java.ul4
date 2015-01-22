@@ -6,11 +6,11 @@
 
 package com.livinglogic.ul4;
 
-class ContinueAST extends AST
+class ContinueAST extends CodeAST
 {
-	public ContinueAST(Location location, int start, int end)
+	public ContinueAST(Tag tag, int start, int end)
 	{
-		super(location, start, end);
+		super(tag, start, end);
 	}
 
 	public String getType()
