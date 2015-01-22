@@ -40,7 +40,7 @@ public abstract class ChangeVarAST extends CodeAST
 		value = (AST)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "lvalue", "value");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "lvalue", "value");
 
 	public Set<String> getAttributeNamesUL4()
 	{

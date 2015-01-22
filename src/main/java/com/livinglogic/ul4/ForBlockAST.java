@@ -18,9 +18,9 @@ public class ForBlockAST extends BlockAST
 	 * This is either a string or a list of strings/lists
 	 */
 	protected Object varname;
-	protected AST container;
+	protected CodeAST container;
 
-	public ForBlockAST(Tag tag, int start, int end, Object varname, AST container)
+	public ForBlockAST(Tag tag, int start, int end, Object varname, CodeAST container)
 	{
 		super(tag, start, end);
 		this.varname = varname;
@@ -95,6 +95,6 @@ public class ForBlockAST extends BlockAST
 	{
 		super.loadUL4ON(decoder);
 		varname = decoder.load();
-		container = (AST)decoder.load();
+		container = (CodeAST)decoder.load();
 	}
 }

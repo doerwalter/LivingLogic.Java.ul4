@@ -124,7 +124,7 @@ public class SignatureAST extends CodeAST
 		}
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "params");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "params");
 
 	public Set<String> getAttributeNamesUL4()
 	{

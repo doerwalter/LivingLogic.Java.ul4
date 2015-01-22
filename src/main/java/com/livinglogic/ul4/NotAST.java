@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 public class NotAST extends UnaryAST
 {
-	public NotAST(Tag tag, int start, int end, AST obj)
+	public NotAST(Tag tag, int start, int end, CodeAST obj)
 	{
 		super(tag, start, end, obj);
 	}
@@ -18,7 +18,7 @@ public class NotAST extends UnaryAST
 		return "not";
 	}
 
-	public static AST make(Tag tag, int start, int end, AST obj)
+	public static CodeAST make(Tag tag, int start, int end, CodeAST obj)
 	{
 		if (obj instanceof ConstAST)
 		{

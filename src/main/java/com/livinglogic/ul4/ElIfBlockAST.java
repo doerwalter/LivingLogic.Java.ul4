@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 class ElIfBlockAST extends ConditionalBlockWithCondition
 {
-	public ElIfBlockAST(Tag tag, int start, int end, AST condition)
+	public ElIfBlockAST(Tag tag, int start, int end, CodeAST condition)
 	{
 		super(tag, start, end, condition);
 	}

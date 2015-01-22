@@ -10,7 +10,7 @@ import java.math.BigInteger;
 
 public class BitNotAST extends UnaryAST
 {
-	public BitNotAST(Tag tag, int start, int end, AST obj)
+	public BitNotAST(Tag tag, int start, int end, CodeAST obj)
 	{
 		super(tag, start, end, obj);
 	}
@@ -20,7 +20,7 @@ public class BitNotAST extends UnaryAST
 		return "bitnot";
 	}
 
-	public static AST make(Tag tag, int start, int end, AST obj)
+	public static CodeAST make(Tag tag, int start, int end, CodeAST obj)
 	{
 		if (obj instanceof ConstAST)
 		{

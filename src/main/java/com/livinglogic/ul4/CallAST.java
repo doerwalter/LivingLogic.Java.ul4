@@ -118,7 +118,7 @@ public class CallAST extends CodeAST
 		}
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "obj", "args");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "obj", "args");
 
 	public Set<String> getAttributeNamesUL4()
 	{

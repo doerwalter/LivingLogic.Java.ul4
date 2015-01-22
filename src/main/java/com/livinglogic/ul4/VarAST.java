@@ -106,7 +106,7 @@ public class VarAST extends CodeAST implements LValue
 		name = (String)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "name");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "name");
 
 	public Set<String> getAttributeNamesUL4()
 	{

@@ -43,7 +43,7 @@ class TextAST extends AST
 		return null;
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "text");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "text");
 
 	public Set<String> getAttributeNamesUL4()
 	{

@@ -171,18 +171,18 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				}
 				else
 				{
-					com.livinglogic.ul4.Tag tagx = (com.livinglogic.ul4.Tag)tagtext;
-					String tagtype = tagx.getTag();
+					Tag tag = (Tag)tagtext;
+					String tagtype = tag.getTag();
 					// FIXME: use a switch in Java 7
 					if (tagtype.equals("print"))
 					{
 						UL4Parser parser = getParser(tag);
-						innerBlock.append(new PrintAST(tag, tag.getStartCode(), tag.getEndCode(), parser.expression()));
+						innerBlock.append(new PrintAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
 					}
 					else if (tagtype.equals("printx"))
 					{
 						UL4Parser parser = getParser(tag);
-						innerBlock.append(new PrintXAST(tag, tag.getStartCode(), tag.getEndCode(), parser.expression()));
+						innerBlock.append(new PrintXAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
 					}
 					else if (tagtype.equals("code"))
 					{
@@ -192,7 +192,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					else if (tagtype.equals("if"))
 					{
 						UL4Parser parser = getParser(tag);
-						ConditionalBlocks node = new ConditionalBlocks(tag, tag.getStartCode(), tag.getEndCode(), new IfBlockAST(tag, tag.getStartCode(), tag.getEndCode(), parser.expression()));
+						ConditionalBlocks node = new ConditionalBlocks(tag, tag.getStartPosCode(), tag.getEndPosCode(), new IfBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
 						innerBlock.append(node);
 						stack.push(node);
 					}
@@ -201,7 +201,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						if (innerBlock instanceof ConditionalBlocks)
 						{
 							UL4Parser parser = getParser(tag);
-							((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(tag, tag.getStartCode(), tag.getEndCode(), parser.expression()));
+							((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
 						}
 						else
 							throw new BlockException("elif doesn't match any if");
@@ -210,7 +210,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					{
 						if (innerBlock instanceof ConditionalBlocks)
 						{
-							((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(tag, tag.getStartCode(), tag.getEndCode()));
+							((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode()));
 						}
 						else
 							throw new BlockException("else doesn't match any if");
@@ -235,7 +235,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					else if (tagtype.equals("while"))
 					{
 						UL4Parser parser = getParser(tag);
-						WhileBlockAST node = new WhileBlockAST(tag, tag.getStartCode(), tag.getEndCode(), parser.expression());
+						WhileBlockAST node = new WhileBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression());
 						innerBlock.append(node);
 						stack.push(node);
 					}
@@ -246,7 +246,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							if (stack.get(i).handleLoopControl("break"))
 								break;
 						}
-						innerBlock.append(new BreakAST(tag, tag.getStartCode(), tag.getEndCode()));
+						innerBlock.append(new BreakAST(tag, tag.getStartPosCode(), tag.getEndPosCode()));
 					}
 					else if (tagtype.equals("continue"))
 					{
@@ -255,12 +255,12 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							if (stack.get(i).handleLoopControl("continue"))
 								break;
 						}
-						innerBlock.append(new ContinueAST(tag, tag.getStartCode(), tag.getEndCode()));
+						innerBlock.append(new ContinueAST(tag, tag.getStartPosCode(), tag.getEndPosCode()));
 					}
 					else if (tagtype.equals("return"))
 					{
 						UL4Parser parser = getParser(tag);
-						innerBlock.append(new ReturnAST(tag, tag.getStartCode(), tag.getEndCode(), parser.expression()));
+						innerBlock.append(new ReturnAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
 					}
 					else if (tagtype.equals("def"))
 					{
@@ -280,7 +280,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			}
 			catch (Exception ex)
 			{
-				throw new TemplateException(new LocationException(ex, location), this);
+				throw new TemplateException(new TagException(ex, tag), this);
 			}
 		}
 		if (stack.size() > 1) // the template itself is still on the stack
@@ -780,24 +780,24 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			Matcher matcher = tagPattern.matcher(source);
 			int pos = 0;
 
-			int start;
-			int end;
+			int startPos;
+			int endPos;
 			while (matcher.find())
 			{
-				start = matcher.start();
-				end = start + matcher.group().length();
-				if (pos != start)
-					tags.add(new TextAST(source, pos, start));
-				int codestart = matcher.start(3);
-				int codeend = codestart + matcher.group(3).length();
+				startPos = matcher.start();
+				endPos = startPos + matcher.group().length();
+				if (pos != startPos)
+					tags.add(new TextAST(source, pos, startPos));
+				int startPosCode = matcher.start(3);
+				int endPosCode = startPosCode + matcher.group(3).length();
 				String type = matcher.group(1);
 				if (!type.equals("note"))
-					tags.add(new Tag(source, matcher.group(1), start, end, codestart, codeend));
-				pos = end;
+					tags.add(new Tag(source, matcher.group(1), startPos, endPos, startPosCode, endPosCode));
+				pos = endPos;
 			}
-			end = source.length();
-			if (pos != end)
-				tags.add(new TextAST(source, end, pos, end));
+			endPos = source.length();
+			if (pos != endPos)
+				tags.add(new TextAST(source, pos, endPos));
 		}
 		return tags;
 	}
@@ -818,10 +818,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return buffer.toString();
 	}
 
-	public void finish(Location endlocation)
+	public void finish(Tag endtag)
 	{
-		super.finish(endlocation);
-		String type = endlocation.getCode().trim();
+		super.finish(endtag);
+		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("def"))
 			throw new BlockException("def ended by end" + type);
 	}

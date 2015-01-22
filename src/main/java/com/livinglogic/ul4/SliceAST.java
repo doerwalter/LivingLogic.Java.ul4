@@ -110,7 +110,7 @@ public class SliceAST extends CodeAST
 		}
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "start", "stop");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "start", "stop");
 
 	public Set<String> getAttributeNamesUL4()
 	{

@@ -117,7 +117,7 @@ abstract class BlockAST extends CodeAST
 		content = (List<AST>)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "endtag", "content");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "endtag", "content");
 
 	public Set<String> getAttributeNamesUL4()
 	{

@@ -79,6 +79,31 @@ public class Tag implements UL4ONSerializable, UL4GetAttributes
 		return source;
 	}
 
+	public String getTag()
+	{
+		return tag;
+	}
+
+	public int getStartPos()
+	{
+		return startPos;
+	}
+
+	public int getEndPos()
+	{
+		return endPos;
+	}
+
+	public int getStartPosCode()
+	{
+		return startPosCode;
+	}
+
+	public int getEndPosCode()
+	{
+		return endPosCode;
+	}
+
 	public String getText()
 	{
 		return source.substring(startPos, endPos);

@@ -12,7 +12,7 @@ package com.livinglogic.ul4;
  */
 public class PrintAST extends UnaryAST
 {
-	public PrintAST(Tag tag, int start, int end, AST obj)
+	public PrintAST(Tag tag, int start, int end, CodeAST obj)
 	{
 		super(tag, start, end, obj);
 	}

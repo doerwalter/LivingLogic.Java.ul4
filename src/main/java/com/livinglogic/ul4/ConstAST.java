@@ -51,7 +51,7 @@ public class ConstAST extends CodeAST
 		value = decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "value");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "value");
 
 	public Set<String> getAttributeNamesUL4()
 	{

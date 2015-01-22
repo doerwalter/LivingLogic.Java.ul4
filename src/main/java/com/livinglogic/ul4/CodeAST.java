@@ -60,7 +60,7 @@ public abstract class CodeAST extends AST
 		tag = (Tag)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "tag");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "tag");
 
 	public Set<String> getAttributeNamesUL4()
 	{

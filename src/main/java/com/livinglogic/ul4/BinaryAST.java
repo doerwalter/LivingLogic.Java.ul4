@@ -22,12 +22,12 @@ abstract class BinaryAST extends CodeAST
 	/**
 	 * The AST node for the left operand.
 	 */
-	protected AST obj1;
+	protected CodeAST obj1;
 
 	/**
 	 * The AST node for the right operand.
 	 */
-	protected AST obj2;
+	protected CodeAST obj2;
 
 	/**
 	 * Create a new {@code BinaryAST} object
@@ -35,7 +35,7 @@ abstract class BinaryAST extends CodeAST
 	 * @param obj1 The left operand
 	 * @param obj2 The right operand
 	 */
-	public BinaryAST(Tag tag, int start, int end, AST obj1, AST obj2)
+	public BinaryAST(Tag tag, int start, int end, CodeAST obj1, CodeAST obj2)
 	{
 		super(tag, start, end);
 		this.obj1 = obj1;
@@ -52,11 +52,11 @@ abstract class BinaryAST extends CodeAST
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		obj1 = (AST)decoder.load();
-		obj2 = (AST)decoder.load();
+		obj1 = (CodeAST)decoder.load();
+		obj2 = (CodeAST)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "obj1", "obj2");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "obj1", "obj2");
 
 	public Set<String> getAttributeNamesUL4()
 	{

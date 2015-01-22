@@ -57,7 +57,7 @@ public class SetVarAST extends CodeAST
 		return null;
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "lvalue", "value");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "lvalue", "value");
 
 	public Set<String> getAttributeNamesUL4()
 	{

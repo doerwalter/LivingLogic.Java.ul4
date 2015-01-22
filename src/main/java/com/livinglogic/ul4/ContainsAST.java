@@ -12,7 +12,7 @@ import static java.util.Arrays.asList;
 
 public class ContainsAST extends BinaryAST
 {
-	public ContainsAST(Tag tag, int start, int end, AST obj1, AST obj2)
+	public ContainsAST(Tag tag, int start, int end, CodeAST obj1, CodeAST obj2)
 	{
 		super(tag, start, end, obj1, obj2);
 	}
@@ -22,7 +22,7 @@ public class ContainsAST extends BinaryAST
 		return "contains";
 	}
 
-	public static AST make(Tag tag, int start, int end, AST obj1, AST obj2)
+	public static CodeAST make(Tag tag, int start, int end, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{

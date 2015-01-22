@@ -16,13 +16,13 @@ import com.livinglogic.ul4on.Encoder;
 
 public class DictComprehensionAST extends CodeAST
 {
-	protected AST key;
-	protected AST value;
+	protected CodeAST key;
+	protected CodeAST value;
 	protected Object varname;
-	protected AST container;
-	protected AST condition;
+	protected CodeAST container;
+	protected CodeAST condition;
 
-	public DictComprehensionAST(Tag tag, int start, int end, AST key, AST value, Object varname, AST container, AST condition)
+	public DictComprehensionAST(Tag tag, int start, int end, CodeAST key, CodeAST value, Object varname, CodeAST container, CodeAST condition)
 	{
 		super(tag, start, end);
 		this.key = key;
@@ -83,10 +83,10 @@ public class DictComprehensionAST extends CodeAST
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		key = (AST)decoder.load();
-		value = (AST)decoder.load();
+		key = (CodeAST)decoder.load();
+		value = (CodeAST)decoder.load();
 		varname = decoder.load();
-		container = (AST)decoder.load();
-		condition = (AST)decoder.load();
+		container = (CodeAST)decoder.load();
+		condition = (CodeAST)decoder.load();
 	}
 }

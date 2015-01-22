@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class MulAST extends BinaryAST
 {
-	public MulAST(Tag tag, int start, int end, AST obj1, AST obj2)
+	public MulAST(Tag tag, int start, int end, CodeAST obj1, CodeAST obj2)
 	{
 		super(tag, start, end, obj1, obj2);
 	}
@@ -25,7 +25,7 @@ public class MulAST extends BinaryAST
 		return "mul";
 	}
 
-	public static AST make(Tag tag, int start, int end, AST obj1, AST obj2)
+	public static CodeAST make(Tag tag, int start, int end, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{

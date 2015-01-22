@@ -225,7 +225,7 @@ name returns [VarAST node]
 	: NAME { $node = new VarAST(tag, getStartPos($NAME), getEndPos($NAME), $NAME.text); }
 	;
 
-literal returns [AST node]
+literal returns [CodeAST node]
 	: e_none=none { $node = $e_none.node; }
 	| e_false=false_ { $node = $e_false.node; }
 	| e_true=true_ { $node = $e_true.node; }
@@ -256,7 +256,7 @@ list returns [ListAST node]
 listcomprehension returns [ListComprehensionAST node]
 	@init
 	{
-		AST _condition = null;
+		CodeAST _condition = null;
 	}
 	:
 		open='['
@@ -292,7 +292,7 @@ set returns [SetAST node]
 setcomprehension returns [SetComprehensionAST node]
 	@init
 	{
-		AST _condition = null;
+		CodeAST _condition = null;
 	}
 	:
 		open='{'
@@ -335,7 +335,7 @@ dict returns [DictAST node]
 dictcomprehension returns [DictComprehensionAST node]
 	@init
 	{
-		AST _condition = null;
+		CodeAST _condition = null;
 	}
 	:
 		open='{'
@@ -356,7 +356,7 @@ dictcomprehension returns [DictComprehensionAST node]
 generatorexpression returns [GeneratorExpressionAST node]
 	@init
 	{
-		AST _condition = null;
+		CodeAST _condition = null;
 		int _end = -1;
 	}
 	:
@@ -371,7 +371,7 @@ generatorexpression returns [GeneratorExpressionAST node]
 		)? { $node = new GeneratorExpressionAST(tag, $item.node.getStartPos(), _end, $item.node, $n.lvalue, $container.node, _condition); }
 	;
 
-atom returns [AST node]
+atom returns [CodeAST node]
 	: e_literal=literal { $node = $e_literal.node; }
 	| e_list=list { $node = $e_list.node; }
 	| e_listcomp=listcomprehension { $node = $e_listcomp.node; }
@@ -407,8 +407,8 @@ nestedlvalue returns [Object lvalue]
 slice returns [SliceAST node]
 	@init
 	{
-		AST startIndex = null;
-		AST stopIndex = null;
+		CodeAST startIndex = null;
+		CodeAST stopIndex = null;
 		int startPos = -1;
 		int endPos = -1;
 	}
@@ -427,7 +427,7 @@ slice returns [SliceAST node]
 	;
 
 /* Function/method call, attribute access, item access, slice access */
-expr_subscript returns [AST node]
+expr_subscript returns [CodeAST node]
 	:
 		e1=atom { $node = $e1.node; }
 		(
@@ -496,18 +496,18 @@ expr_subscript returns [AST node]
 		|
 			/* Item access */
 			'['
-			e2=expr_if
-			close=']' { $node = ItemAST.make(tag, $e1.node.getStartPos(), getEndPos($close), $node, $e2.node); }
+			e2_if=expr_if
+			close=']' { $node = ItemAST.make(tag, $e1.node.getStartPos(), getEndPos($close), $node, $e2_if.node); }
 		|
 			/* Slice access */
 			'['
-			e2=slice
-			close=']' { $node = ItemAST.make(tag, $e1.node.getStartPos(), getEndPos($close), $node, $e2.node); }
+			e2_slice=slice
+			close=']' { $node = ItemAST.make(tag, $e1.node.getStartPos(), getEndPos($close), $node, $e2_slice.node); }
 		)*
 	;
 
 /* Negation/bitwise not */
-expr_unary returns [AST node]
+expr_unary returns [CodeAST node]
 	:
 		e1=expr_subscript { $node = $e1.node; }
 	|
@@ -517,7 +517,7 @@ expr_unary returns [AST node]
 	;
 
 /* Multiplication, division, modulo */
-expr_mul returns [AST node]
+expr_mul returns [CodeAST node]
 	@init
 	{
 		int opcode = -1;
@@ -539,7 +539,7 @@ expr_mul returns [AST node]
 	;
 
 /* Addition, substraction */
-expr_add returns [AST node]
+expr_add returns [CodeAST node]
 	@init
 	{
 		boolean add = false;
@@ -557,7 +557,7 @@ expr_add returns [AST node]
 	;
 
 /* Binary shift */
-expr_bitshift returns [AST node]
+expr_bitshift returns [CodeAST node]
 	@init
 	{
 		boolean left = false;
@@ -575,7 +575,7 @@ expr_bitshift returns [AST node]
 	;
 
 /* Bitwise and */
-expr_bitand returns [AST node]
+expr_bitand returns [CodeAST node]
 	:
 		e1=expr_bitshift { $node = $e1.node; }
 		(
@@ -585,7 +585,7 @@ expr_bitand returns [AST node]
 	;
 
 /* Bitwise exclusive or */
-expr_bitxor returns [AST node]
+expr_bitxor returns [CodeAST node]
 	:
 		e1=expr_bitand { $node = $e1.node; }
 		(
@@ -595,7 +595,7 @@ expr_bitxor returns [AST node]
 	;
 
 /* Bitwise or */
-expr_bitor returns [AST node]
+expr_bitor returns [CodeAST node]
 	:
 		e1=expr_bitxor { $node = $e1.node; }
 		(
@@ -605,7 +605,7 @@ expr_bitor returns [AST node]
 	;
 
 /* Comparisons */
-expr_cmp returns [AST node]
+expr_cmp returns [CodeAST node]
 	@init
 	{
 		int opcode = -1;
@@ -647,7 +647,7 @@ expr_cmp returns [AST node]
 	;
 
 /* Boolean not operator */
-expr_not returns [AST node]
+expr_not returns [CodeAST node]
 	:
 		e1=expr_cmp { $node = $e1.node; }
 	|
@@ -655,7 +655,7 @@ expr_not returns [AST node]
 	;
 
 /* And operator */
-expr_and returns [AST node]
+expr_and returns [CodeAST node]
 	:
 		e1=expr_not { $node = $e1.node; }
 		(
@@ -665,7 +665,7 @@ expr_and returns [AST node]
 	;
 
 /* Or operator */
-expr_or returns [AST node]
+expr_or returns [CodeAST node]
 	:
 		e1=expr_and { $node = $e1.node; }
 		(
@@ -675,7 +675,7 @@ expr_or returns [AST node]
 	;
 
 /* If expression operator */
-expr_if returns [AST node]
+expr_if returns [CodeAST node]
 	:
 		e1=expr_or { $node = $e1.node; }
 		(
@@ -686,12 +686,12 @@ expr_if returns [AST node]
 		)?
 	;
 
-exprarg returns [AST node]
+exprarg returns [CodeAST node]
 	: ege=generatorexpression { $node = $ege.node; }
 	| e1=expr_if { $node = $e1.node; }
 	;
 
-expression returns [AST node]
+expression returns [CodeAST node]
 	: ege=generatorexpression EOF { $node = $ege.node; }
 	| e=expr_if EOF { $node = $e.node; }
 	;
@@ -703,26 +703,26 @@ for_ returns [ForBlockAST node]
 	:
 		n=nestedlvalue
 		'in'
-		e=expr_if { $node = new ForBlockAST(tag, tag.getStartCode(), $e.node.getEndPos(), $n.lvalue, $e.node); }
+		e=expr_if { $node = new ForBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), $n.lvalue, $e.node); }
 		EOF
 	;
 
 
 /* Additional rules for "code" tag */
 
-stmt returns [AST node]
-	: nn=nestedlvalue '=' e=expr_if EOF { $node = new SetVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), $nn.lvalue, $e.node); }
-	| n=expr_subscript '+=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new AddVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '-=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new SubVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '*=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new MulVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '//=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new FloorDivVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '/=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new TrueDivVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '%=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ModVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '<<=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ShiftLeftVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '>>=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ShiftRightVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '&=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitAndVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '^=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitXOrVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
-	| n=expr_subscript '|=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitOrVarAST(tag, tag.getStartCode(), $e.node.getEndPos(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+stmt returns [CodeAST node]
+	: nn=nestedlvalue '=' e=expr_if EOF { $node = new SetVarAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), $nn.lvalue, $e.node); }
+	| n=expr_subscript '+=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new AddVarAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '-=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new SubVarAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '*=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new MulVarAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '//=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new FloorDivVarAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '/=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new TrueDivVarAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '%=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ModVarAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '<<=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ShiftLeftVarAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '>>=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new ShiftRightVarAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '&=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitAndVarAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '^=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitXOrVarAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
+	| n=expr_subscript '|=' e=expr_if EOF { if ($n.node instanceof LValue) $node = new BitOrVarAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), (LValue)$n.node, $e.node); else throw new RuntimeException("lvalue required"); }
 	| e=expression EOF { $node = $e.node; }
 	;
 

@@ -17,12 +17,12 @@ import com.livinglogic.utils.MapChain;
 
 public class GeneratorExpressionAST extends CodeAST
 {
-	protected AST item;
+	protected CodeAST item;
 	protected Object varname;
-	protected AST container;
-	protected AST condition;
+	protected CodeAST container;
+	protected CodeAST condition;
 
-	public GeneratorExpressionAST(Tag tag, int start, int end, AST item, Object varname, AST container, AST condition)
+	public GeneratorExpressionAST(Tag tag, int start, int end, CodeAST item, Object varname, CodeAST container, CodeAST condition)
 	{
 		super(tag, start, end);
 		this.item = item;
@@ -53,10 +53,10 @@ public class GeneratorExpressionAST extends CodeAST
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		item = (AST)decoder.load();
+		item = (CodeAST)decoder.load();
 		varname = decoder.load();
-		container = (AST)decoder.load();
-		condition = (AST)decoder.load();
+		container = (CodeAST)decoder.load();
+		condition = (CodeAST)decoder.load();
 	}
 
 	private class GeneratorExpressionIterator implements Iterator

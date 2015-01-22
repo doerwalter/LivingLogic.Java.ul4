@@ -17,11 +17,11 @@ import com.livinglogic.ul4on.Encoder;
 
 public class IfAST extends CodeAST
 {
-	private AST objIf;
-	private AST objCond;
-	private AST objElse;
+	private CodeAST objIf;
+	private CodeAST objCond;
+	private CodeAST objElse;
 
-	public IfAST(Tag tag, int start, int end, AST objIf, AST objCond, AST objElse)
+	public IfAST(Tag tag, int start, int end, CodeAST objIf, CodeAST objCond, CodeAST objElse)
 	{
 		super(tag, start, end);
 		this.objIf = objIf;
@@ -34,7 +34,7 @@ public class IfAST extends CodeAST
 		return "if";
 	}
 
-	public static AST make(Tag tag, int start, int end, AST objIf, AST objCond, AST objElse)
+	public static CodeAST make(Tag tag, int start, int end, CodeAST objIf, CodeAST objCond, CodeAST objElse)
 	{
 		if (objCond instanceof ConstAST)
 		{
@@ -72,12 +72,12 @@ public class IfAST extends CodeAST
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		objIf = (AST)decoder.load();
-		objCond = (AST)decoder.load();
-		objElse = (AST)decoder.load();
+		objIf = (CodeAST)decoder.load();
+		objCond = (CodeAST)decoder.load();
+		objElse = (CodeAST)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "objif", "objcond", "objelse");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "objif", "objcond", "objelse");
 
 	public Set<String> getAttributeNamesUL4()
 	{

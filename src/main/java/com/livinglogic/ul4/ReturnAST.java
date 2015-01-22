@@ -12,7 +12,7 @@ package com.livinglogic.ul4;
  */
 public class ReturnAST extends UnaryAST
 {
-	public ReturnAST(Tag tag, int start, int end, AST obj)
+	public ReturnAST(Tag tag, int start, int end, CodeAST obj)
 	{
 		super(tag, start, end, obj);
 	}
