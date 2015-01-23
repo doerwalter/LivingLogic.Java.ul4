@@ -311,17 +311,12 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		signature = "(" + signature + ")";
 		Tag tag = new Tag(signature, "signature", 0, signature.length(), 0, signature.length());
-		return getParser(tag, signature);
+		return getParser(tag);
 	}
 
 	private static UL4Parser getParser(Tag tag)
 	{
-		return getParser(tag, tag.getCode());
-	}
-
-	private static UL4Parser getParser(Tag tag, String source)
-	{
-		ANTLRStringStream input = new ANTLRStringStream(source);
+		ANTLRStringStream input = new ANTLRStringStream(tag.getCode());
 		UL4Lexer lexer = new UL4Lexer(tag, input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		UL4Parser parser = new UL4Parser(tag, tokens);
