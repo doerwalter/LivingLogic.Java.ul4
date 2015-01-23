@@ -6,9 +6,13 @@
 
 package com.livinglogic.ul4;
 
+import java.io.IOException;
 import java.util.Set;
 
 import static com.livinglogic.utils.SetUtils.makeExtendedSet;
+
+import com.livinglogic.ul4on.Decoder;
+import com.livinglogic.ul4on.Encoder;
 
 class TextAST extends AST
 {
@@ -35,6 +39,18 @@ class TextAST extends AST
 	public String getType()
 	{
 		return "text";
+	}
+
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(source);
+	}
+
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		source = (String)decoder.load();
 	}
 
 	public Object evaluate(EvaluationContext context)
