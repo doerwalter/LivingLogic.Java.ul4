@@ -34,9 +34,9 @@ public class Tester
 		return buffer.toString();
 	}
 
-	public static InterpretedTemplate compileTemplate(String source, String name, boolean keepWhitespace, String signature) throws RecognitionException
+	public static InterpretedTemplate compileTemplate(String source, String name, InterpretedTemplate.Whitespace whitespace, String signature) throws RecognitionException
 	{
-		return new InterpretedTemplate(source, name, keepWhitespace, null, null, signature);
+		return new InterpretedTemplate(source, name, whitespace, null, null, signature);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -51,7 +51,7 @@ public class Tester
 		InterpretedTemplate template = null;
 
 		if (templateString instanceof String)
-			template = compileTemplate((String)templateString, (String)data.get("name"), (Boolean)data.get("keepws"), (String)data.get("signature"));
+			template = compileTemplate((String)templateString, (String)data.get("name"), InterpretedTemplate.Whitespace.fromString((String)data.get("whitespace")), (String)data.get("signature"));
 		else
 			template = (InterpretedTemplate)templateString;
 

@@ -79,11 +79,11 @@ public class UL4Test
 		}
 	}
 
-	private static InterpretedTemplate getTemplate(String source, String name, boolean keepWhitespace, Signature signature)
+	private static InterpretedTemplate getTemplate(String source, String name, InterpretedTemplate.Whitespace whitespace, Signature signature)
 	{
 		try
 		{
-			InterpretedTemplate template = new InterpretedTemplate(source, name, keepWhitespace, null, null, signature);
+			InterpretedTemplate template = new InterpretedTemplate(source, name, whitespace, null, null, signature);
 			// System.out.println(template);
 			return template;
 		}
@@ -93,11 +93,11 @@ public class UL4Test
 		}
 	}
 
-	private static InterpretedTemplate getTemplate(String source, String name, boolean keepWhitespace, String signature)
+	private static InterpretedTemplate getTemplate(String source, String name, InterpretedTemplate.Whitespace whitespace, String signature)
 	{
 		try
 		{
-			InterpretedTemplate template = new InterpretedTemplate(source, name, keepWhitespace, null, null, signature);
+			InterpretedTemplate template = new InterpretedTemplate(source, name, whitespace, null, null, signature);
 			// System.out.println(template);
 			return template;
 		}
@@ -107,24 +107,24 @@ public class UL4Test
 		}
 	}
 
-	private static InterpretedTemplate getTemplate(String source, String name, boolean keepWhitespace)
+	private static InterpretedTemplate getTemplate(String source, String name, InterpretedTemplate.Whitespace whitespace)
 	{
-		return getTemplate(source, name, keepWhitespace, (Signature)null);
+		return getTemplate(source, name, whitespace, (Signature)null);
 	}
 
-	private static InterpretedTemplate getTemplate(String source, boolean keepWhitespace)
+	private static InterpretedTemplate getTemplate(String source, InterpretedTemplate.Whitespace whitespace)
 	{
-		return getTemplate(source, null, keepWhitespace, (Signature)null);
+		return getTemplate(source, null, whitespace, (Signature)null);
 	}
 
 	private static InterpretedTemplate getTemplate(String source, String name)
 	{
-		return getTemplate(source, name, false, (Signature)null);
+		return getTemplate(source, name, InterpretedTemplate.Whitespace.strip, (Signature)null);
 	}
 
 	private static InterpretedTemplate getTemplate(String source)
 	{
-		return getTemplate(source, null, false, (Signature)null);
+		return getTemplate(source, null, InterpretedTemplate.Whitespace.strip, (Signature)null);
 	}
 
 	private static String getTemplateOutput(String source, Object... args)
@@ -4221,7 +4221,7 @@ public class UL4Test
 	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_signature_directcall() throws Exception
 	{
-		InterpretedTemplate function = getTemplate("<?return x?>", "func_with_sig", false, new Signature("x", Signature.required));
+		InterpretedTemplate function = getTemplate("<?return x?>", "func_with_sig", InterpretedTemplate.Whitespace.strip, new Signature("x", Signature.required));
 
 		function.call();
 	}
@@ -4229,7 +4229,7 @@ public class UL4Test
 	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_stringsignature_directcall() throws Exception
 	{
-		InterpretedTemplate function = getTemplate("<?return x?>", "func_with_sig", false, "x");
+		InterpretedTemplate function = getTemplate("<?return x?>", "func_with_sig", InterpretedTemplate.Whitespace.strip, "x");
 
 		function.call();
 	}
@@ -4237,7 +4237,7 @@ public class UL4Test
 	@Test
 	public void function_stringsignature_directcall_default() throws Exception
 	{
-		InterpretedTemplate function = getTemplate("<?return x+y?>", "func_with_sig", false, "x=17, y=23");
+		InterpretedTemplate function = getTemplate("<?return x+y?>", "func_with_sig", InterpretedTemplate.Whitespace.strip, "x=17, y=23");
 
 		assertEquals(42, function.call(makeMap("y", 25)));
 	}
@@ -4245,7 +4245,7 @@ public class UL4Test
 	@Test
 	public void function_stringsignature_directcall_remainingkwargs() throws Exception
 	{
-		InterpretedTemplate function = getTemplate("<?return ', '.join(key + ': ' + str(value) for (key, value) in sorted(kwargs.items()))?>", "func_with_sig", false, "**kwargs");
+		InterpretedTemplate function = getTemplate("<?return ', '.join(key + ': ' + str(value) for (key, value) in sorted(kwargs.items()))?>", "func_with_sig", InterpretedTemplate.Whitespace.strip, "**kwargs");
 
 		assertEquals("x: 17, y: 23", function.call(makeMap("y", 23, "x", 17)));
 	}
@@ -4253,8 +4253,8 @@ public class UL4Test
 	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_signature_templatecall() throws Exception
 	{
-		InterpretedTemplate function = getTemplate("<?return x?>", "func_with_sig", false, new Signature("x", Signature.required));
-		InterpretedTemplate template = getTemplate("<?print func_with_sig()?>", "t", false);
+		InterpretedTemplate function = getTemplate("<?return x?>", "func_with_sig", InterpretedTemplate.Whitespace.strip, new Signature("x", Signature.required));
+		InterpretedTemplate template = getTemplate("<?print func_with_sig()?>", "t", InterpretedTemplate.Whitespace.strip);
 
 		template.renders(makeMap("func_with_sig", function));
 	}
@@ -4262,7 +4262,7 @@ public class UL4Test
 	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void template_signature_directcall() throws Exception
 	{
-		InterpretedTemplate template = getTemplate("<?print x?>", "t", false, new Signature("x", Signature.required));
+		InterpretedTemplate template = getTemplate("<?print x?>", "t", InterpretedTemplate.Whitespace.strip, new Signature("x", Signature.required));
 
 		checkTemplateOutput("42", template);
 	}
@@ -4270,7 +4270,7 @@ public class UL4Test
 	@Test
 	public void template_signature_directcall_default() throws Exception
 	{
-		InterpretedTemplate template = getTemplate("<?print x?>", "t", false, new Signature("x", 42));
+		InterpretedTemplate template = getTemplate("<?print x?>", "t", InterpretedTemplate.Whitespace.strip, new Signature("x", 42));
 
 		checkTemplateOutput("42", template);
 	}

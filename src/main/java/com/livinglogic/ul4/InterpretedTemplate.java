@@ -47,11 +47,28 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public String name = null;
 
+	public enum Whitespace
+	{
+		keep, strip, smart;
+
+		public static Whitespace fromString(String value)
+		{
+			if ("keep".equals(value))
+				return keep;
+			else if ("strip".equals(value))
+				return strip;
+			else if ("smart".equals(value))
+				return smart;
+			else
+				throw new RuntimeException("unknown whitespace value " + value);
+		}
+	};
+
 	/**
 	 * Should whitespace be skipped when outputting text nodes?
 	 * (i.e. linefeed and the whitespace after the linefeed will be skipped. Other spaces/tabs etc. will not be skipped)
 	 */
-	public boolean keepWhitespace = true;
+	public Whitespace whitespace = Whitespace.keep;
 
 	/**
 	 * The start delimiter for tags (defaults to {@code "<?"})
@@ -86,7 +103,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		super(null, 0, 0);
 		this.source = null;
 		this.name = null;
-		this.keepWhitespace = false;
+		this.whitespace = Whitespace.keep;
 		this.startdelim = startdelim != null ? startdelim : "<?";
 		this.enddelim = enddelim != null ? enddelim : "?>";
 		this.signature = null;
@@ -96,12 +113,12 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * Create of toplevel template without a signature
 	 */
-	public InterpretedTemplate(String source, String name, boolean keepWhitespace, String startdelim, String enddelim) throws RecognitionException
+	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim) throws RecognitionException
 	{
 		super(null, 0, 0);
 		this.source = source;
 		this.name = name;
-		this.keepWhitespace = keepWhitespace;
+		this.whitespace = whitespace;
 		this.startdelim = startdelim != null ? startdelim : "<?";
 		this.enddelim = enddelim != null ? enddelim : "?>";
 		this.signature = null;
@@ -112,18 +129,18 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * Create of toplevel template with a specified signature
 	 */
-	public InterpretedTemplate(String source, String name, boolean keepWhitespace, String startdelim, String enddelim, Signature signature) throws RecognitionException
+	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim, Signature signature) throws RecognitionException
 	{
-		this(source, name, keepWhitespace, startdelim, enddelim);
+		this(source, name, whitespace, startdelim, enddelim);
 		this.signature = signature;
 	}
 
 	/**
 	 * Create of toplevel template with a signature compiled from a string
 	 */
-	public InterpretedTemplate(String source, String name, boolean keepWhitespace, String startdelim, String enddelim, String signature) throws RecognitionException
+	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim, String signature) throws RecognitionException
 	{
-		this(source, name, keepWhitespace, startdelim, enddelim);
+		this(source, name, whitespace, startdelim, enddelim);
 		if (signature != null)
 		{
 			UL4Parser parser = getSignatureParser(signature);
@@ -137,12 +154,12 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * Creates an {@code InterpretedTemplate} object. Used for subtemplates.
 	 */
-	private InterpretedTemplate(Tag tag, String name, boolean keepWhitespace, String startdelim, String enddelim, SignatureAST signature)
+	private InterpretedTemplate(Tag tag, String name, Whitespace whitespace, String startdelim, String enddelim, SignatureAST signature)
 	{
 		super(tag, 0, 0);
 		this.source = tag.getSource();
 		this.name = name;
-		this.keepWhitespace = keepWhitespace;
+		this.whitespace = whitespace;
 		this.startdelim = startdelim != null ? startdelim : "<?";
 		this.enddelim = enddelim != null ? enddelim : "?>";
 		this.signature = null;
@@ -266,8 +283,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					{
 						UL4Parser parser = getParser(tag);
 						Definition definition = parser.definition();
-						// Copy over all the attributes, however passing a {@link Location} will prevent compilation
-						InterpretedTemplate subtemplate = new InterpretedTemplate(tag, definition.getName(), keepWhitespace, startdelim, enddelim, definition.getSignature());
+						// Copy over all the attributes, however passing a {@link Tag} will prevent compilation
+						InterpretedTemplate subtemplate = new InterpretedTemplate(tag, definition.getName(), whitespace, startdelim, enddelim, definition.getSignature());
 						innerBlock.append(subtemplate);
 						stack.push(subtemplate);
 					}
@@ -326,9 +343,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return source;
 	}
 
-	public boolean getKeepWhitespace()
+	public Whitespace getWhitespace()
 	{
-		return keepWhitespace;
+		return whitespace;
 	}
 
 	public String getStartDelim()
@@ -759,11 +776,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return buffer.toString();
 	}
 
-	public String formatText(String text)
-	{
-		return keepWhitespace ? text : removeWhitespace(text);
-	}
-
 	/**
 	 * Split the template source into tags and literal text.
 	 * @param source The sourcecode of the template
@@ -910,7 +922,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		encoder.dump(VERSION);
 		encoder.dump(source);
 		encoder.dump(name);
-		encoder.dump(keepWhitespace);
+		encoder.dump(whitespace.toString());
 		encoder.dump(startdelim);
 		encoder.dump(enddelim);
 
@@ -954,7 +966,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 		source = (String)decoder.load();
 		name = (String)decoder.load();
-		keepWhitespace = (Boolean)decoder.load();
+		whitespace = Whitespace.fromString((String)decoder.load());
 		startdelim = (String)decoder.load();
 		enddelim = (String)decoder.load();
 
@@ -1062,7 +1074,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "keepws", "startdelim", "enddelim", "source", "render", "renders");
+	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "startdelim", "enddelim", "source", "render", "renders");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -1073,8 +1085,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		if ("name".equals(key))
 			return name;
-		else if ("keepws".equals(key))
-			return keepWhitespace;
+		else if ("whitespace".equals(key))
+			return whitespace.toString();
 		else if ("startdelim".equals(key))
 			return startdelim;
 		else if ("enddelim".equals(key))
