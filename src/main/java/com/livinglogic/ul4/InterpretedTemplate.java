@@ -833,7 +833,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	static public void register4UL4ON()
 	{
-		Utils.register("de.livinglogic.ul4.location", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Location(null, null, null, -1, -1, -1, -1); }});
+		Utils.register("de.livinglogic.ul4.tag", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Tag(null, null, -1, -1, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.text", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TextAST(null, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.const", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConstAST(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.list", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListAST(null, -1, -1); }});
