@@ -780,7 +780,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public List<Object> tokenizeTags(String source, String startdelim, String enddelim)
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "(printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Object> tags = new LinkedList<Object>();
 		if (source != null)
 		{

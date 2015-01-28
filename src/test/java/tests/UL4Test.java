@@ -251,9 +251,15 @@ public class UL4Test
 	}
 
 	@Test
-	public void whitespace()
+	public void whitespace_in_expression()
 	{
 		checkTemplateOutput("40", "<?print\na\n+\nb\n?>", "a", 17, "b", 23);
+	}
+
+	@Test
+	public void whitespace_before_tag()
+	{
+		checkTemplateOutput("42", "<? print 42 ?>");
 	}
 
 	@Test

@@ -1,3 +1,9 @@
+exp-100:
+--------
+* Whitespace is now allowed before the tagname in UL4 tag, i.e. ``<? print 42 ?>``
+  will work.
+
+
 exp-99:
 -------
 * Calling Function and FunctionWithContent objects now destroys the intermediate
