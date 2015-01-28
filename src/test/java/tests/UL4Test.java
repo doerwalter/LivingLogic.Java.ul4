@@ -3874,8 +3874,8 @@ public class UL4Test
 		checkTemplateOutput(source, "<?print template.source?>", "template", t);
 		checkTemplateOutput("1", "<?print len(template.content)?>", "template", t);
 		checkTemplateOutput("print", "<?print template.content[0].type?>", "template", t);
-		checkTemplateOutput(source, "<?print template.content[0].location.tag?>", "template", t);
-		checkTemplateOutput("x", "<?print template.content[0].location.code?>", "template", t);
+		checkTemplateOutput(source, "<?print template.content[0].tag.text?>", "template", t);
+		checkTemplateOutput("x", "<?print template.content[0].tag.code?>", "template", t);
 		checkTemplateOutput("var", "<?print template.content[0].obj.type?>", "template", t);
 		checkTemplateOutput("x", "<?print template.content[0].obj.name?>", "template", t);
 	}
@@ -3907,8 +3907,8 @@ public class UL4Test
 		String source = "<?def lower?><?print t.lower()?><?end def?>";
 
 		checkTemplateOutput(source + "<?print lower.source?>", source + "<?print lower.source?>");
-		checkTemplateOutput(source, source + "<?print lower.source[lower.location.starttag:lower.endlocation.endtag]?>");
-		checkTemplateOutput("<?print t.lower()?>", source + "<?print lower.source[lower.location.endtag:lower.endlocation.starttag]?>");
+		checkTemplateOutput(source, source + "<?print lower.source[lower.tag.startpos:lower.endtag.endpos]?>");
+		checkTemplateOutput("<?print t.lower()?>", source + "<?print lower.source[lower.tag.endpos:lower.endtag.startpos]?>");
 		checkTemplateOutput("lower", source + "<?print lower.name?>");
 	}
 
