@@ -796,7 +796,7 @@ signature returns [SignatureAST node]
 
 definition returns [Definition node]
 	:
-		n=name { { $node = new Definition($n.text, null); } }
+		n=name { $node = new Definition($n.text, null); }
 		(
 			sig=signature { $node.setSignature($signature.node); }
 		)?
