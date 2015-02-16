@@ -60,7 +60,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			else if ("smart".equals(value))
 				return smart;
 			else
-				throw new RuntimeException("unknown whitespace value " + value);
+				throw new WhitespaceException(value);
 		}
 	};
 
@@ -166,12 +166,42 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		this.signatureAST = signature;
 	}
 
+	protected void handleSpecialTags(List<Object> tagtexts) throws RecognitionException
+	{
+		for (Object tagtext : tagtexts)
+		{
+			if (tagtext instanceof Tag)
+			{
+				Tag tag = (Tag)tagtext;
+				String tagtype = tag.getTag();
+				if (tagtype.equals("whitespace"))
+					whitespace = Whitespace.fromString(tag.getCode());
+				else if (tagtype.equals("ul4"))
+				{
+					UL4Parser parser = getParser(tag);
+					Definition definition = parser.definition();
+					name = definition.getName();
+					SignatureAST signatureAST = definition.getSignature();
+					if (signatureAST != null)
+					{
+						EvaluationContext context = new EvaluationContext();
+						signature = signatureAST.evaluate(context);
+					}
+					else
+						signature = null;
+				}
+			}
+		}
+	}
+
 	protected void compile() throws RecognitionException
 	{
 		if (source == null)
 			return;
 
 		List<Object> tagtexts = tokenizeTags(source, startdelim, enddelim);
+
+		handleSpecialTags(tagtexts);
 
 		// Stack of currently active blocks
 		Stack<BlockAST> stack = new Stack<BlockAST>();
@@ -191,7 +221,15 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					Tag tag = (Tag)tagtext;
 					String tagtype = tag.getTag();
 					// FIXME: use a switch in Java 7
-					if (tagtype.equals("print"))
+					if (tagtype.equals("ul4"))
+					{
+						// already handled
+					}
+					else if (tagtype.equals("whitespace"))
+					{
+						// already handled
+					}
+					else if (tagtype.equals("print"))
 					{
 						UL4Parser parser = getParser(tag);
 						innerBlock.append(new PrintAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
@@ -780,7 +818,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public List<Object> tokenizeTags(String source, String startdelim, String enddelim)
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Object> tags = new LinkedList<Object>();
 		if (source != null)
 		{
