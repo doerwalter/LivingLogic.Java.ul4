@@ -18,7 +18,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 /**
  * The class that records information about a template tag in the template source.
  */
-public class Tag implements UL4ONSerializable, UL4GetAttributes
+public class Tag implements UL4ONSerializable, UL4GetAttributes, SourcePart
 {
 	/**
 	 * The template source code

@@ -18,7 +18,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 /**
  * The base class of all nodes in the abstract syntax tree.
  */
-public abstract class AST implements UL4ONSerializable, UL4GetAttributes
+public abstract class AST implements UL4ONSerializable, UL4GetAttributes, SourcePart
 {
 	/**
 	 * The start index of this node in the source
@@ -40,6 +40,8 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttributes
 		this.startPos = startPos;
 		this.endPos = endPos;
 	}
+
+	abstract public String getSource();
 
 	abstract public String getText();
 

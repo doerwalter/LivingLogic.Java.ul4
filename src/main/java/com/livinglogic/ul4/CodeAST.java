@@ -38,6 +38,12 @@ public abstract class CodeAST extends AST
 	}
 
 	@Override
+	public String getSource()
+	{
+		return tag.getSource();
+	}
+
+	@Override
 	public String getText()
 	{
 		return tag.getSource().substring(startPos, endPos);

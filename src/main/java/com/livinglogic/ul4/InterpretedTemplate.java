@@ -166,59 +166,117 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		this.signatureAST = signature;
 	}
 
-	protected void handleSpecialTags(List<Object> tagtexts) throws RecognitionException
+	protected void handleSpecialTags(List<List<SourcePart>> lines) throws RecognitionException
 	{
-		for (Object tagtext : tagtexts)
+		for (List<SourcePart> line : lines)
 		{
-			if (tagtext instanceof Tag)
+			for (SourcePart thing : line)
 			{
-				Tag tag = (Tag)tagtext;
-				String tagtype = tag.getTag();
-				if (tagtype.equals("whitespace"))
-					whitespace = Whitespace.fromString(tag.getCode());
-				else if (tagtype.equals("ul4"))
+				if (thing instanceof Tag)
 				{
-					UL4Parser parser = getParser(tag);
-					Definition definition = parser.definition();
-					name = definition.getName();
-					SignatureAST signatureAST = definition.getSignature();
-					if (signatureAST != null)
+					Tag tag = (Tag)thing;
+					String tagtype = tag.getTag();
+					if (tagtype.equals("whitespace"))
+						whitespace = Whitespace.fromString(tag.getCode());
+					else if (tagtype.equals("ul4"))
 					{
-						EvaluationContext context = new EvaluationContext();
-						signature = signatureAST.evaluate(context);
+						UL4Parser parser = getParser(tag);
+						Definition definition = parser.definition();
+						name = definition.getName();
+						SignatureAST signatureAST = definition.getSignature();
+						if (signatureAST != null)
+						{
+							EvaluationContext context = new EvaluationContext();
+							signature = signatureAST.evaluate(context);
+						}
+						else
+							signature = null;
 					}
-					else
-						signature = null;
 				}
 			}
 		}
 	}
+
+	private List<SourcePart> handleWhitespaceKeep(List<List<SourcePart>> lines)
+	{
+		List<SourcePart> things = new LinkedList<SourcePart>();
+		for (List<SourcePart> line : lines)
+		{
+			for (SourcePart thing : line)
+				things.add(thing);
+		}
+		return things;
+	}
+
+	private List<SourcePart> handleWhitespaceStrip(List<List<SourcePart>> lines)
+	{
+		List<SourcePart> things = new LinkedList<SourcePart>();
+
+		boolean first = true;
+		for (List<SourcePart> line : lines)
+		{
+			for (SourcePart thing : line)
+			{
+				if (first || !(thing instanceof IndentAST || thing instanceof LineEndAST))
+				{
+					things.add(thing);
+					first = false;
+				}
+			}
+		}
+		return things;
+	}
+
+	private List<SourcePart> handleWhitespaceSmart(List<List<SourcePart>> lines)
+	{
+		// FIXME: Implement this
+		return handleWhitespaceKeep(lines);
+	}
+
 
 	protected void compile() throws RecognitionException
 	{
 		if (source == null)
 			return;
 
-		List<Object> tagtexts = tokenizeTags(source, startdelim, enddelim);
+		List<List<SourcePart>> lines = tokenizeTags(source, startdelim, enddelim);
 
-		handleSpecialTags(tagtexts);
+		handleSpecialTags(lines);
+
+		List<SourcePart> parts;
+
+		switch (whitespace)
+		{
+			case keep:
+				parts = handleWhitespaceKeep(lines);
+				break;
+			case strip:
+				parts = handleWhitespaceStrip(lines);
+				break;
+			case smart:
+				parts = handleWhitespaceSmart(lines);
+				break;
+			default: // This can not happen, but prevents a "variable parts might not have been initialized" compiler error.
+				parts = null;
+				break;
+		}
 
 		// Stack of currently active blocks
 		Stack<BlockAST> stack = new Stack<BlockAST>();
 		stack.push(this);
 
-		for (Object tagtext : tagtexts)
+		for (SourcePart part : parts)
 		{
 			try
 			{
 				BlockAST innerBlock = stack.peek();
-				if (tagtext instanceof TextAST)
+				if (part instanceof TextAST)
 				{
-					innerBlock.append((TextAST)tagtext);
+					innerBlock.append((TextAST)part);
 				}
 				else
 				{
-					Tag tag = (Tag)tagtext;
+					Tag tag = (Tag)part;
 					String tagtype = tag.getTag();
 					// FIXME: use a switch in Java 7
 					if (tagtype.equals("ul4"))
@@ -783,30 +841,138 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return "template";
 	}
 
-	private static String removeWhitespace(String string)
+	private static boolean isLineEnd(char c)
 	{
-		StringBuilder buffer = new StringBuilder();
-		boolean keepWS = true;
+		return c == '\u2007' || c == '\u202F' || c == '\f' || c == '\r' || c == '\n';
+	}
 
-		for (int i = 0; i < string.length(); ++i)
+	public static List<Integer> splitLines(SourcePart part, int initialState)
+	{
+		List<Integer> result = new LinkedList<Integer>();
+
+		String source = part.getSource();
+		int startPos = part.getStartPos();
+		int endPos = part.getEndPos();
+		int pos = startPos;
+		int state = initialState; // 0 for indentation, 1 for text and 2 for lineend
+		boolean wasR = false;
+
+		while (pos < endPos)
 		{
-			char c = string.charAt(i);
-
-			if (c == '\n')
-				keepWS = false;
-			else if (Character.isWhitespace(c))
+			char c = source.charAt(pos);
+			if (state == 0)
 			{
-				if (keepWS)
-					buffer.append(c);
+				if (!isLineEnd(c) && Character.isWhitespace(c))
+				{
+					++pos;
+				}
+				else
+				{
+					if (pos != startPos)
+					{
+						result.add(state);
+						result.add(pos);
+					}
+					startPos = pos++;
+					state = isLineEnd(c) ? 2 : 1;
+					wasR = (c == '\r');
+				}
+			}
+			else if (state == 1)
+			{
+				if (isLineEnd(c))
+				{
+					if (pos != startPos)
+					{
+						result.add(state);
+						result.add(pos);
+					}
+					startPos = pos++;
+					state = 2;
+					wasR = (c == '\r');
+				}
+				else
+				{
+					++pos;
+				}
 			}
 			else
 			{
-				buffer.append(c);
-				keepWS = true;
+				if (isLineEnd(c))
+				{
+					if (wasR && c == '\n')
+						++pos;
+					else
+					{
+						if (pos != startPos)
+						{
+							result.add(state);
+							result.add(pos);
+						}
+						startPos = pos++;
+					}
+					wasR = (c == '\r');
+				}
+				else
+				{
+					result.add(state);
+					result.add(pos);
+					state = (Character.isWhitespace(c)) ? 0 : 1;
+					startPos = pos++;
+				}
 			}
 		}
+		if (startPos < endPos)
+		{
+			result.add(state);
+			result.add(endPos);
+		}
+		return result;
+	}
 
-		return buffer.toString();
+	private void addPart2Lines(List<List<SourcePart>> lines, SourcePart part)
+	{
+		int lineCount = lines.size();
+		List<SourcePart> lastLine;
+
+		if (lineCount > 0)
+			lastLine = lines.get(lines.size()-1);
+		else
+		{
+			lastLine = new LinkedList<SourcePart>();
+			lines.add(lastLine);
+		}
+
+		// If the last line is empty (because it is new) and it doesn't start with an indentation,
+		// add an empty indentation at the start
+		if (!(part instanceof IndentAST) && lastLine.size() == 0)
+		{
+			lastLine.add(new IndentAST(part.getSource(), part.getStartPos(), part.getStartPos(), null));
+		}
+		lastLine.add(part);
+	}
+
+	private void addText2Lines(List<List<SourcePart>> lines, TextAST text, int initialState)
+	{
+		List<Integer> splitOffsets = splitLines(text, initialState);
+
+		int startPos = text.getStartPos();
+
+		for (int i = 0; i < splitOffsets.size(); i += 2)
+		{
+			int state = splitOffsets.get(i);
+			int endPos = splitOffsets.get(i+1);
+			if (state == 0)
+				addPart2Lines(lines, new IndentAST(text.getSource(), startPos, endPos, null));
+			else if (state == 1)
+				addPart2Lines(lines, new TextAST(text.getSource(), startPos, endPos));
+			else
+			{
+				addPart2Lines(lines, new LineEndAST(text.getSource(), startPos, endPos));
+				lines.add(new LinkedList<SourcePart>());
+			}
+			startPos = endPos;
+		}
 	}
 
 	/**
@@ -814,12 +980,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 * @param source The sourcecode of the template
 	 * @param startdelim The start delimiter for template tags (usually {@code "<?"})
 	 * @param enddelim The end delimiter for template tags (usually {@code "?>"})
-	 * @return A list of {@link Tag} or {@link TextAST} objects
+	 * @return A list of lines containing {@link Tag} or {@link TextAST} objects
 	 */
-	public List<Object> tokenizeTags(String source, String startdelim, String enddelim)
+	public List<List<SourcePart>> tokenizeTags(String source, String startdelim, String enddelim)
 	{
 		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
-		LinkedList<Object> tags = new LinkedList<Object>();
+		LinkedList<List<SourcePart>> lines = new LinkedList<List<SourcePart>>();
+		boolean wasTag = false;
 		if (source != null)
 		{
 			Matcher matcher = tagPattern.matcher(source);
@@ -832,19 +999,26 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				startPos = matcher.start();
 				endPos = startPos + matcher.group().length();
 				if (pos != startPos)
-					tags.add(new TextAST(source, pos, startPos));
+				{
+					addText2Lines(lines, new TextAST(source, pos, startPos), wasTag ? 1 : 0);
+					wasTag = false;
+				}
 				int startPosCode = matcher.start(3);
 				int endPosCode = startPosCode + matcher.group(3).length();
 				String type = matcher.group(1);
 				if (!type.equals("note"))
-					tags.add(new Tag(source, matcher.group(1), startPos, endPos, startPosCode, endPosCode));
+					addPart2Lines(lines, new Tag(source, matcher.group(1), startPos, endPos, startPosCode, endPosCode));
 				pos = endPos;
+				wasTag = true;
 			}
 			endPos = source.length();
 			if (pos != endPos)
-				tags.add(new TextAST(source, pos, endPos));
+			{
+				addText2Lines(lines, new TextAST(source, pos, endPos), wasTag ? 1 : 0);
+				wasTag = false;
+			}
 		}
-		return tags;
+		return lines;
 	}
 
 	private static String escapeREchars(String input)
@@ -880,6 +1054,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		Utils.register("de.livinglogic.ul4.tag", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Tag(null, null, -1, -1, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.text", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TextAST(null, -1, -1); }});
+		Utils.register("de.livinglogic.ul4.indent", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IndentAST(null, -1, -1, null); }});
+		Utils.register("de.livinglogic.ul4.lineend", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LineEndAST(null, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.const", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConstAST(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.list", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListAST(null, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.listcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListComprehensionAST(null, -1, -1, null, null, null, null); }});

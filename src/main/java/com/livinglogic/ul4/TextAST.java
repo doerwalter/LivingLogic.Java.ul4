@@ -14,7 +14,7 @@ import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-class TextAST extends AST
+public class TextAST extends AST
 {
 	protected String source;
 
@@ -22,6 +22,24 @@ class TextAST extends AST
 	{
 		super(startPos, endPos);
 		this.source = source;
+	}
+
+	@Override
+	public String getSource()
+	{
+		return source;
+	}
+
+	@Override
+	public int getStartPos()
+	{
+		return startPos;
+	}
+
+	@Override
+	public int getEndPos()
+	{
+		return endPos;
 	}
 
 	@Override

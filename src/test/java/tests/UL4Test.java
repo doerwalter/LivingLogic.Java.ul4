@@ -251,6 +251,12 @@ public class UL4Test
 	}
 
 	@Test
+	public void tag_whitespace() throws Exception
+	{
+		checkTemplateOutput("gurk", "<?whitespace strip?><?if 1?>\n\tgurk\n\n<?end if?>");
+	}
+
+	@Test
 	public void whitespace_in_expression()
 	{
 		checkTemplateOutput("40", "<?print\na\n+\nb\n?>", "a", 17, "b", 23);
@@ -3872,12 +3878,13 @@ public class UL4Test
 		checkTemplateOutput("<?", "<?print template.startdelim?>", "template", t);
 		checkTemplateOutput("?>", "<?print template.enddelim?>", "template", t);
 		checkTemplateOutput(source, "<?print template.source?>", "template", t);
-		checkTemplateOutput("1", "<?print len(template.content)?>", "template", t);
-		checkTemplateOutput("print", "<?print template.content[0].type?>", "template", t);
-		checkTemplateOutput(source, "<?print template.content[0].tag.text?>", "template", t);
-		checkTemplateOutput("x", "<?print template.content[0].tag.code?>", "template", t);
-		checkTemplateOutput("var", "<?print template.content[0].obj.type?>", "template", t);
-		checkTemplateOutput("x", "<?print template.content[0].obj.name?>", "template", t);
+		checkTemplateOutput("2", "<?print len(template.content)?>", "template", t);
+		// Test the second item, because the first one is an empty indent node
+		checkTemplateOutput("print", "<?print template.content[1].type?>", "template", t);
+		checkTemplateOutput(source, "<?print template.content[1].tag.text?>", "template", t);
+		checkTemplateOutput("x", "<?print template.content[1].tag.code?>", "template", t);
+		checkTemplateOutput("var", "<?print template.content[1].obj.type?>", "template", t);
+		checkTemplateOutput("x", "<?print template.content[1].obj.name?>", "template", t);
 	}
 
 	@Test
@@ -3886,9 +3893,9 @@ public class UL4Test
 		String source = "<?printx 42?>";
 		InterpretedTemplate t = getTemplate(source);
 
-		checkTemplateOutput("printx", "<?print template.content[0].type?>", "template", t);
-		checkTemplateOutput("const", "<?print template.content[0].obj.type?>", "template", t);
-		checkTemplateOutput("42", "<?print template.content[0].obj.value?>", "template", t);
+		checkTemplateOutput("printx", "<?print template.content[1].type?>", "template", t);
+		checkTemplateOutput("const", "<?print template.content[1].obj.type?>", "template", t);
+		checkTemplateOutput("42", "<?print template.content[1].obj.value?>", "template", t);
 	}
 
 	@Test
@@ -3897,8 +3904,8 @@ public class UL4Test
 		String source = "foo";
 		InterpretedTemplate t = getTemplate(source);
 
-		checkTemplateOutput("text", "<?print template.content[0].type?>", "template", t);
-		checkTemplateOutput("foo", "<?print template.content[0].text?>", "template", t);
+		checkTemplateOutput("text", "<?print template.content[1].type?>", "template", t);
+		checkTemplateOutput("foo", "<?print template.content[1].text?>", "template", t);
 	}
 
 	@Test
@@ -3977,15 +3984,15 @@ public class UL4Test
 	}
 
 	@Test
-	public void keepWhitespace()
+	public void stripWhitespace()
 	{
-		InterpretedTemplate template1 = getTemplate("<?if True?> foo<?end if?>");
+		InterpretedTemplate template1 = getTemplate("<?if True?> foo<?end if?>", InterpretedTemplate.Whitespace.strip);
 		assertEquals(template1.renders(), " foo");
 
-		InterpretedTemplate template2 = getTemplate("<?if True?> foo\n bar<?end if?>");
+		InterpretedTemplate template2 = getTemplate("<?if True?> foo\n bar<?end if?>", InterpretedTemplate.Whitespace.strip);
 		assertEquals(template2.renders(), " foobar");
 
-		InterpretedTemplate template3 = getTemplate("<?if True?>\n foo\n bar<?end if?>");
+		InterpretedTemplate template3 = getTemplate("<?if True?>\n foo\n bar<?end if?>", InterpretedTemplate.Whitespace.strip);
 		assertEquals(template3.renders(), "foobar");
 	}
 
@@ -4142,7 +4149,7 @@ public class UL4Test
 		Connection db = getDatabaseConnection();
 
 		if (db != null)
-			checkTemplateOutput("84", source, "db", db);
+			checkTemplateOutput("84", getTemplate(source, InterpretedTemplate.Whitespace.strip), "db", db);
 	}
 
 	@Test
