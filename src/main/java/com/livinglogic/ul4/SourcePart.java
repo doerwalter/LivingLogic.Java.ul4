@@ -1,11 +1,14 @@
 /*
-** Copyright 2009-2014 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2015 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
 
 package com.livinglogic.ul4;
 
+/*
+ * A {@code SourcePart} object references a slice of a source code string.
+ */
 public interface SourcePart
 {
 	String getSource();

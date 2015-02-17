@@ -14,6 +14,9 @@ import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
+/**
+ * The base class of the classes that represent literal text in the template source.
+ */
 public class TextAST extends AST
 {
 	protected String source;

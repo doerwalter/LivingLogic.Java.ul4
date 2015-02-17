@@ -16,7 +16,8 @@ import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.UL4ONSerializable;
 
 /**
- * The base class of all nodes in the abstract syntax tree.
+ * The base class of all nodes in the abstract syntax tree, i.e. everything
+ * inside a template tag.
  */
 public abstract class CodeAST extends AST
 {

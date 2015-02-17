@@ -16,7 +16,8 @@ import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.UL4ONSerializable;
 
 /**
- * The base class of all nodes in the abstract syntax tree.
+ * The base class of all nodes. This can be either literal text ({@code TextAST})
+ * between the tags, or compiled tag content ({@code CodeAST}).
  */
 public abstract class AST implements UL4ONSerializable, UL4GetAttributes, SourcePart
 {
@@ -41,6 +42,12 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttributes, Source
 		this.endPos = endPos;
 	}
 
+	/**
+	 * The template source. This is abstract, because for literal text the
+	 * source is a member of {@code TextAST}, but for node that are created
+	 * by compiling the source inside a tag, the source is only referenced from
+	 * the {@code Tag} object (to which {@code CodeAST} has a reference)
+	 */
 	abstract public String getSource();
 
 	abstract public String getText();

@@ -852,13 +852,33 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return c == '\u2007' || c == '\u202F' || c == '\f' || c == '\r' || c == '\n';
 	}
 
-	public static List<Integer> splitLines(SourcePart part, int initialState)
+	private void addPart2Lines(List<List<SourcePart>> lines, SourcePart part)
 	{
-		List<Integer> result = new LinkedList<Integer>();
+		int lineCount = lines.size();
+		List<SourcePart> lastLine;
 
-		String source = part.getSource();
-		int startPos = part.getStartPos();
-		int endPos = part.getEndPos();
+		if (lineCount > 0)
+			lastLine = lines.get(lines.size()-1);
+		else
+		{
+			lastLine = new LinkedList<SourcePart>();
+			lines.add(lastLine);
+		}
+
+		// If we're adding to an empty line ensure that it starts with an indentation
+		if (!(part instanceof IndentAST) && lastLine.size() == 0)
+			lastLine.add(new IndentAST(part.getSource(), part.getStartPos(), part.getStartPos(), null));
+		lastLine.add(part);
+		// If we added a line end append a new empty line
+		if (part instanceof LineEndAST)
+			lines.add(new LinkedList<SourcePart>());
+	}
+
+	private void addText2Lines(List<List<SourcePart>> lines, TextAST text, int initialState)
+	{
+		String source = text.getSource();
+		int startPos = text.getStartPos();
+		int endPos = text.getEndPos();
 		int pos = startPos;
 		int state = initialState; // 0 for indentation, 1 for text and 2 for lineend
 		boolean wasR = false;
@@ -875,10 +895,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				else
 				{
 					if (pos != startPos)
-					{
-						result.add(state);
-						result.add(pos);
-					}
+						addPart2Lines(lines, new IndentAST(source, startPos, pos, null));
 					startPos = pos++;
 					state = isLineEnd(c) ? 2 : 1;
 					wasR = (c == '\r');
@@ -889,10 +906,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				if (isLineEnd(c))
 				{
 					if (pos != startPos)
-					{
-						result.add(state);
-						result.add(pos);
-					}
+						addPart2Lines(lines, new TextAST(source, startPos, pos));
 					startPos = pos++;
 					state = 2;
 					wasR = (c == '\r');
@@ -911,18 +925,14 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					else
 					{
 						if (pos != startPos)
-						{
-							result.add(state);
-							result.add(pos);
-						}
+							addPart2Lines(lines, new LineEndAST(source, startPos, pos));
 						startPos = pos++;
 					}
 					wasR = (c == '\r');
 				}
 				else
 				{
-					result.add(state);
-					result.add(pos);
+					addPart2Lines(lines, new LineEndAST(source, startPos, pos));
 					state = (Character.isWhitespace(c)) ? 0 : 1;
 					startPos = pos++;
 				}
@@ -930,54 +940,12 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 		if (startPos < endPos)
 		{
-			result.add(state);
-			result.add(endPos);
-		}
-		return result;
-	}
-
-	private void addPart2Lines(List<List<SourcePart>> lines, SourcePart part)
-	{
-		int lineCount = lines.size();
-		List<SourcePart> lastLine;
-
-		if (lineCount > 0)
-			lastLine = lines.get(lines.size()-1);
-		else
-		{
-			lastLine = new LinkedList<SourcePart>();
-			lines.add(lastLine);
-		}
-
-		// If the last line is empty (because it is new) and it doesn't start with an indentation,
-		// add an empty indentation at the start
-		if (!(part instanceof IndentAST) && lastLine.size() == 0)
-		{
-			lastLine.add(new IndentAST(part.getSource(), part.getStartPos(), part.getStartPos(), null));
-		}
-		lastLine.add(part);
-	}
-
-	private void addText2Lines(List<List<SourcePart>> lines, TextAST text, int initialState)
-	{
-		List<Integer> splitOffsets = splitLines(text, initialState);
-
-		int startPos = text.getStartPos();
-
-		for (int i = 0; i < splitOffsets.size(); i += 2)
-		{
-			int state = splitOffsets.get(i);
-			int endPos = splitOffsets.get(i+1);
 			if (state == 0)
-				addPart2Lines(lines, new IndentAST(text.getSource(), startPos, endPos, null));
+				addPart2Lines(lines, new IndentAST(source, startPos, pos, null));
 			else if (state == 1)
-				addPart2Lines(lines, new TextAST(text.getSource(), startPos, endPos));
+				addPart2Lines(lines, new TextAST(source, startPos, pos));
 			else
-			{
-				addPart2Lines(lines, new LineEndAST(text.getSource(), startPos, endPos));
-				lines.add(new LinkedList<SourcePart>());
-			}
-			startPos = endPos;
+				addPart2Lines(lines, new LineEndAST(source, startPos, pos));
 		}
 	}
 
