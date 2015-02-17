@@ -841,6 +841,12 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return "template";
 	}
 
+	/**
+	 * Internal method that returns wether a character is a line ending character
+	 * or not.
+	 * @param c   The character to test
+	 * @return {@code true} if {@code c} is a line ending character, else {@code false}
+	 */
 	private static boolean isLineEnd(char c)
 	{
 		return c == '\u2007' || c == '\u202F' || c == '\f' || c == '\r' || c == '\n';
