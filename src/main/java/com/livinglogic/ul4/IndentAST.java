@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2014 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2015 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -11,6 +11,10 @@ import java.io.IOException;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
+/**
+ * An IndentAST is a literal text in the template source that represents the
+ * indentation at the beginning of a line. For "smart" whitespace mode
+ */
 class IndentAST extends TextAST
 {
 	protected String text;

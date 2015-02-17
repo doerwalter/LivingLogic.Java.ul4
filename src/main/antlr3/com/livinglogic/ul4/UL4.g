@@ -1,3 +1,9 @@
+/*
+** Copyright 2009-2015 by LivingLogic AG, Bayreuth/Germany
+** All Rights Reserved
+** See LICENSE for the license
+*/
+
 grammar UL4;
 
 options
