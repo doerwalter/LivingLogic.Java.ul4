@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Iterator;
 import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
@@ -166,9 +167,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		this.signatureAST = signature;
 	}
 
-	protected void handleSpecialTags(List<List<SourcePart>> lines) throws RecognitionException
+	protected void handleSpecialTags(List<Line> lines) throws RecognitionException
 	{
-		for (List<SourcePart> line : lines)
+		for (Line line : lines)
 		{
 			for (SourcePart thing : line)
 			{
@@ -197,10 +198,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 	}
 
-	private List<SourcePart> handleWhitespaceKeep(List<List<SourcePart>> lines)
+	private List<SourcePart> handleWhitespaceKeep(List<Line> lines)
 	{
 		List<SourcePart> things = new LinkedList<SourcePart>();
-		for (List<SourcePart> line : lines)
+		for (Line line : lines)
 		{
 			for (SourcePart thing : line)
 				things.add(thing);
@@ -208,12 +209,12 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return things;
 	}
 
-	private List<SourcePart> handleWhitespaceStrip(List<List<SourcePart>> lines)
+	private List<SourcePart> handleWhitespaceStrip(List<Line> lines)
 	{
 		List<SourcePart> things = new LinkedList<SourcePart>();
 
 		boolean first = true;
-		for (List<SourcePart> line : lines)
+		for (Line line : lines)
 		{
 			for (SourcePart thing : line)
 			{
@@ -227,7 +228,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return things;
 	}
 
-	private List<SourcePart> handleWhitespaceSmart(List<List<SourcePart>> lines)
+	private List<SourcePart> handleWhitespaceSmart(List<Line> lines)
 	{
 		// FIXME: Implement this
 		return handleWhitespaceKeep(lines);
@@ -239,7 +240,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		if (source == null)
 			return;
 
-		List<List<SourcePart>> lines = tokenizeTags(source, startdelim, enddelim);
+		List<Line> lines = tokenizeTags(source, startdelim, enddelim);
 
 		handleSpecialTags(lines);
 
@@ -852,16 +853,16 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return c == '\u2007' || c == '\u202F' || c == '\f' || c == '\r' || c == '\n';
 	}
 
-	private void addPart2Lines(List<List<SourcePart>> lines, SourcePart part)
+	private void addPart2Lines(List<Line> lines, SourcePart part)
 	{
 		int lineCount = lines.size();
-		List<SourcePart> lastLine;
+		Line lastLine;
 
 		if (lineCount > 0)
 			lastLine = lines.get(lines.size()-1);
 		else
 		{
-			lastLine = new LinkedList<SourcePart>();
+			lastLine = new Line();
 			lines.add(lastLine);
 		}
 
@@ -871,10 +872,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		lastLine.add(part);
 		// If we added a line end append a new empty line
 		if (part instanceof LineEndAST)
-			lines.add(new LinkedList<SourcePart>());
+			lines.add(new Line());
 	}
 
-	private void addText2Lines(List<List<SourcePart>> lines, TextAST text, int initialState)
+	private void addText2Lines(List<Line> lines, TextAST text, int initialState)
 	{
 		String source = text.getSource();
 		int startPos = text.getStartPos();
@@ -956,10 +957,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 * @param enddelim The end delimiter for template tags (usually {@code "?>"})
 	 * @return A list of lines containing {@link Tag} or {@link TextAST} objects
 	 */
-	public List<List<SourcePart>> tokenizeTags(String source, String startdelim, String enddelim)
+	public List<Line> tokenizeTags(String source, String startdelim, String enddelim)
 	{
 		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
-		LinkedList<List<SourcePart>> lines = new LinkedList<List<SourcePart>>();
+		LinkedList<Line> lines = new LinkedList<Line>();
 		boolean wasTag = false;
 		if (source != null)
 		{
@@ -1022,6 +1023,31 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public boolean handleLoopControl(String name)
 	{
 		throw new BlockException(name + " outside of for/while loop");
+	}
+
+	private static class Line implements Iterable<SourcePart>
+	{
+		private List<SourcePart> parts;
+
+		public Line()
+		{
+			parts = new LinkedList<SourcePart>();
+		}
+
+		public void add(SourcePart part)
+		{
+			parts.add(part);
+		}
+
+		public Iterator<SourcePart> iterator()
+		{
+			return parts.iterator();
+		}
+
+		public int size()
+		{
+			return parts.size();
+		}
 	}
 
 	static public void register4UL4ON()
