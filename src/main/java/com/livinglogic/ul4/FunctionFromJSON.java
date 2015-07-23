@@ -9,7 +9,7 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.io.IOException;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import org.json.simple.JSONValue;
 
 public class FunctionFromJSON extends Function
 {
@@ -32,15 +32,7 @@ public class FunctionFromJSON extends Function
 
 	public static Object call(String obj)
 	{
-		try
-		{
-			ObjectMapper mapper = new ObjectMapper();
-			return mapper.readValue(obj, Object.class);
-		}
-		catch (IOException ex)
-		{
-			throw new RuntimeException(ex);
-		}
+		return JSONValue.parse(obj);
 	}
 
 	public static Object call(Object obj)

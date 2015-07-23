@@ -2,6 +2,8 @@ exp-100:
 --------
 * Whitespace is now allowed before the tagname in UL4 tag, i.e. ``<? print 42 ?>``
   will work.
+* Parsing json is now done with json-simple
+  (https://code.google.com/p/json-simple/)
 
 
 exp-99:
