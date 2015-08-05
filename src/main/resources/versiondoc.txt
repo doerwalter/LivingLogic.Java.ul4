@@ -6,6 +6,11 @@ exp-100:
   (https://code.google.com/p/json-simple/)
 
 
+exp-99-2:
+---------
+* Fixed pom file from exp-99-1.
+
+
 exp-99-1:
 ---------
 * Fixed handling of signatures when calling local templates.
