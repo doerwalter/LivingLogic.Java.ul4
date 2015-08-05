@@ -6,6 +6,11 @@ exp-100:
   (https://code.google.com/p/json-simple/)
 
 
+exp-99-1:
+---------
+* Fixed handling of signatures when calling local templates.
+
+
 exp-99:
 -------
 * Calling Function and FunctionWithContent objects now destroys the intermediate

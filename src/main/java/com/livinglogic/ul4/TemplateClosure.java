@@ -96,7 +96,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 
 		public Signature getSignature()
 		{
-			return object.template.getSignature();
+			return object.signature;
 		}
 
 		public Object evaluate(EvaluationContext context, BoundArguments arguments)

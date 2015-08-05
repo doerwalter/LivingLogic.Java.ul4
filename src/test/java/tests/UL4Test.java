@@ -4231,6 +4231,14 @@ public class UL4Test
 			checkTemplateOutput("True", source, "db", db);
 	}
 
+	@Test
+	public void signature_positional_argument() throws Exception
+	{
+		String source = "<?def border_radius(radius)?>border-radius: <?print radius?>px;<?end def?><?code border_radius.render(5)?>";
+
+		checkTemplateOutput("border-radius: 5px;", source);
+	}
+
 	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_signature_directcall() throws Exception
 	{
