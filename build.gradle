@@ -2,6 +2,9 @@ apply plugin: 'java'
 apply plugin: 'antlr'
 apply plugin: 'maven-publish'
 
+sourceCompatibility=javaSourceCompatibility
+targetCompatibility=javaTargetCompatibility
+
 dependencies {
 	antlr 'org.antlr:antlr:3.5'
 
