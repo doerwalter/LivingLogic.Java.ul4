@@ -35,7 +35,7 @@ publishing {
 	repositories {
 		maven {
 			url llNexusRepoUrl
-			
+
 			credentials {
 				username = llNexusRepoUsername
 				password = llNexusRepoPassword
@@ -48,17 +48,17 @@ publishing {
 			groupId 'com.livinglogic'
 			artifactId 'ul4'
 			version version
-			
+
 			pom.withXml {
 				def root = asNode()
 				root.appendNode('description', 'Java implementation of the UL4 templating language')
 				root.appendNode('url', 'http://www.livinglogic.de/Python/ul4c/')
 				root.appendNode('inceptionYear', '2008')
-				
+
 				def organization = root.appendNode('organization')
 				organization.appendNode('name', 'LivingLogic AG')
 				organization.appendNode('url', 'http://www.livinglogic.de')
-				
+
 				def developers = root.appendNode('developers')
 				def developer = developers.appendNode('developer')
 				developer.appendNode('name', 'Walter Dörwald')
@@ -68,11 +68,11 @@ publishing {
 				developer.appendNode('name', 'Andreas Gaßner')
 				developer.appendNode('email', 'ag@livinglogic.de')
 				developer.appendNode('timezone', 'Europe/Munich')
-				
+
 				def scm = root.appendNode('scm')
 				scm.appendNode('url', 'https://github.com/LivingLogic/LivingLogic.Java.ul4')
 			}
-			
+
 			from components.java
 
 			artifact sourceJar {
