@@ -39,8 +39,10 @@ import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.ul4.UL4GetItemString;
+import com.livinglogic.ul4.UL4GetItemStringWithContext;
 import com.livinglogic.ul4.UL4Attributes;
 import com.livinglogic.ul4.Signature;
+import com.livinglogic.ul4.MulAST;
 import com.livinglogic.dbutils.Connection;
 
 @RunWith(CauseTestRunner.class)
@@ -69,6 +71,16 @@ public class UL4Test
 			else if ("y".equals(key))
 				return y;
 			return new UndefinedKey(key);
+		}
+	}
+
+	private static class DoubleIt implements UL4GetItemStringWithContext
+	{
+		public Object getItemStringWithContextUL4(EvaluationContext context, String key)
+		{
+			Object value = context.get(key);
+			value = MulAST.call(2, value);
+			return value;
 		}
 	}
 
@@ -3845,6 +3857,11 @@ public class UL4Test
 		checkTemplateOutput("1", "<?code d = [5]?><?def f?><?return d?><?end def?><?code f()[0] %= 2?><?print d[0]?>");
 	}
 
+	@Test
+	public void lvalue_with_context()
+	{
+		checkTemplateOutput("84", "<?print double.x?>", "x", 42, "double", new DoubleIt());
+	}
 
 	@Test
 	public void parse()

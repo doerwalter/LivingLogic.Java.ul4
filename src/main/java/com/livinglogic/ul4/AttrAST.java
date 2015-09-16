@@ -254,9 +254,9 @@ public class AttrAST extends CodeAST implements LValue
 	public static Object call(EvaluationContext context, Object obj, String attrname)
 	{
 		if (obj instanceof UL4GetItemStringWithContext)
-			return call((UL4GetItemStringWithContext)obj, attrname);
+			return call(context, (UL4GetItemStringWithContext)obj, attrname);
 		else if (obj instanceof UL4GetItemWithContext)
-			return call((UL4GetItemWithContext)obj, attrname);
+			return call(context, (UL4GetItemWithContext)obj, attrname);
 		else
 			return call(obj, attrname);
 	}
