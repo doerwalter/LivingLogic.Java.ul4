@@ -1,3 +1,8 @@
+exp-99-4:
+---------
+* Fixed AttrAST: The code path for UL4GetItemWithContext and
+  UL4GetItemStringWithContext was wrong.
+
 exp-99-3:
 ---------
 * The "combined" interfaces UL4GetAttributes, UL4GetSetAttributes, UL4GetSetItem
