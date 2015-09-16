@@ -6,6 +6,16 @@ exp-100:
   (https://code.google.com/p/json-simple/)
 
 
+exp-99-3:
+---------
+* The "combined" interfaces UL4GetAttributes, UL4GetSetAttributes, UL4GetSetItem
+  and UL4GetSetItemString have been removed.
+* Two new interfaces UL4GetItemWithContext and UL4GetItemStringWithContext have
+  been added. They allow to implement "dynamic attributes", i.e. attributes
+  whose values depend on the local variables. E.g. it would be possible to
+  implement an object ``double``, such that ``double.x`` returns ``2*x``.
+
+
 exp-99-2:
 ---------
 * Fixed pom file from exp-99-1.

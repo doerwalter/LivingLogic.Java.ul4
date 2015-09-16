@@ -36,7 +36,7 @@ public class AttrAST extends CodeAST implements LValue
 
 	public Object evaluate(EvaluationContext context)
 	{
-		return call(obj.decoratedEvaluate(context), attrname);
+		return call(context, obj.decoratedEvaluate(context), attrname);
 	}
 
 	public void evaluateSet(EvaluationContext context, Object value)
@@ -46,57 +46,57 @@ public class AttrAST extends CodeAST implements LValue
 
 	public void evaluateAdd(EvaluationContext context, Object value)
 	{
-		callAdd(obj.decoratedEvaluate(context), attrname, value);
+		callAdd(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public void evaluateSub(EvaluationContext context, Object value)
 	{
-		callSub(obj.decoratedEvaluate(context), attrname, value);
+		callSub(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public void evaluateMul(EvaluationContext context, Object value)
 	{
-		callMul(obj.decoratedEvaluate(context), attrname, value);
+		callMul(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public void evaluateFloorDiv(EvaluationContext context, Object value)
 	{
-		callFloorDiv(obj.decoratedEvaluate(context), attrname, value);
+		callFloorDiv(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public void evaluateTrueDiv(EvaluationContext context, Object value)
 	{
-		callTrueDiv(obj.decoratedEvaluate(context), attrname, value);
+		callTrueDiv(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public void evaluateMod(EvaluationContext context, Object value)
 	{
-		callMod(obj.decoratedEvaluate(context), attrname, value);
+		callMod(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public void evaluateShiftLeft(EvaluationContext context, Object value)
 	{
-		callShiftLeft(obj.decoratedEvaluate(context), attrname, value);
+		callShiftLeft(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public void evaluateShiftRight(EvaluationContext context, Object value)
 	{
-		callShiftRight(obj.decoratedEvaluate(context), attrname, value);
+		callShiftRight(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public void evaluateBitAnd(EvaluationContext context, Object value)
 	{
-		callBitAnd(obj.decoratedEvaluate(context), attrname, value);
+		callBitAnd(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public void evaluateBitXOr(EvaluationContext context, Object value)
 	{
-		callBitXOr(obj.decoratedEvaluate(context), attrname, value);
+		callBitXOr(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public void evaluateBitOr(EvaluationContext context, Object value)
 	{
-		callBitOr(obj.decoratedEvaluate(context), attrname, value);
+		callBitOr(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public static Object call(UL4GetItem obj, String attrname)
@@ -104,22 +104,23 @@ public class AttrAST extends CodeAST implements LValue
 		return obj.getItemUL4(attrname);
 	}
 
-	public static Object call(UL4GetAttributes obj, String attrname)
+	public static Object call(UL4Attributes obj, String attrname)
 	{
-		if ("items".equals(attrname))
+		if ("items".equals(attrname) && obj instanceof UL4GetItemString)
 			return new BoundUL4GetAttributesMethodItems(obj);
-		else if ("values".equals(attrname))
+		else if ("values".equals(attrname) && obj instanceof UL4GetItemString)
 			return new BoundUL4GetAttributesMethodValues(obj);
-		else if ("get".equals(attrname))
-			return new BoundUL4GetItemStringMethodGet(obj);
-
-		return obj.getItemStringUL4(attrname);
+		throw new ArgumentTypeMismatchException("{}.{}", obj, attrname);
 	}
 
 	public static Object call(UL4GetItemString obj, String attrname)
 	{
 		if ("get".equals(attrname))
 			return new BoundUL4GetItemStringMethodGet(obj);
+		else if ("items".equals(attrname) && obj instanceof UL4Attributes)
+			return new BoundUL4GetAttributesMethodItems((UL4Attributes)obj);
+		else if ("values".equals(attrname) && obj instanceof UL4Attributes)
+			return new BoundUL4GetAttributesMethodValues((UL4Attributes)obj);
 		return obj.getItemStringUL4(attrname);
 	}
 
@@ -223,12 +224,12 @@ public class AttrAST extends CodeAST implements LValue
 
 	public static Object call(Object obj, String attrname)
 	{
-		if (obj instanceof UL4GetAttributes) // test this before UL4GetItemString
-			return call((UL4GetAttributes)obj, attrname);
-		else if (obj instanceof UL4GetItemString)
+		if (obj instanceof UL4GetItemString)
 			return call((UL4GetItemString)obj, attrname);
 		else if (obj instanceof UL4GetItem)
 			return call((UL4GetItem)obj, attrname);
+		else if (obj instanceof UL4Attributes)
+			return call((UL4Attributes)obj, attrname);
 		else if (obj instanceof Map)
 			return call((Map)obj, attrname);
 		else if (obj instanceof List)
@@ -238,6 +239,26 @@ public class AttrAST extends CodeAST implements LValue
 		else if (obj instanceof Date)
 			return call((Date)obj, attrname);
 		throw new ArgumentTypeMismatchException("{}.{}", obj, attrname);
+	}
+
+	public static Object call(EvaluationContext context, UL4GetItemWithContext obj, String attrname)
+	{
+		return obj.getItemWithContextUL4(context, attrname);
+	}
+
+	public static Object call(EvaluationContext context, UL4GetItemStringWithContext obj, String attrname)
+	{
+		return obj.getItemStringWithContextUL4(context, attrname);
+	}
+
+	public static Object call(EvaluationContext context, Object obj, String attrname)
+	{
+		if (obj instanceof UL4GetItemStringWithContext)
+			return call((UL4GetItemStringWithContext)obj, attrname);
+		else if (obj instanceof UL4GetItemWithContext)
+			return call((UL4GetItemWithContext)obj, attrname);
+		else
+			return call(obj, attrname);
 	}
 
 	public static void callSet(UL4SetItem obj, String attrname, Object value)
@@ -267,14 +288,17 @@ public class AttrAST extends CodeAST implements LValue
 			throw new ArgumentTypeMismatchException("{}.{} = {}", obj, attrname, value);
 	}
 
-	public static void callAdd(UL4GetSetItem obj, String attrname, Object value)
+	private static Object getValue(EvaluationContext context, Object obj, String attrname, String excmessage, Object value)
 	{
-		obj.setItemUL4(attrname, IAdd.call(obj.getItemUL4(attrname), value));
-	}
-
-	public static void callAdd(UL4GetSetItemString obj, String attrname, Object value)
-	{
-		obj.setItemStringUL4(attrname, IAdd.call(obj.getItemStringUL4(attrname), value));
+		if (obj instanceof UL4GetItemString)
+			return ((UL4GetItemString)obj).getItemStringUL4(attrname);
+		else if (obj instanceof UL4GetItemStringWithContext)
+			return ((UL4GetItemStringWithContext)obj).getItemStringWithContextUL4(context, attrname);
+		else if (obj instanceof UL4GetItem)
+			return ((UL4GetItem)obj).getItemUL4(attrname);
+		else if (obj instanceof UL4GetItemWithContext)
+			return ((UL4GetItemWithContext)obj).getItemWithContextUL4(context, attrname);
+		throw new ArgumentTypeMismatchException(excmessage, obj, attrname, value);
 	}
 
 	public static void callAdd(Map obj, String attrname, Object value)
@@ -282,26 +306,22 @@ public class AttrAST extends CodeAST implements LValue
 		obj.put(attrname, IAdd.call(call(obj, attrname), value));
 	}
 
-	public static void callAdd(Object obj, String attrname, Object value)
+	public static void callAdd(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4GetSetItemString)
-			callAdd((UL4GetSetItemString)obj, attrname, value);
-		else if (obj instanceof UL4SetItem)
-			callAdd((UL4SetItem)obj, attrname, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callAdd((Map)obj, attrname, value);
+		else if (obj instanceof UL4SetItemString)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} += {}", value);
+			((UL4SetItemString)obj).setItemStringUL4(attrname, IAdd.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} += {}", value);
+			((UL4SetItem)obj).setItemUL4(attrname, IAdd.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}.{} += {}", obj, attrname, value);
-	}
-
-	public static void callSub(UL4GetSetItem obj, String attrname, Object value)
-	{
-		obj.setItemUL4(attrname, SubAST.call(obj.getItemUL4(attrname), value));
-	}
-
-	public static void callSub(UL4GetSetItemString obj, String attrname, Object value)
-	{
-		obj.setItemStringUL4(attrname, SubAST.call(obj.getItemStringUL4(attrname), value));
 	}
 
 	public static void callSub(Map obj, String attrname, Object value)
@@ -309,26 +329,22 @@ public class AttrAST extends CodeAST implements LValue
 		obj.put(attrname, SubAST.call(call(obj, attrname), value));
 	}
 
-	public static void callSub(Object obj, String attrname, Object value)
+	public static void callSub(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4GetSetItemString)
-			callSub((UL4GetSetItemString)obj, attrname, value);
-		else if (obj instanceof UL4SetItem)
-			callSub((UL4SetItem)obj, attrname, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callSub((Map)obj, attrname, value);
+		else if (obj instanceof UL4SetItemString)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} -= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4(attrname, SubAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} -= {}", value);
+			((UL4SetItem)obj).setItemUL4(attrname, SubAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}.{} -= {}", obj, attrname, value);
-	}
-
-	public static void callMul(UL4GetSetItem obj, String attrname, Object value)
-	{
-		obj.setItemUL4(attrname, IMul.call(obj.getItemUL4(attrname), value));
-	}
-
-	public static void callMul(UL4GetSetItemString obj, String attrname, Object value)
-	{
-		obj.setItemStringUL4(attrname, IMul.call(obj.getItemStringUL4(attrname), value));
 	}
 
 	public static void callMul(Map obj, String attrname, Object value)
@@ -336,26 +352,22 @@ public class AttrAST extends CodeAST implements LValue
 		obj.put(attrname, IMul.call(call(obj, attrname), value));
 	}
 
-	public static void callMul(Object obj, String attrname, Object value)
+	public static void callMul(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4GetSetItemString)
-			callMul((UL4GetSetItemString)obj, attrname, value);
-		else if (obj instanceof UL4SetItem)
-			callMul((UL4SetItem)obj, attrname, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callMul((Map)obj, attrname, value);
+		else if (obj instanceof UL4SetItemString)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} *= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4(attrname, IMul.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} *= {}", value);
+			((UL4SetItem)obj).setItemUL4(attrname, IMul.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}.{} *= {}", obj, attrname, value);
-	}
-
-	public static void callFloorDiv(UL4GetSetItem obj, String attrname, Object value)
-	{
-		obj.setItemUL4(attrname, FloorDivAST.call(obj.getItemUL4(attrname), value));
-	}
-
-	public static void callFloorDiv(UL4GetSetItemString obj, String attrname, Object value)
-	{
-		obj.setItemStringUL4(attrname, FloorDivAST.call(obj.getItemStringUL4(attrname), value));
 	}
 
 	public static void callFloorDiv(Map obj, String attrname, Object value)
@@ -363,26 +375,22 @@ public class AttrAST extends CodeAST implements LValue
 		obj.put(attrname, FloorDivAST.call(call(obj, attrname), value));
 	}
 
-	public static void callFloorDiv(Object obj, String attrname, Object value)
+	public static void callFloorDiv(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4GetSetItemString)
-			callFloorDiv((UL4GetSetItemString)obj, attrname, value);
-		else if (obj instanceof UL4SetItem)
-			callFloorDiv((UL4SetItem)obj, attrname, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callFloorDiv((Map)obj, attrname, value);
+		else if (obj instanceof UL4SetItemString)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} //= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4(attrname, FloorDivAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} //= {}", value);
+			((UL4SetItem)obj).setItemUL4(attrname, FloorDivAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}.{} //= {}", obj, attrname, value);
-	}
-
-	public static void callTrueDiv(UL4GetSetItem obj, String attrname, Object value)
-	{
-		obj.setItemUL4(attrname, TrueDivAST.call(obj.getItemUL4(attrname), value));
-	}
-
-	public static void callTrueDiv(UL4GetSetItemString obj, String attrname, Object value)
-	{
-		obj.setItemStringUL4(attrname, TrueDivAST.call(obj.getItemStringUL4(attrname), value));
 	}
 
 	public static void callTrueDiv(Map obj, String attrname, Object value)
@@ -390,26 +398,22 @@ public class AttrAST extends CodeAST implements LValue
 		obj.put(attrname, TrueDivAST.call(call(obj, attrname), value));
 	}
 
-	public static void callTrueDiv(Object obj, String attrname, Object value)
+	public static void callTrueDiv(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4GetSetItemString)
-			callTrueDiv((UL4GetSetItemString)obj, attrname, value);
-		else if (obj instanceof UL4SetItem)
-			callTrueDiv((UL4SetItem)obj, attrname, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callTrueDiv((Map)obj, attrname, value);
+		else if (obj instanceof UL4SetItemString)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} /= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4(attrname, TrueDivAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} /= {}", value);
+			((UL4SetItem)obj).setItemUL4(attrname, TrueDivAST.call(orgvalue, value));
+		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} /= {}", obj, attrname, value);
-	}
-
-	public static void callMod(UL4GetSetItem obj, String attrname, Object value)
-	{
-		obj.setItemUL4(attrname, ModAST.call(obj.getItemUL4(attrname), value));
-	}
-
-	public static void callMod(UL4GetSetItemString obj, String attrname, Object value)
-	{
-		obj.setItemStringUL4(attrname, ModAST.call(obj.getItemStringUL4(attrname), value));
+			throw new ArgumentTypeMismatchException("{}.{} //= {}", obj, attrname, value);
 	}
 
 	public static void callMod(Map obj, String attrname, Object value)
@@ -417,26 +421,22 @@ public class AttrAST extends CodeAST implements LValue
 		obj.put(attrname, ModAST.call(call(obj, attrname), value));
 	}
 
-	public static void callMod(Object obj, String attrname, Object value)
+	public static void callMod(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4GetSetItemString)
-			callMod((UL4GetSetItemString)obj, attrname, value);
-		else if (obj instanceof UL4SetItem)
-			callMod((UL4SetItem)obj, attrname, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callMod((Map)obj, attrname, value);
+		else if (obj instanceof UL4SetItemString)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} %= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4(attrname, ModAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} %= {}", value);
+			((UL4SetItem)obj).setItemUL4(attrname, ModAST.call(orgvalue, value));
+		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} %= {}", obj, attrname, value);
-	}
-
-	public static void callShiftLeft(UL4GetSetItem obj, String attrname, Object value)
-	{
-		obj.setItemUL4(attrname, ShiftLeftAST.call(obj.getItemUL4(attrname), value));
-	}
-
-	public static void callShiftLeft(UL4GetSetItemString obj, String attrname, Object value)
-	{
-		obj.setItemStringUL4(attrname, ShiftLeftAST.call(obj.getItemStringUL4(attrname), value));
+			throw new ArgumentTypeMismatchException("{}.{} //= {}", obj, attrname, value);
 	}
 
 	public static void callShiftLeft(Map obj, String attrname, Object value)
@@ -444,26 +444,22 @@ public class AttrAST extends CodeAST implements LValue
 		obj.put(attrname, ShiftLeftAST.call(call(obj, attrname), value));
 	}
 
-	public static void callShiftLeft(Object obj, String attrname, Object value)
+	public static void callShiftLeft(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4GetSetItemString)
-			callShiftLeft((UL4GetSetItemString)obj, attrname, value);
-		else if (obj instanceof UL4SetItem)
-			callShiftLeft((UL4SetItem)obj, attrname, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callShiftLeft((Map)obj, attrname, value);
+		else if (obj instanceof UL4SetItemString)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} <<= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4(attrname, ShiftLeftAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} <<= {}", value);
+			((UL4SetItem)obj).setItemUL4(attrname, ShiftLeftAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}.{} <<= {}", obj, attrname, value);
-	}
-
-	public static void callShiftRight(UL4GetSetItem obj, String attrname, Object value)
-	{
-		obj.setItemUL4(attrname, ShiftRightAST.call(obj.getItemUL4(attrname), value));
-	}
-
-	public static void callShiftRight(UL4GetSetItemString obj, String attrname, Object value)
-	{
-		obj.setItemStringUL4(attrname, ShiftRightAST.call(obj.getItemStringUL4(attrname), value));
 	}
 
 	public static void callShiftRight(Map obj, String attrname, Object value)
@@ -471,26 +467,22 @@ public class AttrAST extends CodeAST implements LValue
 		obj.put(attrname, ShiftRightAST.call(call(obj, attrname), value));
 	}
 
-	public static void callShiftRight(Object obj, String attrname, Object value)
+	public static void callShiftRight(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4GetSetItemString)
-			callShiftRight((UL4GetSetItemString)obj, attrname, value);
-		else if (obj instanceof UL4SetItem)
-			callShiftRight((UL4SetItem)obj, attrname, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callShiftRight((Map)obj, attrname, value);
+		else if (obj instanceof UL4SetItemString)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} >>= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4(attrname, ShiftRightAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} >>= {}", value);
+			((UL4SetItem)obj).setItemUL4(attrname, ShiftRightAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}.{} >>= {}", obj, attrname, value);
-	}
-
-	public static void callBitAnd(UL4GetSetItem obj, String attrname, Object value)
-	{
-		obj.setItemUL4(attrname, BitAndAST.call(obj.getItemUL4(attrname), value));
-	}
-
-	public static void callBitAnd(UL4GetSetItemString obj, String attrname, Object value)
-	{
-		obj.setItemStringUL4(attrname, BitAndAST.call(obj.getItemStringUL4(attrname), value));
 	}
 
 	public static void callBitAnd(Map obj, String attrname, Object value)
@@ -498,26 +490,22 @@ public class AttrAST extends CodeAST implements LValue
 		obj.put(attrname, BitAndAST.call(call(obj, attrname), value));
 	}
 
-	public static void callBitAnd(Object obj, String attrname, Object value)
+	public static void callBitAnd(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4GetSetItemString)
-			callBitAnd((UL4GetSetItemString)obj, attrname, value);
-		else if (obj instanceof UL4SetItem)
-			callBitAnd((UL4SetItem)obj, attrname, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callBitAnd((Map)obj, attrname, value);
+		else if (obj instanceof UL4SetItemString)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} &= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4(attrname, BitAndAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} &= {}", value);
+			((UL4SetItem)obj).setItemUL4(attrname, BitAndAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}.{} &= {}", obj, attrname, value);
-	}
-
-	public static void callBitXOr(UL4GetSetItem obj, String attrname, Object value)
-	{
-		obj.setItemUL4(attrname, BitXOrAST.call(obj.getItemUL4(attrname), value));
-	}
-
-	public static void callBitXOr(UL4GetSetItemString obj, String attrname, Object value)
-	{
-		obj.setItemStringUL4(attrname, BitXOrAST.call(obj.getItemStringUL4(attrname), value));
 	}
 
 	public static void callBitXOr(Map obj, String attrname, Object value)
@@ -525,26 +513,22 @@ public class AttrAST extends CodeAST implements LValue
 		obj.put(attrname, BitXOrAST.call(call(obj, attrname), value));
 	}
 
-	public static void callBitXOr(Object obj, String attrname, Object value)
+	public static void callBitXOr(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4GetSetItemString)
-			callBitXOr((UL4GetSetItemString)obj, attrname, value);
-		else if (obj instanceof UL4SetItem)
-			callBitXOr((UL4SetItem)obj, attrname, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callBitXOr((Map)obj, attrname, value);
+		else if (obj instanceof UL4SetItemString)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} ^= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4(attrname, BitXOrAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} ^= {}", value);
+			((UL4SetItem)obj).setItemUL4(attrname, BitXOrAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}.{} ^= {}", obj, attrname, value);
-	}
-
-	public static void callBitOr(UL4GetSetItem obj, String attrname, Object value)
-	{
-		obj.setItemUL4(attrname, BitOrAST.call(obj.getItemUL4(attrname), value));
-	}
-
-	public static void callBitOr(UL4GetSetItemString obj, String attrname, Object value)
-	{
-		obj.setItemStringUL4(attrname, BitOrAST.call(obj.getItemStringUL4(attrname), value));
 	}
 
 	public static void callBitOr(Map obj, String attrname, Object value)
@@ -552,14 +536,20 @@ public class AttrAST extends CodeAST implements LValue
 		obj.put(attrname, BitOrAST.call(call(obj, attrname), value));
 	}
 
-	public static void callBitOr(Object obj, String attrname, Object value)
+	public static void callBitOr(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4GetSetItemString)
-			callBitOr((UL4GetSetItemString)obj, attrname, value);
-		else if (obj instanceof UL4SetItem)
-			callBitOr((UL4SetItem)obj, attrname, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callBitOr((Map)obj, attrname, value);
+		else if (obj instanceof UL4SetItemString)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} |= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4(attrname, BitOrAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, attrname, "{}.{} |= {}", value);
+			((UL4SetItem)obj).setItemUL4(attrname, BitOrAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}.{} |= {}", obj, attrname, value);
 	}

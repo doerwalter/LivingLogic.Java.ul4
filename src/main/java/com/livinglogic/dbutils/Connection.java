@@ -19,7 +19,8 @@ import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.ArgumentException;
 import com.livinglogic.ul4.Utils;
-import com.livinglogic.ul4.UL4GetAttributes;
+import com.livinglogic.ul4.UL4GetItemString;
+import com.livinglogic.ul4.UL4Attributes;
 import com.livinglogic.ul4.BoundMethodWithContext;
 import com.livinglogic.ul4.BoundMethod;
 import com.livinglogic.ul4.UndefinedKey;
@@ -30,7 +31,7 @@ import com.livinglogic.ul4.BoundArguments;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Connection implements UL4GetAttributes
+public class Connection implements UL4GetItemString, UL4Attributes
 {
 	private java.sql.Connection connection;
 

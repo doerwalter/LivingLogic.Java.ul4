@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 import java.util.Set;
 
-public interface UL4Attributes extends UL4GetItemString
+public interface UL4Attributes
 {
 	/**
 	 * Return the set of attribute names of this object that are available to UL4.

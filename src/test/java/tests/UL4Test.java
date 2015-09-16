@@ -38,14 +38,15 @@ import com.livinglogic.ul4.FunctionDate;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.UndefinedKey;
-import com.livinglogic.ul4.UL4GetAttributes;
+import com.livinglogic.ul4.UL4GetItemString;
+import com.livinglogic.ul4.UL4Attributes;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.dbutils.Connection;
 
 @RunWith(CauseTestRunner.class)
 public class UL4Test
 {
-	private static class Point implements UL4GetAttributes
+	private static class Point implements UL4GetItemString, UL4Attributes
 	{
 		int x;
 		int y;

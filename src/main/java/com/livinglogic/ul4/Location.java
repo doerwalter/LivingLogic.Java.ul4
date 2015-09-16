@@ -20,7 +20,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
  * template. It marks the position of either a template tag or of the literal
  * text between two template tags.
  */
-public class Location implements UL4ONSerializable, UL4Attributes
+public class Location implements UL4ONSerializable, UL4GetItemString, UL4Attributes
 {
 	/**
 	* The template object this location belongs to

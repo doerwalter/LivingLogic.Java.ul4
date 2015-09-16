@@ -11,13 +11,15 @@ import java.util.Set;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 
-import com.livinglogic.ul4.UL4GetSetAttributes;
+import com.livinglogic.ul4.UL4GetItemString;
+import com.livinglogic.ul4.UL4SetItemString;
+import com.livinglogic.ul4.UL4Attributes;
 import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.ul4.ReadonlyException;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public abstract class Var implements UL4GetSetAttributes
+public abstract class Var implements UL4GetItemString, UL4SetItemString, UL4Attributes
 {
 	public static Object noValue = new Object();
 	protected Object value;

@@ -36,7 +36,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 import com.livinglogic.ul4on.Utils;
 
 
-public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWithContext, UL4Type, UL4Attributes
+public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWithContext, UL4Type, UL4GetItemString, UL4Attributes
 {
 	/**
 	 * The version number used in the UL4ON dump of the template.
