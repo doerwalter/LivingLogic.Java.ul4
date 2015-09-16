@@ -11,9 +11,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
-public class BoundUL4GetAttributesMethodItems extends BoundMethod<UL4GetAttributes>
+public class BoundUL4GetAttributesMethodItems extends BoundMethod<UL4Attributes>
 {
-	public BoundUL4GetAttributesMethodItems(UL4GetAttributes object)
+	public BoundUL4GetAttributesMethodItems(UL4Attributes object)
 	{
 		super(object);
 	}
@@ -23,7 +23,7 @@ public class BoundUL4GetAttributesMethodItems extends BoundMethod<UL4GetAttribut
 		return "object.items";
 	}
 
-	public static Object call(UL4GetAttributes object)
+	public static Object call(UL4Attributes object)
 	{
 		return new UL4AttributeItemsIterator(object);
 	}
@@ -35,10 +35,10 @@ public class BoundUL4GetAttributesMethodItems extends BoundMethod<UL4GetAttribut
 
 	private static class UL4AttributeItemsIterator implements Iterator<Vector>
 	{
-		UL4GetAttributes object;
+		UL4Attributes object;
 		Iterator<String> iterator;
 
-		public UL4AttributeItemsIterator(UL4GetAttributes object)
+		public UL4AttributeItemsIterator(UL4Attributes object)
 		{
 			this.object = object;
 			this.iterator = object.getAttributeNamesUL4().iterator();
@@ -54,7 +54,7 @@ public class BoundUL4GetAttributesMethodItems extends BoundMethod<UL4GetAttribut
 			Vector retVal = new Vector(2);
 			String attributeName = iterator.next();
 			retVal.add(attributeName);
-			retVal.add(object.getItemStringUL4(attributeName));
+			retVal.add(((UL4GetItemString)object).getItemStringUL4(attributeName));
 			return retVal;
 		}
 

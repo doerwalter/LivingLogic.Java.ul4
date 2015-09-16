@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
-public interface UL4GetSetItemString extends UL4GetItemString, UL4SetItemString
+public interface UL4GetItemStringWithContext
 {
+	Object getItemStringWithContextUL4(EvaluationContext context, String key);
 }

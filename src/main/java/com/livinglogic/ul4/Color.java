@@ -18,7 +18,7 @@ import org.apache.commons.lang.math.NumberUtils;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Color implements Collection, UL4Repr, UL4Attributes, UL4Len, UL4Type
+public class Color implements Collection, UL4Repr, UL4GetItemString, UL4Attributes, UL4Len, UL4Type
 {
 	private char r;
 	private char g;

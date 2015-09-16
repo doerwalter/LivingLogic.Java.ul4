@@ -21,7 +21,7 @@ import com.livinglogic.utils.MapChain;
  * @author W. Doerwald
  */
 
-public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL4Attributes
+public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL4GetItemString, UL4Attributes
 {
 	private InterpretedTemplate template;
 	private Map<String, Object> variables;

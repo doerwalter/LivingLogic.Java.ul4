@@ -36,7 +36,7 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public Object evaluate(EvaluationContext context)
 	{
-		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
+		return call(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
 	}
 
 	public void evaluateSet(EvaluationContext context, Object value)
@@ -46,57 +46,57 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public void evaluateAdd(EvaluationContext context, Object value)
 	{
-		callAdd(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+		callAdd(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
 	public void evaluateSub(EvaluationContext context, Object value)
 	{
-		callSub(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+		callSub(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
 	public void evaluateMul(EvaluationContext context, Object value)
 	{
-		callMul(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+		callMul(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
 	public void evaluateFloorDiv(EvaluationContext context, Object value)
 	{
-		callFloorDiv(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+		callFloorDiv(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
 	public void evaluateTrueDiv(EvaluationContext context, Object value)
 	{
-		callTrueDiv(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+		callTrueDiv(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
 	public void evaluateMod(EvaluationContext context, Object value)
 	{
-		callMod(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+		callMod(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
 	public void evaluateShiftLeft(EvaluationContext context, Object value)
 	{
-		callShiftLeft(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+		callShiftLeft(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
 	public void evaluateShiftRight(EvaluationContext context, Object value)
 	{
-		callShiftRight(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+		callShiftRight(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
 	public void evaluateBitAnd(EvaluationContext context, Object value)
 	{
-		callBitAnd(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+		callBitAnd(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
 	public void evaluateBitXOr(EvaluationContext context, Object value)
 	{
-		callBitXOr(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+		callBitXOr(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
 	public void evaluateBitOr(EvaluationContext context, Object value)
 	{
-		callBitOr(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
+		callBitOr(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
 	public static Object call(String obj, int index)
@@ -198,6 +198,26 @@ public class ItemAST extends BinaryAST implements LValue
 		throw new ArgumentTypeMismatchException("{}[{}]", obj, index);
 	}
 
+	public static Object call(EvaluationContext context, UL4GetItemWithContext obj, Object key)
+	{
+		return obj.getItemWithContextUL4(context, key);
+	}
+
+	public static Object call(EvaluationContext context, UL4GetItemStringWithContext obj, String key)
+	{
+		return obj.getItemStringWithContextUL4(context, key);
+	}
+
+	public static Object call(EvaluationContext context, Object obj, Object index)
+	{
+		if (obj instanceof UL4GetItemWithContext)
+			return call(context, (UL4GetItemWithContext)obj, index);
+		else if (obj instanceof UL4GetItemStringWithContext)
+			return call(context, (UL4GetItemStringWithContext)obj, index);
+		else
+			return call(obj, index);
+	}
+
 	public static void callSet(List obj, int index, Object value)
 	{
 		if (0 > index)
@@ -251,6 +271,29 @@ public class ItemAST extends BinaryAST implements LValue
 			throw new ArgumentTypeMismatchException("{}[{}] = {}", obj, index, value);
 	}
 
+	private static Object getValue(EvaluationContext context, Object obj, Object key, String excmessage, Object value)
+	{
+		if (key instanceof String)
+		{
+			if (obj instanceof UL4GetItemString)
+				return ((UL4GetItemString)obj).getItemStringUL4((String)key);
+			else if (obj instanceof UL4GetItemStringWithContext)
+				return ((UL4GetItemStringWithContext)obj).getItemStringWithContextUL4(context, (String)key);
+			else if (obj instanceof UL4GetItem)
+				return ((UL4GetItem)obj).getItemUL4((String)key);
+			else if (obj instanceof UL4GetItemWithContext)
+				return ((UL4GetItemWithContext)obj).getItemWithContextUL4(context, (String)key);
+		}
+		else
+		{
+			if (obj instanceof UL4GetItem)
+				return ((UL4GetItem)obj).getItemUL4(key);
+			else if (obj instanceof UL4GetItemWithContext)
+				return ((UL4GetItemWithContext)obj).getItemWithContextUL4(context, key);
+		}
+		throw new ArgumentTypeMismatchException(excmessage, obj, key, value);
+	}
+
 	public static void callAdd(List obj, int index, Object value)
 	{
 		if (0 > index)
@@ -258,31 +301,27 @@ public class ItemAST extends BinaryAST implements LValue
 		obj.set(index, AddAST.call(obj.get(index), value));
 	}
 
-	public static void callAdd(UL4GetSetItem obj, Object key, Object value)
-	{
-		obj.setItemUL4(key, AddAST.call(obj.getItemUL4(key), value));
-	}
-
-	public static void callAdd(UL4GetSetItemString obj, String key, Object value)
-	{
-		obj.setItemStringUL4(key, AddAST.call(obj.getItemStringUL4(key), value));
-	}
-
 	public static void callAdd(Map obj, Object index, Object value)
 	{
 		obj.put(index, AddAST.call(call(obj, index), value));
 	}
 
-	public static void callAdd(Object obj, Object index, Object value)
+	public static void callAdd(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof UL4GetSetItem)
-			callAdd((UL4GetSetItem)obj, index, value);
-		if (obj instanceof UL4GetSetItemString && index instanceof String)
-			callAdd((UL4GetSetItemString)obj, (String)index, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callAdd((Map)obj, index, value);
 		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
 			callAdd((List)obj, Utils.toInt(index), value);
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] += {}", value);
+			((UL4SetItem)obj).setItemUL4(index, IAdd.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItemString && index instanceof String)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] += {}", value);
+			((UL4SetItemString)obj).setItemStringUL4((String)index, IAdd.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] += {}", obj, index, value);
 	}
@@ -294,31 +333,27 @@ public class ItemAST extends BinaryAST implements LValue
 		obj.set(index, SubAST.call(obj.get(index), value));
 	}
 
-	public static void callSub(UL4GetSetItem obj, Object key, Object value)
-	{
-		obj.setItemUL4(key, SubAST.call(obj.getItemUL4(key), value));
-	}
-
-	public static void callSub(UL4GetSetItemString obj, String key, Object value)
-	{
-		obj.setItemStringUL4(key, SubAST.call(obj.getItemStringUL4(key), value));
-	}
-
 	public static void callSub(Map obj, Object index, Object value)
 	{
 		obj.put(index, SubAST.call(call(obj, index), value));
 	}
 
-	public static void callSub(Object obj, Object index, Object value)
+	public static void callSub(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof UL4GetSetItem)
-			callSub((UL4GetSetItem)obj, index, value);
-		if (obj instanceof UL4GetSetItemString && index instanceof String)
-			callSub((UL4GetSetItemString)obj, (String)index, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callSub((Map)obj, index, value);
 		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
 			callSub((List)obj, Utils.toInt(index), value);
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] -= {}", value);
+			((UL4SetItem)obj).setItemUL4(index, SubAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItemString && index instanceof String)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] -= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4((String)index, SubAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] -= {}", obj, index, value);
 	}
@@ -330,31 +365,27 @@ public class ItemAST extends BinaryAST implements LValue
 		obj.set(index, IMul.call(obj.get(index), value));
 	}
 
-	public static void callMul(UL4GetSetItem obj, Object key, Object value)
-	{
-		obj.setItemUL4(key, IMul.call(obj.getItemUL4(key), value));
-	}
-
-	public static void callMul(UL4GetSetItemString obj, String key, Object value)
-	{
-		obj.setItemStringUL4(key, IMul.call(obj.getItemStringUL4(key), value));
-	}
-
 	public static void callMul(Map obj, Object index, Object value)
 	{
 		obj.put(index, IMul.call(call(obj, index), value));
 	}
 
-	public static void callMul(Object obj, Object index, Object value)
+	public static void callMul(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof UL4GetSetItem)
-			callMul((UL4GetSetItem)obj, index, value);
-		if (obj instanceof UL4GetSetItemString && index instanceof String)
-			callMul((UL4GetSetItemString)obj, (String)index, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callMul((Map)obj, index, value);
 		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
 			callMul((List)obj, Utils.toInt(index), value);
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] *= {}", value);
+			((UL4SetItem)obj).setItemUL4(index, IMul.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItemString && index instanceof String)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] *= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4((String)index, IMul.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] *= {}", obj, index, value);
 	}
@@ -366,31 +397,28 @@ public class ItemAST extends BinaryAST implements LValue
 		obj.set(index, FloorDivAST.call(obj.get(index), value));
 	}
 
-	public static void callFloorDiv(UL4GetSetItem obj, Object key, Object value)
-	{
-		obj.setItemUL4(key, FloorDivAST.call(obj.getItemUL4(key), value));
-	}
-
-	public static void callFloorDiv(UL4GetSetItemString obj, String key, Object value)
-	{
-		obj.setItemStringUL4(key, FloorDivAST.call(obj.getItemStringUL4(key), value));
-	}
-
 	public static void callFloorDiv(Map obj, Object index, Object value)
 	{
 		obj.put(index, FloorDivAST.call(call(obj, index), value));
 	}
 
-	public static void callFloorDiv(Object obj, Object index, Object value)
+
+	public static void callFloorDiv(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof UL4GetSetItem)
-			callFloorDiv((UL4GetSetItem)obj, index, value);
-		if (obj instanceof UL4GetSetItemString && index instanceof String)
-			callFloorDiv((UL4GetSetItemString)obj, (String)index, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callFloorDiv((Map)obj, index, value);
 		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
 			callFloorDiv((List)obj, Utils.toInt(index), value);
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] //= {}", value);
+			((UL4SetItem)obj).setItemUL4(index, FloorDivAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItemString && index instanceof String)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] //= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4((String)index, FloorDivAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] //= {}", obj, index, value);
 	}
@@ -402,31 +430,27 @@ public class ItemAST extends BinaryAST implements LValue
 		obj.set(index, TrueDivAST.call(obj.get(index), value));
 	}
 
-	public static void callTrueDiv(UL4GetSetItem obj, Object key, Object value)
-	{
-		obj.setItemUL4(key, TrueDivAST.call(obj.getItemUL4(key), value));
-	}
-
-	public static void callTrueDiv(UL4GetSetItemString obj, String key, Object value)
-	{
-		obj.setItemStringUL4(key, TrueDivAST.call(obj.getItemStringUL4(key), value));
-	}
-
 	public static void callTrueDiv(Map obj, Object index, Object value)
 	{
 		obj.put(index, TrueDivAST.call(call(obj, index), value));
 	}
 
-	public static void callTrueDiv(Object obj, Object index, Object value)
+	public static void callTrueDiv(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof UL4GetSetItem)
-			callTrueDiv((UL4GetSetItem)obj, index, value);
-		if (obj instanceof UL4GetSetItemString && index instanceof String)
-			callTrueDiv((UL4GetSetItemString)obj, (String)index, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callTrueDiv((Map)obj, index, value);
 		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
 			callTrueDiv((List)obj, Utils.toInt(index), value);
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] /= {}", value);
+			((UL4SetItem)obj).setItemUL4(index, TrueDivAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItemString && index instanceof String)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] /= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4((String)index, TrueDivAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] /= {}", obj, index, value);
 	}
@@ -438,43 +462,36 @@ public class ItemAST extends BinaryAST implements LValue
 		obj.set(index, ModAST.call(obj.get(index), value));
 	}
 
-	public static void callMod(UL4GetSetItem obj, Object key, Object value)
-	{
-		obj.setItemUL4(key, ModAST.call(obj.getItemUL4(key), value));
-	}
-
-	public static void callMod(UL4GetSetItemString obj, String key, Object value)
-	{
-		obj.setItemStringUL4(key, ModAST.call(obj.getItemStringUL4(key), value));
-	}
-
 	public static void callMod(Map obj, Object index, Object value)
 	{
 		obj.put(index, ModAST.call(call(obj, index), value));
 	}
 
-	public static void callMod(Object obj, Object index, Object value)
+	public static void callMod(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof UL4GetSetItem)
-			callMod((UL4GetSetItem)obj, index, value);
-		if (obj instanceof UL4GetSetItemString && index instanceof String)
-			callMod((UL4GetSetItemString)obj, (String)index, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callMod((Map)obj, index, value);
 		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
 			callMod((List)obj, Utils.toInt(index), value);
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] %= {}", value);
+			((UL4SetItem)obj).setItemUL4(index, ModAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItemString && index instanceof String)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] %= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4((String)index, ModAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] %= {}", obj, index, value);
 	}
 
-	public static void callShiftLeft(UL4GetSetItem obj, Object key, Object value)
+	public static void callShiftLeft(List obj, int index, Object value)
 	{
-		obj.setItemUL4(key, ShiftLeftAST.call(obj.getItemUL4(key), value));
-	}
-
-	public static void callShiftLeft(UL4GetSetItemString obj, String key, Object value)
-	{
-		obj.setItemStringUL4(key, ShiftLeftAST.call(obj.getItemStringUL4(key), value));
+		if (0 > index)
+			index += obj.size();
+		obj.set(index, ShiftLeftAST.call(obj.get(index), value));
 	}
 
 	public static void callShiftLeft(Map obj, Object index, Object value)
@@ -482,26 +499,31 @@ public class ItemAST extends BinaryAST implements LValue
 		obj.put(index, ShiftLeftAST.call(call(obj, index), value));
 	}
 
-	public static void callShiftLeft(Object obj, Object index, Object value)
+	public static void callShiftLeft(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof UL4GetSetItem)
-			callShiftLeft((UL4GetSetItem)obj, index, value);
-		if (obj instanceof UL4GetSetItemString && index instanceof String)
-			callShiftLeft((UL4GetSetItemString)obj, (String)index, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callShiftLeft((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callShiftLeft((List)obj, Utils.toInt(index), value);
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] <<= {}", value);
+			((UL4SetItem)obj).setItemUL4(index, ShiftLeftAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItemString && index instanceof String)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] <<= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4((String)index, ShiftLeftAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] <<= {}", obj, index, value);
 	}
 
-	public static void callShiftRight(UL4GetSetItem obj, Object key, Object value)
+	public static void callShiftRight(List obj, int index, Object value)
 	{
-		obj.setItemUL4(key, ShiftRightAST.call(obj.getItemUL4(key), value));
-	}
-
-	public static void callShiftRight(UL4GetSetItemString obj, String key, Object value)
-	{
-		obj.setItemStringUL4(key, ShiftRightAST.call(obj.getItemStringUL4(key), value));
+		if (0 > index)
+			index += obj.size();
+		obj.set(index, ShiftRightAST.call(obj.get(index), value));
 	}
 
 	public static void callShiftRight(Map obj, Object index, Object value)
@@ -509,26 +531,31 @@ public class ItemAST extends BinaryAST implements LValue
 		obj.put(index, ShiftRightAST.call(call(obj, index), value));
 	}
 
-	public static void callShiftRight(Object obj, Object index, Object value)
+	public static void callShiftRight(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof UL4GetSetItem)
-			callShiftRight((UL4GetSetItem)obj, index, value);
-		if (obj instanceof UL4GetSetItemString && index instanceof String)
-			callShiftRight((UL4GetSetItemString)obj, (String)index, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callShiftRight((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callShiftRight((List)obj, Utils.toInt(index), value);
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] >>= {}", value);
+			((UL4SetItem)obj).setItemUL4(index, ShiftRightAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItemString && index instanceof String)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] >>= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4((String)index, ShiftRightAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] >>= {}", obj, index, value);
 	}
 
-	public static void callBitAnd(UL4GetSetItem obj, Object key, Object value)
+	public static void callBitAnd(List obj, int index, Object value)
 	{
-		obj.setItemUL4(key, BitAndAST.call(obj.getItemUL4(key), value));
-	}
-
-	public static void callBitAnd(UL4GetSetItemString obj, String key, Object value)
-	{
-		obj.setItemStringUL4(key, BitAndAST.call(obj.getItemStringUL4(key), value));
+		if (0 > index)
+			index += obj.size();
+		obj.set(index, BitAndAST.call(obj.get(index), value));
 	}
 
 	public static void callBitAnd(Map obj, Object index, Object value)
@@ -536,26 +563,31 @@ public class ItemAST extends BinaryAST implements LValue
 		obj.put(index, BitAndAST.call(call(obj, index), value));
 	}
 
-	public static void callBitAnd(Object obj, Object index, Object value)
+	public static void callBitAnd(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof UL4GetSetItem)
-			callBitAnd((UL4GetSetItem)obj, index, value);
-		if (obj instanceof UL4GetSetItemString && index instanceof String)
-			callBitAnd((UL4GetSetItemString)obj, (String)index, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callBitAnd((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callBitAnd((List)obj, Utils.toInt(index), value);
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] &= {}", value);
+			((UL4SetItem)obj).setItemUL4(index, BitAndAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItemString && index instanceof String)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] &= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4((String)index, BitAndAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] &= {}", obj, index, value);
 	}
 
-	public static void callBitXOr(UL4GetSetItem obj, Object key, Object value)
+	public static void callBitXOr(List obj, int index, Object value)
 	{
-		obj.setItemUL4(key, BitXOrAST.call(obj.getItemUL4(key), value));
-	}
-
-	public static void callBitXOr(UL4GetSetItemString obj, String key, Object value)
-	{
-		obj.setItemStringUL4(key, BitXOrAST.call(obj.getItemStringUL4(key), value));
+		if (0 > index)
+			index += obj.size();
+		obj.set(index, BitXOrAST.call(obj.get(index), value));
 	}
 
 	public static void callBitXOr(Map obj, Object index, Object value)
@@ -563,26 +595,31 @@ public class ItemAST extends BinaryAST implements LValue
 		obj.put(index, BitXOrAST.call(call(obj, index), value));
 	}
 
-	public static void callBitXOr(Object obj, Object index, Object value)
+	public static void callBitXOr(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof UL4GetSetItem)
-			callBitXOr((UL4GetSetItem)obj, index, value);
-		if (obj instanceof UL4GetSetItemString && index instanceof String)
-			callBitXOr((UL4GetSetItemString)obj, (String)index, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callBitXOr((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callBitXOr((List)obj, Utils.toInt(index), value);
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] ^= {}", value);
+			((UL4SetItem)obj).setItemUL4(index, BitXOrAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItemString && index instanceof String)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] ^= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4((String)index, BitXOrAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] ^= {}", obj, index, value);
 	}
 
-	public static void callBitOr(UL4GetSetItem obj, Object key, Object value)
+	public static void callBitOr(List obj, int index, Object value)
 	{
-		obj.setItemUL4(key, BitOrAST.call(obj.getItemUL4(key), value));
-	}
-
-	public static void callBitOr(UL4GetSetItemString obj, String key, Object value)
-	{
-		obj.setItemStringUL4(key, BitOrAST.call(obj.getItemStringUL4(key), value));
+		if (0 > index)
+			index += obj.size();
+		obj.set(index, BitOrAST.call(obj.get(index), value));
 	}
 
 	public static void callBitOr(Map obj, Object index, Object value)
@@ -590,14 +627,22 @@ public class ItemAST extends BinaryAST implements LValue
 		obj.put(index, BitOrAST.call(call(obj, index), value));
 	}
 
-	public static void callBitOr(Object obj, Object index, Object value)
+	public static void callBitOr(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof UL4GetSetItem)
-			callBitOr((UL4GetSetItem)obj, index, value);
-		if (obj instanceof UL4GetSetItemString && index instanceof String)
-			callBitOr((UL4GetSetItemString)obj, (String)index, value);
-		else if (obj instanceof Map)
+		if (obj instanceof Map)
 			callBitOr((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callBitOr((List)obj, Utils.toInt(index), value);
+		else if (obj instanceof UL4SetItem)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] |= {}", value);
+			((UL4SetItem)obj).setItemUL4(index, BitOrAST.call(orgvalue, value));
+		}
+		else if (obj instanceof UL4SetItemString && index instanceof String)
+		{
+			Object orgvalue = getValue(context, obj, index, "{}[{}] |= {}", value);
+			((UL4SetItemString)obj).setItemStringUL4((String)index, BitOrAST.call(orgvalue, value));
+		}
 		else
 			throw new ArgumentTypeMismatchException("{}[{}] |= {}", obj, index, value);
 	}

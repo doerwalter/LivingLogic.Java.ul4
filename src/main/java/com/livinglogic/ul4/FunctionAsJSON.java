@@ -96,7 +96,7 @@ public class FunctionAsJSON extends Function
 				.append(StringEscapeUtils.escapeJavaScript(((TemplateClosure)obj).getTemplate().dumps()))
 				.append("\")");
 		}
-		else if (obj instanceof UL4Attributes)
+		else if (obj instanceof UL4Attributes && obj instanceof UL4GetItemString)
 		{
 			builder.append("{");
 			boolean first = true;
@@ -109,7 +109,7 @@ public class FunctionAsJSON extends Function
 					builder.append(", ");
 				call(builder, attributeName);
 				builder.append(": ");
-				Object value = ((UL4Attributes)obj).getItemStringUL4(attributeName);
+				Object value = ((UL4GetItemString)obj).getItemStringUL4(attributeName);
 				call(builder, value);
 			}
 			builder.append("}");

@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
 
-public class BoundUL4GetAttributesMethodValues extends BoundMethod<UL4GetAttributes>
+public class BoundUL4GetAttributesMethodValues extends BoundMethod<UL4Attributes>
 {
-	public BoundUL4GetAttributesMethodValues(UL4GetAttributes object)
+	public BoundUL4GetAttributesMethodValues(UL4Attributes object)
 	{
 		super(object);
 	}
@@ -22,7 +22,7 @@ public class BoundUL4GetAttributesMethodValues extends BoundMethod<UL4GetAttribu
 		return "object.values";
 	}
 
-	public static Object call(UL4GetAttributes object)
+	public static Object call(UL4Attributes object)
 	{
 		return new UL4GetAttributeValuesIterator(object);
 	}
@@ -34,10 +34,10 @@ public class BoundUL4GetAttributesMethodValues extends BoundMethod<UL4GetAttribu
 
 	private static class UL4GetAttributeValuesIterator implements Iterator<Object>
 	{
-		UL4GetAttributes object;
+		UL4Attributes object;
 		Iterator<String> iterator;
 
-		public UL4GetAttributeValuesIterator(UL4GetAttributes object)
+		public UL4GetAttributeValuesIterator(UL4Attributes object)
 		{
 			this.object = object;
 			this.iterator = object.getAttributeNamesUL4().iterator();
@@ -50,7 +50,7 @@ public class BoundUL4GetAttributesMethodValues extends BoundMethod<UL4GetAttribu
 
 		public Object next()
 		{
-			return object.getItemStringUL4(iterator.next());
+			return ((UL4GetItemString)object).getItemStringUL4(iterator.next());
 		}
 
 		public void remove()
