@@ -10,6 +10,7 @@ import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.AbstractMap;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -149,62 +150,34 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 
 	class EntrySet extends AbstractSet<Map.Entry<K, V>>
 	{
+		/* Our entry iterator is based on our key iterator instead of
+		 * using the entry iterators of the first and second map.
+		 * 
+		 * This simplifies our implementation, as we don't need any caching logic
+		 * (like the key iterator does) and it simplifies the subclass
+		 * {@code AbstractCombiningMapChain} (as it doesn't have to implement any
+		 * entry set functionality, because our implementation falls back to
+		 * calling {@code get}, which {@code AbstractCombiningMapChain}
+		 * overwrites).
+		 */
 		class EntrySetIterator implements Iterator<Map.Entry<K, V>>
 		{
-			private Iterator<Map.Entry<K, V>> firstIterator;
-			private Iterator<Map.Entry<K, V>> secondIterator;
-			private Map.Entry<K, V> bufferedEntry;
+			private Iterator<K> keyIterator;
 
 			public EntrySetIterator()
 			{
-				firstIterator = first.entrySet().iterator();
-				secondIterator = getSecond().entrySet().iterator();
-				bufferedEntry = null;
+				keyIterator = keySet().iterator();
 			}
 
 			public boolean hasNext()
 			{
-				if (bufferedEntry != null)
-					return true;
-				if (firstIterator.hasNext())
-					return true;
-
-				// the first iterator is exhausted; use the second one
-				// ignore all entries that the first iterator has already produced
-				while (secondIterator.hasNext())
-				{
-					Map.Entry<K, V> entry = secondIterator.next();
-					// Is this an entry we haven't seen before?
-					if (!first.containsKey(entry.getKey()))
-					{
-						bufferedEntry = entry;
-						return true;
-					}
-				}
-				return false;
+				return keyIterator.hasNext();
 			}
 
 			public Map.Entry<K, V> next()
 			{
-				if (bufferedEntry != null)
-				{
-					Map.Entry<K, V> result = bufferedEntry;
-					bufferedEntry = null;
-					return result;
-				}
-				if (firstIterator.hasNext())
-					return firstIterator.next();
-
-				// the first iterator is exhausted; use the second one
-				// ignore all entries that the first iterator has already produced
-				while (secondIterator.hasNext())
-				{
-					Map.Entry<K, V> entry = secondIterator.next();
-					// Is this an entry we haven't seen before?
-					if (!first.containsKey(entry.getKey()))
-						return entry;
-				}
-				throw new NoSuchElementException();
+				K key = keyIterator.next();
+				return new AbstractMap.SimpleImmutableEntry(key, get(key));
 			}
 
 			public void remove()
@@ -270,7 +243,7 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 		}
 	}
 
-	private Map<K, V> first;
+	protected Map<K, V> first;
 
 	public AbstractMapChain(Map<K, V> first)
 	{
