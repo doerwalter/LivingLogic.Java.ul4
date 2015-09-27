@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.AbstractMap;
 import java.util.Set;
 
 /**
@@ -102,65 +103,6 @@ public abstract class ObjectAsMap implements Map<String, Object>
 		 * Return a certain attribute from the specified object.
 		 */
 		public Object getValue(Object object);
-	}
-
-	/**
-	 * Our own {@code Map.Entry} implementation required for {@code entrySet}
-	 */
-	static class Entry implements Map.Entry<String, Object>
-	{
-		protected String key;
-		protected Object value;
-
-		/**
-		 * Constructor
-		 * @param key the string to be used as the key of this mapping
-		 * @param value the object to be used as the key of this mapping
-		 */
-		public Entry(String key, Object value)
-		{
-			this.key = key;
-			this.value = value;
-		}
-
-		@Override
-		public String getKey()
-		{
-			return key;
-		}
-
-		@Override
-		public Object getValue()
-		{
-			return value;
-		}
-
-		@Override
-		public Object setValue(Object value)
-		{
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public boolean equals(Object o)
-		{
-			if (o instanceof Entry)
-			{
-				Entry o2 = (Entry)o;
-
-				if (key.equals(o2.getKey()))
-				{
-					return (value == null) ? o2.getValue()==null : value.equals(o2.getValue());
-				}
-			}
-			return false;
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return key.hashCode() ^ (value==null ? 0 : value.hashCode());
-		}
 	}
 
 	@Override
@@ -279,7 +221,7 @@ public abstract class ObjectAsMap implements Map<String, Object>
 			 * name {@code key}, extract this attribute from the object {@code this}
 			 * and put the resulting key and value pair into the result set
 			 * {@code items} */
-			items.add(new Entry(key, valueMakers.get(key).getValue(this)));
+			items.add(new AbstractMap.SimpleImmutableEntry(key, valueMakers.get(key).getValue(this)));
 		return items;
 	}
 }
