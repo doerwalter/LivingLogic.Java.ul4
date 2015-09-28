@@ -1,3 +1,8 @@
+exp-99-6:
+---------
+* Added support for UL4GetItemString to ItemAST.
+
+
 exp-99-3:
 ---------
 * The "combined" interfaces UL4GetAttributes, UL4GetSetAttributes, UL4GetSetItem
