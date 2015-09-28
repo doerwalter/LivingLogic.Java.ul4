@@ -6,6 +6,16 @@ exp-100:
   (https://code.google.com/p/json-simple/)
 
 
+exp-99-6:
+---------
+* Added support for UL4GetItemString to ItemAST.
+
+
+exp-99-5:
+---------
+* Added AbstractCombiningMapChain.
+
+
 exp-99-4:
 ---------
 * Fixed AttrAST: The code path for UL4GetItemWithContext and
