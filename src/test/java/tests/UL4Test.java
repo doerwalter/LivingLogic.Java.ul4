@@ -1314,6 +1314,7 @@ public class UL4Test
 		checkTemplateOutput("", "<?print x[4]?>", "x", "gurk");
 		checkTemplateOutput("", "<?print 'gurk'[-5]?>");
 		checkTemplateOutput("", "<?print x[-5]?>", "x", "gurk");
+		checkTemplateOutput("17", "<?print x['x']?>", "x", new Point(17, 23));
 	}
 
 	@Test

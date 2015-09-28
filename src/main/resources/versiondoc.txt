@@ -1,3 +1,8 @@
+exp-99-7:
+---------
+* Fixed a bug in the changes from exp-99-6.
+
+
 exp-99-6:
 ---------
 * Added support for UL4GetItemString to ItemAST.
