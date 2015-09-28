@@ -177,6 +177,8 @@ public class ItemAST extends BinaryAST implements LValue
 	{
 		if (obj instanceof UL4GetItem)
 			return call((UL4GetItem)obj, index);
+		else if (obj instanceof UL4GetItemString)
+			return call((UL4GetItemString)obj, index);
 		else if (obj instanceof Map)
 			return call((Map)obj, index);
 		else if (index instanceof Slice)
