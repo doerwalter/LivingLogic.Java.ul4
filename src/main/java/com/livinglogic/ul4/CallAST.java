@@ -56,6 +56,33 @@ public class CallAST extends CodeAST
 		arguments.add(new RemainingKeywordArguments(arg));
 	}
 
+	@Override
+	public Object decoratedEvaluate(EvaluationContext context)
+	{
+		// Overwrite with a version that rewrap ASTException and TagException too.
+		try
+		{
+			context.tick();
+			return evaluate(context);
+		}
+		catch (BreakException ex)
+		{
+			throw ex;
+		}
+		catch (ContinueException ex)
+		{
+			throw ex;
+		}
+		catch (ReturnException ex)
+		{
+			throw ex;
+		}
+		catch (Exception ex)
+		{
+			throw new ASTException(ex, context.getTemplate(), this);
+		}
+	}
+
 	public Object evaluate(EvaluationContext context)
 	{
 		Object realObject = obj.decoratedEvaluate(context);

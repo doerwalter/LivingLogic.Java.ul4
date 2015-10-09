@@ -51,6 +51,11 @@ public class TextAST extends AST
 		return source.substring(startPos, endPos);
 	}
 
+	public CodeSnippet getSnippet()
+	{
+		return new CodeSnippet(getText());
+	}
+
 	public void toString(Formatter formatter)
 	{
 		formatter.write("text ");

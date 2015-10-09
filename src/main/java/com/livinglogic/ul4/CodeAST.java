@@ -55,6 +55,16 @@ public abstract class CodeAST extends AST
 		return tag;
 	}
 
+	public CodeSnippet getSnippet()
+	{
+		String source = getSource();
+		return new CodeSnippet(
+			source.substring(getTag().getStartPos(), getStartPos()),
+			source.substring(getStartPos(), getEndPos()),
+			source.substring(getEndPos(), getTag().getEndPos())
+		);
+	}
+
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);

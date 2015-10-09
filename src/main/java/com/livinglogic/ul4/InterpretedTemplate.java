@@ -268,16 +268,16 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 		for (SourcePart part : parts)
 		{
-			try
+			BlockAST innerBlock = stack.peek();
+			if (part instanceof TextAST)
 			{
-				BlockAST innerBlock = stack.peek();
-				if (part instanceof TextAST)
+				innerBlock.append((TextAST)part);
+			}
+			else
+			{
+				Tag tag = (Tag)part;
+				try
 				{
-					innerBlock.append((TextAST)part);
-				}
-				else
-				{
-					Tag tag = (Tag)part;
 					String tagtype = tag.getTag();
 					// FIXME: use a switch in Java 7
 					if (tagtype.equals("ul4"))
@@ -391,16 +391,16 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						throw new RuntimeException("unknown tag " + tagtype);
 					}
 				}
-			}
-			catch (Exception ex)
-			{
-				throw new TemplateException(new TagException(ex, tag), this);
+				catch (Exception ex)
+				{
+					throw new TagException(ex, this, tag);
+				}
 			}
 		}
 		if (stack.size() > 1) // the template itself is still on the stack
 		{
 			BlockAST innerBlock = stack.peek();
-			throw new ASTException(new BlockException(innerBlock.getType() + " block unclosed"), innerBlock);
+			throw new ASTException(new BlockException(innerBlock.getType() + " block unclosed"), this, innerBlock);
 		}
 	}
 
@@ -621,21 +621,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		{
 			super.evaluate(context);
 		}
-		catch (BreakException ex)
-		{
-			throw ex;
-		}
-		catch (ContinueException ex)
-		{
-			throw ex;
-		}
 		catch (ReturnException ex)
 		{
 			// ignore return value and end rendering
-		}
-		catch (Exception ex)
-		{
-			throw new TemplateException(ex, this);
 		}
 		finally
 		{
@@ -796,21 +784,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			super.evaluate(context);
 			return null;
 		}
-		catch (BreakException ex)
-		{
-			throw ex;
-		}
-		catch (ContinueException ex)
-		{
-			throw ex;
-		}
 		catch (ReturnException ex)
 		{
 			return ex.getValue();
-		}
-		catch (Exception ex)
-		{
-			throw new TemplateException(ex, this);
 		}
 		finally
 		{

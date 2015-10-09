@@ -114,6 +114,11 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 		return source.substring(startPosCode, endPosCode);
 	}
 
+	public CodeSnippet getSnippet()
+	{
+		return new CodeSnippet(getText());
+	}
+
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		encoder.dump(startPos);
