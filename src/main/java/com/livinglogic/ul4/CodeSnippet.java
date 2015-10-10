@@ -9,53 +9,67 @@ package com.livinglogic.ul4;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * A class that holds a code snippet (i.e. code inside a tag) and the code
- * before and after the relevant code inside the tag.
- * Use for formatting exception message
+ * A class that holds a the data for formatting a code snippet (i.e. code
+ * inside a tag with the surrounding tag)
+ * Use for formatting exception message.
  */
 public class CodeSnippet
 {
 	/**
-	 * The code before the relevant code
+	 * The complete source code
 	 */
-	protected String prefix;
+	protected String source;
 
 	/**
-	 * The relevant code itself
+	 * The start position of the tag
 	 */
-	protected String code;
+	protected int startPos;
 
 	/**
-	 * The code after the relevant code
+	 * The end position of the tag
 	 */
-	protected String suffix;
+	protected int endPos;
+
+	/**
+	 * The start position of the code inside the tag
+	 */
+	protected int startPosCode;
+
+	/**
+	 * The end position of the code inside the tag
+	 */
+	protected int endPosCode;
 
 	/**
 	 * Create a new {@code CodeSnippet} object.
 	 */
-	public CodeSnippet(String code)
+	public CodeSnippet(String source, int startPos, int endPos)
 	{
-		this.prefix = "";
-		this.code = code;
-		this.suffix = "";
+		this.source = source;
+		this.startPos = startPos;
+		this.endPos = endPos;
+		this.startPosCode = startPos;
+		this.endPosCode = endPos;
 	}
 
 	/**
 	 * Create a new {@code CodeSnippet} object.
 	 */
-	public CodeSnippet(String prefix, String code, String suffix)
+	public CodeSnippet(String source, int startPos, int endPos, int startPosCode, int endPosCode)
 	{
-		this.prefix = prefix;
-		this.code = code;
-		this.suffix = suffix;
+		this.source = source;
+		this.startPos = startPos;
+		this.endPos = endPos;
+		this.startPosCode = startPosCode;
+		this.endPosCode = endPosCode;
 	}
 
 	public String toString()
 	{
 		StringBuilder buffer = new StringBuilder();
-		String prefix = rawRepr(this.prefix);
-		String code = rawRepr(this.code);
-		String suffix = rawRepr(this.suffix);
+		String prefix = rawRepr(source.substring(startPos, startPosCode));
+		String code = rawRepr(source.substring(startPosCode, endPosCode));
+		String suffix = rawRepr(source.substring(endPosCode, endPos));
 		buffer.append(prefix);
 		buffer.append(code);
 		buffer.append(suffix);

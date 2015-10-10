@@ -57,12 +57,7 @@ public abstract class CodeAST extends AST
 
 	public CodeSnippet getSnippet()
 	{
-		String source = getSource();
-		return new CodeSnippet(
-			source.substring(getTag().getStartPos(), getStartPos()),
-			source.substring(getStartPos(), getEndPos()),
-			source.substring(getEndPos(), getTag().getEndPos())
-		);
+		return new CodeSnippet(tag.getSource(), tag.getStartPos(), tag.getEndPos(), startPos, endPos);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

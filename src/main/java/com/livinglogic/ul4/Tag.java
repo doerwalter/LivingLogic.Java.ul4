@@ -116,7 +116,7 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 
 	public CodeSnippet getSnippet()
 	{
-		return new CodeSnippet(getText());
+		return new CodeSnippet(source, startPos, endPos);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

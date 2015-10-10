@@ -53,7 +53,7 @@ public class TextAST extends AST
 
 	public CodeSnippet getSnippet()
 	{
-		return new CodeSnippet(getText());
+		return new CodeSnippet(source, startPos, endPos);
 	}
 
 	public void toString(Formatter formatter)

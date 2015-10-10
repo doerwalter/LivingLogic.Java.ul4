@@ -3980,7 +3980,7 @@ public class UL4Test
 	@Test
 	public void function_closure()
 	{
-		checkTemplateResult(24, "<?code y=3?><?def inner?><?return 2*x*y?><?end def?><?return inner(x=4)?>");
+		checkTemplateResult(24, "<?code y=3?><?def inner?><?return 2*x*y*None?><?end def?><?return inner(x=4)?>");
 		checkTemplateResult(24, "<?def outer?><?code y=3?><?def inner?><?return 2*x*y?><?end def?><?return inner?><?end def?><?return outer()(x=4)?>");
 	}
 
