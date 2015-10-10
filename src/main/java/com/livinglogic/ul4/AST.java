@@ -94,19 +94,15 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 		{
 			throw ex;
 		}
-		// Pass through ASTException and TagException, as the location is already known
+		// Pass through SourceException, as the location is already known.
 		// However in CallAST, we always wrap to get the call into the exception stack.
-		catch (ASTException ex)
-		{
-			throw ex;
-		}
-		catch (TagException ex)
+		catch (SourceException ex)
 		{
 			throw ex;
 		}
 		catch (Exception ex)
 		{
-			throw new ASTException(ex, context.getTemplate(), this);
+			throw new SourceException(ex, context.getTemplate(), this);
 		}
 	}
 

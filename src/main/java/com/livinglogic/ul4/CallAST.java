@@ -59,7 +59,7 @@ public class CallAST extends CodeAST
 	@Override
 	public Object decoratedEvaluate(EvaluationContext context)
 	{
-		// Overwrite with a version that rewrap ASTException and TagException too.
+		// Overwrite with a version that rewraps SourceException too, because we want to see the call in the exception chain.
 		try
 		{
 			context.tick();
@@ -79,7 +79,7 @@ public class CallAST extends CodeAST
 		}
 		catch (Exception ex)
 		{
-			throw new ASTException(ex, context.getTemplate(), this);
+			throw new SourceException(ex, context.getTemplate(), this);
 		}
 	}
 

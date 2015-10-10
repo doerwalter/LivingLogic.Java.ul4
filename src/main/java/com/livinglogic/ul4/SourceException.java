@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 import org.apache.commons.lang.StringUtils;
 
-public class TagException extends RuntimeException
+public class SourceException extends RuntimeException
 {
-	private static String makeMessage(InterpretedTemplate template, Tag tag)
+	private static String makeMessage(InterpretedTemplate template, SourcePart part)
 	{
 		StringBuilder buffer = new StringBuilder();
 		String name = template.nameUL4();
@@ -22,16 +22,16 @@ public class TagException extends RuntimeException
 			buffer.append(FunctionRepr.call(name));
 		}
 		buffer.append(": offset ");
-		buffer.append(tag.getStartPos());
+		buffer.append(part.getStartPos());
 		buffer.append(":");
-		buffer.append(tag.getEndPos());
+		buffer.append(part.getEndPos());
 		buffer.append("\n");
-		buffer.append(tag.getSnippet().toString());
+		buffer.append(part.getSnippet().toString());
 		return buffer.toString();
 	}
 
-	public TagException(Throwable cause, InterpretedTemplate template, Tag tag)
+	public SourceException(Throwable cause, InterpretedTemplate template, SourcePart part)
 	{
-		super(makeMessage(template, tag), cause);
+		super(makeMessage(template, part), cause);
 	}
 }

@@ -393,14 +393,14 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				}
 				catch (Exception ex)
 				{
-					throw new TagException(ex, this, tag);
+					throw new SourceException(ex, this, tag);
 				}
 			}
 		}
 		if (stack.size() > 1) // the template itself is still on the stack
 		{
 			BlockAST innerBlock = stack.peek();
-			throw new ASTException(new BlockException(innerBlock.getType() + " block unclosed"), this, innerBlock);
+			throw new SourceException(new BlockException(innerBlock.getType() + " block unclosed"), this, innerBlock);
 		}
 	}
 
