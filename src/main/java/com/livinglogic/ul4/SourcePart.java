@@ -16,4 +16,6 @@ public interface SourcePart
 	int getStartPos();
 
 	int getEndPos();
+
+	CodeSnippet getSnippet();
 }
