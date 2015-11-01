@@ -30,6 +30,9 @@ public class RenderAST extends CallRenderAST
 		this.indent = null;
 	}
 
+	/**
+	 * This is used to "convert" a {@code CallAST} that comes out of the parser into a {@code RenderAST}
+	 */
 	public RenderAST(CallAST call)
 	{
 		super(call.tag, call.startPos, call.endPos, call.obj);
