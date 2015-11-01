@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -30,6 +31,11 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	 * May by {@code null}, in which case output will be ignored.
 	 */
 	protected Writer writer;
+
+	/**
+	 * The list of currently active indentation strings
+	 */
+	protected List<String> indents;
 
 	/**
 	 * A map containing the currently defined variables
@@ -98,6 +104,7 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	public EvaluationContext(Writer writer, long milliseconds)
 	{
 		this.writer = writer;
+		this.indents = new LinkedList<String>();
 		variables = new HashMap<String, Object>();
 		template = null;
 		allVariables = new MapChain<String, Object>(variables, functions);
@@ -112,6 +119,16 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 		{
 			throw new RuntimeExceededException();
 		}
+	}
+
+	public void pushIndent(String indent)
+	{
+		indents.add(indent);
+	}
+
+	public void popIndent()
+	{
+		indents.remove(indents.size()-1);
 	}
 
 	/**

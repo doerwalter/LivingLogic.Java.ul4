@@ -36,7 +36,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 import com.livinglogic.ul4on.Utils;
 
 
-public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWithContext, UL4Type, UL4GetItemString, UL4Attributes
+public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWithContext, UL4RenderWithContext, UL4Type, UL4GetItemString, UL4Attributes
 {
 	/**
 	 * The version number used in the UL4ON dump of the template.
@@ -385,6 +385,15 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						innerBlock.append(subtemplate);
 						stack.push(subtemplate);
 					}
+					else if (tagtype.equals("render"))
+					{
+						UL4Parser parser = getParser(tag);
+						CodeAST code = parser.expression();
+						if (!(code instanceof CallAST))
+							throw new RuntimeException("render call required");
+						RenderAST render = new RenderAST((CallAST)code);
+						innerBlock.append(render);
+					}
 					else
 					{
 						// Can't happen
@@ -536,6 +545,19 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public String renders(EvaluationContext context)
 	{
 		return renders(context, null);
+	}
+
+	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
+	{
+		BoundArguments arguments = new BoundArguments(signature, this, args, kwargs);
+		try
+		{
+			renderBound(context, null, arguments.byName());
+		}
+		finally
+		{
+			arguments.cleanup();
+		}
 	}
 
 	/**
@@ -935,7 +957,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public List<Line> tokenizeTags(String source, String startdelim, String enddelim)
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|render)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Line> lines = new LinkedList<Line>();
 		boolean wasTag = false;
 		if (source != null)
@@ -1103,6 +1125,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		Utils.register("de.livinglogic.ul4.bitxorvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitXOrVarAST(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.bitorvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitOrVarAST(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.call", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallAST(null, -1, -1, null); }});
+		Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderAST(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate(); }});
 		Utils.register("de.livinglogic.ul4.signature", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SignatureAST(null, -1, -1); }});
 	}
@@ -1244,32 +1267,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 	}
 
-	private static class BoundMethodRender extends BoundMethodWithContext<InterpretedTemplate>
-	{
-		public BoundMethodRender(InterpretedTemplate object)
-		{
-			super(object);
-		}
-
-		public String nameUL4()
-		{
-			String name = object.nameUL4();
-			return (name != null ? name : "template") + ".render";
-		}
-
-		public Signature getSignature()
-		{
-			return object.signature;
-		}
-
-		public Object evaluate(EvaluationContext context, BoundArguments arguments)
-		{
-			object.renderBound(context, null, arguments.byName());
-			return null;
-		}
-	}
-
-	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "startdelim", "enddelim", "source", "render", "renders");
+	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "startdelim", "enddelim", "source", "renders");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -1288,8 +1286,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			return enddelim;
 		else if ("source".equals(key))
 			return source;
-		else if ("render".equals(key))
-			return new BoundMethodRender(this);
 		else if ("renders".equals(key))
 			return new BoundMethodRenderS(this);
 		else

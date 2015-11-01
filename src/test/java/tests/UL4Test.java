@@ -3419,36 +3419,37 @@ public class UL4Test
 	}
 
 	@Test
-	public void method_render()
+	public void render()
 	{
+		checkTemplateOutput("gurk", "<?def x?>gurk<?end def?><?render x()?>");
+
 		InterpretedTemplate t1 = getTemplate("<?print prefix?><?print data?><?print suffix?>");
 		InterpretedTemplate t2 = getTemplate("<?print 'foo'?>");
 
-		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?code t.render(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
-		checkTemplateOutput("foo", "<?print t.render()?>", "t", t2);
-		checkTemplateOutput("foo", "<?code m = t.render?><?code m()?>", "t", t2);
-		checkTemplateOutput("foo", "<?print t.render \n\t(\n \t)\n\t ?>", "t", t2);
+		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?render t(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
+		checkTemplateOutput("foo", "<?render t()?>", "t", t2);
+		checkTemplateOutput("foo", "<?render t \n\t(\n \t)\n\t ?>", "t", t2);
 
-		checkTemplateOutput("42", "<?code globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("<?print value?>")));
-		checkTemplateOutput("", "<?code globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("")));
+		checkTemplateOutput("42", "<?render globals.template(value=42)?>", "globals", makeMap("template", getTemplate("<?print value?>")));
+		checkTemplateOutput("", "<?render globals.template(value=42)?>", "globals", makeMap("template", getTemplate("")));
 	}
 
 	@Test
-	public void method_render_local_vars()
+	public void render_local_vars()
 	{
 		InterpretedTemplate t = getTemplate("<?code x += 1?><?print x?>");
 
-		checkTemplateOutput("42,43,42", "<?print x?>,<?code t.render(x=x)?>,<?print x?>", "t", t, "x", 42);
+		checkTemplateOutput("42,43,42", "<?print x?>,<?render t(x=x)?>,<?print x?>", "t", t, "x", 42);
 	}
 
 	@Test
-	public void method_render_localtemplate()
+	public void render_localtemplate()
 	{
 		checkTemplateOutput("foo", "<?def lower?><?print x.lower()?><?end def?><?print lower.renders(x='FOO')?>");
 	}
 
 	@Test
-	public void method_render_nested()
+	public void render_nested()
 	{
 		String source = (
 			"<?def outer?>" +
@@ -3460,13 +3461,13 @@ public class UL4Test
 				"<?end def?>" +
 				"<?code x += 1?>" +
 				"<?code y += 1?>" +
-				"<?code inner.render(x=x)?>" +
+				"<?render inner(x=x)?>" +
 				"<?print x?>!" +
 				"<?print y?>!" +
 			"<?end def?>" +
 			"<?code x += 1?>" +
 			"<?code y += 1?>" +
-			"<?code outer.render(x=x)?>" +
+			"<?render outer(x=x)?>" +
 			"<?print x?>!" +
 			"<?print y?>!"
 		);
@@ -3941,16 +3942,16 @@ public class UL4Test
 	@Test
 	public void nestedscopes()
 	{
-		checkTemplateOutput("0;1;2;", "<?for i in range(3)?><?def x?><?print repr(i)?>;<?end def?><?code x.render()?><?end for?>");
-		checkTemplateOutput("1;", "<?for i in range(3)?><?if i == 1?><?def x?><?print i?>;<?end def?><?end if?><?end for?><?code x.render()?>");
-		checkTemplateOutput("1", "<?code i = 1?><?def x?><?print i?><?end def?><?code i = 2?><?code x.render()?>");
-		checkTemplateOutput("1", "<?code i = 1?><?def x?><?def y?><?print i?><?end def?><?code i = 2?><?code y.render()?><?end def?><?code i = 3?><?code x.render()?>");
+		checkTemplateOutput("0;1;2;", "<?for i in range(3)?><?def x?><?print repr(i)?>;<?end def?><?render x()?><?end for?>");
+		checkTemplateOutput("1;", "<?for i in range(3)?><?if i == 1?><?def x?><?print i?>;<?end def?><?end if?><?end for?><?render x()?>");
+		checkTemplateOutput("1", "<?code i = 1?><?def x?><?print i?><?end def?><?code i = 2?><?render x()?>");
+		checkTemplateOutput("1", "<?code i = 1?><?def x?><?def y?><?print i?><?end def?><?code i = 2?><?render y()?><?end def?><?code i = 3?><?render x()?>");
 	}
 
 	@Test
 	public void pass_functions()
 	{
-		checkTemplateOutput("&lt;", "<?def x?><?print x('<')?><?end def?><?code x.render(x=xmlescape)?>");
+		checkTemplateOutput("&lt;", "<?def x?><?print x('<')?><?end def?><?render x(x=xmlescape)?>");
 	}
 
 	@Test
@@ -4019,8 +4020,8 @@ public class UL4Test
 	public void keywordEvaluationOrder()
 	{
 		// Test that expressions for keyword arguments are evaluated in the order they are given
-		checkTemplateOutput("12;", "<?def t?><?print x?>;<?print y?><?end def?><?code t.render(x=print(1), y=print(2))?>");
-		checkTemplateOutput("21;", "<?def t?><?print x?>;<?print y?><?end def?><?code t.render(y=print(2), x=print(1))?>");
+		checkTemplateOutput("12;", "<?def t?><?print x?>;<?print y?><?end def?><?render t(x=print(1), y=print(2))?>");
+		checkTemplateOutput("21;", "<?def t?><?print x?>;<?print y?><?end def?><?render t(y=print(2), x=print(1))?>");
 	}
 
 	@Test
@@ -4253,7 +4254,7 @@ public class UL4Test
 	@Test
 	public void signature_positional_argument() throws Exception
 	{
-		String source = "<?def border_radius(radius)?>border-radius: <?print radius?>px;<?end def?><?code border_radius.render(5)?>";
+		String source = "<?def border_radius(radius)?>border-radius: <?print radius?>px;<?end def?><?render border_radius(5)?>";
 
 		checkTemplateOutput("border-radius: 5px;", source);
 	}

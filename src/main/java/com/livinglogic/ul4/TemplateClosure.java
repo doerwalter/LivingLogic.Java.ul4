@@ -21,7 +21,7 @@ import com.livinglogic.utils.MapChain;
  * @author W. Doerwald
  */
 
-public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL4GetItemString, UL4Attributes
+public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext, UL4Name, UL4Type, UL4GetItemString, UL4Attributes
 {
 	private InterpretedTemplate template;
 	private Map<String, Object> variables;
@@ -42,6 +42,19 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 	public String nameUL4()
 	{
 		return template.nameUL4();
+	}
+
+	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
+	{
+		BoundArguments arguments = new BoundArguments(signature, template, args, kwargs);
+		try
+		{
+			render(context, arguments.byName());
+		}
+		finally
+		{
+			arguments.cleanup();
+		}
 	}
 
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
@@ -81,31 +94,6 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 		return "template";
 	}
 
-	private static class BoundMethodRender extends BoundMethodWithContext<TemplateClosure>
-	{
-		public BoundMethodRender(TemplateClosure object)
-		{
-			super(object);
-		}
-
-		public String nameUL4()
-		{
-			String name = object.nameUL4();
-			return (name != null ? name : "template") + ".render";
-		}
-
-		public Signature getSignature()
-		{
-			return object.signature;
-		}
-
-		public Object evaluate(EvaluationContext context, BoundArguments arguments)
-		{
-			object.render(context, arguments.byName());
-			return null;
-		}
-	}
-
 	private static class BoundMethodRenderS extends BoundMethodWithContext<TemplateClosure>
 	{
 		public BoundMethodRenderS(TemplateClosure object)
@@ -139,9 +127,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4Name, UL4Type, UL
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("render".equals(key))
-			return new BoundMethodRender(this);
-		else if ("renders".equals(key))
+		if ("renders".equals(key))
 			return new BoundMethodRenderS(this);
 		else
 			return template.getItemStringUL4(key);
