@@ -87,15 +87,6 @@ public class RenderAST extends CallRenderAST
 		return null;
 	}
 
-	public void call(EvaluationContext context, UL4Render obj, List<Object> args, Map<String, Object> kwargs)
-	{
-		if (indent != null)
-			context.pushIndent(indent.getText());
-		obj.renderUL4(args, kwargs);
-		if (indent != null)
-			context.popIndent();
-	}
-
 	public void call(EvaluationContext context, UL4RenderWithContext obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		if (indent != null)
@@ -109,8 +100,6 @@ public class RenderAST extends CallRenderAST
 	{
 		if (obj instanceof UL4RenderWithContext)
 			call(context, (UL4RenderWithContext)obj, args, kwargs);
-		else if (obj instanceof UL4Render)
-			call(context, (UL4Render)obj, args, kwargs);
 		else
 			throw new NotRenderableException(obj);
 	}
