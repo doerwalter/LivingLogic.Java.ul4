@@ -42,6 +42,8 @@ import com.livinglogic.ul4.UL4GetItemString;
 import com.livinglogic.ul4.UL4GetItemStringWithContext;
 import com.livinglogic.ul4.UL4Attributes;
 import com.livinglogic.ul4.Signature;
+import com.livinglogic.ul4.Function;
+import com.livinglogic.ul4.BoundArguments;
 import com.livinglogic.ul4.MulAST;
 import com.livinglogic.dbutils.Connection;
 
@@ -4016,12 +4018,51 @@ public class UL4Test
 		assertEquals(template3.renders(), "foobar");
 	}
 
+	public static final class MakeVar extends Function
+	{
+		protected int value;
+
+		public MakeVar()
+		{
+			value = 0;
+		}
+
+		public String nameUL4()
+		{
+			return "makevar";
+		}
+
+		private static final Signature signature = new Signature("var", Signature.required);
+
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		public Object evaluate(BoundArguments args)
+		{
+			return call((Integer)args.get(0));
+		}
+
+		public int call(int value)
+		{
+			int result = this.value + value;
+			this.value = value;
+			return result;
+		}
+	}
+
 	@Test
 	public void keywordEvaluationOrder()
 	{
 		// Test that expressions for keyword arguments are evaluated in the order they are given
-		checkTemplateOutput("12;", "<?def t?><?print x?>;<?print y?><?end def?><?render t(x=print(1), y=print(2))?>");
-		checkTemplateOutput("21;", "<?def t?><?print x?>;<?print y?><?end def?><?render t(y=print(2), x=print(1))?>");
+		InterpretedTemplate t1 = getTemplate("<?def t?><?print x?>;<?print y?><?end def?><?render t(x=makevar(1), y=makevar(2))?>");
+		String output1 = t1.renders(makeMap("makevar", new MakeVar()));
+		assertEquals("1;3", output1);
+
+		InterpretedTemplate t2 = getTemplate("<?def t?><?print x?>;<?print y?><?end def?><?render t(x=makevar(2), y=makevar(1))?>");
+		String output2 = t2.renders(makeMap("makevar", new MakeVar()));
+		assertEquals("2;3", output2);
 	}
 
 	@Test

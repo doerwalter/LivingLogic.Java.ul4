@@ -282,8 +282,6 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	{
 		MapUtils.putMap(
 			functions,
-			"print", new FunctionPrint(),
-			"printx", new FunctionPrintX(),
 			"now", new FunctionNow(),
 			"utcnow", new FunctionUTCNow(),
 			"date", new FunctionDate(),
