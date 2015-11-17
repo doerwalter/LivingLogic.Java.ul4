@@ -24,7 +24,7 @@ import org.apache.commons.lang.ObjectUtils;
  *
  * Methods of {@code AbstractMapChain} that modify the mapping only modify the first
  * {@code Map} not the second one. Modifying the {@code AbstractMapChain} via the sets
- * returned by {@code keySet()} or{@code entrySet()} is forbidden (i.e. those
+ * returned by {@code keySet()} or {@code entrySet()} is forbidden (i.e. those
  * methods throw a {@code UnsupportedOperationException} exception).
  *
  * @author W. Doerwald
