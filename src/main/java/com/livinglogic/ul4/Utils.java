@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -392,6 +393,57 @@ public class Utils
 				return value1.compareTo(new BigDecimal((BigInteger)arg2)) == 0;
 			else if (arg2 instanceof BigDecimal)
 				return value1.compareTo((BigDecimal)arg2) == 0;
+		}
+		else if (arg1 instanceof List)
+		{
+			if (arg1 == arg2)
+				return true;
+			if (!(arg2 instanceof List))
+				return false;
+
+			ListIterator iter1 = ((List)arg1).listIterator();
+			ListIterator iter2 = ((List)arg2).listIterator();
+			while (iter1.hasNext() && iter2.hasNext())
+			{
+				Object item1 = iter1.next();
+				Object item2 = iter2.next();
+				if (!eq(item1, item2))
+					return false;
+			}
+			return !(iter1.hasNext() || iter2.hasNext());
+		}
+		else if (arg1 instanceof Map)
+		{
+			if (arg1 == arg2)
+				return true;
+			if (!(arg2 instanceof Map))
+				return false;
+
+			Map map1 = (Map)arg1;
+			Map map2 = (Map)arg2;
+
+			if (map1.size() != map2.size())
+				return false;
+
+			Iterator<Map.Entry> iter = map1.entrySet().iterator();
+			while (iter.hasNext())
+			{
+				Map.Entry entry = iter.next();
+				Object key = entry.getKey();
+				Object value = entry.getValue();
+				if (value == null)
+				{
+					if (!(map2.get(key) == null && map2.containsKey(key)))
+						return false;
+				}
+				else
+				{
+					if (!Utils.eq(value, map2.get(key)))
+						return false;
+				}
+			}
+
+			return true;
 		}
 		return arg1.equals(arg2);
 	}
