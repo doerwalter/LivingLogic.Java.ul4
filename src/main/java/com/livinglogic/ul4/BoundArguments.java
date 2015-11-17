@@ -81,7 +81,7 @@ public class BoundArguments
 			}
 
 			// Handle additional keyword arguments
-			// if there are any, and we suport a "**" argument, put the remaining keyword arguments into this argument as a map, else complain
+			// if there are any, and we support a "**" argument, put the remaining keyword arguments into this argument as a map, else complain
 			if (kwargs != null)
 			{
 				if (signature.remainingKeywordParametersName != null)
