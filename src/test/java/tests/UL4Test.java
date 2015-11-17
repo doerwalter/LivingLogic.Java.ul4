@@ -1107,10 +1107,53 @@ public class UL4Test
 		checkTemplateOutput("False", source, "x", 17, "y", 23);
 		checkTemplateOutput("True", source, "x", 17, "y", 17);
 		checkTemplateOutput("True", source, "x", 17, "y", 17.0);
+		checkTemplateOutput("True", source, "x", "foo", "y", "foo");
+		checkTemplateOutput("False", source, "x", "foobar", "y", "foobaz");
+		checkTemplateOutput("True", source, "x", new TimeDelta(0), "y", new TimeDelta(0));
+		checkTemplateOutput("False", source, "x", new TimeDelta(0), "y", new TimeDelta(1));
+		checkTemplateOutput("False", source, "x", new TimeDelta(0), "y", new TimeDelta(0, 1));
+		checkTemplateOutput("False", source, "x", new TimeDelta(0), "y", new TimeDelta(0, 0, 1));
+		checkTemplateOutput("True", source, "x", new MonthDelta(0), "y", new MonthDelta(0));
+		checkTemplateOutput("False", source, "x", new MonthDelta(0), "y", new MonthDelta(1));
+		checkTemplateOutput("True", source, "x", FunctionDate.call(2015, 11, 12), "y", FunctionDate.call(2015, 11, 12));
+		checkTemplateOutput("False", source, "x", FunctionDate.call(2015, 11, 12), "y", FunctionDate.call(2015, 11, 13));
+		checkTemplateOutput("True", source, "x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x12, 0x34, 0x56, 0x78));
+		checkTemplateOutput("False", source, "x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x11, 0x34, 0x56, 0x78));
+		checkTemplateOutput("False", source, "x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x12, 0x33, 0x56, 0x78));
+		checkTemplateOutput("False", source, "x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x12, 0x34, 0x55, 0x78));
+		checkTemplateOutput("False", source, "x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x12, 0x34, 0x56, 0x77));
+		checkTemplateOutput("True", source, "x", asList(), "y", asList());
+		checkTemplateOutput("True", source, "x", asList(1, 2, 3), "y", asList(1, 2, 3));
+		checkTemplateOutput("True", source, "x", asList(1, asList(2, asList(3))), "y", asList(1, asList(2, asList(3))));
+		checkTemplateOutput("False", source, "x", asList(1, asList(2, asList(3))), "y", asList(1, asList(2, asList(4))));
+		checkTemplateOutput("False", source, "x", asList(1, 2, 3), "y", asList(1, 2, 4));
+		checkTemplateOutput("False", source, "x", asList(1, 2, 3), "y", asList(1, 2, 3, 4));
+		checkTemplateOutput("True", source, "x", makeMap(), "y", makeMap());
+		checkTemplateOutput("True", source, "x", makeMap(1, 2, "foo", "bar"), "y", makeMap(1, 2, "foo", "bar"));
+		checkTemplateOutput("False", source, "x", makeMap(1, 2, "foo", "bar"), "y", makeMap(1, 2, "foo", "baz"));
+		checkTemplateOutput("False", source, "x", makeMap(1, 2, "foo", "bar", 3, 4), "y", makeMap(1, 2, "foo", "bar", 5, 6));
+		checkTemplateOutput("True", source, "x", makeSet(), "y", makeSet());
+		checkTemplateOutput("True", source, "x", makeSet(1, "foo"), "y", makeSet(1, "foo"));
+		checkTemplateOutput("False", source, "x", makeSet(1, "foo"), "y", makeSet(1, "bar"));
+		checkTemplateOutput("False", source, "x", makeSet(1, 2), "y", makeSet(1, 2, 3));
+
+		// Check mixed number types
+		checkTemplateOutput("True", source, "x", new Integer(42), "y", new Long(42));
+		checkTemplateOutput("True", source, "x", new Integer(42), "y", new BigInteger("42"));
+		checkTemplateOutput("True", source, "x", asList(new Integer(42)), "y", asList(new Long(42)));
+		checkTemplateOutput("True", source, "x", asList(new Integer(42)), "y", asList(new BigInteger("42")));
+		checkTemplateOutput("True", source, "x", makeMap("42", new Integer(42)), "y", makeMap("42", new Long(42)));
+		checkTemplateOutput("True", source, "x", makeMap("42", new Integer(42)), "y", makeMap("42", new BigInteger("42")));
+
 		// Check mixed type comparisons
+		checkTemplateOutput("False", source, "x", null, "y", true);
 		checkTemplateOutput("False", source, "x", null, "y", 42);
 		checkTemplateOutput("False", source, "x", 42, "y", "foo");
+		checkTemplateOutput("False", source, "x", "foo", "y", asList());
+		checkTemplateOutput("False", source, "x", asList(), "y", makeMap());
+		checkTemplateOutput("False", source, "x", makeMap(), "y", makeSet());
 		checkTemplateOutput("False", source, "x", "foo", "y", new Date());
+
 		// This checks constant folding
 		checkTemplateOutput("False", "<?print 17 == 23?>");
 		checkTemplateOutput("True", "<?print 17 == 17.?>");
@@ -1130,10 +1173,46 @@ public class UL4Test
 		checkTemplateOutput("True", source, "x", 17, "y", 23);
 		checkTemplateOutput("False", source, "x", 17, "y", 17);
 		checkTemplateOutput("False", source, "x", 17, "y", 17.0);
+		checkTemplateOutput("False", source, "x", "foo", "y", "foo");
+		checkTemplateOutput("True", source, "x", "foobar", "y", "foobaz");
+		checkTemplateOutput("False", source, "x", new TimeDelta(0), "y", new TimeDelta(0));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0), "y", new TimeDelta(1));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0), "y", new TimeDelta(0, 1));
+		checkTemplateOutput("True", source, "x", new TimeDelta(0), "y", new TimeDelta(0, 0, 1));
+		checkTemplateOutput("False", source, "x", new MonthDelta(0), "y", new MonthDelta(0));
+		checkTemplateOutput("True", source, "x", new MonthDelta(0), "y", new MonthDelta(1));
+		checkTemplateOutput("False", source, "x", FunctionDate.call(2015, 11, 12), "y", FunctionDate.call(2015, 11, 12));
+		checkTemplateOutput("True", source, "x", FunctionDate.call(2015, 11, 12), "y", FunctionDate.call(2015, 11, 13));
+		checkTemplateOutput("False", source, "x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x12, 0x34, 0x56, 0x78));
+		checkTemplateOutput("True", source, "x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x11, 0x34, 0x56, 0x78));
+		checkTemplateOutput("True", source, "x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x12, 0x33, 0x56, 0x78));
+		checkTemplateOutput("True", source, "x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x12, 0x34, 0x55, 0x78));
+		checkTemplateOutput("True", source, "x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x12, 0x34, 0x56, 0x77));
+		checkTemplateOutput("False", source, "x", asList(), "y", asList());
+		checkTemplateOutput("False", source, "x", asList(1, 2, 3), "y", asList(1, 2, 3));
+		checkTemplateOutput("False", source, "x", asList(1, asList(2, asList(3))), "y", asList(1, asList(2, asList(3))));
+		checkTemplateOutput("True", source, "x", asList(1, asList(2, asList(3))), "y", asList(1, asList(2, asList(4))));
+		checkTemplateOutput("True", source, "x", asList(1, 2, 3), "y", asList(1, 2, 4));
+		checkTemplateOutput("True", source, "x", asList(1, 2, 3), "y", asList(1, 2, 3, 4));
+		checkTemplateOutput("False", source, "x", makeMap(), "y", makeMap());
+		checkTemplateOutput("False", source, "x", makeMap(1, 2, "foo", "bar"), "y", makeMap(1, 2, "foo", "bar"));
+		checkTemplateOutput("True", source, "x", makeMap(1, 2, "foo", "bar"), "y", makeMap(1, 2, "foo", "baz"));
+		checkTemplateOutput("True", source, "x", makeMap(1, 2, "foo", "bar", 3, 4), "y", makeMap(1, 2, "foo", "bar", 5, 6));
+		checkTemplateOutput("False", source, "x", makeSet(), "y", makeSet());
+		checkTemplateOutput("True", source, "x", makeSet(42), "y", makeSet(new Long(42)));
+		checkTemplateOutput("False", source, "x", makeSet(1, "foo"), "y", makeSet(1, "foo"));
+		checkTemplateOutput("True", source, "x", makeSet(1, "foo"), "y", makeSet(1, "bar"));
+		checkTemplateOutput("True", source, "x", makeSet(1, 2), "y", makeSet(1, 2, 3));
+
 		// Check mixed type comparisons
+		checkTemplateOutput("True", source, "x", null, "y", true);
 		checkTemplateOutput("True", source, "x", null, "y", 42);
 		checkTemplateOutput("True", source, "x", 42, "y", "foo");
+		checkTemplateOutput("True", source, "x", "foo", "y", asList());
+		checkTemplateOutput("True", source, "x", asList(), "y", makeMap());
+		checkTemplateOutput("True", source, "x", makeMap(), "y", makeSet());
 		checkTemplateOutput("True", source, "x", "foo", "y", new Date());
+
 		// This checks constant folding
 		checkTemplateOutput("True", "<?print 17 != 23?>");
 		checkTemplateOutput("False", "<?print 17 != 17.?>");
