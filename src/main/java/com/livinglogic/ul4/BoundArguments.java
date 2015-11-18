@@ -68,7 +68,7 @@ public class BoundArguments
 			}
 
 			// Handle additional positional arguments
-			// if there are any, and we suport a "*" argument, put the remaining arguments into this argument as a list, else complain
+			// if there are any, and we support a "*" argument, put the remaining arguments into this argument as a list, else complain
 			int expectedArgCount = signature.size();
 			if (signature.remainingParametersName != null)
 			{
