@@ -4,6 +4,9 @@ exp-100:
   will work.
 * Parsing json is now done with json-simple
   (https://code.google.com/p/json-simple/)
+* Closures no longer see a frozen version of the variables at the time of the
+  ``<?def?>`` tag, but the final state of the variables (like many other
+  programming languages do).
 
 
 exp-99-7:
