@@ -147,8 +147,15 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			UL4Parser parser = getSignatureParser(signature);
 			SignatureAST ast = parser.signature();
 			EvaluationContext context = new EvaluationContext();
-			Signature sig = ast.evaluate(context);
-			this.signature = sig;
+			try
+			{
+				Signature sig = ast.evaluate(context);
+				this.signature = sig;
+			}
+			finally
+			{
+				context.close();
+			}
 		}
 	}
 
@@ -188,7 +195,14 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						if (signatureAST != null)
 						{
 							EvaluationContext context = new EvaluationContext();
-							signature = signatureAST.evaluate(context);
+							try
+							{
+								signature = signatureAST.evaluate(context);
+							}
+							finally
+							{
+								context.close();
+							}
 						}
 						else
 							signature = null;
