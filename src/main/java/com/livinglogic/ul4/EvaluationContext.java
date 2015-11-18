@@ -216,7 +216,6 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 		return setVariables(new MapChain<String, Object>(variables, getVariables()));
 	}
 
-
 	/**
 	 * Return the {@code Writer} object where template output is written to.
 	 */
