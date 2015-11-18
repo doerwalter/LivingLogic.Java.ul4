@@ -23,15 +23,11 @@ import com.livinglogic.ul4on.Encoder;
 public class SignatureAST extends CodeAST
 {
 	protected List<Parameter> parameters;
-	protected String remainingParametersName;
-	protected String remainingKeywordParametersName;
 
 	public SignatureAST(Tag tag, int start, int end)
 	{
 		super(tag, start, end);
 		parameters = new LinkedList<Parameter>();
-		remainingParametersName = null;
-		remainingKeywordParametersName = null;
 	}
 
 	public String getType()
@@ -39,24 +35,9 @@ public class SignatureAST extends CodeAST
 		return "signature";
 	}
 
-	public void add(String name)
+	public void add(String name, ArgumentDescription.Type type, AST defaultValue)
 	{
-		parameters.add(new Parameter(name));
-	}
-
-	public void add(String name, AST defaultValue)
-	{
-		parameters.add(new Parameter(name, defaultValue));
-	}
-
-	public void setRemainingArguments(String name)
-	{
-		remainingParametersName = name;
-	}
-
-	public void setRemainingKeywordArguments(String name)
-	{
-		remainingKeywordParametersName = name;
+		parameters.add(new Parameter(name, type, defaultValue));
 	}
 
 	public Signature evaluate(EvaluationContext context)
@@ -66,15 +47,8 @@ public class SignatureAST extends CodeAST
 		for (Parameter param : parameters)
 		{
 			AST defaultValue = param.getDefaultValue();
-			if (defaultValue != null)
-				signature.add(param.getName(), ArgumentDescription.Type.DEFAULT, defaultValue.decoratedEvaluate(context));
-			else
-				signature.add(param.getName(), ArgumentDescription.Type.REQUIRED, null);
+			signature.add(param.getName(), param.getType(), defaultValue != null ? defaultValue.decoratedEvaluate(context) : null);
 		}
-		if (remainingParametersName != null)
-			signature.add(remainingParametersName, ArgumentDescription.Type.VAR_POSITIONAL, null);
-		if (remainingKeywordParametersName != null)
-			signature.add(remainingKeywordParametersName, ArgumentDescription.Type.VAR_KEYWORD, null);
 
 		return signature;
 	}
@@ -85,16 +59,23 @@ public class SignatureAST extends CodeAST
 		List paramsDump = new LinkedList();
 		for (Parameter param : parameters)
 		{
-			Object defaultValue = param.getDefaultValue();
-			if (defaultValue == null)
-				paramsDump.add(param.getName());
-			else
-				paramsDump.add(asList(param.getName(), defaultValue));
+			String name = param.getName();
+			switch (param.getType())
+			{
+				case REQUIRED:
+					paramsDump.add(name);
+					break;
+				case DEFAULT:
+					paramsDump.add(asList(name, param.getDefaultValue()));
+					break;
+				case VAR_POSITIONAL:
+					paramsDump.add("*" + name);
+					break;
+				case VAR_KEYWORD:
+					paramsDump.add("**" + name);
+					break;
+			}
 		}
-		if (remainingParametersName != null)
-			paramsDump.add("*" + remainingParametersName);
-		if (remainingKeywordParametersName != null)
-			paramsDump.add("**" + remainingKeywordParametersName);
 		encoder.dump(paramsDump);
 	}
 
@@ -109,17 +90,17 @@ public class SignatureAST extends CodeAST
 				String paramString = (String)paramDump;
 
 				if (paramString.startsWith("**"))
-					remainingKeywordParametersName = paramString.substring(2);
+					add(paramString.substring(2), ArgumentDescription.Type.VAR_KEYWORD, null);
 				else if (paramString.startsWith("*"))
-					remainingParametersName = paramString.substring(1);
+					add(paramString.substring(1), ArgumentDescription.Type.VAR_POSITIONAL, null);
 				else
-					add(paramString);
+					add(paramString, ArgumentDescription.Type.REQUIRED, null);
 			}
 			else
 			{
 				String name = (String)((List)paramDump).get(0);
 				AST defaultValue = (AST)((List)paramDump).get(1);
-				add(name, defaultValue);
+				add(name, ArgumentDescription.Type.DEFAULT, defaultValue);
 			}
 		}
 	}
