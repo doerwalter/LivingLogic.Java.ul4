@@ -37,7 +37,7 @@ public abstract class Function implements UL4Call, UL4Name, UL4Type, UL4Repr
 		{
 			// We can clean up here, as the function implementation shouldn't be a "closure",
 			// i.e. it should not return the variables map or anything that needs the map
-			arguments.cleanup();
+			arguments.close();
 		}
 		return result;
 	}

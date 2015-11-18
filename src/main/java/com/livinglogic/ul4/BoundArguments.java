@@ -15,7 +15,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class BoundArguments
+import com.livinglogic.utils.Closeable;
+
+public class BoundArguments implements Closeable
 {
 	protected Signature signature;
 	protected List<Object> argumentsByPosition;
@@ -169,7 +171,7 @@ public class BoundArguments
 	 * as the variables might be referenced by a closure.
 	 * However for {@code Function} objects that can be done without problems.
 	 */
-	public void cleanup()
+	public void close()
 	{
 		if (signature != null)
 		{
