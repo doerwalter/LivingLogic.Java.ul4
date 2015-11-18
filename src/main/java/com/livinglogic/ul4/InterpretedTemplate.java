@@ -556,6 +556,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 		finally
 		{
+			// We can clean up here, as a "render" call can't pass anything to the outside world
 			arguments.cleanup();
 		}
 	}
@@ -612,6 +613,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 		finally
 		{
+			// We can clean up here, as a "render" call can't pass anything to the outside world
 			arguments.cleanup();
 		}
 	}
@@ -716,7 +718,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 		finally
 		{
-			arguments.cleanup();
+			// no cleanup here, as the result might be a closure that still needs the local variables
 		}
 		return result;
 	}
@@ -775,7 +777,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 		finally
 		{
-			arguments.cleanup();
+			// no cleanup here, as the result might be a closure that still needs the local variables
 		}
 		return result;
 	}

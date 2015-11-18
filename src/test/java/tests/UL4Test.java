@@ -3552,7 +3552,7 @@ public class UL4Test
 			"<?print x?>!" +
 			"<?print y?>!"
 		);
-		checkTemplateOutput("45!43!44!43!43!43!", source, "x", 42, "y", 42);
+		checkTemplateOutput("45!45!44!44!43!43!", source, "x", 42, "y", 42);
 	}
 
 	@Test
@@ -4024,9 +4024,10 @@ public class UL4Test
 	public void nestedscopes()
 	{
 		checkTemplateOutput("0;1;2;", "<?for i in range(3)?><?def x?><?print repr(i)?>;<?end def?><?render x()?><?end for?>");
-		checkTemplateOutput("1;", "<?for i in range(3)?><?if i == 1?><?def x?><?print i?>;<?end def?><?end if?><?end for?><?render x()?>");
-		checkTemplateOutput("1", "<?code i = 1?><?def x?><?print i?><?end def?><?code i = 2?><?render x()?>");
-		checkTemplateOutput("1", "<?code i = 1?><?def x?><?def y?><?print i?><?end def?><?code i = 2?><?render y()?><?end def?><?code i = 3?><?render x()?>");
+		checkTemplateOutput("2;2;2;", "<?code fs = []?><?for i in range(3)?><?def x?><?print repr(i)?>;<?end def?><?code fs.append(x)?><?end for?><?for f in fs?><?render f()?><?end for?>");
+		checkTemplateOutput("2;", "<?for i in range(3)?><?if i == 1?><?def x?><?print i?>;<?end def?><?end if?><?end for?><?render x()?>");
+		checkTemplateOutput("2", "<?code i = 1?><?def x?><?print i?><?end def?><?code i = 2?><?render x()?>");
+		checkTemplateOutput("2", "<?code i = 1?><?def x?><?def y?><?print i?><?end def?><?code i = 2?><?render y()?><?end def?><?code i = 3?><?render x()?>");
 	}
 
 	@Test
@@ -4063,7 +4064,7 @@ public class UL4Test
 	public void function_closure()
 	{
 		checkTemplateResult(24, "<?code y=3?><?def inner?><?return 2*x*y?><?end def?><?return inner(x=4)?>");
-		checkTemplateResult(24, "<?def outer?><?code y=3?><?def inner?><?return 2*x*y?><?end def?><?return inner?><?end def?><?return outer()(x=4)?>");
+		checkTemplateResult(24, "<?def outer()?><?code y=3?><?def inner(x)?><?return 2*x*y?><?end def?><?return inner?><?end def?><?return outer()(x=4)?>");
 	}
 
 	@Test
@@ -4075,7 +4076,7 @@ public class UL4Test
 	@CauseTest(expectedCause=StackOverflowError.class)
 	public void endless_recursion()
 	{
-		checkTemplateOutput("", "<?def f?><?for child in container?><?code f(f=f, container=container)?><?end for?><?end def?><?code x = []?><?code x.append(x)?><?code f(f=f, container=x)?>");
+		checkTemplateOutput("", "<?def f(container)?><?for child in container?><?code f(container)?><?end for?><?end def?><?code x = []?><?code x.append(x)?><?code f(x)?>");
 	}
 
 	@CauseTest(expectedCause=RuntimeExceededException.class)

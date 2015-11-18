@@ -163,7 +163,11 @@ public class BoundArguments
 
 	/**
 	 * "Destroys" a {@code BoundArguments} object to simplify the work the Java GC has to do
-	 * After the call the object is no longer usable
+	 * After the call the object is no longer usable.
+	 *
+	 * Note that this should not be called for any template arguments,
+	 * as the variables might be referenced by a closure.
+	 * However for {@code Function} objects that can be done without problems.
 	 */
 	public void cleanup()
 	{

@@ -30,7 +30,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 	public TemplateClosure(InterpretedTemplate template, EvaluationContext context)
 	{
 		this.template = template;
-		this.variables = new HashMap<String, Object>(context.getVariables()); // Make a shallow copy of the variables in their current state
+		this.variables = context.getVariables();
 		signature = template.signatureAST != null ? template.signatureAST.evaluate(context) : null;
 	}
 
@@ -53,6 +53,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 		}
 		finally
 		{
+			// We can clean up here, as a "render" call can't pass anything to the outside world
 			arguments.cleanup();
 		}
 	}
@@ -67,7 +68,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 		}
 		finally
 		{
-			arguments.cleanup();
+			// no cleanup here, as the result might be a closure that still needs the local variables
 		}
 		return result;
 	}

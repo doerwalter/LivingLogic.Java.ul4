@@ -35,6 +35,8 @@ public abstract class FunctionWithContext implements UL4CallWithContext, UL4Name
 		}
 		finally
 		{
+			// We can clean up here, as the function implementation shouldn't be a "closure",
+			// i.e. it should not return the variables map or anything that needs the map
 			arguments.cleanup();
 		}
 		return result;
