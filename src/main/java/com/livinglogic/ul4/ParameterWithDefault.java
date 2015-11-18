@@ -26,6 +26,6 @@ public class ParameterWithDefault extends Parameter
 
 	public void addToSignature(EvaluationContext context, Signature signature)
 	{
-		signature.add(name, defaultValue.decoratedEvaluate(context));
+		signature.add(name, ArgumentDescription.Type.DEFAULT, defaultValue.decoratedEvaluate(context));
 	}
 }

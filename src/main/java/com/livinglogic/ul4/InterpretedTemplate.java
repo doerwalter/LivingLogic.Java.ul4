@@ -1157,18 +1157,23 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			paramsDump = new LinkedList();
 			for (ArgumentDescription argdesc : signature)
 			{
-				if (argdesc.hasDefaultValue())
+				switch (argdesc.getType())
 				{
-					paramsDump.add(argdesc.getName() + "=");
-					paramsDump.add(argdesc.getDefaultValue());
+					case REQUIRED:
+						paramsDump.add(argdesc.getName());
+						break;
+					case DEFAULT:
+						paramsDump.add(argdesc.getName() + "=");
+						paramsDump.add(argdesc.getDefaultValue());
+						break;
+					case VAR_POSITIONAL:
+						paramsDump.add("*" + argdesc.getName());
+						break;
+					case VAR_KEYWORD:
+						paramsDump.add("**" + argdesc.getName());
+						break;
 				}
-				else
-					paramsDump.add(argdesc.getName());
 			}
-			if (signature.remainingParametersName != null)
-				paramsDump.add("*" + signature.remainingParametersName);
-			if (signature.remainingKeywordParametersName != null)
-				paramsDump.add("**" + signature.remainingKeywordParametersName);
 			encoder.dump(paramsDump);
 		}
 		else
@@ -1210,6 +1215,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 		else
 		{
+			System.out.println(FunctionRepr.call(paramsDump));
 			signature = new Signature();
 			boolean nextDefault = false;
 			String paramName = null;
@@ -1217,7 +1223,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			{
 				if (nextDefault)
 				{
-					signature.add(paramName, param);
+					signature.add(paramName, ArgumentDescription.Type.DEFAULT, param);
 					nextDefault = false;
 				}
 				else
@@ -1229,11 +1235,11 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						nextDefault = true;
 					}
 					else if (paramName.startsWith("**"))
-						signature.setRemainingKeywordParameters(paramName.substring(2));
+						signature.add(paramName.substring(2), ArgumentDescription.Type.VAR_KEYWORD, null);
 					else if (paramName.startsWith("*"))
-						signature.setRemainingParameters(paramName.substring(1));
+						signature.add(paramName.substring(1), ArgumentDescription.Type.VAR_POSITIONAL, null);
 					else
-						signature.add(paramName);
+						signature.add(paramName, ArgumentDescription.Type.REQUIRED, null);
 				}
 			}
 			this.signature = signature;

@@ -13,13 +13,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Collection;
 
 public class Signature implements Iterable<ArgumentDescription>
 {
 	protected LinkedHashMap<String, ArgumentDescription> parameters;
+	protected int size;
+	protected boolean hasRemainingParameters;
+	protected boolean hasRemainingKeywordParameters;
 	protected List<String> parameterNames;
-	protected String remainingParametersName;
-	protected String remainingKeywordParametersName;
 
 	/**
 	 * Marker objects that specify certain types of parameters.
@@ -31,9 +33,10 @@ public class Signature implements Iterable<ArgumentDescription>
 	public Signature(Object... args)
 	{
 		parameters = new LinkedHashMap<String, ArgumentDescription>();
+		size = 0;
+		hasRemainingParameters = false;
+		hasRemainingKeywordParameters = false;
 		parameterNames = null;
-		this.remainingParametersName = null;
-		this.remainingKeywordParametersName = null;
 
 		String parameterName = null;
 		for (int i = 0; i < args.length; ++i)
@@ -43,50 +46,48 @@ public class Signature implements Iterable<ArgumentDescription>
 			else
 			{
 				if (args[i] == required)
-					add(parameterName);
+					add(parameterName, ArgumentDescription.Type.REQUIRED, null);
 				else if (args[i] == remainingParameters)
-					setRemainingParameters(parameterName);
+					add(parameterName, ArgumentDescription.Type.VAR_POSITIONAL, null);
 				else if (args[i] == remainingKeywordParameters)
-					setRemainingKeywordParameters(parameterName);
+					add(parameterName, ArgumentDescription.Type.VAR_KEYWORD, null);
 				else
-					add(parameterName, args[i]);
+					add(parameterName, ArgumentDescription.Type.DEFAULT, args[i]);
 			}
 		}
 	}
 
-	public void add(String name)
+	public void add(String name, ArgumentDescription.Type type, Object defaultValue)
 	{
-		parameters.put(name, new ArgumentDescription(name, parameters.size()));
-	}
-
-	public void add(String name, Object defaultValue)
-	{
-		parameters.put(name, new ArgumentDescription(name, parameters.size(), defaultValue));
-	}
-
-	public void setRemainingParameters(String name)
-	{
-		remainingParametersName = name;
-	}
-
-	public void setRemainingKeywordParameters(String name)
-	{
-		remainingKeywordParametersName = name;
-	}
-
-	public List<String> getParameterNames()
-	{
-		if (parameterNames == null)
+		parameters.put(name, new ArgumentDescription(name, parameters.size(), type, defaultValue));
+		switch (type)
 		{
-			parameterNames = new ArrayList<String>(parameters.size() + (remainingParametersName != null ? 1 : 0) + (remainingKeywordParametersName != null ? 1 : 0));
-			for (String argumentName : parameters.keySet())
-				parameterNames.add(argumentName);
-			if (remainingParametersName != null)
-				parameterNames.add(remainingParametersName);
-			if (remainingKeywordParametersName != null)
-				parameterNames.add(remainingKeywordParametersName);
+			case REQUIRED:
+			case DEFAULT:
+				++size;
+				break;
+			case VAR_POSITIONAL:
+				hasRemainingParameters = true;
+				break;
+			case VAR_KEYWORD:
+				hasRemainingKeywordParameters = true;
+				break;
 		}
-		return parameterNames;
+	}
+
+	public boolean hasRemainingParameters()
+	{
+		return hasRemainingParameters;
+	}
+
+	public boolean hasRemainingKeywordParameters()
+	{
+		return hasRemainingKeywordParameters;
+	}
+
+	public Collection<ArgumentDescription> getParameters()
+	{
+		return parameters.values();
 	}
 
 	public Iterator<ArgumentDescription> iterator()
@@ -96,12 +97,16 @@ public class Signature implements Iterable<ArgumentDescription>
 
 	public int size()
 	{
-		return parameters.size();
+		return size;
 	}
 
 	public boolean containsParameterNamed(String argName)
 	{
-		return parameters.containsKey(argName);
+		ArgumentDescription description = parameters.get(argName);
+		if (description == null)
+			return false;
+		ArgumentDescription.Type type = description.getType();
+		return type == ArgumentDescription.Type.REQUIRED || type == ArgumentDescription.Type.DEFAULT;
 	}
 
 	public String toString()
@@ -118,26 +123,6 @@ public class Signature implements Iterable<ArgumentDescription>
 			else
 				buffer.append(", ");
 			buffer.append(argdesc);
-		}
-
-		if (remainingParametersName != null)
-		{
-			if (first)
-				first = false;
-			else
-				buffer.append(", ");
-			buffer.append("*");
-			buffer.append(remainingParametersName);
-		}
-
-		if (remainingKeywordParametersName != null)
-		{
-			if (first)
-				first = false;
-			else
-				buffer.append(", ");
-			buffer.append("**");
-			buffer.append(remainingKeywordParametersName);
 		}
 		buffer.append(")");
 

@@ -34,35 +34,46 @@ public class BoundArguments
 		}
 		else
 		{
-			int size = signature.size() + (signature.remainingParametersName != null ? 1 : 0) + (signature.remainingKeywordParametersName != null ? 1 : 0);
+			int size = signature.size() + (signature.hasRemainingParameters() ? 1 : 0) + (signature.hasRemainingKeywordParameters() ? 1 : 0);;
 			argumentsByPosition = new ArrayList<Object>(size);
 			argumentsByName = null; // will be created on demand
 
 			int argsize = args != null ? args.size() : 0;
 
+			String remainingParametersName = null;
+			String remainingKeywordParametersName = null;
+
 			int i = 0;
 			for (ArgumentDescription argDesc : signature)
 			{
 				String argName = argDesc.getName();
-				Object argValue = kwargs != null ? kwargs.get(argName) : null;
-				// argument has been specified via keyword
-				if (argValue != null || (kwargs != null && kwargs.containsKey(argName)))
-				{
-					if (i < argsize)
-						// argument has been specified as a positional argument too
-						throw new DuplicateArgumentException(object, argDesc);
-					add(argValue);
-				}
+				ArgumentDescription.Type type = argDesc.getType();
+				if (type == ArgumentDescription.Type.VAR_POSITIONAL)
+					remainingParametersName = argName;
+				else if (type == ArgumentDescription.Type.VAR_KEYWORD)
+					remainingKeywordParametersName = argName;
 				else
 				{
-					if (i < argsize)
-						// argument has been specified as a positional argument
-						add(args.get(i));
-					else if (argDesc.hasDefaultValue())
-						// we have a default value for this argument
-						add(argDesc.getDefaultValue());
+					Object argValue = kwargs != null ? kwargs.get(argName) : null;
+					// argument has been specified via keyword
+					if (argValue != null || (kwargs != null && kwargs.containsKey(argName)))
+					{
+						if (i < argsize)
+							// argument has been specified as a positional argument too
+							throw new DuplicateArgumentException(object, argDesc);
+						add(argValue);
+					}
 					else
-						throw new MissingArgumentException(object, argDesc);
+					{
+						if (i < argsize)
+							// argument has been specified as a positional argument
+							add(args.get(i));
+						else if (type == ArgumentDescription.Type.DEFAULT)
+							// we have a default value for this argument
+							add(argDesc.getDefaultValue());
+						else
+							throw new MissingArgumentException(object, argDesc);
+					}
 				}
 				++i;
 			}
@@ -70,21 +81,24 @@ public class BoundArguments
 			// Handle additional positional arguments
 			// if there are any, and we support a "*" argument, put the remaining arguments into this argument as a list, else complain
 			int expectedArgCount = signature.size();
-			if (signature.remainingParametersName != null)
+			if (argsize > expectedArgCount)
 			{
-				add(argsize > expectedArgCount ? args.subList(signature.size(), argsize) : new ArrayList<Object>());
+				if (remainingParametersName != null)
+					add(args.subList(expectedArgCount, argsize));
+				else
+					throw new TooManyArgumentsException(object, signature, argsize);
 			}
 			else
 			{
-				if (argsize > expectedArgCount)
-					throw new TooManyArgumentsException(object, signature, argsize);
+				if (remainingParametersName != null)
+					add(new ArrayList<Object>());
 			}
 
 			// Handle additional keyword arguments
 			// if there are any, and we support a "**" argument, put the remaining keyword arguments into this argument as a map, else complain
 			if (kwargs != null)
 			{
-				if (signature.remainingKeywordParametersName != null)
+				if (remainingKeywordParametersName != null)
 				{
 					LinkedHashMap<String, Object> realRemainingKeywordArguments = new LinkedHashMap<String, Object>();
 					for (String kwargname : kwargs.keySet())
@@ -119,10 +133,9 @@ public class BoundArguments
 		{
 			argumentsByName = new LinkedHashMap<String, Object>(argumentsByPosition.size());
 
-			List<String> parameterNames = signature.getParameterNames();
-
-			for (int i = 0; i < parameterNames.size(); ++i)
-				argumentsByName.put(parameterNames.get(i), argumentsByPosition.get(i));
+			int i = 0;
+			for (ArgumentDescription argDesc : signature.getParameters())
+				argumentsByName.put(argDesc.getName(), argumentsByPosition.get(i++));
 		}
 	}
 
@@ -156,14 +169,14 @@ public class BoundArguments
 	{
 		if (signature != null)
 		{
-			if (signature.remainingKeywordParametersName != null)
+			if (signature.hasRemainingKeywordParameters())
 			{
 				Map<String, Object> kwargs = (Map<String, Object>)get(argumentsByPosition.size() - 1);
 				kwargs.clear();
 			}
-			if (signature.remainingParametersName != null)
+			if (signature.hasRemainingParameters())
 			{
-				List<Object> args = (List<Object>)get(argumentsByPosition.size() - (signature.remainingKeywordParametersName != null ? 2 : 1));
+				List<Object> args = (List<Object>)get(argumentsByPosition.size() - (signature.hasRemainingKeywordParameters() ? 2 : 1));
 				args.clear();
 			}
 			argumentsByPosition.clear();

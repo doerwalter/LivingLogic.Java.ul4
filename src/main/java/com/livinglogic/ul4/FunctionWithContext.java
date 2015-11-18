@@ -28,8 +28,14 @@ public abstract class FunctionWithContext implements UL4CallWithContext, UL4Name
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
 		BoundArguments arguments = new BoundArguments(getSignature(), this, args, kwargs);
-		Object result = evaluate(context, arguments);
-		arguments.cleanup();
+		try
+		{
+			Object result = evaluate(context, arguments);
+		}
+		finally
+		{
+			arguments.cleanup();
+		}
 		return result;
 	}
 

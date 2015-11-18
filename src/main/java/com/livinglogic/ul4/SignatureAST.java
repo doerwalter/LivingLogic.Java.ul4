@@ -67,14 +67,14 @@ public class SignatureAST extends CodeAST
 		{
 			AST defaultValue = param.getDefaultValue();
 			if (defaultValue != null)
-				signature.add(param.getName(), defaultValue.decoratedEvaluate(context));
+				signature.add(param.getName(), ArgumentDescription.Type.DEFAULT, defaultValue.decoratedEvaluate(context));
 			else
-				signature.add(param.getName());
+				signature.add(param.getName(), ArgumentDescription.Type.REQUIRED, null);
 		}
 		if (remainingParametersName != null)
-			signature.setRemainingParameters(remainingParametersName);
+			signature.add(remainingParametersName, ArgumentDescription.Type.VAR_POSITIONAL, null);
 		if (remainingKeywordParametersName != null)
-			signature.setRemainingKeywordParameters(remainingKeywordParametersName);
+			signature.add(remainingKeywordParametersName, ArgumentDescription.Type.VAR_KEYWORD, null);
 
 		return signature;
 	}

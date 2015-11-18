@@ -10,22 +10,21 @@ public class ArgumentDescription
 {
 	protected String name;
 	protected int position;
-	protected boolean hasDefaultValue;
+	public enum Type
+	{
+		REQUIRED,
+		DEFAULT,
+		VAR_POSITIONAL,
+		VAR_KEYWORD,
+	}
+	protected Type type;
 	protected Object defaultValue;
 
-	public ArgumentDescription(String name, int position)
+	public ArgumentDescription(String name, int position, Type type, Object defaultValue)
 	{
 		this.name = name;
 		this.position = position;
-		this.hasDefaultValue = false;
-		this.defaultValue = null;
-	}
-
-	public ArgumentDescription(String name, int position, Object defaultValue)
-	{
-		this.name = name;
-		this.position = position;
-		this.hasDefaultValue = true;
+		this.type = type;
 		this.defaultValue = defaultValue;
 	}
 
@@ -39,9 +38,9 @@ public class ArgumentDescription
 		return position;
 	}
 
-	public boolean hasDefaultValue()
+	public Type getType()
 	{
-		return hasDefaultValue;
+		return type;
 	}
 
 	public Object getDefaultValue()
@@ -51,9 +50,17 @@ public class ArgumentDescription
 
 	public String toString()
 	{
-		if (hasDefaultValue)
-			return name + "=" + FunctionRepr.call(defaultValue);
-		else
-			return name;
+		switch (type)
+		{
+			case REQUIRED:
+				return name;
+			case DEFAULT:
+				return name + "=" + FunctionRepr.call(defaultValue);
+			case VAR_POSITIONAL:
+				return "*" + name;
+			case VAR_KEYWORD:
+				return "**" + name;
+		}
+		return null;
 	}
 }

@@ -28,8 +28,15 @@ public abstract class Function implements UL4Call, UL4Name, UL4Type, UL4Repr
 	public Object callUL4(List<Object> args, Map<String, Object> kwargs)
 	{
 		BoundArguments arguments = new BoundArguments(getSignature(), this, args, kwargs);
-		Object result = evaluate(arguments);
-		arguments.cleanup();
+		Object result;
+		try
+		{
+			result = evaluate(arguments);
+		}
+		finally
+		{
+			arguments.cleanup();
+		}
 		return result;
 	}
 
