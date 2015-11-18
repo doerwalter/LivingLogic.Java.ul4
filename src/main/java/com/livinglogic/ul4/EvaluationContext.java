@@ -146,6 +146,7 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 			{
 			}
 		}
+		closeables.clear();
 	}
 
 	/**
