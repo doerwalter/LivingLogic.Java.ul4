@@ -1231,7 +1231,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 		else
 		{
-			System.out.println(FunctionRepr.call(paramsDump));
 			signature = new Signature();
 			boolean nextDefault = false;
 			String paramName = null;
