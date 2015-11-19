@@ -4091,6 +4091,12 @@ public class UL4Test
 	}
 
 	@Test
+	public void template_closure()
+	{
+		checkTemplateOutput("24", "<?code f = []?><?def outer()?><?code y=3?><?def inner(x)?><?print 2*x*y?><?end def?><?code f.append(inner)?><?end def?><?code outer()?><?render f[0](x=4)?>");
+	}
+
+	@Test
 	public void return_in_template()
 	{
 		checkTemplateOutput("gurk", "gurk<?return 42?>hurz");
