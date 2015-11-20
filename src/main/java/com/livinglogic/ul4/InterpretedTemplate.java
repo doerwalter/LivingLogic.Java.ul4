@@ -539,7 +539,15 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public void render(java.io.Writer writer, Map<String, Object> variables)
 	{
-		render(null, writer, variables);
+		EvaluationContext context = new EvaluationContext();
+		try
+		{
+			render(context, writer, variables);
+		}
+		finally
+		{
+			context.close();
+		}
 	}
 
 	/**
@@ -548,7 +556,15 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public String renders()
 	{
-		return renders(null, null);
+		EvaluationContext context = new EvaluationContext();
+		try
+		{
+			return renders(context, null);
+		}
+		finally
+		{
+			context.close();
+		}
 	}
 
 	/**
@@ -586,7 +602,15 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public String renders(Map<String, Object> variables)
 	{
-		return renders(null, variables);
+		EvaluationContext context = new EvaluationContext();
+		try
+		{
+			return renders(context, variables);
+		}
+		finally
+		{
+			context.close();
+		}
 	}
 
 	/**
@@ -620,10 +644,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public void render(EvaluationContext context, Writer writer, Map<String, Object> variables)
 	{
-		boolean contextIsLocal = (context == null);
-		if (context == null)
-			context = new EvaluationContext(writer);
-
 		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
 		context.registerCloseable(arguments);
 		try
@@ -632,9 +652,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 		finally
 		{
-			// If we created the context locally, we are responsible for cleaning up, otherwise it's the responsibility of our caller
-			if (contextIsLocal)
-				context.close();
 			// no cleanup here, as the render call might leak a closure to the outside world
 		}
 	}
@@ -650,10 +667,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public void renderBound(EvaluationContext context, java.io.Writer writer, Map<String, Object> variables)
 	{
-		boolean contextIsLocal = (context == null);
 		Writer oldWriter = null;
-		if (context == null)
-			context = new EvaluationContext(writer);
 
 		Map<String, Object> oldVariables = context.setVariables(variables);
 
@@ -678,10 +692,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				context.setWriter(oldWriter);
 
 			context.setVariables(oldVariables);
-
-			// If we created the context locally, we are responsible for cleaning up, otherwise it's the responsibility of our caller
-			if (contextIsLocal)
-				context.close();
 		}
 	}
 
@@ -751,7 +761,15 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public Object call()
 	{
-		return call(null, null);
+		EvaluationContext context = new EvaluationContext();
+		try
+		{
+			return call(context, null);
+		}
+		finally
+		{
+			context.close();
+		}
 	}
 
 	/**
@@ -776,7 +794,15 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public Object call(Map<String, Object> variables)
 	{
-		return call(null, variables);
+		EvaluationContext context = new EvaluationContext();
+		try
+		{
+			return call(context, variables);
+		}
+		finally
+		{
+			context.close();
+		}
 	}
 
 	/**
@@ -791,23 +817,17 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public Object call(EvaluationContext context, Map<String, Object> variables)
 	{
-		boolean contextIsLocal = (context == null);
-		if (context == null)
-			context = new EvaluationContext();
 		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
 		context.registerCloseable(arguments);
 		Object result = null;
 		try
 		{
-			result = callBound(context, arguments.byName());
+			return callBound(context, arguments.byName());
 		}
 		finally
 		{
-			// If we created the context locally, we are responsible for cleaning up, otherwise it's the responsibility of our caller
-			if (contextIsLocal)
-				context.close();
+			// no cleanup here, as the result might be a closure that still needs the local variables
 		}
-		return result;
 	}
 
 	/**
@@ -820,11 +840,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public Object callBound(EvaluationContext context, Map<String, Object> variables)
 	{
-		boolean contextIsLocal = (context == null);
-
-		if (context == null)
-			context = new EvaluationContext(null);
-
 		Map<String, Object> oldVariables = context.setVariables(variables);
 
 		Writer oldWriter = context.setWriter(null);
@@ -847,10 +862,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			context.setWriter(oldWriter);
 
 			context.setVariables(oldVariables);
-
-			// If we created the context locally, we are responsible for cleaning up, otherwise it's the responsibility of our caller
-			if (contextIsLocal)
-				context.close();
 		}
 	}
 
