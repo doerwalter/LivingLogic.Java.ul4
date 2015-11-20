@@ -564,6 +564,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
 		BoundArguments arguments = new BoundArguments(signature, this, args, kwargs);
+		context.registerCloseable(arguments);
 		try
 		{
 			renderBound(context, null, arguments.byName());
@@ -624,6 +625,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			context = new EvaluationContext(writer);
 
 		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
+		context.registerCloseable(arguments);
 		try
 		{
 			renderBound(context, writer, arguments.byName());
@@ -730,6 +732,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
 		BoundArguments arguments = new BoundArguments(signature, this, args, kwargs);
+		context.registerCloseable(arguments);
 		Object result = null;
 		try
 		{
@@ -792,6 +795,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		if (context == null)
 			context = new EvaluationContext();
 		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
+		context.registerCloseable(arguments);
 		Object result = null;
 		try
 		{
