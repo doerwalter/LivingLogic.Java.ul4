@@ -36,10 +36,6 @@ public class GTAST extends BinaryAST
 
 	public static boolean call(Object obj1, Object obj2)
 	{
-		if (null != obj1 && null != obj2)
-			return Utils.cmp(obj1, obj2, ">") > 0;
-		if ((null == obj1) != (null == obj2))
-			throw new ArgumentTypeMismatchException("{} > {}", obj1, obj2);
-		return false;
+		return Utils.cmp(obj1, obj2, ">") > 0;
 	}
 }

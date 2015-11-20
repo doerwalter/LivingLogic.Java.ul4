@@ -208,6 +208,25 @@ public class Utils
 		return ((arg1 > arg2) ? 1 : 0) - ((arg1 < arg2) ? 1 : 0);
 	}
 
+	public static int cmp(List arg1, List arg2, String op)
+	{
+		if (arg1 == arg2)
+			return 0;
+		int i = 0;
+		int arg2size = arg2.size();
+		for (Object item : arg1)
+		{
+			if (i >= arg2size)
+				return 1;
+			int res = cmp(arg1.get(i), arg2.get(i), op);
+			if (res != 0)
+				return res;
+			++i;
+		}
+		int arg1size = arg1.size();
+		return arg1size > arg2size ? -1 : 0;
+	}
+
 	public static int cmp(Comparable arg1, Comparable arg2)
 	{
 		return arg1.compareTo(arg2);
@@ -296,9 +315,17 @@ public class Utils
 			else if (arg2 instanceof BigDecimal)
 				return cmp(value1, (BigDecimal)arg2);
 		}
-		else if (arg1 instanceof Comparable && arg2 instanceof Comparable)
-			return cmp((Comparable)arg1, (Comparable)arg2);
-		throw new ArgumentTypeMismatchException("{} " + op + " {}", arg1, arg2);
+		else if (arg1 instanceof List)
+		{
+			if (arg2 instanceof List)
+				return cmp((List)arg1, (List)arg2, op);
+		}
+		else if (arg1 instanceof Comparable)
+		{
+			if (arg2 instanceof Comparable)
+				return cmp((Comparable)arg1, (Comparable)arg2);
+		}
+		throw new UnorderableTypesException(op, arg1, arg2);
 	}
 
 	public static boolean eq(Object arg1, Object arg2)
