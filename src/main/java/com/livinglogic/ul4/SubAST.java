@@ -70,6 +70,14 @@ public class SubAST extends BinaryAST
 		return arg1 - arg2;
 	}
 
+	public static TimeDelta call(Date arg1, Date arg2)
+	{
+		long diff = arg1.getTime() - arg2.getTime();
+		long seconds = diff/1000;
+		int milliseconds = (int)(diff % 1000);
+		return new TimeDelta(0, seconds, 1000 * milliseconds);
+	}
+
 	public static TimeDelta call(TimeDelta arg1, TimeDelta arg2)
 	{
 		return arg1.subtract(arg2);
@@ -164,18 +172,23 @@ public class SubAST extends BinaryAST
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg1).subtract((BigDecimal)arg2);
 		}
-		else if (arg2 instanceof TimeDelta)
+		else if (arg1 instanceof Date)
 		{
-			if (arg1 instanceof Date)
+			if (arg2 instanceof TimeDelta)
 				return call((Date)arg1, (TimeDelta)arg2);
-			else if (arg1 instanceof TimeDelta)
+			else if (arg2 instanceof MonthDelta)
+				return call((Date)arg1, (MonthDelta)arg2);
+			else if (arg2 instanceof Date)
+				return call((Date)arg1, (Date)arg2);
+		}
+		else if (arg1 instanceof TimeDelta)
+		{
+			if (arg2 instanceof TimeDelta)
 				return call((TimeDelta)arg1, (TimeDelta)arg2);
 		}
-		else if (arg2 instanceof MonthDelta)
+		else if (arg1 instanceof MonthDelta)
 		{
-			if (arg1 instanceof Date)
-				return call((Date)arg1, (MonthDelta)arg2);
-			else if (arg1 instanceof MonthDelta)
+			if (arg2 instanceof MonthDelta)
 				return call((MonthDelta)arg1, (MonthDelta)arg2);
 		}
 		throw new ArgumentTypeMismatchException("{} - {}", arg1, arg2);
