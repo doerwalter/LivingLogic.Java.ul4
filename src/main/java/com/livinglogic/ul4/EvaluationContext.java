@@ -256,7 +256,6 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	/**
 	 * Return a template variable
 	 * @param key The name of the variable
-	 * @throws KeyException if the variable isn't defined
 	 */
 	public Object get(String key)
 	{
