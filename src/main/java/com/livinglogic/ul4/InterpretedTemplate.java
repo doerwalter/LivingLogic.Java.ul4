@@ -619,6 +619,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public void render(EvaluationContext context, Writer writer, Map<String, Object> variables)
 	{
+		boolean contextIsLocal = (context == null);
+		if (context == null)
+			context = new EvaluationContext(writer);
+
 		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
 		try
 		{
@@ -626,6 +630,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 		finally
 		{
+			// If we created the context locally, we are responsible for cleaning up, otherwise it's the responsibility of our caller
+			if (contextIsLocal)
+				context.close();
 			// no cleanup here, as the render call might leak a closure to the outside world
 		}
 	}
@@ -781,6 +788,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public Object call(EvaluationContext context, Map<String, Object> variables)
 	{
+		boolean contextIsLocal = (context == null);
+		if (context == null)
+			context = new EvaluationContext();
 		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
 		Object result = null;
 		try
@@ -789,7 +799,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 		finally
 		{
-			// no cleanup here, as the result might be a closure that still needs the local variables
+			// If we created the context locally, we are responsible for cleaning up, otherwise it's the responsibility of our caller
+			if (contextIsLocal)
+				context.close();
 		}
 		return result;
 	}
