@@ -635,6 +635,10 @@ expr_cmp returns [CodeAST node]
 				'in' { opcode = 6; }
 			|
 				'not' 'in' { opcode = 7; }
+			|
+				'is' { opcode = 8; }
+			|
+				'is' 'not' { opcode = 9; }
 			)
 			e2=expr_bitor {
 				switch (opcode)
@@ -647,6 +651,8 @@ expr_cmp returns [CodeAST node]
 						case 5: $node = GEAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
 						case 6: $node = ContainsAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
 						case 7: $node = NotContainsAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
+						case 8: $node = IsAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
+						case 9: $node = IsNotAST.make(tag, $node.getStartPos(), $e2.node.getEndPos(), $node, $e2.node); break;
 					}
 			}
 		)*

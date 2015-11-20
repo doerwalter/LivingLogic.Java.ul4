@@ -1117,6 +1117,42 @@ public class UL4Test
 	}
 
 	@Test
+	public void operator_is()
+	{
+		String source = "<?print x is y?>";
+
+		checkTemplateOutput("True", source, "x", null, "y", null);
+
+		Object obj1 = 42;
+		checkTemplateOutput("True", source, "x", obj1, "y", obj1);
+
+		Object obj2 = asList(1, 2, 3);
+		checkTemplateOutput("True", source, "x", obj2, "y", obj2);
+
+		Object obj3 = asList(1, 2, 3);
+		Object obj4 = asList(1, 2, 3);
+		checkTemplateOutput("False", source, "x", obj3, "y", obj4);
+	}
+
+	@Test
+	public void operator_isnot()
+	{
+		String source = "<?print x is not y?>";
+
+		checkTemplateOutput("False", source, "x", null, "y", null);
+
+		Object obj1 = 42;
+		checkTemplateOutput("False", source, "x", obj1, "y", obj1);
+
+		Object obj2 = asList(1, 2, 3);
+		checkTemplateOutput("False", source, "x", obj2, "y", obj2);
+
+		Object obj3 = asList(1, 2, 3);
+		Object obj4 = asList(1, 2, 3);
+		checkTemplateOutput("True", source, "x", obj3, "y", obj4);
+	}
+
+	@Test
 	public void operator_eq()
 	{
 		String source = "<?print x == y?>";
