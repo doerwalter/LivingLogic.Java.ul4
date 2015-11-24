@@ -224,7 +224,7 @@ public class Utils
 			++i;
 		}
 		int arg1size = arg1.size();
-		return arg1size > arg2size ? -1 : 0;
+		return arg1size < arg2size ? -1 : 0;
 	}
 
 	public static int cmp(Comparable arg1, Comparable arg2)
