@@ -1296,6 +1296,14 @@ public class UL4Test
 		checkTemplateOutput("True", source, "x", new TimeDelta(0), "y", new TimeDelta(0, 0, 1));
 		checkTemplateOutput("False", source, "x", new MonthDelta(0), "y", new MonthDelta(0));
 		checkTemplateOutput("True", source, "x", new MonthDelta(0), "y", new MonthDelta(1));
+		checkTemplateOutput("True", source, "x", "bar", "y", "foo");
+		checkTemplateOutput("False", source, "x", "foo", "y", "foo");
+		checkTemplateOutput("True", source, "x", "foobar", "y", "foobaz");
+		checkTemplateOutput("True", source, "x", asList(1, 2), "y", asList(1, 2, 3));
+		checkTemplateOutput("False", source, "x", asList(1, 3), "y", asList(1, 2));
+		checkTemplateOutput("True", source, "x", asList(1, 2, "bar"), "y", asList(1, 2, "foo"));
+		checkTemplateOutput("True", source, "x", asList(1, 2, asList(3, "bar")), "y", asList(1, 2, asList(3, "foo")));
+
 		// This checks constant folding
 		checkTemplateOutput("True", "<?print 17 < 23?>");
 		checkTemplateOutput("False", "<?print 17 < 17.?>");
@@ -1320,6 +1328,16 @@ public class UL4Test
 		checkTemplateOutput("True", source, "x", new TimeDelta(0), "y", new TimeDelta(0, 0, 1));
 		checkTemplateOutput("False", source, "x", new MonthDelta(1), "y", new MonthDelta(0));
 		checkTemplateOutput("True", source, "x", new MonthDelta(0), "y", new MonthDelta(1));
+		checkTemplateOutput("True", source, "x", "bar", "y", "foo");
+		checkTemplateOutput("True", source, "x", "foo", "y", "foo");
+		checkTemplateOutput("True", source, "x", "foobar", "y", "foobaz");
+		checkTemplateOutput("True", source, "x", asList(1, 2), "y", asList(1, 2));
+		checkTemplateOutput("True", source, "x", asList(1, 2), "y", asList(1, 2, 3));
+		checkTemplateOutput("False", source, "x", asList(1, 3), "y", asList(1, 2));
+		checkTemplateOutput("True", source, "x", asList(1, 2, "foo"), "y", asList(1, 2, "foo"));
+		checkTemplateOutput("True", source, "x", asList(1, 2, "bar"), "y", asList(1, 2, "foo"));
+		checkTemplateOutput("True", source, "x", asList(1, 2, asList(3, "bar")), "y", asList(1, 2, asList(3, "foo")));
+
 		// This checks constant folding
 		checkTemplateOutput("True", "<?print 17 <= 23?>");
 		checkTemplateOutput("True", "<?print 17 <= 17.?>");
@@ -1346,6 +1364,14 @@ public class UL4Test
 		checkTemplateOutput("True", source, "x", new TimeDelta(0, 0, 1), "y", new TimeDelta(0));
 		checkTemplateOutput("False", source, "x", new MonthDelta(0), "y", new MonthDelta(0));
 		checkTemplateOutput("True", source, "x", new MonthDelta(1), "y", new MonthDelta(0));
+		checkTemplateOutput("True", source, "x", "foo", "y", "bar");
+		checkTemplateOutput("False", source, "x", "foo", "y", "foo");
+		checkTemplateOutput("True", source, "x", "foobaz", "y", "foobar");
+		checkTemplateOutput("True", source, "x", asList(1, 2, 3), "y", asList(1, 2));
+		checkTemplateOutput("False", source, "x", asList(1, 2), "y", asList(1, 3));
+		checkTemplateOutput("True", source, "x", asList(1, 2, "foo"), "y", asList(1, 2, "bar"));
+		checkTemplateOutput("True", source, "x", asList(1, 2, asList(3, "foo")), "y", asList(1, 2, asList(3, "bar")));
+
 		// This checks constant folding
 		checkTemplateOutput("False", "<?print 17 > 23?>");
 		checkTemplateOutput("False", "<?print 17 > 17.?>");
@@ -1372,6 +1398,16 @@ public class UL4Test
 		checkTemplateOutput("True", source, "x", new TimeDelta(0, 0, 1), "y", new TimeDelta(0));
 		checkTemplateOutput("False", source, "x", new MonthDelta(0), "y", new MonthDelta(1));
 		checkTemplateOutput("True", source, "x", new MonthDelta(1), "y", new MonthDelta(0));
+		checkTemplateOutput("True", source, "x", "foo", "y", "bar");
+		checkTemplateOutput("True", source, "x", "foo", "y", "foo");
+		checkTemplateOutput("True", source, "x", "foobaz", "y", "foobar");
+		checkTemplateOutput("True", source, "x", asList(1, 2), "y", asList(1, 2));
+		checkTemplateOutput("True", source, "x", asList(1, 2, 3), "y", asList(1, 2));
+		checkTemplateOutput("False", source, "x", asList(1, 2), "y", asList(1, 3));
+		checkTemplateOutput("True", source, "x", asList(1, 2, "foo"), "y", asList(1, 2, "foo"));
+		checkTemplateOutput("True", source, "x", asList(1, 2, "foo"), "y", asList(1, 2, "bar"));
+		checkTemplateOutput("True", source, "x", asList(1, 2, asList(3, "foo")), "y", asList(1, 2, asList(3, "bar")));
+
 		// This checks constant folding
 		checkTemplateOutput("False", "<?print 17 >= 23?>");
 		checkTemplateOutput("True", "<?print 17 >= 17.?>");
