@@ -217,8 +217,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		List<SourcePart> parts = new LinkedList<SourcePart>();
 		for (Line line : lines)
 		{
-			for (SourcePart thing : line)
-				parts.add(thing);
+			for (SourcePart part : line)
+				parts.add(part);
 		}
 		return parts;
 	}
@@ -230,11 +230,11 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		boolean first = true;
 		for (Line line : lines)
 		{
-			for (SourcePart thing : line)
+			for (SourcePart part : line)
 			{
-				if (first || !(thing instanceof IndentAST || thing instanceof LineEndAST))
+				if (first || !(part instanceof IndentAST || part instanceof LineEndAST))
 				{
-					parts.add(thing);
+					parts.add(part);
 					first = false;
 				}
 			}
