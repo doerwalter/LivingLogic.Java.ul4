@@ -1087,6 +1087,11 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			return parts.size();
 		}
 
+		public SourcePart get(int i)
+		{
+			return parts.get(i);
+		}
+
 		public boolean isEmpty()
 		{
 			for (SourcePart part : parts)
