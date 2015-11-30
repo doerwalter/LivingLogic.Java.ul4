@@ -28,7 +28,7 @@ class IndentAST extends TextAST
 	@Override
 	public String getText()
 	{
-		return text != null ? null : super.getText();
+		return text != null ? text : super.getText();
 	}
 
 	public void setText(String text)
