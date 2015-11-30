@@ -178,11 +178,11 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		for (Line line : lines)
 		{
-			for (SourcePart thing : line)
+			for (SourcePart part : line)
 			{
-				if (thing instanceof Tag)
+				if (part instanceof Tag)
 				{
-					Tag tag = (Tag)thing;
+					Tag tag = (Tag)part;
 					String tagtype = tag.getTag();
 					if (tagtype.equals("whitespace"))
 						whitespace = Whitespace.fromString(tag.getCode());
@@ -214,18 +214,18 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	private List<SourcePart> handleWhitespaceKeep(List<Line> lines)
 	{
-		List<SourcePart> things = new LinkedList<SourcePart>();
+		List<SourcePart> parts = new LinkedList<SourcePart>();
 		for (Line line : lines)
 		{
 			for (SourcePart thing : line)
-				things.add(thing);
+				parts.add(thing);
 		}
-		return things;
+		return parts;
 	}
 
 	private List<SourcePart> handleWhitespaceStrip(List<Line> lines)
 	{
-		List<SourcePart> things = new LinkedList<SourcePart>();
+		List<SourcePart> parts = new LinkedList<SourcePart>();
 
 		boolean first = true;
 		for (Line line : lines)
@@ -234,12 +234,11 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			{
 				if (first || !(thing instanceof IndentAST || thing instanceof LineEndAST))
 				{
-					things.add(thing);
+					parts.add(thing);
 					first = false;
 				}
 			}
 		}
-		return things;
 	}
 
 	private List<SourcePart> handleWhitespaceSmart(List<Line> lines)
