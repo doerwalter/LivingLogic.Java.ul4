@@ -36,6 +36,15 @@ class IndentAST extends TextAST
 		this.text = text;
 	}
 
+	@Override
+	public Object evaluate(EvaluationContext context)
+	{
+		for (String indent : context.indents)
+			context.write(indent);
+		context.write(getText());
+		return null;
+	}
+
 	public void toString(Formatter formatter)
 	{
 		formatter.write("indent ");
