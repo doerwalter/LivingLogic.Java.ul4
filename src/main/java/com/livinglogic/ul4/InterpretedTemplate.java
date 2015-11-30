@@ -1072,6 +1072,17 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			parts = new LinkedList<SourcePart>();
 		}
 
+		public String indent()
+		{
+			if (size() > 0)
+			{
+				SourcePart start = get(0);
+				if (start instanceof IndentAST)
+					return ((IndentAST)start).getText();
+			}
+			return "";
+		}
+
 		public void add(SourcePart part)
 		{
 			parts.add(part);
