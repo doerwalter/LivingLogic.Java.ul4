@@ -46,6 +46,22 @@ public class RenderAST extends CallRenderAST
 	}
 
 	@Override
+	public Object evaluate(EvaluationContext context)
+	{
+		Object realObject = obj.decoratedEvaluate(context);
+
+		List<Object> realArguments = new ArrayList<Object>();
+		Map<String, Object> realKeywordArguments = new HashMap<String, Object>();
+
+		for (Argument argument : arguments)
+			argument.addToCallArguments(context, realObject, realArguments, realKeywordArguments);
+
+		call(context, realObject, realArguments, realKeywordArguments);
+
+		return null;
+	}
+
+	@Override
 	public Object decoratedEvaluate(EvaluationContext context)
 	{
 		// Overwrite with a version that rewraps SourceException too, because we want to see the render call in the exception chain.
@@ -70,21 +86,6 @@ public class RenderAST extends CallRenderAST
 		{
 			throw new SourceException(ex, context.getTemplate(), this);
 		}
-	}
-
-	public Object evaluate(EvaluationContext context)
-	{
-		Object realObject = obj.decoratedEvaluate(context);
-
-		List<Object> realArguments = new ArrayList<Object>();
-		Map<String, Object> realKeywordArguments = new HashMap<String, Object>();
-
-		for (Argument argument : arguments)
-			argument.addToCallArguments(context, realObject, realArguments, realKeywordArguments);
-
-		call(context, realObject, realArguments, realKeywordArguments);
-
-		return null;
 	}
 
 	public void call(EvaluationContext context, UL4RenderWithContext obj, List<Object> args, Map<String, Object> kwargs)
