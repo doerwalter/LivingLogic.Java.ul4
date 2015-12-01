@@ -40,6 +40,41 @@ public class SignatureAST extends CodeAST
 		parameters.add(new Parameter(name, type, defaultValue));
 	}
 
+	public void toString(Formatter formatter)
+	{
+		boolean first = true;
+		formatter.write("(");
+		for (Parameter param : parameters)
+		{
+			if (first)
+				first = false;
+			else
+				formatter.write(", ");
+
+			String name = param.getName();
+			switch (param.getType())
+			{
+				case REQUIRED:
+					formatter.write(name);
+					break;
+				case DEFAULT:
+					formatter.write(name);
+					formatter.write("=");
+					param.getDefaultValue().toString(formatter);
+					break;
+				case VAR_POSITIONAL:
+					formatter.write("*");
+					formatter.write(name);
+					break;
+				case VAR_KEYWORD:
+					formatter.write("**");
+					formatter.write(name);
+					break;
+			}
+		}
+		formatter.write(")");
+	}
+
 	public Signature evaluate(EvaluationContext context)
 	{
 		Signature signature = new Signature();

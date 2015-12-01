@@ -482,6 +482,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		formatter.write("def ");
 		formatter.write(name != null ? name : "unnamed");
+		if (signatureAST != null)
+			signatureAST.toString(formatter);
+		else if (signature != null)
+			formatter.write(signature.toString());
 		formatter.write(":");
 		formatter.lf();
 		formatter.indent();
