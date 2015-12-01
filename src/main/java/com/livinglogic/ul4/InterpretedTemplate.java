@@ -10,6 +10,7 @@ import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.Stack;
 import java.util.Iterator;
@@ -244,8 +245,137 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	private List<SourcePart> handleWhitespaceSmart(List<Line> lines)
 	{
-		// FIXME: Implement this
-		return handleWhitespaceKeep(lines);
+		// Step 1: Determine the block structure of the lines
+		List<Block> blocks = new LinkedList<Block>(); // List of all blocks
+		List<Block> stack = new LinkedList<Block>(); // Stack of currently "open" blocks
+
+		List<BlockLine> newlines = new LinkedList<BlockLine>();
+
+		int i = 0;
+		for (Line line : lines)
+		{
+			String tagName = line.blockTagName();
+			if (tagName == null)
+			{
+				newlines.add(new BlockLine(line, stack));
+			}
+			else
+			{
+				// Tags "closing" a block
+				if ("elif".equals(tagName) || "else".equals(tagName) || "end".equals(tagName))
+				{
+					if (stack.size() > 0)
+					{
+						stack.get(stack.size()-1).endLine = i;
+						stack.remove(stack.size()-1);
+					}
+				}
+				newlines.add(new BlockLine(line, stack));
+				// Tags "opening" a block
+				if ("for".equals(tagName) || "if".equals(tagName) || "def".equals(tagName) || "elif".equals(tagName) || "else".equals(tagName))
+				{
+					Block block = new Block(i+1); // Block starts on the next line
+					stack.add(block);
+					blocks.add(block);
+				}
+			}
+			++i;
+		}
+
+		// Close open blocks (shouldn't be neccessary for properly nested templates, i.e. stack should be empty)
+		int lineCount = lines.size();
+		for (Block block : stack)
+			block.endLine = lineCount;
+
+		// Step 2: Find the outer and inner indentation of all blocks
+		for (Block block : blocks)
+			block.setIndent(lines);
+
+		// Step 3: Fix the indentation
+		Map<String, String> allIndents = new HashMap<String, String>(); // for "interning" indentation
+		for (BlockLine blockLine : newlines)
+		{
+			Line line = blockLine.line;
+			List<Block> lineStack = blockLine.stack;
+
+			// use all character for indentation that are not part of the "artificial" indentation introduced in each block
+			String oldIndent = line.indent();
+			if (oldIndent.length() > 0)
+			{
+				StringBuilder newIndentBuilder = new StringBuilder();
+				for (int j = 0; j < oldIndent.length(); ++j)
+				{
+					boolean ok = true;
+					for (Block block : lineStack)
+					{
+						if (block.containsCol(j))
+						{
+							ok = false;
+							break;
+						}
+					}
+					if (ok)
+						newIndentBuilder.append(oldIndent.charAt(j));
+				}
+				String newIndent = newIndentBuilder.toString();
+				if (allIndents.get(newIndent) != null)
+					newIndent = allIndents.get(newIndent);
+				else
+					allIndents.put(newIndent, newIndent);
+				((IndentAST)line.get(0)).setText(newIndent);
+			}
+		}
+
+		// Step 4: Drop whitespace from empty lines or lines that only contain indentation and block tags
+		List<SourcePart> parts = new LinkedList<SourcePart>();
+		for (Line line : lines)
+		{
+			if (line.size() == 2)
+			{
+				if (line.get(0) instanceof IndentAST)
+				{
+					if (line.get(1) instanceof LineEndAST)
+					{
+						parts.add(line.get(1));
+						continue;
+					}
+					else if (line.get(1) instanceof Tag)
+					{
+						Tag tag = (Tag)line.get(1);
+						if (!tag.tag.equals("print") && !tag.tag.equals("printx") && !tag.tag.equals("render"))
+						{
+							parts.add(tag);
+							continue;
+						}
+					}
+				}
+			}
+			else if (line.size() == 3)
+			{
+				if (line.get(0) instanceof IndentAST && line.get(2) instanceof LineEndAST)
+				{
+					if (line.get(1) instanceof Tag)
+					{
+						Tag tag = (Tag)line.get(1);
+						if (tag.tag.equals("render"))
+						{
+							parts.add(line.get(0)); // This will be move into the render tag later
+							parts.add(tag);
+							continue;
+						}
+						else if (!tag.tag.equals("print") && !tag.tag.equals("printx"))
+						{
+							parts.add(tag);
+							continue;
+						}
+					}
+				}
+			}
+			// We get here when we never run into a "continue", i.e. when we didn't encounter a special case
+			for (SourcePart part : line)
+				parts.add(part);
+		}
+		return parts;
 	}
 
 
@@ -406,6 +536,21 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						if (!(code instanceof CallAST))
 							throw new RuntimeException("render call required");
 						RenderAST render = new RenderAST((CallAST)code);
+						// If we have an indentation before the {code <?render?>} tag, move it
+						// into the {@code indent} attribute of the {code RenderAST} object,
+						// because this indentation must be added to every line that the
+						// rendered template outputs.
+						if (innerBlock instanceof ConditionalBlocks)
+							innerBlock = (BlockAST)innerBlock.content.get(innerBlock.content.size()-1); // We can replace {@code innerBlock}, because we don't need it any more for the rest of the loop body
+						if (innerBlock.content.size() > 0)
+						{
+							AST lastNode = innerBlock.content.get(innerBlock.content.size()-1);
+							if (lastNode instanceof IndentAST)
+							{
+								render.indent = (IndentAST)lastNode;
+								innerBlock.content.remove(innerBlock.content.size()-1);
+							}
+						}
 						innerBlock.append(render);
 					}
 					else
@@ -1116,6 +1261,93 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					return false;
 			}
 			return true;
+		}
+
+		public String blockTagName()
+		{
+			int size = size();
+			if (2 <= size && size <= 3)
+			{
+				if (get(0) instanceof IndentAST && get(1) instanceof Tag)
+				{
+					Tag tag = (Tag)get(1);
+					String tagName = tag.tag;
+					if ("def".equals(tagName) || "for".equals(tagName) || "if".equals(tagName) || "elif".equals(tagName) || "else".equals(tagName) || "end".equals(tagName))
+					{
+						if (size == 2 || get(2) instanceof LineEndAST)
+							return tagName;
+					}
+				}
+			}
+			return null;
+		}
+	}
+
+	private static String commonPrefix(String s1, String s2)
+	{
+		int length1 = s1.length();
+		int length2 = s2.length();
+		int commonLength = Math.min(s1.length(), s2.length());
+		for (int i = 0; i < commonLength; ++i)
+		{
+			if (s1.charAt(i) != s2.charAt(i))
+				return s1.substring(0, i);
+		}
+		return s1.substring(0, commonLength);
+	}
+
+	private static class Block
+	{
+		public int startLine;
+		public int endLine;
+		public int indentStartCol;
+		public int indentEndCol;
+
+		public Block(int startLine)
+		{
+			this.startLine = startLine;
+			this.endLine = startLine;
+			this.indentStartCol = -1;
+			this.indentEndCol = -1;
+		}
+
+		public void setIndent(List<Line> lines)
+		{
+			// outer indent, i.e. the indentation of the start tag of the block
+			indentStartCol = startLine == 0 ? 0 : lines.get(startLine-1).indent().length();
+
+			// inner indentation (ignoring lines that only contain whitespace)
+			String innerIndent = null;
+			for (int i = startLine; i < endLine; ++i)
+			{
+				Line line = lines.get(i);
+				if (!line.isEmpty())
+				{
+					String indentString = line.indent();
+					if (innerIndent == null)
+						innerIndent = indentString;
+					else
+						innerIndent = commonPrefix(innerIndent, indentString);
+				}
+			}
+			indentEndCol = innerIndent.length();
+		}
+
+		public boolean containsCol(int col)
+		{
+			return indentStartCol <= col && col <= indentEndCol;
+		}
+	}
+
+	private static class BlockLine
+	{
+		public Line line;
+		public List<Block> stack;
+
+		BlockLine(Line line, List<Block> stack)
+		{
+			this.line = line;
+			this.stack = new LinkedList<Block>(stack);
 		}
 	}
 

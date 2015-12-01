@@ -4199,6 +4199,57 @@ public class UL4Test
 		assertEquals(template3.renders(), "foobar");
 	}
 
+	@Test
+	public void render_reindents() throws Exception
+	{
+		InterpretedTemplate template = getTemplate("<?print 42?>\n<?print 43?>", "t", InterpretedTemplate.Whitespace.keep);
+
+		checkTemplateOutput("\t42\n\t43", "\t<?render t()?>", "t", template);
+	}
+
+	@Test
+	public void smart_whitespace() throws Exception
+	{
+		// Without linefeeds the text will be output as-is.
+		checkTemplateOutput("\tTrue", getTemplate("<?if True?>\tTrue<?end if?>", InterpretedTemplate.Whitespace.smart));
+
+		// Line feeds will be removed from lines containing only a "control flow" tag.
+		checkTemplateOutput("True\n", getTemplate("<?if True?>\nTrue\n<?end if?>\n", InterpretedTemplate.Whitespace.smart));
+
+		// Indentation will also be removed from those lines.
+		checkTemplateOutput("True\n", getTemplate("    <?if True?>\nTrue\n         <?end if?>\n", InterpretedTemplate.Whitespace.smart));
+
+		// Additional text (before and after tag) will leave the line feeds intact.
+		checkTemplateOutput("x\nTrue\n", getTemplate("x<?if True?>\nTrue\n<?end if?>\n", InterpretedTemplate.Whitespace.smart));
+		checkTemplateOutput(" \nTrue\n", getTemplate("<?if True?> \nTrue\n<?end if?>\n", InterpretedTemplate.Whitespace.smart));
+
+		// Multiple tags will also leave the line feeds intact.
+		checkTemplateOutput("\nTrue\n\n", getTemplate("<?if True?><?if True?>\nTrue\n<?end if?><?end if?>\n", InterpretedTemplate.Whitespace.smart));
+
+		// For <?print?> and <?printx?> tags the indentation and line feed will not be stripped
+		checkTemplateOutput(" 42\n", getTemplate(" <?print 42?>\n", InterpretedTemplate.Whitespace.smart));
+		checkTemplateOutput(" 42\n", getTemplate(" <?printx 42?>\n", InterpretedTemplate.Whitespace.smart));
+
+		// For <?render?> tags the line feed will be stripped, but the indentation will be reused for each line rendered by the call
+		checkTemplateOutput("   x\r\n", getTemplate("<?def x?>\nx\r\n<?end def?>\n   <?render x()?>\n", InterpretedTemplate.Whitespace.smart));
+
+		// But of course "common" indentation will be ignored
+		checkTemplateOutput("x\r\n", getTemplate("<?if True?>\n   <?def x?>\n   x\r\n   <?end def?>\n   <?render x()?>\n<?end if?>\n", InterpretedTemplate.Whitespace.smart));
+
+		// But not on the outermost level, which leads to an esoteric corner case:
+		// The indentation will be output twice (once by the text itself, and once by the render call).
+		checkTemplateOutput("      x\r\n", getTemplate("   <?def x?>\n   x\r\n   <?end def?>\n   <?render x()?>\n", InterpretedTemplate.Whitespace.smart));
+
+		// Additional indentation in the block will be removed.
+		checkTemplateOutput("True\n", getTemplate("<?if True?>\n\tTrue\n<?end if?>\n", InterpretedTemplate.Whitespace.smart));
+
+		// Outer indentation will be kept.
+		checkTemplateOutput(" True\n", getTemplate(" <?if True?>\n \tTrue\n <?end if?>\n", InterpretedTemplate.Whitespace.smart));
+
+		// Mixed indentation will not be recognized as indentation.
+		checkTemplateOutput("\tTrue\n", getTemplate(" <?if True?>\n\tTrue\n <?end if?>\n", InterpretedTemplate.Whitespace.smart));
+	}
+
 	public static final class MakeVar extends Function
 	{
 		protected int value;
