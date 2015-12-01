@@ -45,6 +45,17 @@ public class RenderAST extends CallRenderAST
 		return "render";
 	}
 
+	public void toString(Formatter formatter)
+	{
+		formatter.write("render ");
+		super.toString(formatter);
+		if (indent != null)
+		{
+			formatter.write(" with indent ");
+			formatter.write(FunctionRepr.call(indent.getText()));
+		}
+	}
+
 	@Override
 	public Object evaluate(EvaluationContext context)
 	{
