@@ -31,7 +31,10 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 
 	public void toString(Formatter formatter)
 	{
-		formatter.write(getType());
+		String type = getType();
+		if (type.endsWith("block")) // drop "block" at the end
+			type = type.substring(0, type.length()-5);
+		formatter.write(type);
 		formatter.write(" ");
 		toStringFromSource(formatter);
 		formatter.write(":");
