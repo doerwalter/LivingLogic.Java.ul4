@@ -22,9 +22,39 @@ public class SourceException extends RuntimeException
 			buffer.append(FunctionRepr.call(name));
 		}
 		buffer.append(": offset ");
-		buffer.append(part.getStartPos());
+		int offset = part.getStartPos();
+		buffer.append(offset);
 		buffer.append(":");
 		buffer.append(part.getEndPos());
+
+		// Determine line and column number
+		int line = 1;
+		int col;
+		String source = part.getSource();
+		int lastLineFeed = source.lastIndexOf("\n", offset);
+
+		if (lastLineFeed == -1)
+		{
+			col = offset+1;
+		}
+		else
+		{
+			col = 1;
+			for (int i = 0; i < offset; ++i)
+			{
+				if (source.charAt(i) == '\n')
+				{
+					++line;
+					col = 0;
+				}
+				++col;
+			}
+		}
+
+		buffer.append("; line ");
+		buffer.append(line);
+		buffer.append("; col ");
+		buffer.append(col);
 		buffer.append("\n");
 		buffer.append(part.getSnippet().toString());
 		return buffer.toString();
