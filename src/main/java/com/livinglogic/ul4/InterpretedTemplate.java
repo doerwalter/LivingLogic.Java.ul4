@@ -239,6 +239,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				}
 			}
 		}
+		return parts;
 	}
 
 	private List<SourcePart> handleWhitespaceSmart(List<Line> lines)
