@@ -7,6 +7,8 @@ exp-100:
 * Closures no longer see a frozen version of the variables at the time of the
   ``<?def?>`` tag, but the final state of the variables (like many other
   programming languages do).
+* Updated for compatibility with XIST 5.14: smart whitespace handling and
+  related stuff has been implemented.
 
 
 exp-99-7:
