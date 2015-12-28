@@ -72,17 +72,17 @@ public class CallAST extends CallRenderAST
 		return call(context, realObject, realArguments, realKeywordArguments);
 	}
 
-	public Object call(UL4Call obj, List<Object> args, Map<String, Object> kwargs)
+	public static Object call(UL4Call obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		return obj.callUL4(args, kwargs);
 	}
 
-	public Object call(EvaluationContext context, UL4CallWithContext obj, List<Object> args, Map<String, Object> kwargs)
+	public static Object call(EvaluationContext context, UL4CallWithContext obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		return obj.callUL4(context, args, kwargs);
 	}
 
-	public Object call(EvaluationContext context, Object obj, List<Object> args, Map<String, Object> kwargs)
+	public static Object call(EvaluationContext context, Object obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		if (obj instanceof UL4Call)
 			return call((UL4Call)obj, args, kwargs);
