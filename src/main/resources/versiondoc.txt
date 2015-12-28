@@ -1,3 +1,8 @@
+exp-101:
+--------
+* sorted() now supports the key and reverse arguments.
+
+
 exp-100:
 --------
 * Whitespace is now allowed before the tagname in UL4 tag, i.e. ``<? print 42 ?>``
