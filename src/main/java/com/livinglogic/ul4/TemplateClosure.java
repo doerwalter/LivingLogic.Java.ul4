@@ -21,7 +21,7 @@ import com.livinglogic.utils.MapChain;
  * @author W. Doerwald
  */
 
-public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext, UL4Name, UL4Type, UL4GetItemString, UL4Attributes
+public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext, UL4Name, UL4Type, UL4GetItemString, UL4Attributes, UL4Repr
 {
 	private InterpretedTemplate template;
 	private Map<String, Object> variables;
@@ -132,5 +132,14 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 			return new BoundMethodRenderS(this);
 		else
 			return template.getItemStringUL4(key);
+	}
+
+	public void reprUL4(UL4Repr.Formatter formatter)
+	{
+		formatter.append("<");
+		formatter.append(getClass().toString().substring(6));
+		formatter.append(" for ");
+		formatter.visit(template);
+		formatter.append(">");
 	}
 }

@@ -19,7 +19,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
  * The base class of all nodes. This can be either literal text ({@code TextAST})
  * between the tags, or compiled tag content ({@code CodeAST}).
  */
-public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Attributes, SourcePart
+public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Attributes, SourcePart, UL4Repr
 {
 	/**
 	 * The start index of this node in the source
@@ -234,5 +234,16 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 			return endPos;
 		else
 			return new UndefinedKey(key);
+	}
+
+	public void reprUL4(UL4Repr.Formatter formatter)
+	{
+		formatter.append("<");
+		formatter.append(getClass().toString().substring(6));
+		formatter.append(" startPos=");
+		formatter.visit(startPos);
+		formatter.append(" endPos=");
+		formatter.visit(endPos);
+		formatter.append(">");
 	}
 }

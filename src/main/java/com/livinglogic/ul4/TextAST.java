@@ -99,4 +99,17 @@ public class TextAST extends AST
 		else
 			return super.getItemStringUL4(key);
 	}
+
+	public void reprUL4(UL4Repr.Formatter formatter)
+	{
+		formatter.append("<");
+		formatter.append(getClass().toString().substring(6));
+		formatter.append(" startPos=");
+		formatter.visit(startPos);
+		formatter.append(" endPos=");
+		formatter.visit(endPos);
+		formatter.append(" text=");
+		formatter.visit(getText());
+		formatter.append(">");
+	}
 }

@@ -35,6 +35,7 @@ import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.InterpretedTemplate;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.FunctionDate;
+import com.livinglogic.ul4.FunctionRepr;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.UndefinedKey;
@@ -4599,5 +4600,23 @@ public class UL4Test
 	public void function_subcall_remainingkwargs() throws Exception
 	{
 		checkTemplateOutput("x: 17, y: 23", "<?def f(**kwargs)?><?return ', '.join(key + ': ' + str(value) for (key, value) in sorted(kwargs.items()))?><?end def?><?print f(x=17, y=23)?>");
+	}
+
+	@Test
+	public void template_repr()
+	{
+		InterpretedTemplate template;
+
+		template = getTemplate("<?print 42?>", "foo", InterpretedTemplate.Whitespace.keep);
+		assertEquals("<com.livinglogic.ul4.InterpretedTemplate name=\"foo\">", FunctionRepr.call(template));
+
+		template = getTemplate("<?print 42?>", "foo", InterpretedTemplate.Whitespace.strip);
+		assertEquals("<com.livinglogic.ul4.InterpretedTemplate name=\"foo\" whitespace=\"strip\">", FunctionRepr.call(template));
+
+		template = getTemplate("<?print 42?>", "foo", InterpretedTemplate.Whitespace.strip, "a, b=0xff");
+		assertEquals("<com.livinglogic.ul4.InterpretedTemplate name=\"foo\" whitespace=\"strip\" signature=(a, b=255)>", FunctionRepr.call(template));
+
+		template = getTemplate("<?def x(a, b=0xff)?><?end def?><?print repr(x)?>", "foo", InterpretedTemplate.Whitespace.keep);
+		checkTemplateOutput("<com.livinglogic.ul4.TemplateClosure for <com.livinglogic.ul4.InterpretedTemplate name=\"x\" signatureAST=(a, b=0xff)>>", template);
 	}
 }

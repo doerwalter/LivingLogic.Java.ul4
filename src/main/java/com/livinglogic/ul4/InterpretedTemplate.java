@@ -623,7 +623,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return signature;
 	}
 
-	public void toString(Formatter formatter)
+	public void toString(AST.Formatter formatter)
 	{
 		formatter.write("def ");
 		formatter.write(name != null ? name : "unnamed");
@@ -1028,6 +1028,43 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public String typeUL4()
 	{
 		return "template";
+	}
+
+	public void reprUL4(UL4Repr.Formatter formatter)
+	{
+		formatter.append("<");
+		formatter.append(getClass().toString().substring(6));
+		if (name != null)
+		{
+			formatter.append(" name=");
+			formatter.visit(name);
+		}
+		if (whitespace != Whitespace.keep)
+		{
+			formatter.append(" whitespace=");
+			formatter.visit(whitespace.toString());
+		}
+		if (!"<?".equals(startdelim))
+		{
+			formatter.append(" startdelim=");
+			formatter.visit(startdelim);
+		}
+		if (!"?>".equals(enddelim))
+		{
+			formatter.append(" enddelim=");
+			formatter.visit(enddelim);
+		}
+		if (signature != null)
+		{
+			formatter.append(" signature=");
+			formatter.append(signature.toString());
+		}
+		if (signatureAST != null)
+		{
+			formatter.append(" signatureAST=");
+			formatter.append(signatureAST.toString());
+		}
+		formatter.append(">");
 	}
 
 	/**
