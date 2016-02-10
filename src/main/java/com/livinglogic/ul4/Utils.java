@@ -62,7 +62,7 @@ public class Utils
 			return "null";
 		if (obj instanceof Undefined)
 			return obj.toString();
-		return obj.getClass().toString().substring(6);
+		return obj.getClass().getName();
 	}
 
 	public static BigInteger toBigInteger(int arg)

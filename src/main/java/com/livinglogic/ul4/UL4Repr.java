@@ -93,7 +93,7 @@ public interface UL4Repr
 						else if (object instanceof Map)
 							visitMap((Map)object);
 						else
-							append("<" + getClass().toString().substring(6) + ">");
+							append("<" + getClass().getName() + ">");
 					}
 					catch (Throwable t)
 					{

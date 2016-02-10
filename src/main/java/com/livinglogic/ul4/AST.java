@@ -239,7 +239,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
 		formatter.append("<");
-		formatter.append(getClass().toString().substring(6));
+		formatter.append(getClass().getName());
 		formatter.append(" startPos=");
 		formatter.visit(startPos);
 		formatter.append(" endPos=");

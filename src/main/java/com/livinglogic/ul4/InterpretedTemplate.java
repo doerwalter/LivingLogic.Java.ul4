@@ -1033,7 +1033,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
 		formatter.append("<");
-		formatter.append(getClass().toString().substring(6));
+		formatter.append(getClass().getName());
 		if (name != null)
 		{
 			formatter.append(" name=");

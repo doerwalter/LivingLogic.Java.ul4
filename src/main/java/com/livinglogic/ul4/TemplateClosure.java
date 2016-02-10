@@ -137,7 +137,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
 		formatter.append("<");
-		formatter.append(getClass().toString().substring(6));
+		formatter.append(getClass().getName());
 		formatter.append(" for ");
 		formatter.visit(template);
 		formatter.append(">");
