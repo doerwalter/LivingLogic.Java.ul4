@@ -3005,7 +3005,11 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", true);
 		checkTemplateOutput("False", source, "data", false);
 		checkTemplateOutput("42", source, "data", 42);
+		checkTemplateOutput("42", source, "data", new BigInteger("42"));
+		checkTemplateOutput("42.0", source, "data", 42.);
 		checkTemplateOutput("42.5", source, "data", 42.5);
+		checkTemplateOutput("42.0", source, "data", new BigDecimal("42.0"));
+		checkTemplateOutput("42.5", source, "data", new BigDecimal("42.5"));
 		checkTemplateOutput("\"foo\"", source, "data", "foo");
 		checkTemplateOutput("[]", source, "data", asList());
 		checkTemplateOutput("[1, 2, 3]", source, "data", asList(1, 2, 3));

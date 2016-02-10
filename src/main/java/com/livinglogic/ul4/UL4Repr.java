@@ -59,7 +59,7 @@ public interface UL4Repr
 			else if (object instanceof BigDecimal)
 			{
 				String result = object.toString();
-				if (result.indexOf('.') < 0 || result.indexOf('E') < 0 || result.indexOf('e') < 0)
+				if (result.indexOf('.') < 0 && result.indexOf('E') < 0 && result.indexOf('e') < 0)
 					result += ".0";
 				append(result);
 			}
