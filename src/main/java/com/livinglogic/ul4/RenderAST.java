@@ -81,15 +81,7 @@ public class RenderAST extends CallRenderAST
 			context.tick();
 			return evaluate(context);
 		}
-		catch (BreakException ex)
-		{
-			throw ex;
-		}
-		catch (ContinueException ex)
-		{
-			throw ex;
-		}
-		catch (ReturnException ex)
+		catch (BreakException|ContinueException|ReturnException ex)
 		{
 			throw ex;
 		}

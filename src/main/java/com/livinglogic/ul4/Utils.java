@@ -617,11 +617,7 @@ public class Utils
 						{
 							cx = Integer.parseInt(string.substring(i+1, i+3), 16);
 						}
-						catch (NumberFormatException ex)
-						{
-							throw new SyntaxException("illegal \\x escape: " + FunctionRepr.call(savesubstr(string, i+1, i+3)), ex);
-						}
-						catch (IndexOutOfBoundsException ex)
+						catch (NumberFormatException|IndexOutOfBoundsException ex)
 						{
 							throw new SyntaxException("illegal \\x escape: " + FunctionRepr.call(savesubstr(string, i+1, i+3)), ex);
 						}
@@ -634,11 +630,7 @@ public class Utils
 						{
 							cu = Integer.parseInt(string.substring(i+1, i+5), 16);
 						}
-						catch (NumberFormatException ex)
-						{
-							throw new SyntaxException("illegal \\u escape: " + FunctionRepr.call(savesubstr(string, i+1, i+5)), ex);
-						}
-						catch (IndexOutOfBoundsException ex)
+						catch (NumberFormatException|IndexOutOfBoundsException ex)
 						{
 							throw new SyntaxException("illegal \\u escape: " + FunctionRepr.call(savesubstr(string, i+1, i+5)), ex);
 						}

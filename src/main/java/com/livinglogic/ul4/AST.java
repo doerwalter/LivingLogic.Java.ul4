@@ -82,21 +82,9 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 			context.tick();
 			return evaluate(context);
 		}
-		catch (BreakException ex)
-		{
-			throw ex;
-		}
-		catch (ContinueException ex)
-		{
-			throw ex;
-		}
-		catch (ReturnException ex)
-		{
-			throw ex;
-		}
 		// Pass through SourceException, as the location is already known.
 		// However in CallAST, we always wrap to get the call into the exception stack.
-		catch (SourceException ex)
+		catch (BreakException|ContinueException|ReturnException|SourceException ex)
 		{
 			throw ex;
 		}

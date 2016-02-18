@@ -61,19 +61,7 @@ abstract class BlockAST extends CodeAST
 		{
 			return evaluate(context);
 		}
-		catch (BreakException ex)
-		{
-			throw ex;
-		}
-		catch (ContinueException ex)
-		{
-			throw ex;
-		}
-		catch (ReturnException ex)
-		{
-			throw ex;
-		}
-		catch (SourceException ex)
+		catch (BreakException|ContinueException|ReturnException|SourceException ex)
 		{
 			throw ex;
 		}

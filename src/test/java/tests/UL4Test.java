@@ -272,11 +272,7 @@ public class UL4Test
 			Class.forName(connectionInfo[0]);
 			return new Connection(java.sql.DriverManager.getConnection(connectionInfo[1], connectionInfo[2], connectionInfo[3]));
 		}
-		catch (ClassNotFoundException ex)
-		{
-			throw new RuntimeException(ex);
-		}
-		catch (SQLException ex)
+		catch (ClassNotFoundException|SQLException ex)
 		{
 			throw new RuntimeException(ex);
 		}
