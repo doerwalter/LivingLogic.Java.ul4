@@ -1,6 +1,5 @@
 exp-101:
 --------
-* sorted() now supports the key and reverse arguments.
 * repr() will now fall back to output "<classname>" for unknown instances.
 * Added repr support for AST, TextAST, CodeAST and InterpretedTemplate.
 
