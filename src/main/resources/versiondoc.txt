@@ -1,3 +1,8 @@
+exp-102:
+--------
+sorted() now supports the key and reverse arguments.
+
+
 exp-101:
 --------
 * repr() will now fall back to output "<classname>" for unknown instances.

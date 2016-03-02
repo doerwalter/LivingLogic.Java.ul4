@@ -14,102 +14,100 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
-public class FunctionSorted extends Function
+import static java.util.Arrays.asList;
+
+public class FunctionSorted extends FunctionWithContext
 {
 	public String nameUL4()
 	{
 		return "sorted";
 	}
 
-	private static final Signature signature = new Signature("iterable", Signature.required);
+	private static final Signature signature = new Signature("iterable", Signature.required, "key", null, "reverse", false);
 
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
-	private static Comparator comparator = new Comparator()
+	private static class SortedComparator implements Comparator
 	{
+		private boolean reverse;
+
+		public SortedComparator(boolean reverse)
+		{
+			this.reverse = reverse;
+		}
+
 		public int compare(Object o1, Object o2)
 		{
-			if (o1 instanceof Comparable && o2 instanceof Comparable)
-				return ((Comparable)o1).compareTo((Comparable)o2);
-			else if (o1 instanceof Collection && o2 instanceof Collection)
-			{
-				Iterator i1 = ((Collection)o1).iterator();
-				Iterator i2 = ((Collection)o2).iterator();
-				for (;;)
-				{
-					if (i1.hasNext())
-					{
-						if (i2.hasNext())
-						{
-							int result = compare(i1.next(), i2.next());
-							if (result != 0)
-								return result;
-						}
-						else
-							return 1;
-					}
-					else
-					{
-						if (i2.hasNext())
-							return -1;
-						else
-							return 0;
-					}
-				}
-			}
-			else
-			{
-				throw new ClassCastException("can't compare " + Utils.objectType(o1) + " with " + Utils.objectType(o2));
-			}
+			int result = Utils.cmp(o1, o2, "<=>");
+			if (reverse)
+				result = -result;
+			return result;
 		}
-	};
-
-	public Object evaluate(BoundArguments args)
-	{
-		return call(args.get(0));
 	}
 
-	public static Vector call(String obj)
+	private static class SortKey implements Comparable<SortKey>
 	{
-		Vector retVal = FunctionList.call(obj);
-		Collections.sort(retVal, comparator);
-		return retVal;
+		private Object object;
+		private Object keyValue;
+
+		public SortKey(Object object, Object keyValue)
+		{
+			this.object = object;
+			this.keyValue = keyValue;
+		}
+
+		public int compareTo(SortKey o)
+		{
+			return Utils.cmp(keyValue, o.keyValue, "<=>");
+		}
 	}
 
-	public static Vector call(Collection obj)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		Vector retVal = FunctionList.call(obj);
-		Collections.sort(retVal, comparator);
-		return retVal;
+		return call(context, args.get(0), args.get(1), args.get(2));
 	}
 
-	public static Vector call(Map obj)
+	private static Vector<SortKey> decorate(EvaluationContext context, Iterator iter, Object key)
 	{
-		Vector retVal = FunctionList.call(obj);
-		Collections.sort(retVal, comparator);
-		return retVal;
+		Vector<SortKey> result = new Vector<SortKey>();
+
+		while (iter.hasNext())
+		{
+			Object object = iter.next();
+			Object keyValue = CallAST.call(context, key, asList(object), null);
+
+			result.add(new SortKey(object, keyValue));
+		}
+		return result;
 	}
 
-	public static Vector call(Iterator obj)
+	private static Vector undecorate(List<SortKey> sortResult)
 	{
-		Vector retVal = FunctionList.call(obj);
-		Collections.sort(retVal, comparator);
-		return retVal;
+		int size = sortResult.size();
+		Vector result = new Vector(size);
+		for (int i = 0; i < size; ++i)
+			result.add(sortResult.get(i).object);
+		return result;
 	}
 
-	public static Vector call(Object obj)
+	public static Vector call(EvaluationContext context, Object obj, Object key, Object reverse)
 	{
-		if (obj instanceof String)
-			return call((String)obj);
-		else if (obj instanceof Collection)
-			return call((Collection)obj);
-		else if (obj instanceof Map)
-			return call((Map)obj);
-		else if (obj instanceof Iterator)
-			return call((Iterator)obj);
-		throw new ArgumentTypeMismatchException("sorted({})", obj);
+		boolean reverseBool = FunctionBool.call(reverse);
+
+		if (key == null)
+		{
+			Vector result = FunctionList.call(obj);
+			Collections.sort(result, new SortedComparator(reverseBool));
+			return result;
+		}
+		else
+		{
+			Vector<SortKey> sort = decorate(context, Utils.iterator(obj), key);
+			Collections.sort(sort, new SortedComparator(reverseBool));
+			return undecorate(sort);
+		}
 	}
 }
