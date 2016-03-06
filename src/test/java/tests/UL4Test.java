@@ -3675,6 +3675,12 @@ public class UL4Test
 	}
 
 	@Test
+	public void method_add()
+	{
+		checkTemplateOutput("{42}", "<?code s = {/}?><?code s.add(42)?><?print s?>");
+	}
+
+	@Test
 	public void method_r_g_b_a()
 	{
 		checkTemplateOutput("0x11", "<?code c = #123?><?print hex(c.r())?>");

@@ -145,6 +145,17 @@ public class AttrAST extends CodeAST implements LValue
 		}
 	}
 
+	public static Object call(Set obj, String attrname)
+	{
+		switch (attrname)
+		{
+			case  "add":
+				return new BoundSetMethodAdd(obj);
+			default:
+				return new UndefinedKey(attrname);
+		}
+	}
+
 	public static Object call(List obj, String attrname)
 	{
 		switch (attrname)
@@ -244,6 +255,8 @@ public class AttrAST extends CodeAST implements LValue
 			return call((UL4Attributes)obj, attrname);
 		else if (obj instanceof Map)
 			return call((Map)obj, attrname);
+		else if (obj instanceof Set)
+			return call((Set)obj, attrname);
 		else if (obj instanceof List)
 			return call((List)obj, attrname);
 		else if (obj instanceof String)

@@ -1,6 +1,7 @@
 exp-102:
 --------
-sorted() now supports the key and reverse arguments.
+* sorted() now supports the key and reverse arguments.
+* Sets now have a method add.
 
 
 exp-101:
