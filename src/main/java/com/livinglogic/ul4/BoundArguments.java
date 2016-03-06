@@ -15,9 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.livinglogic.utils.Closeable;
-
-public class BoundArguments implements Closeable
+public class BoundArguments implements AutoCloseable
 {
 	protected Signature signature;
 	protected List<Object> argumentsByPosition;

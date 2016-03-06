@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 
-import com.livinglogic.utils.Closeable;
 import com.livinglogic.utils.CloseableRegistry;
 import com.livinglogic.utils.MapChain;
 import com.livinglogic.utils.MapUtils;
@@ -24,7 +23,7 @@ import com.livinglogic.utils.MapUtils;
  * {@link AST#evaluate} and stores an output stream and a map containing the
  * currently defined variables as well as other globally available information.
  */
-public class EvaluationContext implements Closeable, CloseableRegistry
+public class EvaluationContext implements AutoCloseable, CloseableRegistry
 {
 	/**
 	 * The {@code Writer} object where output can be written via {@link #write}.
@@ -58,7 +57,7 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	 * A list of cleanup tasks that have to be done, when the
 	 * {@code EvaluationContext} is no longer used
 	 */
-	private LinkedList<Closeable> closeables;
+	private LinkedList<AutoCloseable> closeables;
 
 	/**
 	 * The maximum number of milliseconds of runtime that are allowed
@@ -108,7 +107,7 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 		variables = new HashMap<String, Object>();
 		template = null;
 		allVariables = new MapChain<String, Object>(variables, functions);
-		closeables = new LinkedList<Closeable>();
+		closeables = new LinkedList<AutoCloseable>();
 		this.milliseconds = milliseconds;
 		startMilliseconds = System.currentTimeMillis();
 	}
@@ -136,7 +135,7 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	 */
 	public void close()
 	{
-		for (Closeable closeable : closeables)
+		for (AutoCloseable closeable : closeables)
 		{
 			try
 			{
@@ -152,7 +151,7 @@ public class EvaluationContext implements Closeable, CloseableRegistry
 	/**
 	 * Call this to register a new cleanup hook.
 	 */
-	public void registerCloseable(Closeable closeable)
+	public void registerCloseable(AutoCloseable closeable)
 	{
 		closeables.add(closeable);
 	}

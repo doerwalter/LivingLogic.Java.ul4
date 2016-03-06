@@ -24,7 +24,6 @@ import com.livinglogic.ul4.UL4Attributes;
 import com.livinglogic.ul4.BoundMethodWithContext;
 import com.livinglogic.ul4.BoundMethod;
 import com.livinglogic.ul4.UndefinedKey;
-import com.livinglogic.utils.Closeable;
 import com.livinglogic.utils.CloseableRegistry;
 import com.livinglogic.dbutils.IntVar;
 import com.livinglogic.ul4.BoundArguments;
@@ -51,12 +50,12 @@ public class Connection implements UL4GetItemString, UL4Attributes
 			registerParameters(statement, args);
 
 			if (closeableRegistry != null)
-				closeableRegistry.registerCloseable(new Closeable() { public void close() {try { statement.close(); } catch (SQLException ex) {} } } );
+				closeableRegistry.registerCloseable(statement);
 
 			resultSet = statement.executeQuery();
 
 			if (closeableRegistry != null)
-				closeableRegistry.registerCloseable(new Closeable() { public void close() {try { resultSet.close(); } catch (SQLException ex) {} } } );
+				closeableRegistry.registerCloseable(resultSet);
 
 			fetchParameters(statement, args);
 		}
@@ -100,14 +99,14 @@ public class Connection implements UL4GetItemString, UL4Attributes
 			statement = connection.prepareCall(query.toString());
 
 			if (closeableRegistry != null)
-				closeableRegistry.registerCloseable(new Closeable() { public void close() {try { statement.close(); } catch (SQLException ex) {} } } );
+				closeableRegistry.registerCloseable(statement);
 
 			registerParameters(statement, parameters);
 
 			resultSet = statement.executeQuery();
 
 			if (closeableRegistry != null)
-				closeableRegistry.registerCloseable(new Closeable() { public void close() {try { resultSet.close(); } catch (SQLException ex) {} } } );
+				closeableRegistry.registerCloseable(resultSet);
 
 			fetchParameters(statement, parameters);
 
