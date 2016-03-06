@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Set;
 
 public class BoundSetMethodAdd extends BoundMethod<Set>
@@ -20,21 +21,21 @@ public class BoundSetMethodAdd extends BoundMethod<Set>
 		return "set.add";
 	}
 
-	private static final Signature signature = new Signature("object", Signature.required);
+	private static final Signature signature = new Signature("object", Signature.remainingParameters);
 
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
-	public static void call(Set set, Object object)
+	public static void call(Set set, List<Object> objects)
 	{
-		set.add(object);
+		set.addAll(objects);
 	}
 
 	public Object evaluate(BoundArguments args)
 	{
-		call(object, args.get(0));
+		call(object, (List<Object>)args.get(0));
 		return null;
 	}
 }
