@@ -385,13 +385,16 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("days".equals(key))
-			return new BoundMethodDays(this);
-		else if ("seconds".equals(key))
-			return new BoundMethodSeconds(this);
-		else if ("microseconds".equals(key))
-			return new BoundMethodMicroseconds(this);
-		else
-			return new UndefinedKey(key);
+		switch (key)
+		{
+			case "days":
+				return new BoundMethodDays(this);
+			case "seconds":
+				return new BoundMethodSeconds(this);
+			case "microseconds":
+				return new BoundMethodMicroseconds(this);
+			default:
+				return new UndefinedKey(key);
+		}
 	}
 }

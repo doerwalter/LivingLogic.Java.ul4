@@ -128,10 +128,13 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("renders".equals(key))
-			return new BoundMethodRenderS(this);
-		else
-			return template.getItemStringUL4(key);
+		switch (key)
+		{
+			case "renders":
+				return new BoundMethodRenderS(this);
+			default:
+				return template.getItemStringUL4(key);
+		}
 	}
 
 	public void reprUL4(UL4Repr.Formatter formatter)

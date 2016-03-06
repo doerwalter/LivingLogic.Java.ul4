@@ -86,13 +86,16 @@ public class IfAST extends CodeAST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("objif".equals(key))
-			return objIf;
-		else if ("objcond".equals(key))
-			return objCond;
-		else if ("objelse".equals(key))
-			return objElse;
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "objif":
+				return objIf;
+			case "objcond":
+				return objCond;
+			case "objelse":
+				return objElse;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }

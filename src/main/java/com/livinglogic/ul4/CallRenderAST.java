@@ -93,11 +93,14 @@ public abstract class CallRenderAST extends CodeAST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("obj".equals(key))
-			return obj;
-		else if ("args".equals(key))
-			return arguments;
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "obj":
+				return obj;
+			case "args":
+				return arguments;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }

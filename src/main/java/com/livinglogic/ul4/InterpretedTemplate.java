@@ -1613,19 +1613,22 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("name".equals(key))
-			return name;
-		else if ("whitespace".equals(key))
-			return whitespace.toString();
-		else if ("startdelim".equals(key))
-			return startdelim;
-		else if ("enddelim".equals(key))
-			return enddelim;
-		else if ("source".equals(key))
-			return source;
-		else if ("renders".equals(key))
-			return new BoundMethodRenderS(this);
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "name":
+				return name;
+			case "whitespace":
+				return whitespace.toString();
+			case "startdelim":
+				return startdelim;
+			case "enddelim":
+				return enddelim;
+			case "source":
+				return source;
+			case "renders":
+				return new BoundMethodRenderS(this);
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }

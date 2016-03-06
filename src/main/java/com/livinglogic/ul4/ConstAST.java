@@ -60,9 +60,12 @@ public class ConstAST extends CodeAST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("value".equals(key))
-			return value;
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "value":
+				return value;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }

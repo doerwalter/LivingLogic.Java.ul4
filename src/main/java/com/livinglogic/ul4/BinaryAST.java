@@ -65,11 +65,14 @@ abstract class BinaryAST extends CodeAST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("obj1".equals(key))
-			return obj1;
-		else if ("obj2".equals(key))
-			return obj2;
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "obj1":
+				return obj1;
+			case "obj2":
+				return obj2;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }

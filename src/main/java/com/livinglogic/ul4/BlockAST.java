@@ -118,11 +118,14 @@ abstract class BlockAST extends CodeAST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("endtag".equals(key))
-			return endtag;
-		else if ("content".equals(key))
-			return content;
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "endtag":
+				return endtag;
+			case "content":
+				return content;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }

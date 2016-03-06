@@ -175,9 +175,12 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("months".equals(key))
-			return new BoundMethodMonths(this);
-		else
-			return new UndefinedKey(key);
+		switch (key)
+		{
+			case "months":
+				return new BoundMethodMonths(this);
+			default:
+				return new UndefinedKey(key);
+		}
 	}
 }

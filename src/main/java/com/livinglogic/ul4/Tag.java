@@ -148,23 +148,26 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("source".equals(key))
-			return source;
-		else if ("tag".equals(key))
-			return tag;
-		else if ("startpos".equals(key))
-			return startPos;
-		else if ("endpos".equals(key))
-			return endPos;
-		else if ("startposcode".equals(key))
-			return startPosCode;
-		else if ("endposcode".equals(key))
-			return endPosCode;
-		else if ("text".equals(key))
-			return getText();
-		else if ("code".equals(key))
-			return getCode();
-		else
-			return new UndefinedKey(key);
+		switch (key)
+		{
+			case "source":
+				return source;
+			case "tag":
+				return tag;
+			case "startpos":
+				return startPos;
+			case "endpos":
+				return endPos;
+			case "startposcode":
+				return startPosCode;
+			case "endposcode":
+				return endPosCode;
+			case "text":
+				return getText();
+			case "code":
+				return getCode();
+			default:
+				return new UndefinedKey(key);
+		}
 	}
 }

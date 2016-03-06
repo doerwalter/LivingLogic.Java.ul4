@@ -69,11 +69,15 @@ public class UL4Test
 
 		public Object getItemStringUL4(String key)
 		{
-			if ("x".equals(key))
-				return x;
-			else if ("y".equals(key))
-				return y;
-			return new UndefinedKey(key);
+			switch (key)
+			{
+				case "x":
+					return x;
+				case "y":
+					return y;
+				default:
+					return new UndefinedKey(key);
+			}
 		}
 	}
 

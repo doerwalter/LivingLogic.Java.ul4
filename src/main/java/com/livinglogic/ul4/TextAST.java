@@ -94,10 +94,13 @@ public class TextAST extends AST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("text".equals(key))
-			return getText();
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "text":
+				return getText();
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 
 	public void reprUL4(UL4Repr.Formatter formatter)

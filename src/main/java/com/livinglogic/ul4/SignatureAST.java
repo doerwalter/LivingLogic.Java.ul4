@@ -149,9 +149,12 @@ public class SignatureAST extends CodeAST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("params".equals(key))
-			return parameters;
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "params":
+				return parameters;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }

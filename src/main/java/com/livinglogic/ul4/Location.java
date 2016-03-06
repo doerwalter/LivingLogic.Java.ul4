@@ -221,25 +221,28 @@ public class Location implements UL4ONSerializable, UL4GetItemString, UL4Attribu
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("root".equals(key))
-			return root;
-		else if ("source".equals(key))
-			return source;
-		else if ("type".equals(key))
-			return type;
-		else if ("starttag".equals(key))
-			return starttag;
-		else if ("endtag".equals(key))
-			return endtag;
-		else if ("startcode".equals(key))
-			return startcode;
-		else if ("endcode".equals(key))
-			return endcode;
-		else if ("tag".equals(key))
-			return getTag();
-		else if ("code".equals(key))
-			return getCode();
-		else
-			return new UndefinedKey(key);
+		switch (key)
+		{
+			case "root":
+				return root;
+			case "source":
+				return source;
+			case "type":
+				return type;
+			case "starttag":
+				return starttag;
+			case "endtag":
+				return endtag;
+			case "startcode":
+				return startcode;
+			case "endcode":
+				return endcode;
+			case "tag":
+				return getTag();
+			case "code":
+				return getCode();
+			default:
+				return new UndefinedKey(key);
+		}
 	}
 }

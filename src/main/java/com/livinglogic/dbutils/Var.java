@@ -38,23 +38,28 @@ public abstract class Var implements UL4GetItemString, UL4SetItemString, UL4Attr
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("value".equals(key))
-			return value == noValue ? null : value;
-		else
-			return new UndefinedKey(key);
+		switch (key)
+		{
+			case "value":
+				return value == noValue ? null : value;
+			default:
+				return new UndefinedKey(key);
+		}
 	}
 
 	public void setItemStringUL4(String key, Object value)
 	{
-		if ("value".equals(key))
+		switch (key)
 		{
-			if (value == noValue)
-				value = noValue;
-			else
-				setValue(value);
+			case "value":
+				if (value == noValue)
+					value = noValue;
+				else
+					setValue(value);
+				break;
+			default:
+				throw new ReadonlyException(key);
 		}
-		else
-			throw new ReadonlyException(key);
 	}
 
 	public abstract void register(CallableStatement statement, int position) throws SQLException;

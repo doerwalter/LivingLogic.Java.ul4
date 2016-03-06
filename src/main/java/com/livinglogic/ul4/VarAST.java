@@ -115,9 +115,12 @@ public class VarAST extends CodeAST implements LValue
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("name".equals(key))
-			return name;
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "name":
+				return name;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }

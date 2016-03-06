@@ -126,100 +126,112 @@ public class AttrAST extends CodeAST implements LValue
 
 	public static Object call(Map obj, String attrname)
 	{
-		if ("items".equals(attrname))
-			return new BoundDictMethodItems(obj);
-		else if ("values".equals(attrname))
-			return new BoundDictMethodValues(obj);
-		else if ("get".equals(attrname))
-			return new BoundDictMethodGet(obj);
-		else if ("update".equals(attrname))
-			return new BoundDictMethodUpdate(obj);
+		switch (attrname)
+		{
+			case  "items":
+				return new BoundDictMethodItems(obj);
+			case  "values":
+				return new BoundDictMethodValues(obj);
+			case  "get":
+				return new BoundDictMethodGet(obj);
+			case  "update":
+				return new BoundDictMethodUpdate(obj);
+			default:
+				Object result = obj.get(attrname);
 
-		Object result = obj.get(attrname);
-
-		if ((result == null) && !obj.containsKey(attrname))
-			return new UndefinedKey(attrname);
-		return result;
+				if ((result == null) && !obj.containsKey(attrname))
+					return new UndefinedKey(attrname);
+				return result;
+		}
 	}
 
 	public static Object call(List obj, String attrname)
 	{
-		if ("append".equals(attrname))
-			return new BoundListMethodAppend(obj);
-		else if ("insert".equals(attrname))
-			return new BoundListMethodInsert(obj);
-		else if ("pop".equals(attrname))
-			return new BoundListMethodPop(obj);
-		else if ("find".equals(attrname))
-			return new BoundListMethodFind(obj);
-		else if ("rfind".equals(attrname))
-			return new BoundListMethodRFind(obj);
-		else
-			return new UndefinedKey(attrname);
+		switch (attrname)
+		{
+			case "append":
+				return new BoundListMethodAppend(obj);
+			case "insert":
+				return new BoundListMethodInsert(obj);
+			case "pop":
+				return new BoundListMethodPop(obj);
+			case "find":
+				return new BoundListMethodFind(obj);
+			case "rfind":
+				return new BoundListMethodRFind(obj);
+			default:
+				return new UndefinedKey(attrname);
+		}
 	}
 
 	public static Object call(String obj, String attrname)
 	{
-		if ("split".equals(attrname))
-			return new BoundStringMethodSplit(obj);
-		else if ("rsplit".equals(attrname))
-			return new BoundStringMethodRSplit(obj);
-		else if ("strip".equals(attrname))
-			return new BoundStringMethodStrip(obj);
-		else if ("lstrip".equals(attrname))
-			return new BoundStringMethodLStrip(obj);
-		else if ("rstrip".equals(attrname))
-			return new BoundStringMethodRStrip(obj);
-		else if ("upper".equals(attrname))
-			return new BoundStringMethodUpper(obj);
-		else if ("lower".equals(attrname))
-			return new BoundStringMethodLower(obj);
-		else if ("capitalize".equals(attrname))
-			return new BoundStringMethodCapitalize(obj);
-		else if ("startswith".equals(attrname))
-			return new BoundStringMethodStartsWith(obj);
-		else if ("endswith".equals(attrname))
-			return new BoundStringMethodEndsWith(obj);
-		else if ("replace".equals(attrname))
-			return new BoundStringMethodReplace(obj);
-		else if ("find".equals(attrname))
-			return new BoundStringMethodFind(obj);
-		else if ("rfind".equals(attrname))
-			return new BoundStringMethodRFind(obj);
-		else if ("join".equals(attrname))
-			return new BoundStringMethodJoin(obj);
-		else
-			return new UndefinedKey(attrname);
+		switch (attrname)
+		{
+			case "split":
+				return new BoundStringMethodSplit(obj);
+			case "rsplit":
+				return new BoundStringMethodRSplit(obj);
+			case "strip":
+				return new BoundStringMethodStrip(obj);
+			case "lstrip":
+				return new BoundStringMethodLStrip(obj);
+			case "rstrip":
+				return new BoundStringMethodRStrip(obj);
+			case "upper":
+				return new BoundStringMethodUpper(obj);
+			case "lower":
+				return new BoundStringMethodLower(obj);
+			case "capitalize":
+				return new BoundStringMethodCapitalize(obj);
+			case "startswith":
+				return new BoundStringMethodStartsWith(obj);
+			case "endswith":
+				return new BoundStringMethodEndsWith(obj);
+			case "replace":
+				return new BoundStringMethodReplace(obj);
+			case "find":
+				return new BoundStringMethodFind(obj);
+			case "rfind":
+				return new BoundStringMethodRFind(obj);
+			case "join":
+				return new BoundStringMethodJoin(obj);
+			default:
+				return new UndefinedKey(attrname);
+		}
 	}
 
 	public static Object call(Date obj, String attrname)
 	{
-		if ("year".equals(attrname))
-			return new BoundDateMethodYear(obj);
-		else if ("month".equals(attrname))
-			return new BoundDateMethodMonth(obj);
-		else if ("day".equals(attrname))
-			return new BoundDateMethodDay(obj);
-		else if ("hour".equals(attrname))
-			return new BoundDateMethodHour(obj);
-		else if ("minute".equals(attrname))
-			return new BoundDateMethodMinute(obj);
-		else if ("second".equals(attrname))
-			return new BoundDateMethodSecond(obj);
-		else if ("microsecond".equals(attrname))
-			return new BoundDateMethodMicrosecond(obj);
-		else if ("weekday".equals(attrname))
-			return new BoundDateMethodWeekday(obj);
-		else if ("yearday".equals(attrname))
-			return new BoundDateMethodYearday(obj);
-		else if ("week".equals(attrname))
-			return new BoundDateMethodWeek(obj);
-		else if ("isoformat".equals(attrname))
-			return new BoundDateMethodISOFormat(obj);
-		else if ("mimeformat".equals(attrname))
-			return new BoundDateMethodMIMEFormat(obj);
-		else
-			return new UndefinedKey(attrname);
+		switch (attrname)
+		{
+			case "year":
+				return new BoundDateMethodYear(obj);
+			case "month":
+				return new BoundDateMethodMonth(obj);
+			case "day":
+				return new BoundDateMethodDay(obj);
+			case "hour":
+				return new BoundDateMethodHour(obj);
+			case "minute":
+				return new BoundDateMethodMinute(obj);
+			case "second":
+				return new BoundDateMethodSecond(obj);
+			case "microsecond":
+				return new BoundDateMethodMicrosecond(obj);
+			case "weekday":
+				return new BoundDateMethodWeekday(obj);
+			case "yearday":
+				return new BoundDateMethodYearday(obj);
+			case "week":
+				return new BoundDateMethodWeek(obj);
+			case "isoformat":
+				return new BoundDateMethodISOFormat(obj);
+			case "mimeformat":
+				return new BoundDateMethodMIMEFormat(obj);
+			default:
+				return new UndefinedKey(attrname);
+		}
 	}
 
 	public static Object call(Object obj, String attrname)
@@ -577,11 +589,14 @@ public class AttrAST extends CodeAST implements LValue
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("obj".equals(key))
-			return obj;
-		else if ("attrname".equals(key))
-			return attrname;
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "obj":
+				return obj;
+			case "attrname":
+				return attrname;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }

@@ -81,10 +81,13 @@ public abstract class CodeAST extends AST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("tag".equals(key))
-			return tag;
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "tag":
+				return tag;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 
 	public void reprUL4(UL4Repr.Formatter formatter)

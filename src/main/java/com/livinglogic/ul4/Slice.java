@@ -97,11 +97,14 @@ public class Slice implements UL4GetItemString, UL4Attributes, UL4Repr, Comparab
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("start".equals(key))
-			return getStart();
-		else if ("stop".equals(key))
-			return getStop();
-		else
-			return new UndefinedKey(key);
+		switch (key)
+		{
+			case "start":
+				return getStart();
+			case "stop":
+				return getStop();
+			default:
+				return new UndefinedKey(key);
+		}
 	}
 }

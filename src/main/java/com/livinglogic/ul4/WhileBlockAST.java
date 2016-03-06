@@ -75,10 +75,13 @@ public class WhileBlockAST extends BlockAST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("condition".equals(key))
-			return condition;
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "condition":
+				return condition;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 
 	public Object evaluate(EvaluationContext context)

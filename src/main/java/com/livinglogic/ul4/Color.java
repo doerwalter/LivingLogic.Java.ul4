@@ -945,33 +945,36 @@ public class Color implements Collection, UL4Repr, UL4GetItemString, UL4Attribut
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("r".equals(key))
-			return new BoundMethodR(this);
-		else if ("g".equals(key))
-			return new BoundMethodG(this);
-		else if ("b".equals(key))
-			return new BoundMethodB(this);
-		else if ("a".equals(key))
-			return new BoundMethodA(this);
-		else if ("lum".equals(key))
-			return new BoundMethodLum(this);
-		else if ("hls".equals(key))
-			return new BoundMethodHLS(this);
-		else if ("hlsa".equals(key))
-			return new BoundMethodHLSA(this);
-		else if ("hsv".equals(key))
-			return new BoundMethodHSV(this);
-		else if ("hsva".equals(key))
-			return new BoundMethodHSVA(this);
-		else if ("witha".equals(key))
-			return new BoundMethodWithA(this);
-		else if ("withlum".equals(key))
-			return new BoundMethodWithLum(this);
-		else if ("abslum".equals(key))
-			return new BoundMethodAbsLum(this);
-		else if ("rellum".equals(key))
-			return new BoundMethodRelLum(this);
-		else
-			return new UndefinedKey(key);
+		switch (key)
+		{
+			case "r":
+				return new BoundMethodR(this);
+			case "g":
+				return new BoundMethodG(this);
+			case "b":
+				return new BoundMethodB(this);
+			case "a":
+				return new BoundMethodA(this);
+			case "lum":
+				return new BoundMethodLum(this);
+			case "hls":
+				return new BoundMethodHLS(this);
+			case "hlsa":
+				return new BoundMethodHLSA(this);
+			case "hsv":
+				return new BoundMethodHSV(this);
+			case "hsva":
+				return new BoundMethodHSVA(this);
+			case "witha":
+				return new BoundMethodWithA(this);
+			case "withlum":
+				return new BoundMethodWithLum(this);
+			case "abslum":
+				return new BoundMethodAbsLum(this);
+			case "rellum":
+				return new BoundMethodRelLum(this);
+			default:
+				return new UndefinedKey(key);
+		}
 	}
 }

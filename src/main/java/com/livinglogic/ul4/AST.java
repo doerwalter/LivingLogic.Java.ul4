@@ -214,14 +214,17 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("type".equals(key))
-			return getType();
-		else if ("startpos".equals(key))
-			return startPos;
-		else if ("endpos".equals(key))
-			return endPos;
-		else
-			return new UndefinedKey(key);
+		switch (key)
+		{
+			case "type":
+				return getType();
+			case "startpos":
+				return startPos;
+			case "endpos":
+				return endPos;
+			default:
+				return new UndefinedKey(key);
+		}
 	}
 
 	public void reprUL4(UL4Repr.Formatter formatter)

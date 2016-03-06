@@ -119,11 +119,14 @@ public class SliceAST extends CodeAST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("index1".equals(key))
-			return index1;
-		else if ("index2".equals(key))
-			return index2;
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "index1":
+				return index1;
+			case "index2":
+				return index2;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }

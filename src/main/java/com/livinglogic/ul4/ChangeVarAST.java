@@ -49,11 +49,14 @@ public abstract class ChangeVarAST extends CodeAST
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("lvalue".equals(key))
-			return lvalue;
-		else if ("value".equals(key))
-			return value;
-		else
-			return super.getItemStringUL4(key);
+		switch (key)
+		{
+			case "lvalue":
+				return lvalue;
+			case "value":
+				return value;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }

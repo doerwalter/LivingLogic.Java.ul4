@@ -285,23 +285,26 @@ public class Connection implements UL4GetItemString, UL4Attributes
 
 	public Object getItemStringUL4(String key)
 	{
-		if ("queryargs".equals(key))
-			return new BoundMethodQueryArgs(this);
-		else if ("query".equals(key))
-			return new BoundMethodQuery(this);
-		else if ("execute".equals(key))
-			return new BoundMethodExecute(this);
-		else if ("int".equals(key))
-			return IntVar.function;
-		else if ("number".equals(key))
-			return NumberVar.function;
-		else if ("str".equals(key))
-			return StrVar.function;
-		else if ("clob".equals(key))
-			return CLOBVar.function;
-		else if ("date".equals(key))
-			return DateVar.function;
-		else
-			return new UndefinedKey(key);
+		switch (key)
+		{
+			case "queryargs":
+				return new BoundMethodQueryArgs(this);
+			case "query":
+				return new BoundMethodQuery(this);
+			case "execute":
+				return new BoundMethodExecute(this);
+			case "int":
+				return IntVar.function;
+			case "number":
+				return NumberVar.function;
+			case "str":
+				return StrVar.function;
+			case "clob":
+				return CLOBVar.function;
+			case "date":
+				return DateVar.function;
+			default:
+				return new UndefinedKey(key);
+		}
 	}
 }
