@@ -144,22 +144,13 @@ public class Connection implements UL4GetItemString, UL4Attributes
 			++i;
 		}
 
-		final CallableStatement statement;
-		try
+		try (CallableStatement statement = connection.prepareCall(query.toString()))
 		{
-			statement = connection.prepareCall(query.toString());
-			try
-			{
-				registerParameters(statement, parameters);
+			registerParameters(statement, parameters);
 
-				statement.execute();
+			statement.execute();
 
-				fetchParameters(statement, parameters);
-			}
-			finally
-			{
-				statement.close();
-			}
+			fetchParameters(statement, parameters);
 		}
 		catch (SQLException ex)
 		{

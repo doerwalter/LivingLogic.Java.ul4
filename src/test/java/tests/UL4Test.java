@@ -159,17 +159,10 @@ public class UL4Test
 
 	private static String getTemplateOutput(InterpretedTemplate template, long milliseconds, Object... args)
 	{
-		EvaluationContext context = new EvaluationContext(null, milliseconds);
-		String result = null;
-		try
+		try (EvaluationContext context = new EvaluationContext(null, milliseconds))
 		{
-			result = template.renders(context, makeMap(args));
+			return template.renders(context, makeMap(args));
 		}
-		finally
-		{
-			context.close();
-		}
-		return result;
 	}
 
 	private static void checkTemplateOutput(String expected, String source, Object... args)
@@ -190,15 +183,10 @@ public class UL4Test
 	private static void checkTemplateOutputLimit(String expected, InterpretedTemplate template, long milliseconds, Object... args)
 	{
 		// Render the template once directly
-		EvaluationContext context1 = new EvaluationContext(null, milliseconds);
-		try
+		try (EvaluationContext context1 = new EvaluationContext(null, milliseconds))
 		{
 			String output1 = template.renders(context1, makeMap(args));
 			assertEquals(expected, output1);
-		}
-		finally
-		{
-			context1.close();
 		}
 
 		// Recreate the template from the dump of the compiled template
@@ -208,15 +196,10 @@ public class UL4Test
 		assertEquals(template.toString(), template2.toString());
 
 		// Check that they have the same output
-		EvaluationContext context2 = new EvaluationContext(null, milliseconds);
-		try
+		try (EvaluationContext context2 = new EvaluationContext(null, milliseconds))
 		{
 			String output2 = template2.renders(context2, makeMap(args));
 			assertEquals(expected, output2);
-		}
-		finally
-		{
-			context2.close();
 		}
 	}
 

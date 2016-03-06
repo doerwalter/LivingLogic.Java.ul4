@@ -147,15 +147,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		{
 			UL4Parser parser = getSignatureParser(signature);
 			SignatureAST ast = parser.signature();
-			EvaluationContext context = new EvaluationContext();
-			try
+			try (EvaluationContext context = new EvaluationContext())
 			{
 				Signature sig = ast.evaluate(context);
 				this.signature = sig;
-			}
-			finally
-			{
-				context.close();
 			}
 		}
 	}
@@ -195,14 +190,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						SignatureAST signatureAST = definition.getSignature();
 						if (signatureAST != null)
 						{
-							EvaluationContext context = new EvaluationContext();
-							try
+							try (EvaluationContext context = new EvaluationContext())
 							{
 								signature = signatureAST.evaluate(context);
-							}
-							finally
-							{
-								context.close();
 							}
 						}
 						else
@@ -705,14 +695,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public String renders()
 	{
-		EvaluationContext context = new EvaluationContext();
-		try
+		try (EvaluationContext context = new EvaluationContext())
 		{
 			return renders(context, null);
-		}
-		finally
-		{
-			context.close();
 		}
 	}
 
@@ -730,14 +715,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		BoundArguments arguments = new BoundArguments(signature, this, args, kwargs);
 		context.registerCloseable(arguments);
-		try
-		{
-			renderBound(context, null, arguments.byName());
-		}
-		finally
-		{
-			// no cleanup here, as the render call might leak a closure to the outside world
-		}
+		renderBound(context, null, arguments.byName());
+		// no cleanup here, as the render call might leak a closure to the outside world
 	}
 
 	/**
@@ -751,14 +730,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public String renders(Map<String, Object> variables)
 	{
-		EvaluationContext context = new EvaluationContext();
-		try
+		try (EvaluationContext context = new EvaluationContext())
 		{
 			return renders(context, variables);
-		}
-		finally
-		{
-			context.close();
 		}
 	}
 
@@ -795,14 +769,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
 		context.registerCloseable(arguments);
-		try
-		{
-			renderBound(context, writer, arguments.byName());
-		}
-		finally
-		{
-			// no cleanup here, as the render call might leak a closure to the outside world
-		}
+		renderBound(context, writer, arguments.byName());
+		// no cleanup here, as the render call might leak a closure to the outside world
 	}
 
 	/**
@@ -893,14 +861,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		BoundArguments arguments = new BoundArguments(signature, this, args, kwargs);
 		context.registerCloseable(arguments);
 		Object result = null;
-		try
-		{
-			result = callBound(context, arguments.byName());
-		}
-		finally
-		{
-			// no cleanup here, as the result might be a closure that still needs the local variables
-		}
+		result = callBound(context, arguments.byName());
+		// no cleanup here, as the result might be a closure that still needs the local variables
 		return result;
 	}
 
@@ -910,14 +872,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public Object call()
 	{
-		EvaluationContext context = new EvaluationContext();
-		try
+		try (EvaluationContext context = new EvaluationContext())
 		{
 			return call(context, null);
-		}
-		finally
-		{
-			context.close();
 		}
 	}
 
@@ -969,14 +926,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
 		context.registerCloseable(arguments);
 		Object result = null;
-		try
-		{
-			return callBound(context, arguments.byName());
-		}
-		finally
-		{
-			// no cleanup here, as the result might be a closure that still needs the local variables
-		}
+		return callBound(context, arguments.byName());
+		// no cleanup here, as the result might be a closure that still needs the local variables
 	}
 
 	/**

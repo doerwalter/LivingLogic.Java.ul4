@@ -46,15 +46,10 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 
 	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		BoundArguments arguments = new BoundArguments(signature, template, args, kwargs);
-		try
+		// We can clean up here, as a "render" call can't pass anything to the outside world
+		try (BoundArguments arguments = new BoundArguments(signature, template, args, kwargs))
 		{
 			render(context, arguments.byName());
-		}
-		finally
-		{
-			// We can clean up here, as a "render" call can't pass anything to the outside world
-			arguments.close();
 		}
 	}
 

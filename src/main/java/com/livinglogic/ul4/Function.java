@@ -27,19 +27,12 @@ public abstract class Function implements UL4Call, UL4Name, UL4Type, UL4Repr
 
 	public Object callUL4(List<Object> args, Map<String, Object> kwargs)
 	{
-		BoundArguments arguments = new BoundArguments(getSignature(), this, args, kwargs);
-		Object result;
-		try
+		// We can clean up here, as the function implementation shouldn't be a "closure",
+		// i.e. it should not return the variables map or anything that needs the map
+		try (BoundArguments arguments = new BoundArguments(getSignature(), this, args, kwargs))
 		{
-			result = evaluate(arguments);
+			return evaluate(arguments);
 		}
-		finally
-		{
-			// We can clean up here, as the function implementation shouldn't be a "closure",
-			// i.e. it should not return the variables map or anything that needs the map
-			arguments.close();
-		}
-		return result;
 	}
 
 	public abstract Object evaluate(BoundArguments args);
