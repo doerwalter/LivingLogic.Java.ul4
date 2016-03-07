@@ -347,13 +347,50 @@ public class Color implements Collection, UL4Repr, UL4GetItemString, UL4Attribut
 
 	public Color blend(Color color)
 	{
-		double sa = a/255.;
-		double rsa = 1.-sa;
-		int nr = (int)(r*sa+rsa*color.r);
-		int ng = (int)(g*sa+rsa*color.g);
-		int nb = (int)(b*sa+rsa*color.b);
-		int na = (int)(255-rsa*(255-color.a));
-		return new Color(nr, ng, nb, na);
+		// Scale our values to the range [0, 1]
+		double rt = r/255.;
+		double gt = g/255.;
+		double bt = b/255.;
+		double at = a/255.;
+
+		// Convert to premultiplied alpha
+		rt *= at;
+		gt *= at;
+		bt *= at;
+
+		// Scale other values to the range [0, 1]
+		double ao = color.a/255.;
+		double ro = color.r/255.;
+		double go = color.g/255.;
+		double bo = color.b/255.;
+
+		// Convert to premultiplied alpha
+		ro *= ao;
+		go *= ao;
+		bo *= ao;
+
+		// Blend colors
+		double rf = rt + ro * (1 - at);
+		double gf = gt + go * (1 - at);
+		double bf = bt + bo * (1 - at);
+		double af = ao + at - ao * at;
+
+		// Unmultiply alpha
+		if (af != 0)
+		{
+			rf /= af;
+			gf /= af;
+			bf /= af;
+		}
+
+		// Scale back to [0, 255]
+		int r = (int)(255*rf);
+		int g = (int)(255*gf);
+		int b = (int)(255*bf);
+		int a = (int)(255*af);
+
+		// create final color
+		return new Color(r, g, b, a);
 	}
 
 	public Vector<Double> hls()
