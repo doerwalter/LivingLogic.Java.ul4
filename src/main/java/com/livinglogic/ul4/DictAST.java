@@ -17,19 +17,14 @@ import com.livinglogic.ul4on.Encoder;
 
 public class DictAST extends CodeAST
 {
-	protected LinkedList<DictItem> items = new LinkedList<DictItem>();
+	protected List<DictItemASTBase> items = new LinkedList<DictItemASTBase>();
 
 	public DictAST(Tag tag, int start, int end)
 	{
 		super(tag, start, end);
 	}
 
-	public void append(AST key, AST value)
-	{
-		items.add(new DictItem(key, value));
-	}
-
-	public void append(DictItem item)
+	public void append(DictItemASTBase item)
 	{
 		items.add(item);
 	}
@@ -41,30 +36,22 @@ public class DictAST extends CodeAST
 
 	public Object evaluate(EvaluationContext context)
 	{
-		Map result = new HashMap(items.size());
+		Map result = new HashMap();
 
-		for (DictItem item : items)
-			item.addTo(context, result);
+		for (DictItemASTBase item : items)
+			item.decoratedEvaluateDict(context, result);
 		return result;
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		LinkedList itemList = new LinkedList();
-		for (DictItem item : items)
-			itemList.add(item.object4UL4ON());
-		encoder.dump(itemList);
+		encoder.dump(items);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		List<List<Object>> itemList = (List<List<Object>>)decoder.load();
-		items = new LinkedList<DictItem>();
-		for (List item : itemList)
-		{
-			items.add(new DictItem((AST)item.get(0), (AST)item.get(1)));
-		}
+		items = (List<DictItemASTBase>)decoder.load();
 	}
 }

@@ -418,6 +418,16 @@ public class UL4Test
 	}
 
 	@Test
+	public void type_unpack()
+	{
+		checkTemplateOutput("[]", "<?print [*[]]?>");
+		checkTemplateOutput("[0, 1, 2]", "<?print [*range(3)]?>");
+		checkTemplateOutput("[0, 1, 2]", "<?print [*{0, 1, 2}]?>");
+		checkTemplateOutput("[-1, 0, 1, 2, -2, 3, 4, 5]", "<?print [-1, *range(3), -2, *range(3, 6)]?>");
+		checkTemplateOutput("[0]", "<?print [*{0: 1}]?>");
+	}
+
+	@Test
 	public void type_listcomprehension()
 	{
 		checkTemplateOutput("[2, 6]", "<?code d = [2*i for i in range(4) if i%2]?><?print d?>");
@@ -433,7 +443,7 @@ public class UL4Test
 	}
 
 	@Test
-	public void type_unpackset()
+	public void type_set_unpack()
 	{
 		checkTemplateOutput("{/}", "<?print {*{/}}?>");
 		checkTemplateOutput("{/}", "<?print {*[]}?>");
@@ -461,6 +471,14 @@ public class UL4Test
 		checkTemplateOutput("1:3!", "<?for (key, value) in {1:2, 1:3}.items()?><?print key?>:<?print value?>!<?end for?>");
 		checkTemplateOutput("no", "<?if {}?>yes<?else?>no<?end if?>");
 		checkTemplateOutput("yes", "<?if {1:2}?>yes<?else?>no<?end if?>");
+	}
+
+	@Test
+	public void type_dict_unpack()
+	{
+		checkTemplateOutput("{}", "<?print {**{}}?>");
+		checkTemplateOutput("0:zero;1:one;2:two;", "<?code a = {0: 'zero', 1: 'one'}?><?code b = {2: 'two', **a}?><?for (k, v) in sorted(b.items())?><?print k?>:<?print v?>;<?end for?>");
+		checkTemplateOutput("0:zero;1:one;2:two;3:three;", "<?code a = {0: 'zero', 1: 'one'}?><?code b = {2: 'two'}?><?code c = {3: 'three', **a, **b.items()}?><?for (k, v) in sorted(c.items())?><?print k?>:<?print v?>;<?end for?>");
 	}
 
 	@Test

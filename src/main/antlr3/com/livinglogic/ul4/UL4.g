@@ -325,11 +325,14 @@ setcomprehension returns [SetComprehensionAST node]
 
 /* Dict literal */
 fragment
-dictitem returns [DictItem node]
+dictitem returns [DictItemASTBase node]
 	:
 		k=expr_if
 		':'
-		v=expr_if { $node = new DictItem($k.node, $v.node); }
+		v=expr_if { $node = new DictItemAST(tag, $k.node.getStartPos(), $v.node.getEndPos(), $k.node, $v.node); }
+	|
+		star='**'
+		e=expr_if { $node = new UnpackDictItemAST(tag, getStartPos($star), $e.node.getEndPos(), $e.node); }
 	;
 
 dict returns [DictAST node]
