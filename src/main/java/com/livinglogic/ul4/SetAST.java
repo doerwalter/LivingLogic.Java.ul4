@@ -16,14 +16,14 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SetAST extends CodeAST
 {
-	protected List<AST> items = new LinkedList<AST>();
+	protected List<SeqItemASTBase> items = new LinkedList<SeqItemASTBase>();
 
 	public SetAST(Tag tag, int start, int end)
 	{
 		super(tag, start, end);
 	}
 
-	public void append(AST item)
+	public void append(SeqItemASTBase item)
 	{
 		items.add(item);
 	}
@@ -37,8 +37,8 @@ public class SetAST extends CodeAST
 	{
 		HashSet result = new HashSet(items.size());
 
-		for (AST item : items)
-			result.add(item.decoratedEvaluate(context));
+		for (SeqItemASTBase item : items)
+			item.decoratedEvaluateSet(context, result);
 		return result;
 	}
 
@@ -51,6 +51,6 @@ public class SetAST extends CodeAST
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		items = (List<AST>)decoder.load();
+		items = (List<SeqItemASTBase>)decoder.load();
 	}
 }

@@ -433,6 +433,18 @@ public class UL4Test
 	}
 
 	@Test
+	public void type_unpackset()
+	{
+		checkTemplateOutput("{/}", "<?print {*{/}}?>");
+		checkTemplateOutput("{/}", "<?print {*[]}?>");
+		checkTemplateOutput("[0, 1, 2]", "<?print sorted({*range(3)})?>");
+		checkTemplateOutput("[0, 1, 2]", "<?print sorted({*{0, 1, 2}})?>");
+		checkTemplateOutput("[-2, -1, 0, 1, 2, 3, 4, 5]", "<?print sorted({-1, *range(3), -2, *range(3, 6)})?>");
+		checkTemplateOutput("{0}", "<?print {*{0: 1}}?>");
+	}
+
+
+	@Test
 	public void type_setcomprehension()
 	{
 		checkTemplateOutput("{2}", "<?code d = {2*i for i in range(2) if i%2}?><?print d?>");

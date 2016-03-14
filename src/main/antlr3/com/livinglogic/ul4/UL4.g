@@ -244,16 +244,25 @@ literal returns [CodeAST node]
 	;
 
 /* List literals */
+fragment
+seqitem returns [SeqItemASTBase node]
+	:
+		e=expr_if { $node = new SeqItemAST(tag, $e.node.getStartPos(), $e.node.getEndPos(), $e.node); }
+	|
+		star='*'
+		es=expr_if { $node = new UnpackSeqItemAST(tag, getStartPos($star), $es.node.getEndPos(), $es.node); }
+	;
+
 list returns [ListAST node]
 	:
 		open='['
 		close=']' { $node = new ListAST(tag, getStartPos($open), getEndPos($close)); }
 	|
 		open='[' {$node = new ListAST(tag, getStartPos($open), -1); }
-		e1=expr_if { $node.append($e1.node); }
+		e1=seqitem { $node.append($e1.node); }
 		(
 			','
-			e2=expr_if { $node.append($e2.node); }
+			e2=seqitem { $node.append($e2.node); }
 		)*
 		','?
 		close=']' { $node.setEndPos(getEndPos($close)); }
@@ -286,10 +295,10 @@ set returns [SetAST node]
 		close='}' { $node = new SetAST(tag, getStartPos($open), getEndPos($close)); }
 	|
 		open='{' {$node = new SetAST(tag, getStartPos($open), -1); }
-		e1=expr_if { $node.append($e1.node); }
+		e1=seqitem { $node.append($e1.node); }
 		(
 			','
-			e2=expr_if { $node.append($e2.node); }
+			e2=seqitem { $node.append($e2.node); }
 		)*
 		','?
 		close='}' { $node.setEndPos(getEndPos($close)); }

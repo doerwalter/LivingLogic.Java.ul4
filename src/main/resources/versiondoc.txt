@@ -2,6 +2,7 @@ exp-102:
 --------
 * sorted() now supports the key and reverse arguments.
 * Sets now have a method add.
+* Support for iterable unpacking in list and set literals has been added.
 
 
 exp-101:

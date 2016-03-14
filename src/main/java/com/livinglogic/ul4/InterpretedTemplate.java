@@ -1346,6 +1346,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		Utils.register("de.livinglogic.ul4.indent", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IndentAST(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.lineend", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LineEndAST(null, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.const", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConstAST(null, -1, -1, null); }});
+		Utils.register("de.livinglogic.ul4.seqitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SeqItemAST(null, -1, -1, null); }});
+		Utils.register("de.livinglogic.ul4.unpackseqitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.UnpackSeqItemAST(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.list", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListAST(null, -1, -1); }});
 		Utils.register("de.livinglogic.ul4.listcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListComprehensionAST(null, -1, -1, null, null, null, null); }});
 		Utils.register("de.livinglogic.ul4.set", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SetAST(null, -1, -1); }});
