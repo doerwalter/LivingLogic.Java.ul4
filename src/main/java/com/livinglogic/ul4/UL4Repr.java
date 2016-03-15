@@ -92,6 +92,8 @@ public interface UL4Repr
 							visitArray((Object[])object);
 						else if (object instanceof Map)
 							visitMap((Map)object);
+						else if (object instanceof Class)
+							visitClass((Class)object);
 						else
 							append("<" + object.getClass().getName() + ">");
 					}
@@ -103,6 +105,15 @@ public interface UL4Repr
 				}
 			}
 			return this;
+		}
+
+		private void visitClass(Class object)
+		{
+			append("<");
+			append(object.getClass().getName());
+			append(" class=");
+			visit(object.getName());
+			append(">");
 		}
 
 		private void visitDate(Date object)

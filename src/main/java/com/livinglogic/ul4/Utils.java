@@ -60,9 +60,10 @@ public class Utils
 	{
 		if (obj == null)
 			return "null";
-		if (obj instanceof Undefined)
+		else if (obj instanceof Undefined)
 			return obj.toString();
-		return obj.getClass().getName();
+		else
+			return obj.getClass().getName();
 	}
 
 	public static BigInteger toBigInteger(int arg)
@@ -489,7 +490,7 @@ public class Utils
 			return Arrays.asList((Object[])obj).iterator();
 		else if (obj instanceof Iterator)
 			return (Iterator)obj;
-		throw new ArgumentTypeMismatchException("iter({})", obj);
+		throw new NotIterableException(obj);
 	}
 
 	public static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy-MM-dd");

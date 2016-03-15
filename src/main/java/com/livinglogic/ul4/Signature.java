@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Collection;
 
-public class Signature implements Iterable<ArgumentDescription>
+public class Signature implements UL4Repr, Iterable<ArgumentDescription>
 {
 	protected LinkedHashMap<String, ArgumentDescription> parameters;
 	protected int size;
@@ -107,6 +107,15 @@ public class Signature implements Iterable<ArgumentDescription>
 			return false;
 		ArgumentDescription.Type type = description.getType();
 		return type == ArgumentDescription.Type.REQUIRED || type == ArgumentDescription.Type.DEFAULT;
+	}
+
+	public void reprUL4(UL4Repr.Formatter formatter)
+	{
+		formatter.append("<");
+		formatter.append(getClass().getName());
+		formatter.append(" ");
+		formatter.append(toString());
+		formatter.append(">");
 	}
 
 	public String toString()

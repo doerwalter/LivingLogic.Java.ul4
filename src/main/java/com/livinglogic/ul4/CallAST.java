@@ -58,8 +58,8 @@ public class CallAST extends CallRenderAST
 		List<Object> realArguments = new ArrayList<Object>();
 		Map<String, Object> realKeywordArguments = new HashMap<String, Object>();
 
-		for (Argument argument : arguments)
-			argument.addToCallArguments(context, realObject, realArguments, realKeywordArguments);
+		for (ArgumentASTBase argument : arguments)
+			argument.decoratedEvaluateCall(context, realArguments, realKeywordArguments);
 
 		return call(context, realObject, realArguments, realKeywordArguments);
 	}

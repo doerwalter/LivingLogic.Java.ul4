@@ -6,7 +6,7 @@
 
 package com.livinglogic.ul4;
 
-public class ArgumentDescription
+public class ArgumentDescription implements UL4Repr
 {
 	protected String name;
 	protected int position;
@@ -46,6 +46,15 @@ public class ArgumentDescription
 	public Object getDefaultValue()
 	{
 		return defaultValue;
+	}
+
+	public void reprUL4(UL4Repr.Formatter formatter)
+	{
+		formatter.append("<");
+		formatter.append(getClass().getName());
+		formatter.append(" ");
+		formatter.append(toString());
+		formatter.append(">");
 	}
 
 	public String toString()

@@ -26,7 +26,7 @@ import com.livinglogic.ul4on.Encoder;
 public abstract class CallRenderAST extends CodeAST
 {
 	protected AST obj;
-	protected List<Argument> arguments = new LinkedList<Argument>();
+	protected List<ArgumentASTBase> arguments = new LinkedList<ArgumentASTBase>();
 
 	public CallRenderAST(Tag tag, int start, int end, AST obj)
 	{
@@ -34,54 +34,23 @@ public abstract class CallRenderAST extends CodeAST
 		this.obj = obj;
 	}
 
-	public void appendArgument(AST arg)
+	public void addArgument(ArgumentASTBase argument)
 	{
-		arguments.add(new Argument(arg));
-	}
-
-	public void appendKeywordArgument(String name, AST arg)
-	{
-		arguments.add(new KeywordArgument(name, arg));
-	}
-
-	public void appendRemainingArguments(AST arg)
-	{
-		arguments.add(new RemainingArguments(arg));
-	}
-
-	public void appendRemainingKeywordArguments(AST arg)
-	{
-		arguments.add(new RemainingKeywordArguments(arg));
+		arguments.add(argument);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
 		encoder.dump(obj);
-		List argumentList = new LinkedList();
-		for (Argument arg : arguments)
-			argumentList.add(asList(arg.getName(), arg.getArg()));
-		encoder.dump(argumentList);
+		encoder.dump(arguments);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
 		obj = (AST)decoder.load();
-		List<List> argumentList = (List<List>)decoder.load();
-		for (List namearg : argumentList)
-		{
-			String name = (String)namearg.get(0);
-			AST arg = (AST)namearg.get(1);
-			if (name == null)
-				appendArgument(arg);
-			else if (name.equals("*"))
-				appendRemainingArguments(arg);
-			else if (name.equals("**"))
-				appendRemainingKeywordArguments(arg);
-			else
-				appendKeywordArgument(name, arg);
-		}
+		arguments = (List<ArgumentASTBase>)decoder.load();
 	}
 
 	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "obj", "args");

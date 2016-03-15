@@ -1411,6 +1411,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		Utils.register("de.livinglogic.ul4.bitandvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitAndVarAST(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.bitxorvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitXOrVarAST(null, -1, -1, null, null); }});
 		Utils.register("de.livinglogic.ul4.bitorvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitOrVarAST(null, -1, -1, null, null); }});
+		Utils.register("de.livinglogic.ul4.posarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.PositionalArgumentAST(null, -1, -1, null); }});
+		Utils.register("de.livinglogic.ul4.keywordarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.KeywordArgumentAST(null, -1, -1, null, null); }});
+		Utils.register("de.livinglogic.ul4.unpacklistarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.UnpackListArgumentAST(null, -1, -1, null); }});
+		Utils.register("de.livinglogic.ul4.unpackdictarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.UnpackDictArgumentAST(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.call", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallAST(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderAST(null, -1, -1, null); }});
 		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate(); }});

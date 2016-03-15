@@ -24,9 +24,11 @@ public class UndefinedIndex extends Undefined
 
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
-		formatter.append("UndefinedIndex(");
+		formatter.append("<");
+		formatter.append(getClass().getName());
+		formatter.append(" ");
 		formatter.visit(index);
-		formatter.append(")");
+		formatter.append(">");
 	}
 
 	public String toString()

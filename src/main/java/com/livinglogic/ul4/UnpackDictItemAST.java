@@ -45,10 +45,10 @@ public class UnpackDictItemAST extends DictItemASTBase
 			{
 				Object pair = iter.next();
 
-					if (pair instanceof List && ((List)pair).size()==2)
-						result.put(((List)pair).get(0), ((List)pair).get(1));
-					else
-						throw new ArgumentException(exceptionMessage);
+				if (pair instanceof List && ((List)pair).size()==2)
+					result.put(((List)pair).get(0), ((List)pair).get(1));
+				else
+					throw new ArgumentException(exceptionMessage);
 			}
 		}
 	}

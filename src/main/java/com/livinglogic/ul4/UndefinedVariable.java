@@ -17,9 +17,11 @@ public class UndefinedVariable extends Undefined
 
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
-		formatter.append("UndefinedVariable(");
+		formatter.append("<");
+		formatter.append(getClass().getName());
+		formatter.append(" ");
 		formatter.visit(varname);
-		formatter.append(")");
+		formatter.append(">");
 	}
 
 	public String toString()

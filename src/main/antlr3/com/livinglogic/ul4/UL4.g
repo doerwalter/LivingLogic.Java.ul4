@@ -444,7 +444,22 @@ slice returns [SliceAST node]
 		)? { $node = new SliceAST(tag, startPos, endPos, startIndex, stopIndex); }
 	;
 
+
 /* Function/method call, attribute access, item access, slice access */
+fragment
+argument returns [ArgumentASTBase node]
+	:
+		e=exprarg { $node = new PositionalArgumentAST(tag, $e.node.getStartPos(), $e.node.getEndPos(), $e.node); }
+	|
+		en=name '=' ev=exprarg { $node = new KeywordArgumentAST(tag, $en.node.getStartPos(), $ev.node.getEndPos(), $en.text, $ev.node); }
+	|
+		star='*'
+		es=exprarg { $node = new UnpackListArgumentAST(tag, getStartPos($star), $es.node.getEndPos(), $es.node); }
+	|
+		star='**'
+		ess=exprarg { $node = new UnpackDictArgumentAST(tag, getStartPos($star), $ess.node.getEndPos(), $ess.node); }
+	;
+
 expr_subscript returns [CodeAST node]
 	:
 		e1=atom { $node = $e1.node; }
@@ -456,60 +471,13 @@ expr_subscript returns [CodeAST node]
 			/* Function/method call */
 			'(' { $node = new CallAST(tag, $e1.node.getStartPos(), -1, $node); }
 			(
-				/* No arguments */
-			|
-				/* "**" argument only */
-				'**' rkwargs=exprarg { ((CallAST)$node).appendRemainingKeywordArguments($rkwargs.node); }
-				','?
-			|
-				/* "*" argument only (and maybe **) */
-				'*' rargs=exprarg { ((CallAST)$node).appendRemainingArguments($rargs.node); }
+				a1=argument { $a1.node.addToCall((CallAST)$node); }
 				(
 					','
-					'**' rkwargs=exprarg { ((CallAST)$node).appendRemainingKeywordArguments($rkwargs.node); }
-				)?
-				','?
-			|
-				/* At least one positional argument */
-				a1=exprarg { ((CallAST)$node).appendArgument($a1.node); }
-				(
-					','
-					a2=exprarg { ((CallAST)$node).appendArgument($a2.node); }
+					a2=argument { $a2.node.addToCall((CallAST)$node); }
 				)*
-				(
-					','
-					an3=name '=' av3=exprarg { ((CallAST)$node).appendKeywordArgument($an3.text, $av3.node); }
-				)*
-				(
-					','
-					'*' rargs=exprarg { ((CallAST)$node).appendRemainingArguments($rargs.node); }
-				)?
-				/* Python allows keyword arguments after the '*' argument, but we don't.
-				 * To allow it we would have to track the order of the arguments that get passed, so that we can guarantee that they get
-				 * evaluated from left to right
-				 */
-				(
-					','
-					'**' rkwargs=exprarg { ((CallAST)$node).appendRemainingKeywordArguments($rkwargs.node); }
-				)?
 				','?
-			|
-				/* Keyword arguments only */
-				an1=name '=' av1=exprarg { ((CallAST)$node).appendKeywordArgument($an1.text, $av1.node); }
-				(
-					','
-					an2=name '=' av2=exprarg { ((CallAST)$node).appendKeywordArgument($an2.text, $av2.node); }
-				)*
-				(
-					','
-					'*' rargs=exprarg { ((CallAST)$node).appendRemainingArguments($rargs.node); }
-				)?
-				(
-					','
-					'**' rkwargs=exprarg { ((CallAST)$node).appendRemainingKeywordArguments($rkwargs.node); }
-				)?
-				','?
-			)
+			)*
 			close=')' { $node.setEndPos(getEndPos($close)); }
 		|
 			/* Item access */
