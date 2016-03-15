@@ -1672,7 +1672,6 @@ public class UL4Test
 	@Test
 	public void function_timedelta()
 	{
-		checkTemplateOutput("0:00:00", "<?print repr(x)?>", "x", new NotIterableException("foo").getClass());
 		checkTemplateOutput("0:00:00", "<?print timedelta()?>");
 		checkTemplateOutput("1 day, 0:00:00", "<?print timedelta(1)?>");
 		checkTemplateOutput("2 days, 0:00:00", "<?print timedelta(2)?>");
