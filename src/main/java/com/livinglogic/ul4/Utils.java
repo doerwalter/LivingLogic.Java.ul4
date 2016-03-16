@@ -620,7 +620,7 @@ public class Utils
 						}
 						catch (NumberFormatException|IndexOutOfBoundsException ex)
 						{
-							throw new SyntaxException("illegal \\x escape: " + FunctionRepr.call(savesubstr(string, i+1, i+3)), ex);
+							throw new StringFormatException("illegal \\x escape: " + FunctionRepr.call(savesubstr(string, i+1, i+3)), ex);
 						}
 						output.append((char)cx);
 						i += 3;
@@ -633,7 +633,7 @@ public class Utils
 						}
 						catch (NumberFormatException|IndexOutOfBoundsException ex)
 						{
-							throw new SyntaxException("illegal \\u escape: " + FunctionRepr.call(savesubstr(string, i+1, i+5)), ex);
+							throw new StringFormatException("illegal \\u escape: " + FunctionRepr.call(savesubstr(string, i+1, i+5)), ex);
 						}
 						output.append((char)cu);
 						i += 5;
