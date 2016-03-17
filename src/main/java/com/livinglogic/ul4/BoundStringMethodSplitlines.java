@@ -64,7 +64,7 @@ public class BoundStringMethodSplitlines extends BoundMethod<String>
 			{
 				if (startPos != pos)
 					result.add(object.substring(startPos));
-				break;
+				return result;
 			}
 			int lineEndLen = lookingAtLineEnd(object, pos);
 			if (lineEndLen == 0)
@@ -77,7 +77,6 @@ public class BoundStringMethodSplitlines extends BoundMethod<String>
 				startPos = pos;
 			}
 		}
-		return result;
 	}
 
 	public Object evaluate(BoundArguments args)
