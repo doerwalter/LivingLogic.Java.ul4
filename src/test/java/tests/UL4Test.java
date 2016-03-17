@@ -3674,6 +3674,26 @@ public class UL4Test
 	}
 
 	@Test
+	public void method_splitlines()
+	{
+		checkTemplateOutput(
+			"('a')('b')('c')('d')('e')('f')('g')('h')('i')('j')('k')",
+			"<?for item in obj.splitlines(keepends)?>(<?print repr(item)?>)<?end for?>",
+			"obj", "a\nb\rc\r\nd\u000be\u000cf\u001cg\u001dh\u001ei\u0085j\u2028k\u2029",
+			"keepends", false
+		);
+
+		checkTemplateOutput(
+			"('a\\n')('b\\r')('c\\r\\n')('d\\x0b')('e\\x0c')('f\\x1c')('g\\x1d')('h\\x1e')('i\\x85')('j\\u2028')('k\\u2029')",
+			"<?for item in obj.splitlines(keepends)?>(<?print repr(item)?>)<?end for?>",
+			"obj", "a\nb\rc\r\nd\u000be\u000cf\u001cg\u001dh\u001ei\u0085j\u2028k\u2029",
+			"keepends", true
+		);
+
+		checkTemplateOutput("['a', 'b']", "<?print obj.splitlines(keepends=false)?>", "obj", "a\nb");
+	}
+
+	@Test
 	public void method_replace()
 	{
 		checkTemplateOutput("goork", "<?print 'gurk'.replace('u', 'oo')?>");
