@@ -32,20 +32,35 @@ public interface UL4Repr
 	{
 		private Stack<Object> visited;
 		private StringBuilder buffer;
+		private boolean ascii; // Limit the repr output of strings to ASCII?
 
 		private static SimpleDateFormat isoReprDateFormatter = new SimpleDateFormat("@'('yyyy-MM-dd')'");
 		private static SimpleDateFormat isoReprDateTimeFormatter = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm:ss')'");
 		private static SimpleDateFormat isoReprTimestampMicroFormatter = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm:ss.SSS'000)'");
 
-		public Formatter()
+		public Formatter(boolean ascii)
 		{
 			visited = new Stack<Object>();
 			buffer = new StringBuilder();
+			this.ascii = ascii;
 		}
 
 		public void append(String string)
 		{
 			buffer.append(string);
+		}
+
+		public void append(char c)
+		{
+			buffer.append(c);
+		}
+
+		private void appendHex(int value, int length)
+		{
+			String s = Integer.toHexString(value);
+			for (int i = s.length(); i < length; ++i)
+				append("0");
+			append(s);
 		}
 
 		public Formatter visit(Object object)
@@ -65,9 +80,119 @@ public interface UL4Repr
 			}
 			else if (object instanceof String)
 			{
-				append("\"");
-				append(StringEscapeUtils.escapeJava(((String)object)));
-				append("\"");
+				String string = (String)object;
+				//buffer.ensureCapacity(buffer.capacity() + string.length() + 2);
+
+				boolean haveSQuote = false;
+				boolean haveDQuote = false;
+				for (int i = 0; i < string.length(); ++i)
+				{
+					char c = string.charAt(i);
+					if (c == '\'')
+					{
+						haveSQuote = true;
+						if (haveDQuote)
+							break;
+					}
+					else if (c == '"')
+					{
+						haveDQuote = true;
+						if (haveSQuote)
+							break;
+					}
+				}
+				// Prefer single quotes: Only use double quotes if the string contains single quotes, but no double quotes
+				char quote = haveSQuote && !haveDQuote ? '"' : '\'';
+
+				append(quote);
+				for (int i = 0; i < string.length(); ++i)
+				{
+					char c = string.charAt(i);
+					switch (c)
+					{
+						// Escape quotes if necesssary
+						case '"':
+							if (c == quote)
+								append("\\\"");
+							else
+								append('"');
+							break;
+						case '\'':
+							if (c == quote)
+								append("\\'");
+							else
+								append('\'');
+							break;
+						// Escape backslash
+						case '\\':
+							append("\\\\");
+							break;
+						// Escape ASCII whitespace
+						case '\t':
+							append("\\t");
+							break;
+						case '\n':
+							append("\\n");
+							break;
+						case '\r':
+							append("\\r");
+							break;
+						default:
+							int cp = (int)c;
+							// Escape C0 control characters
+							if (cp < 0x20)
+							{
+								append("\\x");
+								appendHex(cp, 2);
+							}
+							// Output the rest of ASCII (except for U+007F) literally
+							else if (cp < 0x7f)
+								append(c);
+							// If the output should be ASCII, escape everything else
+							else if (ascii)
+							{
+								if (cp <= 0xff)
+								{
+									append("\\x");
+									appendHex(cp, 2);
+								}
+								else
+								{
+									append("\\u");
+									appendHex(cp, 4);
+								}
+							}
+							// else escape everything in the Unicode categories: Cc, Cf, Cs, Co, Cn, Zl, Zp, Zs
+							else
+							{
+								int charType = Character.getType(c);
+								if (charType == Character.CONTROL ||
+								    charType == Character.FORMAT ||
+								    charType == Character.SURROGATE ||
+								    charType == Character.PRIVATE_USE ||
+								    charType == Character.UNASSIGNED ||
+								    charType == Character.LINE_SEPARATOR ||
+								    charType == Character.PARAGRAPH_SEPARATOR ||
+								    charType == Character.SPACE_SEPARATOR)
+								{
+									if (cp <= 0xff)
+									{
+										append("\\x");
+										appendHex(cp, 2);
+									}
+									else
+									{
+										append("\\u");
+										appendHex(cp, 4);
+									}
+								}
+								else
+									append(c);
+							}
+							break;
+					}
+				}
+				append(quote);
 			}
 			else if (object instanceof Date)
 				visitDate((Date)object);

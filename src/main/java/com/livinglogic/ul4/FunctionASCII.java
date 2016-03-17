@@ -16,11 +16,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-public class FunctionRepr extends Function
+public class FunctionASCII extends Function
 {
 	public String nameUL4()
 	{
-		return "repr";
+		return "ascii";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
@@ -37,6 +37,6 @@ public class FunctionRepr extends Function
 
 	public static String call(Object obj)
 	{
-		return new UL4Repr.Formatter(false).visit(obj).toString();
+		return new UL4Repr.Formatter(true).visit(obj).toString();
 	}
 }

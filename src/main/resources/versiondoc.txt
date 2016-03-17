@@ -4,6 +4,8 @@ exp-102:
 * Sets now have a method add.
 * Support for iterable unpacking in list and set literals has been added.
 * Support for dict/iterable unpacking in dict literals has been added.
+* repr() now produces the same output for strings as the Python version.
+* Support for the function ascii() has been added.
 
 
 exp-101:

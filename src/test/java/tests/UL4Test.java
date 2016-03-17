@@ -1840,9 +1840,9 @@ public class UL4Test
 		checkTemplateOutput("False", "<?print repr(fromjson(data))?>", "data", "false");
 		checkTemplateOutput("True", "<?print repr(fromjson(data))?>", "data", "true");
 		checkTemplateOutput("42", "<?print repr(fromjson(data))?>", "data", "42");
-		checkTemplateOutput("\"abc\"", "<?print repr(fromjson(data))?>", "data", "\"abc\"");
+		checkTemplateOutput("'abc'", "<?print repr(fromjson(data))?>", "data", "\"abc\"");
 		checkTemplateOutput("[1, 2, 3]", "<?print repr(fromjson(data))?>", "data", "[1,2,3]");
-		checkTemplateOutput("{\"eins\": 42}", "<?print repr(fromjson(data))?>", "data", "{\"eins\": 42}");
+		checkTemplateOutput("{'eins': 42}", "<?print repr(fromjson(data))?>", "data", "{\"eins\": 42}");
 		checkTemplateOutput("None", "<?print repr(fromjson(string=data))?>", "data", "null");
 	}
 
@@ -2017,12 +2017,12 @@ public class UL4Test
 	{
 		checkTemplateOutput("[]", "<?print list()?>");
 		checkTemplateOutput("[1, 2]", "<?print list(data)?>", "data", asList(1, 2));
-		checkTemplateOutput("[\"g\", \"u\", \"r\", \"k\"]", "<?print list(data)?>", "data", "gurk");
-		checkTemplateOutput("[[\"foo\", 42]]", "<?print repr(list(data.items()))?>", "data", makeMap("foo", 42));
+		checkTemplateOutput("['g', 'u', 'r', 'k']", "<?print list(data)?>", "data", "gurk");
+		checkTemplateOutput("[['foo', 42]]", "<?print repr(list(data.items()))?>", "data", makeMap("foo", 42));
 		checkTemplateOutput("[0, 1, 2]", "<?print repr(list(range(3)))?>");
 		checkTemplateOutput("[1, 2, 3]", "<?print list(data)?>", "data", new Integer[]{1, 2, 3});
-		checkTemplateOutput("[\"x\", \"y\"]", "<?print repr(list(data))?>", "data", new Point(17, 23));
-		checkTemplateOutput("[\"g\", \"u\", \"r\", \"k\"]", "<?print list(iterable=data)?>", "data", "gurk");
+		checkTemplateOutput("['x', 'y']", "<?print repr(list(data))?>", "data", new Point(17, 23));
+		checkTemplateOutput("['g', 'u', 'r', 'k']", "<?print list(iterable=data)?>", "data", "gurk");
 		checkTemplateOutput("[1, 2, 3]", "<?print list(data)?>", "data", new Iterate());
 	}
 
@@ -3007,6 +3007,11 @@ public class UL4Test
 		checkTemplateOutput("", "<?print ismonthdelta(1, 2)?>");
 	}
 
+	private String codePoint(int value)
+	{
+		return String.valueOf((char)value);
+	}
+
 	@Test
 	public void function_repr()
 	{
@@ -3024,14 +3029,91 @@ public class UL4Test
 		checkTemplateOutput("42.5", source, "data", 42.5);
 		checkTemplateOutput("42.0", source, "data", new BigDecimal("42.0"));
 		checkTemplateOutput("42.5", source, "data", new BigDecimal("42.5"));
-		checkTemplateOutput("\"foo\"", source, "data", "foo");
+		checkTemplateOutput("'foo'", source, "data", "foo");
+		checkTemplateOutput("\"'\"", source, "data", "'");
+		checkTemplateOutput("'\"'", source, "data", "\"");
+		checkTemplateOutput("'\\'\"'", source, "data", "'\"");
+		checkTemplateOutput("'\\r'", source, "data", "\r");
+		checkTemplateOutput("'\\t'", source, "data", "\t");
+		checkTemplateOutput("'\\n'", source, "data", "\n");
+		checkTemplateOutput("'\\x00'", source, "data", codePoint(0)); // category Cc
+		checkTemplateOutput("'\\x7f'", source, "data", codePoint(0x7f));
+		checkTemplateOutput("'\\x80'", source, "data", codePoint(0x80));
+		checkTemplateOutput("'\\x9f'", source, "data", codePoint(0x9f));
+		checkTemplateOutput("'\\xa0'", source, "data", codePoint(0xa0)); // category Zs
+		checkTemplateOutput("'\\xad'", source, "data", codePoint(0xad)); // category Cf
+		checkTemplateOutput("'\u00ff'", source, "data", codePoint(0xff));
+		checkTemplateOutput("'\u0100'", source, "data", codePoint(0x100));
+		checkTemplateOutput("'\\u0378'", source, "data", codePoint(0x378)); // category Cn
+		checkTemplateOutput("'\\u2028'", source, "data", codePoint(0x2028)); // category Zl
+		checkTemplateOutput("'\\u2029'", source, "data", codePoint(0x2029)); // category Zp
+		checkTemplateOutput("'\\ud800'", source, "data", codePoint(0xd800)); // category Cs
+		checkTemplateOutput("'\\ue000'", source, "data", codePoint(0xe000)); // category Co
+		checkTemplateOutput("'\u3042'", source, "data", codePoint(0x3042));
+		checkTemplateOutput("'\\uffff'", source, "data", codePoint(0xffff));
 		checkTemplateOutput("[]", source, "data", asList());
 		checkTemplateOutput("[1, 2, 3]", source, "data", asList(1, 2, 3));
 		checkTemplateOutput("[...]", source, "data", list);
 		checkTemplateOutput("[1, 2, 3]", source, "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("{}", source, "data", makeMap());
-		checkTemplateOutput("{\"a\": 1}", source, "data", makeMap("a", 1));
-		checkTemplateOutput2("{\"a\": 1, \"b\": 2}", "{\"b\": 2, \"a\": 1}", source, "data", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("{'a': 1}", source, "data", makeMap("a", 1));
+		checkTemplateOutput2("{'a': 1, 'b': 2}", "{'b': 2, 'a': 1}", source, "data", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("{/}", source, "data", makeSet());
+		checkTemplateOutput("{1}", source, "data", makeSet(1));
+		checkTemplateOutput("@(2011-02-07T12:34:56.123000)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56, 123000));
+		checkTemplateOutput("@(2011-02-07T12:34:56)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56));
+		checkTemplateOutput("@(2011-02-07)", source, "data", FunctionDate.call(2011, 2, 7));
+		checkTemplateOutput("@(2011-02-07)", source, "data", FunctionDate.call(2011, 2, 7));
+		checkTemplateOutput("None", "<?print repr(obj=data)?>", "data", null);
+	}
+
+
+	@Test
+	public void function_ascii()
+	{
+		String source = "<?print ascii(data)?>";
+
+		java.util.List list = new java.util.ArrayList();
+		list.add(list);
+
+		checkTemplateOutput("None", source, "data", null);
+		checkTemplateOutput("True", source, "data", true);
+		checkTemplateOutput("False", source, "data", false);
+		checkTemplateOutput("42", source, "data", 42);
+		checkTemplateOutput("42", source, "data", new BigInteger("42"));
+		checkTemplateOutput("42.0", source, "data", 42.);
+		checkTemplateOutput("42.5", source, "data", 42.5);
+		checkTemplateOutput("42.0", source, "data", new BigDecimal("42.0"));
+		checkTemplateOutput("42.5", source, "data", new BigDecimal("42.5"));
+		checkTemplateOutput("'foo'", source, "data", "foo");
+		checkTemplateOutput("\"'\"", source, "data", "'");
+		checkTemplateOutput("'\"'", source, "data", "\"");
+		checkTemplateOutput("'\\'\"'", source, "data", "'\"");
+		checkTemplateOutput("'\\r'", source, "data", "\r");
+		checkTemplateOutput("'\\t'", source, "data", "\t");
+		checkTemplateOutput("'\\n'", source, "data", "\n");
+		checkTemplateOutput("'\\x00'", source, "data", codePoint(0)); // category Cc
+		checkTemplateOutput("'\\x7f'", source, "data", codePoint(0x7f));
+		checkTemplateOutput("'\\x80'", source, "data", codePoint(0x80));
+		checkTemplateOutput("'\\x9f'", source, "data", codePoint(0x9f));
+		checkTemplateOutput("'\\xa0'", source, "data", codePoint(0xa0)); // category Zs
+		checkTemplateOutput("'\\xad'", source, "data", codePoint(0xad)); // category Cf
+		checkTemplateOutput("'\\u00ff'", source, "data", codePoint(0xff));
+		checkTemplateOutput("'\\u0100'", source, "data", codePoint(0x100));
+		checkTemplateOutput("'\\u0378'", source, "data", codePoint(0x378)); // category Cn
+		checkTemplateOutput("'\\u2028'", source, "data", codePoint(0x2028)); // category Zl
+		checkTemplateOutput("'\\u2029'", source, "data", codePoint(0x2029)); // category Zp
+		checkTemplateOutput("'\\ud800'", source, "data", codePoint(0xd800)); // category Cs
+		checkTemplateOutput("'\\ue000'", source, "data", codePoint(0xe000)); // category Co
+		checkTemplateOutput("'\\u3042'", source, "data", codePoint(0x3042));
+		checkTemplateOutput("'\\uffff'", source, "data", codePoint(0xffff));
+		checkTemplateOutput("[]", source, "data", asList());
+		checkTemplateOutput("[1, 2, 3]", source, "data", asList(1, 2, 3));
+		checkTemplateOutput("[...]", source, "data", list);
+		checkTemplateOutput("[1, 2, 3]", source, "data", new Integer[]{1, 2, 3});
+		checkTemplateOutput("{}", source, "data", makeMap());
+		checkTemplateOutput("{'a': 1}", source, "data", makeMap("a", 1));
+		checkTemplateOutput2("{'a': 1, 'b': 2}", "{'b': 2, 'a': 1}", source, "data", makeMap("a", 1, "b", 2));
 		checkTemplateOutput("{/}", source, "data", makeSet());
 		checkTemplateOutput("{1}", source, "data", makeSet(1));
 		checkTemplateOutput("@(2011-02-07T12:34:56.123000)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56, 123000));
@@ -4632,15 +4714,15 @@ public class UL4Test
 		InterpretedTemplate template;
 
 		template = getTemplate("<?print 42?>", "foo", InterpretedTemplate.Whitespace.keep);
-		assertEquals("<com.livinglogic.ul4.InterpretedTemplate name=\"foo\">", FunctionRepr.call(template));
+		assertEquals("<com.livinglogic.ul4.InterpretedTemplate name='foo'>", FunctionRepr.call(template));
 
 		template = getTemplate("<?print 42?>", "foo", InterpretedTemplate.Whitespace.strip);
-		assertEquals("<com.livinglogic.ul4.InterpretedTemplate name=\"foo\" whitespace=\"strip\">", FunctionRepr.call(template));
+		assertEquals("<com.livinglogic.ul4.InterpretedTemplate name='foo' whitespace='strip'>", FunctionRepr.call(template));
 
 		template = getTemplate("<?print 42?>", "foo", InterpretedTemplate.Whitespace.strip, "a, b=0xff");
-		assertEquals("<com.livinglogic.ul4.InterpretedTemplate name=\"foo\" whitespace=\"strip\" signature=(a, b=255)>", FunctionRepr.call(template));
+		assertEquals("<com.livinglogic.ul4.InterpretedTemplate name='foo' whitespace='strip' signature=(a, b=255)>", FunctionRepr.call(template));
 
 		template = getTemplate("<?def x(a, b=0xff)?><?end def?><?print repr(x)?>", "foo", InterpretedTemplate.Whitespace.keep);
-		checkTemplateOutput("<com.livinglogic.ul4.TemplateClosure for <com.livinglogic.ul4.InterpretedTemplate name=\"x\" signatureAST=(a, b=0xff)>>", template);
+		checkTemplateOutput("<com.livinglogic.ul4.TemplateClosure for <com.livinglogic.ul4.InterpretedTemplate name='x' signatureAST=(a, b=0xff)>>", template);
 	}
 }

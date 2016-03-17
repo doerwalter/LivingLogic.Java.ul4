@@ -290,6 +290,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 			"csv", new FunctionCSV(),
 			"str", new FunctionStr(),
 			"repr", new FunctionRepr(),
+			"ascii", new FunctionASCII(),
 			"int", new FunctionInt(),
 			"float", new FunctionFloat(),
 			"bool", new FunctionBool(),
