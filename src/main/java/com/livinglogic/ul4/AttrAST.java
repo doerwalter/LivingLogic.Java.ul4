@@ -183,6 +183,8 @@ public class AttrAST extends CodeAST implements LValue
 				return new BoundStringMethodSplit(obj);
 			case "rsplit":
 				return new BoundStringMethodRSplit(obj);
+			case "splitlines":
+				return new BoundStringMethodSplitlines(obj);
 			case "strip":
 				return new BoundStringMethodStrip(obj);
 			case "lstrip":
