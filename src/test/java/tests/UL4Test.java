@@ -3098,7 +3098,7 @@ public class UL4Test
 		checkTemplateOutput("'\\x9f'", source, "data", codePoint(0x9f));
 		checkTemplateOutput("'\\xa0'", source, "data", codePoint(0xa0)); // category Zs
 		checkTemplateOutput("'\\xad'", source, "data", codePoint(0xad)); // category Cf
-		checkTemplateOutput("'\\u00ff'", source, "data", codePoint(0xff));
+		checkTemplateOutput("'\\xff'", source, "data", codePoint(0xff));
 		checkTemplateOutput("'\\u0100'", source, "data", codePoint(0x100));
 		checkTemplateOutput("'\\u0378'", source, "data", codePoint(0x378)); // category Cn
 		checkTemplateOutput("'\\u2028'", source, "data", codePoint(0x2028)); // category Zl
