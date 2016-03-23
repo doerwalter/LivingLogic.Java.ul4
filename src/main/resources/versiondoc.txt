@@ -1,3 +1,10 @@
+exp-99-8:
+---------
+* Changed the order of tests in the implementation of len() so that collections
+  are checked first. This gives consistent results for len() and iterating an
+  object if it implements both List and UL4Attributes.
+
+
 exp-99-7:
 ---------
 * Fixed a bug in the changes from exp-99-6.
