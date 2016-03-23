@@ -65,12 +65,12 @@ public class FunctionLen extends Function
 			return call((String)obj);
 		else if (obj instanceof UL4Len)
 			return call((Map)obj);
-		else if (obj instanceof UL4Attributes)
-			return call((UL4Attributes)obj);
 		else if (obj instanceof Collection)
 			return call((Collection)obj);
 		else if (obj instanceof Object[])
 			return call((Object[])obj);
+		else if (obj instanceof UL4Attributes)
+			return call((UL4Attributes)obj);
 		else if (obj instanceof Map)
 			return call((Map)obj);
 		throw new ArgumentTypeMismatchException("len({})", obj);

@@ -8,6 +8,7 @@ exp-102:
 * repr() now produces the same output for strings as the Python version.
 * Support for the function ascii() has been added.
 * A string method splitlines() has been added.
+* Merged in the List/UL4Attributes fix from exp-99-8.
 
 
 exp-101:
@@ -27,6 +28,13 @@ exp-100:
   programming languages do).
 * Updated for compatibility with XIST 5.14: smart whitespace handling and
   related stuff has been implemented.
+
+
+exp-99-8:
+---------
+* Changed the order of tests in the implementation of len() so that collections
+  are checked first. This gives consistent results for len() and iterating an
+  object if it implements both List and UL4Attributes.
 
 
 exp-99-7:
