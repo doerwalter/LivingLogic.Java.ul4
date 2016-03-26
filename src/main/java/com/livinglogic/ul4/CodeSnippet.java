@@ -9,9 +9,9 @@ package com.livinglogic.ul4;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * A class that holds a the data for formatting a code snippet (i.e. code
+ * A class that holds the data for formatting a code snippet (i.e. code
  * inside a tag with the surrounding tag)
- * Use for formatting exception message.
+ * Used for formatting exception message.
  */
 public class CodeSnippet
 {
