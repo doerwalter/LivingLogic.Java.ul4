@@ -13,7 +13,9 @@ public class SourceException extends RuntimeException
 	private static String makeMessage(InterpretedTemplate template, SourcePart part)
 	{
 		StringBuilder buffer = new StringBuilder();
-		String name = template.nameUL4();
+		String name = null;
+		if (template != null)
+			name = template.nameUL4();
 		if (name == null)
 			buffer.append("in unnamed template");
 		else

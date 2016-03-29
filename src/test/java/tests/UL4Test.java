@@ -166,22 +166,22 @@ public class UL4Test
 		}
 	}
 
-	private static void checkTemplateOutput(String expected, String source, Object... args)
+	public static void checkTemplateOutput(String expected, String source, Object... args)
 	{
 		checkTemplateOutputLimit(expected, getTemplate(source), -1, args);
 	}
 
-	private static void checkTemplateOutputLimit(String expected, String source, long milliseconds, Object... args)
+	public static void checkTemplateOutputLimit(String expected, String source, long milliseconds, Object... args)
 	{
 		checkTemplateOutputLimit(expected, getTemplate(source), milliseconds, args);
 	}
 
-	private static void checkTemplateOutput(String expected, InterpretedTemplate template, Object... args)
+	public static void checkTemplateOutput(String expected, InterpretedTemplate template, Object... args)
 	{
 		checkTemplateOutputLimit(expected, template, -1, args);
 	}
 
-	private static void checkTemplateOutputLimit(String expected, InterpretedTemplate template, long milliseconds, Object... args)
+	public static void checkTemplateOutputLimit(String expected, InterpretedTemplate template, long milliseconds, Object... args)
 	{
 		// Render the template once directly
 		try (EvaluationContext context1 = new EvaluationContext(null, milliseconds))
@@ -204,7 +204,7 @@ public class UL4Test
 		}
 	}
 
-	private static void checkTemplateOutput2(String expected1, String expected2, String source, Object... args)
+	public static void checkTemplateOutput2(String expected1, String expected2, String source, Object... args)
 	{
 		// Render the template once by directly compiling and rendering it
 		InterpretedTemplate template1 = getTemplate(source);

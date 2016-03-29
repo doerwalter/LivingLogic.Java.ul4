@@ -33,9 +33,9 @@ public class FunctionStr extends Function
 		return call(args.get(0));
 	}
 
-	public static SimpleDateFormat strDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-	private static SimpleDateFormat strDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private static SimpleDateFormat strTimestampMicroFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'000'");
+	public static SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy-MM-dd");
+	public static SimpleDateFormat formatterDatetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public static SimpleDateFormat formatterTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'000'");
 
 	public static String call()
 	{
@@ -66,9 +66,9 @@ public class FunctionStr extends Function
 		else if (obj instanceof Date)
 		{
 			if (BoundDateMethodMicrosecond.call((Date)obj) != 0)
-				return strTimestampMicroFormatter.format(obj);
+				return formatterTimestamp.format(obj);
 			else
-				return strDateTimeFormatter.format(obj);
+				return formatterDatetime.format(obj);
 		}
 		else if (obj instanceof Color)
 			return obj.toString();
