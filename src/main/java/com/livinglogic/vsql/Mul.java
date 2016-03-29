@@ -69,9 +69,9 @@ public class Mul extends Binary
 		{
 			if (type2 == Type.STR || type2 == Type.CLOB)
 			{
-				buffer.append("(case when ");
+				buffer.append("(case ");
 				obj1.sqlOracle(buffer);
-				buffer.append(" != 0 then ");
+				buffer.append(" when 1 then ");
 				obj2.sqlOracle(buffer);
 				buffer.append(" else null end)");
 			}
@@ -126,9 +126,9 @@ public class Mul extends Binary
 		{
 			if (type2 == Type.BOOL)
 			{
-				buffer.append("(case when ");
+				buffer.append("(case ");
 				obj2.sqlOracle(buffer);
-				buffer.append(" != 0 then ");
+				buffer.append(" when 1 then ");
 				obj1.sqlOracle(buffer);
 				buffer.append(" else null end)");
 				buffer.append(")");
