@@ -22,12 +22,16 @@ public class Module implements UL4GetItemString, UL4Repr
 	public Module()
 	{
 		functions = new HashMap<String, Function>();
+		functions.put("field", new FieldRef.Function());
 		functions.put("const", new Const.Function());
 		functions.put("lower", new Lower.Function());
 		functions.put("upper", new Upper.Function());
 		functions.put("add", new Add.Function());
 		functions.put("mul", new Mul.Function());
-		functions.put("field", new FieldRef.Function());
+		functions.put("str", new Str.Function());
+		functions.put("rightnow", new RightNow.Function());
+		functions.put("now", new Now.Function());
+		functions.put("today", new Today.Function());
 	}
 
 	public Set<String> getAttributeNamesUL4()

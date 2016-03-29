@@ -93,13 +93,13 @@ public class VSQLTest
 	static Function error = new FunctionError();
 
 	String convert = 
-		"<?def convert(template, ast)?>" +
+		"<?def convert(ast, template)?>" +
 			"<?if ast.type == 'const'?>" +
 				"<?return vsql.const(ast.value, ast, template)?>" +
 			"<?elif ast.type == 'add'?>" +
-				"<?return vsql.add(convert(template, ast.obj1), convert(template, ast.obj2), ast, template)?>" +
+				"<?return vsql.add(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
 			"<?elif ast.type == 'mul'?>" +
-				"<?return vsql.mul(convert(template, ast.obj1), convert(template, ast.obj2), ast, template)?>" +
+				"<?return vsql.mul(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
 			"<?elif ast.type == 'attr'?>" +
 				"<?if ast.obj.type == 'var' and ast.obj.name == 'f'?>" +
 					"<?if ast.attrname in fields?>" +
@@ -110,12 +110,28 @@ public class VSQLTest
 				"<?else?>" +
 					"<?code error('unknown attribute access ' + repr(ast), ast, template)?>" +
 				"<?end if?>" +
+			"<?elif ast.type == 'call'?>" +
+				"<?if ast.obj.type == 'attr' and ast.obj.attrname == 'lower' and not ast.args?>" +
+					"<?return vsql.lower(convert(ast.obj.obj, template), ast, template)?>" +
+				"<?elif ast.obj.type == 'attr' and ast.obj.attrname == 'upper' and not ast.args?>" +
+					"<?return vsql.upper(convert(ast.obj.obj, template), ast, template)?>" +
+				"<?elif ast.obj.type == 'var' and ast.obj.name == 'str' and len(ast.args) == 1 and ast.args[0].type == 'posarg'?>" +
+					"<?return vsql.str(convert(ast.args[0].value, template), ast, template)?>" +
+				"<?elif ast.obj.type == 'var' and ast.obj.name == 'rightnow' and not ast.args?>" +
+					"<?return vsql.rightnow(ast, template)?>" +
+				"<?elif ast.obj.type == 'var' and ast.obj.name == 'now' and not ast.args?>" +
+					"<?return vsql.now(ast, template)?>" +
+				"<?elif ast.obj.type == 'var' and ast.obj.name == 'today' and not ast.args?>" +
+					"<?return vsql.today(ast, template)?>" +
+				"<?else?>" +
+					"<?code error('unknown call ' + repr(ast), ast, template)?>" +
+				"<?end if?>" +
 			"<?else?>" +
 				"<?code error('unknown node type ' + ast.type, ast, template)?>" +
 			"<?end if?>" +
 		"<?end def?>" +
 		"<?code template = compile('<' + '?return ' + source + '?' + '>', 'expression')?>" +
-		"<?print convert(template, template.content[1].obj).sql('oracle')?>"
+		"<?print convert(template.content[1].obj, template).sql('oracle')?>"
 	;
 
 	public static HashMap<String, Field> fields;
@@ -126,6 +142,7 @@ public class VSQLTest
 		fields.put("vorname", new Field("vorname", Type.STR, "dat_char1"));
 		fields.put("nachname", new Field("nachname", Type.STR, "dat_char2"));
 		fields.put("id", new Field("id", Type.INT, "dat_int1"));
+		fields.put("active", new Field("active", Type.BOOL, "dat_bool1"));
 	}
 
 	public void check(String expected, String source)
@@ -148,25 +165,25 @@ public class VSQLTest
 	@Test
 	public void lower()
 	{
-		tests.UL4Test.checkTemplateOutput("lower('FOO')", "<?print vsql.lower(vsql.const('FOO')).sql('oracle')?>", "vsql", module);
+		check("lower('FOO')", "'FOO'.lower()");
 	}
 
 	@CauseTest(expectedCause=RuntimeException.class)
 	public void lower_fail()
 	{
-		tests.UL4Test.checkTemplateOutput(null, "<?print vsql.lower(vsql.const(42)).sql('oracle')?>", "vsql", module);
+		check(null, "42.lower()");
 	}
 
 	@Test
 	public void upper()
 	{
-		tests.UL4Test.checkTemplateOutput("upper('FOO')", "<?print vsql.upper(vsql.const('FOO')).sql('oracle')?>", "vsql", module);
+		check("upper('foo')", "'foo'.upper()");
 	}
 
 	@CauseTest(expectedCause=RuntimeException.class)
 	public void upper_fail()
 	{
-		tests.UL4Test.checkTemplateOutput(null, "<?print vsql.upper(vsql.const(42)).sql('oracle')?>", "vsql", module);
+		check(null, "42.upper()");
 	}
 
 	@Test
@@ -175,6 +192,36 @@ public class VSQLTest
 		tests.UL4Test.checkTemplateOutput("(1+42)", "<?print vsql.add(vsql.const(True), vsql.const(42)).sql('oracle')?>", "vsql", module);
 		tests.UL4Test.checkTemplateOutput("(17+23)", "<?print vsql.add(vsql.const(17), vsql.const(23)).sql('oracle')?>", "vsql", module);
 		tests.UL4Test.checkTemplateOutput("('foo'||'bar')", "<?print vsql.add(vsql.const('foo'), vsql.const('bar')).sql('oracle')?>", "vsql", module);
+	}
+
+	@Test
+	public void str()
+	{
+		check("(case 1 when 1 then 'True' when 0 then 'False' else null end)", "str(True)");
+		check("to_char(42)", "str(42)");
+		check("to_char(42.5)", "str(42.5)");
+		check("to_char(to_date('2016-01-01', 'YYYY-MM-DD'), 'YYYY-MM-DD')", "str(@(2016-01-01))");
+		check("to_char(to_date('2016-01-01 12:34:56', 'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')", "str(@(2016-01-01T12:34:56))");
+		check("to_char(to_timestamp('2016-01-01 12:34:56.789000', 'YYYY-MM-DD HH24:MI:SS.FF6'), 'YYYY-MM-DD HH24:MI:SS.FF6')", "str(@(2016-01-01T12:34:56.789000))");
+		check("'foo'", "str('foo')");
+	}
+
+	@Test
+	public void rightnow()
+	{
+		check("systimestamp", "rightnow()");
+	}
+
+	@Test
+	public void now()
+	{
+		check("sysdate", "now()");
+	}
+
+	@Test
+	public void today()
+	{
+		check("trunc(sysdate)", "today()");
 	}
 
 	@CauseTest(expectedCause=RuntimeException.class)
