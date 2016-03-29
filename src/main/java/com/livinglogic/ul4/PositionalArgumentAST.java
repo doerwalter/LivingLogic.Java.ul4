@@ -8,7 +8,10 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.io.IOException;
+
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
@@ -55,5 +58,32 @@ public class PositionalArgumentAST extends ArgumentASTBase
 	{
 		super.loadUL4ON(decoder);
 		value = (AST)decoder.load();
+	}
+
+	protected static Set<String> attributes = makeExtendedSet(ArgumentASTBase.attributes, "value");
+
+	public Set<String> getAttributeNamesUL4()
+	{
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		switch (key)
+		{
+			case "value":
+				return value;
+			default:
+				return super.getItemStringUL4(key);
+		}
+	}
+
+	public void reprUL4(UL4Repr.Formatter formatter)
+	{
+		formatter.append("<");
+		formatter.append(getClass().getName());
+		formatter.append(" value=");
+		formatter.visit(value);
+		formatter.append(">");
 	}
 }
