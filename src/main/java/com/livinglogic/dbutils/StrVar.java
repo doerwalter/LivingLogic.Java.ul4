@@ -38,7 +38,7 @@ public class StrVar extends Var
 		if (value == null || value instanceof String)
 			this.value = value;
 		else
-			throw new ArgumentTypeMismatchException("str.value = {}", value);
+			throw new ArgumentTypeMismatchException("str.value = {!t} not supported", value);
 	}
 
 	public void register(CallableStatement statement, int position) throws SQLException

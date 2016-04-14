@@ -39,6 +39,6 @@ public class FunctionFromJSON extends Function
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new ArgumentTypeMismatchException("fromjson({})", obj);
+		throw new ArgumentTypeMismatchException("fromjson({!t}) not supported", obj);
 	}
 }

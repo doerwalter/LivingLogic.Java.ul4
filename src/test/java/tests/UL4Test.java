@@ -961,6 +961,7 @@ public class UL4Test
 		String source = "<?print x * y?>";
 
 		checkTemplateOutput("0", source, "x", false, "y", false);
+		checkTemplateOutput("0", source, "x", false, "y", false);
 		checkTemplateOutput("0", source, "x", false, "y", true);
 		checkTemplateOutput("0", source, "x", true, "y", false);
 		checkTemplateOutput("1", source, "x", true, "y", true);

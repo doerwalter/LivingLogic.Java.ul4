@@ -60,6 +60,6 @@ public class FunctionOct extends Function
 			else
 				return "0o" + bi.toString(8);
 		}
-		throw new ArgumentTypeMismatchException("oct({})", obj);
+		throw new ArgumentTypeMismatchException("oct({!t}) not supported", obj);
 	}
 }

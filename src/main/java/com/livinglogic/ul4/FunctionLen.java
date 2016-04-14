@@ -73,6 +73,6 @@ public class FunctionLen extends Function
 			return call((UL4Attributes)obj);
 		else if (obj instanceof Map)
 			return call((Map)obj);
-		throw new ArgumentTypeMismatchException("len({})", obj);
+		throw new ArgumentTypeMismatchException("len({!t}) not supported", obj);
 	}
 }

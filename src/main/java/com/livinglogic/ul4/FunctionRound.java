@@ -169,6 +169,6 @@ public class FunctionRound extends Function
 			else
 				return new BigDecimal(decValue.toBigInteger().toString()).movePointLeft(intDigits);
 		}
-		throw new ArgumentTypeMismatchException("round({}, {})", x, digits);
+		throw new ArgumentTypeMismatchException("round({!t}, {!t}) not supported", x, digits);
 	}
 }

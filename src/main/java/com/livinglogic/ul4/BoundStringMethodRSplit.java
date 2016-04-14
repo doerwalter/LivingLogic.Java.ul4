@@ -70,7 +70,7 @@ public class BoundStringMethodRSplit extends BoundMethod<String>
 			return call(object);
 		else if (separator instanceof String)
 			return call(object, (String)separator, 0x7fffffff);
-		throw new ArgumentTypeMismatchException("{}.rsplit({})", object, separator);
+		throw new ArgumentTypeMismatchException("{!t}.rsplit({!t}) not supported", object, separator);
 	}
 
 	public static List<String> call(String object, String separator, int maxsplit)
@@ -111,6 +111,6 @@ public class BoundStringMethodRSplit extends BoundMethod<String>
 			else if (separator instanceof String)
 				return call(object, (String)separator, Utils.toInt(maxsplit));
 		}
-		throw new ArgumentTypeMismatchException("{}.rsplit({}, {})", object, separator, maxsplit);
+		throw new ArgumentTypeMismatchException("{!t}.rsplit({!t}, {!t}) not supported", object, separator, maxsplit);
 	}
 }

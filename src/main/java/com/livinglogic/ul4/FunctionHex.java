@@ -61,6 +61,6 @@ public class FunctionHex extends Function
 			else
 				return "0x" + bi.toString(16);
 		}
-		throw new ArgumentTypeMismatchException("hex({})", obj);
+		throw new ArgumentTypeMismatchException("hex({!t}) not supported", obj);
 	}
 }

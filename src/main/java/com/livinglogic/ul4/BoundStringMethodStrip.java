@@ -48,6 +48,6 @@ public class BoundStringMethodStrip extends BoundMethod<String>
 			return call(object);
 		else if (arg instanceof String)
 			return call(object, (String)arg);
-		throw new ArgumentTypeMismatchException("{}.strip({})", object, arg);
+		throw new ArgumentTypeMismatchException("{!t}.strip({!t}) not supported", object, arg);
 	}
 }

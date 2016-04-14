@@ -48,6 +48,6 @@ public class BoundStringMethodLStrip extends BoundMethod<String>
 			return call(object);
 		else if (arg instanceof String)
 			return call(object, (String)arg);
-		throw new ArgumentTypeMismatchException("{}.lstrip({})", object, arg);
+		throw new ArgumentTypeMismatchException("{!t}.lstrip({!t}) not supported", object, arg);
 	}
 }

@@ -36,6 +36,7 @@ public class Module implements UL4GetItemString, UL4Repr
 		functions.put("now", new Now.Function());
 		functions.put("today", new Today.Function());
 		functions.put("ifelse", new IfElse.Function());
+		functions.put("Eq", new Eq.Function());
 	}
 
 	public Set<String> getAttributeNamesUL4()

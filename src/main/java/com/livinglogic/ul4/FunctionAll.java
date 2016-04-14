@@ -83,6 +83,6 @@ public class FunctionAll extends Function
 			return call((Iterator)obj);
 		else if (obj instanceof Map)
 			return call((Map)obj);
-		throw new ArgumentTypeMismatchException("all({})", obj);
+		throw new ArgumentTypeMismatchException("all({!t}) not supported", obj);
 	}
 }

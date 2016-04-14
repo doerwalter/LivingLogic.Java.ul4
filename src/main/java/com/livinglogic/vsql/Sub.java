@@ -33,12 +33,7 @@ public class Sub extends Binary
 		Type type1 = obj1.type();
 		Type type2 = obj2.type();
 
-		if ((type1 == Type.BOOL || type1 == Type.INT) && (type2 == Type.BOOL || type2 == Type.INT))
-			return Type.INT;
-		else if ((type1 == Type.BOOL || type1 == Type.INT || type1 == Type.NUMBER) && (type2 == Type.BOOL || type2 == Type.INT || type2 == Type.NUMBER))
-			return Type.NUMBER;
-		else
-			throw error("vsql.sub(" + type1 + ", " + type2 + ") not supported!");
+		return Type.widenNumber(type1, type2, this, "vsql.sub({}, {}) not supported!", type1, type2);
 	}
 
 	protected void sqlOracle(StringBuffer buffer)

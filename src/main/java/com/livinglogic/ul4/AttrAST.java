@@ -110,7 +110,7 @@ public class AttrAST extends CodeAST implements LValue
 			return new BoundUL4GetAttributesMethodItems(obj);
 		else if ("values".equals(attrname) && obj instanceof UL4GetItemString)
 			return new BoundUL4GetAttributesMethodValues(obj);
-		throw new ArgumentTypeMismatchException("{}.{}", obj, attrname);
+		throw new ArgumentTypeMismatchException("{!t}.{!t} not supported", obj, attrname);
 	}
 
 	public static Object call(UL4GetItemString obj, String attrname)
@@ -265,7 +265,7 @@ public class AttrAST extends CodeAST implements LValue
 			return call((String)obj, attrname);
 		else if (obj instanceof Date)
 			return call((Date)obj, attrname);
-		throw new ArgumentTypeMismatchException("{}.{}", obj, attrname);
+		throw new ArgumentTypeMismatchException("{!t}.{!t} not supported", obj, attrname);
 	}
 
 	public static Object call(EvaluationContext context, UL4GetItemWithContext obj, String attrname)
@@ -312,7 +312,7 @@ public class AttrAST extends CodeAST implements LValue
 		else if (obj instanceof Map)
 			callSet((Map)obj, attrname, value);
 		else
-			throw new ArgumentTypeMismatchException("{}.{} = {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{!t}.{!t} = {!t} not supported", obj, attrname, value);
 	}
 
 	private static Object getValue(EvaluationContext context, Object obj, String attrname, String excmessage, Object value)
@@ -339,16 +339,16 @@ public class AttrAST extends CodeAST implements LValue
 			callAdd((Map)obj, attrname, value);
 		else if (obj instanceof UL4SetItemString)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} += {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} += {!t} not supported", value);
 			((UL4SetItemString)obj).setItemStringUL4(attrname, IAdd.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} += {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} += {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(attrname, IAdd.call(orgvalue, value));
 		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} += {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{!t}.{} += {!t} not supported", obj, attrname, value);
 	}
 
 	public static void callSub(Map obj, String attrname, Object value)
@@ -362,16 +362,16 @@ public class AttrAST extends CodeAST implements LValue
 			callSub((Map)obj, attrname, value);
 		else if (obj instanceof UL4SetItemString)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} -= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} -= {!t} not supported", value);
 			((UL4SetItemString)obj).setItemStringUL4(attrname, SubAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} -= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} -= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(attrname, SubAST.call(orgvalue, value));
 		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} -= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{!t}.{} -= {!t} not supported", obj, attrname, value);
 	}
 
 	public static void callMul(Map obj, String attrname, Object value)
@@ -385,16 +385,16 @@ public class AttrAST extends CodeAST implements LValue
 			callMul((Map)obj, attrname, value);
 		else if (obj instanceof UL4SetItemString)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} *= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} *= {!t} not supported", value);
 			((UL4SetItemString)obj).setItemStringUL4(attrname, IMul.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} *= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} *= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(attrname, IMul.call(orgvalue, value));
 		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} *= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{!t}.{} *= {!t} not supported", obj, attrname, value);
 	}
 
 	public static void callFloorDiv(Map obj, String attrname, Object value)
@@ -408,16 +408,16 @@ public class AttrAST extends CodeAST implements LValue
 			callFloorDiv((Map)obj, attrname, value);
 		else if (obj instanceof UL4SetItemString)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} //= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} //= {!t} not supported", value);
 			((UL4SetItemString)obj).setItemStringUL4(attrname, FloorDivAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} //= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} //= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(attrname, FloorDivAST.call(orgvalue, value));
 		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} //= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{!t}.{} //= {!t} not supported", obj, attrname, value);
 	}
 
 	public static void callTrueDiv(Map obj, String attrname, Object value)
@@ -431,16 +431,16 @@ public class AttrAST extends CodeAST implements LValue
 			callTrueDiv((Map)obj, attrname, value);
 		else if (obj instanceof UL4SetItemString)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} /= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} /= {!t} not supported", value);
 			((UL4SetItemString)obj).setItemStringUL4(attrname, TrueDivAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} /= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} /= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(attrname, TrueDivAST.call(orgvalue, value));
 		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} //= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{!t}.{} //= {!t} not supported", obj, attrname, value);
 	}
 
 	public static void callMod(Map obj, String attrname, Object value)
@@ -454,16 +454,16 @@ public class AttrAST extends CodeAST implements LValue
 			callMod((Map)obj, attrname, value);
 		else if (obj instanceof UL4SetItemString)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} %= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} %= {!t} not supported", value);
 			((UL4SetItemString)obj).setItemStringUL4(attrname, ModAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} %= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} %= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(attrname, ModAST.call(orgvalue, value));
 		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} //= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{!t}.{} //= {!t} not supported", obj, attrname, value);
 	}
 
 	public static void callShiftLeft(Map obj, String attrname, Object value)
@@ -477,16 +477,16 @@ public class AttrAST extends CodeAST implements LValue
 			callShiftLeft((Map)obj, attrname, value);
 		else if (obj instanceof UL4SetItemString)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} <<= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} <<= {!t} not supported", value);
 			((UL4SetItemString)obj).setItemStringUL4(attrname, ShiftLeftAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} <<= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} <<= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(attrname, ShiftLeftAST.call(orgvalue, value));
 		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} <<= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{!t}.{} <<= {!t} not supported", obj, attrname, value);
 	}
 
 	public static void callShiftRight(Map obj, String attrname, Object value)
@@ -500,16 +500,16 @@ public class AttrAST extends CodeAST implements LValue
 			callShiftRight((Map)obj, attrname, value);
 		else if (obj instanceof UL4SetItemString)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} >>= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} >>= {!t} not supported", value);
 			((UL4SetItemString)obj).setItemStringUL4(attrname, ShiftRightAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} >>= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} >>= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(attrname, ShiftRightAST.call(orgvalue, value));
 		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} >>= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{!t}.{} >>= {!t} not supported", obj, attrname, value);
 	}
 
 	public static void callBitAnd(Map obj, String attrname, Object value)
@@ -523,16 +523,16 @@ public class AttrAST extends CodeAST implements LValue
 			callBitAnd((Map)obj, attrname, value);
 		else if (obj instanceof UL4SetItemString)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} &= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} &= {!t} not supported", value);
 			((UL4SetItemString)obj).setItemStringUL4(attrname, BitAndAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} &= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} &= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(attrname, BitAndAST.call(orgvalue, value));
 		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} &= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{!t}.{} &= {!t} not supported", obj, attrname, value);
 	}
 
 	public static void callBitXOr(Map obj, String attrname, Object value)
@@ -546,16 +546,16 @@ public class AttrAST extends CodeAST implements LValue
 			callBitXOr((Map)obj, attrname, value);
 		else if (obj instanceof UL4SetItemString)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} ^= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} ^= {!t} not supported", value);
 			((UL4SetItemString)obj).setItemStringUL4(attrname, BitXOrAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} ^= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} ^= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(attrname, BitXOrAST.call(orgvalue, value));
 		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} ^= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{!t}.{} ^= {!t} not supported", obj, attrname, value);
 	}
 
 	public static void callBitOr(Map obj, String attrname, Object value)
@@ -569,16 +569,16 @@ public class AttrAST extends CodeAST implements LValue
 			callBitOr((Map)obj, attrname, value);
 		else if (obj instanceof UL4SetItemString)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} |= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} |= {!t} not supported", value);
 			((UL4SetItemString)obj).setItemStringUL4(attrname, BitOrAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
-			Object orgvalue = getValue(context, obj, attrname, "{}.{} |= {}", value);
+			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} |= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(attrname, BitOrAST.call(orgvalue, value));
 		}
 		else
-			throw new ArgumentTypeMismatchException("{}.{} |= {}", obj, attrname, value);
+			throw new ArgumentTypeMismatchException("{!t}.{} |= {!t} not supported", obj, attrname, value);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

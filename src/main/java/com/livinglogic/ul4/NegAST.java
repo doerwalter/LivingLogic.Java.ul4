@@ -81,6 +81,6 @@ public class NegAST extends UnaryAST
 			return call((TimeDelta)arg);
 		else if (arg instanceof MonthDelta)
 			return call((MonthDelta)arg);
-		throw new ArgumentTypeMismatchException("-{}", arg);
+		throw new ArgumentTypeMismatchException("-{!t}", arg);
 	}
 }

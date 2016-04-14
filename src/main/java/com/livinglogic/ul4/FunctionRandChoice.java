@@ -68,6 +68,6 @@ public class FunctionRandChoice extends Function
 			return call((List)obj);
 		else if (obj instanceof Color)
 			return call((Color)obj);
-		throw new ArgumentTypeMismatchException("randchoice({})", obj);
+		throw new ArgumentTypeMismatchException("randchoice({!t}) not supported", obj);
 	}
 }

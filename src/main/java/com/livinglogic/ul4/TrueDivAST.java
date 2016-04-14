@@ -85,7 +85,7 @@ public class TrueDivAST extends BinaryAST
 			if (arg2 instanceof MonthDelta)
 				return ((MonthDelta)arg1).truediv((MonthDelta)arg2);
 		}
-		throw new ArgumentTypeMismatchException("{} / {}", arg1, arg2);
+		throw new ArgumentTypeMismatchException("{!t} / {!t} not supported", arg1, arg2);
 	}
 
 }

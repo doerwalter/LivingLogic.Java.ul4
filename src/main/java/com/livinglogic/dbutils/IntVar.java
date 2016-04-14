@@ -39,7 +39,7 @@ public class IntVar extends Var
 		if (value == null || value instanceof Boolean || value instanceof Number)
 			this.value = value;
 		else
-			throw new ArgumentTypeMismatchException("int.value = {}", value);
+			throw new ArgumentTypeMismatchException("int.value = {!t} not supported", value);
 	}
 
 	public void register(CallableStatement statement, int position) throws SQLException

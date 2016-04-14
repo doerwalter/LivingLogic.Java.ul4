@@ -47,7 +47,7 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 		Object arg3 = args.get(2);
 
 		if (!(arg1 instanceof String) || !(arg2 instanceof String))
-			throw new ArgumentTypeMismatchException("{}.replace({}, {})", object, arg1, arg2);
+			throw new ArgumentTypeMismatchException("{!t}.replace({!t}, {!t}) not supported", object, arg1, arg2);
 
 		if (arg3 == null)
 			return call(object, (String)arg1, (String)arg2);

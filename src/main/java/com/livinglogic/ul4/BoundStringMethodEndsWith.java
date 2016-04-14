@@ -37,6 +37,6 @@ public class BoundStringMethodEndsWith extends BoundMethod<String>
 	{
 		if (args.get(0) instanceof String)
 			return call(object, (String)args.get(0));
-		throw new ArgumentTypeMismatchException("{}.endswith({})", object, args.get(0));
+		throw new ArgumentTypeMismatchException("{!t}.endswith({!t}) not supported", object, args.get(0));
 	}
 }

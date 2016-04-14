@@ -96,6 +96,8 @@ public class VSQLTest
 		"<?def convert(ast, template)?>" +
 			"<?if ast.type == 'const'?>" +
 				"<?return vsql.const(ast.value, ast, template)?>" +
+			"<?elif ast.type == 'eq'?>" +
+				"<?return vsql.Eq(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
 			"<?elif ast.type == 'add'?>" +
 				"<?return vsql.add(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
 			"<?elif ast.type == 'mul'?>" +
@@ -262,6 +264,14 @@ public class VSQLTest
 		check("to_char(to_date('2016-01-01 12:34:56', 'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')", "str(@(2016-01-01T12:34:56))");
 		check("to_char(to_timestamp('2016-01-01 12:34:56.789000', 'YYYY-MM-DD HH24:MI:SS.FF6'), 'YYYY-MM-DD HH24:MI:SS.FF6')", "str(@(2016-01-01T12:34:56.789000))");
 		check("'foo'", "str('foo')");
+	}
+
+	@Test
+	public void eq()
+	{
+		check("case when dat_active is null and dat_firstname is null then 1 else 0 end", "f.active == f.firstname");
+		check("case when dat_active = dat_id then 1 else 0 end", "f.active == f.id");
+		check("case when dat_firstname = dat_lastname then 1 else 0 end", "f.firstname == f.lastname");
 	}
 
 	@Test

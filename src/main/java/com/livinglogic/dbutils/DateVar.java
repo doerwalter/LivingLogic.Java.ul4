@@ -40,7 +40,7 @@ public class DateVar extends Var
 		if (value == null || value instanceof Date || value instanceof Timestamp)
 			this.value = value;
 		else
-			throw new ArgumentTypeMismatchException("date.value = {}", value);
+			throw new ArgumentTypeMismatchException("date.value = {!t} not supported", value);
 	}
 
 	public void register(CallableStatement statement, int position) throws SQLException

@@ -83,6 +83,6 @@ public class FunctionAny extends Function
 			return call((Iterator)obj);
 		else if (obj instanceof Map)
 			return call((Map)obj);
-		throw new ArgumentTypeMismatchException("any({})", obj);
+		throw new ArgumentTypeMismatchException("any({!t}) not supported", obj);
 	}
 }

@@ -44,6 +44,6 @@ public class BitNotAST extends UnaryAST
 			return ~Utils.toLong(obj);
 		else if (obj instanceof BigInteger)
 			return ((BigInteger)obj).not();
-		throw new ArgumentTypeMismatchException("~{}", obj);
+		throw new ArgumentTypeMismatchException("~{!t} not supported", obj);
 	}
 }

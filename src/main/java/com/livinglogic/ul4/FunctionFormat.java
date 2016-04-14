@@ -477,7 +477,7 @@ public class FunctionFormat extends Function
 			return call(Utils.toLong(obj), formatString, locale);
 		else if (obj instanceof BigInteger)
 			return call((BigInteger)obj, formatString, locale);
-		throw new ArgumentTypeMismatchException("format({}, {}, {})", obj, formatString, locale);
+		throw new ArgumentTypeMismatchException("format({!t}, {!t}, {!t}) not supported", obj, formatString, locale);
 	}
 
 	public static String call(Object obj, Object formatString, Object lang)
@@ -497,7 +497,7 @@ public class FunctionFormat extends Function
 				return call(obj, (String)formatString, locale);
 			}
 		}
-		throw new ArgumentTypeMismatchException("format({}, {}, {})", obj, formatString, lang);
+		throw new ArgumentTypeMismatchException("format({!t}, {!t}, {!t}) not supported", obj, formatString, lang);
 	}
 
 	public static String call(Object obj, String formatString)

@@ -54,6 +54,6 @@ public class FunctionChr extends Function
 			return String.valueOf(charValue);
 		}
 		// FIXME: Add support for BigInteger
-		throw new ArgumentTypeMismatchException("chr({})", obj);
+		throw new ArgumentTypeMismatchException("chr({!t}) not supported", obj);
 	}
 }

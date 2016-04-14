@@ -173,6 +173,6 @@ public class ModAST extends BinaryAST
 		}
 		else if (arg1 instanceof Color && arg2 instanceof Color)
 			return ((Color)arg1).blend((Color)arg2);
-		throw new ArgumentTypeMismatchException("{} % {}", arg1, arg2);
+		throw new ArgumentTypeMismatchException("{!t} % {!t} not supported", arg1, arg2);
 	}
 }

@@ -63,7 +63,7 @@ public class Utils
 		else if (obj instanceof Undefined)
 			return obj.toString();
 		else
-			return obj.getClass().getName();
+			return "<" + obj.getClass().getName() + ">";
 	}
 
 	public static BigInteger toBigInteger(int arg)
@@ -568,6 +568,54 @@ public class Utils
 		if (stop > string.length())
 			stop = string.length();
 		return string.substring(start, stop);
+	}
+
+	public static int indexOf(String haystack, int startPos, String... needles)
+	{
+		int bestPos = -1;
+
+		for (int i = 0; i < needles.length; ++i)
+		{
+			int pos = haystack.indexOf(needles[i], startPos);
+			if (pos != -1 && (bestPos == -1 || pos < bestPos))
+				bestPos = pos;
+		}
+		return bestPos;
+	}
+
+	public static String formatMessage(String template, Object... args)
+	{
+		StringBuilder buffer = new StringBuilder();
+		int argIndex = 0;
+
+		for (int startPos = 0;;)
+		{
+			int pos = indexOf(template, startPos, "{}", "{!r}", "{!t}");
+
+			if (pos == -1)
+			{
+				buffer.append(template.substring(startPos));
+				break;
+			}
+			if (pos != startPos)
+				buffer.append(template.substring(startPos, pos));
+			if (template.startsWith("{}", pos))
+			{
+				buffer.append(args[argIndex++].toString());
+				startPos = pos + 2;
+			}
+			else if (template.startsWith("{!r}", pos))
+			{
+				buffer.append(FunctionRepr.call(args[argIndex++]));
+				startPos = pos + 4;
+			}
+			else /* {!t} */
+			{
+				buffer.append(objectType(args[argIndex++]));
+				startPos = pos + 4;
+			}
+		}
+		return buffer.toString();
 	}
 
 	public static String unescapeUL4String(String string)

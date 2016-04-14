@@ -35,7 +35,7 @@ public class FunctionReversed extends Function
 			return new StringReversedIterator((String)obj);
 		else if (obj instanceof List)
 			return new ListReversedIterator((List)obj);
-		throw new ArgumentTypeMismatchException("reversed({})", obj);
+		throw new ArgumentTypeMismatchException("reversed({!t}) not supported", obj);
 	}
 
 	private static class StringReversedIterator implements Iterator<String>

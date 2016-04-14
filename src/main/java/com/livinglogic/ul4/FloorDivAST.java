@@ -172,6 +172,6 @@ public class FloorDivAST extends BinaryAST
 			else if (arg2 instanceof MonthDelta)
 				return ((MonthDelta)arg1).floordiv((MonthDelta)arg2);
 		}
-		throw new ArgumentTypeMismatchException("{} // {}", arg1, arg2);
+		throw new ArgumentTypeMismatchException("{!t} // {!t} not supported", arg1, arg2);
 	}
 }

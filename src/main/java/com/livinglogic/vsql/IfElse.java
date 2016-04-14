@@ -43,44 +43,8 @@ public class IfElse extends Node
 	public Type type()
 	{
 		Type typeIf = objIf.type();
-		Type typeCond = objCond.type();
 		Type typeElse = objElse.type();
-
-		if (typeIf == Type.BOOL)
-		{
-			if (typeElse == Type.BOOL)
-				return Type.BOOL;
-			else if (typeElse == Type.INT)
-				return Type.INT;
-			else if (typeElse == Type.NUMBER)
-				return Type.NUMBER;
-		}
-		else if (typeIf == Type.INT)
-		{
-			if (typeElse == Type.BOOL || typeElse == Type.INT)
-				return Type.INT;
-			else if (typeElse == Type.NUMBER)
-				return Type.NUMBER;
-		}
-		else if (typeIf == Type.NUMBER)
-		{
-			if (typeElse == Type.BOOL || typeElse == Type.INT || typeElse == Type.NUMBER)
-				return Type.NUMBER;
-		}
-		else if (typeIf == Type.STR)
-		{
-			if (typeElse == Type.STR)
-				return Type.STR;
-			else if (typeElse == Type.CLOB)
-				return Type.CLOB;
-		}
-		else if (typeIf == Type.CLOB)
-		{
-			if (typeElse == Type.STR || typeElse == Type.CLOB)
-				return Type.CLOB;
-		}
-
-		throw error("vsql.ifelse(" + typeIf + ", ?, " + typeElse + ") not supported!");
+		return Type.widen(typeIf, typeElse, this, "vsql.ifelse({}, ?, {}) not supported!", typeIf, typeElse);
 	}
 
 	protected void sqlOracle(StringBuffer buffer)

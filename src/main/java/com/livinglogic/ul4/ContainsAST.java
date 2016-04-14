@@ -81,6 +81,6 @@ public class ContainsAST extends BinaryAST
 			if (obj instanceof String)
 				return call((String)obj, (UL4Attributes)container);
 		}
-		throw new ArgumentTypeMismatchException("{} in {}", obj, container);
+		throw new ArgumentTypeMismatchException("{!t} in {!t} not supported", obj, container);
 	}
 }

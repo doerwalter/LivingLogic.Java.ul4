@@ -191,6 +191,6 @@ public class SubAST extends BinaryAST
 			if (arg2 instanceof MonthDelta)
 				return call((MonthDelta)arg1, (MonthDelta)arg2);
 		}
-		throw new ArgumentTypeMismatchException("{} - {}", arg1, arg2);
+		throw new ArgumentTypeMismatchException("{!t} - {!t} not supported", arg1, arg2);
 	}
 }

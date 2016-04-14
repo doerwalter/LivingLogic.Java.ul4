@@ -38,7 +38,7 @@ public class NumberVar extends Var
 		if (value == null || value instanceof Number)
 			this.value = value;
 		else
-			throw new ArgumentTypeMismatchException("number.value = {}", value);
+			throw new ArgumentTypeMismatchException("number.value = {!t} not supported", value);
 	}
 
 	public void register(CallableStatement statement, int position) throws SQLException

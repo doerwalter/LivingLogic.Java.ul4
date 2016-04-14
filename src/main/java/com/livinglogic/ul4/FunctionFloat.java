@@ -48,6 +48,6 @@ public class FunctionFloat extends Function
 			return new BigDecimal(((BigInteger)obj).toString());
 		else if (obj instanceof BigDecimal || obj instanceof Float || obj instanceof Double)
 			return obj;
-		throw new ArgumentTypeMismatchException("float({})", obj);
+		throw new ArgumentTypeMismatchException("float({!t}) not supported", obj);
 	}
 }

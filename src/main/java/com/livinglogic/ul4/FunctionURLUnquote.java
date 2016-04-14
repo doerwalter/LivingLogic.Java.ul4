@@ -46,6 +46,6 @@ public class FunctionURLUnquote extends Function
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new ArgumentTypeMismatchException("urlunquote({})", obj);
+		throw new ArgumentTypeMismatchException("urlunquote({!t}) not supported", obj);
 	}
 }

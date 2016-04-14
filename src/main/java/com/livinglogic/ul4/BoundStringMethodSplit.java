@@ -69,6 +69,6 @@ public class BoundStringMethodSplit extends BoundMethod<String>
 			else if (separator instanceof String)
 				return call(object, (String)separator, Utils.toInt(maxsplit));
 		}
-		throw new ArgumentTypeMismatchException("{}.split({}, {})", object, separator, maxsplit);
+		throw new ArgumentTypeMismatchException("{!t}.split({!t}, {!t}) not supported", object, separator, maxsplit);
 	}
 }

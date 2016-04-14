@@ -96,6 +96,6 @@ public class FunctionSet extends Function
 			return call((Iterable)obj);
 		else if (obj instanceof Iterator)
 			return call((Iterator)obj);
-		throw new ArgumentTypeMismatchException("set({})", obj);
+		throw new ArgumentTypeMismatchException("set({!t}) not supported", obj);
 	}
 }

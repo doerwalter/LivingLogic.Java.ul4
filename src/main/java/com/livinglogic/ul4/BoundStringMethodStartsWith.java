@@ -39,6 +39,6 @@ public class BoundStringMethodStartsWith extends BoundMethod<String>
 
 		if (arg instanceof String)
 			return call(object, (String)arg);
-		throw new ArgumentTypeMismatchException("{}.startswith({})", object, arg);
+		throw new ArgumentTypeMismatchException("{!t}.startswith({!t}) not supported", object, arg);
 	}
 }

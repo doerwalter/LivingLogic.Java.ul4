@@ -66,7 +66,7 @@ public class FunctionInt extends Function
 			return ((Number)obj).intValue();
 		else if (obj instanceof BigDecimal)
 			return ((BigDecimal)obj).toBigInteger();
-		throw new ArgumentTypeMismatchException("int({})", obj);
+		throw new ArgumentTypeMismatchException("int({!t}) not supported", obj);
 	}
 
 	public static Object call(Object obj1, Object obj2)
@@ -78,6 +78,6 @@ public class FunctionInt extends Function
 			if (obj2 instanceof Integer || obj2 instanceof Byte || obj2 instanceof Short || obj2 instanceof Long || obj2 instanceof BigInteger)
 				return Integer.valueOf((String)obj1, ((Number)obj2).intValue());
 		}
-		throw new ArgumentTypeMismatchException("int({}, {})", obj1, obj2);
+		throw new ArgumentTypeMismatchException("int({!t}, {!t}) not supported", obj1, obj2);
 	}
 }

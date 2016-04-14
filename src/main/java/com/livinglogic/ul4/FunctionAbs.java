@@ -83,6 +83,6 @@ public class FunctionAbs extends Function
 			return ((BigDecimal)arg).abs();
 		else if (arg instanceof UL4Abs)
 			return ((UL4Abs)arg).absUL4();
-		throw new ArgumentTypeMismatchException("abs({})", arg);
+		throw new ArgumentTypeMismatchException("abs({!t}) not supported", arg);
 	}
 }

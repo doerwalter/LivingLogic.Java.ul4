@@ -46,6 +46,6 @@ public class FunctionURLQuote extends Function
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new ArgumentTypeMismatchException("urlquote({})", obj);
+		throw new ArgumentTypeMismatchException("urlquote({!t}) not supported", obj);
 	}
 }

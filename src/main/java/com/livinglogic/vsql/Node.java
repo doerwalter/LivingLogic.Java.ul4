@@ -8,6 +8,7 @@ package com.livinglogic.vsql;
 
 import java.util.Set;
 
+import com.livinglogic.ul4.Utils;
 import com.livinglogic.ul4.InterpretedTemplate;
 import com.livinglogic.ul4.SourcePart;
 import com.livinglogic.ul4.BoundMethod;
@@ -36,17 +37,17 @@ public abstract class Node implements UL4Attributes, UL4GetItemString, UL4Repr
 		this.origin = origin;
 	}
 
-	public static RuntimeException error(InterpretedTemplate template, SourcePart origin, String message)
+	public static RuntimeException error(InterpretedTemplate template, SourcePart origin, String message, Object... args)
 	{
-		RuntimeException ex = new RuntimeException(message);
+		RuntimeException ex = new RuntimeException(Utils.formatMessage(message, args));
 		if (origin != null)
 			ex = new SourceException(ex, template, origin);
 		return ex;
 	}
 
-	protected RuntimeException error(String message)
+	protected RuntimeException error(String message, Object... args)
 	{
-		return error(template, origin, message);
+		return error(template, origin, message, args);
 	}
 
 	public abstract Type type();
@@ -87,7 +88,7 @@ public abstract class Node implements UL4Attributes, UL4GetItemString, UL4Repr
 		public Object evaluate(BoundArguments args)
 		{
 			if (!(args.get(0) instanceof String))
-				throw new ArgumentTypeMismatchException("sql() argument must be string not {}", args.get(0));
+				throw new ArgumentTypeMismatchException("sql() argument must be string not {!t}", args.get(0));
 			return object.sql((String)args.get(0));
 		}
 	}

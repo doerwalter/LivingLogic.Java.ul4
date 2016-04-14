@@ -61,6 +61,6 @@ public class FunctionBin extends Function
 			else
 				return "0b" + bi.toString(2);
 		}
-		throw new ArgumentTypeMismatchException("bin({})", obj);
+		throw new ArgumentTypeMismatchException("bin({!t}) not supported", obj);
 	}
 }

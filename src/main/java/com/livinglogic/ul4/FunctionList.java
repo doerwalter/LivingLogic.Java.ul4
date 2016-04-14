@@ -95,6 +95,6 @@ public class FunctionList extends Function
 			return call((Iterable)obj);
 		else if (obj instanceof Iterator)
 			return call((Iterator)obj);
-		throw new ArgumentTypeMismatchException("list({})", obj);
+		throw new ArgumentTypeMismatchException("list({!t}) not supported", obj);
 	}
 }

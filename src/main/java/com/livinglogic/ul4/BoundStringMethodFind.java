@@ -57,6 +57,6 @@ public class BoundStringMethodFind extends BoundMethod<String>
 			int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : object.length();
 			return call(object, (String)args.get(0), startIndex, endIndex);
 		}
-		throw new ArgumentTypeMismatchException("{}.find({}, {}, {})", object, args.get(0), args.get(1), args.get(2));
+		throw new ArgumentTypeMismatchException("{!t}.find({!t}, {!t}, {!t}) not supported", object, args.get(0), args.get(1), args.get(2));
 	}
 }

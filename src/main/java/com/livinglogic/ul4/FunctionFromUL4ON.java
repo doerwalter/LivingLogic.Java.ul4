@@ -36,6 +36,6 @@ public class FunctionFromUL4ON extends Function
 	{
 		if (obj instanceof String)
 			return call((String)obj);
-		throw new ArgumentTypeMismatchException("fromul4on({})", obj);
+		throw new ArgumentTypeMismatchException("fromul4on({!t}) not supported", obj);
 	}
 }

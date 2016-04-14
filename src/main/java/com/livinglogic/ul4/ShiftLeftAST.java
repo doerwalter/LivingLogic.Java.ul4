@@ -86,6 +86,6 @@ public class ShiftLeftAST extends BinaryAST
 			if (arg2 instanceof BigInteger || arg2 instanceof Long || arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
 				return call((BigInteger)arg1, Utils.toInt(arg2));
 		}
-		throw new ArgumentTypeMismatchException("{} << {}", arg1, arg2);
+		throw new ArgumentTypeMismatchException("{!t} << {!t} not supported", arg1, arg2);
 	}
 }

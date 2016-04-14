@@ -78,6 +78,6 @@ public class BitXOrAST extends BinaryAST
 			else if (arg2 instanceof BigInteger)
 				return call((BigInteger)arg1, (BigInteger)arg2);
 		}
-		throw new ArgumentTypeMismatchException("{} | {}", arg1, arg2);
+		throw new ArgumentTypeMismatchException("{!t} | {!t} not supported", arg1, arg2);
 	}
 }

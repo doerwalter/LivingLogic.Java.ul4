@@ -49,7 +49,7 @@ public class MulAST extends BinaryAST
 	public static String call(long arg1, String arg2)
 	{
 		if (((int)arg1) != arg1)
-			throw new ArgumentTypeMismatchException("{} * {}", arg1, arg2);
+			throw new ArgumentTypeMismatchException("{!t} * {!t} not supported", arg1, arg2);
 		return StringUtils.repeat(arg2, (int)arg1);
 	}
 
@@ -289,6 +289,6 @@ public class MulAST extends BinaryAST
 			else if (arg2 instanceof Long)
 				return call((MonthDelta)arg1, Utils.toLong(arg2));
 		}
-		throw new ArgumentTypeMismatchException("{} * {}", arg1, arg2);
+		throw new ArgumentTypeMismatchException("{!t} * {!t} not supported", arg1, arg2);
 	}
 }

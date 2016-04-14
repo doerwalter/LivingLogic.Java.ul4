@@ -31,7 +31,7 @@ public class FunctionOrd extends Function
 	{
 		if (obj.length() != 1)
 		{
-			throw new IllegalArgumentException("String " + obj + " contains more than one unicode character!");
+			throw new IllegalArgumentException(Utils.formatMessage("String {!r} contains more than one unicode character!", obj));
 		}
 		return (int)obj.charAt(0);
 	}
@@ -42,6 +42,6 @@ public class FunctionOrd extends Function
 		{
 			return call((String)obj);
 		}
-		throw new ArgumentTypeMismatchException("ord({})", obj);
+		throw new ArgumentTypeMismatchException("ord({!t}) not supported", obj);
 	}
 }
