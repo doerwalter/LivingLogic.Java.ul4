@@ -21,9 +21,9 @@ import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.ul4.Utils;
 import com.livinglogic.ul4.FunctionStr;
 
-public class Add extends Binary
+public class Sub extends Binary
 {
-	public Add(InterpretedTemplate template, SourcePart origin, Node obj1, Node obj2)
+	public Sub(InterpretedTemplate template, SourcePart origin, Node obj1, Node obj2)
 	{
 		super(template, origin, obj1, obj2);
 	}
@@ -37,12 +37,8 @@ public class Add extends Binary
 			return Type.INT;
 		else if ((type1 == Type.BOOL || type1 == Type.INT || type1 == Type.NUMBER) && (type2 == Type.BOOL || type2 == Type.INT || type2 == Type.NUMBER))
 			return Type.NUMBER;
-		else if ((type1 == Type.STR) && (type2 == Type.STR))
-			return Type.STR;
-		else if ((type1 == Type.STR || type1 == Type.CLOB) && (type2 == Type.STR || type2 == Type.CLOB))
-			return Type.CLOB;
 		else
-			throw error("vsql.add(" + type1 + ", " + type2 + ") not supported!");
+			throw error("vsql.sub(" + type1 + ", " + type2 + ") not supported!");
 	}
 
 	protected void sqlOracle(StringBuffer buffer)
@@ -50,52 +46,28 @@ public class Add extends Binary
 		Type type1 = obj1.type();
 		Type type2 = obj2.type();
 
-		if ((type1 == Type.BOOL || type1 == Type.INT) && (type2 == Type.BOOL || type2 == Type.INT))
+		if ((type1 == Type.BOOL || type1 == Type.INT || type1 == Type.NUMBER) && (type2 == Type.BOOL || type2 == Type.INT || type2 == Type.NUMBER))
 		{
 			buffer.append("(");
 			obj1.sqlOracle(buffer);
-			buffer.append("+");
-			obj2.sqlOracle(buffer);
-			buffer.append(")");
-		}
-		else if ((type1 == Type.BOOL || type1 == Type.INT || type1 == Type.NUMBER) && (type2 == Type.BOOL || type2 == Type.INT || type2 == Type.NUMBER))
-		{
-			buffer.append("(");
-			obj1.sqlOracle(buffer);
-			buffer.append("+");
-			obj2.sqlOracle(buffer);
-			buffer.append(")");
-		}
-		else if ((type1 == Type.STR) && (type2 == Type.STR))
-		{
-			buffer.append("(");
-			obj1.sqlOracle(buffer);
-			buffer.append("||");
-			obj2.sqlOracle(buffer);
-			buffer.append(")");
-		}
-		else if ((type1 == Type.STR || type1 == Type.CLOB) && (type2 == Type.STR || type2 == Type.CLOB))
-		{
-			buffer.append("(");
-			obj1.sqlOracle(buffer);
-			buffer.append("||");
+			buffer.append("-");
 			obj2.sqlOracle(buffer);
 			buffer.append(")");
 		}
 		else
-			throw error("vsql.add(" + type1 + ", " + type2 + ") not supported!");
+			throw error("vsql.sub(" + type1 + ", " + type2 + ") not supported!");
 	}
 
 	public static class Function extends Binary.Function
 	{
 		public String nameUL4()
 		{
-			return "vsql.add";
+			return "vsql.sub";
 		}
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new Add((InterpretedTemplate)args.get(3), (SourcePart)args.get(2), (Node)args.get(0), (Node)args.get(1));
+			return new Sub((InterpretedTemplate)args.get(3), (SourcePart)args.get(2), (Node)args.get(0), (Node)args.get(1));
 		}
 	}
 }

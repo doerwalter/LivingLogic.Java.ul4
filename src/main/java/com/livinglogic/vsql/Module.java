@@ -27,11 +27,15 @@ public class Module implements UL4GetItemString, UL4Repr
 		functions.put("lower", new Lower.Function());
 		functions.put("upper", new Upper.Function());
 		functions.put("add", new Add.Function());
+		functions.put("sub", new Sub.Function());
 		functions.put("mul", new Mul.Function());
+		functions.put("truediv", new TrueDiv.Function());
+		functions.put("floordiv", new FloorDiv.Function());
 		functions.put("str", new Str.Function());
 		functions.put("rightnow", new RightNow.Function());
 		functions.put("now", new Now.Function());
 		functions.put("today", new Today.Function());
+		functions.put("ifelse", new IfElse.Function());
 	}
 
 	public Set<String> getAttributeNamesUL4()

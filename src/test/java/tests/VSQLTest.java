@@ -100,6 +100,14 @@ public class VSQLTest
 				"<?return vsql.add(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
 			"<?elif ast.type == 'mul'?>" +
 				"<?return vsql.mul(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+			"<?elif ast.type == 'sub'?>" +
+				"<?return vsql.sub(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+			"<?elif ast.type == 'truediv'?>" +
+				"<?return vsql.truediv(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+			"<?elif ast.type == 'floordiv'?>" +
+				"<?return vsql.floordiv(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+			"<?elif ast.type == 'if'?>" +
+				"<?return vsql.ifelse(convert(ast.objif, template), convert(ast.objcond, template), convert(ast.objelse, template), ast, template)?>" +
 			"<?elif ast.type == 'attr'?>" +
 				"<?if ast.obj.type == 'var' and ast.obj.name == 'f'?>" +
 					"<?if ast.attrname in fields?>" +
@@ -139,10 +147,11 @@ public class VSQLTest
 	static
 	{
 		fields = new HashMap<String, Field>();
-		fields.put("vorname", new Field("vorname", Type.STR, "dat_char1"));
-		fields.put("nachname", new Field("nachname", Type.STR, "dat_char2"));
-		fields.put("id", new Field("id", Type.INT, "dat_int1"));
-		fields.put("active", new Field("active", Type.BOOL, "dat_bool1"));
+		fields.put("firstname", new Field("firstname", Type.STR, "dat_firstname"));
+		fields.put("lastname", new Field("lastname", Type.STR, "dat_lastname"));
+		fields.put("id", new Field("id", Type.INT, "dat_id"));
+		fields.put("active", new Field("active", Type.BOOL, "dat_active"));
+		fields.put("weight", new Field("age", Type.NUMBER, "dat_weight"));
 	}
 
 	public void check(String expected, String source)
@@ -189,9 +198,58 @@ public class VSQLTest
 	@Test
 	public void add()
 	{
-		tests.UL4Test.checkTemplateOutput("(1+42)", "<?print vsql.add(vsql.const(True), vsql.const(42)).sql('oracle')?>", "vsql", module);
-		tests.UL4Test.checkTemplateOutput("(17+23)", "<?print vsql.add(vsql.const(17), vsql.const(23)).sql('oracle')?>", "vsql", module);
-		tests.UL4Test.checkTemplateOutput("('foo'||'bar')", "<?print vsql.add(vsql.const('foo'), vsql.const('bar')).sql('oracle')?>", "vsql", module);
+		check("(1+dat_id)", "True + f.id");
+		check("(dat_active+dat_id)", "f.active + f.id");
+		check("(dat_id+42)", "f.id + 42");
+		check("(dat_id+42.5)", "f.id + 42.5");
+		check("((dat_firstname||' ')||dat_lastname)", "f.firstname + ' ' + f.lastname");
+	}
+
+	@Test
+	public void sub()
+	{
+		check("(1-dat_id)", "True - f.id");
+		check("(dat_active-dat_id)", "f.active - f.id");
+		check("(dat_id-42)", "f.id - 42");
+		check("(dat_id-42.5)", "f.id - 42.5");
+	}
+
+	@Test
+	public void mul()
+	{
+		check("(1*dat_id)", "True * f.id");
+		check("(dat_active*dat_id)", "f.active * f.id");
+		check("ul4_pkg.mul_int_str(2, dat_firstname)", "2 * f.firstname");
+	}
+
+	@Test
+	public void truediv()
+	{
+		check("(1/dat_id)", "True / f.id");
+		check("(dat_active/dat_id)", "f.active / f.id");
+		check("(dat_active/42.5)", "f.active / 42.5");
+		check("(42/dat_id)", "42 / f.id");
+		check("(dat_id/42.5)", "f.id / 42.5");
+	}
+
+	@Test
+	public void floordiv()
+	{
+		check("ul4_pkg.floordiv_int_int(dat_active, 1)", "f.active // True");
+		check("ul4_pkg.floordiv_int_int(dat_active, 42)", "f.active // 42");
+		check("ul4_pkg.floordiv_int_number(dat_active, 42.5)", "f.active // 42.5");
+		check("ul4_pkg.floordiv_int_int(dat_id, 1)", "f.id // True");
+		check("ul4_pkg.floordiv_int_int(dat_id, 42)", "f.id // 42");
+		check("ul4_pkg.floordiv_int_number(dat_id, 42.5)", "f.id // 42.5");
+		check("ul4_pkg.floordiv_number_int(dat_weight, 1)", "f.weight // True");
+		check("ul4_pkg.floordiv_number_int(dat_weight, 42)", "f.weight // 42");
+		check("ul4_pkg.floordiv_number_number(dat_weight, 42.5)", "f.weight // 42.5");
+	}
+
+	@Test
+	public void ifelse()
+	{
+		check("case when ul4_pkg.bool_bool(dat_active) then dat_firstname else 'Inactive' end", "f.firstname if f.active else 'Inactive'");
 	}
 
 	@Test
@@ -233,7 +291,7 @@ public class VSQLTest
 	@Test
 	public void fields()
 	{
-		check("((dat_char1||' ')||dat_char2)", "f.vorname + ' ' + f.nachname");
-		check("(2*dat_int1)", "2 * f.id");
+		check("((dat_firstname||' ')||dat_lastname)", "f.firstname + ' ' + f.lastname");
+		check("(2*dat_id)", "2 * f.id");
 	}
 }
