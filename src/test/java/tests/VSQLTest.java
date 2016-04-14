@@ -98,6 +98,8 @@ public class VSQLTest
 				"<?return vsql.const(ast.value, ast, template)?>" +
 			"<?elif ast.type == 'eq'?>" +
 				"<?return vsql.Eq(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+			"<?elif ast.type == 'ne'?>" +
+				"<?return vsql.NE(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
 			"<?elif ast.type == 'add'?>" +
 				"<?return vsql.add(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
 			"<?elif ast.type == 'mul'?>" +
@@ -272,6 +274,14 @@ public class VSQLTest
 		check("case when dat_active is null and dat_firstname is null then 1 else 0 end", "f.active == f.firstname");
 		check("case when dat_active = dat_id then 1 else 0 end", "f.active == f.id");
 		check("case when dat_firstname = dat_lastname then 1 else 0 end", "f.firstname == f.lastname");
+	}
+
+	@Test
+	public void ne()
+	{
+		check("case when dat_active is null and dat_firstname is null then 0 else 1 end", "f.active != f.firstname");
+		check("case when dat_active = dat_id then 0 else 1 end", "f.active != f.id");
+		check("case when dat_firstname = dat_lastname then 0 else 1 end", "f.firstname != f.lastname");
 	}
 
 	@Test
