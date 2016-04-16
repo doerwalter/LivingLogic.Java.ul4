@@ -40,16 +40,6 @@ public class Field
 		this.sql = sql;
 	}
 
-	public Type type()
-	{
-		return type;
-	}
-
-	protected void sqlOracle(StringBuffer buffer)
-	{
-		buffer.append(sql);
-	}
-
 	protected static Set<String> attributes = makeSet("identifier", "type", "sql");
 
 	public Set<String> getAttributeNamesUL4()

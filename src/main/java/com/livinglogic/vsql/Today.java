@@ -35,7 +35,7 @@ public class Today extends Node
 		return Type.DATE;
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
 		buffer.append("trunc(sysdate)");
 	}

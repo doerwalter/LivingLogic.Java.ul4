@@ -60,7 +60,7 @@ public class Mul extends Binary
 		throw error("vsql.mul(" + type1 + ", " + type2 + ") not supported!");
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
 		Type type1 = obj1.type();
 		Type type2 = obj2.type();

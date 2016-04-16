@@ -47,7 +47,7 @@ public class IfElse extends Node
 		return Type.widen(typeIf, typeElse, this, "vsql.ifelse({}, ?, {}) not supported!", typeIf, typeElse);
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
 		Type typeIf = objIf.type();
 		Type typeCond = objCond.type();

@@ -33,91 +33,176 @@ public class NE extends Binary
 		return Type.BOOL;
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
 		Type type1 = obj1.type();
 		Type type2 = obj2.type();
 
-		if ((type1 == Type.BOOL || type1 == Type.INT) && (type2 == Type.BOOL || type2 == Type.INT))
+		switch (type1)
 		{
-			buffer.append("case when ");
-			obj1.sqlOracle(buffer);
-			buffer.append(" = ");
-			obj2.sqlOracle(buffer);
-			buffer.append(" then 0 else 1 end");
-		}
-		else if ((type1 == Type.BOOL || type1 == Type.INT || type1 == Type.NUMBER) && (type2 == Type.BOOL || type2 == Type.INT || type2 == Type.NUMBER))
-		{
-			buffer.append("case when ");
-			obj1.sqlOracle(buffer);
-			buffer.append(" = ");
-			obj2.sqlOracle(buffer);
-			buffer.append(" then 0 else 1 end");
-		}
-		else if (type1 == Type.STR)
-		{
-			if (type2 == Type.STR)
-			{
-				buffer.append("case when ");
-				obj1.sqlOracle(buffer);
-				buffer.append(" = ");
-				obj2.sqlOracle(buffer);
-				buffer.append(" then 0 else 1 end");
-			}
-			else if (type2 == Type.CLOB)
-			{
-				buffer.append("ul4_pkg.ne_str_clob");
-				obj1.sqlOracle(buffer);
-				buffer.append(", ");
-				obj2.sqlOracle(buffer);
-				buffer.append(")");
-			}
-			else
-			{
-				// mixed types are only equal, if they are both null
-				buffer.append("case when ");
-				obj1.sqlOracle(buffer);
-				buffer.append(" is null and ");
-				obj2.sqlOracle(buffer);
-				buffer.append(" is null then 0 else 1 end");
-			}
-		}
-		else if (type1 == Type.CLOB)
-		{
-			if (type2 == Type.STR)
-			{
-				buffer.append("ul4_pkg.ne_clob_str");
-				obj1.sqlOracle(buffer);
-				buffer.append(", ");
-				obj2.sqlOracle(buffer);
-				buffer.append(")");
-			}
-			else if (type2 == Type.CLOB)
-			{
-				buffer.append("ul4_pkg.ne_clob_clob");
-				obj1.sqlOracle(buffer);
-				buffer.append(", ");
-				obj2.sqlOracle(buffer);
-				buffer.append(")");
-			}
-			else
-			{
-				// mixed types are only equal, if they are both null
-				buffer.append("case when ");
-				obj1.sqlOracle(buffer);
-				buffer.append(" is null and ");
-				obj2.sqlOracle(buffer);
-				buffer.append(" is null then 0 else 1 end");
-			}
-		}
-		else
-		{
-			// mixed types are only equal, if they are both null
-			buffer.append("case when ");
-			obj1.sqlOracle(buffer);
-			buffer.append(" is null and ");
-			obj2.sqlOracle(buffer);
-			buffer.append(" is null then 0 else 1 end");
+			case NULL:
+				switch (type2)
+				{
+					case NULL:
+						outOracle(buffer, "1");
+					default:
+						outOracle(buffer, "case when ", obj2, " is null then 0 else 1 end");
+						break;
+				}
+				break;
+			case BOOL:
+				switch (type2)
+				{
+					case NULL:
+						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
+						break;
+					case BOOL:
+						outOracle(buffer, "ul4_pkg.ne_bool_bool(", obj1, ", ", obj2, ")");
+						break;
+					case INT:
+						outOracle(buffer, "ul4_pkg.ne_bool_int(", obj1, ", ", obj2, ")");
+						break;
+					case NUMBER:
+						outOracle(buffer, "ul4_pkg.ne_bool_number(", obj1, ", ", obj2, ")");
+						break;
+					default:
+						// mixed types are only equal, if they are both null
+						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
+						break;
+				}
+				break;
+			case INT:
+				switch (type2)
+				{
+					case NULL:
+						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
+						break;
+					case BOOL:
+						outOracle(buffer, "ul4_pkg.ne_int_bool(", obj1, ", ", obj2, ")");
+						break;
+					case INT:
+						outOracle(buffer, "ul4_pkg.ne_int_int(", obj1, ", ", obj2, ")");
+						break;
+					case NUMBER:
+						outOracle(buffer, "ul4_pkg.ne_int_number(", obj1, ", ", obj2, ")");
+						break;
+					default:
+						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
+						break;
+				}
+				break;
+			case NUMBER:
+				switch (type2)
+				{
+					case NULL:
+						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
+						break;
+					case BOOL:
+						outOracle(buffer, "ul4_pkg.ne_number_bool(", obj1, ", ", obj2, ")");
+						break;
+					case INT:
+						outOracle(buffer, "ul4_pkg.ne_number_int(", obj1, ", ", obj2, ")");
+						break;
+					case NUMBER:
+						outOracle(buffer, "ul4_pkg.ne_number_number(", obj1, ", ", obj2, ")");
+						break;
+					default:
+						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
+						break;
+				}
+				break;
+			case DATE:
+				switch (type2)
+				{
+					case NULL:
+						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
+						break;
+					case DATE:
+						outOracle(buffer, "ul4_pkg.ne_date_date(", obj1, ", ", obj2, ")");
+						break;
+					case DATETIME:
+						outOracle(buffer, "ul4_pkg.ne_date_datetime(", obj1, ", ", obj2, ")");
+						break;
+					case TIMESTAMP:
+						outOracle(buffer, "ul4_pkg.ne_date_timestamp(", obj1, ", ", obj2, ")");
+						break;
+					default:
+						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
+						break;
+				}
+				break;
+			case DATETIME:
+				switch (type2)
+				{
+					case NULL:
+						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
+						break;
+					case DATE:
+						outOracle(buffer, "ul4_pkg.ne_datetime_date(", obj1, ", ", obj2, ")");
+						break;
+					case DATETIME:
+						outOracle(buffer, "ul4_pkg.ne_datetime_datetime(", obj1, ", ", obj2, ")");
+						break;
+					case TIMESTAMP:
+						outOracle(buffer, "ul4_pkg.ne_datetime_timestamp(", obj1, ", ", obj2, ")");
+						break;
+					default:
+						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
+						break;
+				}
+				break;
+			case TIMESTAMP:
+				switch (type2)
+				{
+					case NULL:
+						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
+						break;
+					case DATE:
+						outOracle(buffer, "ul4_pkg.ne_timestamp_date(", obj1, ", ", obj2, ")");
+						break;
+					case DATETIME:
+						outOracle(buffer, "ul4_pkg.ne_timestamp_datetime(", obj1, ", ", obj2, ")");
+						break;
+					case TIMESTAMP:
+						outOracle(buffer, "ul4_pkg.ne_timestamp_timestamp(", obj1, ", ", obj2, ")");
+						break;
+					default:
+						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
+						break;
+				}
+				break;
+			case STR:
+				switch (type2)
+				{
+					case NULL:
+						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
+						break;
+					case STR:
+						outOracle(buffer, "ul4_pkg.ne_str_str(", obj1, ", ", obj2, ")");
+						break;
+					case CLOB:
+						outOracle(buffer, "ul4_pkg.ne_str_clob(", obj1, ", ", obj2, ")");
+						break;
+					default:
+						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
+				}
+				break;
+			case CLOB:
+				switch (type2)
+				{
+					case NULL:
+						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
+						break;
+					case STR:
+						outOracle(buffer, "ul4_pkg.ne_clob_str(", obj1, ", ", obj2, ")");
+						break;
+					case CLOB:
+						outOracle(buffer, "ul4_pkg.ne_clob_clob(", obj1, ", ", obj2, ")");
+						break;
+					default:
+						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
+				}
+				break;
 		}
 	}
 

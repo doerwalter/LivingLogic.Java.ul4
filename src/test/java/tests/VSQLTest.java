@@ -110,6 +110,14 @@ public class VSQLTest
 				"<?return vsql.truediv(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
 			"<?elif ast.type == 'floordiv'?>" +
 				"<?return vsql.floordiv(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+			"<?elif ast.type == 'lt'?>" +
+				"<?return vsql.Lt(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+			"<?elif ast.type == 'le'?>" +
+				"<?return vsql.LE(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+			"<?elif ast.type == 'gt'?>" +
+				"<?return vsql.Gt(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+			"<?elif ast.type == 'ge'?>" +
+				"<?return vsql.GE(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
 			"<?elif ast.type == 'if'?>" +
 				"<?return vsql.ifelse(convert(ast.objif, template), convert(ast.objcond, template), convert(ast.objelse, template), ast, template)?>" +
 			"<?elif ast.type == 'attr'?>" +
@@ -229,23 +237,27 @@ public class VSQLTest
 	@Test
 	public void truediv()
 	{
-		check("(1/dat_id)", "True / f.id");
-		check("(dat_active/dat_id)", "f.active / f.id");
-		check("(dat_active/42.5)", "f.active / 42.5");
-		check("(42/dat_id)", "42 / f.id");
-		check("(dat_id/42.5)", "f.id / 42.5");
+		check("ul4_pkg.truediv_bool_bool(dat_active, 1)", "f.active / True");
+		check("ul4_pkg.truediv_bool_int(dat_active, 42)", "f.active / 42");
+		check("ul4_pkg.truediv_bool_number(dat_active, 42.5)", "f.active / 42.5");
+		check("ul4_pkg.truediv_int_bool(dat_id, 1)", "f.id / True");
+		check("ul4_pkg.truediv_int_int(dat_id, 42)", "f.id / 42");
+		check("ul4_pkg.truediv_int_number(dat_id, 42.5)", "f.id / 42.5");
+		check("ul4_pkg.truediv_number_bool(dat_weight, 1)", "f.weight / True");
+		check("ul4_pkg.truediv_number_int(dat_weight, 42)", "f.weight / 42");
+		check("ul4_pkg.truediv_number_number(dat_weight, 42.5)", "f.weight / 42.5");
 	}
 
 	@Test
 	public void floordiv()
 	{
-		check("ul4_pkg.floordiv_int_int(dat_active, 1)", "f.active // True");
-		check("ul4_pkg.floordiv_int_int(dat_active, 42)", "f.active // 42");
-		check("ul4_pkg.floordiv_int_number(dat_active, 42.5)", "f.active // 42.5");
-		check("ul4_pkg.floordiv_int_int(dat_id, 1)", "f.id // True");
+		check("ul4_pkg.floordiv_bool_bool(dat_active, 1)", "f.active // True");
+		check("ul4_pkg.floordiv_bool_int(dat_active, 42)", "f.active // 42");
+		check("ul4_pkg.floordiv_bool_number(dat_active, 42.5)", "f.active // 42.5");
+		check("ul4_pkg.floordiv_int_bool(dat_id, 1)", "f.id // True");
 		check("ul4_pkg.floordiv_int_int(dat_id, 42)", "f.id // 42");
 		check("ul4_pkg.floordiv_int_number(dat_id, 42.5)", "f.id // 42.5");
-		check("ul4_pkg.floordiv_number_int(dat_weight, 1)", "f.weight // True");
+		check("ul4_pkg.floordiv_number_bool(dat_weight, 1)", "f.weight // True");
 		check("ul4_pkg.floordiv_number_int(dat_weight, 42)", "f.weight // 42");
 		check("ul4_pkg.floordiv_number_number(dat_weight, 42.5)", "f.weight // 42.5");
 	}
@@ -259,12 +271,12 @@ public class VSQLTest
 	@Test
 	public void str()
 	{
-		check("(case 1 when 1 then 'True' when 0 then 'False' else null end)", "str(True)");
+		check("case 1 when null then null when 0 then 'False' else 'True' end", "str(True)");
 		check("to_char(42)", "str(42)");
 		check("to_char(42.5)", "str(42.5)");
-		check("to_char(to_date('2016-01-01', 'YYYY-MM-DD'), 'YYYY-MM-DD')", "str(@(2016-01-01))");
-		check("to_char(to_date('2016-01-01 12:34:56', 'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')", "str(@(2016-01-01T12:34:56))");
-		check("to_char(to_timestamp('2016-01-01 12:34:56.789000', 'YYYY-MM-DD HH24:MI:SS.FF6'), 'YYYY-MM-DD HH24:MI:SS.FF6')", "str(@(2016-01-01T12:34:56.789000))");
+		check("ul4_pkg.str_date(to_date('2016-01-01', 'YYYY-MM-DD'))", "str(@(2016-01-01))");
+		check("ul4_pkg.str_datetime(to_date('2016-01-01 12:34:56', 'YYYY-MM-DD HH24:MI:SS'))", "str(@(2016-01-01T12:34:56))");
+		check("ul4_pkg.str_timestamp(to_timestamp('2016-01-01 12:34:56.789000', 'YYYY-MM-DD HH24:MI:SS.FF6'))", "str(@(2016-01-01T12:34:56.789000))");
 		check("'foo'", "str('foo')");
 	}
 
@@ -272,16 +284,76 @@ public class VSQLTest
 	public void eq()
 	{
 		check("case when dat_active is null and dat_firstname is null then 1 else 0 end", "f.active == f.firstname");
-		check("case when dat_active = dat_id then 1 else 0 end", "f.active == f.id");
-		check("case when dat_firstname = dat_lastname then 1 else 0 end", "f.firstname == f.lastname");
+		check("ul4_pkg.eq_bool_int(dat_active, dat_id)", "f.active == f.id");
+		check("ul4_pkg.eq_str_str(dat_firstname, dat_lastname)", "f.firstname == f.lastname");
 	}
 
 	@Test
 	public void ne()
 	{
 		check("case when dat_active is null and dat_firstname is null then 0 else 1 end", "f.active != f.firstname");
-		check("case when dat_active = dat_id then 0 else 1 end", "f.active != f.id");
-		check("case when dat_firstname = dat_lastname then 0 else 1 end", "f.firstname != f.lastname");
+		check("ul4_pkg.ne_bool_int(dat_active, dat_id)", "f.active != f.id");
+		check("ul4_pkg.ne_str_str(dat_firstname, dat_lastname)", "f.firstname != f.lastname");
+	}
+
+	@Test
+	public void lt()
+	{
+		check("ul4_pkg.lt_bool_bool(dat_active, 1)", "f.active < True");
+		check("ul4_pkg.lt_bool_int(dat_active, 42)", "f.active < 42");
+		check("ul4_pkg.lt_bool_number(dat_active, 42.5)", "f.active < 42.5");
+		check("ul4_pkg.lt_int_bool(dat_id, 1)", "f.id < True");
+		check("ul4_pkg.lt_int_int(dat_id, 42)", "f.id < 42");
+		check("ul4_pkg.lt_int_number(dat_id, 42.5)", "f.id < 42.5");
+		check("ul4_pkg.lt_number_bool(dat_weight, 1)", "f.weight < True");
+		check("ul4_pkg.lt_number_int(dat_weight, 42)", "f.weight < 42");
+		check("ul4_pkg.lt_number_number(dat_weight, 42.5)", "f.weight < 42.5");
+		check("ul4_pkg.lt_str_str(dat_firstname, dat_lastname)", "f.firstname < f.lastname");
+	}
+
+	@Test
+	public void le()
+	{
+		check("ul4_pkg.le_bool_bool(dat_active, 1)", "f.active <= True");
+		check("ul4_pkg.le_bool_int(dat_active, 42)", "f.active <= 42");
+		check("ul4_pkg.le_bool_number(dat_active, 42.5)", "f.active <= 42.5");
+		check("ul4_pkg.le_int_bool(dat_id, 1)", "f.id <= True");
+		check("ul4_pkg.le_int_int(dat_id, 42)", "f.id <= 42");
+		check("ul4_pkg.le_int_number(dat_id, 42.5)", "f.id <= 42.5");
+		check("ul4_pkg.le_number_bool(dat_weight, 1)", "f.weight <= True");
+		check("ul4_pkg.le_number_int(dat_weight, 42)", "f.weight <= 42");
+		check("ul4_pkg.le_number_number(dat_weight, 42.5)", "f.weight <= 42.5");
+		check("ul4_pkg.le_str_str(dat_firstname, dat_lastname)", "f.firstname <= f.lastname");
+	}
+
+	@Test
+	public void gt()
+	{
+		check("ul4_pkg.gt_bool_bool(dat_active, 1)", "f.active > True");
+		check("ul4_pkg.gt_bool_int(dat_active, 42)", "f.active > 42");
+		check("ul4_pkg.gt_bool_number(dat_active, 42.5)", "f.active > 42.5");
+		check("ul4_pkg.gt_int_bool(dat_id, 1)", "f.id > True");
+		check("ul4_pkg.gt_int_int(dat_id, 42)", "f.id > 42");
+		check("ul4_pkg.gt_int_number(dat_id, 42.5)", "f.id > 42.5");
+		check("ul4_pkg.gt_number_bool(dat_weight, 1)", "f.weight > True");
+		check("ul4_pkg.gt_number_int(dat_weight, 42)", "f.weight > 42");
+		check("ul4_pkg.gt_number_number(dat_weight, 42.5)", "f.weight > 42.5");
+		check("ul4_pkg.gt_str_str(dat_firstname, dat_lastname)", "f.firstname > f.lastname");
+	}
+
+	@Test
+	public void ge()
+	{
+		check("ul4_pkg.ge_bool_bool(dat_active, 1)", "f.active >= True");
+		check("ul4_pkg.ge_bool_int(dat_active, 42)", "f.active >= 42");
+		check("ul4_pkg.ge_bool_number(dat_active, 42.5)", "f.active >= 42.5");
+		check("ul4_pkg.ge_int_bool(dat_id, 1)", "f.id >= True");
+		check("ul4_pkg.ge_int_int(dat_id, 42)", "f.id >= 42");
+		check("ul4_pkg.ge_int_number(dat_id, 42.5)", "f.id >= 42.5");
+		check("ul4_pkg.ge_number_bool(dat_weight, 1)", "f.weight >= True");
+		check("ul4_pkg.ge_number_int(dat_weight, 42)", "f.weight >= 42");
+		check("ul4_pkg.ge_number_number(dat_weight, 42.5)", "f.weight >= 42.5");
+		check("ul4_pkg.ge_str_str(dat_firstname, dat_lastname)", "f.firstname >= f.lastname");
 	}
 
 	@Test

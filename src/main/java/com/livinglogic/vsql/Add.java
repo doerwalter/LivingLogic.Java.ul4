@@ -33,48 +33,121 @@ public class Add extends Binary
 		Type type1 = obj1.type();
 		Type type2 = obj2.type();
 
-		return Type.widen(type1, type2, this, "vsql.add({}, {}) not supported!", type1, type2);
+		switch (type1)
+		{
+			case NULL:
+				complain(type1, type2);
+			case BOOL:
+			case INT:
+				switch (type2)
+				{
+					case BOOL:
+					case INT:
+						return Type.INT;
+					case NUMBER:
+						return Type.NUMBER;
+					default:
+						complain(type1, type2);
+				}
+			case NUMBER:
+				switch (type2)
+				{
+					case BOOL:
+					case INT:
+					case NUMBER:
+						return Type.NUMBER;
+					default:
+						complain(type1, type2);
+				}
+			case DATE:
+			case DATETIME:
+			case TIMESTAMP:
+				complain(type1, type2);
+			case STR:
+				switch (type2)
+				{
+					case STR:
+						return Type.STR;
+					case CLOB:
+						return Type.CLOB;
+					default:
+						complain(type1, type2);
+				}
+				break;
+			case CLOB:
+				switch (type2)
+				{
+					case STR:
+					case CLOB:
+						return Type.CLOB;
+					default:
+						complain(type1, type2);
+				}
+				break;
+		}
+		complain(type1, type2);
+		return null;
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
 		Type type1 = obj1.type();
 		Type type2 = obj2.type();
 
-		if ((type1 == Type.BOOL || type1 == Type.INT) && (type2 == Type.BOOL || type2 == Type.INT))
+		switch (type1)
 		{
-			buffer.append("(");
-			obj1.sqlOracle(buffer);
-			buffer.append("+");
-			obj2.sqlOracle(buffer);
-			buffer.append(")");
+			case NULL:
+				complain(type1, type2);
+			case BOOL:
+			case INT:
+			case NUMBER:
+				switch (type2)
+				{
+					case BOOL:
+					case INT:
+					case NUMBER:
+						outOracle(buffer, "(", obj1, "+", obj2, ")");
+						break;
+					default:
+						complain(type1, type2);
+				}
+				break;
+			case DATE:
+			case DATETIME:
+			case TIMESTAMP:
+				complain(type1, type2);
+			case STR:
+				switch (type2)
+				{
+					case STR:
+						outOracle(buffer, "(", obj1, "||", obj2, ")");
+						break;
+					case CLOB:
+						outOracle(buffer, "(", obj1, "||", obj2, ")");
+						break;
+					default:
+						complain(type1, type2);
+				}
+				break;
+			case CLOB:
+				switch (type2)
+				{
+					case STR:
+						outOracle(buffer, "(", obj1, "||", obj2, ")");
+						break;
+					case CLOB:
+						outOracle(buffer, "(", obj1, "||", obj2, ")");
+						break;
+					default:
+						complain(type1, type2);
+				}
+				break;
 		}
-		else if ((type1 == Type.BOOL || type1 == Type.INT || type1 == Type.NUMBER) && (type2 == Type.BOOL || type2 == Type.INT || type2 == Type.NUMBER))
-		{
-			buffer.append("(");
-			obj1.sqlOracle(buffer);
-			buffer.append("+");
-			obj2.sqlOracle(buffer);
-			buffer.append(")");
-		}
-		else if ((type1 == Type.STR) && (type2 == Type.STR))
-		{
-			buffer.append("(");
-			obj1.sqlOracle(buffer);
-			buffer.append("||");
-			obj2.sqlOracle(buffer);
-			buffer.append(")");
-		}
-		else if ((type1 == Type.STR || type1 == Type.CLOB) && (type2 == Type.STR || type2 == Type.CLOB))
-		{
-			buffer.append("(");
-			obj1.sqlOracle(buffer);
-			buffer.append("||");
-			obj2.sqlOracle(buffer);
-			buffer.append(")");
-		}
-		else
-			throw error("vsql.add(" + type1 + ", " + type2 + ") not supported!");
+	}
+
+	private void complain(Type type1, Type type2)
+	{
+		throw error("vsql.add(" + type1 + ", " + type2 + ") not supported!");
 	}
 
 	public static class Function extends Binary.Function

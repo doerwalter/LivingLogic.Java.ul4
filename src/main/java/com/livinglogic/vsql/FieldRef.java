@@ -42,9 +42,9 @@ public class FieldRef extends Node
 		return field.type;
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
-		field.sqlOracle(buffer);
+		buffer.append(field.sql);
 	}
 
 	public static class Function extends com.livinglogic.ul4.Function

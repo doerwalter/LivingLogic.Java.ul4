@@ -35,7 +35,7 @@ public class Now extends Node
 		return Type.DATETIME;
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
 		buffer.append("sysdate");
 	}

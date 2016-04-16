@@ -38,7 +38,7 @@ public class Lower extends Unary
 		throw error("lower of " + type.toString() + " not supported!");
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
 		Type type = type();
 

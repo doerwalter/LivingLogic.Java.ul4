@@ -36,7 +36,7 @@ public class Sub extends Binary
 		return Type.widenNumber(type1, type2, this, "vsql.sub({}, {}) not supported!", type1, type2);
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
 		Type type1 = obj1.type();
 		Type type2 = obj2.type();

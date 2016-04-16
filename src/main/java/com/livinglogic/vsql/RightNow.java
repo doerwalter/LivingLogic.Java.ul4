@@ -35,7 +35,7 @@ public class RightNow extends Node
 		return Type.TIMESTAMP;
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
 		buffer.append("systimestamp");
 	}

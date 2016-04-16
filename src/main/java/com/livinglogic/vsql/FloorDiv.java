@@ -33,41 +33,90 @@ public class FloorDiv extends Binary
 		Type type1 = obj1.type();
 		Type type2 = obj2.type();
 
-		return Type.widenNumber(type1, type2, this, "vsql.floordiv({}, {}) not supported!", type1, type2);
+		switch (type1)
+		{
+			case BOOL:
+			case INT:
+			case NUMBER:
+				switch (type2)
+				{
+					case BOOL:
+					case INT:
+					case NUMBER:
+						return Type.INT;
+					default:
+						complain(type1, type2);
+				}
+			default:
+				complain(type1, type2);
+		}
+		complain(type1, type2);
+		return null;
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
 		Type type1 = obj1.type();
 		Type type2 = obj2.type();
 
-		String func = null;
-
-		if (type1 == Type.BOOL || type1 == Type.INT)
+		switch (type1)
 		{
-			if (type2 == Type.BOOL || type2 == Type.INT)
-				func = "floordiv_int_int";
-			else if (type2 == Type.NUMBER)
-				func = "floordiv_int_number";
+			case BOOL:
+				switch (type2)
+				{
+					case BOOL:
+						outOracle(buffer, "ul4_pkg.floordiv_bool_bool(", obj1, ", ", obj2, ")");
+						break;
+					case INT:
+						outOracle(buffer, "ul4_pkg.floordiv_bool_int(", obj1, ", ", obj2, ")");
+						break;
+					case NUMBER:
+						outOracle(buffer, "ul4_pkg.floordiv_bool_number(", obj1, ", ", obj2, ")");
+						break;
+					default:
+						complain(type1, type2);
+				}
+				break;
+			case INT:
+				switch (type2)
+				{
+					case BOOL:
+						outOracle(buffer, "ul4_pkg.floordiv_int_bool(", obj1, ", ", obj2, ")");
+						break;
+					case INT:
+						outOracle(buffer, "ul4_pkg.floordiv_int_int(", obj1, ", ", obj2, ")");
+						break;
+					case NUMBER:
+						outOracle(buffer, "ul4_pkg.floordiv_int_number(", obj1, ", ", obj2, ")");
+						break;
+					default:
+						complain(type1, type2);
+				}
+				break;
+			case NUMBER:
+				switch (type2)
+				{
+					case BOOL:
+						outOracle(buffer, "ul4_pkg.floordiv_number_bool(", obj1, ", ", obj2, ")");
+						break;
+					case INT:
+						outOracle(buffer, "ul4_pkg.floordiv_number_int(", obj1, ", ", obj2, ")");
+						break;
+					case NUMBER:
+						outOracle(buffer, "ul4_pkg.floordiv_number_number(", obj1, ", ", obj2, ")");
+						break;
+					default:
+						complain(type1, type2);
+				}
+				break;
+			default:
+				complain(type1, type2);
 		}
-		else if (type1 == Type.NUMBER)
-		{
-			if (type2 == Type.BOOL || type2 == Type.INT)
-				func = "floordiv_number_int";
-			else if (type2 == Type.NUMBER)
-				func = "floordiv_number_number";
-		}
+	}
 
-		if (func == null)
-			throw error("vsql.floordiv(" + type1 + ", " + type2 + ") not supported!");
-
-		buffer.append("ul4_pkg.");
-		buffer.append(func);
-		buffer.append("(");
-		obj1.sqlOracle(buffer);
-		buffer.append(", ");
-		obj2.sqlOracle(buffer);
-		buffer.append(")");
+	private void complain(Type type1, Type type2)
+	{
+		throw error("vsql.floordiv(" + type1 + ", " + type2 + ") not supported!");
 	}
 
 	public static class Function extends Binary.Function

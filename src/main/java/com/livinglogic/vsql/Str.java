@@ -32,53 +32,46 @@ public class Str extends Unary
 
 	public Type type()
 	{
-		Type type = obj.type();
-		return (type == Type.CLOB) ? type : Type.STR;
+		switch (obj.type())
+		{
+			case CLOB:
+				return Type.CLOB;
+			default:
+				return Type.STR;
+		}
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
-		Type type = obj.type();
-
-		if (type == Type.BOOL)
+		switch (obj.type())
 		{
-			buffer.append("(case ");
-			obj.sqlOracle(buffer);
-			buffer.append(" when 1 then 'True' when 0 then 'False' else null end)");
-		}
-		else if (type == Type.INT)
-		{
-			buffer.append("to_char(");
-			obj.sqlOracle(buffer);
-			buffer.append(")");
-		}
-		else if (type == Type.NUMBER)
-		{
-			buffer.append("to_char(");
-			obj.sqlOracle(buffer);
-			buffer.append(")");
-		}
-		else if (type == Type.DATE)
-		{
-			buffer.append("to_char(");
-			obj.sqlOracle(buffer);
-			buffer.append(", 'YYYY-MM-DD')");
-		}
-		else if (type == Type.DATETIME)
-		{
-			buffer.append("to_char(");
-			obj.sqlOracle(buffer);
-			buffer.append(", 'YYYY-MM-DD HH24:MI:SS')");
-		}
-		else if (type == Type.TIMESTAMP)
-		{
-			buffer.append("to_char(");
-			obj.sqlOracle(buffer);
-			buffer.append(", 'YYYY-MM-DD HH24:MI:SS.FF6')");
-		}
-		else if (type == Type.STR || type == Type.CLOB)
-		{
-			obj.sqlOracle(buffer);
+			case NULL:
+				outOracle(buffer, "null");
+				break;
+			case BOOL:
+				outOracle(buffer, "case ", obj, " when null then null when 0 then 'False' else 'True' end");
+				break;
+			case INT:
+				outOracle(buffer, "to_char(", obj, ")");
+				break;
+			case NUMBER:
+				outOracle(buffer, "to_char(", obj, ")");
+				break;
+			case DATE:
+				outOracle(buffer, "ul4_pkg.str_date(", obj, ")");
+				break;
+			case DATETIME:
+				outOracle(buffer, "ul4_pkg.str_datetime(", obj, ")");
+				break;
+			case TIMESTAMP:
+				outOracle(buffer, "ul4_pkg.str_timestamp(", obj, ")");
+				break;
+			case STR:
+				outOracle(buffer, obj);
+				break;
+			case CLOB:
+				outOracle(buffer, obj);
+				break;
 		}
 	}
 

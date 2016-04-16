@@ -8,12 +8,14 @@ package com.livinglogic.vsql;
 
 public enum Type
 {
-	BOOL, INT, NUMBER, DATE, DATETIME, TIMESTAMP, STR, CLOB;
+	NULL, BOOL, INT, NUMBER, DATE, DATETIME, TIMESTAMP, STR, CLOB;
 
 	public String toString()
 	{
 		switch (this)
 		{
+			case NULL:
+				return "null";
 			case BOOL:
 				return "bool";
 			case INT:

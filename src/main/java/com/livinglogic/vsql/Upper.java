@@ -38,7 +38,7 @@ public class Upper extends Unary
 		throw error("upper of " + type.toString() + " not supported!");
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
 		Type type = type();
 

@@ -41,6 +41,8 @@ public class Const extends Node
 
 	public Type type()
 	{
+		if (value == null)
+			return Type.NULL;
 		if (value instanceof Boolean)
 			return Type.BOOL;
 		else if (value instanceof Integer || value instanceof BigInteger)
@@ -66,9 +68,11 @@ public class Const extends Node
 			throw error("Can't handle constant of type " + Utils.objectType(value));
 	}
 
-	protected void sqlOracle(StringBuffer buffer)
+	protected void sqlOracle(StringBuilder buffer)
 	{
-		if (value instanceof Boolean)
+		if (value == null)
+			buffer.append("null");
+		else if (value instanceof Boolean)
 			buffer.append(((Boolean)value).booleanValue() ? "1" : "0");
 		else if (value instanceof Integer || value instanceof BigInteger)
 			buffer.append(value.toString());

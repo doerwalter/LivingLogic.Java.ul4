@@ -54,7 +54,7 @@ public abstract class Node implements UL4Attributes, UL4GetItemString, UL4Repr
 
 	String sql(String mode)
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		if ("oracle".equals(mode))
 		{
 			sqlOracle(buffer);
@@ -64,7 +64,18 @@ public abstract class Node implements UL4Attributes, UL4GetItemString, UL4Repr
 		return buffer.toString();
 	}
 
-	protected abstract void sqlOracle(StringBuffer buffer);
+	protected abstract void sqlOracle(StringBuilder buffer);
+
+	protected void outOracle(StringBuilder buffer, Object... args)
+	{
+		for (Object arg : args)
+		{
+			if (arg instanceof Node)
+				((Node)arg).sqlOracle(buffer);
+			else
+				buffer.append(arg);
+		}
+	}
 
 	private static class BoundMethodSQL extends BoundMethod<Node>
 	{
