@@ -28,126 +28,68 @@ public class Add extends Binary
 		super(template, origin, obj1, obj2);
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		Type type1 = obj1.type();
-		Type type2 = obj2.type();
+		SQLSnippet snippet1 = obj1.sqlOracle();
+		SQLSnippet snippet2 = obj2.sqlOracle();
 
-		switch (type1)
+		switch (snippet1.type)
 		{
 			case NULL:
-				complain(type1, type2);
+				complain(snippet1, snippet2);
 			case BOOL:
 			case INT:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case BOOL:
 					case INT:
-						return Type.INT;
+						return new SQLSnippet(Type.INT, "(", snippet1, "+", snippet2, ")");
 					case NUMBER:
-						return Type.NUMBER;
+						return new SQLSnippet(Type.NUMBER, "(", snippet1, "+", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
 			case NUMBER:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case BOOL:
 					case INT:
 					case NUMBER:
-						return Type.NUMBER;
+						return new SQLSnippet(Type.NUMBER, "(", snippet1, "+", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
 			case DATE:
 			case DATETIME:
 			case TIMESTAMP:
-				complain(type1, type2);
+				complain(snippet1, snippet2);
 			case STR:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case STR:
-						return Type.STR;
+						return new SQLSnippet(Type.STR, "(", snippet1, "||", snippet2, ")");
 					case CLOB:
-						return Type.CLOB;
+						return new SQLSnippet(Type.CLOB, "(", snippet1, "||", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
-				break;
 			case CLOB:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case STR:
+						return new SQLSnippet(Type.CLOB, "(", snippet1, "||", snippet2, ")");
 					case CLOB:
-						return Type.CLOB;
+						return new SQLSnippet(Type.CLOB, "(", snippet1, "||", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
-				break;
 		}
-		complain(type1, type2);
 		return null;
 	}
 
-	protected void sqlOracle(StringBuilder buffer)
+	private void complain(SQLSnippet snippet1, SQLSnippet snippet2)
 	{
-		Type type1 = obj1.type();
-		Type type2 = obj2.type();
-
-		switch (type1)
-		{
-			case NULL:
-				complain(type1, type2);
-			case BOOL:
-			case INT:
-			case NUMBER:
-				switch (type2)
-				{
-					case BOOL:
-					case INT:
-					case NUMBER:
-						outOracle(buffer, "(", obj1, "+", obj2, ")");
-						break;
-					default:
-						complain(type1, type2);
-				}
-				break;
-			case DATE:
-			case DATETIME:
-			case TIMESTAMP:
-				complain(type1, type2);
-			case STR:
-				switch (type2)
-				{
-					case STR:
-						outOracle(buffer, "(", obj1, "||", obj2, ")");
-						break;
-					case CLOB:
-						outOracle(buffer, "(", obj1, "||", obj2, ")");
-						break;
-					default:
-						complain(type1, type2);
-				}
-				break;
-			case CLOB:
-				switch (type2)
-				{
-					case STR:
-						outOracle(buffer, "(", obj1, "||", obj2, ")");
-						break;
-					case CLOB:
-						outOracle(buffer, "(", obj1, "||", obj2, ")");
-						break;
-					default:
-						complain(type1, type2);
-				}
-				break;
-		}
-	}
-
-	private void complain(Type type1, Type type2)
-	{
-		throw error("vsql.add(" + type1 + ", " + type2 + ") not supported!");
+		throw error("vsql.add({}, {}) not supported!", snippet1.type, snippet2.type);
 	}
 
 	public static class Function extends Binary.Function

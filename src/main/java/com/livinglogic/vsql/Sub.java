@@ -28,29 +28,46 @@ public class Sub extends Binary
 		super(template, origin, obj1, obj2);
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		Type type1 = obj1.type();
-		Type type2 = obj2.type();
+		SQLSnippet snippet1 = obj1.sqlOracle();
+		SQLSnippet snippet2 = obj2.sqlOracle();
 
-		return Type.widenNumber(type1, type2, this, "vsql.sub({}, {}) not supported!", type1, type2);
+		switch (snippet1.type)
+		{
+			case BOOL:
+			case INT:
+				switch (snippet2.type)
+				{
+					case BOOL:
+					case INT:
+						return new SQLSnippet(Type.INT, "(", snippet1, "-", snippet2, ")");
+					case NUMBER:
+						return new SQLSnippet(Type.NUMBER, "(", snippet1, "-", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
+				break;
+			case NUMBER:
+				switch (snippet2.type)
+				{
+					case BOOL:
+					case INT:
+					case NUMBER:
+						return new SQLSnippet(Type.NUMBER, "(", snippet1, "-", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
+				break;
+			default:
+				complain(snippet1, snippet2);
+		}
+		return null;
 	}
 
-	protected void sqlOracle(StringBuilder buffer)
+	private void complain(SQLSnippet snippet1, SQLSnippet snippet2)
 	{
-		Type type1 = obj1.type();
-		Type type2 = obj2.type();
-
-		if ((type1 == Type.BOOL || type1 == Type.INT || type1 == Type.NUMBER) && (type2 == Type.BOOL || type2 == Type.INT || type2 == Type.NUMBER))
-		{
-			buffer.append("(");
-			obj1.sqlOracle(buffer);
-			buffer.append("-");
-			obj2.sqlOracle(buffer);
-			buffer.append(")");
-		}
-		else
-			throw error("vsql.sub(" + type1 + ", " + type2 + ") not supported!");
+		throw error("vsql.sub({}, {}) not supported!", snippet1.type, snippet2.type);
 	}
 
 	public static class Function extends Binary.Function

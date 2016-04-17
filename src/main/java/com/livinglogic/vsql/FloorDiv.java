@@ -28,95 +28,61 @@ public class FloorDiv extends Binary
 		super(template, origin, obj1, obj2);
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		Type type1 = obj1.type();
-		Type type2 = obj2.type();
+		SQLSnippet snippet1 = obj1.sqlOracle();
+		SQLSnippet snippet2 = obj2.sqlOracle();
 
-		switch (type1)
+		switch (snippet1.type)
 		{
 			case BOOL:
-			case INT:
-			case NUMBER:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case BOOL:
+						return new SQLSnippet(Type.INT, "ul4_pkg.floordiv_bool_bool(", snippet1, ", ", snippet2, ")");
 					case INT:
+						return new SQLSnippet(Type.INT, "ul4_pkg.floordiv_bool_int(", snippet1, ", ", snippet2, ")");
 					case NUMBER:
-						return Type.INT;
+						return new SQLSnippet(Type.INT, "ul4_pkg.floordiv_bool_number(", snippet1, ", ", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
+				break;
+			case INT:
+				switch (snippet2.type)
+				{
+					case BOOL:
+						return new SQLSnippet(Type.INT, "ul4_pkg.floordiv_int_bool(", snippet1, ", ", snippet2, ")");
+					case INT:
+						return new SQLSnippet(Type.INT, "ul4_pkg.floordiv_int_int(", snippet1, ", ", snippet2, ")");
+					case NUMBER:
+						return new SQLSnippet(Type.INT, "ul4_pkg.floordiv_int_number(", snippet1, ", ", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
+				break;
+			case NUMBER:
+				switch (snippet2.type)
+				{
+					case BOOL:
+						return new SQLSnippet(Type.INT, "ul4_pkg.floordiv_number_bool(", snippet1, ", ", snippet2, ")");
+					case INT:
+						return new SQLSnippet(Type.INT, "ul4_pkg.floordiv_number_int(", snippet1, ", ", snippet2, ")");
+					case NUMBER:
+						return new SQLSnippet(Type.INT, "ul4_pkg.floordiv_number_number(", snippet1, ", ", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
+				break;
 			default:
-				complain(type1, type2);
+				complain(snippet1, snippet2);
 		}
-		complain(type1, type2);
 		return null;
 	}
 
-	protected void sqlOracle(StringBuilder buffer)
+	private void complain(SQLSnippet snippet1, SQLSnippet snippet2)
 	{
-		Type type1 = obj1.type();
-		Type type2 = obj2.type();
-
-		switch (type1)
-		{
-			case BOOL:
-				switch (type2)
-				{
-					case BOOL:
-						outOracle(buffer, "ul4_pkg.floordiv_bool_bool(", obj1, ", ", obj2, ")");
-						break;
-					case INT:
-						outOracle(buffer, "ul4_pkg.floordiv_bool_int(", obj1, ", ", obj2, ")");
-						break;
-					case NUMBER:
-						outOracle(buffer, "ul4_pkg.floordiv_bool_number(", obj1, ", ", obj2, ")");
-						break;
-					default:
-						complain(type1, type2);
-				}
-				break;
-			case INT:
-				switch (type2)
-				{
-					case BOOL:
-						outOracle(buffer, "ul4_pkg.floordiv_int_bool(", obj1, ", ", obj2, ")");
-						break;
-					case INT:
-						outOracle(buffer, "ul4_pkg.floordiv_int_int(", obj1, ", ", obj2, ")");
-						break;
-					case NUMBER:
-						outOracle(buffer, "ul4_pkg.floordiv_int_number(", obj1, ", ", obj2, ")");
-						break;
-					default:
-						complain(type1, type2);
-				}
-				break;
-			case NUMBER:
-				switch (type2)
-				{
-					case BOOL:
-						outOracle(buffer, "ul4_pkg.floordiv_number_bool(", obj1, ", ", obj2, ")");
-						break;
-					case INT:
-						outOracle(buffer, "ul4_pkg.floordiv_number_int(", obj1, ", ", obj2, ")");
-						break;
-					case NUMBER:
-						outOracle(buffer, "ul4_pkg.floordiv_number_number(", obj1, ", ", obj2, ")");
-						break;
-					default:
-						complain(type1, type2);
-				}
-				break;
-			default:
-				complain(type1, type2);
-		}
-	}
-
-	private void complain(Type type1, Type type2)
-	{
-		throw error("vsql.floordiv(" + type1 + ", " + type2 + ") not supported!");
+		throw error("vsql.floordiv({}, {}) not supported!", snippet1.type, snippet2.type);
 	}
 
 	public static class Function extends Binary.Function

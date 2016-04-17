@@ -68,48 +68,34 @@ public class Const extends Node
 			throw error("Can't handle constant of type " + Utils.objectType(value));
 	}
 
-	protected void sqlOracle(StringBuilder buffer)
+	protected SQLSnippet sqlOracle()
 	{
 		if (value == null)
-			buffer.append("null");
+			return new SQLSnippet(Type.NULL, "null");
 		else if (value instanceof Boolean)
-			buffer.append(((Boolean)value).booleanValue() ? "1" : "0");
+			return new SQLSnippet(Type.BOOL, ((Boolean)value).booleanValue() ? "1" : "0");
 		else if (value instanceof Integer || value instanceof BigInteger)
-			buffer.append(value.toString());
+			return new SQLSnippet(Type.INT, value.toString());
 		else if (value instanceof Float || value instanceof Double || value instanceof BigDecimal)
-			buffer.append(value.toString()); // FIXME: This might not work for scientific notation
+			return new SQLSnippet(Type.NUMBER, value.toString()); // FIXME: This might not work for scientific notation
 		else if (value instanceof Date)
 		{
 			Calendar calendar = new GregorianCalendar();
 			calendar.setTime((Date)value);
 			if (calendar.get(Calendar.MILLISECOND) != 0)
-			{
-				buffer.append("to_timestamp('");
-				buffer.append(FunctionStr.formatterTimestamp.format((Date)value));
-				buffer.append("', 'YYYY-MM-DD HH24:MI:SS.FF6')");
-			}
+				return new SQLSnippet(Type.TIMESTAMP, "to_timestamp('", FunctionStr.formatterTimestamp.format((Date)value), "', 'YYYY-MM-DD HH24:MI:SS.FF6')");
 			else if (calendar.get(Calendar.SECOND) != 0 || calendar.get(Calendar.MINUTE) != 0 || calendar.get(Calendar.HOUR_OF_DAY) != 0)
-			{
-				buffer.append("to_date('");
-				buffer.append(FunctionStr.formatterDatetime.format((Date)value));
-				buffer.append("', 'YYYY-MM-DD HH24:MI:SS')");
-			}
+				return new SQLSnippet(Type.DATETIME, "to_date('", FunctionStr.formatterDatetime.format((Date)value), "', 'YYYY-MM-DD HH24:MI:SS')");
 			else
-			{
-				buffer.append("to_date('");
-				buffer.append(FunctionStr.formatterDate.format((Date)value));
-				buffer.append("', 'YYYY-MM-DD')");
-			}
+				return new SQLSnippet(Type.DATE, "to_date('", FunctionStr.formatterDate.format((Date)value), "', 'YYYY-MM-DD')");
 		}
 		else if (value instanceof String)
 		{
 			// FIXME: this won't work for CLOBs
-			buffer.append("'");
-			buffer.append(((String)value).replace("'", "''"));
-			buffer.append("'");
+			return new SQLSnippet(Type.STR, "'", ((String)value).replace("'", "''"), "'");
 		}
 		else
-			throw error("Can't handle constant of type " + Utils.objectType(value));
+			throw error("Can't handle constant of type {!t}", value);
 	}
 
 	public static class Function extends com.livinglogic.ul4.Function

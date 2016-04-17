@@ -30,9 +30,9 @@ public class Now extends Node
 		super(template, origin);
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		return Type.DATETIME;
+		return new SQLSnippet(Type.DATETIME, "sysdate");
 	}
 
 	protected void sqlOracle(StringBuilder buffer)

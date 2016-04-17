@@ -50,32 +50,19 @@ public abstract class Node implements UL4Attributes, UL4GetItemString, UL4Repr
 		return error(template, origin, message, args);
 	}
 
-	public abstract Type type();
-
 	String sql(String mode)
 	{
 		StringBuilder buffer = new StringBuilder();
 		if ("oracle".equals(mode))
 		{
-			sqlOracle(buffer);
+			sqlOracle().output(buffer);
 		}
 		else
-			throw new RuntimeException("unknown mode " + mode);
+			throw new RuntimeException(Utils.formatMessage("unknown mode {}", mode));
 		return buffer.toString();
 	}
 
-	protected abstract void sqlOracle(StringBuilder buffer);
-
-	protected void outOracle(StringBuilder buffer, Object... args)
-	{
-		for (Object arg : args)
-		{
-			if (arg instanceof Node)
-				((Node)arg).sqlOracle(buffer);
-			else
-				buffer.append(arg);
-		}
-	}
+	protected abstract SQLSnippet sqlOracle();
 
 	private static class BoundMethodSQL extends BoundMethod<Node>
 	{
@@ -119,8 +106,6 @@ public abstract class Node implements UL4Attributes, UL4GetItemString, UL4Repr
 				return template;
 			case "origin":
 				return origin;
-			case "type":
-				return type().toString();
 			case "sql":
 				return new BoundMethodSQL(this);
 			default:
@@ -133,5 +118,28 @@ public abstract class Node implements UL4Attributes, UL4GetItemString, UL4Repr
 		formatter.append("<");
 		formatter.append(getClass().getName());
 		formatter.append(">");
+	}
+
+	protected static class SQLSnippet
+	{
+		public Type type;
+		public Object[] content;
+
+		public SQLSnippet(Type type, Object... content)
+		{
+			this.type = type;
+			this.content = content;
+		}
+
+		public void output(StringBuilder buffer)
+		{
+			for (Object object : content)
+			{
+				if (object instanceof SQLSnippet)
+					((SQLSnippet)object).output(buffer);
+				else
+					buffer.append(object);
+			}
+		}
 	}
 }

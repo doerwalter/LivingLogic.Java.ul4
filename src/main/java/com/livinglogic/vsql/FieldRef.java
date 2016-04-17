@@ -37,14 +37,9 @@ public class FieldRef extends Node
 		this.field = field;
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		return field.type;
-	}
-
-	protected void sqlOracle(StringBuilder buffer)
-	{
-		buffer.append(field.sql);
+		return new SQLSnippet(field.type, field.sql);
 	}
 
 	public static class Function extends com.livinglogic.ul4.Function

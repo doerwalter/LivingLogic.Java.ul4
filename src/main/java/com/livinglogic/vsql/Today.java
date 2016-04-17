@@ -30,21 +30,16 @@ public class Today extends Node
 		super(template, origin);
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		return Type.DATE;
-	}
-
-	protected void sqlOracle(StringBuilder buffer)
-	{
-		buffer.append("trunc(sysdate)");
+		return new SQLSnippet(Type.DATE, "trunc(sysdate)");
 	}
 
 	public static class Function extends Unary.Function
 	{
 		public String nameUL4()
 		{
-			return "vsql.yoday";
+			return "vsql.today";
 		}
 
 		public Object evaluate(BoundArguments args)

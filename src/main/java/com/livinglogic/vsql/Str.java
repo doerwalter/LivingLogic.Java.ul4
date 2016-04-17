@@ -30,49 +30,31 @@ public class Str extends Unary
 		super(template, origin, obj);
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		switch (obj.type())
-		{
-			case CLOB:
-				return Type.CLOB;
-			default:
-				return Type.STR;
-		}
-	}
-
-	protected void sqlOracle(StringBuilder buffer)
-	{
-		switch (obj.type())
+		SQLSnippet snippet = obj.sqlOracle();
+		switch (snippet.type)
 		{
 			case NULL:
-				outOracle(buffer, "null");
-				break;
+				return new SQLSnippet(Type.STR, "null");
 			case BOOL:
-				outOracle(buffer, "case ", obj, " when null then null when 0 then 'False' else 'True' end");
-				break;
+				return new SQLSnippet(Type.STR, "case ", snippet, " when null then null when 0 then 'False' else 'True' end");
 			case INT:
-				outOracle(buffer, "to_char(", obj, ")");
-				break;
+				return new SQLSnippet(Type.STR, "to_char(", snippet, ")");
 			case NUMBER:
-				outOracle(buffer, "to_char(", obj, ")");
-				break;
+				return new SQLSnippet(Type.STR, "to_char(", snippet, ")");
 			case DATE:
-				outOracle(buffer, "ul4_pkg.str_date(", obj, ")");
-				break;
+				return new SQLSnippet(Type.STR, "ul4_pkg.str_date(", snippet, ")");
 			case DATETIME:
-				outOracle(buffer, "ul4_pkg.str_datetime(", obj, ")");
-				break;
+				return new SQLSnippet(Type.STR, "ul4_pkg.str_datetime(", snippet, ")");
 			case TIMESTAMP:
-				outOracle(buffer, "ul4_pkg.str_timestamp(", obj, ")");
-				break;
+				return new SQLSnippet(Type.STR, "ul4_pkg.str_timestamp(", snippet, ")");
 			case STR:
-				outOracle(buffer, obj);
-				break;
+				return new SQLSnippet(Type.STR, snippet);
 			case CLOB:
-				outOracle(buffer, obj);
-				break;
+				return new SQLSnippet(Type.CLOB, snippet);
 		}
+		return null;
 	}
 
 	public static class Function extends Unary.Function

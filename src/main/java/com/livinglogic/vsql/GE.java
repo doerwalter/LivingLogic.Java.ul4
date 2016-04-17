@@ -28,148 +28,114 @@ public class GE extends Binary
 		super(template, origin, obj1, obj2);
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		return Type.BOOL;
-	}
+		SQLSnippet snippet1 = obj1.sqlOracle();
+		SQLSnippet snippet2 = obj2.sqlOracle();
 
-	protected void sqlOracle(StringBuilder buffer)
-	{
-		Type type1 = obj1.type();
-		Type type2 = obj2.type();
-
-		switch (type1)
+		switch (snippet1.type)
 		{
 			case NULL:
-				complain(type1, type2);
+				complain(snippet1, snippet2);
 			case BOOL:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case BOOL:
-						outOracle(buffer, "ul4_pkg.ge_bool_bool(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_bool_bool(", snippet1, ", ", snippet2, ")");
 					case INT:
-						outOracle(buffer, "ul4_pkg.ge_bool_int(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_bool_int(", snippet1, ", ", snippet2, ")");
 					case NUMBER:
-						outOracle(buffer, "ul4_pkg.ge_bool_number(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_bool_number(", snippet1, ", ", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
-				break;
 			case INT:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case BOOL:
-						outOracle(buffer, "ul4_pkg.ge_int_bool(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_int_bool(", snippet1, ", ", snippet2, ")");
 					case INT:
-						outOracle(buffer, "ul4_pkg.ge_int_int(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_int_int(", snippet1, ", ", snippet2, ")");
 					case NUMBER:
-						outOracle(buffer, "ul4_pkg.ge_int_number(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_int_number(", snippet1, ", ", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
-				break;
 			case NUMBER:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case BOOL:
-						outOracle(buffer, "ul4_pkg.ge_number_bool(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_number_bool(", snippet1, ", ", snippet2, ")");
 					case INT:
-						outOracle(buffer, "ul4_pkg.ge_number_int(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_number_int(", snippet1, ", ", snippet2, ")");
 					case NUMBER:
-						outOracle(buffer, "ul4_pkg.ge_number_number(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_number_number(", snippet1, ", ", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
-				break;
 			case DATE:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case DATE:
-						outOracle(buffer, "ul4_pkg.ge_date_date(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_date_date(", snippet1, ", ", snippet2, ")");
 					case DATETIME:
-						outOracle(buffer, "ul4_pkg.ge_date_datetime(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_date_datetime(", snippet1, ", ", snippet2, ")");
 					case TIMESTAMP:
-						outOracle(buffer, "ul4_pkg.ge_date_timestamp(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_date_timestamp(", snippet1, ", ", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
-				break;
 			case DATETIME:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case DATE:
-						outOracle(buffer, "ul4_pkg.ge_datetime_date(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_datetime_date(", snippet1, ", ", snippet2, ")");
 					case DATETIME:
-						outOracle(buffer, "ul4_pkg.ge_datetime_datetime(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_datetime_datetime(", snippet1, ", ", snippet2, ")");
 					case TIMESTAMP:
-						outOracle(buffer, "ul4_pkg.ge_datetime_timestamp(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_datetime_timestamp(", snippet1, ", ", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
-				break;
 			case TIMESTAMP:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case DATE:
-						outOracle(buffer, "ul4_pkg.ge_timestamp_date(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_timestamp_date(", snippet1, ", ", snippet2, ")");
 					case DATETIME:
-						outOracle(buffer, "ul4_pkg.ge_timestamp_datetime(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_timestamp_datetime(", snippet1, ", ", snippet2, ")");
 					case TIMESTAMP:
-						outOracle(buffer, "ul4_pkg.ge_timestamp_timestamp(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_timestamp_timestamp(", snippet1, ", ", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
-				break;
 			case STR:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case STR:
-						outOracle(buffer, "ul4_pkg.ge_str_str(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_str_str(", snippet1, ", ", snippet2, ")");
 					case CLOB:
-						outOracle(buffer, "ul4_pkg.ge_str_clob(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_str_clob(", snippet1, ", ", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
-				break;
 			case CLOB:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case STR:
-						outOracle(buffer, "ul4_pkg.ge_clob_str(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_clob_str(", snippet1, ", ", snippet2, ")");
 					case CLOB:
-						outOracle(buffer, "ul4_pkg.ge_clob_clob(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ge_clob_clob(", snippet1, ", ", snippet2, ")");
 					default:
-						complain(type1, type2);
+						complain(snippet1, snippet2);
 				}
-				break;
 		}
+		return null;
 	}
 
-	private void complain(Type type1, Type type2)
+	private void complain(SQLSnippet snippet1, SQLSnippet snippet2)
 	{
-		throw error("vsql.GE(" + type1 + ", " + type2 + ") not supported!");
+		throw error("vsql.GE({}, {}) not supported!", snippet1.type, snippet2.type);
 	}
 
 	public static class Function extends Binary.Function

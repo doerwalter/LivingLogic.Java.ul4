@@ -30,22 +30,25 @@ public class Upper extends Unary
 		super(template, origin, obj);
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		Type type = obj.type();
-		if (type == Type.STR || type == Type.CLOB)
-			return type;
-		throw error("upper of " + type.toString() + " not supported!");
+		SQLSnippet snippet = obj.sqlOracle();
+		switch (snippet.type)
+		{
+			case STR:
+			case CLOB:
+				return new SQLSnippet(snippet.type, "upper(", snippet, ")");
+			default:
+				complain(snippet);
+		}
+		return null;
 	}
 
-	protected void sqlOracle(StringBuilder buffer)
+	private void complain(SQLSnippet snippet)
 	{
-		Type type = type();
-
-		buffer.append("upper(");
-		obj.sqlOracle(buffer);
-		buffer.append(")");
+		throw error("vsql.Upper({}) not supported!", snippet.type);
 	}
+
 
 	public static class Function extends Unary.Function
 	{

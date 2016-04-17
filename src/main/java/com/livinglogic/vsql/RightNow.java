@@ -30,9 +30,9 @@ public class RightNow extends Node
 		super(template, origin);
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		return Type.TIMESTAMP;
+		return new SQLSnippet(Type.TIMESTAMP, "systimestamp");
 	}
 
 	protected void sqlOracle(StringBuilder buffer)

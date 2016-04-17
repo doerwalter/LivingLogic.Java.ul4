@@ -28,142 +28,66 @@ public class Mul extends Binary
 		super(template, origin, obj1, obj2);
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		Type type1 = obj1.type();
-		Type type2 = obj2.type();
+		SQLSnippet snippet1 = obj1.sqlOracle();
+		SQLSnippet snippet2 = obj2.sqlOracle();
 
-		if ((type1 == Type.BOOL || type1 == Type.INT))
+		switch (snippet1.type)
 		{
-			if (type2 == Type.STR)
-				return Type.STR;
-			else if (type2 == Type.CLOB)
-				return Type.CLOB;
-			else if (type2 == Type.BOOL || type2 == Type.INT)
-				return Type.INT;
+			case BOOL:
+			case INT:
+				switch (snippet2.type)
+				{
+					case BOOL:
+					case INT:
+						return new SQLSnippet(Type.INT, "(", snippet1, "*", snippet2, ")");
+					case NUMBER:
+						return new SQLSnippet(Type.NUMBER, "(", snippet1, "*", snippet2, ")");
+					case STR:
+						return new SQLSnippet(Type.STR, "ul4_pkg.mul_int_str(", snippet1, ", ", snippet2, ")");
+					case CLOB:
+						return new SQLSnippet(Type.CLOB, "ul4_pkg.mul_int_clob(", snippet1, ", ", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
+			case NUMBER:
+				switch (snippet2.type)
+				{
+					case BOOL:
+					case INT:
+					case NUMBER:
+						return new SQLSnippet(Type.NUMBER, "(", snippet1, "*", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
+			case STR:
+				switch (snippet2.type)
+				{
+					case BOOL:
+					case INT:
+						return new SQLSnippet(Type.STR, "ul4_pkg.mul_str_int(", snippet1, "*", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
+			case CLOB:
+				switch (snippet2.type)
+				{
+					case BOOL:
+					case INT:
+						return new SQLSnippet(Type.CLOB, "ul4_pkg.mul_str_int(", snippet1, "*", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
+			default:
+				complain(snippet1, snippet2);
 		}
-		else if (type1 == Type.NUMBER)
-		{
-			if (type2 == Type.BOOL || type2 == Type.INT || type2 == Type.NUMBER)
-				return Type.NUMBER;
-		}
-		else if (type1 == Type.STR)
-		{
-			if (type2 == Type.BOOL || type2 == Type.INT)
-				return Type.STR;
-		}
-		else if (type1 == Type.CLOB)
-		{
-			if (type2 == Type.BOOL || type2 == Type.INT)
-				return Type.CLOB;
-		}
-		throw error("vsql.mul(" + type1 + ", " + type2 + ") not supported!");
+		return null;
 	}
 
-	protected void sqlOracle(StringBuilder buffer)
+	private void complain(SQLSnippet snippet1, SQLSnippet snippet2)
 	{
-		Type type1 = obj1.type();
-		Type type2 = obj2.type();
-
-		if (type1 == Type.BOOL)
-		{
-			if (type2 == Type.STR || type2 == Type.CLOB)
-			{
-				buffer.append("(case ");
-				obj1.sqlOracle(buffer);
-				buffer.append(" when 1 then ");
-				obj2.sqlOracle(buffer);
-				buffer.append(" else null end)");
-			}
-			else if (type2 == Type.BOOL || type2 == Type.INT || type2 == Type.NUMBER)
-			{
-				buffer.append("(");
-				obj1.sqlOracle(buffer);
-				buffer.append("*");
-				obj2.sqlOracle(buffer);
-				buffer.append(")");
-			}
-		}
-		else if (type1 == Type.INT)
-		{
-			if (type2 == Type.STR)
-			{
-				buffer.append("ul4_pkg.mul_int_str(");
-				obj1.sqlOracle(buffer);
-				buffer.append(", ");
-				obj2.sqlOracle(buffer);
-				buffer.append(")");
-			}
-			else if (type2 == Type.CLOB)
-			{
-				buffer.append("ul4_pkg.mul_int_clob(");
-				obj1.sqlOracle(buffer);
-				buffer.append(", ");
-				obj2.sqlOracle(buffer);
-				buffer.append(")");
-			}
-			else if (type2 == Type.BOOL || type2 == Type.INT || type2 == Type.NUMBER)
-			{
-				buffer.append("(");
-				obj1.sqlOracle(buffer);
-				buffer.append("*");
-				obj2.sqlOracle(buffer);
-				buffer.append(")");
-			}
-		}
-		else if (type1 == Type.NUMBER)
-		{
-			if (type2 == Type.BOOL || type2 == Type.INT || type2 == Type.NUMBER)
-			{
-				buffer.append("(");
-				obj1.sqlOracle(buffer);
-				buffer.append("*");
-				obj2.sqlOracle(buffer);
-				buffer.append(")");
-			}
-		}
-		else if (type1 == Type.STR)
-		{
-			if (type2 == Type.BOOL)
-			{
-				buffer.append("(case ");
-				obj2.sqlOracle(buffer);
-				buffer.append(" when 1 then ");
-				obj1.sqlOracle(buffer);
-				buffer.append(" else null end)");
-				buffer.append(")");
-			}
-			else if (type2 == Type.INT)
-			{
-				buffer.append("ul4_pkg.mul_int_str(");
-				obj2.sqlOracle(buffer);
-				buffer.append(", ");
-				obj1.sqlOracle(buffer);
-				buffer.append(")");
-			}
-		}
-		else if (type1 == Type.CLOB)
-		{
-			if (type2 == Type.BOOL)
-			{
-				buffer.append("(case when ");
-				obj2.sqlOracle(buffer);
-				buffer.append(" != 0 then ");
-				obj1.sqlOracle(buffer);
-				buffer.append(" else null end)");
-				buffer.append(")");
-			}
-			else if (type2 == Type.INT)
-			{
-				buffer.append("ul4_pkg.mul_int_clob(");
-				obj2.sqlOracle(buffer);
-				buffer.append(", ");
-				obj1.sqlOracle(buffer);
-				buffer.append(")");
-			}
-		}
-		else
-			throw error("vsql.mul(" + type1 + ", " + type2 + ") not supported!");
+		throw error("vsql.Mul({}, {}) not supported!", snippet1.type, snippet2.type);
 	}
 
 	public static class Function extends Binary.Function

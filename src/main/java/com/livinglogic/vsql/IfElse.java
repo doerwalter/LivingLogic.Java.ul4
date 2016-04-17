@@ -40,29 +40,147 @@ public class IfElse extends Node
 		this.objElse = objElse;
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		Type typeIf = objIf.type();
-		Type typeElse = objElse.type();
-		return Type.widen(typeIf, typeElse, this, "vsql.ifelse({}, ?, {}) not supported!", typeIf, typeElse);
+		SQLSnippet snippetIf = objIf.sqlOracle();
+		SQLSnippet snippetCond = objCond.sqlOracle();
+		SQLSnippet snippetElse = objElse.sqlOracle();
+
+		switch (snippetIf.type)
+		{
+			case NULL:
+				switch (snippetElse.type)
+				{
+					case NULL:
+						return new SQLSnippet(Type.NULL, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case BOOL:
+						return new SQLSnippet(Type.BOOL, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case INT:
+						return new SQLSnippet(Type.INT, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case NUMBER:
+						return new SQLSnippet(Type.NUMBER, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case DATE:
+						return new SQLSnippet(Type.DATE, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case DATETIME:
+						return new SQLSnippet(Type.DATETIME, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case TIMESTAMP:
+						return new SQLSnippet(Type.TIMESTAMP, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case STR:
+						return new SQLSnippet(Type.STR, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case CLOB:
+						return new SQLSnippet(Type.CLOB, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+				}
+			case BOOL:
+				switch (snippetElse.type)
+				{
+					case NULL:
+						return new SQLSnippet(Type.BOOL, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case BOOL:
+						return new SQLSnippet(Type.BOOL, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case INT:
+						return new SQLSnippet(Type.INT, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case NUMBER:
+						return new SQLSnippet(Type.NUMBER, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					default:
+						complain(snippetIf, snippetElse);
+				}
+			case INT:
+				switch (snippetElse.type)
+				{
+					case NULL:
+						return new SQLSnippet(Type.INT, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case BOOL:
+						return new SQLSnippet(Type.INT, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case INT:
+						return new SQLSnippet(Type.INT, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case NUMBER:
+						return new SQLSnippet(Type.NUMBER, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					default:
+						complain(snippetIf, snippetElse);
+				}
+			case NUMBER:
+				switch (snippetElse.type)
+				{
+					case NULL:
+						return new SQLSnippet(Type.NUMBER, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case BOOL:
+						return new SQLSnippet(Type.NUMBER, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case INT:
+						return new SQLSnippet(Type.NUMBER, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case NUMBER:
+						return new SQLSnippet(Type.NUMBER, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					default:
+						complain(snippetIf, snippetElse);
+				}
+			case DATE:
+				switch (snippetElse.type)
+				{
+					case NULL:
+						return new SQLSnippet(Type.DATE, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case DATE:
+						return new SQLSnippet(Type.DATE, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case DATETIME:
+						return new SQLSnippet(Type.DATETIME, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case TIMESTAMP:
+						return new SQLSnippet(Type.TIMESTAMP, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					default:
+						complain(snippetIf, snippetElse);
+				}
+			case DATETIME:
+				switch (snippetElse.type)
+				{
+					case NULL:
+						return new SQLSnippet(Type.DATETIME, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case DATE:
+						return new SQLSnippet(Type.DATETIME, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case DATETIME:
+						return new SQLSnippet(Type.DATETIME, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case TIMESTAMP:
+						return new SQLSnippet(Type.TIMESTAMP, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					default:
+						complain(snippetIf, snippetElse);
+				}
+			case TIMESTAMP:
+				switch (snippetElse.type)
+				{
+					case NULL:
+						return new SQLSnippet(Type.TIMESTAMP, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case DATE:
+						return new SQLSnippet(Type.TIMESTAMP, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case DATETIME:
+						return new SQLSnippet(Type.TIMESTAMP, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case TIMESTAMP:
+						return new SQLSnippet(Type.TIMESTAMP, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					default:
+						complain(snippetIf, snippetElse);
+				}
+			case STR:
+				switch (snippetElse.type)
+				{
+					case STR:
+						return new SQLSnippet(Type.STR, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case CLOB:
+						return new SQLSnippet(Type.CLOB, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					default:
+						complain(snippetIf, snippetElse);
+				}
+			case CLOB:
+				switch (snippetElse.type)
+				{
+					case STR:
+						return new SQLSnippet(Type.CLOB, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					case CLOB:
+						return new SQLSnippet(Type.CLOB, "case when ul4_pkg.bool_", snippetCond.type.toString(), "(", snippetCond, ") then ", snippetIf, " else ", snippetElse, " end");
+					default:
+						complain(snippetIf, snippetElse);
+				}
+		}
+		return null;
 	}
 
-	protected void sqlOracle(StringBuilder buffer)
+	private void complain(SQLSnippet snippetIf, SQLSnippet snippetElse)
 	{
-		Type typeIf = objIf.type();
-		Type typeCond = objCond.type();
-		Type typeElse = objElse.type();
-		Type type = type();
-
-		buffer.append("case when ul4_pkg.bool_");
-		buffer.append(typeCond.toString());
-		buffer.append("(");
-		objCond.sqlOracle(buffer);
-		buffer.append(") then ");
-		objIf.sqlOracle(buffer);
-		buffer.append(" else ");
-		objElse.sqlOracle(buffer);
-		buffer.append(" end");
+		throw error("vsql.If({}, ?, {}) not supported!", snippetIf.type, snippetElse.type);
 	}
 
 	protected static Set<String> attributes = makeExtendedSet(Node.attributes, "objif", "objcond", "objelse");

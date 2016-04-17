@@ -28,182 +28,132 @@ public class NE extends Binary
 		super(template, origin, obj1, obj2);
 	}
 
-	public Type type()
+	protected SQLSnippet sqlOracle()
 	{
-		return Type.BOOL;
-	}
+		SQLSnippet snippet1 = obj1.sqlOracle();
+		SQLSnippet snippet2 = obj2.sqlOracle();
 
-	protected void sqlOracle(StringBuilder buffer)
-	{
-		Type type1 = obj1.type();
-		Type type2 = obj2.type();
-
-		switch (type1)
+		switch (snippet1.type)
 		{
 			case NULL:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case NULL:
-						outOracle(buffer, "1");
+						return new SQLSnippet(Type.BOOL, "0");
 					default:
-						outOracle(buffer, "case when ", obj2, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet2, " is null then 0 else 1 end");
 				}
-				break;
 			case BOOL:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case NULL:
-						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null then 0 else 1 end");
 					case BOOL:
-						outOracle(buffer, "ul4_pkg.ne_bool_bool(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_bool_bool(", snippet1, ", ", snippet2, ")");
 					case INT:
-						outOracle(buffer, "ul4_pkg.ne_bool_int(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_bool_int(", snippet1, ", ", snippet2, ")");
 					case NUMBER:
-						outOracle(buffer, "ul4_pkg.ne_bool_number(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_bool_number(", snippet1, ", ", snippet2, ")");
 					default:
 						// mixed types are only equal, if they are both null
-						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null and ", snippet2, " is null then 0 else 1 end");
 				}
-				break;
 			case INT:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case NULL:
-						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null then 0 else 1 end");
 					case BOOL:
-						outOracle(buffer, "ul4_pkg.ne_int_bool(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_int_bool(", snippet1, ", ", snippet2, ")");
 					case INT:
-						outOracle(buffer, "ul4_pkg.ne_int_int(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_int_int(", snippet1, ", ", snippet2, ")");
 					case NUMBER:
-						outOracle(buffer, "ul4_pkg.ne_int_number(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_int_number(", snippet1, ", ", snippet2, ")");
 					default:
-						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null and ", snippet2, " is null then 0 else 1 end");
 				}
-				break;
 			case NUMBER:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case NULL:
-						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null then 0 else 1 end");
 					case BOOL:
-						outOracle(buffer, "ul4_pkg.ne_number_bool(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_number_bool(", snippet1, ", ", snippet2, ")");
 					case INT:
-						outOracle(buffer, "ul4_pkg.ne_number_int(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_number_int(", snippet1, ", ", snippet2, ")");
 					case NUMBER:
-						outOracle(buffer, "ul4_pkg.ne_number_number(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_number_number(", snippet1, ", ", snippet2, ")");
 					default:
-						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null and ", snippet2, " is null then 0 else 1 end");
 				}
-				break;
 			case DATE:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case NULL:
-						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null then 0 else 1 end");
 					case DATE:
-						outOracle(buffer, "ul4_pkg.ne_date_date(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_date_date(", snippet1, ", ", snippet2, ")");
 					case DATETIME:
-						outOracle(buffer, "ul4_pkg.ne_date_datetime(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_date_datetime(", snippet1, ", ", snippet2, ")");
 					case TIMESTAMP:
-						outOracle(buffer, "ul4_pkg.ne_date_timestamp(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_date_timestamp(", snippet1, ", ", snippet2, ")");
 					default:
-						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null and ", snippet2, " is null then 0 else 1 end");
 				}
-				break;
 			case DATETIME:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case NULL:
-						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null then 0 else 1 end");
 					case DATE:
-						outOracle(buffer, "ul4_pkg.ne_datetime_date(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_datetime_date(", snippet1, ", ", snippet2, ")");
 					case DATETIME:
-						outOracle(buffer, "ul4_pkg.ne_datetime_datetime(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_datetime_datetime(", snippet1, ", ", snippet2, ")");
 					case TIMESTAMP:
-						outOracle(buffer, "ul4_pkg.ne_datetime_timestamp(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_datetime_timestamp(", snippet1, ", ", snippet2, ")");
 					default:
-						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null and ", snippet2, " is null then 0 else 1 end");
 				}
-				break;
 			case TIMESTAMP:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case NULL:
-						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null then 0 else 1 end");
 					case DATE:
-						outOracle(buffer, "ul4_pkg.ne_timestamp_date(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_timestamp_date(", snippet1, ", ", snippet2, ")");
 					case DATETIME:
-						outOracle(buffer, "ul4_pkg.ne_timestamp_datetime(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_timestamp_datetime(", snippet1, ", ", snippet2, ")");
 					case TIMESTAMP:
-						outOracle(buffer, "ul4_pkg.ne_timestamp_timestamp(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_timestamp_timestamp(", snippet1, ", ", snippet2, ")");
 					default:
-						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null and ", snippet2, " is null then 0 else 1 end");
 				}
-				break;
 			case STR:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case NULL:
-						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null then 0 else 1 end");
 					case STR:
-						outOracle(buffer, "ul4_pkg.ne_str_str(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_str_str(", snippet1, ", ", snippet2, ")");
 					case CLOB:
-						outOracle(buffer, "ul4_pkg.ne_str_clob(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_str_clob(", snippet1, ", ", snippet2, ")");
 					default:
-						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null and ", snippet2, " is null then 0 else 1 end");
 				}
-				break;
 			case CLOB:
-				switch (type2)
+				switch (snippet2.type)
 				{
 					case NULL:
-						outOracle(buffer, "case when ", obj1, " is null then 0 else 1 end");
-						break;
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null then 0 else 1 end");
 					case STR:
-						outOracle(buffer, "ul4_pkg.ne_clob_str(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_clob_str(", snippet1, ", ", snippet2, ")");
 					case CLOB:
-						outOracle(buffer, "ul4_pkg.ne_clob_clob(", obj1, ", ", obj2, ")");
-						break;
+						return new SQLSnippet(Type.BOOL, "ul4_pkg.ne_clob_clob(", snippet1, ", ", snippet2, ")");
 					default:
-						outOracle(buffer, "case when ", obj1, " is null and ", obj2, " is null then 0 else 1 end");
+						return new SQLSnippet(Type.BOOL, "case when ", snippet1, " is null and ", snippet2, " is null then 0 else 1 end");
 				}
-				break;
 		}
+		return null;
 	}
 
 	public static class Function extends Binary.Function
