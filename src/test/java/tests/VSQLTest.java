@@ -137,6 +137,16 @@ public class VSQLTest
 					"<?return vsql.upper(convert(ast.obj.obj, template), ast, template)?>" +
 				"<?elif ast.obj.type == 'var' and ast.obj.name == 'str' and len(ast.args) == 1 and ast.args[0].type == 'posarg'?>" +
 					"<?return vsql.str(convert(ast.args[0].value, template), ast, template)?>" +
+				"<?elif ast.obj.type == 'var' and ast.obj.name == 'monthdelta' and len(ast.args) == 1 and ast.args[0].type == 'posarg'?>" +
+					"<?return vsql.MonthDelta(convert(ast.args[0].value, template), ast, template)?>" +
+				"<?elif ast.obj.type == 'var' and ast.obj.name == 'timedelta' and len(ast.args) >= 1 and len(ast.args) <= 3 and all(arg.type == 'posarg' for arg in ast.args)?>" +
+					"<?return vsql.TimeDelta(" +
+						"convert(ast.args[0].value, template)," +
+						"convert(ast.args[1].value, template) if len(ast.args) >= 2 else None," +
+						"convert(ast.args[2].value, template) if len(ast.args) >= 3 else None," +
+						"ast," +
+						"template," +
+					")?>" +
 				"<?elif ast.obj.type == 'var' and ast.obj.name == 'rightnow' and not ast.args?>" +
 					"<?return vsql.rightnow(ast, template)?>" +
 				"<?elif ast.obj.type == 'var' and ast.obj.name == 'now' and not ast.args?>" +
@@ -184,6 +194,20 @@ public class VSQLTest
 	}
 
 	@Test
+	public void monthdelta()
+	{
+		check("1", "monthdelta(1)");
+		check("add_months(sysdate, 1)", "now() + monthdelta(1)");
+	}
+
+	@Test
+	public void timedelta()
+	{
+		check("1", "timedelta(1)");
+		check("(0+1/86400)", "timedelta(0, 1)");
+	}
+
+	@Test
 	public void lower()
 	{
 		check("lower('FOO')", "'FOO'.lower()");
@@ -215,6 +239,15 @@ public class VSQLTest
 		check("(dat_id+42)", "f.id + 42");
 		check("(dat_id+42.5)", "f.id + 42.5");
 		check("((dat_firstname||' ')||dat_lastname)", "f.firstname + ' ' + f.lastname");
+		check("(trunc(sysdate)+1)", "today() + timedelta(1)");
+		check("(trunc(sysdate)+(0+1/86400))", "today() + timedelta(0, 1)");
+		check("(cast(trunc(sysdate) as timestamp)+(0+0/86400+1/86400000000))", "today() + timedelta(0, 0, 1)");
+		check("(sysdate+1)", "now() + timedelta(1)");
+		check("(sysdate+(0+1/86400))", "now() + timedelta(0, 1)");
+		check("(cast(sysdate as timestamp)+(0+0/86400+1/86400000000))", "now() + timedelta(0, 0, 1)");
+		check("(systimestamp+1)", "rightnow() + timedelta(1)");
+		check("(systimestamp+(0+1/86400))", "rightnow() + timedelta(0, 1)");
+		check("(systimestamp+(0+0/86400+1/86400000000))", "rightnow() + timedelta(0, 0, 1)");
 	}
 
 	@Test
@@ -224,6 +257,15 @@ public class VSQLTest
 		check("(dat_active-dat_id)", "f.active - f.id");
 		check("(dat_id-42)", "f.id - 42");
 		check("(dat_id-42.5)", "f.id - 42.5");
+		check("(trunc(sysdate)-1)", "today() - timedelta(1)");
+		check("(trunc(sysdate)-(0+1/86400))", "today() - timedelta(0, 1)");
+		check("(cast(trunc(sysdate) as timestamp)-(0+0/86400+1/86400000000))", "today() - timedelta(0, 0, 1)");
+		check("(sysdate-1)", "now() - timedelta(1)");
+		check("(sysdate-(0+1/86400))", "now() - timedelta(0, 1)");
+		check("(cast(sysdate as timestamp)-(0+0/86400+1/86400000000))", "now() - timedelta(0, 0, 1)");
+		check("(systimestamp-1)", "rightnow() - timedelta(1)");
+		check("(systimestamp-(0+1/86400))", "rightnow() - timedelta(0, 1)");
+		check("(systimestamp-(0+0/86400+1/86400000000))", "rightnow() - timedelta(0, 0, 1)");
 	}
 
 	@Test

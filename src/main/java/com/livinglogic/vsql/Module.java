@@ -32,6 +32,8 @@ public class Module implements UL4GetItemString, UL4Repr
 		functions.put("truediv", new TrueDiv.Function());
 		functions.put("floordiv", new FloorDiv.Function());
 		functions.put("str", new Str.Function());
+		functions.put("MonthDelta", new MonthDelta.Function());
+		functions.put("TimeDelta", new TimeDelta.Function());
 		functions.put("rightnow", new RightNow.Function());
 		functions.put("now", new Now.Function());
 		functions.put("today", new Today.Function());

@@ -60,9 +60,86 @@ public class Add extends Binary
 						complain(snippet1, snippet2);
 				}
 			case DATE:
+				switch (snippet2.type)
+				{
+					case DAYDELTA:
+						return new SQLSnippet(Type.DATE, "(", snippet1, "+", snippet2, ")");
+					case TIMEDELTA:
+						return new SQLSnippet(Type.DATETIME, "(", snippet1, "+", snippet2, ")");
+					case TIMESTAMPDELTA:
+						return new SQLSnippet(Type.TIMESTAMP, "(cast(", snippet1, " as timestamp)+", snippet2, ")");
+					case MONTHDELTA:
+						return new SQLSnippet(snippet1.type, "add_months(", snippet1, ", ", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
 			case DATETIME:
+				switch (snippet2.type)
+				{
+					case DAYDELTA:
+						return new SQLSnippet(Type.DATETIME, "(", snippet1, "+", snippet2, ")");
+					case TIMEDELTA:
+						return new SQLSnippet(Type.DATETIME, "(", snippet1, "+", snippet2, ")");
+					case TIMESTAMPDELTA:
+						return new SQLSnippet(Type.TIMESTAMP, "(cast(", snippet1, " as timestamp)+", snippet2, ")");
+					case MONTHDELTA:
+						return new SQLSnippet(snippet1.type, "add_months(", snippet1, ", ", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
 			case TIMESTAMP:
-				complain(snippet1, snippet2);
+				switch (snippet2.type)
+				{
+					case DAYDELTA:
+					case TIMEDELTA:
+					case TIMESTAMPDELTA:
+						return new SQLSnippet(Type.TIMESTAMP, "(", snippet1, "+", snippet2, ")");
+					case MONTHDELTA:
+						return new SQLSnippet(snippet1.type, "add_months(", snippet1, ", ", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
+			case DAYDELTA:
+				switch (snippet2.type)
+				{
+					case DAYDELTA:
+						return new SQLSnippet(Type.DAYDELTA, "(", snippet1, "+", snippet2, ")");
+					case TIMEDELTA:
+						return new SQLSnippet(Type.TIMEDELTA, "(", snippet1, "+", snippet2, ")");
+					case TIMESTAMPDELTA:
+						return new SQLSnippet(Type.TIMESTAMPDELTA, "(", snippet1, "+", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
+			case TIMEDELTA:
+				switch (snippet2.type)
+				{
+					case DAYDELTA:
+					case TIMEDELTA:
+						return new SQLSnippet(Type.TIMEDELTA, "(", snippet1, "+", snippet2, ")");
+					case TIMESTAMPDELTA:
+						return new SQLSnippet(Type.TIMESTAMPDELTA, "(", snippet1, "+", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
+			case TIMESTAMPDELTA:
+				switch (snippet2.type)
+				{
+					case DAYDELTA:
+					case TIMEDELTA:
+					case TIMESTAMPDELTA:
+						return new SQLSnippet(Type.TIMESTAMPDELTA, "(", snippet1, "+", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
+			case MONTHDELTA:
+				switch (snippet2.type)
+				{
+					case MONTHDELTA:
+						return new SQLSnippet(snippet1.type, "(", snippet1, "+", snippet2, ")");
+					default:
+						complain(snippet1, snippet2);
+				}
 			case STR:
 				switch (snippet2.type)
 				{
