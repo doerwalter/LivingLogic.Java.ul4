@@ -10,6 +10,11 @@ import org.apache.commons.lang.StringUtils;
 
 public class SourceException extends RuntimeException
 {
+	public SourceException(Throwable cause, InterpretedTemplate template, SourcePart part)
+	{
+		super(makeMessage(template, part), cause);
+	}
+
 	private static String makeMessage(InterpretedTemplate template, SourcePart part)
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -60,10 +65,5 @@ public class SourceException extends RuntimeException
 		buffer.append("\n");
 		buffer.append(part.getSnippet().toString());
 		return buffer.toString();
-	}
-
-	public SourceException(Throwable cause, InterpretedTemplate template, SourcePart part)
-	{
-		super(makeMessage(template, part), cause);
 	}
 }
