@@ -62,9 +62,9 @@ public class Add extends Binary
 			case DATE:
 				switch (snippet2.type)
 				{
-					case DAYDELTA:
+					case DATEDELTA:
 						return new SQLSnippet(Type.DATE, "(", snippet1, "+", snippet2, ")");
-					case TIMEDELTA:
+					case DATETIMEDELTA:
 						return new SQLSnippet(Type.DATETIME, "(", snippet1, "+", snippet2, ")");
 					case TIMESTAMPDELTA:
 						return new SQLSnippet(Type.TIMESTAMP, "(cast(", snippet1, " as timestamp)+", snippet2, ")");
@@ -76,9 +76,9 @@ public class Add extends Binary
 			case DATETIME:
 				switch (snippet2.type)
 				{
-					case DAYDELTA:
+					case DATEDELTA:
 						return new SQLSnippet(Type.DATETIME, "(", snippet1, "+", snippet2, ")");
-					case TIMEDELTA:
+					case DATETIMEDELTA:
 						return new SQLSnippet(Type.DATETIME, "(", snippet1, "+", snippet2, ")");
 					case TIMESTAMPDELTA:
 						return new SQLSnippet(Type.TIMESTAMP, "(cast(", snippet1, " as timestamp)+", snippet2, ")");
@@ -90,8 +90,8 @@ public class Add extends Binary
 			case TIMESTAMP:
 				switch (snippet2.type)
 				{
-					case DAYDELTA:
-					case TIMEDELTA:
+					case DATEDELTA:
+					case DATETIMEDELTA:
 					case TIMESTAMPDELTA:
 						return new SQLSnippet(Type.TIMESTAMP, "(", snippet1, "+", snippet2, ")");
 					case MONTHDELTA:
@@ -99,24 +99,24 @@ public class Add extends Binary
 					default:
 						complain(snippet1, snippet2);
 				}
-			case DAYDELTA:
+			case DATEDELTA:
 				switch (snippet2.type)
 				{
-					case DAYDELTA:
-						return new SQLSnippet(Type.DAYDELTA, "(", snippet1, "+", snippet2, ")");
-					case TIMEDELTA:
-						return new SQLSnippet(Type.TIMEDELTA, "(", snippet1, "+", snippet2, ")");
+					case DATEDELTA:
+						return new SQLSnippet(Type.DATEDELTA, "(", snippet1, "+", snippet2, ")");
+					case DATETIMEDELTA:
+						return new SQLSnippet(Type.DATETIMEDELTA, "(", snippet1, "+", snippet2, ")");
 					case TIMESTAMPDELTA:
 						return new SQLSnippet(Type.TIMESTAMPDELTA, "(", snippet1, "+", snippet2, ")");
 					default:
 						complain(snippet1, snippet2);
 				}
-			case TIMEDELTA:
+			case DATETIMEDELTA:
 				switch (snippet2.type)
 				{
-					case DAYDELTA:
-					case TIMEDELTA:
-						return new SQLSnippet(Type.TIMEDELTA, "(", snippet1, "+", snippet2, ")");
+					case DATEDELTA:
+					case DATETIMEDELTA:
+						return new SQLSnippet(Type.DATETIMEDELTA, "(", snippet1, "+", snippet2, ")");
 					case TIMESTAMPDELTA:
 						return new SQLSnippet(Type.TIMESTAMPDELTA, "(", snippet1, "+", snippet2, ")");
 					default:
@@ -125,8 +125,8 @@ public class Add extends Binary
 			case TIMESTAMPDELTA:
 				switch (snippet2.type)
 				{
-					case DAYDELTA:
-					case TIMEDELTA:
+					case DATEDELTA:
+					case DATETIMEDELTA:
 					case TIMESTAMPDELTA:
 						return new SQLSnippet(Type.TIMESTAMPDELTA, "(", snippet1, "+", snippet2, ")");
 					default:

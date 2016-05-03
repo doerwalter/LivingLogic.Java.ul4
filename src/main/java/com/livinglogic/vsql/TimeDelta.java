@@ -54,12 +54,12 @@ public class TimeDelta extends Node
 		{
 			if ((snippetDays.type == Type.BOOL || snippetDays.type == Type.INT) &&
 			    (snippetSeconds.type == Type.BOOL || snippetSeconds.type == Type.INT))
-				return new SQLSnippet(Type.TIMEDELTA, "(", snippetDays, "+", snippetSeconds, "/86400)");
+				return new SQLSnippet(Type.DATETIMEDELTA, "(", snippetDays, "+", snippetSeconds, "/86400)");
 		}
 		else
 		{
 			if (snippetDays.type == Type.BOOL || snippetDays.type == Type.INT)
-				return new SQLSnippet(Type.DAYDELTA, snippetDays);
+				return new SQLSnippet(Type.DATEDELTA, snippetDays);
 		}
 		complain(snippetDays, snippetSeconds, snippetMicroseconds);
 		return null;

@@ -8,7 +8,7 @@ package com.livinglogic.vsql;
 
 public enum Type
 {
-	NULL, BOOL, INT, NUMBER, DATE, DATETIME, TIMESTAMP, DAYDELTA, TIMEDELTA, TIMESTAMPDELTA, MONTHDELTA, STR, CLOB;
+	NULL, BOOL, INT, NUMBER, DATE, DATETIME, TIMESTAMP, DATEDELTA, DATETIMEDELTA, TIMESTAMPDELTA, MONTHDELTA, STR, CLOB;
 
 	public String toString()
 	{
@@ -28,10 +28,10 @@ public enum Type
 				return "datetime";
 			case TIMESTAMP:
 				return "timestamp";
-			case DAYDELTA:
-				return "daydelta";
-			case TIMEDELTA:
-				return "timedelta";
+			case DATEDELTA:
+				return "datedelta";
+			case DATETIMEDELTA:
+				return "datetimedelta";
 			case TIMESTAMPDELTA:
 				return "timestampdelta";
 			case MONTHDELTA:
