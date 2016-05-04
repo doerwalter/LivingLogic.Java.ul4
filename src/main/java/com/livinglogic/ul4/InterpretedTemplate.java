@@ -435,145 +435,161 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				try
 				{
 					String tagtype = tag.getTag();
-					// FIXME: use a switch in Java 7
-					if (tagtype.equals("ul4"))
+					switch (tagtype)
 					{
-						// already handled
-					}
-					else if (tagtype.equals("whitespace"))
-					{
-						// already handled
-					}
-					else if (tagtype.equals("print"))
-					{
-						UL4Parser parser = getParser(tag);
-						innerBlock.append(new PrintAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
-					}
-					else if (tagtype.equals("printx"))
-					{
-						UL4Parser parser = getParser(tag);
-						innerBlock.append(new PrintXAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
-					}
-					else if (tagtype.equals("code"))
-					{
-						UL4Parser parser = getParser(tag);
-						innerBlock.append(parser.stmt());
-					}
-					else if (tagtype.equals("if"))
-					{
-						UL4Parser parser = getParser(tag);
-						ConditionalBlocks node = new ConditionalBlocks(tag, tag.getStartPosCode(), tag.getEndPosCode(), new IfBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
-						innerBlock.append(node);
-						blockStack.push(node);
-					}
-					else if (tagtype.equals("elif"))
-					{
-						if (innerBlock instanceof ConditionalBlocks)
+						case "ul4":
+						{
+							// already handled
+							break;
+						}
+						case "whitespace":
+						{
+							// already handled
+							break;
+						}
+						case "print":
 						{
 							UL4Parser parser = getParser(tag);
-							((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
+							innerBlock.append(new PrintAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
+							break;
 						}
-						else
-							throw new BlockException("elif doesn't match any if");
-					}
-					else if (tagtype.equals("else"))
-					{
-						if (innerBlock instanceof ConditionalBlocks)
+						case "printx":
 						{
-							((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode()));
+							UL4Parser parser = getParser(tag);
+							innerBlock.append(new PrintXAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
+							break;
 						}
-						else
-							throw new BlockException("else doesn't match any if");
-					}
-					else if (tagtype.equals("end"))
-					{
-						if (blockStack.size() > 1)
+						case "code":
 						{
-							innerBlock.finish(tag);
-							blockStack.pop();
-							if (innerBlock instanceof InterpretedTemplate)
-								templateStack.pop();
+							UL4Parser parser = getParser(tag);
+							innerBlock.append(parser.stmt());
+							break;
 						}
-						else
-							throw new BlockException("not in any block");
-					}
-					else if (tagtype.equals("for"))
-					{
-						UL4Parser parser = getParser(tag);
-						BlockAST node = parser.for_();
-						innerBlock.append(node);
-						blockStack.push(node);
-					}
-					else if (tagtype.equals("while"))
-					{
-						UL4Parser parser = getParser(tag);
-						WhileBlockAST node = new WhileBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression());
-						innerBlock.append(node);
-						blockStack.push(node);
-					}
-					else if (tagtype.equals("break"))
-					{
-						for (int i = blockStack.size()-1; i >= 0; --i)
+						case "if":
 						{
-							if (blockStack.get(i).handleLoopControl("break"))
-								break;
+							UL4Parser parser = getParser(tag);
+							ConditionalBlocks node = new ConditionalBlocks(tag, tag.getStartPosCode(), tag.getEndPosCode(), new IfBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
+							innerBlock.append(node);
+							blockStack.push(node);
+							break;
 						}
-						innerBlock.append(new BreakAST(tag, tag.getStartPosCode(), tag.getEndPosCode()));
-					}
-					else if (tagtype.equals("continue"))
-					{
-						for (int i = blockStack.size()-1; i >= 0; --i)
+						case "elif":
 						{
-							if (blockStack.get(i).handleLoopControl("continue"))
-								break;
-						}
-						innerBlock.append(new ContinueAST(tag, tag.getStartPosCode(), tag.getEndPosCode()));
-					}
-					else if (tagtype.equals("return"))
-					{
-						UL4Parser parser = getParser(tag);
-						innerBlock.append(new ReturnAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
-					}
-					else if (tagtype.equals("def"))
-					{
-						UL4Parser parser = getParser(tag);
-						Definition definition = parser.definition();
-						// Copy over all the attributes, however passing a {@link Tag} will prevent compilation
-						InterpretedTemplate subtemplate = new InterpretedTemplate(tag, definition.getName(), whitespace, startdelim, enddelim, definition.getSignature());
-						innerBlock.append(subtemplate);
-						blockStack.push(subtemplate);
-						subtemplate.parentTemplate = templateStack.peek();
-						tag.setTemplate(subtemplate);
-						templateStack.push(subtemplate);
-					}
-					else if (tagtype.equals("render"))
-					{
-						UL4Parser parser = getParser(tag);
-						CodeAST code = parser.expression();
-						if (!(code instanceof CallAST))
-							throw new RuntimeException("render call required");
-						RenderAST render = new RenderAST((CallAST)code);
-						// If we have an indentation before the {code <?render?>} tag, move it
-						// into the {@code indent} attribute of the {code RenderAST} object,
-						// because this indentation must be added to every line that the
-						// rendered template outputs.
-						if (innerBlock instanceof ConditionalBlocks)
-							innerBlock = (BlockAST)innerBlock.content.get(innerBlock.content.size()-1); // We can replace {@code innerBlock}, because we don't need it any more for the rest of the loop body
-						if (innerBlock.content.size() > 0)
-						{
-							AST lastNode = innerBlock.content.get(innerBlock.content.size()-1);
-							if (lastNode instanceof IndentAST)
+							if (innerBlock instanceof ConditionalBlocks)
 							{
-								render.indent = (IndentAST)lastNode;
-								innerBlock.content.remove(innerBlock.content.size()-1);
+								UL4Parser parser = getParser(tag);
+								((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
 							}
+							else
+								throw new BlockException("elif doesn't match any if");
+							break;
 						}
-						innerBlock.append(render);
-					}
-					else
-					{
-						// Can't happen
-						throw new RuntimeException("unknown tag " + tagtype);
+						case "else":
+						{
+							if (innerBlock instanceof ConditionalBlocks)
+							{
+								((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode()));
+							}
+							else
+								throw new BlockException("else doesn't match any if");
+							break;
+						}
+						case "end":
+						{
+							if (blockStack.size() > 1)
+							{
+								innerBlock.finish(tag);
+								blockStack.pop();
+								if (innerBlock instanceof InterpretedTemplate)
+									templateStack.pop();
+							}
+							else
+								throw new BlockException("not in any block");
+							break;
+						}
+						case "for":
+						{
+							UL4Parser parser = getParser(tag);
+							BlockAST node = parser.for_();
+							innerBlock.append(node);
+							blockStack.push(node);
+							break;
+						}
+						case "while":
+						{
+							UL4Parser parser = getParser(tag);
+							WhileBlockAST node = new WhileBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression());
+							innerBlock.append(node);
+							blockStack.push(node);
+							break;
+						}
+						case "break":
+						{
+							for (int i = blockStack.size()-1; i >= 0; --i)
+							{
+								if (blockStack.get(i).handleLoopControl("break"))
+									break;
+							}
+							innerBlock.append(new BreakAST(tag, tag.getStartPosCode(), tag.getEndPosCode()));
+							break;
+						}
+						case "continue":
+						{
+							for (int i = blockStack.size()-1; i >= 0; --i)
+							{
+								if (blockStack.get(i).handleLoopControl("continue"))
+									break;
+							}
+							innerBlock.append(new ContinueAST(tag, tag.getStartPosCode(), tag.getEndPosCode()));
+							break;
+						}
+						case "return":
+						{
+							UL4Parser parser = getParser(tag);
+							innerBlock.append(new ReturnAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
+							break;
+						}
+						case "def":
+						{
+							UL4Parser parser = getParser(tag);
+							Definition definition = parser.definition();
+							// Copy over all the attributes, however passing a {@link Tag} will prevent compilation
+							InterpretedTemplate subtemplate = new InterpretedTemplate(tag, definition.getName(), whitespace, startdelim, enddelim, definition.getSignature());
+							innerBlock.append(subtemplate);
+							blockStack.push(subtemplate);
+							subtemplate.parentTemplate = templateStack.peek();
+							tag.setTemplate(subtemplate);
+							templateStack.push(subtemplate);
+							break;
+						}
+						case "render":
+						{
+							UL4Parser parser = getParser(tag);
+							CodeAST code = parser.expression();
+							if (!(code instanceof CallAST))
+								throw new RuntimeException("render call required");
+							RenderAST render = new RenderAST((CallAST)code);
+							// If we have an indentation before the {code <?render?>} tag, move it
+							// into the {@code indent} attribute of the {code RenderAST} object,
+							// because this indentation must be added to every line that the
+							// rendered template outputs.
+							if (innerBlock instanceof ConditionalBlocks)
+								innerBlock = (BlockAST)innerBlock.content.get(innerBlock.content.size()-1); // We can replace {@code innerBlock}, because we don't need it any more for the rest of the loop body
+							if (innerBlock.content.size() > 0)
+							{
+								AST lastNode = innerBlock.content.get(innerBlock.content.size()-1);
+								if (lastNode instanceof IndentAST)
+								{
+									render.indent = (IndentAST)lastNode;
+									innerBlock.content.remove(innerBlock.content.size()-1);
+								}
+							}
+							innerBlock.append(render);
+							break;
+						}
+						default:
+							// Can't happen
+							throw new RuntimeException("unknown tag " + tagtype);
 					}
 				}
 				catch (Exception ex)
