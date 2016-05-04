@@ -43,14 +43,22 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 	}
 
 	/**
-	 * The template source. This is abstract, because for literal text the
-	 * source is a member of {@code TextAST}, but for node that are created
-	 * by compiling the source inside a tag, the source is only referenced from
-	 * the {@code Tag} object (to which {@code CodeAST} has a reference)
+	 * The template. This is abstract, because for literal text the
+	 * template is a member of {@code TextAST}, but for node that are created
+	 * by compiling the source inside a tag, the template is only referenced
+	 * from the {@code Tag} object (to which {@code CodeAST} has a reference)
 	 */
-	abstract public String getSource();
+	abstract public InterpretedTemplate getTemplate();
 
-	abstract public String getText();
+	public String getSource()
+	{
+		return getTemplate().getSource();
+	}
+
+	public String getText()
+	{
+		return getSource().substring(startPos, endPos);
+	}
 
 	abstract public CodeSnippet getSnippet();
 
@@ -90,7 +98,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 		}
 		catch (Exception ex)
 		{
-			throw new SourceException(ex, context.getTemplate(), this);
+			throw new SourceException(ex, this);
 		}
 	}
 

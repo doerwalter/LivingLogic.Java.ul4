@@ -13,9 +13,9 @@ import com.livinglogic.ul4on.Encoder;
 
 class LineEndAST extends TextAST
 {
-	public LineEndAST(String source, int startPos, int endPos)
+	public LineEndAST(InterpretedTemplate template, int startPos, int endPos)
 	{
-		super(source, startPos, endPos);
+		super(template, startPos, endPos);
 	}
 
 	public void toString(Formatter formatter)

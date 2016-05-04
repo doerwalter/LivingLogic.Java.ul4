@@ -23,9 +23,9 @@ import com.livinglogic.ul4.FunctionStr;
 
 public class Eq extends Binary
 {
-	public Eq(InterpretedTemplate template, SourcePart origin, Node obj1, Node obj2)
+	public Eq(SourcePart origin, Node obj1, Node obj2)
 	{
-		super(template, origin, obj1, obj2);
+		super(origin, obj1, obj2);
 	}
 
 	protected SQLSnippet sqlOracle()
@@ -165,7 +165,7 @@ public class Eq extends Binary
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new Eq((InterpretedTemplate)args.get(3), (SourcePart)args.get(2), (Node)args.get(0), (Node)args.get(1));
+			return new Eq((SourcePart)args.get(2), (Node)args.get(0), (Node)args.get(1));
 		}
 	}
 }

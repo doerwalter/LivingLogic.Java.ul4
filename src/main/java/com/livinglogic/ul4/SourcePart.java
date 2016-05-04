@@ -7,11 +7,11 @@
 package com.livinglogic.ul4;
 
 /*
- * A {@code SourcePart} object references a slice of a source code string.
+ * A {@code SourcePart} object references a slice of the source code of a template.
  */
 public interface SourcePart
 {
-	String getSource();
+	InterpretedTemplate getTemplate();
 
 	int getStartPos();
 

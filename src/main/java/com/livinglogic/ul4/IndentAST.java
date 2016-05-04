@@ -19,9 +19,9 @@ class IndentAST extends TextAST
 {
 	protected String text;
 
-	public IndentAST(String source, int startPos, int endPos, String text)
+	public IndentAST(InterpretedTemplate template, int startPos, int endPos, String text)
 	{
-		super(source, startPos, endPos);
+		super(template, startPos, endPos);
 		this.text = text;
 	}
 

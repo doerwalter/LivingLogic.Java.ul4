@@ -77,7 +77,7 @@ public class VSQLTest
 			return "error";
 		}
 
-		private static final Signature signature = new Signature("message", Signature.required, "ast", null, "template", null);
+		private static final Signature signature = new Signature("message", Signature.required, "ast", null);
 
 		public Signature getSignature()
 		{
@@ -86,82 +86,81 @@ public class VSQLTest
 
 		public Object evaluate(BoundArguments args)
 		{
-			throw Node.error((InterpretedTemplate)args.get(2), (SourcePart)args.get(1), (String)args.get(0));
+			throw Node.error((SourcePart)args.get(1), (String)args.get(0));
 		}
 	}
 
 	static Function error = new FunctionError();
 
 	String convert = 
-		"<?def convert(ast, template)?>" +
+		"<?def convert(ast)?>" +
 			"<?if ast.type == 'const'?>" +
-				"<?return vsql.const(ast.value, ast, template)?>" +
+				"<?return vsql.const(ast.value, ast)?>" +
 			"<?elif ast.type == 'eq'?>" +
-				"<?return vsql.Eq(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+				"<?return vsql.Eq(convert(ast.obj1), convert(ast.obj2), ast)?>" +
 			"<?elif ast.type == 'ne'?>" +
-				"<?return vsql.NE(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+				"<?return vsql.NE(convert(ast.obj1), convert(ast.obj2), ast)?>" +
 			"<?elif ast.type == 'add'?>" +
-				"<?return vsql.add(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+				"<?return vsql.add(convert(ast.obj1), convert(ast.obj2), ast)?>" +
 			"<?elif ast.type == 'mul'?>" +
-				"<?return vsql.mul(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+				"<?return vsql.mul(convert(ast.obj1), convert(ast.obj2), ast)?>" +
 			"<?elif ast.type == 'sub'?>" +
-				"<?return vsql.sub(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+				"<?return vsql.sub(convert(ast.obj1), convert(ast.obj2), ast)?>" +
 			"<?elif ast.type == 'truediv'?>" +
-				"<?return vsql.truediv(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+				"<?return vsql.truediv(convert(ast.obj1), convert(ast.obj2), ast)?>" +
 			"<?elif ast.type == 'floordiv'?>" +
-				"<?return vsql.floordiv(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+				"<?return vsql.floordiv(convert(ast.obj1), convert(ast.obj2), ast)?>" +
 			"<?elif ast.type == 'lt'?>" +
-				"<?return vsql.Lt(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+				"<?return vsql.Lt(convert(ast.obj1), convert(ast.obj2), ast)?>" +
 			"<?elif ast.type == 'le'?>" +
-				"<?return vsql.LE(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+				"<?return vsql.LE(convert(ast.obj1), convert(ast.obj2), ast)?>" +
 			"<?elif ast.type == 'gt'?>" +
-				"<?return vsql.Gt(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+				"<?return vsql.Gt(convert(ast.obj1), convert(ast.obj2), ast)?>" +
 			"<?elif ast.type == 'ge'?>" +
-				"<?return vsql.GE(convert(ast.obj1, template), convert(ast.obj2, template), ast, template)?>" +
+				"<?return vsql.GE(convert(ast.obj1), convert(ast.obj2), ast)?>" +
 			"<?elif ast.type == 'if'?>" +
-				"<?return vsql.ifelse(convert(ast.objif, template), convert(ast.objcond, template), convert(ast.objelse, template), ast, template)?>" +
+				"<?return vsql.ifelse(convert(ast.objif), convert(ast.objcond), convert(ast.objelse), ast)?>" +
 			"<?elif ast.type == 'attr'?>" +
 				"<?if ast.obj.type == 'var' and ast.obj.name == 'f'?>" +
 					"<?if ast.attrname in fields?>" +
-						"<?return vsql.field(fields[ast.attrname], ast, template)?>" +
+						"<?return vsql.field(fields[ast.attrname], ast)?>" +
 					"<?else?>" +
-						"<?code error('no field named ' + repr(ast.attrname), ast, template)?>" +
+						"<?code error('no field named ' + repr(ast.attrname), ast)?>" +
 					"<?end if?>" +
 				"<?else?>" +
-					"<?code error('unknown attribute access ' + repr(ast), ast, template)?>" +
+					"<?code error('unknown attribute access ' + repr(ast), ast)?>" +
 				"<?end if?>" +
 			"<?elif ast.type == 'call'?>" +
 				"<?if ast.obj.type == 'attr' and ast.obj.attrname == 'lower' and not ast.args?>" +
-					"<?return vsql.lower(convert(ast.obj.obj, template), ast, template)?>" +
+					"<?return vsql.lower(convert(ast.obj.obj), ast)?>" +
 				"<?elif ast.obj.type == 'attr' and ast.obj.attrname == 'upper' and not ast.args?>" +
-					"<?return vsql.upper(convert(ast.obj.obj, template), ast, template)?>" +
+					"<?return vsql.upper(convert(ast.obj.obj), ast)?>" +
 				"<?elif ast.obj.type == 'var' and ast.obj.name == 'str' and len(ast.args) == 1 and ast.args[0].type == 'posarg'?>" +
-					"<?return vsql.str(convert(ast.args[0].value, template), ast, template)?>" +
+					"<?return vsql.str(convert(ast.args[0].value), ast)?>" +
 				"<?elif ast.obj.type == 'var' and ast.obj.name == 'monthdelta' and len(ast.args) == 1 and ast.args[0].type == 'posarg'?>" +
-					"<?return vsql.MonthDelta(convert(ast.args[0].value, template), ast, template)?>" +
+					"<?return vsql.MonthDelta(convert(ast.args[0].value), ast)?>" +
 				"<?elif ast.obj.type == 'var' and ast.obj.name == 'timedelta' and len(ast.args) >= 1 and len(ast.args) <= 3 and all(arg.type == 'posarg' for arg in ast.args)?>" +
 					"<?return vsql.TimeDelta(" +
-						"convert(ast.args[0].value, template)," +
-						"convert(ast.args[1].value, template) if len(ast.args) >= 2 else None," +
-						"convert(ast.args[2].value, template) if len(ast.args) >= 3 else None," +
+						"convert(ast.args[0].value)," +
+						"convert(ast.args[1].value) if len(ast.args) >= 2 else None," +
+						"convert(ast.args[2].value) if len(ast.args) >= 3 else None," +
 						"ast," +
-						"template," +
 					")?>" +
 				"<?elif ast.obj.type == 'var' and ast.obj.name == 'rightnow' and not ast.args?>" +
-					"<?return vsql.rightnow(ast, template)?>" +
+					"<?return vsql.rightnow(ast)?>" +
 				"<?elif ast.obj.type == 'var' and ast.obj.name == 'now' and not ast.args?>" +
-					"<?return vsql.now(ast, template)?>" +
+					"<?return vsql.now(ast)?>" +
 				"<?elif ast.obj.type == 'var' and ast.obj.name == 'today' and not ast.args?>" +
-					"<?return vsql.today(ast, template)?>" +
+					"<?return vsql.today(ast)?>" +
 				"<?else?>" +
-					"<?code error('unknown call ' + repr(ast), ast, template)?>" +
+					"<?code error('unknown call ' + repr(ast), ast)?>" +
 				"<?end if?>" +
 			"<?else?>" +
-				"<?code error('unknown node type ' + ast.type, ast, template)?>" +
+				"<?code error('unknown node type ' + ast.type, ast)?>" +
 			"<?end if?>" +
 		"<?end def?>" +
 		"<?code template = compile('<' + '?return ' + source + '?' + '>', 'expression')?>" +
-		"<?print convert(template.content[1].obj, template).sql('oracle')?>"
+		"<?print convert(template.content[1].obj).sql('oracle')?>"
 	;
 
 	public static HashMap<String, Field> fields;

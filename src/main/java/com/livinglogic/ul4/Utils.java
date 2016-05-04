@@ -570,13 +570,13 @@ public class Utils
 		return string.substring(start, stop);
 	}
 
-	public static int indexOf(String haystack, int startPos, String... needles)
+	public static int indexOf(String haystack, int fromIndex, String... needles)
 	{
 		int bestPos = -1;
 
 		for (int i = 0; i < needles.length; ++i)
 		{
-			int pos = haystack.indexOf(needles[i], startPos);
+			int pos = haystack.indexOf(needles[i], fromIndex);
 			if (pos != -1 && (bestPos == -1 || pos < bestPos))
 				bestPos = pos;
 		}
@@ -588,31 +588,32 @@ public class Utils
 		StringBuilder buffer = new StringBuilder();
 		int argIndex = 0;
 
-		for (int startPos = 0;;)
+		for (int fromIndex = 0;;)
 		{
-			int pos = indexOf(template, startPos, "{}", "{!r}", "{!t}");
+			int index = indexOf(template, fromIndex, "{}", "{!r}", "{!t}");
 
-			if (pos == -1)
+			if (index == -1)
 			{
-				buffer.append(template.substring(startPos));
+				buffer.append(template.substring(fromIndex));
 				break;
 			}
-			if (pos != startPos)
-				buffer.append(template.substring(startPos, pos));
-			if (template.startsWith("{}", pos))
+			if (index != fromIndex)
+				buffer.append(template.substring(fromIndex, index));
+			if (template.startsWith("{}", index))
 			{
-				buffer.append(args[argIndex++].toString());
-				startPos = pos + 2;
+				Object arg = args[argIndex++];
+				buffer.append(arg != null ? arg.toString() : "null");
+				fromIndex = index + 2;
 			}
-			else if (template.startsWith("{!r}", pos))
+			else if (template.startsWith("{!r}", index))
 			{
 				buffer.append(FunctionRepr.call(args[argIndex++]));
-				startPos = pos + 4;
+				fromIndex = index + 4;
 			}
 			else /* {!t} */
 			{
 				buffer.append(objectType(args[argIndex++]));
-				startPos = pos + 4;
+				fromIndex = index + 4;
 			}
 		}
 		return buffer.toString();

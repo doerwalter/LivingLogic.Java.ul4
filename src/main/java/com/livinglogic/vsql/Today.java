@@ -25,9 +25,9 @@ import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 public class Today extends Node
 {
-	public Today(InterpretedTemplate template, SourcePart origin)
+	public Today(SourcePart origin)
 	{
-		super(template, origin);
+		super(origin);
 	}
 
 	protected SQLSnippet sqlOracle()
@@ -44,7 +44,7 @@ public class Today extends Node
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new Today((InterpretedTemplate)args.get(1), (SourcePart)args.get(0));
+			return new Today((SourcePart)args.get(0));
 		}
 	}
 }

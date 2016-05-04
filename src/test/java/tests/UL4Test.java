@@ -4197,12 +4197,14 @@ public class UL4Test
 	public void templateattributes_1()
 	{
 		String source = "<?print x?>";
-		InterpretedTemplate t = getTemplate(source);
+		InterpretedTemplate t = getTemplate(source, "t");
 
 		checkTemplateOutput("<?", "<?print template.startdelim?>", "template", t);
 		checkTemplateOutput("?>", "<?print template.enddelim?>", "template", t);
 		checkTemplateOutput(source, "<?print template.source?>", "template", t);
 		checkTemplateOutput("2", "<?print len(template.content)?>", "template", t);
+		checkTemplateOutput("t", "<?print template.content[0].template.name?>", "template", t);
+		checkTemplateOutput("t", "<?print template.content[1].tag.template.name?>", "template", t);
 		// Test the second item, because the first one is an empty indent node
 		checkTemplateOutput("print", "<?print template.content[1].type?>", "template", t);
 		checkTemplateOutput(source, "<?print template.content[1].tag.text?>", "template", t);
@@ -4241,6 +4243,7 @@ public class UL4Test
 		checkTemplateOutput(source, source + "<?print lower.source[lower.tag.startpos:lower.endtag.endpos]?>");
 		checkTemplateOutput("<?print t.lower()?>", source + "<?print lower.source[lower.tag.endpos:lower.endtag.startpos]?>");
 		checkTemplateOutput("lower", source + "<?print lower.name?>");
+		checkTemplateOutput("None", source + "<?print repr(lower.parenttemplate.name)?>");
 	}
 
 	@Test

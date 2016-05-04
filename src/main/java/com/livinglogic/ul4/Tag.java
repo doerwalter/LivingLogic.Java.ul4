@@ -21,9 +21,9 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, SourcePart
 {
 	/**
-	 * The template source code
+	 * The template
 	 */
-	protected String source;
+	protected InterpretedTemplate template;
 
 	/**
 	 * The tag type ("print", "printx", "for", "if", "end", etc.)
@@ -52,16 +52,16 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 
 	/**
 	 * Create a new {@code Tag} object.
-	 * @param source The template source
+	 * @param template The template
 	 * @param tag The tag type ("print", "printx", "for", "if", "end", etc.)
 	 * @param startPos The start offset in the template source, where the source for this tag is located.
 	 * @param endPos The end offset in the template source, where the source for this tag is located.
-	 * @param startPosCode The offset in {@code source} where the code inside the tag starts.
-	 * @param endPosCode The offset in {@code source} where the code inside the tag ends.
+	 * @param startPosCode The offset in the template source where the code inside the tag starts.
+	 * @param endPosCode The offset in the template source where the code inside the tag ends.
 	 */
-	public Tag(String source, String tag, int startPos, int endPos, int startPosCode, int endPosCode)
+	public Tag(InterpretedTemplate template, String tag, int startPos, int endPos, int startPosCode, int endPosCode)
 	{
-		this.source = source;
+		this.template = template;
 		this.tag = tag;
 		this.startPos = startPos;
 		this.endPos = endPos;
@@ -74,9 +74,20 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 		return "de.livinglogic.ul4.tag";
 	}
 
+	public InterpretedTemplate getTemplate()
+	{
+		return template;
+	}
+
+	// Used by {@see InterpretedTemplate#compile} to fix the template references for inner templates
+	void setTemplate(InterpretedTemplate template)
+	{
+		this.template = template;
+	}
+
 	public String getSource()
 	{
-		return source;
+		return template.getSource();
 	}
 
 	public String getTag()
@@ -106,24 +117,24 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 
 	public String getText()
 	{
-		return source.substring(startPos, endPos);
+		return getSource().substring(startPos, endPos);
 	}
 
 	public String getCode()
 	{
-		return source.substring(startPosCode, endPosCode);
+		return getSource().substring(startPosCode, endPosCode);
 	}
 
 	public CodeSnippet getSnippet()
 	{
-		return new CodeSnippet(source, startPos, endPos);
+		return new CodeSnippet(getSource(), startPos, endPos);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		encoder.dump(startPos);
 		encoder.dump(endPos);
-		encoder.dump(source);
+		encoder.dump(template);
 		encoder.dump(tag);
 		encoder.dump(startPosCode);
 		encoder.dump(endPosCode);
@@ -133,13 +144,13 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 	{
 		startPos = (Integer)decoder.load();
 		endPos = (Integer)decoder.load();
-		source = (String)decoder.load();
+		template = (InterpretedTemplate)decoder.load();
 		tag = (String)decoder.load();
 		startPosCode = (Integer)decoder.load();
 		endPosCode = (Integer)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeSet("source", "tag", "startpos", "endpos", "startposcode", "endposcode");
+	protected static Set<String> attributes = makeSet("template", "tag", "startpos", "endpos", "startposcode", "endposcode");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -150,8 +161,8 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 	{
 		switch (key)
 		{
-			case "source":
-				return source;
+			case "template":
+				return template;
 			case "tag":
 				return tag;
 			case "startpos":

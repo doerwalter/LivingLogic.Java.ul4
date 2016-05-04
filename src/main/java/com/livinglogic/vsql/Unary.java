@@ -31,15 +31,15 @@ public abstract class Unary extends Node
 {
 	protected Node obj;
 
-	public Unary(InterpretedTemplate template, SourcePart origin, Node obj)
+	public Unary(SourcePart origin, Node obj)
 	{
-		super(template, origin);
+		super(origin);
 		this.obj = obj;
 	}
 
 	public static abstract class Function extends com.livinglogic.ul4.Function
 	{
-		private static final Signature signature = new Signature("obj", Signature.required, "origin", null, "template", null);
+		private static final Signature signature = new Signature("obj", Signature.required, "origin", null);
 
 		public Signature getSignature()
 		{

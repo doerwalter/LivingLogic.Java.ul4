@@ -33,9 +33,9 @@ public class Const extends Node
 {
 	protected Object value;
 
-	public Const(InterpretedTemplate template, SourcePart origin, Object value)
+	public Const(SourcePart origin, Object value)
 	{
-		super(template, origin);
+		super(origin);
 		this.value = value;
 	}
 
@@ -105,7 +105,7 @@ public class Const extends Node
 			return "vsql.const";
 		}
 
-		private static final Signature signature = new Signature("value", Signature.required, "origin", null, "template", null);
+		private static final Signature signature = new Signature("value", Signature.required, "origin", null);
 
 		public Signature getSignature()
 		{
@@ -114,7 +114,7 @@ public class Const extends Node
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new Const((InterpretedTemplate)args.get(2), (SourcePart)args.get(1), args.get(0));
+			return new Const((SourcePart)args.get(1), args.get(0));
 		}
 	}
 

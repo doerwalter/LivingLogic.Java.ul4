@@ -25,9 +25,9 @@ import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 public class RightNow extends Node
 {
-	public RightNow(InterpretedTemplate template, SourcePart origin)
+	public RightNow(SourcePart origin)
 	{
-		super(template, origin);
+		super(origin);
 	}
 
 	protected SQLSnippet sqlOracle()
@@ -49,7 +49,7 @@ public class RightNow extends Node
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new RightNow((InterpretedTemplate)args.get(1), (SourcePart)args.get(0));
+			return new RightNow((SourcePart)args.get(0));
 		}
 	}
 }

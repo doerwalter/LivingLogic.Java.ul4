@@ -31,9 +31,9 @@ public class FieldRef extends Node
 {
 	protected Field field;
 
-	public FieldRef(InterpretedTemplate template, SourcePart origin, Field field)
+	public FieldRef(SourcePart origin, Field field)
 	{
-		super(template, origin);
+		super(origin);
 		this.field = field;
 	}
 
@@ -49,7 +49,7 @@ public class FieldRef extends Node
 			return "vsql.field";
 		}
 
-		private static final Signature signature = new Signature("field", Signature.required, "origin", null, "template", null);
+		private static final Signature signature = new Signature("field", Signature.required, "origin", null);
 
 		public Signature getSignature()
 		{
@@ -58,7 +58,7 @@ public class FieldRef extends Node
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new FieldRef((InterpretedTemplate)args.get(2), (SourcePart)args.get(1), (Field)args.get(0));
+			return new FieldRef((SourcePart)args.get(1), (Field)args.get(0));
 		}
 	}
 

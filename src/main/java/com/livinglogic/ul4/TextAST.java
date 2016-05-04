@@ -19,18 +19,24 @@ import com.livinglogic.ul4on.Encoder;
  */
 public class TextAST extends AST
 {
-	protected String source;
+	protected InterpretedTemplate template;
 
-	public TextAST(String source, int startPos, int endPos)
+	public TextAST(InterpretedTemplate template, int startPos, int endPos)
 	{
 		super(startPos, endPos);
-		this.source = source;
+		this.template = template;
 	}
 
 	@Override
-	public String getSource()
+	public InterpretedTemplate getTemplate()
 	{
-		return source;
+		return template;
+	}
+
+	// Used by {@see InterpretedTemplate#compile} to fix the template references for inner templates
+	void setTemplate(InterpretedTemplate template)
+	{
+		this.template = template;
 	}
 
 	@Override
@@ -45,15 +51,9 @@ public class TextAST extends AST
 		return endPos;
 	}
 
-	@Override
-	public String getText()
-	{
-		return source.substring(startPos, endPos);
-	}
-
 	public CodeSnippet getSnippet()
 	{
-		return new CodeSnippet(source, startPos, endPos);
+		return new CodeSnippet(getSource(), startPos, endPos);
 	}
 
 	public void toString(Formatter formatter)
@@ -70,13 +70,13 @@ public class TextAST extends AST
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(source);
+		encoder.dump(template);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		source = (String)decoder.load();
+		template = (InterpretedTemplate)decoder.load();
 	}
 
 	public Object evaluate(EvaluationContext context)
@@ -85,7 +85,7 @@ public class TextAST extends AST
 		return null;
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "text");
+	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "template", "text");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -96,6 +96,8 @@ public class TextAST extends AST
 	{
 		switch (key)
 		{
+			case "template":
+				return template;
 			case "text":
 				return getText();
 			default:

@@ -32,16 +32,16 @@ public abstract class Binary extends Node
 	protected Node obj1;
 	protected Node obj2;
 
-	public Binary(InterpretedTemplate template, SourcePart origin, Node obj1, Node obj2)
+	public Binary(SourcePart origin, Node obj1, Node obj2)
 	{
-		super(template, origin);
+		super(origin);
 		this.obj1 = obj1;
 		this.obj2 = obj2;
 	}
 
 	public static abstract class Function extends com.livinglogic.ul4.Function
 	{
-		private static final Signature signature = new Signature("obj1", Signature.required, "obj2", Signature.required, "origin", null, "template", null);
+		private static final Signature signature = new Signature("obj1", Signature.required, "obj2", Signature.required, "origin", null);
 
 		public Signature getSignature()
 		{

@@ -28,26 +28,24 @@ import static com.livinglogic.utils.SetUtils.makeSet;
  */
 public abstract class Node implements UL4Attributes, UL4GetItemString, UL4Repr
 {
-	protected InterpretedTemplate template;
 	protected SourcePart origin;
 
-	public Node(InterpretedTemplate template, SourcePart origin)
+	public Node(SourcePart origin)
 	{
-		this.template = template;
 		this.origin = origin;
 	}
 
-	public static RuntimeException error(InterpretedTemplate template, SourcePart origin, String message, Object... args)
+	public static RuntimeException error(SourcePart origin, String message, Object... args)
 	{
 		RuntimeException ex = new RuntimeException(Utils.formatMessage(message, args));
 		if (origin != null)
-			ex = new SourceException(ex, template, origin);
+			ex = new SourceException(ex, origin);
 		return ex;
 	}
 
 	protected RuntimeException error(String message, Object... args)
 	{
-		return error(template, origin, message, args);
+		return error(origin, message, args);
 	}
 
 	String sql(String mode)
@@ -91,7 +89,7 @@ public abstract class Node implements UL4Attributes, UL4GetItemString, UL4Repr
 		}
 	}
 
-	protected static Set<String> attributes = makeSet("type", "sql");
+	protected static Set<String> attributes = makeSet("origin", "sql");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -102,8 +100,6 @@ public abstract class Node implements UL4Attributes, UL4GetItemString, UL4Repr
 	{
 		switch (key)
 		{
-			case "template":
-				return template;
 			case "origin":
 				return origin;
 			case "sql":

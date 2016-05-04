@@ -39,15 +39,9 @@ public abstract class CodeAST extends AST
 	}
 
 	@Override
-	public String getSource()
+	public InterpretedTemplate getTemplate()
 	{
-		return tag.getSource();
-	}
-
-	@Override
-	public String getText()
-	{
-		return tag.getSource().substring(startPos, endPos);
+		return tag.getTemplate();
 	}
 
 	public Tag getTag()
@@ -57,7 +51,7 @@ public abstract class CodeAST extends AST
 
 	public CodeSnippet getSnippet()
 	{
-		return new CodeSnippet(tag.getSource(), tag.getStartPos(), tag.getEndPos(), startPos, endPos);
+		return new CodeSnippet(getSource(), tag.getStartPos(), tag.getEndPos(), startPos, endPos);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

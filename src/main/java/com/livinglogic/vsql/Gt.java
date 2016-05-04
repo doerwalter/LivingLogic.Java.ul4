@@ -23,9 +23,9 @@ import com.livinglogic.ul4.FunctionStr;
 
 public class Gt extends Binary
 {
-	public Gt(InterpretedTemplate template, SourcePart origin, Node obj1, Node obj2)
+	public Gt(SourcePart origin, Node obj1, Node obj2)
 	{
-		super(template, origin, obj1, obj2);
+		super(origin, obj1, obj2);
 	}
 
 	protected SQLSnippet sqlOracle()
@@ -155,7 +155,7 @@ public class Gt extends Binary
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new Gt((InterpretedTemplate)args.get(3), (SourcePart)args.get(2), (Node)args.get(0), (Node)args.get(1));
+			return new Gt((SourcePart)args.get(2), (Node)args.get(0), (Node)args.get(1));
 		}
 	}
 }

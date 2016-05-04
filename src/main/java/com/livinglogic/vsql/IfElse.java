@@ -32,9 +32,9 @@ public class IfElse extends Node
 	protected Node objCond;
 	protected Node objElse;
 
-	public IfElse(InterpretedTemplate template, SourcePart origin, Node objIf, Node objCond, Node objElse)
+	public IfElse(SourcePart origin, Node objIf, Node objCond, Node objElse)
 	{
-		super(template, origin);
+		super(origin);
 		this.objIf = objIf;
 		this.objCond = objCond;
 		this.objElse = objElse;
@@ -225,7 +225,7 @@ public class IfElse extends Node
 			return "vsql.ifelse";
 		}
 
-		private static final Signature signature = new Signature("objif", Signature.required, "objcond", Signature.required, "objelse", Signature.required, "origin", null, "template", null);
+		private static final Signature signature = new Signature("objif", Signature.required, "objcond", Signature.required, "objelse", Signature.required, "origin", null);
 
 		public Signature getSignature()
 		{
@@ -234,7 +234,7 @@ public class IfElse extends Node
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new IfElse((InterpretedTemplate)args.get(4), (SourcePart)args.get(3), (Node)args.get(0), (Node)args.get(1), (Node)args.get(2));
+			return new IfElse((SourcePart)args.get(3), (Node)args.get(0), (Node)args.get(1), (Node)args.get(2));
 		}
 	}
 }

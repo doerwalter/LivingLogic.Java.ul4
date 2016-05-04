@@ -13,6 +13,6 @@ public class UnorderableTypesException extends ArgumentTypeMismatchException
 {
 	public UnorderableTypesException(String operator, Object arg1, Object arg2)
 	{
-		super("{} " + operator + " {}", arg1, arg2);
+		super("{!t} " + operator + " {!t}", arg1, arg2);
 	}
 }

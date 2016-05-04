@@ -29,9 +29,9 @@ public class TimeDelta extends Node
 	protected Node seconds;
 	protected Node microseconds;
 
-	public TimeDelta(InterpretedTemplate template, SourcePart origin, Node days, Node seconds, Node microseconds)
+	public TimeDelta(SourcePart origin, Node days, Node seconds, Node microseconds)
 	{
-		super(template, origin);
+		super(origin);
 		this.days = days;
 		this.seconds = seconds;
 		this.microseconds = microseconds;
@@ -82,7 +82,7 @@ public class TimeDelta extends Node
 			return "vsql.TimeDelta";
 		}
 
-		private static final Signature signature = new Signature("days", Signature.required, "seconds", null, "microseconds", null, "origin", null, "template", null);
+		private static final Signature signature = new Signature("days", Signature.required, "seconds", null, "microseconds", null, "origin", null);
 
 		public Signature getSignature()
 		{
@@ -91,7 +91,7 @@ public class TimeDelta extends Node
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new TimeDelta((InterpretedTemplate)args.get(4), (SourcePart)args.get(3), (Node)args.get(0), (Node)args.get(1), (Node)args.get(2));
+			return new TimeDelta((SourcePart)args.get(3), (Node)args.get(0), (Node)args.get(1), (Node)args.get(2));
 		}
 	}
 

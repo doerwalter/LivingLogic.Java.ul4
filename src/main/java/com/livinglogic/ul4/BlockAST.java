@@ -67,7 +67,7 @@ abstract class BlockAST extends CodeAST
 		}
 		catch (Exception ex)
 		{
-			throw new SourceException(ex, context.getTemplate(), this);
+			throw new SourceException(ex, this);
 		}
 	}
 

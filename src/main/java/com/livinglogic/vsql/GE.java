@@ -23,9 +23,9 @@ import com.livinglogic.ul4.FunctionStr;
 
 public class GE extends Binary
 {
-	public GE(InterpretedTemplate template, SourcePart origin, Node obj1, Node obj2)
+	public GE(SourcePart origin, Node obj1, Node obj2)
 	{
-		super(template, origin, obj1, obj2);
+		super(origin, obj1, obj2);
 	}
 
 	protected SQLSnippet sqlOracle()
@@ -147,7 +147,7 @@ public class GE extends Binary
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new GE((InterpretedTemplate)args.get(3), (SourcePart)args.get(2), (Node)args.get(0), (Node)args.get(1));
+			return new GE((SourcePart)args.get(2), (Node)args.get(0), (Node)args.get(1));
 		}
 	}
 }

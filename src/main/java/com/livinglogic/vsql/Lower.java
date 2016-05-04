@@ -25,9 +25,9 @@ import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 public class Lower extends Unary
 {
-	public Lower(InterpretedTemplate template, SourcePart origin, Node obj)
+	public Lower(SourcePart origin, Node obj)
 	{
-		super(template, origin, obj);
+		super(origin, obj);
 	}
 
 	protected SQLSnippet sqlOracle()
@@ -58,7 +58,7 @@ public class Lower extends Unary
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new Lower((InterpretedTemplate)args.get(2), (SourcePart)args.get(1), (Node)args.get(0));
+			return new Lower((SourcePart)args.get(1), (Node)args.get(0));
 		}
 	}
 }

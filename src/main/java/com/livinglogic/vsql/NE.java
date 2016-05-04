@@ -8,7 +8,6 @@ package com.livinglogic.vsql;
 
 import java.util.Set;
 
-import com.livinglogic.ul4.InterpretedTemplate;
 import com.livinglogic.ul4.SourcePart;
 import com.livinglogic.ul4.BoundMethod;
 import com.livinglogic.ul4.Signature;
@@ -23,9 +22,9 @@ import com.livinglogic.ul4.FunctionStr;
 
 public class NE extends Binary
 {
-	public NE(InterpretedTemplate template, SourcePart origin, Node obj1, Node obj2)
+	public NE(SourcePart origin, Node obj1, Node obj2)
 	{
-		super(template, origin, obj1, obj2);
+		super(origin, obj1, obj2);
 	}
 
 	protected SQLSnippet sqlOracle()
@@ -165,7 +164,7 @@ public class NE extends Binary
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new NE((InterpretedTemplate)args.get(3), (SourcePart)args.get(2), (Node)args.get(0), (Node)args.get(1));
+			return new NE((SourcePart)args.get(2), (Node)args.get(0), (Node)args.get(1));
 		}
 	}
 }

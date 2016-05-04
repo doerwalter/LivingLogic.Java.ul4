@@ -1,3 +1,8 @@
+exp-103:
+--------
+* Implemented changes from XIST 5.17: UL4 texts/tags now reference the template.
+
+
 exp-102:
 --------
 * sorted() now supports the key and reverse arguments.

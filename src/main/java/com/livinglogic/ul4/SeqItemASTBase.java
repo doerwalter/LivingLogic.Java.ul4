@@ -36,7 +36,7 @@ public abstract class SeqItemASTBase extends CodeAST
 		}
 		catch (Exception ex)
 		{
-			throw new SourceException(ex, context.getTemplate(), this);
+			throw new SourceException(ex, this);
 		}
 	}
 
@@ -55,7 +55,7 @@ public abstract class SeqItemASTBase extends CodeAST
 		}
 		catch (Exception ex)
 		{
-			throw new SourceException(ex, context.getTemplate(), this);
+			throw new SourceException(ex, this);
 		}
 	}
 

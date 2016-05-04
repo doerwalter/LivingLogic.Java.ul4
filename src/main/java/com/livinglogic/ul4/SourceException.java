@@ -10,23 +10,33 @@ import org.apache.commons.lang.StringUtils;
 
 public class SourceException extends RuntimeException
 {
-	public SourceException(Throwable cause, InterpretedTemplate template, SourcePart part)
+	public SourceException(Throwable cause, SourcePart part)
 	{
-		super(makeMessage(template, part), cause);
+		super(makeMessage(part), cause);
 	}
 
-	private static String makeMessage(InterpretedTemplate template, SourcePart part)
+	private static String makeMessage(SourcePart part)
 	{
 		StringBuilder buffer = new StringBuilder();
 		String name = null;
-		if (template != null)
-			name = template.nameUL4();
-		if (name == null)
-			buffer.append("in unnamed template");
+		InterpretedTemplate template = part.getTemplate();
+		if (template.parentTemplate != null)
+			buffer.insert(0, "in local template ");
 		else
+			buffer.insert(0, "in template ");
+		boolean first = true;
+		while (template != null)
 		{
-			buffer.append("in template ");
-			buffer.append(FunctionRepr.call(name));
+			if (first)
+				first = false;
+			else
+				buffer.append(" in ");
+			name = template.nameUL4();
+			if (name == null)
+				buffer.append("(unnamed)");
+			else
+				buffer.append(FunctionRepr.call(name));
+			template = template.parentTemplate;
 		}
 		buffer.append(": offset ");
 		int offset = part.getStartPos();
@@ -37,7 +47,7 @@ public class SourceException extends RuntimeException
 		// Determine line and column number
 		int line = 1;
 		int col;
-		String source = part.getSource();
+		String source = part.getTemplate().getSource();
 		int lastLineFeed = source.lastIndexOf("\n", offset);
 
 		if (lastLineFeed == -1)

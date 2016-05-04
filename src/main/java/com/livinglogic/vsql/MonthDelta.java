@@ -25,9 +25,9 @@ import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 public class MonthDelta extends Unary
 {
-	public MonthDelta(InterpretedTemplate template, SourcePart origin, Node obj)
+	public MonthDelta(SourcePart origin, Node obj)
 	{
-		super(template, origin, obj);
+		super(origin, obj);
 	}
 
 	protected SQLSnippet sqlOracle()
@@ -59,7 +59,7 @@ public class MonthDelta extends Unary
 
 		public Object evaluate(BoundArguments args)
 		{
-			return new MonthDelta((InterpretedTemplate)args.get(2), (SourcePart)args.get(1), (Node)args.get(0));
+			return new MonthDelta((SourcePart)args.get(1), (Node)args.get(0));
 		}
 	}
 }
