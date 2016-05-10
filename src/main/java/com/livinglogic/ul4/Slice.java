@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Slice implements UL4GetItemString, UL4Attributes, UL4Repr, Comparable<Slice>
+public class Slice implements UL4GetItemString, UL4Attributes, UL4Repr, UL4Type, Comparable<Slice>
 {
 	protected boolean hasStart;
 	protected boolean hasStop;
@@ -33,6 +33,11 @@ public class Slice implements UL4GetItemString, UL4Attributes, UL4Repr, Comparab
 	public Slice(int start)
 	{
 		this(true, false, start, -1);
+	}
+
+	public String typeUL4()
+	{
+		return "slice";
 	}
 
 	public Integer getStart()
