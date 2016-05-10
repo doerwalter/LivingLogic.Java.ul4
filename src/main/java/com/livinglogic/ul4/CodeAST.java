@@ -29,12 +29,11 @@ public abstract class CodeAST extends AST
 	/**
 	 * Create a new {@code CodeAST} object.
 	 * @param tag The {@code Tag} object this node belongs to.
-	 * @param start The start offset in the template source, where the source for this object is located.
-	 * @param end The end offset in the template source, where the source for this object is located.
+	 * @param pos The slice in the template source, where the source for this object is located.
 	 */
-	public CodeAST(Tag tag, int startPos, int endPos)
+	public CodeAST(Tag tag, Slice pos)
 	{
-		super(startPos, endPos);
+		super(pos);
 		this.tag = tag;
 	}
 
@@ -47,11 +46,6 @@ public abstract class CodeAST extends AST
 	public Tag getTag()
 	{
 		return tag;
-	}
-
-	public CodeSnippet getSnippet()
-	{
-		return new CodeSnippet(getSource(), tag.getStartPos(), tag.getEndPos(), startPos, endPos);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
@@ -82,18 +76,5 @@ public abstract class CodeAST extends AST
 			default:
 				return super.getItemStringUL4(key);
 		}
-	}
-
-	public void reprUL4(UL4Repr.Formatter formatter)
-	{
-		formatter.append("<");
-		formatter.append(getClass().getName());
-		formatter.append(" startPos=");
-		formatter.visit(startPos);
-		formatter.append(" endPos=");
-		formatter.visit(endPos);
-		formatter.append(" code=");
-		formatter.visit(getText());
-		formatter.append(">");
 	}
 }

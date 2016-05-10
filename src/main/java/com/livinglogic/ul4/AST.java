@@ -22,24 +22,17 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Attributes, SourcePart, UL4Repr
 {
 	/**
-	 * The start index of this node in the source
+	 * The start/end index of this node in the source
 	 */
-	protected int startPos;
-
-	/**
-	 * The end index of this node in the source
-	 */
-	protected int endPos;
+	protected Slice pos;
 
 	/**
 	 * Create a new {@code AST} object.
-	 * @param startPos The start offset in the template source, where the source for this object is located.
-	 * @param endPos The end offset in the template source, where the source for this object is located.
+	 * @param pos The slice in the template source, where the source for this object is located.
 	 */
-	public AST(int startPos, int endPos)
+	public AST(Slice pos)
 	{
-		this.startPos = startPos;
-		this.endPos = endPos;
+		this.pos = pos;
 	}
 
 	/**
@@ -55,12 +48,10 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 		return getTemplate().getSource();
 	}
 
-	public String getText()
+	public String getCodeText()
 	{
-		return getSource().substring(startPos, endPos);
+		return pos.getFrom(getSource());
 	}
-
-	abstract public CodeSnippet getSnippet();
 
 	/**
 	 * Evaluate this node and return the resulting object.
@@ -115,24 +106,19 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 		return formatter.toString();
 	}
 
-	public int getStartPos()
+	public Slice getPos()
 	{
-		return startPos;
-	}
-
-	public int getEndPos()
-	{
-		return endPos;
+		return pos;
 	}
 
 	public void setStartPos(int startPos)
 	{
-		this.startPos = startPos;
+		this.pos = pos == null ? new Slice(true, false, startPos, -1) : pos.withStart(startPos);
 	}
 
-	public void setEndPos(int endPos)
+	public void setStopPos(int stopPos)
 	{
-		this.endPos = endPos;
+		this.pos = pos == null ? new Slice(false, true, -1, stopPos) : pos.withStop(stopPos);
 	}
 
 	protected static class Formatter
@@ -193,7 +179,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 
 	public void toStringFromSource(Formatter formatter)
 	{
-		formatter.write(getText());
+		formatter.write(getCodeText());
 	}
 
 	public String getUL4ONName()
@@ -203,17 +189,15 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
-		encoder.dump(startPos);
-		encoder.dump(endPos);
+		encoder.dump(pos);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
-		startPos = (Integer)decoder.load();
-		endPos = (Integer)decoder.load();
+		pos = (Slice)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeSet("type", "startpos", "endpos");
+	protected static Set<String> attributes = makeSet("type", "pos");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -226,10 +210,8 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 		{
 			case "type":
 				return getType();
-			case "startpos":
-				return startPos;
-			case "endpos":
-				return endPos;
+			case "pos":
+				return pos;
 			default:
 				return new UndefinedKey(key);
 		}
@@ -239,10 +221,10 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 	{
 		formatter.append("<");
 		formatter.append(getClass().getName());
-		formatter.append(" startPos=");
-		formatter.visit(startPos);
-		formatter.append(" endPos=");
-		formatter.visit(endPos);
-		formatter.append(">");
+		formatter.append(" pos=(");
+		formatter.visit(pos.getStart());
+		formatter.append(":");
+		formatter.visit(pos.getStop());
+		formatter.append(")>");
 	}
 }

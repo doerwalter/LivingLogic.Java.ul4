@@ -24,9 +24,9 @@ public class RenderAST extends CallRenderAST
 {
 	protected IndentAST indent;
 
-	public RenderAST(Tag tag, int start, int end, AST obj)
+	public RenderAST(Tag tag, Slice pos, AST obj)
 	{
-		super(tag, start, end, obj);
+		super(tag, pos, obj);
 		this.indent = null;
 	}
 
@@ -35,7 +35,7 @@ public class RenderAST extends CallRenderAST
 	 */
 	public RenderAST(CallAST call)
 	{
-		super(call.tag, call.startPos, call.endPos, call.obj);
+		super(call.tag, call.pos, call.obj);
 		this.indent = null;
 		this.arguments = call.arguments;
 	}
@@ -52,7 +52,7 @@ public class RenderAST extends CallRenderAST
 		if (indent != null)
 		{
 			formatter.write(" with indent ");
-			formatter.write(FunctionRepr.call(indent.getText()));
+			formatter.write(FunctionRepr.call(indent.getCodeText()));
 		}
 	}
 
@@ -94,7 +94,7 @@ public class RenderAST extends CallRenderAST
 	public void call(EvaluationContext context, UL4RenderWithContext obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		if (indent != null)
-			context.pushIndent(indent.getText());
+			context.pushIndent(indent.getCodeText());
 		obj.renderUL4(context, args, kwargs);
 		if (indent != null)
 			context.popIndent();

@@ -17,9 +17,9 @@ public class SeqItemAST extends SeqItemASTBase
 {
 	protected AST value;
 
-	public SeqItemAST(Tag tag, int start, int end, AST value)
+	public SeqItemAST(Tag tag, Slice pos, AST value)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 		this.value = value;
 	}
 

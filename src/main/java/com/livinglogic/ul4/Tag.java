@@ -18,7 +18,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 /**
  * The class that records information about a template tag in the template source.
  */
-public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, SourcePart
+public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, SourcePart, UL4Repr
 {
 	/**
 	 * The template
@@ -31,42 +31,28 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 	protected String tag;
 
 	/**
-	 * The start index of this tag in the source
+	 * The start/end index of this tag in the source
 	 */
-	protected int startPos;
+	protected Slice tagPos;
 
 	/**
-	 * The end index of this tag in the source
+	 * The start/end index in {@code source} where the code inside the tag starts.
 	 */
-	protected int endPos;
-
-	/**
-	 * The offset in {@code source} where the code inside the tag starts.
-	 */
-	protected int startPosCode;
-
-	/**
-	 * The offset in {@code source} where the code inside the tag ends.
-	 */
-	protected int endPosCode;
+	protected Slice codePos;
 
 	/**
 	 * Create a new {@code Tag} object.
 	 * @param template The template
 	 * @param tag The tag type ("print", "printx", "for", "if", "end", etc.)
-	 * @param startPos The start offset in the template source, where the source for this tag is located.
-	 * @param endPos The end offset in the template source, where the source for this tag is located.
-	 * @param startPosCode The offset in the template source where the code inside the tag starts.
-	 * @param endPosCode The offset in the template source where the code inside the tag ends.
+	 * @param tagPos The slice in the template source, where the source for this tag is located.
+	 * @param codePos The slice in the template source where the code inside the tag starts.
 	 */
-	public Tag(InterpretedTemplate template, String tag, int startPos, int endPos, int startPosCode, int endPosCode)
+	public Tag(InterpretedTemplate template, String tag, Slice tagPos, Slice codePos)
 	{
 		this.template = template;
 		this.tag = tag;
-		this.startPos = startPos;
-		this.endPos = endPos;
-		this.startPosCode = startPosCode;
-		this.endPosCode = endPosCode;
+		this.tagPos = tagPos;
+		this.codePos = codePos;
 	}
 
 	public String getUL4ONName()
@@ -95,62 +81,43 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 		return tag;
 	}
 
-	public int getStartPos()
+	public Slice getPos()
 	{
-		return startPos;
+		return tagPos;
 	}
 
-	public int getEndPos()
+	public Slice getCodePos()
 	{
-		return endPos;
+		return codePos;
 	}
 
-	public int getStartPosCode()
+	public String getTagText()
 	{
-		return startPosCode;
+		return tagPos.getFrom(getSource());
 	}
 
-	public int getEndPosCode()
+	public String getCodeText()
 	{
-		return endPosCode;
-	}
-
-	public String getText()
-	{
-		return getSource().substring(startPos, endPos);
-	}
-
-	public String getCode()
-	{
-		return getSource().substring(startPosCode, endPosCode);
-	}
-
-	public CodeSnippet getSnippet()
-	{
-		return new CodeSnippet(getSource(), startPos, endPos);
+		return codePos.getFrom(getSource());
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
-		encoder.dump(startPos);
-		encoder.dump(endPos);
+		encoder.dump(tagPos);
 		encoder.dump(template);
 		encoder.dump(tag);
-		encoder.dump(startPosCode);
-		encoder.dump(endPosCode);
+		encoder.dump(codePos);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
-		startPos = (Integer)decoder.load();
-		endPos = (Integer)decoder.load();
+		tagPos = (Slice)decoder.load();
 		template = (InterpretedTemplate)decoder.load();
 		tag = (String)decoder.load();
-		startPosCode = (Integer)decoder.load();
-		endPosCode = (Integer)decoder.load();
+		codePos = (Slice)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeSet("template", "tag", "startpos", "endpos", "startposcode", "endposcode");
+	protected static Set<String> attributes = makeSet("template", "tag", "pos");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -165,20 +132,27 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 				return template;
 			case "tag":
 				return tag;
-			case "startpos":
-				return startPos;
-			case "endpos":
-				return endPos;
-			case "startposcode":
-				return startPosCode;
-			case "endposcode":
-				return endPosCode;
+			case "pos":
+				return tagPos;
 			case "text":
-				return getText();
+				return getTagText();
 			case "code":
-				return getCode();
+				return getCodeText();
 			default:
 				return new UndefinedKey(key);
 		}
+	}
+
+	public void reprUL4(UL4Repr.Formatter formatter)
+	{
+		formatter.append("<");
+		formatter.append(getClass().getName());
+		formatter.append(" type=");
+		formatter.visit(tag);
+		formatter.append(" pos=(");
+		formatter.visit(tagPos.getStart());
+		formatter.append(":");
+		formatter.visit(tagPos.getStop());
+		formatter.append(")>");
 	}
 }

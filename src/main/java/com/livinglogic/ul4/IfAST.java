@@ -21,9 +21,9 @@ public class IfAST extends CodeAST
 	private CodeAST objCond;
 	private CodeAST objElse;
 
-	public IfAST(Tag tag, int start, int end, CodeAST objIf, CodeAST objCond, CodeAST objElse)
+	public IfAST(Tag tag, Slice pos, CodeAST objIf, CodeAST objCond, CodeAST objElse)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 		this.objIf = objIf;
 		this.objCond = objCond;
 		this.objElse = objElse;
@@ -34,7 +34,7 @@ public class IfAST extends CodeAST
 		return "if";
 	}
 
-	public static CodeAST make(Tag tag, int start, int end, CodeAST objIf, CodeAST objCond, CodeAST objElse)
+	public static CodeAST make(Tag tag, Slice pos, CodeAST objIf, CodeAST objCond, CodeAST objElse)
 	{
 		if (objCond instanceof ConstAST)
 		{
@@ -43,7 +43,7 @@ public class IfAST extends CodeAST
 			if (!(cond instanceof Undefined))
 				return FunctionBool.call(cond) ? objIf : objElse;
 		}
-		return new IfAST(tag, start, end, objIf, objCond, objElse);
+		return new IfAST(tag, pos, objIf, objCond, objElse);
 	}
 
 	public Object evaluate(EvaluationContext context)

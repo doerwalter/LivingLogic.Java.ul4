@@ -23,9 +23,9 @@ public class SliceAST extends CodeAST
 	protected AST index1;
 	protected AST index2;
 
-	public SliceAST(Tag tag, int start, int end, AST index1, AST index2)
+	public SliceAST(Tag tag, Slice pos, AST index1, AST index2)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 		this.index1 = index1;
 		this.index2 = index2;
 	}
@@ -35,7 +35,7 @@ public class SliceAST extends CodeAST
 		return "slice";
 	}
 
-	public static AST make(Tag tag, int start, int end, AST obj, AST index1, AST index2)
+	public static AST make(Tag tag, Slice pos, AST obj, AST index1, AST index2)
 	{
 		if (obj instanceof ConstAST)
 		{
@@ -45,13 +45,13 @@ public class SliceAST extends CodeAST
 				{
 					Object result = call(null, null);
 					if (!(result instanceof Undefined))
-						return new ConstAST(tag, start, end, result);
+						return new ConstAST(tag, pos, result);
 				}
 				else if (index2 instanceof ConstAST)
 				{
 					Object result = call(null, ((ConstAST)index2).value);
 					if (!(result instanceof Undefined))
-						return new ConstAST(tag, start, end, result);
+						return new ConstAST(tag, pos, result);
 				}
 			}
 			else if (index1 instanceof ConstAST)
@@ -60,17 +60,17 @@ public class SliceAST extends CodeAST
 				{
 					Object result = call(((ConstAST)index1).value, null);
 					if (!(result instanceof Undefined))
-						return new ConstAST(tag, start, end, result);
+						return new ConstAST(tag, pos, result);
 				}
 				else if (index2 instanceof ConstAST)
 				{
 					Object result = call(((ConstAST)index1).value, ((ConstAST)index2).value);
 					if (!(result instanceof Undefined))
-						return new ConstAST(tag, start, end, result);
+						return new ConstAST(tag, pos, result);
 				}
 			}
 		}
-		return new SliceAST(tag, start, end, index1, index2);
+		return new SliceAST(tag, pos, index1, index2);
 	}
 
 	public Object evaluate(EvaluationContext context)

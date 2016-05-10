@@ -22,9 +22,9 @@ public class AttrAST extends CodeAST implements LValue
 	protected AST obj;
 	protected String attrname;
 
-	public AttrAST(Tag tag, int start, int end, AST obj, String attrname)
+	public AttrAST(Tag tag, Slice pos, AST obj, String attrname)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 		this.obj = obj;
 		this.attrname = attrname;
 	}

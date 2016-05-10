@@ -19,16 +19,16 @@ class IndentAST extends TextAST
 {
 	protected String text;
 
-	public IndentAST(InterpretedTemplate template, int startPos, int endPos, String text)
+	public IndentAST(InterpretedTemplate template, Slice pos, String text)
 	{
-		super(template, startPos, endPos);
+		super(template, pos);
 		this.text = text;
 	}
 
 	@Override
-	public String getText()
+	public String getCodeText()
 	{
-		return text != null ? text : super.getText();
+		return text != null ? text : super.getCodeText();
 	}
 
 	public void setText(String text)
@@ -41,14 +41,14 @@ class IndentAST extends TextAST
 	{
 		for (String indent : context.indents)
 			context.write(indent);
-		context.write(getText());
+		context.write(getCodeText());
 		return null;
 	}
 
 	public void toString(Formatter formatter)
 	{
 		formatter.write("indent ");
-		formatter.write(FunctionRepr.call(getText()));
+		formatter.write(FunctionRepr.call(getCodeText()));
 	}
 
 	public String getType()

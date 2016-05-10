@@ -22,9 +22,9 @@ public class DictComprehensionAST extends CodeAST
 	protected CodeAST container;
 	protected CodeAST condition;
 
-	public DictComprehensionAST(Tag tag, int start, int end, CodeAST key, CodeAST value, Object varname, CodeAST container, CodeAST condition)
+	public DictComprehensionAST(Tag tag, Slice pos, CodeAST key, CodeAST value, Object varname, CodeAST container, CodeAST condition)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 		this.key = key;
 		this.value = value;
 		this.varname = varname;

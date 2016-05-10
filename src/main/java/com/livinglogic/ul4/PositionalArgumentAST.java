@@ -20,9 +20,9 @@ public class PositionalArgumentAST extends ArgumentASTBase
 {
 	AST value;
 
-	public PositionalArgumentAST(Tag tag, int start, int end, AST value)
+	public PositionalArgumentAST(Tag tag, Slice pos, AST value)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 		this.value = value;
 	}
 

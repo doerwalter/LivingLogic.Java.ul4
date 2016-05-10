@@ -21,9 +21,9 @@ public class TextAST extends AST
 {
 	protected InterpretedTemplate template;
 
-	public TextAST(InterpretedTemplate template, int startPos, int endPos)
+	public TextAST(InterpretedTemplate template, Slice pos)
 	{
-		super(startPos, endPos);
+		super(pos);
 		this.template = template;
 	}
 
@@ -39,27 +39,10 @@ public class TextAST extends AST
 		this.template = template;
 	}
 
-	@Override
-	public int getStartPos()
-	{
-		return startPos;
-	}
-
-	@Override
-	public int getEndPos()
-	{
-		return endPos;
-	}
-
-	public CodeSnippet getSnippet()
-	{
-		return new CodeSnippet(getSource(), startPos, endPos);
-	}
-
 	public void toString(Formatter formatter)
 	{
 		formatter.write("text ");
-		formatter.write(FunctionRepr.call(getText()));
+		formatter.write(FunctionRepr.call(getCodeText()));
 	}
 
 	public String getType()
@@ -81,7 +64,7 @@ public class TextAST extends AST
 
 	public Object evaluate(EvaluationContext context)
 	{
-		context.write(getText());
+		context.write(getCodeText());
 		return null;
 	}
 
@@ -99,7 +82,7 @@ public class TextAST extends AST
 			case "template":
 				return template;
 			case "text":
-				return getText();
+				return getCodeText();
 			default:
 				return super.getItemStringUL4(key);
 		}
@@ -109,12 +92,12 @@ public class TextAST extends AST
 	{
 		formatter.append("<");
 		formatter.append(getClass().getName());
-		formatter.append(" startPos=");
-		formatter.visit(startPos);
-		formatter.append(" endPos=");
-		formatter.visit(endPos);
-		formatter.append(" text=");
-		formatter.visit(getText());
+		formatter.append(" pos=(");
+		formatter.visit(pos.getStart());
+		formatter.append(":");
+		formatter.visit(pos.getStop());
+		formatter.append(") text=");
+		formatter.visit(getCodeText());
 		formatter.append(">");
 	}
 }

@@ -18,9 +18,9 @@ public class ConstAST extends CodeAST
 {
 	protected Object value;
 
-	public ConstAST(Tag tag, int start, int end, Object value)
+	public ConstAST(Tag tag, Slice pos, Object value)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 		this.value = value;
 	}
 

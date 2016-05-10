@@ -11,9 +11,9 @@ import java.util.Map;
 
 public abstract class ArgumentASTBase extends CodeAST
 {
-	public ArgumentASTBase(Tag tag, int start, int end)
+	public ArgumentASTBase(Tag tag, Slice pos)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 	}
 
 	public Object evaluate(EvaluationContext context)

@@ -21,9 +21,9 @@ public class UnpackDictArgumentAST extends ArgumentASTBase
 {
 	AST value;
 
-	public UnpackDictArgumentAST(Tag tag, int start, int end, AST value)
+	public UnpackDictArgumentAST(Tag tag, Slice pos, AST value)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 		this.value = value;
 	}
 

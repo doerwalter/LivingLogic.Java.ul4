@@ -18,9 +18,9 @@ public class UnpackDictItemAST extends DictItemASTBase
 {
 	protected AST item;
 
-	public UnpackDictItemAST(Tag tag, int start, int end, AST item)
+	public UnpackDictItemAST(Tag tag, Slice pos, AST item)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 		this.item = item;
 	}
 

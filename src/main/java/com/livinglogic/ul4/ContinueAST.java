@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 class ContinueAST extends CodeAST
 {
-	public ContinueAST(Tag tag, int start, int end)
+	public ContinueAST(Tag tag, Slice pos)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 	}
 
 	public String getType()

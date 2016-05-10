@@ -24,9 +24,9 @@ public class SignatureAST extends CodeAST
 {
 	protected List<Parameter> parameters;
 
-	public SignatureAST(Tag tag, int start, int end)
+	public SignatureAST(Tag tag, Slice pos)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 		parameters = new LinkedList<Parameter>();
 	}
 

@@ -21,9 +21,9 @@ abstract class BlockAST extends CodeAST
 	protected List<AST> content = new LinkedList<AST>();
 	protected Tag endtag = null;
 
-	public BlockAST(Tag tag, int start, int end)
+	public BlockAST(Tag tag, Slice pos)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 	}
 
 	public void append(AST item)

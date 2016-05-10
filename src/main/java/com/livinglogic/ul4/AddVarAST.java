@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class AddVarAST extends ChangeVarAST
 {
-	public AddVarAST(Tag tag, int start, int end, LValue lvalue, AST value)
+	public AddVarAST(Tag tag, Slice pos, LValue lvalue, AST value)
 	{
-		super(tag, start, end, lvalue, value);
+		super(tag, pos, lvalue, value);
 	}
 
 	public String getType()

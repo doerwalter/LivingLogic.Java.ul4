@@ -10,9 +10,53 @@ import org.apache.commons.lang.StringUtils;
 
 public class SourceException extends RuntimeException
 {
+	protected SourcePart part;
+
 	public SourceException(Throwable cause, SourcePart part)
 	{
 		super(makeMessage(part), cause);
+		this.part = part;
+	}
+
+	private static String rawRepr(String string)
+	{
+		string = FunctionRepr.call(string);
+		return string.substring(1, string.length()-1);
+	}
+
+	private static void makeCodeSnippet(StringBuilder buffer, SourcePart part)
+	{
+		String source = part.getTemplate().getSource();
+		Slice tagPos, codePos;
+
+		if (part instanceof Tag)
+		{
+			tagPos = ((Tag)part).getPos();
+			codePos = tagPos;
+		}
+		else // AST
+		{
+			codePos = part.getPos();
+			if (part instanceof CodeAST)
+			{
+				Tag tag = ((CodeAST)part).getTag();
+				// top level templates have no tag
+				tagPos = tag == null ? codePos : tag.getPos();
+			}
+			else // TextAST
+			{
+				tagPos = codePos;
+			}
+		}
+		String prefix = rawRepr(source.substring(tagPos.getStart(), codePos.getStart()));
+		String code = rawRepr(source.substring(codePos.getStart(), codePos.getStop()));
+		String suffix = rawRepr(source.substring(codePos.getStop(), tagPos.getStop()));
+		buffer.append(prefix);
+		buffer.append(code);
+		buffer.append(suffix);
+		buffer.append("\n");
+		buffer.append(StringUtils.repeat(" ", prefix.length()));
+		buffer.append(StringUtils.repeat("~", code.length()));
 	}
 
 	private static String makeMessage(SourcePart part)
@@ -39,10 +83,10 @@ public class SourceException extends RuntimeException
 			template = template.parentTemplate;
 		}
 		buffer.append(": offset ");
-		int offset = part.getStartPos();
+		int offset = part.getPos().getStart();
 		buffer.append(offset);
 		buffer.append(":");
-		buffer.append(part.getEndPos());
+		buffer.append(part.getPos().getStop());
 
 		// Determine line and column number
 		int line = 1;
@@ -73,7 +117,7 @@ public class SourceException extends RuntimeException
 		buffer.append("; col ");
 		buffer.append(col);
 		buffer.append("\n");
-		buffer.append(part.getSnippet().toString());
+		makeCodeSnippet(buffer, part);
 		return buffer.toString();
 	}
 }

@@ -11,9 +11,9 @@ import java.math.BigInteger;
 
 public class NegAST extends UnaryAST
 {
-	public NegAST(Tag tag, int start, int end, CodeAST obj)
+	public NegAST(Tag tag, Slice pos, CodeAST obj)
 	{
-		super(tag, start, end, obj);
+		super(tag, pos, obj);
 	}
 
 	public String getType()
@@ -21,15 +21,15 @@ public class NegAST extends UnaryAST
 		return "neg";
 	}
 
-	public static CodeAST make(Tag tag, int start, int end, CodeAST obj)
+	public static CodeAST make(Tag tag, Slice pos, CodeAST obj)
 	{
 		if (obj instanceof ConstAST)
 		{
 			Object result = call(((ConstAST)obj).value);
 			if (!(result instanceof Undefined))
-				return new ConstAST(tag, start, end, result);
+				return new ConstAST(tag, pos, result);
 		}
-		return new NegAST(tag, start, end, obj);
+		return new NegAST(tag, pos, obj);
 	}
 
 	public Object evaluate(EvaluationContext context)

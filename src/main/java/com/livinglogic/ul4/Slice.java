@@ -25,14 +25,40 @@ public class Slice implements UL4GetItemString, UL4Attributes, UL4Repr, Comparab
 		this.stop = stop;
 	}
 
-	public Object getStart()
+	public Slice(int start, int stop)
+	{
+		this(true, true, start, stop);
+	}
+
+	public Slice(int start)
+	{
+		this(true, false, start, -1);
+	}
+
+	public Integer getStart()
 	{
 		return hasStart ? start : null;
 	}
 
-	public Object getStop()
+	public Integer getStop()
 	{
 		return hasStop ? stop : null;
+	}
+
+	public String getFrom(String string)
+	{
+		int containerSize = string.length();
+		return string.substring(this.getStartIndex(containerSize), this.getStopIndex(containerSize));
+	}
+
+	public Slice withStart(int start)
+	{
+		return new Slice(true, hasStop, start, stop);
+	}
+
+	public Slice withStop(int stop)
+	{
+		return new Slice(hasStart, true, start, stop);
 	}
 
 	public int getStartIndex(int containerSize)

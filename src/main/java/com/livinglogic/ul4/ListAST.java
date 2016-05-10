@@ -18,9 +18,9 @@ public class ListAST extends CodeAST
 {
 	protected List<SeqItemASTBase> items = new LinkedList<SeqItemASTBase>();
 
-	public ListAST(Tag tag, int start, int end)
+	public ListAST(Tag tag, Slice pos)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 	}
 
 	public void append(SeqItemASTBase item)

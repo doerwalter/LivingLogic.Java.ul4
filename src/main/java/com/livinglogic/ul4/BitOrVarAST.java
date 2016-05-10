@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class BitOrVarAST extends ChangeVarAST
 {
-	public BitOrVarAST(Tag tag, int start, int end, LValue lvalue, AST value)
+	public BitOrVarAST(Tag tag, Slice pos, LValue lvalue, AST value)
 	{
-		super(tag, start, end, lvalue, value);
+		super(tag, pos, lvalue, value);
 	}
 
 	public String getType()

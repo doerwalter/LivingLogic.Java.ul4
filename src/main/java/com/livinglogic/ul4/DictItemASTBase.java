@@ -11,9 +11,9 @@ import java.util.Map;
 
 public abstract class DictItemASTBase extends CodeAST
 {
-	public DictItemASTBase(Tag tag, int start, int end)
+	public DictItemASTBase(Tag tag, Slice pos)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 	}
 
 	public Object evaluate(EvaluationContext context)

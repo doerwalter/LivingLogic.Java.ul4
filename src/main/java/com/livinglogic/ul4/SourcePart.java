@@ -13,9 +13,5 @@ public interface SourcePart
 {
 	InterpretedTemplate getTemplate();
 
-	int getStartPos();
-
-	int getEndPos();
-
-	CodeSnippet getSnippet();
+	Slice getPos();
 }

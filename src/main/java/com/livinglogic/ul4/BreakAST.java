@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 class BreakAST extends CodeAST
 {
-	public BreakAST(Tag tag, int start, int end)
+	public BreakAST(Tag tag, Slice pos)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 	}
 
 	public String getType()

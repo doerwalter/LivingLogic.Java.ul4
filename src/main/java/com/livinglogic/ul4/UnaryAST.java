@@ -29,9 +29,9 @@ abstract class UnaryAST extends CodeAST
 	 * @param tag The tag where this node appears in.
 	 * @param obj The operand
 	 */
-	public UnaryAST(Tag tag, int start, int end, CodeAST obj)
+	public UnaryAST(Tag tag, Slice pos, CodeAST obj)
 	{
-		super(tag, start, end);
+		super(tag, pos);
 		this.obj = obj;
 	}
 

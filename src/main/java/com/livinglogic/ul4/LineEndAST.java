@@ -13,15 +13,15 @@ import com.livinglogic.ul4on.Encoder;
 
 class LineEndAST extends TextAST
 {
-	public LineEndAST(InterpretedTemplate template, int startPos, int endPos)
+	public LineEndAST(InterpretedTemplate template, Slice pos)
 	{
-		super(template, startPos, endPos);
+		super(template, pos);
 	}
 
 	public void toString(Formatter formatter)
 	{
 		formatter.write("lineend ");
-		formatter.write(FunctionRepr.call(getText()));
+		formatter.write(FunctionRepr.call(getCodeText()));
 	}
 
 	public String getType()

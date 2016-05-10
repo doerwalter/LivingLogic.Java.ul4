@@ -42,7 +42,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * The version number used in the UL4ON dump of the template.
 	 */
-	public static final String VERSION = "35";
+	public static final String VERSION = "36";
 
 	/**
 	 * The name of the template/function (defaults to {@code null})
@@ -107,7 +107,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	private InterpretedTemplate()
 	{
-		super(null, 0, 0);
+		super(null, new Slice(false, false, -1, -1));
 		this.source = null;
 		this.name = null;
 		this.whitespace = Whitespace.keep;
@@ -123,7 +123,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim) throws RecognitionException
 	{
-		super(null, 0, 0);
+		super(null, new Slice(false, false, -1, -1));
 		this.source = source;
 		this.name = name;
 		this.whitespace = whitespace;
@@ -176,7 +176,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	private InterpretedTemplate(Tag tag, String name, Whitespace whitespace, String startdelim, String enddelim, SignatureAST signature)
 	{
-		super(tag, 0, 0);
+		super(tag, new Slice(false, false, -1, -1));
 		this.source = tag.getSource();
 		this.name = name;
 		this.whitespace = whitespace;
@@ -197,7 +197,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					Tag tag = (Tag)part;
 					String tagtype = tag.getTag();
 					if (tagtype.equals("whitespace"))
-						whitespace = Whitespace.fromString(tag.getCode());
+						whitespace = Whitespace.fromString(tag.getCodeText());
 					else if (tagtype.equals("ul4"))
 					{
 						UL4Parser parser = getParser(tag);
@@ -384,7 +384,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return parts;
 	}
 
-
 	protected void compile() throws RecognitionException
 	{
 		if (source == null)
@@ -450,13 +449,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						case "print":
 						{
 							UL4Parser parser = getParser(tag);
-							innerBlock.append(new PrintAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
+							innerBlock.append(new PrintAST(tag, tag.getCodePos(), parser.expression()));
 							break;
 						}
 						case "printx":
 						{
 							UL4Parser parser = getParser(tag);
-							innerBlock.append(new PrintXAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
+							innerBlock.append(new PrintXAST(tag, tag.getCodePos(), parser.expression()));
 							break;
 						}
 						case "code":
@@ -468,7 +467,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						case "if":
 						{
 							UL4Parser parser = getParser(tag);
-							ConditionalBlocks node = new ConditionalBlocks(tag, tag.getStartPosCode(), tag.getEndPosCode(), new IfBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
+							ConditionalBlocks node = new ConditionalBlocks(tag, tag.getCodePos(), new IfBlockAST(tag, tag.getCodePos(), parser.expression()));
 							innerBlock.append(node);
 							blockStack.push(node);
 							break;
@@ -478,7 +477,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							if (innerBlock instanceof ConditionalBlocks)
 							{
 								UL4Parser parser = getParser(tag);
-								((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
+								((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(tag, tag.getCodePos(), parser.expression()));
 							}
 							else
 								throw new BlockException("elif doesn't match any if");
@@ -488,7 +487,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						{
 							if (innerBlock instanceof ConditionalBlocks)
 							{
-								((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode()));
+								((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(tag, tag.getCodePos()));
 							}
 							else
 								throw new BlockException("else doesn't match any if");
@@ -518,7 +517,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						case "while":
 						{
 							UL4Parser parser = getParser(tag);
-							WhileBlockAST node = new WhileBlockAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression());
+							WhileBlockAST node = new WhileBlockAST(tag, tag.getCodePos(), parser.expression());
 							innerBlock.append(node);
 							blockStack.push(node);
 							break;
@@ -530,7 +529,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 								if (blockStack.get(i).handleLoopControl("break"))
 									break;
 							}
-							innerBlock.append(new BreakAST(tag, tag.getStartPosCode(), tag.getEndPosCode()));
+							innerBlock.append(new BreakAST(tag, tag.getCodePos()));
 							break;
 						}
 						case "continue":
@@ -540,13 +539,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 								if (blockStack.get(i).handleLoopControl("continue"))
 									break;
 							}
-							innerBlock.append(new ContinueAST(tag, tag.getStartPosCode(), tag.getEndPosCode()));
+							innerBlock.append(new ContinueAST(tag, tag.getCodePos()));
 							break;
 						}
 						case "return":
 						{
 							UL4Parser parser = getParser(tag);
-							innerBlock.append(new ReturnAST(tag, tag.getStartPosCode(), tag.getEndPosCode(), parser.expression()));
+							innerBlock.append(new ReturnAST(tag, tag.getCodePos(), parser.expression()));
 							break;
 						}
 						case "def":
@@ -607,7 +606,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	private static UL4Parser getParser(Tag tag)
 	{
-		ANTLRStringStream input = new ANTLRStringStream(tag.getCode());
+		ANTLRStringStream input = new ANTLRStringStream(tag.getCodeText());
 		UL4Lexer lexer = new UL4Lexer(tag, input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		UL4Parser parser = new UL4Parser(tag, tokens);
@@ -1080,7 +1079,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 		// If we're adding to an empty line ensure that it starts with an indentation
 		if (!(part instanceof IndentAST) && lastLine.size() == 0)
-			lastLine.add(new IndentAST(this, part.getStartPos(), part.getStartPos(), null));
+			lastLine.add(new IndentAST(this, new Slice(part.getPos().getStart(), part.getPos().getStart()), null));
 		lastLine.add(part);
 		// If we added a line end append a new empty line
 		if (part instanceof LineEndAST)
@@ -1090,13 +1089,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	private void addText2Lines(List<Line> lines, TextAST text, int initialState)
 	{
 		String source = text.getSource();
-		int startPos = text.getStartPos();
-		int endPos = text.getEndPos();
+		int startPos = text.getPos().getStart();
+		int stopPos = text.getPos().getStop();
 		int pos = startPos;
 		int state = initialState; // 0 for indentation, 1 for text and 2 for lineend
 		boolean wasR = false;
 
-		while (pos < endPos)
+		while (pos < stopPos)
 		{
 			char c = source.charAt(pos);
 			if (state == 0)
@@ -1108,7 +1107,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				else
 				{
 					if (pos != startPos)
-						addPart2Lines(lines, new IndentAST(this, startPos, pos, null));
+						addPart2Lines(lines, new IndentAST(this, new Slice(startPos, pos), null));
 					startPos = pos++;
 					state = isLineEnd(c) ? 2 : 1;
 					wasR = (c == '\r');
@@ -1119,7 +1118,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				if (isLineEnd(c))
 				{
 					if (pos != startPos)
-						addPart2Lines(lines, new TextAST(this, startPos, pos));
+						addPart2Lines(lines, new TextAST(this, new Slice(startPos, pos)));
 					startPos = pos++;
 					state = 2;
 					wasR = (c == '\r');
@@ -1138,27 +1137,27 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					else
 					{
 						if (pos != startPos)
-							addPart2Lines(lines, new LineEndAST(this, startPos, pos));
+							addPart2Lines(lines, new LineEndAST(this, new Slice(startPos, pos)));
 						startPos = pos++;
 					}
 					wasR = (c == '\r');
 				}
 				else
 				{
-					addPart2Lines(lines, new LineEndAST(this, startPos, pos));
+					addPart2Lines(lines, new LineEndAST(this, new Slice(startPos, pos)));
 					state = (Character.isWhitespace(c)) ? 0 : 1;
 					startPos = pos++;
 				}
 			}
 		}
-		if (startPos < endPos)
+		if (startPos < stopPos)
 		{
 			if (state == 0)
-				addPart2Lines(lines, new IndentAST(this, startPos, pos, null));
+				addPart2Lines(lines, new IndentAST(this, new Slice(startPos, pos), null));
 			else if (state == 1)
-				addPart2Lines(lines, new TextAST(this, startPos, pos));
+				addPart2Lines(lines, new TextAST(this, new Slice(startPos, pos)));
 			else
-				addPart2Lines(lines, new LineEndAST(this, startPos, pos));
+				addPart2Lines(lines, new LineEndAST(this, new Slice(startPos, pos)));
 		}
 	}
 
@@ -1176,29 +1175,29 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			Matcher matcher = tagPattern.matcher(source);
 			int pos = 0;
 
-			int startPos;
-			int endPos;
+			int tagStartPos;
+			int tagStopPos;
 			while (matcher.find())
 			{
-				startPos = matcher.start();
-				endPos = startPos + matcher.group().length();
-				if (pos != startPos)
+				tagStartPos = matcher.start();
+				tagStopPos = tagStartPos + matcher.group().length();
+				if (pos != tagStartPos)
 				{
-					addText2Lines(lines, new TextAST(this, pos, startPos), wasTag ? 1 : 0);
+					addText2Lines(lines, new TextAST(this, new Slice(pos, tagStartPos)), wasTag ? 1 : 0);
 					wasTag = false;
 				}
-				int startPosCode = matcher.start(3);
-				int endPosCode = startPosCode + matcher.group(3).length();
+				int codeStartPos = matcher.start(3);
+				int codeStopPos = codeStartPos + matcher.group(3).length();
 				String type = matcher.group(1);
 				if (!type.equals("note"))
-					addPart2Lines(lines, new Tag(this, matcher.group(1), startPos, endPos, startPosCode, endPosCode));
-				pos = endPos;
+					addPart2Lines(lines, new Tag(this, matcher.group(1), new Slice(tagStartPos, tagStopPos), new Slice(codeStartPos, codeStopPos)));
+				pos = tagStopPos;
 				wasTag = true;
 			}
-			endPos = source.length();
-			if (pos != endPos)
+			tagStopPos = source.length();
+			if (pos != tagStopPos)
 			{
-				addText2Lines(lines, new TextAST(this, pos, endPos), wasTag ? 1 : 0);
+				addText2Lines(lines, new TextAST(this, new Slice(pos, tagStopPos)), wasTag ? 1 : 0);
 				wasTag = false;
 			}
 		}
@@ -1224,7 +1223,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public void finish(Tag endtag)
 	{
 		super.finish(endtag);
-		String type = endtag.getCode().trim();
+		String type = endtag.getCodeText().trim();
 		if (type != null && type.length() != 0 && !type.equals("def"))
 			throw new BlockException("def ended by end" + type);
 	}
@@ -1249,7 +1248,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			{
 				SourcePart start = get(0);
 				if (start instanceof IndentAST)
-					return ((IndentAST)start).getText();
+					return ((IndentAST)start).getCodeText();
 			}
 			return "";
 		}
@@ -1374,84 +1373,84 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	static public void register4UL4ON()
 	{
-		Utils.register("de.livinglogic.ul4.tag", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Tag(null, null, -1, -1, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.text", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TextAST(null, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.indent", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IndentAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.lineend", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LineEndAST(null, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.const", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConstAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.seqitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SeqItemAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.unpackseqitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.UnpackSeqItemAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.list", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListAST(null, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.listcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListComprehensionAST(null, -1, -1, null, null, null, null); }});
-		Utils.register("de.livinglogic.ul4.set", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SetAST(null, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.setcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SetComprehensionAST(null, -1, -1, null, null, null, null); }});
-		Utils.register("de.livinglogic.ul4.dictitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DictItemAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.unpackdictitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.UnpackDictItemAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.dict", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DictAST(null, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.dictcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DictComprehensionAST(null, -1, -1, null, null, null, null, null); }});
-		Utils.register("de.livinglogic.ul4.genexpr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GeneratorExpressionAST(null, -1, -1, null, null, null, null); }});
-		Utils.register("de.livinglogic.ul4.var", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.VarAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.condblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConditionalBlocks(null, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.ifblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IfBlockAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.elifblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElIfBlockAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.elseblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElseBlockAST(null, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.forblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ForBlockAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.whileblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.WhileBlockAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.break", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BreakAST(null, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.continue", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ContinueAST(null, -1, -1); }});
-		Utils.register("de.livinglogic.ul4.attr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AttrAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.slice", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SliceAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.not", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NotAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.if", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IfAST(null, -1, -1, null, null, null); }});
-		Utils.register("de.livinglogic.ul4.neg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NegAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.bitnot", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitNotAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.print", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.PrintAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.printx", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.PrintXAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.return", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ReturnAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.item", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ItemAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.shiftleft", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ShiftLeftAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.shiftright", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ShiftRightAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.bitand", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitAndAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.bitxor", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitXOrAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.bitor", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitOrAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.is", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IsAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.isnot", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IsNotAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.eq", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.EQAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.ne", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NEAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.lt", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LTAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.le", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LEAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.gt", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GTAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.ge", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GEAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.contains", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ContainsAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.notcontains", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NotContainsAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.add", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AddAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.sub", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SubAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.mul", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.MulAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.floordiv", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.FloorDivAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.truediv", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDivAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.or", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.OrAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.and", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AndAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.mod", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ModAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.setvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SetVarAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.addvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AddVarAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.subvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SubVarAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.mulvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.MulVarAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.floordivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.FloorDivVarAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.truedivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDivVarAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.modvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ModVarAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.shiftleftvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ShiftLeftVarAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.shiftrightvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ShiftRightVarAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.bitandvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitAndVarAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.bitxorvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitXOrVarAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.bitorvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitOrVarAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.posarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.PositionalArgumentAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.keywordarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.KeywordArgumentAST(null, -1, -1, null, null); }});
-		Utils.register("de.livinglogic.ul4.unpacklistarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.UnpackListArgumentAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.unpackdictarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.UnpackDictArgumentAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.call", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallAST(null, -1, -1, null); }});
-		Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderAST(null, -1, -1, null); }});
+		Utils.register("de.livinglogic.ul4.tag", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Tag(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.text", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TextAST(null, null); }});
+		Utils.register("de.livinglogic.ul4.indent", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IndentAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.lineend", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LineEndAST(null, null); }});
+		Utils.register("de.livinglogic.ul4.const", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConstAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.seqitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SeqItemAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.unpackseqitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.UnpackSeqItemAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.list", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListAST(null, null); }});
+		Utils.register("de.livinglogic.ul4.listcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ListComprehensionAST(null, null, null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.set", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SetAST(null, null); }});
+		Utils.register("de.livinglogic.ul4.setcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SetComprehensionAST(null, null, null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.dictitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DictItemAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.unpackdictitem", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.UnpackDictItemAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.dict", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DictAST(null, null); }});
+		Utils.register("de.livinglogic.ul4.dictcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DictComprehensionAST(null, null, null, null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.genexpr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GeneratorExpressionAST(null, null, null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.var", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.VarAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.condblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConditionalBlocks(null, null); }});
+		Utils.register("de.livinglogic.ul4.ifblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IfBlockAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.elifblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElIfBlockAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.elseblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElseBlockAST(null, null); }});
+		Utils.register("de.livinglogic.ul4.forblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ForBlockAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.whileblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.WhileBlockAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.break", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BreakAST(null, null); }});
+		Utils.register("de.livinglogic.ul4.continue", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ContinueAST(null, null); }});
+		Utils.register("de.livinglogic.ul4.attr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AttrAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.slice", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SliceAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.not", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NotAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.if", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IfAST(null, null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.neg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NegAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.bitnot", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitNotAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.print", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.PrintAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.printx", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.PrintXAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.return", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ReturnAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.item", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ItemAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.shiftleft", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ShiftLeftAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.shiftright", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ShiftRightAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.bitand", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitAndAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.bitxor", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitXOrAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.bitor", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitOrAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.is", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IsAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.isnot", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IsNotAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.eq", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.EQAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.ne", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NEAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.lt", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LTAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.le", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LEAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.gt", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GTAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.ge", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GEAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.contains", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ContainsAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.notcontains", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.NotContainsAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.add", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AddAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.sub", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SubAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.mul", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.MulAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.floordiv", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.FloorDivAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.truediv", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDivAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.or", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.OrAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.and", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AndAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.mod", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ModAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.setvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SetVarAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.addvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AddVarAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.subvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SubVarAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.mulvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.MulVarAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.floordivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.FloorDivVarAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.truedivvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TrueDivVarAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.modvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ModVarAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.shiftleftvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ShiftLeftVarAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.shiftrightvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ShiftRightVarAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.bitandvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitAndVarAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.bitxorvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitXOrVarAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.bitorvar", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BitOrVarAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.posarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.PositionalArgumentAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.keywordarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.KeywordArgumentAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.unpacklistarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.UnpackListArgumentAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.unpackdictarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.UnpackDictArgumentAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.call", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderAST(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate(); }});
-		Utils.register("de.livinglogic.ul4.signature", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SignatureAST(null, -1, -1); }});
+		Utils.register("de.livinglogic.ul4.signature", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SignatureAST(null, null); }});
 	}
 
 	static

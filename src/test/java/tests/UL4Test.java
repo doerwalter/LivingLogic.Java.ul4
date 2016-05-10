@@ -4240,8 +4240,8 @@ public class UL4Test
 		String source = "<?def lower?><?print t.lower()?><?end def?>";
 
 		checkTemplateOutput(source + "<?print lower.source?>", source + "<?print lower.source?>");
-		checkTemplateOutput(source, source + "<?print lower.source[lower.tag.startpos:lower.endtag.endpos]?>");
-		checkTemplateOutput("<?print t.lower()?>", source + "<?print lower.source[lower.tag.endpos:lower.endtag.startpos]?>");
+		checkTemplateOutput(source, source + "<?print lower.source[lower.tag.pos.start:lower.endtag.pos.stop]?>");
+		checkTemplateOutput("<?print t.lower()?>", source + "<?print lower.source[lower.tag.pos.stop:lower.endtag.pos.start]?>");
 		checkTemplateOutput("lower", source + "<?print lower.name?>");
 		checkTemplateOutput("None", source + "<?print repr(lower.parenttemplate.name)?>");
 	}

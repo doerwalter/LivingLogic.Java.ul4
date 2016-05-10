@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class NEAST extends BinaryAST
 {
-	public NEAST(Tag tag, int start, int end, CodeAST obj1, CodeAST obj2)
+	public NEAST(Tag tag, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
-		super(tag, start, end, obj1, obj2);
+		super(tag, pos, obj1, obj2);
 	}
 
 	public String getType()
@@ -18,15 +18,15 @@ public class NEAST extends BinaryAST
 		return "ne";
 	}
 
-	public static CodeAST make(Tag tag, int start, int end, CodeAST obj1, CodeAST obj2)
+	public static CodeAST make(Tag tag, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{
 			Object result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
 			if (!(result instanceof Undefined))
-				return new ConstAST(tag, start, end, result);
+				return new ConstAST(tag, pos, result);
 		}
-		return new NEAST(tag, start, end, obj1, obj2);
+		return new NEAST(tag, pos, obj1, obj2);
 	}
 
 	public Object evaluate(EvaluationContext context)

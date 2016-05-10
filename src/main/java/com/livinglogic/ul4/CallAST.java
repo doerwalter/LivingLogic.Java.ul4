@@ -22,9 +22,9 @@ import com.livinglogic.ul4on.Encoder;
 
 public class CallAST extends CallRenderAST
 {
-	public CallAST(Tag tag, int start, int end, AST obj)
+	public CallAST(Tag tag, Slice pos, AST obj)
 	{
-		super(tag, start, end, obj);
+		super(tag, pos, obj);
 	}
 
 	public String getType()
