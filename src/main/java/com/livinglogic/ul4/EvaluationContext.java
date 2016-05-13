@@ -320,6 +320,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 			"iscolor", new FunctionIsColor(),
 			"istimedelta", new FunctionIsTimeDelta(),
 			"ismonthdelta", new FunctionIsMonthDelta(),
+			"isexception", new FunctionIsException(),
 			"chr", new FunctionChr(),
 			"ord", new FunctionOrd(),
 			"hex", new FunctionHex(),

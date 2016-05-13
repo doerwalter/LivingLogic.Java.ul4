@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.List;
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -32,6 +33,7 @@ import com.livinglogic.ul4.RuntimeExceededException;
 import com.livinglogic.ul4.NotIterableException;
 import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.SyntaxException;
+import com.livinglogic.ul4.LocationException;
 import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.InterpretedTemplate;
 import com.livinglogic.ul4.Color;
@@ -1901,6 +1903,7 @@ public class UL4Test
 		checkTemplateOutput("42", source, "data", 42);
 		checkTemplateOutput("4.2", source, "data", 4.2);
 		checkTemplateOutput("foo", source, "data", "foo");
+		checkTemplateOutput("broken", source, "data", new RuntimeException("broken"));
 		checkTemplateOutput("2011-02-09 00:00:00", source, "data", FunctionDate.call(2011, 2, 9));
 		checkTemplateOutput("2011-02-09 12:34:56", source, "data", FunctionDate.call(2011, 2, 9, 12, 34, 56));
 		checkTemplateOutput("2011-02-09 12:34:56.987000", source, "data", FunctionDate.call(2011, 2, 9, 12, 34, 56, 987000));
@@ -2719,6 +2722,43 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_isexception()
+	{
+		String source = "<?print isexception(data)?>";
+
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
+		checkTemplateOutput("False", source, "data", null);
+		checkTemplateOutput("False", source, "data", true);
+		checkTemplateOutput("False", source, "data", false);
+		checkTemplateOutput("False", source, "data", 42);
+		checkTemplateOutput("False", source, "data", 4.2);
+		checkTemplateOutput("False", source, "data", "foo");
+		checkTemplateOutput("True", source, "data", new RuntimeException("broken!"));
+		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
+		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
+		checkTemplateOutput("False", source, "data", makeMap());
+		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print isexception(repr)?>");
+		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print isexception(obj=data)?>", "data", null);
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	public void function_isexception_0_args()
+	{
+		checkTemplateOutput("", "<?print isexception()?>");
+	}
+
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	public void function_isexception_2_args()
+	{
+		checkTemplateOutput("", "<?print isexception(1, 2)?>");
+	}
+
+	@Test
 	public void function_islist()
 	{
 		String source = "<?print islist(data)?>";
@@ -3452,6 +3492,7 @@ public class UL4Test
 		checkTemplateOutput("set", source, "data", makeSet(1, 2));
 		checkTemplateOutput("template", source, "data", getTemplate(""));
 		checkTemplateOutput("color", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("java.lang.RuntimeException", source, "data", new RuntimeException("broken"));
 
 		String sourcekw = "<?print type(obj=data)?>";
 		checkTemplateOutput("none", sourcekw, "data", null);
@@ -3918,6 +3959,54 @@ public class UL4Test
 	}
 
 	@Test
+	public void method_count()
+	{
+		String source = "<?print haystack.count(needle, start, end)?>";
+
+		checkTemplateOutput("3", source, "haystack", "aaa", "needle", "a", "start", null, "end", null);
+		checkTemplateOutput("0", source, "haystack", "aaa", "needle", "b", "start", null, "end", null);
+		checkTemplateOutput("3", source, "haystack", "aaa", "needle", "a", "start", null, "end", null);
+		checkTemplateOutput("0", source, "haystack", "aaa", "needle", "b", "start", null, "end", null);
+		checkTemplateOutput("3", source, "haystack", "aaa", "needle", "a", "start", null, "end", null);
+		checkTemplateOutput("0", source, "haystack", "aaa", "needle", "b", "start", null, "end", null);
+		checkTemplateOutput("0", source, "haystack", "aaa", "needle", "b", "start", null, "end", null);
+		checkTemplateOutput("2", source, "haystack", "aaa", "needle", "a", "start", 1, "end", null);
+		checkTemplateOutput("0", source, "haystack", "aaa", "needle", "a", "start", 10, "end", null);
+		checkTemplateOutput("1", source, "haystack", "aaa", "needle", "a", "start", -1, "end", null);
+		checkTemplateOutput("3", source, "haystack", "aaa", "needle", "a", "start", -10, "end", null);
+		checkTemplateOutput("1", source, "haystack", "aaa", "needle", "a", "start", 0, "end", 1);
+		checkTemplateOutput("3", source, "haystack", "aaa", "needle", "a", "start", 0, "end", 10);
+		checkTemplateOutput("2", source, "haystack", "aaa", "needle", "a", "start", 0, "end", -1);
+		checkTemplateOutput("0", source, "haystack", "aaa", "needle", "a", "start", 0, "end", -10);
+		checkTemplateOutput("3", source, "haystack", "aaa", "needle", "", "start", 1, "end", null);
+		checkTemplateOutput("1", source, "haystack", "aaa", "needle", "", "start", 3, "end", null);
+		checkTemplateOutput("0", source, "haystack", "aaa", "needle", "", "start", 10, "end", null);
+		checkTemplateOutput("2", source, "haystack", "aaa", "needle", "", "start", -1, "end", null);
+		checkTemplateOutput("4", source, "haystack", "aaa", "needle", "", "start", -10, "end", null);
+
+		checkTemplateOutput("1", source, "haystack", "",  "needle", "", "start", null, "end", null);
+		checkTemplateOutput("0", source, "haystack", "",  "needle", "", "start", 1, "end", 1);
+		checkTemplateOutput("0", source, "haystack", "",  "needle", "", "start", 0x7fffffff, "end", 0);
+
+		checkTemplateOutput("0", source, "haystack", "",  "needle", "xx", "start", null, "end", null);
+		checkTemplateOutput("0", source, "haystack", "",  "needle", "xx", "start", 1, "end", 1);
+		checkTemplateOutput("0", source, "haystack", "",  "needle", "xx", "start", 0x7fffffff, "end", 0);
+
+		checkTemplateOutput("1", source, "haystack", "aba", "needle", "ab", "start", null, "end", 2);
+		checkTemplateOutput("0", source, "haystack", "aba", "needle", "ab", "start", null, "end", 1);
+
+		// Matches are non overlapping
+		checkTemplateOutput("1", source, "haystack", "aaa", "needle", "aa", "start", null, "end", null);
+
+		// Test the list version
+		List list = asList(1, 2, 3, 2, 3, 4, 1, 2, 3);
+		checkTemplateOutput("0", source, "haystack", list, "needle", "a", "start", null, "end", null);
+		checkTemplateOutput("3", source, "haystack", list, "needle", 2, "start", null, "end", null);
+		checkTemplateOutput("2", source, "haystack", list, "needle", 2, "start", 2, "end", null);
+		checkTemplateOutput("1", source, "haystack", list, "needle", 2, "start", 2, "end", 7);
+	}
+
+	@Test
 	public void method_find()
 	{
 		checkTemplateOutput("-1", "<?print s.find('ks')?>", "s", "gurkgurk");
@@ -4191,6 +4280,37 @@ public class UL4Test
 	public void tag_note()
 	{
 		checkTemplateOutput("foo", "f<?note This is?>o<?note a comment?>o");
+	}
+
+	@Test
+	public void exception()
+	{
+		InterpretedTemplate t = getTemplate("<?print 2*x?>", "t");
+
+		checkTemplateOutput("broken", "<?print exc?>", "exc", new RuntimeException("broken"));
+		checkTemplateOutput("<java.lang.RuntimeException>", "<?print repr(exc)?>", "exc", new RuntimeException("broken"));
+		checkTemplateOutput("broken", "<?print exc?>", "exc", new RuntimeException("broken"));
+		checkTemplateOutput("None", "<?print repr(exc.cause)?>", "exc", new RuntimeException("broken"));
+		checkTemplateOutput("because", "<?print exc.cause?>", "exc", new RuntimeException("broken", new RuntimeException("because")));
+		checkTemplateOutput("None", "<?print repr(exc.cause.cause)?>", "exc", new RuntimeException("broken", new RuntimeException("because")));
+
+		try
+		{
+			String s = t.renders();
+		}
+		catch (LocationException exc)
+		{
+			checkTemplateOutput("<com.livinglogic.ul4.MulAST pos=(8:11)>", "<?print repr(exc.location)?>", "exc", exc);
+		}
+
+		try
+		{
+			getTemplate("<?if x?>", "t");
+		}
+		catch (LocationException exc)
+		{
+			checkTemplateOutput("<com.livinglogic.ul4.ConditionalBlocks pos=(5:6)>", "<?print repr(exc.location)?>", "exc", exc);
+		}
 	}
 
 	@Test

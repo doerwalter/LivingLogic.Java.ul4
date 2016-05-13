@@ -1,3 +1,10 @@
+exp-104:
+--------
+* Added support for exception object (i.e. the function isexception and
+  exception attributes).
+* Added the count method for strings and lists.
+
+
 exp-103:
 --------
 * Implemented changes from XIST 5.17: UL4 texts/tags now reference the template.

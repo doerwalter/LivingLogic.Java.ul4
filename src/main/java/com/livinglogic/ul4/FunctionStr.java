@@ -76,6 +76,8 @@ public class FunctionStr extends Function
 			return obj.toString();
 		else if (obj instanceof MonthDelta)
 			return obj.toString();
+		else if (obj instanceof Throwable)
+			return ((Throwable)obj).getLocalizedMessage();
 		else
 			return FunctionRepr.call(obj);
 	}

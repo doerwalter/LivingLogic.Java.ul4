@@ -9,9 +9,9 @@ package com.livinglogic.ul4;
 import java.util.Map;
 import java.util.List;
 
-public class BoundListMethodFind extends BoundMethod<List>
+public class BoundListMethodCount extends BoundMethod<List>
 {
-	public BoundListMethodFind(List object)
+	public BoundListMethodCount(List object)
 	{
 		super(object);
 	}
@@ -30,30 +30,26 @@ public class BoundListMethodFind extends BoundMethod<List>
 
 	public static int call(List object, Object sub)
 	{
-		return object.indexOf(sub);
+		return call(object, sub, 0, object.size());
 	}
 
 	public static int call(List object, Object sub, int start)
 	{
-		start = Utils.getSliceStartPos(object.size(), start);
-		if (start != 0)
-			object = object.subList(start, object.size());
-		int pos = object.indexOf(sub);
-		if (pos != -1)
-			pos += start;
-		return pos;
+		return call(object, sub, start, object.size());
 	}
 
 	public static int call(List object, Object sub, int start, int end)
 	{
 		start = Utils.getSliceStartPos(object.size(), start);
 		end = Utils.getSliceEndPos(object.size(), end);
-		if (start != 0 || end != object.size())
-			object = object.subList(start, end);
-		int pos = object.indexOf(sub);
-		if (pos != -1)
-			pos += start;
-		return pos;
+
+		int count = 0;
+		for (int i = start; i < end; ++i)
+		{
+			if (EQAST.call(object.get(i), sub))
+				++count;
+		}
+		return count;
 	}
 
 	public Object evaluate(BoundArguments args)

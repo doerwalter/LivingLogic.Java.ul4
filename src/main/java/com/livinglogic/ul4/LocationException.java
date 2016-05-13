@@ -6,16 +6,20 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 
-public class SourceException extends RuntimeException
-{
-	protected SourcePart part;
+import static com.livinglogic.utils.SetUtils.makeSet;
 
-	public SourceException(Throwable cause, SourcePart part)
+public class LocationException extends RuntimeException implements UL4Attributes, UL4GetItemString
+{
+	protected SourcePart location;
+
+	public LocationException(Throwable cause, SourcePart location)
 	{
-		super(makeMessage(part), cause);
-		this.part = part;
+		super(makeMessage(location), cause);
+		this.location = location;
 	}
 
 	private static String rawRepr(String string)
@@ -24,22 +28,22 @@ public class SourceException extends RuntimeException
 		return string.substring(1, string.length()-1);
 	}
 
-	private static void makeCodeSnippet(StringBuilder buffer, SourcePart part)
+	private static void makeCodeSnippet(StringBuilder buffer, SourcePart location)
 	{
-		String source = part.getTemplate().getSource();
+		String source = location.getTemplate().getSource();
 		Slice tagPos, codePos;
 
-		if (part instanceof Tag)
+		if (location instanceof Tag)
 		{
-			tagPos = ((Tag)part).getPos();
+			tagPos = ((Tag)location).getPos();
 			codePos = tagPos;
 		}
 		else // AST
 		{
-			codePos = part.getPos();
-			if (part instanceof CodeAST)
+			codePos = location.getPos();
+			if (location instanceof CodeAST)
 			{
-				Tag tag = ((CodeAST)part).getTag();
+				Tag tag = ((CodeAST)location).getTag();
 				// top level templates have no tag
 				tagPos = tag == null ? codePos : tag.getPos();
 			}
@@ -59,11 +63,11 @@ public class SourceException extends RuntimeException
 		buffer.append(StringUtils.repeat("~", code.length()));
 	}
 
-	private static String makeMessage(SourcePart part)
+	private static String makeMessage(SourcePart location)
 	{
 		StringBuilder buffer = new StringBuilder();
 		String name = null;
-		InterpretedTemplate template = part.getTemplate();
+		InterpretedTemplate template = location.getTemplate();
 		if (template.parentTemplate != null)
 			buffer.insert(0, "in local template ");
 		else
@@ -83,15 +87,15 @@ public class SourceException extends RuntimeException
 			template = template.parentTemplate;
 		}
 		buffer.append(": offset ");
-		int offset = part.getPos().getStart();
+		int offset = location.getPos().getStart();
 		buffer.append(offset);
 		buffer.append(":");
-		buffer.append(part.getPos().getStop());
+		buffer.append(location.getPos().getStop());
 
 		// Determine line and column number
 		int line = 1;
 		int col;
-		String source = part.getTemplate().getSource();
+		String source = location.getTemplate().getSource();
 		int lastLineFeed = source.lastIndexOf("\n", offset);
 
 		if (lastLineFeed == -1)
@@ -117,7 +121,56 @@ public class SourceException extends RuntimeException
 		buffer.append("; col ");
 		buffer.append(col);
 		buffer.append("\n");
-		makeCodeSnippet(buffer, part);
+		makeCodeSnippet(buffer, location);
 		return buffer.toString();
+	}
+
+	public Slice getOuterPos()
+	{
+		if (location instanceof Tag)
+			return ((Tag)location).getPos();
+		else // AST
+		{
+			Slice codePos = location.getPos();
+			if (location instanceof CodeAST)
+			{
+				Tag tag = ((CodeAST)location).getTag();
+				// top level templates have no tag
+				return  tag == null ? codePos : tag.getPos();
+			}
+			else // TextAST
+				return codePos;
+		}
+	}
+
+	public Slice getInnerPos()
+	{
+		return location.getPos();
+	}
+
+	protected static Set<String> attributes = makeSet("cause", "location", "template", "outerpos", "innerpos");
+
+	public Set<String> getAttributeNamesUL4()
+	{
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		switch (key)
+		{
+			case "cause":
+				return getCause();
+			case "location":
+				return location;
+			case "template":
+				return location.getTemplate();
+			case "outerpos":
+				return getOuterPos();
+			case "innerpos":
+				return getInnerPos();
+			default:
+				return new UndefinedKey(key);
+		}
 	}
 }

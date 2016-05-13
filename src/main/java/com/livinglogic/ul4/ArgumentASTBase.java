@@ -29,13 +29,13 @@ public abstract class ArgumentASTBase extends CodeAST
 			context.tick();
 			evaluateCall(context, arguments, keywordArguments);
 		}
-		catch (BreakException|ContinueException|ReturnException|SourceException ex)
+		catch (BreakException|ContinueException|ReturnException|LocationException ex)
 		{
 			throw ex;
 		}
 		catch (Exception ex)
 		{
-			throw new SourceException(ex, this);
+			throw new LocationException(ex, this);
 		}
 	}
 

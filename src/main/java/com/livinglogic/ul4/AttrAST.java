@@ -166,6 +166,8 @@ public class AttrAST extends CodeAST implements LValue
 				return new BoundListMethodInsert(obj);
 			case "pop":
 				return new BoundListMethodPop(obj);
+			case "count":
+				return new BoundListMethodCount(obj);
 			case "find":
 				return new BoundListMethodFind(obj);
 			case "rfind":
@@ -203,6 +205,8 @@ public class AttrAST extends CodeAST implements LValue
 				return new BoundStringMethodEndsWith(obj);
 			case "replace":
 				return new BoundStringMethodReplace(obj);
+			case "count":
+				return new BoundStringMethodCount(obj);
 			case "find":
 				return new BoundStringMethodFind(obj);
 			case "rfind":
@@ -247,6 +251,17 @@ public class AttrAST extends CodeAST implements LValue
 		}
 	}
 
+	public static Object call(Throwable obj, String attrname)
+	{
+		switch (attrname)
+		{
+			case "cause":
+				return obj.getCause();
+			default:
+				return new UndefinedKey(attrname);
+		}
+	}
+
 	public static Object call(Object obj, String attrname)
 	{
 		if (obj instanceof UL4GetItemString)
@@ -265,6 +280,8 @@ public class AttrAST extends CodeAST implements LValue
 			return call((String)obj, attrname);
 		else if (obj instanceof Date)
 			return call((Date)obj, attrname);
+		else if (obj instanceof Exception)
+			return call((Exception)obj, attrname);
 		throw new ArgumentTypeMismatchException("{!t}.{!t} not supported", obj, attrname);
 	}
 

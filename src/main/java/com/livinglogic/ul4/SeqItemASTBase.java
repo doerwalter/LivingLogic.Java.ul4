@@ -30,13 +30,13 @@ public abstract class SeqItemASTBase extends CodeAST
 			context.tick();
 			evaluateList(context, result);
 		}
-		catch (BreakException|ContinueException|ReturnException|SourceException ex)
+		catch (BreakException|ContinueException|ReturnException|LocationException ex)
 		{
 			throw ex;
 		}
 		catch (Exception ex)
 		{
-			throw new SourceException(ex, this);
+			throw new LocationException(ex, this);
 		}
 	}
 
@@ -49,13 +49,13 @@ public abstract class SeqItemASTBase extends CodeAST
 			context.tick();
 			evaluateSet(context, result);
 		}
-		catch (BreakException|ContinueException|ReturnException|SourceException ex)
+		catch (BreakException|ContinueException|ReturnException|LocationException ex)
 		{
 			throw ex;
 		}
 		catch (Exception ex)
 		{
-			throw new SourceException(ex, this);
+			throw new LocationException(ex, this);
 		}
 	}
 

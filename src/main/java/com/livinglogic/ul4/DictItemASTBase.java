@@ -29,13 +29,13 @@ public abstract class DictItemASTBase extends CodeAST
 			context.tick();
 			evaluateDict(context, result);
 		}
-		catch (BreakException|ContinueException|ReturnException|SourceException ex)
+		catch (BreakException|ContinueException|ReturnException|LocationException ex)
 		{
 			throw ex;
 		}
 		catch (Exception ex)
 		{
-			throw new SourceException(ex, this);
+			throw new LocationException(ex, this);
 		}
 	}
 

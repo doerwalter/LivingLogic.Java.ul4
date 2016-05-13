@@ -54,8 +54,7 @@ public class FunctionType extends Function
 			return "set";
 		else if (obj instanceof Map)
 			return "dict";
-		else
-			return null;
+		else // This includes instances of {@code Throwable}
+			return obj.getClass().getName();
 	}
-
 }

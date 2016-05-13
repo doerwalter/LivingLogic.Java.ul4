@@ -57,38 +57,49 @@ public class RenderAST extends CallRenderAST
 	}
 
 	@Override
-	public Object evaluate(EvaluationContext context)
-	{
-		Object realObject = obj.decoratedEvaluate(context);
-
-		List<Object> realArguments = new ArrayList<Object>();
-		Map<String, Object> realKeywordArguments = new HashMap<String, Object>();
-
-		for (ArgumentASTBase argument : arguments)
-			argument.decoratedEvaluateCall(context, realArguments, realKeywordArguments);
-
-		call(context, realObject, realArguments, realKeywordArguments);
-
-		return null;
-	}
-
-	@Override
 	public Object decoratedEvaluate(EvaluationContext context)
 	{
-		// Overwrite with a version that rewraps SourceException too, because we want to see the render call in the exception chain.
+		boolean addFrame = false;
+		// Overwrite with a version that rewraps LocationException too, because we want to see the call in the exception chain (but only if its a call to a template).
 		try
 		{
 			context.tick();
-			return evaluate(context);
+			Object realObject = obj.decoratedEvaluate(context);
+
+			if (FunctionIsTemplate.call(realObject))
+				addFrame = true;
+
+			List<Object> realArguments = new ArrayList<Object>();
+
+			Map<String, Object> realKeywordArguments = new HashMap<String, Object>();
+
+			for (ArgumentASTBase argument : arguments)
+				argument.decoratedEvaluateCall(context, realArguments, realKeywordArguments);
+
+			call(context, realObject, realArguments, realKeywordArguments);
+			return null;
 		}
 		catch (BreakException|ContinueException|ReturnException ex)
 		{
 			throw ex;
 		}
+		catch (LocationException ex)
+		{
+			if (addFrame)
+				throw new LocationException(ex, this);
+			else
+				throw ex;
+		}
 		catch (Exception ex)
 		{
-			throw new SourceException(ex, this);
+			throw new LocationException(ex, this);
 		}
+	}
+
+	public Object evaluate(EvaluationContext context)
+	{
+		// Do nothing here as the implementation is in {@code decoratedEvaluate}
+		return null;
 	}
 
 	public void call(EvaluationContext context, UL4RenderWithContext obj, List<Object> args, Map<String, Object> kwargs)

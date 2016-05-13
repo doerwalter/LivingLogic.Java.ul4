@@ -60,7 +60,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 	 * method return value: It might write to the output stream that is stored
 	 * in the {@code context} object (as the {@link Print} and {@link PrintX}
 	 * nodes do) and it might modify the variables map stored in the context
-	 * (like {@link StoreVar}, {@link DelVar}, {@link AddVar} etc. do)
+	 * (like {@link StoreVar}, {@link AddVar} etc. do)
 	 * 
 	 * @param context The context object in which this node has to be evaluated.
 	 * @return The result of evaluating the node.
@@ -81,15 +81,15 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 			context.tick();
 			return evaluate(context);
 		}
-		// Pass through SourceException, as the location is already known.
+		// Pass through LocationException, as the location is already known.
 		// However in CallAST, we always wrap to get the call into the exception stack.
-		catch (BreakException|ContinueException|ReturnException|SourceException ex)
+		catch (BreakException|ContinueException|ReturnException|LocationException ex)
 		{
 			throw ex;
 		}
 		catch (Exception ex)
 		{
-			throw new SourceException(ex, this);
+			throw new LocationException(ex, this);
 		}
 	}
 
