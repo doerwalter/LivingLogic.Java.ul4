@@ -3,6 +3,8 @@ exp-104:
 * Added support for exception object (i.e. the function isexception and
   exception attributes).
 * Added the count method for strings and lists.
+* istemplate() has been changed to return true if both of these interfaces are
+  implemented: UL4CallWithContext and UL4RenderWithContext.
 
 
 exp-103:
