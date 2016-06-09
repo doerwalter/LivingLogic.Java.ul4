@@ -95,8 +95,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
-			<artifactId>antlr</artifactId>
-			<version>3.5</version>
+			<artifactId>antlr-runtime</artifactId>
+			<version>3.5.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
