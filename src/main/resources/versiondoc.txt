@@ -1,3 +1,8 @@
+HEAD:
+-----
+* Added dictionary method clear.
+
+
 exp-104:
 --------
 * Added support for exception objects (i.e. the function isexception and

@@ -136,6 +136,8 @@ public class AttrAST extends CodeAST implements LValue
 				return new BoundDictMethodGet(obj);
 			case  "update":
 				return new BoundDictMethodUpdate(obj);
+			case  "clear":
+				return new BoundDictMethodClear(obj);
 			default:
 				Object result = obj.get(attrname);
 

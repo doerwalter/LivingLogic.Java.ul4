@@ -3850,6 +3850,12 @@ public class UL4Test
 	}
 
 	@Test
+	public void method_clear()
+	{
+		checkTemplateOutput("{}", "<?code d = {17: 23}?><?code d.clear()?><?print d?>");
+	}
+
+	@Test
 	public void method_add()
 	{
 		checkTemplateOutput("[42, 43]", "<?code s = {/}?><?code s.add(42, 43)?><?print sorted(s)?>");
