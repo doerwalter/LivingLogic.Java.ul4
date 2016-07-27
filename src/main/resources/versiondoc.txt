@@ -1,6 +1,6 @@
 HEAD:
 -----
-* Added dictionary method clear.
+* Added dictionary and set method clear.
 
 
 exp-104:
