@@ -3853,6 +3853,7 @@ public class UL4Test
 	public void method_clear()
 	{
 		checkTemplateOutput("{}", "<?code d = {17: 23}?><?code d.clear()?><?print d?>");
+		checkTemplateOutput("{/}", "<?code d = {17, 23}?><?code d.clear()?><?print d?>");
 	}
 
 	@Test

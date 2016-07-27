@@ -151,8 +151,10 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		switch (attrname)
 		{
-			case  "add":
+			case "add":
 				return new BoundSetMethodAdd(obj);
+			case "clear":
+				return new BoundSetMethodClear(obj);
 			default:
 				return new UndefinedKey(attrname);
 		}
