@@ -911,6 +911,8 @@ public class UL4Test
 		checkTemplateOutput("2012-10-16 23:59:59", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 1));
 		checkTemplateOutput("2012-10-16 23:59:59.500000", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 0, 500000));
 		checkTemplateOutput("2012-10-16 23:59:59.999000", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 0, 1000));
+		checkTemplateOutput("2 days, 0:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", FunctionDate.call(2012, 10, 15));
+		checkTemplateOutput("730 days, 0:00:00", source, "x", FunctionDate.call(1999, 1, 1), "y", FunctionDate.call(1997, 1, 1));
 		checkTemplateOutput("0:00:00", source, "x", new TimeDelta(1), "y", new TimeDelta(1));
 		checkTemplateOutput("1 day, 0:00:00", source, "x", new TimeDelta(2), "y", new TimeDelta(1));
 		checkTemplateOutput("23:59:59", source, "x", new TimeDelta(1), "y", new TimeDelta(0, 1));
