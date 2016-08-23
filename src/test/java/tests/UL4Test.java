@@ -3621,6 +3621,14 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_md5()
+	{
+		String result = "acbd18db4cc2f85cedef654fccc4a4d8";
+		checkTemplateOutput(result, "<?print md5('foo')?>");
+		checkTemplateOutput(result, "<?print md5(string='foo')?>");
+	}
+
+	@Test
 	public void method_upper()
 	{
 		checkTemplateOutput("GURK", "<?print 'gurk'.upper()?>");

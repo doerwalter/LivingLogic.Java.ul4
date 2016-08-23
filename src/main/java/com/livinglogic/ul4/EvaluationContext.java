@@ -350,7 +350,8 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 			"rgb", new FunctionRGB(),
 			"hls", new FunctionHLS(),
 			"hsv", new FunctionHSV(),
-			"round", new FunctionRound()
+			"round", new FunctionRound(),
+			"md5", new FunctionMD5()
 		);
 	}
 }

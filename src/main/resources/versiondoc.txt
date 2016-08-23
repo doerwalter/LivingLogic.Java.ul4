@@ -1,6 +1,7 @@
 HEAD:
 -----
 * Added dictionary and set method clear.
+* Added function md5.
 
 
 exp-104:
