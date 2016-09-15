@@ -1,7 +1,9 @@
-HEAD:
------
+exp-105:
+--------
 * Added dictionary and set method clear.
 * Added function md5.
+* Expose attributes of DictItemAST, ListAST, SeqItemAST, UnpackDictItemAST and
+  UnpackSeqItemAST to UL4.
 
 
 exp-104:

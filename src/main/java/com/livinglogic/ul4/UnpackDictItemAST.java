@@ -9,7 +9,10 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Iterator;
+
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
@@ -63,5 +66,23 @@ public class UnpackDictItemAST extends DictItemASTBase
 	{
 		super.loadUL4ON(decoder);
 		item = (AST)decoder.load();
+	}
+
+	protected static Set<String> attributes = makeExtendedSet(SeqItemASTBase.attributes, "item");
+
+	public Set<String> getAttributeNamesUL4()
+	{
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		switch (key)
+		{
+			case "item":
+				return item;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }

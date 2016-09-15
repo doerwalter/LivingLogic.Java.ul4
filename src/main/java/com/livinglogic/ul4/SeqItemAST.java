@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
+
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
@@ -48,5 +50,23 @@ public class SeqItemAST extends SeqItemASTBase
 	{
 		super.loadUL4ON(decoder);
 		value = (AST)decoder.load();
+	}
+
+	protected static Set<String> attributes = makeExtendedSet(SeqItemASTBase.attributes, "value");
+
+	public Set<String> getAttributeNamesUL4()
+	{
+		return attributes;
+	}
+
+	public Object getItemStringUL4(String key)
+	{
+		switch (key)
+		{
+			case "value":
+				return value;
+			default:
+				return super.getItemStringUL4(key);
+		}
 	}
 }
