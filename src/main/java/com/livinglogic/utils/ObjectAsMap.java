@@ -22,7 +22,7 @@ import java.util.Set;
  * return a singleton map object (which means that each instance of this subclass
  * will have the same keys in their map view). The value stored for a certain key
  * of the instance is produced by the value in the map returned by
- * {@link #getValueMakers}. This value is a {@link .ValueMaker} instance that
+ * {@link #getValueMakers}. This value is a {@link #ValueMaker} instance that
  * will be used to extract the appropriate member/value for the instance.
  *
  * An example subclass of {@code ObjectAsMap} might look like this:
@@ -188,7 +188,7 @@ public abstract class ObjectAsMap implements Map<String, Object>
 
 	/**
 	 * Abstract method that returns a map that maps attribute names to
-	 * {@link .ValueMaker} objects. A {@link .ValueMaker} extracts an attribute
+	 * {@link #ValueMaker} objects. A {@link #ValueMaker} extracts an attribute
 	 * from an object.
 	 *
 	 * This method should return a singleton (as for every instance the attribute

@@ -21,7 +21,7 @@ import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
 /**
- * Common base class of {@see CallAST} and {@see RenderAST}
+ * Common base class of {@link CallAST} and {@link RenderAST}
  */
 public abstract class CallRenderAST extends CodeAST
 {

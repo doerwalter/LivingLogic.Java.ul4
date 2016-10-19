@@ -98,7 +98,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public String source = null;
 
 	/**
-	 * If this is a nested template, {@code {parentTemplate} references the outer template
+	 * If this is a nested template, {@code parentTemplate} references the outer template
 	 */
 	public InterpretedTemplate parentTemplate = null;
 
@@ -798,7 +798,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 *                  These variables will be checked against the signature
 	 *                  of the template (if a signature is defined, otherwise
 	 *                  all variables will be accepted)
-	 * @return the return value of the function
 	 */
 	public void render(EvaluationContext context, Writer writer, Map<String, Object> variables)
 	{

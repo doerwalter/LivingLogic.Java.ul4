@@ -16,8 +16,8 @@ import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.UL4ONSerializable;
 
 /**
- * The base class of all nodes. This can be either literal text ({@code TextAST})
- * between the tags, or compiled tag content ({@code CodeAST}).
+ * The base class of all syntax tree nodes. This can be either literal text
+ * ({@link TextAST}) between the tags, or compiled tag content ({@link CodeAST}).
  */
 public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Attributes, SourcePart, UL4Repr
 {
@@ -58,9 +58,9 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 	 *
 	 * Evaluating the node might also have several side effects besides the
 	 * method return value: It might write to the output stream that is stored
-	 * in the {@code context} object (as the {@link Print} and {@link PrintX}
-	 * nodes do) and it might modify the variables map stored in the context
-	 * (like {@link StoreVar}, {@link AddVar} etc. do)
+	 * in the {@code context} object (as the {@link PrintAST} and
+	 * {@link PrintXAST} nodes do) and it might modify the variables map stored
+	 * in the context (like {@link VarAST} does)
 	 * 
 	 * @param context The context object in which this node has to be evaluated.
 	 * @return The result of evaluating the node.
@@ -68,8 +68,8 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 	abstract public Object evaluate(EvaluationContext context);
 
 	/**
-	 * {@code decoratedEvaluate} wraps a call to {@link evaluate} with exception
-	 * handling. {@link evaluate} should not be called directly. Instead
+	 * {@code decoratedEvaluate} wraps a call to {@link #evaluate} with exception
+	 * handling. {@link #evaluate} should not be called directly. Instead
 	 * {@code decoratedEvaluate} should be used. When an exception bubbles up
 	 * the call stack, {@code decoratedEvaluate} creates a exception chain
 	 * containing information about the location of the exception.
@@ -170,7 +170,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 	}
 	/**
 	 * Format this object using a Formatter object.
-	 * @param formmatter the Fomatter object
+	 * @param formatter the Formatter object
 	 */
 	public void toString(Formatter formatter)
 	{

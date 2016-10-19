@@ -14,6 +14,6 @@ public class KeyException extends RuntimeException
 {
 	public KeyException(Object key)
 	{
-		super("Key '" + key + "' not found!");
+		super("Key " + FunctionRepr.call(key) + " not found!");
 	}
 }
