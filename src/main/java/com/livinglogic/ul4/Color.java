@@ -508,7 +508,7 @@ public class Color implements Collection, UL4Repr, UL4GetItemString, UL4Attribut
 		double l = (dminc+dmaxc)/2.0;
 
 		if (minc == maxc)
-			return fromhls(0., lum, 0., a);
+			return fromhls(0., lum, 0., a/255.);
 
 		double s = l <= 0.5 ? (dmaxc-dminc) / (dmaxc+dminc) : (dmaxc-dminc) / (2.0-dmaxc-dminc);
 
@@ -525,7 +525,7 @@ public class Color implements Collection, UL4Repr, UL4GetItemString, UL4Attribut
 			h = 4.0+gc-rc;
 		h = (h/6.0) % 1.0;
 
-		return fromhls(h, lum, s, a);
+		return fromhls(h, lum, s, a/255.);
 	}
 
 	public Color witha(int a)
