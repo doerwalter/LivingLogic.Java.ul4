@@ -406,6 +406,8 @@ public class UL4Test
 		checkTemplateOutput("17,34,51,68", "<?code c = #1234?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
 		checkTemplateOutput("18,52,86,120", "<?code c = #12345678?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>");
 		checkTemplateOutput("yes", "<?if #fff?>yes<?else?>no<?end if?>");
+		checkTemplateOutput("rgba(0,0,0,0)", "<?code c = #0000?><?print c?>");
+		checkTemplateOutput("rgba(136,136,136,0.533)", "<?code c = #8888?><?print c?>");
 	}
 
 	@Test

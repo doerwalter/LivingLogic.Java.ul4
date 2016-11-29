@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.NoSuchElementException;
 import java.util.Vector;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
 
@@ -239,7 +242,8 @@ public class Color implements Collection, UL4Repr, UL4GetItemString, UL4Attribut
 		}
 		else
 		{
-			return "rgba(" + Integer.toString(r) + "," + Integer.toString(g) + "," + Integer.toString(b) + "," + a/255. + ")";
+			DecimalFormat df = new DecimalFormat("0.###", new DecimalFormatSymbols(Locale.ENGLISH));
+			return "rgba(" + Integer.toString(r) + "," + Integer.toString(g) + "," + Integer.toString(b) + "," + df.format((double)a/255.) + ")";
 		}
 	}
 

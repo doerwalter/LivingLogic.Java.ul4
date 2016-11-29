@@ -1,3 +1,8 @@
+exp-107:
+--------
+* Optimize output of color alpha values in CSS format (limit to 3 decimal places).
+
+
 exp-106:
 --------
 * Fixed alpha handling (byte/double) in Color.withlum().
