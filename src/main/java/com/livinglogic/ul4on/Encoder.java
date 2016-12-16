@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 import com.livinglogic.ul4.Color;
@@ -220,7 +221,7 @@ public class Encoder
 			else if (obj instanceof Map)
 			{
 				record(obj);
-				line("D");
+				line(obj instanceof LinkedHashMap ? "E" : "D");
 				++level;
 				for (Map.Entry entry: ((Map<Object, Object>)obj).entrySet())
 				{

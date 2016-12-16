@@ -1,3 +1,9 @@
+exp-108:
+--------
+* UL4ON now supports ordered maps (typecode 'e'/'E') for the Java type
+  LinkedHashMap.
+
+
 exp-107:
 --------
 * Optimize output of color alpha values in CSS format (limit to 3 decimal places).

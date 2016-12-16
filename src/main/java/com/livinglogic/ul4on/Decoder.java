@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -279,11 +280,11 @@ public class Decoder
 					result.add(load(typecode));
 			}
 		}
-		else if (typecode == 'd' || typecode == 'D')
+		else if (typecode == 'd' || typecode == 'D' || typecode == 'e' || typecode == 'E')
 		{
-			Map result = new HashMap();
+			Map result = typecode == 'e' || typecode == 'E' ? new LinkedHashMap() : new HashMap();
 
-			if (typecode == 'D')
+			if (typecode == 'D' || typecode == 'E')
 				loading(result);
 
 			while (true)
