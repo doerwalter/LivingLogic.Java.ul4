@@ -24,6 +24,7 @@ import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.Slice;
 import com.livinglogic.ul4.FunctionDate;
+import com.livinglogic.ul4.FunctionRepr;
 
 /**
  * A {@code Decoder} object wraps a {@code Reader} object and can read any object
@@ -110,11 +111,19 @@ public class Decoder
 		{
 			int c = reader.read();
 			if (c == -1)
-				throw new RuntimeException("broken stream: unexpected eof");
+				throw new RuntimeException("broken stream: unexpected EOF");
 
 			if (!Character.isWhitespace(c))
 				return (char)c;
 		}
+	}
+
+	private String charRepr(int c)
+	{
+		if (c < 0)
+			return "EOF";
+		else
+			return FunctionRepr.call(Character.toString((char)c));
 	}
 
 	/**
@@ -147,7 +156,7 @@ public class Decoder
 			else if (data == 'F')
 				result = false;
 			else
-				throw new RuntimeException("broken stream: expected 'T' or 'F', got '\\u" + Integer.toHexString(data) + "'");
+				throw new RuntimeException("broken stream: expected 'T' or 'F', got " + charRepr(data));
 			if (typecode == 'B')
 				loading(result);
 			return result;
@@ -368,12 +377,12 @@ public class Decoder
 			int nextTypecode = nextChar();
 
 			if (nextTypecode != ')')
-				throw new RuntimeException("broken stream : object terminator ')' expected, got '\\u" + Integer.toHexString(nextTypecode) + "'");
+				throw new RuntimeException("broken stream : object terminator ')' expected, got " + charRepr(nextTypecode));
 
 			return result;
 		}
 		else
-			throw new RuntimeException("broken stream: unknown typecode '\\u" + Integer.toHexString(typecode) + "'");
+			throw new RuntimeException("broken stream: unknown typecode " + charRepr(typecode));
 	}
 
 	private int readInt() throws IOException
