@@ -114,6 +114,31 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 		}
 	}
 
+	private static class BoundMethodRender extends BoundMethodWithContext<TemplateClosure>
+	{
+		public BoundMethodRender(TemplateClosure object)
+		{
+			super(object);
+		}
+
+		public String nameUL4()
+		{
+			String name = object.nameUL4();
+			return (name != null ? name : "template") + ".render";
+		}
+
+		public Signature getSignature()
+		{
+			return object.signature;
+		}
+
+		public Object evaluate(EvaluationContext context, BoundArguments arguments)
+		{
+			object.render(context, arguments.byName());
+			return null;
+		}
+	}
+
 	protected static Set<String> attributes = InterpretedTemplate.attributes;
 
 	public Set<String> getAttributeNamesUL4()
@@ -127,6 +152,8 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 		{
 			case "renders":
 				return new BoundMethodRenderS(this);
+			case "render":
+				return new BoundMethodRender(this);
 			default:
 				return template.getItemStringUL4(key);
 		}

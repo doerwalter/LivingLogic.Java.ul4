@@ -1596,7 +1596,32 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "startdelim", "enddelim", "source", "parenttemplate", "renders");
+	private static class BoundMethodRender extends BoundMethodWithContext<InterpretedTemplate>
+	{
+		public BoundMethodRender(InterpretedTemplate object)
+		{
+			super(object);
+		}
+
+		public String nameUL4()
+		{
+			String name = object.nameUL4();
+			return (name != null ? name : "template") + ".render";
+		}
+
+		public Signature getSignature()
+		{
+			return object.signature;
+		}
+
+		public Object evaluate(EvaluationContext context, BoundArguments arguments)
+		{
+			object.renderBound(context, null, arguments.byName());
+			return null;
+		}
+	}
+
+	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "startdelim", "enddelim", "source", "parenttemplate", "renders", "render");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -1621,6 +1646,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				return parentTemplate;
 			case "renders":
 				return new BoundMethodRenderS(this);
+			case "render":
+				return new BoundMethodRender(this);
 			default:
 				return super.getItemStringUL4(key);
 		}

@@ -3783,6 +3783,8 @@ public class UL4Test
 
 		checkTemplateOutput("42", "<?render globals.template(value=42)?>", "globals", makeMap("template", getTemplate("<?print value?>")));
 		checkTemplateOutput("", "<?render globals.template(value=42)?>", "globals", makeMap("template", getTemplate("")));
+
+		checkTemplateOutput("42", "<?def x()?><?print y?><?end def?><?code y = 42?><?render x()?>");
 	}
 
 	@Test
@@ -3797,6 +3799,32 @@ public class UL4Test
 	public void render_localtemplate()
 	{
 		checkTemplateOutput("foo", "<?def lower?><?print x.lower()?><?end def?><?print lower.renders(x='FOO')?>");
+	}
+
+	@Test
+	public void deprecated_rendermethod()
+	{
+		checkTemplateOutput("gurk", "<?def x?>gurk<?end def?><?code x.render()?>");
+
+		InterpretedTemplate t1 = getTemplate("<?print prefix?><?print data?><?print suffix?>");
+		InterpretedTemplate t2 = getTemplate("<?print 'foo'?>");
+
+		checkTemplateOutput("(f)(o)(o)", "<?for c in data?><?code t.render(data=c, prefix='(', suffix=')')?><?end for?>", "t", t1, "data", "foo");
+		checkTemplateOutput("foo", "<?render t()?>", "t", t2);
+		checkTemplateOutput("foo", "<?render t \n\t(\n \t)\n\t ?>", "t", t2);
+
+		checkTemplateOutput("42", "<?code globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("<?print value?>")));
+		checkTemplateOutput("", "<?code globals.template.render(value=42)?>", "globals", makeMap("template", getTemplate("")));
+
+		checkTemplateOutput("42", "<?def x()?><?print y?><?end def?><?code y = 42?><?code x.render()?>");
+	}
+
+	@Test
+	public void deprecated_rendermethod_local_vars()
+	{
+		InterpretedTemplate t = getTemplate("<?code x += 1?><?print x?>");
+
+		checkTemplateOutput("42,43,42", "<?print x?>,<?code t.render(x=x)?>,<?print x?>", "t", t, "x", 42);
 	}
 
 	@Test
