@@ -245,7 +245,6 @@ exp-93:
 
 exp-92:
 -------
-Comments:
 * The bitwise operators &, |, ^, ~, << and >> (and their augmented assigment
   counterparts &=, |=, ^=, <<= and >>=) have been added.
 * If expressions have been added.
@@ -253,7 +252,6 @@ Comments:
 
 exp-91:
 -------
-Comments:
 * com.livinglogic.dbutils.ResultSetMapIterator now returns the records as a
   org.apache.commons.collections.map.CaseInsensitiveMap, i.e. keys are case
   insensitive.
@@ -261,26 +259,22 @@ Comments:
 
 exp-90:
 -------
-Comments:
 * Add support for attribute, item and slice assignment.
 
 
 exp-89:
 -------
-Comments:
 * Added bound methods. Instead of implementing UL4MethodCall/UL4MethodCallWithContext,
   simply return BoundMethod objects from getItemStringUL4().
 
 
 exp-88:
 -------
-Comments:
 * Added the UL4 functions first() and last().
 
 
 exp-87:
 -------
-Comments:
 * Connection.query() has been renamed to Connection.queryargs().
 * Connection.query() now requires at least one positional argument. Arguments
   alternate between fragments of the SQL query and parameters that will be
@@ -289,75 +283,63 @@ Comments:
 
 exp-86:
 -------
-Comments:
 * Make SetUtils methods generic.
 
 
 exp-85:
 -------
-Comments:
 * Add start argument to FunctionSum.
 
 
 exp-84:
 -------
-Comments:
 * Add FunctionSum.
 
 
 exp-83:
 -------
-Comments:
 * Add method SetUtils.makeExtendedSet().
 * Expose the text of Text nodes to templates.
 
 
 exp-82:
 -------
-Comments:
 * Object arrays are now supported everywhere List objects are.
 
 
 exp-81-3:
 ---------
-Comments:
 * Fixed FunctionJSON.call(): ' may not be escaped in JSON strings according to
   json.org (and jQuery).
 
 
 exp-81-2:
 ---------
-Comments:
 * Add missing Javascript escape for JSON output of templates.
 
 
 exp-81-1:
 ---------
-Comments:
 * Fixed JSON output of templates.
 
 
 exp-81:
 -------
-Comments:
 * Fixed a bug in CallMeth.evaluate(), that surfaced when a * argument was present.
 
 
 exp-80:
 -------
-Comments:
 * Added methods abslum() and rellum() to Color.
 
 
 exp-79:
 -------
-Comments:
 * Fixed a comparison bug in Utils.narrowBigInteger().
 
 
 exp-78:
 -------
-Comments:
 * int(string) now returns a Long/BigInteger if the value overflows.
 * int() and com.livinglogic.dbutils.Connection now try to convert BigIntegers to
   a narrower format (Integer/Long) if possible.
@@ -365,57 +347,48 @@ Comments:
 
 exp-77:
 -------
-Comments:
 * Added support for positional parameters in com.livinglogic.dbutils.Connection.
 
 
 exp-76:
 -------
-Comments:
 * Fixed strange ANTLR problems with triple quoted strings in various situations
   (function calls etc.)
 
 
 exp-75:
 -------
-Comments:
 * Keys in database records are now converted to lower case.
 
 
 exp-74:
 -------
-Comments:
 * Added support for triple quoted strings.
 
 
 exp-73:
 -------
-Comments:
 * Exception chains for compiler error now have an additional stack level that
   shows the tag the compile error happened in.
 
 
 exp-72:
 -------
-Comments:
 * Fixed a bug in the signature for Connection.query().
 
 
 exp-71:
 -------
-Comments:
 * FunctionAsJSON now handles UL4Attributes objects.
 
 
 exp-70:
 -------
-Comments:
 * Implemented function slice().
 
 
 exp-69:
 -------
-Comments:
 * Added interface UL4Attributes that extends UL4GetItemString and allows map
   style access to the attributes of an object.
 * Added interfaces UL4MethodCall and UL4MethodCallWithContext that allow
@@ -424,14 +397,12 @@ Comments:
 
 exp-68:
 -------
-Comments:
 * Renamed package com.livinglogic.oracleutils to com.livinglogic.dbutils, since
   it is no longer Oracle specific.
 
 
 exp-67:
 -------
-Comments:
 * Added function list().
 * Implemented support for custom methods via the interface UL4MethodCall and
   UL4MethodCallWithContext.
@@ -441,21 +412,18 @@ Comments:
 
 exp-66:
 -------
-Comments:
 * removeWhitespace no longer removes the initial spaces in a string, but only
   the whitespace *after* a linefeed.
 
 
 exp-65:
 -------
-Comments:
 * Moved removeWhitespace into InterpretedTemplate, as it's only used there to
   avoid package name conflicts.
 
 
 exp-64:
 -------
-Comments:
 * Implemented UL4 functions.
 * Removed builtin UL4 functions vars and get.
 * Added methods append, insert, pop and update.
@@ -466,7 +434,6 @@ Comments:
 
 exp-63:
 -------
-Comments:
 * Removed ChainedHashMap, as MapChain can be used instead now.
 * Removed EvaluationContext.keepWhitespace, as this would be used for all
   templates called, even if their value is different.
@@ -475,13 +442,11 @@ Comments:
 
 exp-62:
 -------
-Comments:
 * Added support for the whitespace flag.
 
 
 exp-61:
 -------
-Comments:
 * Added support classes AbstractMapChain and MapChain.
 * Added support for the automatic variable stack.
 * Added support for nested scopes/closures.
@@ -491,13 +456,11 @@ Comments:
 
 exp-60-1:
 ---------
-Comments:
 * Fixed FunctionBool for BigInteger and BigDecimal objects.
 
 
 exp-60:
 -------
-Comments:
 * To improve UL4 exception messages there are now several undefined objects,
   which give information about which key/name/index resulted in the undefined
   object being created.
@@ -508,19 +471,16 @@ Comments:
 
 exp-59:
 -------
-Comments:
 * Added functions any() and all().
 
 
 exp-58:
 -------
-Comments:
 * format() now works for integers.
 
 
 exp-57:
 -------
-Comments:
 * Use StringBuilder instead of StringBuffer everywhere.
 * FunctionSort can now sort collections (lexicographically).
 * Added values method.
@@ -528,7 +488,6 @@ Comments:
 
 exp-56:
 -------
-Comments:
 * Merged constant loading AST classes into one class: Const.
 * UL4ON can now read/write TimeDelta and MonthDelta objects.
 * Added the Undefined singleton.
@@ -537,7 +496,6 @@ Comments:
 
 exp-55:
 -------
-Comments:
 * Added support for list/dict comprehension, generator expressions and the date
   function. Added language argument to format function. Added support for the
   week method. Added support for timedelta and monthdelta objects. Added support
@@ -546,32 +504,27 @@ Comments:
 
 exp-54:
 -------
-Comments:
 * Variable unpacking is now supported for assignment too.
 
 
 exp-53:
 -------
-Comments:
 * Variable unpacking in for loops can now be nested arbitrarily deep.
 
 
 exp-52:
 -------
-Comments:
 * Fixed implementation of And to try the first operand first.
 
 
 exp-51:
 -------
-Comments:
 * Added the functions min() and max().
 * Added a proper (threaded) implementation of InterpretedTemplate.reader().
 
 
 exp-50:
 -------
-Comments:
 * The UL4 parser has been ported to ANTLR. The final jar doesn't
   contain any Python/Jython any longer.
 
@@ -590,86 +543,73 @@ Comments:
 
 exp-49:
 -------
-Comments:
 * Now the new style Javascript code generation is used (i.e. the code
   is generated by Javascript itself).
 
 
 exp-48:
 -------
-Comments:
 * Renamed the function first, last and firstlast to isfirst, islast and
   isfirstlast.
 
 
 exp-47:
 -------
-Comments:
 * Added support for the new UL4ON object serialization format (via the
   class com.livinglogic.ul4on.Utils).
 
 
 exp-46:
 -------
-Comments:
 * Added support for the new UL4 functions first(), last(), firstlast() and
   enumfl().
 
 
 exp-45:
 -------
-Comments:
 * Added new utility classes MapUtils, ChainedHashMap and ObjectAsMap.
 * Template, Opcode and Location now expose their attributes via a Map interface.
 
 
 exp-44:
 -------
-Comments:
 * Enhanced Location.toString() for literals.
 * Fixed TagException.toString() for parsing errors.
 
 
 exp-43:
 -------
-Comments:
 * Fixed location handling bugs with subtemplates.
 * Sub templates are now created by annotate().
 
 
 exp-42:
 -------
-Comments:
 * Updated to match the implementation in XIST 3.23 (i.e. names for templates).
 
 
 exp-40:
 -------
-Comments:
 * Added a new method Color.fromrepr().
 
 
 exp-39:
 -------
-Comments:
 * Fixed offsets into the source and the opcodes list for subtemplates.
 
 
 exp-38:
 -------
-Comments:
 * Updated Jython to version 2.5.2.
 
 
 exp-37:
 -------
-Comments:
 * Fixed comparison operator when only one of the arguments is null.
 
 
 exp-36:
 -------
-Comments:
 * The functionality for generating Javscript source from a template has been
   moved to a separate class JavascriptSource4Template.
 * Fixed many bugs that were detected by running the XIST test suite with
@@ -683,26 +623,23 @@ Comments:
 
 exp-35:
 -------
-Comments:
 * Sets can now be sorted.
 
 
 exp-34:
 -------
-Comments:
 * Iterators can now be sorted.
 
 
 exp-33:
 -------
 file format: 14
-Comments:
+
 * Update file format to be compatible with XIST 3.15.
 
 
 exp-32:
 -------
-Comments:
 * Added InterpretedTemplate.reader() that returns a java.io.Reader object for
   reading the template output.
 * Removed all versions of the render methods that didn't have a variables
@@ -711,28 +648,24 @@ Comments:
 
 exp-31:
 -------
-Comments:
 * Added missing implementation for the "contains" opcode in
   InterpretedTemplate.Renderer().
 
 
 exp-30:
 -------
-Comments:
 * Added two methods InterpretedTemplate.render() that render the template output
   to a java.io.Writer.
 
 
 exp-29:
 -------
-Comments:
 * Fixed InterpretedTemplate.load() to conform to the format produced by Pythons
   version.
 
 
 exp-28:
 -------
-Comments:
 * Fixed problems with linefeeds in comments for tag code in
   Template.javascriptSource().
 
@@ -741,7 +674,6 @@ exp-27:
 -------
 file format: 13
 
-Comments:
 * Added a new method InterpretedTemplate.javascriptSource() that generates
   Javascript source from the template.
 * Updated date literals to used a "@" suffix.
@@ -750,13 +682,11 @@ Comments:
 
 exp-26:
 -------
-Comments:
 * Support for the UL4 methods startswith and endswith has been added.
 
 
 exp-25:
 -------
-Comments:
 * Support for the UL4 function randchoice has been added.
 
 
@@ -771,7 +701,6 @@ Comments:
 
 exp-23:
 -------
-Comments:
 * Add support for more number types in the 1 and 2 arg version of toInteger().
 * Add support for more number types to toFloat().
 * Add support for more number types to repr().
@@ -787,20 +716,17 @@ Comments:
 
 exp-22:
 -------
-Comments:
 * The build file now forces compilation with Java 1.5.
 
 
 exp-21:
 -------
-Comments:
 * Now Utils.format() can be called without a locale argument (which is
   useful for the JSP code generated by the XIST function ll.xist.ns.jsp.fromul4().
 
 
 exp-20:
 -------
-Comments:
 * Utils.sub(), Utils.mul(), Utils.truediv() and Utils.floordiv() now support
   all valid combinations of bool/int/float/string operands.
 * type() now returns the correct type for all Number subclasses.
@@ -809,45 +735,38 @@ Comments:
 
 exp-19:
 -------
-Comments:
 * Utils.add() now supports all combinations of bool/int/float operands.
 
 
 exp-18:
 -------
-Comments:
 * Utils.xmlescape() now uses ObjectUtils.toString() to support null.
 
 
 exp-17:
 -------
-Comments:
 * Fixed error for unsupported operations.
 * Utils.iterator() now supports Iterable not just Collection.
 
 
 exp-16:
 -------
-Comments:
 * Fixed bug in the block nesting check logic.
 
 
 exp-15:
 -------
-Comments:
 * Reverted the fix to the rgb() function (argument are float values between 0
   and 1).
 
 
 exp-14:
 -------
-Comments:
 * Fixed the rgb() function.
 
 
 exp-13:
 -------
-Comments:
 * Updated to use Jython 2.5 (i.e. Java 1.5).
 * All that's needed to use Jython is now in ul4jython.jar (which is generated
   by makejar.sh).
@@ -857,7 +776,6 @@ exp-12:
 -------
 file format: 11
 
-Comments:
 * Added float() and iscolor() functions.
 
 
@@ -865,7 +783,6 @@ exp-11:
 -------
 file format: 10
 
-Comments:
 * Added join() method.
 
 
@@ -873,29 +790,22 @@ exp-10:
 -------
 file format: 9
 
-Comments:
 * Added reversed() function.
 
 
 exp-9:
 ------
-
-Comments:
 * Added int() with two arguments.
 * Added render method.
 
 
 exp-8:
 ------
-
-Comments:
 * Added support for Long in a few spots in Utils.java.
 
 
 exp-7:
 ------
-
-Comments:
 * Added interface JSPTemplate for an UL4 template converted to JSP.
 
 
@@ -903,7 +813,6 @@ exp-6:
 ------
 file format: 7
 
-Comments:
 * Added <?note?> tag.
 * Added functions type(), vars(), zip().
 * Added one-arg find and rfind methods.
@@ -916,7 +825,6 @@ exp-5:
 ------
 file format: 5
 
-Comments:
 * Added printx tag/opcode.
 * Added string method capitalize().
 * Enhance exception for unclosed blocks.
@@ -926,13 +834,11 @@ Comments:
 
 exp-4:
 ------
-Comments:
 * Added support for a csvescape() function.
 
 
 exp-3:
 ------
-Comments:
 * The org.apache.commons package is now used to implement some of the operations.
 * Added support for a string method replace().
 * Added support for a repr() function.
@@ -942,7 +848,6 @@ exp-2:
 ------
 file format: 4
 
-Comments:
 * Added break and continue tags/opcodes.
 
 
