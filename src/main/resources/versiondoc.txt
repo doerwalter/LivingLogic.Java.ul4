@@ -1,3 +1,9 @@
+exp-111:
+--------
+* The UL4ON decoder now records the stream position, so it can be show in
+  exception messages.
+
+
 exp-110:
 --------
 * (Re)implemented the render method for templates (for backwards compatibility).
