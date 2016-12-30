@@ -38,6 +38,11 @@ public class Decoder
 	private Reader reader = null;
 
 	/**
+	 * The current position in the UL4ON stream
+	 */
+	int position = 0;
+
+	/**
 	 * The list of objects that have been read so far from {@code reader} and
 	 * that must be available for backreferences.
 	 */
@@ -102,6 +107,13 @@ public class Decoder
 		objects.set(oldpos, value);
 	}
 
+	private int readChar() throws IOException
+	{
+		int c = reader.read();
+		++position;
+		return c;
+	}
+
 	/**
 	 * Read the next not-whitespace character
 	 */
@@ -109,9 +121,9 @@ public class Decoder
 	{
 		while (true)
 		{
-			int c = reader.read();
+			int c = readChar();
 			if (c == -1)
-				throw new RuntimeException("broken stream: unexpected EOF");
+				throw new DecoderException(position, "broken stream: unexpected EOF");
 
 			if (!Character.isWhitespace(c))
 				return (char)c;
@@ -149,16 +161,17 @@ public class Decoder
 		}
 		else if (typecode == 'b' || typecode == 'B')
 		{
-			int data = reader.read();
+			int data = readChar();
 			Boolean result;
 			if (data == 'T')
 				result = true;
 			else if (data == 'F')
 				result = false;
 			else
-				throw new RuntimeException("broken stream: expected 'T' or 'F', got " + charRepr(data));
+				throw new DecoderException(position, "broken stream: expected 'T' or 'F', got " + charRepr(data));
 			if (typecode == 'B')
 				loading(result);
+			++position;
 			return result;
 		}
 		else if (typecode == 'i' || typecode == 'I')
@@ -167,7 +180,7 @@ public class Decoder
 			Object result = null;
 			while (true)
 			{
-				int c = reader.read();
+				int c = readChar();
 				if (c == '-' || Character.isDigit(c))
 					buffer.append((char)c);
 				else
@@ -366,7 +379,7 @@ public class Decoder
 			ObjectFactory factory = Utils.registry.get(name);
 
 			if (factory == null)
-				throw new RuntimeException("can't load object of type " + name);
+				throw new DecoderException(position, "can't load object of type " + name);
 			UL4ONSerializable result = factory.create();
 
 			if (typecode == 'O')
@@ -377,12 +390,12 @@ public class Decoder
 			int nextTypecode = nextChar();
 
 			if (nextTypecode != ')')
-				throw new RuntimeException("broken stream : object terminator ')' expected, got " + charRepr(nextTypecode));
+				throw new DecoderException(position, "broken stream : object terminator ')' expected, got " + charRepr(nextTypecode));
 
 			return result;
 		}
 		else
-			throw new RuntimeException("broken stream: unknown typecode " + charRepr(typecode));
+			throw new DecoderException(position, "broken stream: unknown typecode " + charRepr(typecode));
 	}
 
 	private int readInt() throws IOException
@@ -391,7 +404,7 @@ public class Decoder
 		
 		while (true)
 		{
-			int c = reader.read();
+			int c = readChar();
 			if (c == '-' || Character.isDigit(c))
 				buffer.append((char)c);
 			else
@@ -407,7 +420,7 @@ public class Decoder
 
 		while (true)
 		{
-			int c = reader.read();
+			int c = readChar();
 			if (c == '-' || c == '+' || Character.isDigit(c) || c == '.' || c == 'e' || c == 'E')
 				buffer.append((char)c);
 			else

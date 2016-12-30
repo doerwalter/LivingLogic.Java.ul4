@@ -1,20 +1,23 @@
 package tests;
 
-import static com.livinglogic.ul4on.Utils.dumps;
-import static com.livinglogic.ul4on.Utils.loads;
-import static com.livinglogic.utils.MapUtils.makeMap;
-import static com.livinglogic.utils.SetUtils.makeSet;
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Date;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
+import static java.util.Arrays.asList;
+
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import com.livinglogic.ul4on.DecoderException;
+
+import static com.livinglogic.ul4on.Utils.dumps;
+import static com.livinglogic.ul4on.Utils.loads;
+import static com.livinglogic.utils.MapUtils.makeMap;
+import static com.livinglogic.utils.SetUtils.makeSet;
 
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.InterpretedTemplate;
@@ -22,6 +25,9 @@ import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.Slice;
 
+import org.junit.runner.RunWith;
+
+@RunWith(CauseTestRunner.class)
 public class UL4ONTest
 {
 	private static InterpretedTemplate getTemplate(String source, String name)
@@ -94,5 +100,11 @@ public class UL4ONTest
 
 		assertEquals(l2.size(), 1);
 		assertTrue(l2.get(0) == l2);
+	}
+
+	@CauseTest(expectedCause=DecoderException.class)
+	public void broken()
+	{
+		Object x = loads("l i42 k23 ]");
 	}
 }
