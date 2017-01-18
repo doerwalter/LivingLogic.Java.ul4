@@ -810,6 +810,11 @@ public class UL4Test
 		checkTemplateOutput("", "<?def gurk?><?continue?><?end def?>");
 	}
 
+	public void tag_ul4()
+	{
+		checkTemplateOutput("42", "<?ul4 test(x=42)?><?print x?>");
+	}
+
 	@Test
 	public void tag_while()
 	{
