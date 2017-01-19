@@ -624,11 +624,14 @@ public class Utils
 		if (string == null)
 			return null;
 		StringBuilder output = new StringBuilder(string.length());
-		for (int i = 0; i < string.length(); ++i)
+		for (int i = 0; i < string.length();)
 		{
 			char c = string.charAt(i);
 			if (c != '\\' || i == string.length()-1)
+			{
 				output.append(c);
+				++i;
+			}
 			else
 			{
 				char c2 = string.charAt(++i);
@@ -636,30 +639,39 @@ public class Utils
 				{
 					case '\\':
 						output.append('\\');
+						++i; // already skipped the '/'
 						break;
 					case 'n':
 						output.append('\n');
+						++i; // already skipped the '/'
 						break;
 					case 'r':
 						output.append('\r');
+						++i; // already skipped the '/'
 						break;
 					case 't':
 						output.append('\t');
+						++i; // already skipped the '/'
 						break;
 					case 'f':
 						output.append('\f');
+						++i; // already skipped the '/'
 						break;
 					case 'b':
 						output.append('\b');
+						++i; // already skipped the '/'
 						break;
 					case 'a':
 						output.append('\u0007');
+						++i; // already skipped the '/'
 						break;
 					case '"':
 						output.append('"');
+						++i; // already skipped the '/'
 						break;
 					case '\'':
 						output.append('\'');
+						++i; // already skipped the '/'
 						break;
 					case 'x':
 						int cx;
@@ -672,7 +684,7 @@ public class Utils
 							throw new StringFormatException("illegal \\x escape: " + FunctionRepr.call(savesubstr(string, i+1, i+3)), ex);
 						}
 						output.append((char)cx);
-						i += 3;
+						i += 3; // already skipped the '/'
 						break;
 					case 'u':
 						int cu;
@@ -685,13 +697,14 @@ public class Utils
 							throw new StringFormatException("illegal \\u escape: " + FunctionRepr.call(savesubstr(string, i+1, i+5)), ex);
 						}
 						output.append((char)cu);
-						i += 5;
+						i += 5; // already skipped the '/'
 						break;
 					case 'U':
 						throw new RuntimeException("\\U escapes are not supported");
 					default:
 						output.append(c);
 						output.append(c2);
+						++i; // already skipped the '/'
 				}
 			}
 		}

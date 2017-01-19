@@ -363,19 +363,21 @@ public class UL4Test
 	@Test
 	public void type_string()
 	{
-		checkTemplateOutput("foo", "<?print \"foo\"?>");
-		checkTemplateOutput("\n", "<?print \"\\n\"?>");
-		checkTemplateOutput("\r", "<?print \"\\r\"?>");
-		checkTemplateOutput("\t", "<?print \"\\t\"?>");
-		checkTemplateOutput("\f", "<?print \"\\f\"?>");
-		checkTemplateOutput("\u0008", "<?print \"\\b\"?>");
-		checkTemplateOutput("\u0007", "<?print \"\\a\"?>");
-		checkTemplateOutput("\u0000", "<?print \"\\x00\"?>");
+		checkTemplateOutput("foo", "<?print 'foo'?>");
+		checkTemplateOutput("\n", "<?print '\\n'?>");
+		checkTemplateOutput("\r", "<?print '\\r'?>");
+		checkTemplateOutput("\t", "<?print '\\t'?>");
+		checkTemplateOutput("\f", "<?print '\\f'?>");
+		checkTemplateOutput("\u0008", "<?print '\\b'?>");
+		checkTemplateOutput("\u0007", "<?print '\\a'?>");
+		checkTemplateOutput("\u0000", "<?print '\\x00'?>");
 		checkTemplateOutput("\"", "<?print \"\\\"\"?>");
 		checkTemplateOutput("'", "<?print \"\\'\"?>");
-		checkTemplateOutput("\u20ac", "<?print \"\u20ac\"?>");
-		checkTemplateOutput("\u00ff", "<?print \"\\xff\"?>");
-		checkTemplateOutput("\u20ac", "<?print \"\\u20ac\"?>");
+		checkTemplateOutput("\u20ac", "<?print '\u20ac'?>");
+		checkTemplateOutput("\t\n\u00a0\u27f6\u00a0\t\n", "<?print '\\t\\n\\xa0\\u27f6\\xa0\\t\\n'?>");
+
+		checkTemplateOutput("\u00ff", "<?print '\\xff'?>");
+		checkTemplateOutput("\u20ac", "<?print '\\u20ac'?>");
 		checkTemplateOutput("gu\trk", "<?print 'gu\trk'?>");
 		checkTemplateOutput("gu\n\r\t\\rk", "<?print 'gu\\n\\r\\t\\\\rk'?>");
 		checkTemplateOutput("gu\r\nrk", "<?print '''gu\r\nrk'''?>");

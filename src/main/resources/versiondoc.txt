@@ -1,3 +1,8 @@
+exp-112:
+--------
+* Fixed a bug in Utils.unescapeUL4String() with \x and \u escapes.
+
+
 exp-111:
 --------
 * The UL4ON decoder now records the stream position, so it can be show in
