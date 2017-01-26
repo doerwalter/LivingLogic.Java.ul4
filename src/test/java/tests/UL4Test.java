@@ -4887,6 +4887,42 @@ public class UL4Test
 	}
 
 	@Test
+	public void template_signature_nestedcall_directsig()
+	{
+		InterpretedTemplate innerTemplate = getTemplate("<?return x + y?>", "inner", InterpretedTemplate.Whitespace.strip, new Signature("x", Signature.required, "y", Signature.required));
+		InterpretedTemplate outerTemplate = getTemplate("<?print inner(17, 23)?>", "outer", InterpretedTemplate.Whitespace.strip);
+
+		checkTemplateOutput("40", outerTemplate, "inner", innerTemplate);
+	}
+
+	@Test
+	public void template_signature_nestedcall_stringsig()
+	{
+		InterpretedTemplate innerTemplate = getTemplate("<?return x + y?>", "inner", InterpretedTemplate.Whitespace.strip, "x, y");
+		InterpretedTemplate outerTemplate = getTemplate("<?print inner(17, 23)?>", "outer", InterpretedTemplate.Whitespace.strip);
+
+		checkTemplateOutput("40", outerTemplate, "inner", innerTemplate);
+	}
+
+	@Test
+	public void template_signature_nestedcall_tagsig()
+	{
+		InterpretedTemplate innerTemplate = getTemplate("<?ul4 inner(x, y)?><?return x + y?>", "inner", InterpretedTemplate.Whitespace.strip);
+		InterpretedTemplate outerTemplate = getTemplate("<?print inner(17, 23)?>", "outer", InterpretedTemplate.Whitespace.strip);
+
+		checkTemplateOutput("40", outerTemplate, "inner", innerTemplate);
+	}
+
+	@Test
+	public void template_signature_nestedrender_tagsig()
+	{
+		InterpretedTemplate innerTemplate = getTemplate("<?ul4 inner(x, y)?><?print x + y?>", "inner", InterpretedTemplate.Whitespace.strip);
+		InterpretedTemplate outerTemplate = getTemplate("<?render inner(17, 23)?>", "outer", InterpretedTemplate.Whitespace.strip);
+
+		checkTemplateOutput("40", outerTemplate, "inner", innerTemplate);
+	}
+
+	@Test
 	public void template_signature_directcall_default() throws Exception
 	{
 		InterpretedTemplate template = getTemplate("<?print x?>", "t", InterpretedTemplate.Whitespace.strip, new Signature("x", 42));

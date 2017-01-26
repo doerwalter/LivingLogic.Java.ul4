@@ -1,6 +1,12 @@
+exp-113:
+--------
+* Calling the InterpretedTemplate constructor with the Signature argument no
+  longer overwrites a signature specified via on <?ul4?> tag.
+
+
 exp-112:
 --------
-* Fixed a bug in Utils.unescapeUL4String() with \x and \u escapes.
+* Fixed a off-by-one bug in Utils.unescapeUL4String() with \x and \u escapes.
 
 
 exp-111:

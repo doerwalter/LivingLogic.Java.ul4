@@ -160,7 +160,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim, Signature signature) throws RecognitionException
 	{
 		this(source, name, whitespace, startdelim, enddelim);
-		this.signature = signature;
+		if (this.signature == null) // signature from <?ul4?> tag wins
+			this.signature = signature;
 	}
 
 	/**
