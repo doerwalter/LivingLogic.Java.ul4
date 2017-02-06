@@ -304,7 +304,7 @@ public class Decoder
 		}
 		else if (typecode == 'd' || typecode == 'D' || typecode == 'e' || typecode == 'E')
 		{
-			Map result = typecode == 'e' || typecode == 'E' ? new LinkedHashMap() : new HashMap();
+			Map result = (typecode == 'e' || typecode == 'E') ? new LinkedHashMap() : new HashMap();
 
 			if (typecode == 'D' || typecode == 'E')
 				loading(result);
