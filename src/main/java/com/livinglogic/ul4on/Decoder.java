@@ -86,7 +86,7 @@ public class Decoder
 	 * We have to record the object we're loading *now*, so that it is available for backreferences.
 	 * However until we've read the UL4ON name of the class (for custom object) or the attributes
 	 * of the object (for immutable objects with attributes), we can't create the object.
-	 * So we push ``None`` to the backreference list for now and put the right object in this spot,
+	 * So we push {@code null} to the backreference list for now and put the right object in this spot,
 	 * once we've created it (via {@code endFakeLoading}). This shouldn't lead to problems,
 	 * because during the time the backreference is wrong, only the class name is read,
 	 * so our object won't be referenced. For immutable objects the attributes normally
