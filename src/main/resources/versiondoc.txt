@@ -1,7 +1,7 @@
 exp-113:
 --------
 * Calling the InterpretedTemplate constructor with the Signature argument no
-  longer overwrites a signature specified via on <?ul4?> tag.
+  longer overwrites a signature specified via an <?ul4?> tag.
 
 
 exp-112:
