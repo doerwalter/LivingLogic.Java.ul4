@@ -7,7 +7,7 @@
 package com.livinglogic.ul4;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -39,7 +39,7 @@ public class DictComprehensionAST extends CodeAST
 
 	public Object evaluate(EvaluationContext context)
 	{
-		Map result = new HashMap();
+		Map result = new LinkedHashMap();
 
 		Object container = this.container.decoratedEvaluate(context);
 

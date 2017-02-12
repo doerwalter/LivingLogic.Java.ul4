@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -36,7 +36,7 @@ public class DictAST extends CodeAST
 
 	public Object evaluate(EvaluationContext context)
 	{
-		Map result = new HashMap();
+		Map result = new LinkedHashMap();
 
 		for (DictItemASTBase item : items)
 			item.decoratedEvaluateDict(context, result);

@@ -2,6 +2,7 @@ package tests;
 
 import static com.livinglogic.ul4on.Utils.dumps;
 import static com.livinglogic.utils.MapUtils.makeMap;
+import static com.livinglogic.utils.MapUtils.makeOrderedMap;
 import static com.livinglogic.utils.SetUtils.makeSet;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -472,12 +473,14 @@ public class UL4Test
 	public void type_dict()
 	{
 		checkTemplateOutput("", "<?for (key, value) in {}.items()?><?print key?>:<?print value?>!<?end for?>");
-		checkTemplateOutput("1:2!", "<?for (key, value) in {1:2}.items()?><?print key?>:<?print value?>!<?end for?>");
-		checkTemplateOutput("1:2!", "<?for (key, value) in {1:2,}.items()?><?print key?>:<?print value?>!<?end for?>");
+		checkTemplateOutput("1:2!", "<?for (key, value) in {1: 2}.items()?><?print key?>:<?print value?>!<?end for?>");
+		checkTemplateOutput("1:2!", "<?for (key, value) in {1: 2,}.items()?><?print key?>:<?print value?>!<?end for?>");
 		// With duplicate keys, later ones simply overwrite earlier ones
-		checkTemplateOutput("1:3!", "<?for (key, value) in {1:2, 1:3}.items()?><?print key?>:<?print value?>!<?end for?>");
+		checkTemplateOutput("1:3!", "<?for (key, value) in {1: 2, 1: 3}.items()?><?print key?>:<?print value?>!<?end for?>");
 		checkTemplateOutput("no", "<?if {}?>yes<?else?>no<?end if?>");
-		checkTemplateOutput("yes", "<?if {1:2}?>yes<?else?>no<?end if?>");
+		checkTemplateOutput("yes", "<?if {1: 2}?>yes<?else?>no<?end if?>");
+		// Dicts are ordered
+		checkTemplateOutput("1:one!2:two!3:three!", "<?for (key, value) in {1: 'one', 2: 'two', 3: 'three'}.items()?><?print key?>:<?print value?>!<?end for?>");
 	}
 
 	@Test
@@ -494,6 +497,8 @@ public class UL4Test
 		checkTemplateOutput("", "<?code d = {i:2*i for i in range(10) if i%2}?><?if 2 in d?><?print d[2]?><?end if?>");
 		checkTemplateOutput("6", "<?code d = {i:2*i for i in range(10) if i%2}?><?if 3 in d?><?print d[3]?><?end if?>");
 		checkTemplateOutput("6", "<?code d = {i:2*i for i in range(10)}?><?print d[3]?>");
+		// Dicts comprehensions are ordered
+		checkTemplateOutput("1:one!2:two!3:three!", "<?for (key, value) in {i:v for (i, v) in enumerate(['one', 'two', 'three'], 1)}.items()?><?print key?>:<?print value?>!<?end for?>");
 	}
 
 	@Test
@@ -4864,9 +4869,9 @@ public class UL4Test
 	@Test
 	public void function_stringsignature_directcall_remainingkwargs() throws Exception
 	{
-		InterpretedTemplate function = getTemplate("<?return ', '.join(key + ': ' + str(value) for (key, value) in sorted(kwargs.items()))?>", "func_with_sig", InterpretedTemplate.Whitespace.strip, "**kwargs");
+		InterpretedTemplate function = getTemplate("<?return ', '.join(key + ': ' + str(value) for (key, value) in kwargs.items())?>", "func_with_sig", InterpretedTemplate.Whitespace.strip, "**kwargs");
 
-		assertEquals("x: 17, y: 23", function.call(makeMap("y", 23, "x", 17)));
+		assertEquals("y: 23, x: 17", function.call(makeOrderedMap("y", 23, "x", 17)));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)

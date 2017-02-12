@@ -6,8 +6,9 @@
 
 package com.livinglogic.utils;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Class that provides utilities for working with maps
@@ -45,7 +46,22 @@ public class MapUtils
 	 */
 	public static Map makeMap(Object... args)
 	{
-		HashMap map = new HashMap();
+		Map map = new HashMap();
+		putMap(map, args);
+		return map;
+	}
+
+	/**
+	 * Create an ordered Map (i.e. a {@code LinkedHashMap}
+	 * from key, value arguments.
+	 *
+	 * @param args An even number of objects. The objects at index 0, 2, 4, ...
+	 *             are the keys, the objects at index 1, 3, 5 are the values.
+	 * @return A Map containing the variables
+	 */
+	public static Map makeOrderedMap(Object... args)
+	{
+		Map map = new LinkedHashMap();
 		putMap(map, args);
 		return map;
 	}
@@ -59,6 +75,21 @@ public class MapUtils
 	public static Map<String, Object> makeStringMap(Object... args)
 	{
 		HashMap<String, Object> map = new HashMap<String, Object>();
+		putMap(map, args);
+		return map;
+	}
+
+	/**
+	 * Create an ordered Map (i.e. a {@code LinkedHashMap}
+	 * from (string) key, value arguments.
+	 *
+	 * @param args An even number of objects. The objects at index 0, 2, 4, ...
+	 *             are the string keys, the objects at index 1, 3, 5 are the values.
+	 * @return A Map containing the variables
+	 */
+	public static Map<String, Object> makeOrderedStringMap(Object... args)
+	{
+		HashMap<String, Object> map = new LinkedHashMap<String, Object>();
 		putMap(map, args);
 		return map;
 	}

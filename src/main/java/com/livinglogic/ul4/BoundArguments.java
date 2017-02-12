@@ -30,7 +30,7 @@ public class BoundArguments implements AutoCloseable
 				throw new PositionalArgumentsNotSupportedException(object);
 
 			argumentsByPosition = null;
-			argumentsByName = kwargs != null ? new HashMap<String, Object>(kwargs) : new HashMap<String, Object>();
+			argumentsByName = kwargs != null ? new LinkedHashMap<String, Object>(kwargs) : new LinkedHashMap<String, Object>();
 		}
 		else
 		{
