@@ -49,7 +49,7 @@ public class FunctionAsJSON extends Function
 		{
 			String result = obj.toString();
 			builder.append(result);
-			if (result.indexOf('.') < 0 || result.indexOf('E') < 0 || result.indexOf('e') < 0)
+			if (result.indexOf('.') < 0 && result.indexOf('E') < 0 && result.indexOf('e') < 0)
 				builder.append(".0");
 		}
 		else if (obj instanceof String)

@@ -1814,7 +1814,8 @@ public class UL4Test
 		checkTemplateOutput("false", "<?print asjson(data)?>", "data", false);
 		checkTemplateOutput("true", "<?print asjson(data)?>", "data", true);
 		checkTemplateOutput("42", "<?print asjson(data)?>", "data", 42);
-		// no check for float
+		checkTemplateOutput("42.5", "<?print asjson(data)?>", "data", 42.5);
+		checkTemplateOutput("42.5", "<?print asjson(data)?>", "data", new BigDecimal("42.5"));
 		checkTemplateOutput("\"abc\"", "<?print asjson(data)?>", "data", "abc");
 		checkTemplateOutput("\"'\"", "<?print asjson(data)?>", "data", "'");
 		checkTemplateOutput("\"\\\"\"", "<?print asjson(data)?>", "data", "\"");
