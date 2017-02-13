@@ -42,7 +42,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * The version number used in the UL4ON dump of the template.
 	 */
-	public static final String VERSION = "38";
+	public static final String VERSION = "39";
 
 	/**
 	 * The name of the template/function (defaults to {@code null})
@@ -121,7 +121,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * Create of toplevel template without a signature
 	 */
-	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim) throws RecognitionException
+	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim)
 	{
 		super(null, new Slice(false, false, -1, -1));
 		this.source = source;
@@ -157,7 +157,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * Create of toplevel template with a specified signature
 	 */
-	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim, Signature signature) throws RecognitionException
+	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim, Signature signature)
 	{
 		this(source, name, whitespace, startdelim, enddelim);
 		if (this.signature == null) // signature from <?ul4?> tag wins
@@ -167,7 +167,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * Create of toplevel template with a signature compiled from a string
 	 */
-	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim, String signature) throws RecognitionException
+	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim, String signature)
 	{
 		this(makeSource(source, name, startdelim, enddelim, signature), name, whitespace, startdelim, enddelim);
 	}
@@ -187,7 +187,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		this.signatureAST = signature;
 	}
 
-	protected void handleSpecialTags(List<Line> lines) throws RecognitionException
+	protected void handleSpecialTags(List<Line> lines)
 	{
 		for (Line line : lines)
 		{
@@ -202,7 +202,15 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					else if (tagtype.equals("ul4"))
 					{
 						UL4Parser parser = getParser(tag);
-						Definition definition = parser.definition();
+						Definition definition;
+						try
+						{
+							definition = parser.definition();
+						}
+						catch (RecognitionException exc)
+						{
+							throw new RuntimeException(exc);
+						}
 						name = definition.getName();
 						SignatureAST signatureAST = definition.getSignature();
 						if (signatureAST != null)
@@ -385,7 +393,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return parts;
 	}
 
-	protected void compile() throws RecognitionException
+	protected void compile()
 	{
 		if (source == null)
 			return;
@@ -1507,20 +1515,50 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		String version = (String)decoder.load();
-		if (!VERSION.equals(version))
+		if (version == null) // this is a "source" version of the UL4ON dump
 		{
-			throw new RuntimeException("Invalid version, expected " + VERSION + ", got " + version);
+			String name = (String)decoder.load();
+			String source = (String)decoder.load();
+			String signature = (String)decoder.load();
+			String whitespace = (String)decoder.load();
+			String startdelim = (String)decoder.load();
+			String enddelim = (String)decoder.load();
+			if (startdelim == null)
+				startdelim = "<?";
+			if (enddelim == null)
+				enddelim = "?>";
+
+			// remove old attributes, set new ones, and recompile the template
+			this.pos = new Slice(false, false, -1, -1);
+			this.tag = null;
+			this.endtag = null;
+			this.content.clear();
+			this.name = name;
+			this.whitespace = Whitespace.fromString(whitespace);
+			this.startdelim = startdelim;
+			this.enddelim = enddelim;
+			this.signature = null;
+			this.signatureAST = null;
+			this.source = makeSource(source, name, startdelim, enddelim, signature);
+			compile();
 		}
-		name = (String)decoder.load();
-		source = (String)decoder.load();
-		whitespace = Whitespace.fromString((String)decoder.load());
-		startdelim = (String)decoder.load();
-		enddelim = (String)decoder.load();
-		parentTemplate = (InterpretedTemplate)decoder.load();
+		else // this is a "compiled" version of the UL4ON dump
+		{
+			if (!VERSION.equals(version))
+			{
+				throw new RuntimeException("Invalid version, expected " + VERSION + ", got " + version);
+			}
+			name = (String)decoder.load();
+			source = (String)decoder.load();
+			whitespace = Whitespace.fromString((String)decoder.load());
+			startdelim = (String)decoder.load();
+			enddelim = (String)decoder.load();
+			parentTemplate = (InterpretedTemplate)decoder.load();
 
-		loadSignatureUL4ON(decoder);
+			loadSignatureUL4ON(decoder);
 
-		super.loadUL4ON(decoder);
+			super.loadUL4ON(decoder);
+		}
 	}
 
 	private void loadSignatureUL4ON(Decoder decoder) throws IOException

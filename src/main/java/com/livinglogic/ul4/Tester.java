@@ -34,13 +34,13 @@ public class Tester
 		return buffer.toString();
 	}
 
-	public static InterpretedTemplate compileTemplate(String source, String name, InterpretedTemplate.Whitespace whitespace, String signature) throws RecognitionException
+	public static InterpretedTemplate compileTemplate(String source, String name, InterpretedTemplate.Whitespace whitespace, String signature)
 	{
 		return new InterpretedTemplate(source, name, whitespace, null, null, signature);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void main(String[] args) throws IOException, UnsupportedEncodingException, RecognitionException
+	public static void main(String[] args) throws IOException, UnsupportedEncodingException
 	{
 		InterpretedTemplate.register4UL4ON();
 

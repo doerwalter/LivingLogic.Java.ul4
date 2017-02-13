@@ -105,30 +105,16 @@ public class UL4Test
 
 	private static InterpretedTemplate getTemplate(String source, String name, InterpretedTemplate.Whitespace whitespace, Signature signature)
 	{
-		try
-		{
-			InterpretedTemplate template = new InterpretedTemplate(source, name, whitespace, null, null, signature);
-			// System.out.println(template);
-			return template;
-		}
-		catch (RecognitionException ex)
-		{
-			throw new RuntimeException(ex);
-		}
+		InterpretedTemplate template = new InterpretedTemplate(source, name, whitespace, null, null, signature);
+		// System.out.println(template);
+		return template;
 	}
 
 	private static InterpretedTemplate getTemplate(String source, String name, InterpretedTemplate.Whitespace whitespace, String signature)
 	{
-		try
-		{
-			InterpretedTemplate template = new InterpretedTemplate(source, name, whitespace, null, null, signature);
-			// System.out.println(template);
-			return template;
-		}
-		catch (RecognitionException ex)
-		{
-			throw new RuntimeException(ex);
-		}
+		InterpretedTemplate template = new InterpretedTemplate(source, name, whitespace, null, null, signature);
+		// System.out.println(template);
+		return template;
 	}
 
 	private static InterpretedTemplate getTemplate(String source, String name, InterpretedTemplate.Whitespace whitespace)

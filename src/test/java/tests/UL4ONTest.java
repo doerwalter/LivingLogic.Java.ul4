@@ -32,16 +32,9 @@ public class UL4ONTest
 {
 	private static InterpretedTemplate getTemplate(String source, String name)
 	{
-		try
-		{
-			InterpretedTemplate template = new InterpretedTemplate(source, name, InterpretedTemplate.Whitespace.keep, null, null, (String)null);
-			// System.out.println(template);
-			return template;
-		}
-		catch (RecognitionException ex)
-		{
-			throw new RuntimeException(ex);
-		}
+		InterpretedTemplate template = new InterpretedTemplate(source, name, InterpretedTemplate.Whitespace.keep, null, null, (String)null);
+		// System.out.println(template);
+		return template;
 	}
 
 	private static InterpretedTemplate getTemplate(String source)
@@ -88,6 +81,13 @@ public class UL4ONTest
 		checkRoundtrip(makeSet(1, 2, 3));
 		checkRoundtrip(template);
 		checkRoundtrip(asList(asList(1, 2, 3), asList(4, 5, 6), asList(7, 8, 9)));
+	}
+
+	@Test
+	public void template_from_source()
+	{
+		InterpretedTemplate template = (InterpretedTemplate)loads("o s'de.livinglogic.ul4.template' n s'test' s'<?print x + y?>' s'x, y=23' s'keep' n n )");
+		assertEquals("40", template.renders(makeMap("x", 17)));
 	}
 
 	@Test
