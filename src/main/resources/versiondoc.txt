@@ -1,3 +1,7 @@
+exp-116:
+--------
+* Fixed asjson() output of BigDecimal objects.
+
 exp-115:
 --------
 * UL4ON dumps can now contain UL4 templates in "source" format, i.e. the
