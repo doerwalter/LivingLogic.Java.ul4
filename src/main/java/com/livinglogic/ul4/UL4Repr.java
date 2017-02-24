@@ -50,7 +50,12 @@ import org.apache.commons.lang.StringEscapeUtils;
 public interface UL4Repr
 {
 	/**
-	 * Output this object in "repr" format.
+	 * <p>Output this object in "repr" format.</p>
+	 *
+	 * <p>To do this, methods on the {@code Formatter} object should be called,
+	 * i.e. {@link Formatter#append} to output literal text and
+	 * {@link Formatter#visit} to output the "repr" version of another object.</p>
+	 *
 	 *
 	 * @param formatter The {@code Formatter} object that handles output.
 	 */
