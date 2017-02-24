@@ -9,13 +9,21 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <p>A {@code Parameter} object is used by {@link SignatureAST} objects
+ * to store information about one particular parameter of a local template.</p>
+ *
+ * <p>This is different from a {@link ParameterDescription} in a {@link Signature}
+ * object as the default value in {@code Parameter} is an {@link AST}, as the
+ * default value has to be evaluated when the local template gets evaluated.</p>
+ */
 public class Parameter
 {
 	protected String name;
-	protected ArgumentDescription.Type type;
+	protected ParameterDescription.Type type;
 	protected AST defaultValue;
 
-	public Parameter(String name, ArgumentDescription.Type type, AST defaultValue)
+	public Parameter(String name, ParameterDescription.Type type, AST defaultValue)
 	{
 		this.name = name;
 		this.type = type;
@@ -27,7 +35,7 @@ public class Parameter
 		return name;
 	}
 
-	public ArgumentDescription.Type getType()
+	public ParameterDescription.Type getType()
 	{
 		return type;
 	}

@@ -1487,22 +1487,22 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		{
 			List paramsDump = null;
 			paramsDump = new LinkedList();
-			for (ArgumentDescription argdesc : signature)
+			for (ParameterDescription paramdesc : signature)
 			{
-				switch (argdesc.getType())
+				switch (paramdesc.getType())
 				{
 					case REQUIRED:
-						paramsDump.add(argdesc.getName());
+						paramsDump.add(paramdesc.getName());
 						break;
 					case DEFAULT:
-						paramsDump.add(argdesc.getName() + "=");
-						paramsDump.add(argdesc.getDefaultValue());
+						paramsDump.add(paramdesc.getName() + "=");
+						paramsDump.add(paramdesc.getDefaultValue());
 						break;
 					case VAR_POSITIONAL:
-						paramsDump.add("*" + argdesc.getName());
+						paramsDump.add("*" + paramdesc.getName());
 						break;
 					case VAR_KEYWORD:
-						paramsDump.add("**" + argdesc.getName());
+						paramsDump.add("**" + paramdesc.getName());
 						break;
 				}
 			}
@@ -1585,7 +1585,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			{
 				if (nextDefault)
 				{
-					signature.add(paramName, ArgumentDescription.Type.DEFAULT, param);
+					signature.add(paramName, ParameterDescription.Type.DEFAULT, param);
 					nextDefault = false;
 				}
 				else
@@ -1597,11 +1597,11 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						nextDefault = true;
 					}
 					else if (paramName.startsWith("**"))
-						signature.add(paramName.substring(2), ArgumentDescription.Type.VAR_KEYWORD, null);
+						signature.add(paramName.substring(2), ParameterDescription.Type.VAR_KEYWORD, null);
 					else if (paramName.startsWith("*"))
-						signature.add(paramName.substring(1), ArgumentDescription.Type.VAR_POSITIONAL, null);
+						signature.add(paramName.substring(1), ParameterDescription.Type.VAR_POSITIONAL, null);
 					else
-						signature.add(paramName, ArgumentDescription.Type.REQUIRED, null);
+						signature.add(paramName, ParameterDescription.Type.REQUIRED, null);
 				}
 			}
 			this.signature = signature;

@@ -774,56 +774,56 @@ signature returns [SignatureAST node]
 		/* No paramteers */
 	|
 		/* "**" parameter only */
-		'**' rkwargsname=name { $node.add($rkwargsname.text, ArgumentDescription.Type.VAR_KEYWORD, null); }
+		'**' rkwargsname=name { $node.add($rkwargsname.text, ParameterDescription.Type.VAR_KEYWORD, null); }
 		','?
 	|
 		/* "*" parameter only (and maybe **) */
-		'*' rargsname=name { $node.add($rargsname.text, ArgumentDescription.Type.VAR_POSITIONAL, null); }
+		'*' rargsname=name { $node.add($rargsname.text, ParameterDescription.Type.VAR_POSITIONAL, null); }
 		(
 			','
-			'**' rkwargsname=name { $node.add($rkwargsname.text, ArgumentDescription.Type.VAR_KEYWORD, null); }
+			'**' rkwargsname=name { $node.add($rkwargsname.text, ParameterDescription.Type.VAR_KEYWORD, null); }
 		)?
 		','?
 	|
 		/* All parameters have a default */
 		aname1=name
 		'='
-		adefault1=exprarg { $node.add($aname1.text, ArgumentDescription.Type.DEFAULT, $adefault1.node); }
+		adefault1=exprarg { $node.add($aname1.text, ParameterDescription.Type.DEFAULT, $adefault1.node); }
 		(
 			','
 			aname2=name
 			'='
-			adefault2=exprarg { $node.add($aname2.text, ArgumentDescription.Type.DEFAULT, $adefault2.node); }
+			adefault2=exprarg { $node.add($aname2.text, ParameterDescription.Type.DEFAULT, $adefault2.node); }
 		)*
 		(
 			','
-			'*' rargsname=name { $node.add($rargsname.text, ArgumentDescription.Type.VAR_POSITIONAL, null); }
+			'*' rargsname=name { $node.add($rargsname.text, ParameterDescription.Type.VAR_POSITIONAL, null); }
 		)?
 		(
 			','
-			'**' rkwargsname=name { $node.add($rkwargsname.text, ArgumentDescription.Type.VAR_KEYWORD, null); }
+			'**' rkwargsname=name { $node.add($rkwargsname.text, ParameterDescription.Type.VAR_KEYWORD, null); }
 		)?
 		','?
 	|
 		/* At least one parameter without a default */
-		aname1=name { $node.add($aname1.text, ArgumentDescription.Type.REQUIRED, null); }
+		aname1=name { $node.add($aname1.text, ParameterDescription.Type.REQUIRED, null); }
 		(
 			','
-			aname2=name { $node.add($aname2.text, ArgumentDescription.Type.REQUIRED, null); }
+			aname2=name { $node.add($aname2.text, ParameterDescription.Type.REQUIRED, null); }
 		)*
 		(
 			','
 			aname3=name
 			'='
-			adefault3=exprarg { $node.add($aname3.text, ArgumentDescription.Type.DEFAULT, $adefault3.node); }
+			adefault3=exprarg { $node.add($aname3.text, ParameterDescription.Type.DEFAULT, $adefault3.node); }
 		)*
 		(
 			','
-			'*' rargsname=name { $node.add($rargsname.text, ArgumentDescription.Type.VAR_POSITIONAL, null); }
+			'*' rargsname=name { $node.add($rargsname.text, ParameterDescription.Type.VAR_POSITIONAL, null); }
 		)?
 		(
 			','
-			'**' rkwargsname=name { $node.add($rkwargsname.text, ArgumentDescription.Type.VAR_KEYWORD, null); }
+			'**' rkwargsname=name { $node.add($rkwargsname.text, ParameterDescription.Type.VAR_KEYWORD, null); }
 		)?
 		','?
 	)

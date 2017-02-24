@@ -7,42 +7,42 @@
 package com.livinglogic.ul4;
 
 /**
- * Exception when an argument has been specified both as a positional argument and as a keyword argument.
+ * Exception when an parameter has been specified both as a positional argument and as a keyword argument.
  */
 public class DuplicateArgumentException extends ArgumentException
 {
-	public DuplicateArgumentException(String name, String argumentName, int argumentPosition)
+	public DuplicateArgumentException(String name, String parameterName, int parameterPosition)
 	{
-		super((name != null ? name + "() " : "") + "argument " + FunctionRepr.call(argumentName) + (argumentPosition >= 0 ? " (position " + argumentPosition + ")": "") + " specified multiple times");
+		super((name != null ? name + "() " : "") + "argument " + FunctionRepr.call(parameterName) + (parameterPosition >= 0 ? " (position " + parameterPosition + ")": "") + " specified multiple times");
 	}
 
-	public DuplicateArgumentException(String argumentName)
+	public DuplicateArgumentException(String parameterName)
 	{
-		this(null, argumentName, -1);
+		this(null, parameterName, -1);
 	}
 
-	public DuplicateArgumentException(String name, String argumentName)
+	public DuplicateArgumentException(String name, String parameterName)
 	{
-		this(name, argumentName, -1);
+		this(name, parameterName, -1);
 	}
 
-	public DuplicateArgumentException(UL4Name object, String argumentName)
+	public DuplicateArgumentException(UL4Name object, String parameterName)
 	{
-		this(object.nameUL4(), argumentName);
+		this(object.nameUL4(), parameterName);
 	}
 
-	public DuplicateArgumentException(Object object, String argumentName)
+	public DuplicateArgumentException(Object object, String parameterName)
 	{
-		this(object instanceof UL4Name ? ((UL4Name)object).nameUL4() : Utils.objectType(object), argumentName);
+		this(object instanceof UL4Name ? ((UL4Name)object).nameUL4() : Utils.objectType(object), parameterName);
 	}
 
-	public DuplicateArgumentException(String name, ArgumentDescription argument)
+	public DuplicateArgumentException(String name, ParameterDescription parameter)
 	{
-		this(name, argument.getName(), argument.getPosition());
+		this(name, parameter.getName(), parameter.getPosition());
 	}
 
-	public DuplicateArgumentException(UL4Name object, ArgumentDescription argument)
+	public DuplicateArgumentException(UL4Name object, ParameterDescription parameter)
 	{
-		this(object.nameUL4(), argument);
+		this(object.nameUL4(), parameter);
 	}
 }

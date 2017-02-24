@@ -40,65 +40,65 @@ public class BoundArguments implements AutoCloseable
 
 			int argsize = args != null ? args.size() : 0;
 
-			String remainingParametersName = null;
-			String remainingKeywordParametersName = null;
+			String remainingArgumentsName = null;
+			String remainingKeywordArgumentsName = null;
 
 			int i = 0;
-			for (ArgumentDescription argDesc : signature)
+			for (ParameterDescription paramDesc : signature)
 			{
-				String argName = argDesc.getName();
-				ArgumentDescription.Type type = argDesc.getType();
-				if (type == ArgumentDescription.Type.VAR_POSITIONAL)
-					remainingParametersName = argName;
-				else if (type == ArgumentDescription.Type.VAR_KEYWORD)
-					remainingKeywordParametersName = argName;
+				String argName = paramDesc.getName();
+				ParameterDescription.Type type = paramDesc.getType();
+				if (type == ParameterDescription.Type.VAR_POSITIONAL)
+					remainingArgumentsName = argName;
+				else if (type == ParameterDescription.Type.VAR_KEYWORD)
+					remainingKeywordArgumentsName = argName;
 				else
 				{
 					Object argValue = kwargs != null ? kwargs.get(argName) : null;
-					// argument has been specified via keyword
+					// parameter has been specified via keyword
 					if (argValue != null || (kwargs != null && kwargs.containsKey(argName)))
 					{
 						if (i < argsize)
-							// argument has been specified as a positional argument too
-							throw new DuplicateArgumentException(object, argDesc);
+							// parameter has been specified as a positional argument too
+							throw new DuplicateArgumentException(object, paramDesc);
 						add(argValue);
 					}
 					else
 					{
 						if (i < argsize)
-							// argument has been specified as a positional argument
+							// parameter has been specified as a positional argument
 							add(args.get(i));
-						else if (type == ArgumentDescription.Type.DEFAULT)
-							// we have a default value for this argument
-							add(argDesc.getDefaultValue());
+						else if (type == ParameterDescription.Type.DEFAULT)
+							// we have a default value for this parameter
+							add(paramDesc.getDefaultValue());
 						else
-							throw new MissingArgumentException(object, argDesc);
+							throw new MissingArgumentException(object, paramDesc);
 					}
 				}
 				++i;
 			}
 
 			// Handle additional positional arguments
-			// if there are any, and we support a "*" argument, put the remaining arguments into this argument as a list, else complain
+			// if there are any, and we support a "*" parameter, put the remaining arguments into this argument as a list, else complain
 			int expectedArgCount = signature.size();
 			if (argsize > expectedArgCount)
 			{
-				if (remainingParametersName != null)
+				if (remainingArgumentsName != null)
 					add(args.subList(expectedArgCount, argsize));
 				else
 					throw new TooManyArgumentsException(object, signature, argsize);
 			}
 			else
 			{
-				if (remainingParametersName != null)
+				if (remainingArgumentsName != null)
 					add(new ArrayList<Object>());
 			}
 
 			// Handle additional keyword arguments
-			// if there are any, and we support a "**" argument, put the remaining keyword arguments into this argument as a map, else complain
+			// if there are any, and we support a "**" parameter, put the remaining keyword arguments into this argument as a map, else complain
 			if (kwargs != null)
 			{
-				if (remainingKeywordParametersName != null)
+				if (remainingKeywordArgumentsName != null)
 				{
 					LinkedHashMap<String, Object> realRemainingKeywordArguments = new LinkedHashMap<String, Object>();
 					for (String kwargname : kwargs.keySet())
@@ -134,8 +134,8 @@ public class BoundArguments implements AutoCloseable
 			argumentsByName = new LinkedHashMap<String, Object>(argumentsByPosition.size());
 
 			int i = 0;
-			for (ArgumentDescription argDesc : signature.getParameters())
-				argumentsByName.put(argDesc.getName(), argumentsByPosition.get(i++));
+			for (ParameterDescription paramDesc : signature.getParameters())
+				argumentsByName.put(paramDesc.getName(), argumentsByPosition.get(i++));
 		}
 	}
 

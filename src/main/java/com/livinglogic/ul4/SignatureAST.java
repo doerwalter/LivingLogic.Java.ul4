@@ -35,7 +35,7 @@ public class SignatureAST extends CodeAST
 		return "signature";
 	}
 
-	public void add(String name, ArgumentDescription.Type type, AST defaultValue)
+	public void add(String name, ParameterDescription.Type type, AST defaultValue)
 	{
 		parameters.add(new Parameter(name, type, defaultValue));
 	}
@@ -125,17 +125,17 @@ public class SignatureAST extends CodeAST
 				String paramString = (String)paramDump;
 
 				if (paramString.startsWith("**"))
-					add(paramString.substring(2), ArgumentDescription.Type.VAR_KEYWORD, null);
+					add(paramString.substring(2), ParameterDescription.Type.VAR_KEYWORD, null);
 				else if (paramString.startsWith("*"))
-					add(paramString.substring(1), ArgumentDescription.Type.VAR_POSITIONAL, null);
+					add(paramString.substring(1), ParameterDescription.Type.VAR_POSITIONAL, null);
 				else
-					add(paramString, ArgumentDescription.Type.REQUIRED, null);
+					add(paramString, ParameterDescription.Type.REQUIRED, null);
 			}
 			else
 			{
 				String name = (String)((List)paramDump).get(0);
 				AST defaultValue = (AST)((List)paramDump).get(1);
-				add(name, ArgumentDescription.Type.DEFAULT, defaultValue);
+				add(name, ParameterDescription.Type.DEFAULT, defaultValue);
 			}
 		}
 	}

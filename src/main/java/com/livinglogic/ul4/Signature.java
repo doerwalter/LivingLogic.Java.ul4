@@ -15,51 +15,51 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Collection;
 
-public class Signature implements UL4Repr, Iterable<ArgumentDescription>
+public class Signature implements UL4Repr, Iterable<ParameterDescription>
 {
 	/**
-	 * All arguments in the order they were specified in the constructor.
+	 * All parameters in the order they were specified in the constructor.
 	 */
-	protected LinkedHashMap<String, ArgumentDescription> parameters;
+	protected LinkedHashMap<String, ParameterDescription> parameters;
 
 	/**
-	 * The number of arguments (excluding the {@code *} and {@code **} argument).
+	 * The number of parameters (excluding the {@code *} and {@code **} parameters).
 	 */
 	protected int size;
 
 	/**
-	 * Does the signature have a {@code *} argument (which collections any
+	 * Does the signature have a {@code *} parameter (which collections any
 	 * additional positional argument)?
 	 */
 	protected boolean hasRemainingParameters;
 
 	/**
-	 * Does the signature have a {@code **} argument (which collections any
+	 * Does the signature have a {@code **} parameter (which collections any
 	 * additional keyword argument)?
 	 */
 	protected boolean hasRemainingKeywordParameters;
 	protected List<String> parameterNames;
 
 	/**
-	 * Marker object that specifies that this argument is required.
+	 * Marker object that specifies that this parameter is required.
 	 */
 	public static Object required = new Object();
 
 	/**
-	 * Marker object that specifies that this argument collects any additional
+	 * Marker object that specifies that this parameter collects any additional
 	 * positional argument.
 	 */
 	public static Object remainingParameters = new Object();
 
 	/**
-	 * Marker object that specifies that this argument collects any additional
+	 * Marker object that specifies that this parameter collects any additional
 	 * keyword argument.
 	 */
 	public static Object remainingKeywordParameters = new Object();
 
 	public Signature(Object... args)
 	{
-		parameters = new LinkedHashMap<String, ArgumentDescription>();
+		parameters = new LinkedHashMap<String, ParameterDescription>();
 		size = 0;
 		hasRemainingParameters = false;
 		hasRemainingKeywordParameters = false;
@@ -73,20 +73,20 @@ public class Signature implements UL4Repr, Iterable<ArgumentDescription>
 			else
 			{
 				if (args[i] == required)
-					add(parameterName, ArgumentDescription.Type.REQUIRED, null);
+					add(parameterName, ParameterDescription.Type.REQUIRED, null);
 				else if (args[i] == remainingParameters)
-					add(parameterName, ArgumentDescription.Type.VAR_POSITIONAL, null);
+					add(parameterName, ParameterDescription.Type.VAR_POSITIONAL, null);
 				else if (args[i] == remainingKeywordParameters)
-					add(parameterName, ArgumentDescription.Type.VAR_KEYWORD, null);
+					add(parameterName, ParameterDescription.Type.VAR_KEYWORD, null);
 				else
-					add(parameterName, ArgumentDescription.Type.DEFAULT, args[i]);
+					add(parameterName, ParameterDescription.Type.DEFAULT, args[i]);
 			}
 		}
 	}
 
-	public void add(String name, ArgumentDescription.Type type, Object defaultValue)
+	public void add(String name, ParameterDescription.Type type, Object defaultValue)
 	{
-		parameters.put(name, new ArgumentDescription(name, parameters.size(), type, defaultValue));
+		parameters.put(name, new ParameterDescription(name, parameters.size(), type, defaultValue));
 		switch (type)
 		{
 			case REQUIRED:
@@ -112,12 +112,12 @@ public class Signature implements UL4Repr, Iterable<ArgumentDescription>
 		return hasRemainingKeywordParameters;
 	}
 
-	public Collection<ArgumentDescription> getParameters()
+	public Collection<ParameterDescription> getParameters()
 	{
 		return parameters.values();
 	}
 
-	public Iterator<ArgumentDescription> iterator()
+	public Iterator<ParameterDescription> iterator()
 	{
 		return parameters.values().iterator();
 	}
@@ -129,11 +129,11 @@ public class Signature implements UL4Repr, Iterable<ArgumentDescription>
 
 	public boolean containsParameterNamed(String argName)
 	{
-		ArgumentDescription description = parameters.get(argName);
+		ParameterDescription description = parameters.get(argName);
 		if (description == null)
 			return false;
-		ArgumentDescription.Type type = description.getType();
-		return type == ArgumentDescription.Type.REQUIRED || type == ArgumentDescription.Type.DEFAULT;
+		ParameterDescription.Type type = description.getType();
+		return type == ParameterDescription.Type.REQUIRED || type == ParameterDescription.Type.DEFAULT;
 	}
 
 	public void reprUL4(UL4Repr.Formatter formatter)
@@ -152,13 +152,13 @@ public class Signature implements UL4Repr, Iterable<ArgumentDescription>
 
 		buffer.append("(");
 
-		for (ArgumentDescription argdesc : parameters.values())
+		for (ParameterDescription paramDesc : parameters.values())
 		{
 			if (first)
 				first = false;
 			else
 				buffer.append(", ");
-			buffer.append(argdesc);
+			buffer.append(paramDesc);
 		}
 		buffer.append(")");
 

@@ -11,23 +11,23 @@ package com.livinglogic.ul4;
  */
 public class MissingArgumentException extends ArgumentException
 {
-	public MissingArgumentException(String name, String argumentName, int argumentPosition)
+	public MissingArgumentException(String name, String parameterName, int parameterPosition)
 	{
-		super(name + "(): required argument " + argumentName + " (position " + argumentPosition + ") missing");
+		super(name + "(): required argument " + parameterName + " (position " + parameterPosition + ") missing");
 	}
 
-	public MissingArgumentException(UL4Name object, String argumentName, int argumentPosition)
+	public MissingArgumentException(UL4Name object, String parameterName, int parameterPosition)
 	{
-		this(object.nameUL4(), argumentName, argumentPosition);
+		this(object.nameUL4(), parameterName, parameterPosition);
 	}
 
-	public MissingArgumentException(String name, ArgumentDescription argument)
+	public MissingArgumentException(String name, ParameterDescription parameter)
 	{
-		this(name, argument.getName(), argument.getPosition());
+		this(name, parameter.getName(), parameter.getPosition());
 	}
 
-	public MissingArgumentException(UL4Name name, ArgumentDescription argument)
+	public MissingArgumentException(UL4Name name, ParameterDescription parameter)
 	{
-		this(name.nameUL4(), argument);
+		this(name.nameUL4(), parameter);
 	}
 }

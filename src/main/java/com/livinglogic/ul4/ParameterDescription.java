@@ -7,48 +7,48 @@
 package com.livinglogic.ul4;
 
 /**
- * An {@code ArgumentDescription} object is used by {@link Signature} objects
- * to store information about one particular argument.
+ * An {@code ParameterDescription} object is used by {@link Signature} objects
+ * to store information about one particular parameter.
  */
-public class ArgumentDescription implements UL4Repr
+public class ParameterDescription implements UL4Repr
 {
 	/**
-	 * The name of the argument
+	 * The name of the parameter.
 	 */
 	protected String name;
 	/**
-	 * The position of the argument in the signature.
+	 * The position of the parameter in the signature.
 	 */
 	protected int position;
 	public enum Type
 	{
 		/**
-		 * The argument must be specified in the call.
+		 * The parameter must have an argument in the call.
 		 */
 		REQUIRED,
 		/**
-		 * The argument is optional and has a default value.
+		 * The argument is optional. The parameter has a default value.
 		 */
 		DEFAULT,
 		/**
-		 * The argument collects all additional positional arguments in a list.
+		 * The parameter collects all additional positional arguments in a list.
 		 */
 		VAR_POSITIONAL,
 		/**
-		 * The argument collects all additional keyword arguments in a map.
+		 * The parameter collects all additional keyword arguments in a map.
 		 */
 		VAR_KEYWORD,
 	}
 	/**
-	 * The type of the argument
+	 * The type of the parameter
 	 */
 	protected Type type;
 	/**
-	 * The default value of the argument (if it is of type {@code DEFAULT})
+	 * The default value of the parameter (if it is of type {@code DEFAULT})
 	 */
 	protected Object defaultValue;
 
-	public ArgumentDescription(String name, int position, Type type, Object defaultValue)
+	public ParameterDescription(String name, int position, Type type, Object defaultValue)
 	{
 		this.name = name;
 		this.position = position;
