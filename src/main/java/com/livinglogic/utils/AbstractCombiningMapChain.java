@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2014 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2017 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
