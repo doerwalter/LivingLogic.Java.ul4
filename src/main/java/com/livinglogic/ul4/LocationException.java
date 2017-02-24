@@ -170,7 +170,7 @@ public class LocationException extends RuntimeException implements UL4Attributes
 			case "innerpos":
 				return getInnerPos();
 			default:
-				return new UndefinedKey(key);
+				throw new AttributeException(key);
 		}
 	}
 }

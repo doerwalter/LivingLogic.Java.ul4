@@ -101,7 +101,14 @@ public class AttrAST extends CodeAST implements LValue
 
 	public static Object call(UL4GetItem obj, String attrname)
 	{
-		return obj.getItemUL4(attrname);
+		try
+		{
+			return obj.getItemUL4(attrname);
+		}
+		catch (AttributeException exc)
+		{
+			return new UndefinedKey(attrname);
+		}
 	}
 
 	public static Object call(UL4Attributes obj, String attrname)
@@ -110,7 +117,7 @@ public class AttrAST extends CodeAST implements LValue
 			return new BoundUL4GetAttributesMethodItems(obj);
 		else if ("values".equals(attrname) && obj instanceof UL4GetItemString)
 			return new BoundUL4GetAttributesMethodValues(obj);
-		throw new ArgumentTypeMismatchException("{!t}.{!t} not supported", obj, attrname);
+		return new UndefinedKey(attrname);
 	}
 
 	public static Object call(UL4GetItemString obj, String attrname)
@@ -121,7 +128,15 @@ public class AttrAST extends CodeAST implements LValue
 			return new BoundUL4GetAttributesMethodItems((UL4Attributes)obj);
 		else if ("values".equals(attrname) && obj instanceof UL4Attributes)
 			return new BoundUL4GetAttributesMethodValues((UL4Attributes)obj);
-		return obj.getItemStringUL4(attrname);
+		try
+		{
+			return obj.getItemStringUL4(attrname);
+		}
+		catch (AttributeException exc)
+		{
+			return new UndefinedKey(attrname);
+		}
+
 	}
 
 	public static Object call(Map obj, String attrname)
@@ -291,12 +306,26 @@ public class AttrAST extends CodeAST implements LValue
 
 	public static Object call(EvaluationContext context, UL4GetItemWithContext obj, String attrname)
 	{
-		return obj.getItemWithContextUL4(context, attrname);
+		try
+		{
+			return obj.getItemWithContextUL4(context, attrname);
+		}
+		catch (AttributeException exc)
+		{
+			return new UndefinedKey(attrname);
+		}
 	}
 
 	public static Object call(EvaluationContext context, UL4GetItemStringWithContext obj, String attrname)
 	{
-		return obj.getItemStringWithContextUL4(context, attrname);
+		try
+		{
+			return obj.getItemStringWithContextUL4(context, attrname);
+		}
+		catch (AttributeException exc)
+		{
+			return new UndefinedKey(attrname);
+		}
 	}
 
 	public static Object call(EvaluationContext context, Object obj, String attrname)
@@ -338,6 +367,10 @@ public class AttrAST extends CodeAST implements LValue
 
 	private static Object getValue(EvaluationContext context, Object obj, String attrname, String excmessage, Object value)
 	{
+		// We do not catch the {@code AttributeException} here, because {@code getValue} is
+		// only called for augmented assignment so eventually we will try to set the attribute,
+		// so we want to throw an {@code AttributeException} for non-existant attributes
+		// and {@code ReadonlyException} for read-only ones.
 		if (obj instanceof UL4GetItemString)
 			return ((UL4GetItemString)obj).getItemStringUL4(attrname);
 		else if (obj instanceof UL4GetItemStringWithContext)

@@ -145,7 +145,14 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static Object call(UL4GetItemString obj, String key)
 	{
-		return obj.getItemStringUL4(key);
+		try
+		{
+			return obj.getItemStringUL4(key);
+		}
+		catch (AttributeException exc)
+		{
+			return new UndefinedKey(key);
+		}
 	}
 
 	public static int call(Color obj, int index)
@@ -202,12 +209,26 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static Object call(EvaluationContext context, UL4GetItemWithContext obj, Object key)
 	{
-		return obj.getItemWithContextUL4(context, key);
+		try
+		{
+			return obj.getItemWithContextUL4(context, key);
+		}
+		catch (AttributeException exc)
+		{
+			return new UndefinedKey(key);
+		}
 	}
 
 	public static Object call(EvaluationContext context, UL4GetItemStringWithContext obj, String key)
 	{
-		return obj.getItemStringWithContextUL4(context, key);
+		try
+		{
+			return obj.getItemStringWithContextUL4(context, key);
+		}
+		catch (AttributeException exc)
+		{
+			return new UndefinedKey(key);
+		}
 	}
 
 	public static Object call(EvaluationContext context, Object obj, Object index)

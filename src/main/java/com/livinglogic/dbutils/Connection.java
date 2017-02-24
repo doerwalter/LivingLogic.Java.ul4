@@ -23,7 +23,7 @@ import com.livinglogic.ul4.UL4GetItemString;
 import com.livinglogic.ul4.UL4Attributes;
 import com.livinglogic.ul4.BoundMethodWithContext;
 import com.livinglogic.ul4.BoundMethod;
-import com.livinglogic.ul4.UndefinedKey;
+import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.utils.CloseableRegistry;
 import com.livinglogic.dbutils.IntVar;
 import com.livinglogic.ul4.BoundArguments;
@@ -294,7 +294,7 @@ public class Connection implements UL4GetItemString, UL4Attributes
 			case "date":
 				return DateVar.function;
 			default:
-				return new UndefinedKey(key);
+				throw new AttributeException(key);
 		}
 	}
 }

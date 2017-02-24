@@ -43,6 +43,7 @@ import com.livinglogic.ul4.FunctionRepr;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.UndefinedKey;
+import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.ul4.UL4GetItemString;
 import com.livinglogic.ul4.UL4GetItemStringWithContext;
 import com.livinglogic.ul4.UL4Attributes;
@@ -80,7 +81,7 @@ public class UL4Test
 				case "y":
 					return y;
 				default:
-					return new UndefinedKey(key);
+					throw new AttributeException(key);
 			}
 		}
 	}
@@ -1514,6 +1515,9 @@ public class UL4Test
 	@Test
 	public void operator_getitem()
 	{
+		String source = "<?print x?>";
+		InterpretedTemplate t = getTemplate(source, "t");
+
 		checkTemplateOutput("u", "<?print 'gurk'[1]?>");
 		checkTemplateOutput("u", "<?print x[1]?>", "x", "gurk");
 		checkTemplateOutput("u", "<?print 'gurk'[-3]?>");
@@ -4365,6 +4369,7 @@ public class UL4Test
 		String source = "<?print x?>";
 		InterpretedTemplate t = getTemplate(source, "t");
 
+		checkTemplateOutput("<com.livinglogic.ul4.UndefinedKey 'foo'>", "<?print repr(template.foo)?>", "template", t);
 		checkTemplateOutput("<?", "<?print template.startdelim?>", "template", t);
 		checkTemplateOutput("?>", "<?print template.enddelim?>", "template", t);
 		checkTemplateOutput(source, "<?print template.source?>", "template", t);

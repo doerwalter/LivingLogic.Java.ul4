@@ -139,7 +139,7 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 			case "code":
 				return getCodeText();
 			default:
-				return new UndefinedKey(key);
+				throw new AttributeException(key);
 		}
 	}
 

@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import com.livinglogic.ul4.UL4GetItemString;
 import com.livinglogic.ul4.UL4SetItemString;
 import com.livinglogic.ul4.UL4Attributes;
-import com.livinglogic.ul4.UndefinedKey;
+import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.ul4.ReadonlyException;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
@@ -43,7 +43,7 @@ public abstract class Var implements UL4GetItemString, UL4SetItemString, UL4Attr
 			case "value":
 				return value == noValue ? null : value;
 			default:
-				return new UndefinedKey(key);
+				throw new AttributeException(key);
 		}
 	}
 

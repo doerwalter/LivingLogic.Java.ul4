@@ -1,6 +1,15 @@
+HEAD:
+-----
+* Implementations of UL4GetItem, UL4GetItemString, UL4GetItemWithContext and
+  UL4GetItemStringWithContext are now required to throw an AttributeException
+  when the attribute doesn't exist (instead of returning an UndefinedKey
+  object).
+
+
 exp-116:
 --------
 * Fixed asjson() output of BigDecimal objects.
+
 
 exp-115:
 --------

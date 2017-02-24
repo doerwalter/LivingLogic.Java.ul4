@@ -1015,7 +1015,7 @@ public class Color implements Collection, UL4Repr, UL4GetItemString, UL4Attribut
 			case "rellum":
 				return new BoundMethodRelLum(this);
 			default:
-				return new UndefinedKey(key);
+				throw new AttributeException(key);
 		}
 	}
 }

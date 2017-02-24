@@ -394,7 +394,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 			case "microseconds":
 				return new BoundMethodMicroseconds(this);
 			default:
-				return new UndefinedKey(key);
+				throw new AttributeException(key);
 		}
 	}
 }

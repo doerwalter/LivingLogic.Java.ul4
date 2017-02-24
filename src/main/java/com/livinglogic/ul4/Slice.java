@@ -135,7 +135,7 @@ public class Slice implements UL4GetItemString, UL4Attributes, UL4Repr, UL4Type,
 			case "stop":
 				return getStop();
 			default:
-				return new UndefinedKey(key);
+				throw new AttributeException(key);
 		}
 	}
 }
