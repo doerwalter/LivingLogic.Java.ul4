@@ -17,17 +17,44 @@ import java.util.Collection;
 
 public class Signature implements UL4Repr, Iterable<ArgumentDescription>
 {
+	/**
+	 * All arguments in the order they were specified in the constructor.
+	 */
 	protected LinkedHashMap<String, ArgumentDescription> parameters;
+
+	/**
+	 * The number of arguments (excluding the {@code *} and {@code **} argument).
+	 */
 	protected int size;
+
+	/**
+	 * Does the signature have a {@code *} argument (which collections any
+	 * additional positional argument)?
+	 */
 	protected boolean hasRemainingParameters;
+
+	/**
+	 * Does the signature have a {@code **} argument (which collections any
+	 * additional keyword argument)?
+	 */
 	protected boolean hasRemainingKeywordParameters;
 	protected List<String> parameterNames;
 
 	/**
-	 * Marker objects that specify certain types of parameters.
+	 * Marker object that specifies that this argument is required.
 	 */
 	public static Object required = new Object();
+
+	/**
+	 * Marker object that specifies that this argument collects any additional
+	 * positional argument.
+	 */
 	public static Object remainingParameters = new Object();
+
+	/**
+	 * Marker object that specifies that this argument collects any additional
+	 * keyword argument.
+	 */
 	public static Object remainingKeywordParameters = new Object();
 
 	public Signature(Object... args)

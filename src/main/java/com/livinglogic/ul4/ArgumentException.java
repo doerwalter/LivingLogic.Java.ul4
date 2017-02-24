@@ -7,7 +7,7 @@
 package com.livinglogic.ul4;
 
 /**
- * Base class of all exceptions for some kind of problems with argument.
+ * Base class of all exceptions for some kind of problems with arguments.
  */
 public class ArgumentException extends UnsupportedOperationException
 {
