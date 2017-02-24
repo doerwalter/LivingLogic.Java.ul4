@@ -54,13 +54,13 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 	}
 
 	/**
-	 * Evaluate this node and return the resulting object.
+	 * <p>Evaluate this node and return the resulting object.</p>
 	 *
-	 * Evaluating the node might also have several side effects besides the
+	 * <p>Evaluating the node might also have several side effects besides the
 	 * method return value: It might write to the output stream that is stored
 	 * in the {@code context} object (as the {@link PrintAST} and
 	 * {@link PrintXAST} nodes do) and it might modify the variables map stored
-	 * in the context (like {@link VarAST} does)
+	 * in the context (like {@link VarAST} does).</p>
 	 * 
 	 * @param context The context object in which this node has to be evaluated.
 	 * @return The result of evaluating the node.

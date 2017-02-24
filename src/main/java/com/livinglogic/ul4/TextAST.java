@@ -33,7 +33,7 @@ public class TextAST extends AST
 		return template;
 	}
 
-	// Used by {@see InterpretedTemplate#compile} to fix the template references for inner templates
+	// Used by {@link InterpretedTemplate#compile} to fix the template references for inner templates
 	void setTemplate(InterpretedTemplate template)
 	{
 		this.template = template;

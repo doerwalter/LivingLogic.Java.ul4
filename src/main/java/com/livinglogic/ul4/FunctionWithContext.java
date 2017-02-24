@@ -9,6 +9,15 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <p>A {@code FunctionWithContext} object implements a function that can be
+ * called from UL4. It is similar to {@link Function} except that
+ * {@link #evaluate} gets passed the context in addition to the arguments.</p>
+ *
+ * <p>{@code FunctionWithContext} is abstract. Subclasses must implement
+ * {@link #evaluate}. Also when the function requires arguments
+ * {@link #getSignature} must be overwritten.</p>
+ */
 public abstract class FunctionWithContext implements UL4CallWithContext, UL4Name, UL4Type, UL4Repr
 {
 	public abstract String nameUL4();
@@ -20,6 +29,11 @@ public abstract class FunctionWithContext implements UL4CallWithContext, UL4Name
 
 	private static final Signature signature = new Signature(); // default signature: no arguments
 
+	/**
+	 * <p>Return a signature for this function.</p>
+	 *
+	 * <p>The default returns a signature without any arguments.</p>
+	 */
 	protected Signature getSignature()
 	{
 		return signature;
@@ -42,6 +56,13 @@ public abstract class FunctionWithContext implements UL4CallWithContext, UL4Name
 		return result;
 	}
 
+	/**
+	 * Evaluate this function and return the result.
+	 *
+	 * @param context The context of the call.
+	 * @param args The arguments for the call.
+	 * @return The result of the function call.
+	 */
 	public abstract Object evaluate(EvaluationContext context, BoundArguments args);
 
 	public void reprUL4(UL4Repr.Formatter formatter)
