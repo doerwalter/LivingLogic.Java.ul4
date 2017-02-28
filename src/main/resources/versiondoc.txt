@@ -1,9 +1,13 @@
-HEAD:
------
+exp-117:
+--------
 * Implementations of UL4GetItem, UL4GetItemString, UL4GetItemWithContext and
   UL4GetItemStringWithContext are now required to throw an AttributeException
   when the attribute doesn't exist (instead of returning an UndefinedKey
   object).
+* Added <?doc?> tag which is available as via the Java method
+  InterpretedTemplate.getDoc() or the doc attribute in UL4.
+* The template signature is now accessible as the signature attribute
+  (and supports str() and repr()).
 
 
 exp-116:

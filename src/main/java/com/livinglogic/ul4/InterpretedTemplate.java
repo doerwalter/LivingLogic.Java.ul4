@@ -42,7 +42,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * The version number used in the UL4ON dump of the template.
 	 */
-	public static final String VERSION = "39";
+	public static final String VERSION = "41";
 
 	/**
 	 * The name of the template/function (defaults to {@code null})
@@ -93,6 +93,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public SignatureAST signatureAST = null;
 
 	/**
+	 * The slice for the docstring (from a {@code <?doc?>} tag).
+	 */
+	public Slice docPos = null;
+	/**
 	 * The template/function source (of the top-level template, i.e. subtemplates always get the full source).
 	 */
 	public String source = null;
@@ -115,6 +119,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		this.enddelim = enddelim != null ? enddelim : "?>";
 		this.signature = null;
 		this.signatureAST = null;
+		this.docPos = null;
 		this.parentTemplate = null;
 	}
 
@@ -131,6 +136,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		this.enddelim = enddelim != null ? enddelim : "?>";
 		this.signature = null;
 		this.signatureAST = null;
+		this.docPos = null;
 		compile();
 	}
 
@@ -185,6 +191,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		this.enddelim = enddelim != null ? enddelim : "?>";
 		this.signature = null;
 		this.signatureAST = signature;
+		this.docPos = null;
 	}
 
 	protected void handleSpecialTags(List<Line> lines)
@@ -455,6 +462,14 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							// already handled
 							break;
 						}
+						case "doc":
+						{
+							// Only use the first {@code <?doc?>} tag in each template, ignore all later ones
+							InterpretedTemplate innerTemplate = templateStack.peek();
+							if (innerTemplate.docPos == null)
+								innerTemplate.docPos = tag.getCodePos();
+							break;
+						}
 						case "print":
 						{
 							UL4Parser parser = getParser(tag);
@@ -640,6 +655,11 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public Whitespace getWhitespace()
 	{
 		return whitespace;
+	}
+
+	public String getDoc()
+	{
+		return docPos != null ? docPos.getFrom(source) : null;
 	}
 
 	public String getStartDelim()
@@ -1175,7 +1195,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public List<Line> tokenizeTags()
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|render)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|render)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Line> lines = new LinkedList<Line>();
 		boolean wasTag = false;
 		if (source != null)
@@ -1474,6 +1494,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		encoder.dump(whitespace.toString());
 		encoder.dump(startdelim);
 		encoder.dump(enddelim);
+		encoder.dump(docPos);
 		encoder.dump(parentTemplate);
 
 		dumpSignatureUL4ON(encoder);
@@ -1553,6 +1574,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			whitespace = Whitespace.fromString((String)decoder.load());
 			startdelim = (String)decoder.load();
 			enddelim = (String)decoder.load();
+			docPos = (Slice)decoder.load();
 			parentTemplate = (InterpretedTemplate)decoder.load();
 
 			loadSignatureUL4ON(decoder);
@@ -1660,7 +1682,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "startdelim", "enddelim", "source", "parenttemplate", "renders", "render");
+	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "startdelim", "enddelim", "signature", "doc", "source", "parenttemplate", "renders", "render");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -1679,6 +1701,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				return startdelim;
 			case "enddelim":
 				return enddelim;
+			case "signature":
+				return signature;
+			case "doc":
+				return getDoc();
 			case "source":
 				return source;
 			case "parenttemplate":

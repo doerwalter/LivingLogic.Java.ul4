@@ -4333,6 +4333,16 @@ public class UL4Test
 	}
 
 	@Test
+	public void tag_doc()
+	{
+		InterpretedTemplate t = getTemplate("<?doc foo?><?def inner?><?doc innerfoo?><?doc innerbar?><?end def?><?doc bar?><?printx inner.doc?>", "t");
+
+		assertEquals("foo", t.getDoc());
+
+		checkTemplateOutput("innerfoo", t);
+	}
+
+	@Test
 	public void exception()
 	{
 		InterpretedTemplate t = getTemplate("<?print 2*x?>", "t");
@@ -4403,6 +4413,15 @@ public class UL4Test
 
 		checkTemplateOutput("text", "<?print template.content[1].type?>", "template", t);
 		checkTemplateOutput("foo", "<?print template.content[1].text?>", "template", t);
+	}
+
+	@Test
+	public void templateattributes_4()
+	{
+		String source = "<?doc foo?>";
+		InterpretedTemplate t = getTemplate(source);
+
+		checkTemplateOutput("foo", "<?print template.doc?>", "template", t);
 	}
 
 	@Test
@@ -4675,6 +4694,8 @@ public class UL4Test
 	public void template_str()
 	{
 		universaltemplate().toString();
+
+		checkTemplateOutput("(x=17, y=@(2000-02-29))", "<?def f(x=17, y=@(2000-02-29))?><?return x+y?><?end def?><?print str(f.signature)?>");
 	}
 
 	@Test
@@ -4955,5 +4976,7 @@ public class UL4Test
 
 		template = getTemplate("<?def x(a, b=0xff)?><?end def?><?print repr(x)?>", "foo", InterpretedTemplate.Whitespace.keep);
 		checkTemplateOutput("<com.livinglogic.ul4.TemplateClosure for <com.livinglogic.ul4.InterpretedTemplate name='x' signatureAST=(a, b=0xff)>>", template);
+
+		checkTemplateOutput("<com.livinglogic.ul4.Signature (x=17, y=@(2000-02-29))>", "<?def f(x=17, y=@(2000-02-29))?><?return x+y?><?end def?><?print repr(f.signature)?>");
 	}
 }

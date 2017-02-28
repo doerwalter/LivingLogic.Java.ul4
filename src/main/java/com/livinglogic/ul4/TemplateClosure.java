@@ -154,6 +154,8 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 				return new BoundMethodRenderS(this);
 			case "render":
 				return new BoundMethodRender(this);
+			case "signature":
+				return signature;
 			default:
 				return template.getItemStringUL4(key);
 		}
