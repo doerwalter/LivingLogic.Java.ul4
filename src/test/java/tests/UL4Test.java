@@ -4978,5 +4978,6 @@ public class UL4Test
 		checkTemplateOutput("<com.livinglogic.ul4.TemplateClosure for <com.livinglogic.ul4.InterpretedTemplate name='x' signatureAST=(a, b=0xff)>>", template);
 
 		checkTemplateOutput("<com.livinglogic.ul4.Signature (x=17, y=@(2000-02-29))>", "<?def f(x=17, y=@(2000-02-29))?><?return x+y?><?end def?><?print repr(f.signature)?>");
+		checkTemplateOutput("<com.livinglogic.ul4.Signature (bad=[...])>", "<?code bad = []?><?code bad.append(bad)?><?def f(bad=bad)?><?end def?><?print repr(f.signature)?>");
 	}
 }
