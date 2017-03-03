@@ -31,7 +31,7 @@ public class RenderAST extends CallRenderAST
 	}
 
 	/**
-	 * This is used to "convert" a {@code CallAST} that comes out of the parser into a {@code RenderAST}
+	 * This is used to "convert" a {@link CallAST} that comes out of the parser into a {@code RenderAST}
 	 */
 	public RenderAST(CallAST call)
 	{
@@ -104,6 +104,8 @@ public class RenderAST extends CallRenderAST
 
 	public void call(EvaluationContext context, UL4RenderWithContext obj, List<Object> args, Map<String, Object> kwargs)
 	{
+		if (obj == null)
+			throw new NotRenderableException(obj);
 		if (indent != null)
 			context.pushIndent(indent.getCodeText());
 		obj.renderUL4(context, args, kwargs);

@@ -1,3 +1,9 @@
+exp-119:
+--------
+* Rendering or calling null now reliably produces a
+  NotRenderableException/NotCallableException.
+
+
 exp-118:
 --------
 * Fixed a minor bug when loading an UL4ON dump of a template in source form.

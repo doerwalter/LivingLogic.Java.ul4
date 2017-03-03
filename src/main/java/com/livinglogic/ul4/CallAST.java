@@ -79,11 +79,15 @@ public class CallAST extends CallRenderAST
 
 	public static Object call(UL4Call obj, List<Object> args, Map<String, Object> kwargs)
 	{
+		if (obj == null)
+			throw new NotCallableException(obj);
 		return obj.callUL4(args, kwargs);
 	}
 
 	public static Object call(EvaluationContext context, UL4CallWithContext obj, List<Object> args, Map<String, Object> kwargs)
 	{
+		if (obj == null)
+			throw new NotCallableException(obj);
 		return obj.callUL4(context, args, kwargs);
 	}
 
