@@ -1560,6 +1560,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			this.enddelim = enddelim;
 			this.signature = null;
 			this.signatureAST = null;
+			this.docPos = null;
 			this.source = makeSource(source, name, startdelim, enddelim, signature);
 			compile();
 		}

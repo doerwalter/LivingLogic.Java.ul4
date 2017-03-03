@@ -1,3 +1,8 @@
+exp-118:
+--------
+* Fixed a minor bug when loading an UL4ON dump of a template in source form.
+
+
 exp-117:
 --------
 * Implementations of UL4GetItem, UL4GetItemString, UL4GetItemWithContext and
