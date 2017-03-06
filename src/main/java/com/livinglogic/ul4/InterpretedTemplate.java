@@ -214,9 +214,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						{
 							definition = parser.definition();
 						}
-						catch (RecognitionException exc)
+						catch (Exception exc)
 						{
-							throw new RuntimeException(exc);
+							throw new LocationException(exc, tag);
 						}
 						name = definition.getName();
 						SignatureAST signatureAST = definition.getSignature();

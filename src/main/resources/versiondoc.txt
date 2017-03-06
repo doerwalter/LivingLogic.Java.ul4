@@ -1,3 +1,9 @@
+exp-120:
+--------
+* When compiling the template signature in an <?ul4?> fails the exception will
+  now be properly wrapped to show the <?ul4?> tag in which the exceptions
+  happened.
+
 exp-119:
 --------
 * Rendering or calling null now reliably produces a
