@@ -1,8 +1,15 @@
+exp-121:
+--------
+* When deeserializing UL4ON dumps it's now possible to pass in a
+  "custom type registry" to customize which object get created.
+
+
 exp-120:
 --------
 * When compiling the template signature in an <?ul4?> tag fails the exception
   will now be properly wrapped to show the <?ul4?> tag in which the exceptions
   happened.
+
 
 exp-119:
 --------
