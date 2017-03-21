@@ -699,7 +699,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public static InterpretedTemplate loads(String data)
 	{
-		return (InterpretedTemplate)Utils.loads(data);
+		return (InterpretedTemplate)Utils.loads(data, null);
 	}
 
 	/**
@@ -710,7 +710,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public static InterpretedTemplate load(Reader reader) throws IOException
 	{
-		return (InterpretedTemplate)Utils.load(reader);
+		return (InterpretedTemplate)Utils.load(reader, null);
 	}
 
 	/**

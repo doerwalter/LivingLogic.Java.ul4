@@ -55,16 +55,26 @@ public class Decoder
 	private Map<Object, Object> keys = new HashMap<Object, Object>();
 
 	/**
-	 * Create an {@code Decoder} object for reading serialized UL4ON output
-	 * from the {@code Reader} {@code reader}.
+	 * Custom type registry. Any type name not found in this registry will be
+	 * looked up in the globals registry {@link Utils#registry}
 	 */
-	public Decoder(Reader reader)
+	private Map<String, ObjectFactory> registry = null;
+
+	/**
+	 * Create an {@code Decoder} object for reading serialized UL4ON dump
+	 * from the {@code Reader} {@code reader}.
+	 *
+	 * @param reader the {@code Reader} from which the UL4ON dump will be read.
+	 * @param registry custom type registry.
+	 */
+	public Decoder(Reader reader, Map<String, ObjectFactory> registry)
 	{
 		this.reader = reader;
+		this.registry = registry;
 	}
 
 	/**
-	 * Reads a object in the UL4ON object serialization from the reader and returns it.
+	 * Reads a object in the UL4ON dump from the reader and returns it.
 	 * @return the object read from the stream
 	 * @throws IOException if reading from the stream fails
 	 */
@@ -376,10 +386,17 @@ public class Decoder
 
 			String name = (String)load(-2);
 
-			ObjectFactory factory = Utils.registry.get(name);
+			ObjectFactory factory = null;
+
+			if (registry != null)
+				factory = registry.get(name);
 
 			if (factory == null)
-				throw new DecoderException(position, "can't load object of type " + name);
+				factory = Utils.registry.get(name);
+
+			if (factory == null)
+				throw new DecoderException(position, "can't load object of type " + FunctionRepr.call(name));
+
 			UL4ONSerializable result = factory.create();
 
 			if (typecode == 'O')

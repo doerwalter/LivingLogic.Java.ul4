@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.IOException;
 
 import static java.util.Arrays.asList;
 
@@ -14,6 +15,10 @@ import static org.junit.Assert.assertTrue;
 
 import com.livinglogic.ul4on.DecoderException;
 
+import com.livinglogic.ul4on.UL4ONSerializable;
+import com.livinglogic.ul4on.ObjectFactory;
+import com.livinglogic.ul4on.Encoder;
+import com.livinglogic.ul4on.Decoder;
 import static com.livinglogic.ul4on.Utils.dumps;
 import static com.livinglogic.ul4on.Utils.loads;
 import static com.livinglogic.utils.MapUtils.makeMap;
@@ -30,6 +35,53 @@ import org.junit.runner.RunWith;
 @RunWith(CauseTestRunner.class)
 public class UL4ONTest
 {
+	private static class Point implements UL4ONSerializable
+	{
+		int x;
+		int y;
+
+		Point(int x, int y)
+		{
+			this.x = x;
+			this.y = y;
+		}
+
+		public int identity()
+		{
+			return 1;
+		}
+
+		public String getUL4ONName()
+		{
+			return "de.livingapps.appdd.test.point";
+		}
+
+		public void dumpUL4ON(Encoder encoder) throws IOException
+		{
+			encoder.dump(x);
+			encoder.dump(y);
+		}
+
+		public void loadUL4ON(Decoder decoder) throws IOException
+		{
+			x = (int)decoder.load();
+			y = (int)decoder.load();
+		}
+	}
+
+	private static class Point2 extends Point
+	{
+		public Point2(int x, int y)
+		{
+			super(x, y);
+		}
+
+		public int identity()
+		{
+			return 2;
+		}
+	}
+
 	private static InterpretedTemplate getTemplate(String source, String name)
 	{
 		InterpretedTemplate template = new InterpretedTemplate(source, name, InterpretedTemplate.Whitespace.keep, null, null, (String)null);
@@ -45,7 +97,7 @@ public class UL4ONTest
 	private static void checkRoundtrip(Object object)
 	{
 		String output = dumps(object);
-		Object recreated = loads(output);
+		Object recreated = loads(output, null);
 
 		// If we have an InterpretedTemplate, check the output instead
 		if ((recreated instanceof InterpretedTemplate) && (object instanceof InterpretedTemplate))
@@ -86,7 +138,7 @@ public class UL4ONTest
 	@Test
 	public void template_from_source()
 	{
-		InterpretedTemplate template = (InterpretedTemplate)loads("o s'de.livinglogic.ul4.template' n s'test' s'<?print x + y?>' s'x, y=23' s'keep' n n )");
+		InterpretedTemplate template = (InterpretedTemplate)loads("o s'de.livinglogic.ul4.template' n s'test' s'<?print x + y?>' s'x, y=23' s'keep' n n )", null);
 		assertEquals("40", template.renders(makeMap("x", 17)));
 	}
 
@@ -96,15 +148,39 @@ public class UL4ONTest
 		List l1 = new ArrayList();
 		l1.add(l1);
 
-		List l2 = (List)loads(dumps(l1));
+		List l2 = (List)loads(dumps(l1), null);
 
 		assertEquals(l2.size(), 1);
 		assertTrue(l2.get(0) == l2);
 	}
 
+	@Test
+	public void custom_class()
+	{
+		Point p1 = new Point(17, 23);
+
+		Point p2 = (Point)loads(dumps(p1), makeMap("de.livingapps.appdd.test.point", new ObjectFactory(){ public UL4ONSerializable create() { return new Point(0, 0); }}));
+
+		assertEquals(p2.x, 17);
+		assertEquals(p2.y, 23);
+		assertEquals(p2.identity(), 1);
+	}
+
+	@Test
+	public void custom_class_registry()
+	{
+		Point p1 = new Point(17, 23);
+
+		Point p2 = (Point)loads(dumps(p1), makeMap("de.livingapps.appdd.test.point", new ObjectFactory(){ public UL4ONSerializable create() { return new Point2(0, 0); }}));
+
+		assertEquals(p2.x, 17);
+		assertEquals(p2.y, 23);
+		assertEquals(p2.identity(), 2);
+	}
+
 	@CauseTest(expectedCause=DecoderException.class)
 	public void broken()
 	{
-		Object x = loads("l i42 k23 ]");
+		Object x = loads("l i42 k23 ]", null);
 	}
 }

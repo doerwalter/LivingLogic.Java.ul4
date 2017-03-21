@@ -44,7 +44,7 @@ public class Tester
 	{
 		InterpretedTemplate.register4UL4ON();
 
-		Map<String, Object> data = (Map<String, Object>)loads(readStdIn());
+		Map<String, Object> data = (Map<String, Object>)loads(readStdIn(), null);
 
 		String command = (String)data.get("command");
 		Object templateString = data.get("template");

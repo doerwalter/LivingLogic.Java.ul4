@@ -93,13 +93,14 @@ public class Utils
 	/**
 	 * Load an object by reading in the UL4ON object serialization format from {@code reader}.
 	 * @param reader The Reader from which to read the object
+	 * @param registry custom type registry
 	 * @return the deserialized object
 	 */
-	public static Object load(Reader reader) throws IOException
+	public static Object load(Reader reader, Map<String, ObjectFactory> registry) throws IOException
 	{
 		try
 		{
-			return new Decoder(reader).load();
+			return new Decoder(reader, registry).load();
 		}
 		catch (IOException e)
 		{
@@ -113,11 +114,11 @@ public class Utils
 	 * @param s The object in serialized form
 	 * @return the deserialized object
 	 */
-	public static Object loads(String s)
+	public static Object loads(String s, Map<String, ObjectFactory> registry)
 	{
 		try
 		{
-			return load(new StringReader(s));
+			return load(new StringReader(s), registry);
 		}
 		catch (IOException e)
 		{
@@ -131,9 +132,9 @@ public class Utils
 	 * @param clob The CLOB that contains the object in serialized form
 	 * @return the deserialized object
 	 */
-	public static Object load(Clob clob) throws IOException, SQLException
+	public static Object load(Clob clob, Map<String, ObjectFactory> registry) throws IOException, SQLException
 	{
-		return load(clob.getCharacterStream());
+		return load(clob.getCharacterStream(), registry);
 	}
 
 	private static String readChars(Reader reader, int count) throws IOException
