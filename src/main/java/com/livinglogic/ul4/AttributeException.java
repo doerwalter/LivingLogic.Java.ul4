@@ -15,8 +15,8 @@ package com.livinglogic.ul4;
  */
 public class AttributeException extends RuntimeException
 {
-	public AttributeException(Object key)
+	public AttributeException(Object object, Object key)
 	{
-		super("No such attribute " + FunctionRepr.call(key) + "!");
+		super(Utils.formatMessage("Object of type {!t} has no attribute {!r}!", object, key));
 	}
 }

@@ -136,7 +136,6 @@ public class AttrAST extends CodeAST implements LValue
 		{
 			return new UndefinedKey(attrname);
 		}
-
 	}
 
 	public static Object call(Map obj, String attrname)

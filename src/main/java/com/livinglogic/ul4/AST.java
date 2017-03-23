@@ -213,7 +213,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 			case "pos":
 				return pos;
 			default:
-				throw new AttributeException(key);
+				throw new AttributeException(this, key);
 		}
 	}
 

@@ -180,7 +180,7 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 			case "months":
 				return new BoundMethodMonths(this);
 			default:
-				throw new AttributeException(key);
+				throw new AttributeException(this, key);
 		}
 	}
 }

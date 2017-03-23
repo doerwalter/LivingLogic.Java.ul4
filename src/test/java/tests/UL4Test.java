@@ -81,7 +81,7 @@ public class UL4Test
 				case "y":
 					return y;
 				default:
-					throw new AttributeException(key);
+					throw new AttributeException(this, key);
 			}
 		}
 	}

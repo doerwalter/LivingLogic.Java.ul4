@@ -294,7 +294,7 @@ public class Connection implements UL4GetItemString, UL4Attributes
 			case "date":
 				return DateVar.function;
 			default:
-				throw new AttributeException(key);
+				throw new AttributeException(this, key);
 		}
 	}
 }

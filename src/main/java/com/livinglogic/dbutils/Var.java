@@ -43,7 +43,7 @@ public abstract class Var implements UL4GetItemString, UL4SetItemString, UL4Attr
 			case "value":
 				return value == noValue ? null : value;
 			default:
-				throw new AttributeException(key);
+				throw new AttributeException(this, key);
 		}
 	}
 
