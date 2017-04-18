@@ -1,3 +1,9 @@
+exp-122:
+--------
+* The AttributeException constructor now has two arguments: The object and the
+  key.
+
+
 exp-121:
 --------
 * When deeserializing UL4ON dumps it's now possible to pass in a
