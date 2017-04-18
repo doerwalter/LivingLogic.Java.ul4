@@ -77,8 +77,8 @@ public class Tester
 		else
 			throw new RuntimeException("unknown command " + FunctionRepr.call(command));
 
-		// We can't use ``System.out.print`` here, because this gives us no control over the encoding
-		// Use ``System.out.write`` to make sure the output is in UTF-8
+		// We can't use {@code System.out.print} here, because this gives us no control over the encoding
+		// Use {@code System.out.write} to make sure the output is in UTF-8
 		byte[] outputBytes = output.getBytes("utf-8");
 		System.out.write(outputBytes, 0, outputBytes.length);
 	}

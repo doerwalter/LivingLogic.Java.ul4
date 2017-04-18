@@ -4621,7 +4621,7 @@ public class UL4Test
 	@Test
 	public void notContainmentPrecedence()
 	{
-		// Check that ``not x in y`` is parsed as ``not (x in y)``
+		// Check that {@code not x in y} is parsed as {@code not (x in y)}
 		checkTemplateOutput("True", "<?print not 'x' in 'gurk'?>");
 	}
 
