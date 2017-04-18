@@ -34,27 +34,9 @@ public class FunctionType extends Function
 
 	public static String call(Object obj)
 	{
-		if (obj == null)
-			return "none";
-		else if (obj instanceof String)
-			return "str";
-		else if (obj instanceof Boolean)
-			return "bool";
-		else if (obj instanceof Integer || obj instanceof Long || obj instanceof Byte || obj instanceof Short || obj instanceof BigInteger)
-			return "int";
-		else if (obj instanceof Double || obj instanceof Float || obj instanceof BigDecimal)
-			return "float";
-		else if (obj instanceof Date)
-			return "date";
-		else if (obj instanceof UL4Type)
+		if (obj instanceof UL4Type)
 			return ((UL4Type)obj).typeUL4();
-		else if (obj instanceof List)
-			return "list";
-		else if (obj instanceof Set)
-			return "set";
-		else if (obj instanceof Map)
-			return "dict";
-		else // This includes instances of {@code Throwable}
-			return obj.getClass().getName();
+		else
+			return Proto.get(obj).name();
 	}
 }

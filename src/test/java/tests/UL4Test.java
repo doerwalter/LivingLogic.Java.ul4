@@ -44,6 +44,7 @@ import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.ul4.AttributeException;
+import com.livinglogic.ul4.UL4Bool;
 import com.livinglogic.ul4.UL4GetItemString;
 import com.livinglogic.ul4.UL4GetItemStringWithContext;
 import com.livinglogic.ul4.UL4Attributes;
@@ -56,7 +57,7 @@ import com.livinglogic.dbutils.Connection;
 @RunWith(CauseTestRunner.class)
 public class UL4Test
 {
-	private static class Point implements UL4GetItemString, UL4Attributes
+	private static class Point implements UL4Bool, UL4GetItemString, UL4Attributes
 	{
 		int x;
 		int y;
@@ -65,6 +66,11 @@ public class UL4Test
 		{
 			this.x = x;
 			this.y = y;
+		}
+
+		public boolean boolUL4()
+		{
+			return x != 0 || x != 0;
 		}
 
 		public Set<String> getAttributeNamesUL4()
@@ -1932,8 +1938,11 @@ public class UL4Test
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", false);
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", 0);
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", 42);
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", new Long(42));
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", new BigInteger("0"));
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", new BigInteger("42"));
+		checkTemplateOutput("False", "<?print bool(data)?>", "data", 0.0f);
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", 4.2f);
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", 0.0);
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", 4.2);
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", new BigDecimal("0.000"));
@@ -1946,6 +1955,11 @@ public class UL4Test
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("False", "<?print bool(data)?>", "data", makeMap());
 		checkTemplateOutput("True", "<?print bool(data)?>", "data", makeMap("foo", "bar"));
+		checkTemplateOutput("False", "<?print bool(data)?>", "data", makeSet());
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", makeSet("foo", "bar"));
+		checkTemplateOutput("False", "<?print bool(data)?>", "data", new Point(0, 0));
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", new Point(17, 23));
+		checkTemplateOutput("True", "<?print bool(data)?>", "data", new Object());
 		checkTemplateOutput("True", "<?print bool(obj=data)?>", "data", true);
 	}
 
