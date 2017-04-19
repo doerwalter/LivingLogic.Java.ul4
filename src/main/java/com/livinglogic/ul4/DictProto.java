@@ -14,11 +14,13 @@ public class DictProto extends Proto
 
 	public static String name = "dict";
 
+	@Override
 	public String name()
 	{
 		return name;
 	}
 
+	@Override
 	public boolean bool(Object object)
 	{
 		return bool((Map)object);
@@ -29,6 +31,7 @@ public class DictProto extends Proto
 		return object != null && !object.isEmpty();
 	}
 
+	@Override
 	public int len(Object object)
 	{
 		return len((Map)object);
@@ -37,5 +40,34 @@ public class DictProto extends Proto
 	public static int len(Map object)
 	{
 		return object.size();
+	}
+
+	@Override
+	public Object getAttr(Object object, String key)
+	{
+		return getAttr((Map)object, key);
+	}
+
+	public static Object getAttr(Map object, String key)
+	{
+		switch (key)
+		{
+			case  "items":
+				return new BoundDictMethodItems(object);
+			case  "values":
+				return new BoundDictMethodValues(object);
+			case  "get":
+				return new BoundDictMethodGet(object);
+			case  "update":
+				return new BoundDictMethodUpdate(object);
+			case  "clear":
+				return new BoundDictMethodClear(object);
+			default:
+				Object result = object.get(key);
+
+				if ((result == null) && !object.containsKey(key))
+					return new UndefinedKey(key);
+				return result;
+		}
 	}
 }

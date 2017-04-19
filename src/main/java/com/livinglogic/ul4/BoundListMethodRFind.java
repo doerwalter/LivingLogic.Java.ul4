@@ -45,7 +45,7 @@ public class BoundListMethodRFind extends BoundMethod<List>
 	public static int call(List object, Object sub, int start, int end)
 	{
 		start = Utils.getSliceStartPos(object.size(), start);
-		end = Utils.getSliceStartPos(object.size(), end);
+		end = Utils.getSliceEndPos(object.size(), end);
 		object = object.subList(start, end);
 		int pos = object.lastIndexOf(sub);
 		if (pos != -1)

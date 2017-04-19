@@ -19,11 +19,13 @@ public class BoolProto extends Proto
 
 	public static String name = "bool";
 
+	@Override
 	public String name()
 	{
 		return name;
 	}
 
+	@Override
 	public boolean bool(Object object)
 	{
 		return bool((Boolean)object);

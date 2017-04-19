@@ -19,11 +19,13 @@ public class NoneProto extends Proto
 
 	public static String name = "none";
 
+	@Override
 	public String name()
 	{
 		return name;
 	}
 
+	@Override
 	public boolean bool(Object object)
 	{
 		return bool();

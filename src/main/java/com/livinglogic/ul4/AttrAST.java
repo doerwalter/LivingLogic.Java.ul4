@@ -140,144 +140,32 @@ public class AttrAST extends CodeAST implements LValue
 
 	public static Object call(Map obj, String attrname)
 	{
-		switch (attrname)
-		{
-			case  "items":
-				return new BoundDictMethodItems(obj);
-			case  "values":
-				return new BoundDictMethodValues(obj);
-			case  "get":
-				return new BoundDictMethodGet(obj);
-			case  "update":
-				return new BoundDictMethodUpdate(obj);
-			case  "clear":
-				return new BoundDictMethodClear(obj);
-			default:
-				Object result = obj.get(attrname);
-
-				if ((result == null) && !obj.containsKey(attrname))
-					return new UndefinedKey(attrname);
-				return result;
-		}
+		return DictProto.getAttr(obj, attrname);
 	}
 
 	public static Object call(Set obj, String attrname)
 	{
-		switch (attrname)
-		{
-			case "add":
-				return new BoundSetMethodAdd(obj);
-			case "clear":
-				return new BoundSetMethodClear(obj);
-			default:
-				return new UndefinedKey(attrname);
-		}
+		return SetProto.getAttr(obj, attrname);
 	}
 
 	public static Object call(List obj, String attrname)
 	{
-		switch (attrname)
-		{
-			case "append":
-				return new BoundListMethodAppend(obj);
-			case "insert":
-				return new BoundListMethodInsert(obj);
-			case "pop":
-				return new BoundListMethodPop(obj);
-			case "count":
-				return new BoundListMethodCount(obj);
-			case "find":
-				return new BoundListMethodFind(obj);
-			case "rfind":
-				return new BoundListMethodRFind(obj);
-			default:
-				return new UndefinedKey(attrname);
-		}
+		return ListProto.getAttr(obj, attrname);
 	}
 
 	public static Object call(String obj, String attrname)
 	{
-		switch (attrname)
-		{
-			case "split":
-				return new BoundStringMethodSplit(obj);
-			case "rsplit":
-				return new BoundStringMethodRSplit(obj);
-			case "splitlines":
-				return new BoundStringMethodSplitlines(obj);
-			case "strip":
-				return new BoundStringMethodStrip(obj);
-			case "lstrip":
-				return new BoundStringMethodLStrip(obj);
-			case "rstrip":
-				return new BoundStringMethodRStrip(obj);
-			case "upper":
-				return new BoundStringMethodUpper(obj);
-			case "lower":
-				return new BoundStringMethodLower(obj);
-			case "capitalize":
-				return new BoundStringMethodCapitalize(obj);
-			case "startswith":
-				return new BoundStringMethodStartsWith(obj);
-			case "endswith":
-				return new BoundStringMethodEndsWith(obj);
-			case "replace":
-				return new BoundStringMethodReplace(obj);
-			case "count":
-				return new BoundStringMethodCount(obj);
-			case "find":
-				return new BoundStringMethodFind(obj);
-			case "rfind":
-				return new BoundStringMethodRFind(obj);
-			case "join":
-				return new BoundStringMethodJoin(obj);
-			default:
-				return new UndefinedKey(attrname);
-		}
+		return StrProto.getAttr(obj, attrname);
 	}
 
 	public static Object call(Date obj, String attrname)
 	{
-		switch (attrname)
-		{
-			case "year":
-				return new BoundDateMethodYear(obj);
-			case "month":
-				return new BoundDateMethodMonth(obj);
-			case "day":
-				return new BoundDateMethodDay(obj);
-			case "hour":
-				return new BoundDateMethodHour(obj);
-			case "minute":
-				return new BoundDateMethodMinute(obj);
-			case "second":
-				return new BoundDateMethodSecond(obj);
-			case "microsecond":
-				return new BoundDateMethodMicrosecond(obj);
-			case "weekday":
-				return new BoundDateMethodWeekday(obj);
-			case "yearday":
-				return new BoundDateMethodYearday(obj);
-			case "week":
-				return new BoundDateMethodWeek(obj);
-			case "isoformat":
-				return new BoundDateMethodISOFormat(obj);
-			case "mimeformat":
-				return new BoundDateMethodMIMEFormat(obj);
-			default:
-				return new UndefinedKey(attrname);
-		}
+		return DateProto.getAttr(obj, attrname);
 	}
 
 	public static Object call(Throwable obj, String attrname)
 	{
-		switch (attrname)
-		{
-			case "cause":
-				return obj.getCause();
-			default:
-				return new UndefinedKey(attrname);
-		}
+		return new ExceptionProto(obj.getClass()).getAttr(obj, attrname);
 	}
 
 	public static Object call(Object obj, String attrname)

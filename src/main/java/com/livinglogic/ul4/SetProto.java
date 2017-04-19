@@ -14,11 +14,13 @@ public class SetProto extends Proto
 
 	public static String name = "set";
 
+	@Override
 	public String name()
 	{
 		return name;
 	}
 
+	@Override
 	public boolean bool(Object object)
 	{
 		return bool((Set)object);
@@ -29,6 +31,7 @@ public class SetProto extends Proto
 		return object != null && !object.isEmpty();
 	}
 
+	@Override
 	public int len(Object object)
 	{
 		return len((Set)object);
@@ -37,5 +40,24 @@ public class SetProto extends Proto
 	public static int len(Set object)
 	{
 		return object.size();
+	}
+
+	@Override
+	public Object getAttr(Object object, String key)
+	{
+		return getAttr((Set)object, key);
+	}
+
+	public static Object getAttr(Set object, String key)
+	{
+		switch (key)
+		{
+			case "add":
+				return new BoundSetMethodAdd(object);
+			case "clear":
+				return new BoundSetMethodClear(object);
+			default:
+				throw new AttributeException(object, key);
+		}
 	}
 }

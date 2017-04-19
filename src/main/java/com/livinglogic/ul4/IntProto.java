@@ -14,6 +14,7 @@ public class IntProto extends Proto
 
 	public static String name = "int";
 
+	@Override
 	public String name()
 	{
 		return name;

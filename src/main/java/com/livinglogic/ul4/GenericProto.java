@@ -15,11 +15,13 @@ public class GenericProto extends Proto
 		this.clazz = clazz;
 	}
 
+	@Override
 	public String name()
 	{
 		return clazz.getName();
 	}
 
+	@Override
 	public boolean bool(Object object)
 	{
 		if (object == null)
@@ -35,6 +37,7 @@ public class GenericProto extends Proto
 		return object.boolUL4();
 	}
 
+	@Override
 	public int len(Object object)
 	{
 		if (object instanceof UL4Len)
@@ -46,5 +49,22 @@ public class GenericProto extends Proto
 	public static int len(UL4Len object)
 	{
 		return object.lenUL4();
+	}
+
+	@Override
+	public Object getAttr(EvaluationContext context, Object object, String key)
+	{
+		return getAttr((String)object, key);
+	}
+
+	@Override
+	public Object getAttr(Object object, String key)
+	{
+		return getAttr((String)object, key);
+	}
+
+	public static Object getAttr(String object, String key)
+	{
+		return null;
 	}
 }

@@ -9,7 +9,7 @@ package com.livinglogic.ul4;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.Map;
 
@@ -31,6 +31,16 @@ public abstract class Proto implements UL4GetItemString, UL4Attributes
 		throw new ArgumentTypeMismatchException("len({!t}) not supported", object);
 	}
 
+	public Object getAttr(EvaluationContext context, Object object, String key)
+	{
+		return getAttr(object, key);
+	}
+
+	public Object getAttr(Object object, String key)
+	{
+		throw new AttributeException(object, key);
+	}
+
 	public static Proto get(Object object)
 	{
 		if (object == null)
@@ -45,12 +55,14 @@ public abstract class Proto implements UL4GetItemString, UL4Attributes
 			return StrProto.proto;
 		else if (object instanceof Date)
 			return DateProto.proto;
-		else if (object instanceof Set) // this must be tested before testing for {@code Collection}.
-			return SetProto.proto;
-		else if (object instanceof Collection || object instanceof Object[])
+		else if (object instanceof List || object instanceof Object[])
 			return ListProto.proto;
 		else if (object instanceof Map)
 			return DictProto.proto;
+		else if (object instanceof Set)
+			return SetProto.proto;
+		else if (object instanceof Throwable)
+			return new ExceptionProto(object.getClass());
 		else
 			return new GenericProto(object.getClass());
 	}

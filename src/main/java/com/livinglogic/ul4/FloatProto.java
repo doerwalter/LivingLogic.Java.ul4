@@ -14,11 +14,13 @@ public class FloatProto extends Proto
 
 	public static String name = "float";
 
+	@Override
 	public String name()
 	{
 		return name;
 	}
 
+	@Override
 	public boolean bool(Object object)
 	{
 		if (object instanceof BigDecimal)
