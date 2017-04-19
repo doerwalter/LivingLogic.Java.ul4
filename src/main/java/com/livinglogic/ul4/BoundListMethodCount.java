@@ -18,7 +18,7 @@ public class BoundListMethodCount extends BoundMethod<List>
 
 	public String nameUL4()
 	{
-		return "list.find";
+		return "list.count";
 	}
 
 	private static final Signature signature = new Signature("sub", Signature.required, "start", null, "end", null);
