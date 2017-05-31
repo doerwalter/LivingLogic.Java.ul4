@@ -26,12 +26,12 @@ import org.apache.commons.lang.StringEscapeUtils;
  *
  * <pre>
  * import com.livinglogic.ul4.UL4Repr;
- * 
+ *
  * public class Person implements UL4Repr
  * {
  *    private String firstname;
  *    private String lastname;
- * 
+ *
  *    public void reprUL4(UL4Repr.Formatter formatter)
  *    {
  *       formatter.append("<");
