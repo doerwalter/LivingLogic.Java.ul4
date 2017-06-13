@@ -38,6 +38,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<antlr.version>3.5.2</antlr.version>
 	</properties>
 	<build>
 		<plugins>
@@ -52,7 +53,7 @@
 			<plugin>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr3-maven-plugin</artifactId>
-				<version>3.5.2</version>
+				<version>${antlr.version}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -96,7 +97,7 @@
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr-runtime</artifactId>
-			<version>3.5.2</version>
+			<version>${antlr.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
