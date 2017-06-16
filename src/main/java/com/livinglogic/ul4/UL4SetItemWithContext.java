@@ -6,7 +6,7 @@
 
 package com.livinglogic.ul4;
 
-public interface UL4SetItemString
+public interface UL4SetItemWithContext
 {
-	void setItemStringUL4(String key, Object value);
+	void setItemWithContextUL4(EvaluationContext context, Object key, Object value);
 }

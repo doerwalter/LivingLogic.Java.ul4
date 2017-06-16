@@ -140,14 +140,14 @@ public class RenderAST extends CallRenderAST
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{
 			case "indent":
 				return indent;
 			default:
-				return super.getItemStringUL4(key);
+				return super.getAttrUL4(key);
 		}
 	}
 }

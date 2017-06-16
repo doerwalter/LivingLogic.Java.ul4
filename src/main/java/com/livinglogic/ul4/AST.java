@@ -19,7 +19,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
  * The base class of all syntax tree nodes. This can be either literal text
  * ({@link TextAST}) between the tags, or compiled tag content ({@link CodeAST}).
  */
-public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Attributes, SourcePart, UL4Repr
+public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, SourcePart, UL4Repr
 {
 	/**
 	 * The start/end index of this node in the source
@@ -199,12 +199,12 @@ public abstract class AST implements UL4ONSerializable, UL4GetItemString, UL4Att
 
 	protected static Set<String> attributes = makeSet("type", "pos");
 
-	public Set<String> getAttributeNamesUL4()
+	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{

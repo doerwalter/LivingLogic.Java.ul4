@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class LocationException extends RuntimeException implements UL4Attributes, UL4GetItemString
+public class LocationException extends RuntimeException implements UL4Dir, UL4GetAttr
 {
 	protected SourcePart location;
 
@@ -150,12 +150,12 @@ public class LocationException extends RuntimeException implements UL4Attributes
 
 	protected static Set<String> attributes = makeSet("cause", "location", "template", "outerpos", "innerpos");
 
-	public Set<String> getAttributeNamesUL4()
+	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{

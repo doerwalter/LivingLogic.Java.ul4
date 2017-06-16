@@ -62,11 +62,6 @@ public class FunctionSet extends Function
 		return obj.keySet();
 	}
 
-	public static Set call(UL4Attributes obj)
-	{
-		return obj.getAttributeNamesUL4();
-	}
-
 	public static Set call(Iterable obj)
 	{
 		return call(obj.iterator());
@@ -90,8 +85,6 @@ public class FunctionSet extends Function
 			return call((Object[])obj);
 		else if (obj instanceof Map)
 			return call((Map)obj);
-		else if (obj instanceof UL4Attributes)
-			return call((UL4Attributes)obj);
 		else if (obj instanceof Iterable)
 			return call((Iterable)obj);
 		else if (obj instanceof Iterator)

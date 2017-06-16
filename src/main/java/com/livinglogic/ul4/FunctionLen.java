@@ -29,16 +29,8 @@ public class FunctionLen extends Function
 		return call(args.get(0));
 	}
 
-	public static int call(UL4Attributes obj)
-	{
-		return obj.getAttributeNamesUL4().size();
-	}
-
 	public static Object call(Object obj)
 	{
-		if (obj instanceof UL4Attributes)
-			return call((UL4Attributes)obj);
-		else
-			return Proto.get(obj).len(obj);
+		return Proto.get(obj).len(obj);
 	}
 }

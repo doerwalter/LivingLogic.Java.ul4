@@ -13,6 +13,8 @@ import java.util.Date;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
+
 public class StrProto extends Proto
 {
 	public static Proto proto = new StrProto();
@@ -45,6 +47,14 @@ public class StrProto extends Proto
 	public static int len(String object)
 	{
 		return object.length();
+	}
+
+	protected static Set<String> attrNames = makeSet("split", "rsplit", "splitlines", "strip", "lstrip", "rstrip", "upper", "lower", "capitalize", "startswith", "endswith", "replace", "count", "find", "rfind", "join");
+
+	@Override
+	public Set<String> getAttrNames(Object object)
+	{
+		return attrNames;
 	}
 
 	@Override

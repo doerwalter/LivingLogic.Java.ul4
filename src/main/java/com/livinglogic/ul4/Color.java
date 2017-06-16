@@ -21,7 +21,7 @@ import org.apache.commons.lang.math.NumberUtils;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Color implements Collection, UL4Repr, UL4GetItemString, UL4Attributes, UL4Len, UL4Type
+public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, UL4Type
 {
 	private char r;
 	private char g;
@@ -979,12 +979,12 @@ public class Color implements Collection, UL4Repr, UL4GetItemString, UL4Attribut
 
 	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "lum", "hls", "hlsa", "hsv", "hsva", "witha", "withlum", "abslum", "rellum");
 
-	public Set<String> getAttributeNamesUL4()
+	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{

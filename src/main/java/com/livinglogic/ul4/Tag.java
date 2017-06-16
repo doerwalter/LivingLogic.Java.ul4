@@ -18,7 +18,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 /**
  * The class that records information about a template tag in the template source.
  */
-public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, SourcePart, UL4Repr
+public class Tag implements UL4ONSerializable, UL4GetAttr, UL4Dir, SourcePart, UL4Repr
 {
 	/**
 	 * The template
@@ -119,12 +119,12 @@ public class Tag implements UL4ONSerializable, UL4GetItemString, UL4Attributes, 
 
 	protected static Set<String> attributes = makeSet("template", "tag", "pos");
 
-	public Set<String> getAttributeNamesUL4()
+	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{

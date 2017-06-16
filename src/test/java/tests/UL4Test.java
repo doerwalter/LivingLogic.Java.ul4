@@ -14,8 +14,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.Date;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -30,6 +32,8 @@ import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.MissingArgumentException;
 import com.livinglogic.ul4.TooManyArgumentsException;
+import com.livinglogic.ul4.ReadonlyException;
+import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.ul4.RuntimeExceededException;
 import com.livinglogic.ul4.NotIterableException;
 import com.livinglogic.ul4.BlockException;
@@ -43,11 +47,11 @@ import com.livinglogic.ul4.FunctionRepr;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.UndefinedKey;
-import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.ul4.UL4Bool;
-import com.livinglogic.ul4.UL4GetItemString;
-import com.livinglogic.ul4.UL4GetItemStringWithContext;
-import com.livinglogic.ul4.UL4Attributes;
+import com.livinglogic.ul4.UL4GetAttr;
+import com.livinglogic.ul4.UL4GetAttrWithContext;
+import com.livinglogic.ul4.UL4SetAttr;
+import com.livinglogic.ul4.UL4Dir;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.Function;
 import com.livinglogic.ul4.BoundArguments;
@@ -57,7 +61,7 @@ import com.livinglogic.dbutils.Connection;
 @RunWith(CauseTestRunner.class)
 public class UL4Test
 {
-	private static class Point implements UL4Bool, UL4GetItemString, UL4Attributes
+	private static class Point implements UL4Bool, UL4GetAttr, UL4SetAttr, UL4Dir
 	{
 		int x;
 		int y;
@@ -73,12 +77,12 @@ public class UL4Test
 			return x != 0 || x != 0;
 		}
 
-		public Set<String> getAttributeNamesUL4()
+		public Set<String> dirUL4()
 		{
 			return makeSet("x", "y");
 		}
 
-		public Object getItemStringUL4(String key)
+		public Object getAttrUL4(String key)
 		{
 			switch (key)
 			{
@@ -90,11 +94,28 @@ public class UL4Test
 					throw new AttributeException(this, key);
 			}
 		}
+
+		public void setAttrUL4(String key, Object value)
+		{
+			switch (key)
+			{
+				case "x":
+					if (value instanceof Integer)
+						x = (Integer)value;
+					else
+						throw new ArgumentTypeMismatchException("Point.x = {!r} not supported!", value);
+					break;
+				case "y":
+					throw new ReadonlyException(this, key);
+				default:
+					throw new AttributeException(this, key);
+			}
+		}
 	}
 
-	private static class DoubleIt implements UL4GetItemStringWithContext
+	private static class DoubleIt implements UL4GetAttrWithContext
 	{
-		public Object getItemStringWithContextUL4(EvaluationContext context, String key)
+		public Object getAttrWithContextUL4(EvaluationContext context, String key)
 		{
 			Object value = context.get(key);
 			value = MulAST.call(2, value);
@@ -1457,8 +1478,6 @@ public class UL4Test
 		checkTemplateOutput("False", source, "x", "c", "y", makeMap("a", 1, "b", 2));
 		checkTemplateOutput("True", source, "x", 0xff, "y", new Color(0x00, 0x80, 0xff, 0x42));
 		checkTemplateOutput("False", source, "x", 0x23, "y", new Color(0x00, 0x80, 0xff, 0x42));
-		checkTemplateOutput("True", "<?print 'x' in p?>", "p", new Point(17, 23));
-		checkTemplateOutput("False", "<?print 'z' in p?>", "p", new Point(17, 23));
 	}
 
 	@Test
@@ -1476,8 +1495,6 @@ public class UL4Test
 		checkTemplateOutput("True", source, "x", "c", "y", makeMap("a", 1, "b", 2));
 		checkTemplateOutput("False", source, "x", 0xff, "y", new Color(0x00, 0x80, 0xff, 0x42));
 		checkTemplateOutput("True", source, "x", 0x23, "y", new Color(0x00, 0x80, 0xff, 0x42));
-		checkTemplateOutput("False", "<?print 'x' not in p?>", "p", new Point(17, 23));
-		checkTemplateOutput("True", "<?print 'z' not in p?>", "p", new Point(17, 23));
 	}
 
 	@Test
@@ -1521,9 +1538,6 @@ public class UL4Test
 	@Test
 	public void operator_getitem()
 	{
-		String source = "<?print x?>";
-		InterpretedTemplate t = getTemplate(source, "t");
-
 		checkTemplateOutput("u", "<?print 'gurk'[1]?>");
 		checkTemplateOutput("u", "<?print x[1]?>", "x", "gurk");
 		checkTemplateOutput("u", "<?print 'gurk'[-3]?>");
@@ -1532,7 +1546,10 @@ public class UL4Test
 		checkTemplateOutput("", "<?print x[4]?>", "x", "gurk");
 		checkTemplateOutput("", "<?print 'gurk'[-5]?>");
 		checkTemplateOutput("", "<?print x[-5]?>", "x", "gurk");
-		checkTemplateOutput("17", "<?print x['x']?>", "x", new Point(17, 23));
+		checkTemplateOutput("u", "<?print x[1]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("u", "<?print x[-3]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("", "<?print x[4]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("", "<?print x[-5]?>", "x", asList("g", "u", "r", "k"));
 	}
 
 	@Test
@@ -1562,6 +1579,18 @@ public class UL4Test
 		checkTemplateOutput("gurk", "<?print x[:10]?>", "x", "gurk");
 		checkTemplateOutput("", "<?print 'gurk'[:-5]?>");
 		checkTemplateOutput("", "<?print x[:-5]?>", "x", "gurk");
+		checkTemplateOutput("['u', 'r']", "<?print x[1:3]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("['u', 'r']", "<?print x[-3:-1]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("[]", "<?print x[4:10]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("[]", "<?print x[-10:-5]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("['u', 'r', 'k']", "<?print x[1:]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("['u', 'r', 'k']", "<?print x[-3:]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("[]", "<?print x[4:]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("['g', 'u', 'r', 'k']", "<?print x[-10:]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("['g', 'u', 'r']", "<?print x[:3]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("['g', 'u', 'r']", "<?print x[:-1]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("['g', 'u', 'r', 'k']", "<?print x[:10]?>", "x", asList("g", "u", "r", "k"));
+		checkTemplateOutput("[]", "<?print x[:-5]?>", "x", asList("g", "u", "r", "k"));
 	}
 
 	@Test
@@ -2046,7 +2075,6 @@ public class UL4Test
 		checkTemplateOutput("[['foo', 42]]", "<?print repr(list(data.items()))?>", "data", makeMap("foo", 42));
 		checkTemplateOutput("[0, 1, 2]", "<?print repr(list(range(3)))?>");
 		checkTemplateOutput("[1, 2, 3]", "<?print list(data)?>", "data", new Integer[]{1, 2, 3});
-		checkTemplateOutput("['x', 'y']", "<?print repr(list(data))?>", "data", new Point(17, 23));
 		checkTemplateOutput("['g', 'u', 'r', 'k']", "<?print list(iterable=data)?>", "data", "gurk");
 		checkTemplateOutput("[1, 2, 3]", "<?print list(data)?>", "data", new Iterate());
 	}
@@ -2066,7 +2094,6 @@ public class UL4Test
 		checkTemplateOutput("3", source, "data", asList(1, 2, 3));
 		checkTemplateOutput("3", source, "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("3", source, "data", makeMap("a", 1, "b", 2, "c", 3));
-		checkTemplateOutput("2", source, "data", new Point(17, 23));
 		checkTemplateOutput("3", "<?print len(sequence=data)?>", "data", "foo");
 	}
 
@@ -2110,6 +2137,12 @@ public class UL4Test
 	public void function_len_float()
 	{
 		checkTemplateOutput("", "<?print len(data)?>", "data", 42.4);
+	}
+
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
+	public void function_len_point()
+	{
+		checkTemplateOutput("", "<?print len(data)?>", "data", new Point(17, 23));
 	}
 
 	@Test
@@ -3648,6 +3681,78 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_getattr()
+	{
+		checkTemplateOutput("GURK", "<?print getattr('gurk', 'upper')()?>");
+		checkTemplateOutput("a:42;b:17;c:23;", "<?for (key, value) in sorted(getattr(data, 'items')())?><?print key?>:<?print value?>;<?end for?>", "data", makeMap("a", 42, "b", 17, "c", 23));
+		checkTemplateOutput("{/}", "<?code getattr(data, 'clear')()?><?print data?>", "data", makeSet("a", "b", "c"));
+		checkTemplateOutput("x=17, y=23", "x=<?print getattr(data, 'x')?>, y=<?print getattr(data, 'y')?>", "data", new Point(17, 23));
+	}
+
+	@Test
+	public void function_hasattr()
+	{
+		checkTemplateOutput("True", "<?print hasattr('gurk', 'upper')?>");
+		checkTemplateOutput("False", "<?print hasattr('gurk', 'no')?>");
+		checkTemplateOutput("TrueFalseFalse", "<?print hasattr(data, 'items')?><?print hasattr('data', 'a')?><?print hasattr('data', 'd')?>", "data", makeMap("a", 42, "b", 17, "c", 23));
+		checkTemplateOutput("TrueFalse", "<?print hasattr(data, 'clear')?><?print hasattr('data', 'a')?>", "data", makeSet("a", "b", "c"));
+		checkTemplateOutput("TrueTrueFalse", "<?print hasattr(data, 'x')?><?print hasattr(data, 'y')?><?print hasattr(data, 'z')?>", "data", new Point(17, 23));
+	}
+
+	@Test
+	public void function_setattr()
+	{
+		checkTemplateOutput("42", "<?code setattr(data, 'x', 42)?><?print data.x?>", "data", new Point(17, 23));
+	}
+
+	@CauseTest(expectedCause=ReadonlyException.class)
+	public void function_setattr_readonly()
+	{
+		checkTemplateOutput("", "<?code setattr(data, 'y', 42)?>", "data", new Point(17, 23));
+	}
+
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
+	public void function_setattr_wrongtype()
+	{
+		checkTemplateOutput("", "<?code setattr(data, 'x', 'gurk')?>", "data", new Point(17, 23));
+	}
+
+	@CauseTest(expectedCause=AttributeException.class)
+	public void function_setattr_wrongattr()
+	{
+		checkTemplateOutput("", "<?code setattr(data, 'z', 42)?>", "data", new Point(17, 23));
+	}
+
+	@Test
+	public void function_dir()
+	{
+		Object dataNull = null;
+		Boolean dataBool = true;
+		Integer dataInt = 42;
+		Double dataFloat = 42.5;
+		Date dataDate = new Date();
+		Color dataColor = new Color(1, 2, 3, 4);
+		List dataList = asList();
+		Set dataSet = new HashSet();
+		Map dataMap = makeMap("x", 17);
+		Point dataPoint = new Point(17, 23);
+
+		List dataAll = asList(dataNull, dataBool, dataInt, dataFloat, dataDate, dataColor, dataList, dataSet, dataMap, dataPoint);
+
+		checkTemplateOutput("[]", "<?print sorted(dir(data))?>", "data", dataNull);
+		checkTemplateOutput("[]", "<?print sorted(dir(data))?>", "data", dataBool);
+		checkTemplateOutput("[]", "<?print sorted(dir(data))?>", "data", dataInt);
+		checkTemplateOutput("[]", "<?print sorted(dir(data))?>", "data", dataFloat);
+		checkTemplateOutput("['day', 'hour', 'isoformat', 'microsecond', 'mimeformat', 'minute', 'month', 'second', 'week', 'weekday', 'year', 'yearday']", "<?print sorted(dir(data))?>", "data", dataDate);
+		checkTemplateOutput("['a', 'abslum', 'b', 'g', 'hls', 'hlsa', 'hsv', 'hsva', 'lum', 'r', 'rellum', 'witha', 'withlum']", "<?print sorted(dir(data))?>", "data", dataColor);
+		checkTemplateOutput("['append', 'count', 'find', 'insert', 'pop', 'rfind']", "<?print sorted(dir(data))?>", "data", dataList);
+		checkTemplateOutput("['add', 'clear']", "<?print sorted(dir(data))?>", "data", dataSet);
+		checkTemplateOutput("['clear', 'get', 'items', 'update', 'values']", "<?print sorted(dir(data))?>", "data", dataMap);
+		checkTemplateOutput("['x', 'y']", "<?print sorted(dir(data))?>", "data", dataPoint);
+		checkTemplateOutput("", "<?for d in data?><?for an in dir(d)?><?if getattr(d, an, None) is None?><?print repr(d)?>.<?print an?>: FAIL<?end if?><?end for?><?end for?>", "data", dataAll);
+	}
+
+	@Test
 	public void method_upper()
 	{
 		checkTemplateOutput("GURK", "<?print 'gurk'.upper()?>");
@@ -3882,16 +3987,12 @@ public class UL4Test
 	public void method_items()
 	{
 		checkTemplateOutput("a:42;b:17;c:23;", "<?for (key, value) in sorted(data.items())?><?print key?>:<?print value?>;<?end for?>", "data", makeMap("a", 42, "b", 17, "c", 23));
-		checkTemplateOutput("x:17;y:23;", "<?for (key, value) in data.items()?><?print key?>:<?print value?>;<?end for?>", "data", new Point(17, 23));
-		checkTemplateOutput("x:17;y:23;", "<?code m = data.items?><?for (key, value) in m()?><?print key?>:<?print value?>;<?end for?>", "data", new Point(17, 23));
 	}
 
 	@Test
 	public void method_values()
 	{
 		checkTemplateOutput("17;23;42;", "<?for value in sorted(data.values())?><?print value?>;<?end for?>", "data", makeMap("a", 42, "b", 17, "c", 23));
-		checkTemplateOutput("17;23;", "<?for value in data.values()?><?print value?>;<?end for?>", "data", new Point(17, 23));
-		checkTemplateOutput("17;23;", "<?code m = data.values?><?for value in m()?><?print value?>;<?end for?>", "data", new Point(17, 23));
 	}
 
 	@Test
@@ -4501,6 +4602,21 @@ public class UL4Test
 	public void template_closure()
 	{
 		checkTemplateOutput("24", "<?code f = []?><?def outer()?><?code y=3?><?def inner(x)?><?print 2*x*y?><?end def?><?code f.append(inner)?><?end def?><?code outer()?><?render f[0](x=4)?>");
+	}
+
+	@Test
+	public void template_closure_toplevel()
+	{
+		String sourceOther = "<?ul4 other(loc, x)?><?print loc()?>";
+		InterpretedTemplate tOther = getTemplate(sourceOther);
+
+		String sourceFinal = "<?ul4 final(x)?><?return x == 42?>";
+		InterpretedTemplate tFinal = getTemplate(sourceFinal);
+
+		String sourceInitial = "<?ul4 initial?><?def local()?><?if final(x)?><?return 'OK'?><?else?><?return 'FAIL'?><?end if?><?end def?><?render other(local, x)?>";
+		InterpretedTemplate tInitial = getTemplate(sourceInitial);
+
+		checkTemplateOutput("OK", tInitial, "x", 42, "other", tOther, "final", tFinal);
 	}
 
 	@Test

@@ -60,7 +60,7 @@ public abstract class CallRenderAST extends CodeAST
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{
@@ -69,7 +69,7 @@ public abstract class CallRenderAST extends CodeAST
 			case "args":
 				return arguments;
 			default:
-				return super.getItemStringUL4(key);
+				return super.getAttrUL4(key);
 		}
 	}
 }

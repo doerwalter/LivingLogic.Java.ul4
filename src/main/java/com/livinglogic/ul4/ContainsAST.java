@@ -58,11 +58,6 @@ public class ContainsAST extends BinaryAST
 		return container.containsKey(obj);
 	}
 
-	public static boolean call(Object obj, UL4Attributes container)
-	{
-		return container.getAttributeNamesUL4().contains(obj);
-	}
-
 	public static boolean call(Object obj, Object container)
 	{
 		if (container instanceof String)
@@ -76,11 +71,6 @@ public class ContainsAST extends BinaryAST
 			return call(obj, (Object[])container);
 		else if (container instanceof Map)
 			return call(obj, (Map)container);
-		else if (container instanceof UL4Attributes)
-		{
-			if (obj instanceof String)
-				return call((String)obj, (UL4Attributes)container);
-		}
 		throw new ArgumentTypeMismatchException("{!t} in {!t} not supported", obj, container);
 	}
 }

@@ -7,6 +7,9 @@
 package com.livinglogic.ul4;
 
 import java.util.List;
+import java.util.Set;
+
+import static com.livinglogic.utils.SetUtils.makeSet;
 
 public class ListProto extends Proto
 {
@@ -56,6 +59,14 @@ public class ListProto extends Proto
 	public static int len(Object[] object)
 	{
 		return object.length;
+	}
+
+	protected static Set<String> attrNames = makeSet("append", "insert", "pop", "count", "find", "rfind");
+
+	@Override
+	public Set<String> getAttrNames(Object object)
+	{
+		return attrNames;
 	}
 
 	@Override

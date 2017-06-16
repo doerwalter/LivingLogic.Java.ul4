@@ -96,11 +96,11 @@ public class FunctionAsJSON extends Function
 				.append(StringEscapeUtils.escapeJavaScript(((TemplateClosure)obj).getTemplate().dumps()))
 				.append("\")");
 		}
-		else if (obj instanceof UL4Attributes && obj instanceof UL4GetItemString)
+		else if (obj instanceof UL4Dir && obj instanceof UL4GetAttr)
 		{
 			builder.append("{");
 			boolean first = true;
-			Set<String> attributeNames = ((UL4Attributes)obj).getAttributeNamesUL4();
+			Set<String> attributeNames = ((UL4Dir)obj).dirUL4();
 			for (String attributeName : attributeNames)
 			{
 				if (first)
@@ -109,7 +109,7 @@ public class FunctionAsJSON extends Function
 					builder.append(", ");
 				call(builder, attributeName);
 				builder.append(": ");
-				Object value = ((UL4GetItemString)obj).getItemStringUL4(attributeName);
+				Object value = ((UL4GetAttr)obj).getAttrUL4(attributeName);
 				call(builder, value);
 			}
 			builder.append("}");

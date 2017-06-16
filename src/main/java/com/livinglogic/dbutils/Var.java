@@ -11,15 +11,15 @@ import java.util.Set;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 
-import com.livinglogic.ul4.UL4GetItemString;
-import com.livinglogic.ul4.UL4SetItemString;
-import com.livinglogic.ul4.UL4Attributes;
+import com.livinglogic.ul4.UL4GetAttr;
+import com.livinglogic.ul4.UL4SetAttr;
+import com.livinglogic.ul4.UL4Dir;
 import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.ul4.ReadonlyException;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public abstract class Var implements UL4GetItemString, UL4SetItemString, UL4Attributes
+public abstract class Var implements UL4GetAttr, UL4SetAttr, UL4Dir
 {
 	public static Object noValue = new Object();
 	protected Object value;
@@ -31,12 +31,12 @@ public abstract class Var implements UL4GetItemString, UL4SetItemString, UL4Attr
 
 	protected static Set<String> attributes = makeSet("value");
 
-	public Set<String> getAttributeNamesUL4()
+	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{
@@ -47,7 +47,7 @@ public abstract class Var implements UL4GetItemString, UL4SetItemString, UL4Attr
 		}
 	}
 
-	public void setItemStringUL4(String key, Object value)
+	public void setAttrUL4(String key, Object value)
 	{
 		switch (key)
 		{
@@ -58,7 +58,7 @@ public abstract class Var implements UL4GetItemString, UL4SetItemString, UL4Attr
 					setValue(value);
 				break;
 			default:
-				throw new ReadonlyException(key);
+				throw new ReadonlyException(this, key);
 		}
 	}
 

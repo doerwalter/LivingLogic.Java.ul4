@@ -117,7 +117,7 @@ public class SliceAST extends CodeAST
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{
@@ -126,7 +126,7 @@ public class SliceAST extends CodeAST
 			case "index2":
 				return index2;
 			default:
-				return super.getItemStringUL4(key);
+				return super.getAttrUL4(key);
 		}
 	}
 }

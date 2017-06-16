@@ -67,14 +67,14 @@ public abstract class CodeAST extends AST
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{
 			case "tag":
 				return tag;
 			default:
-				return super.getItemStringUL4(key);
+				return super.getAttrUL4(key);
 		}
 	}
 }

@@ -63,7 +63,7 @@ abstract class BinaryAST extends CodeAST
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{
@@ -72,7 +72,7 @@ abstract class BinaryAST extends CodeAST
 			case "obj2":
 				return obj2;
 			default:
-				return super.getItemStringUL4(key);
+				return super.getAttrUL4(key);
 		}
 	}
 }

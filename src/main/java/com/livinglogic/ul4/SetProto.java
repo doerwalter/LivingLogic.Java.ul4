@@ -8,6 +8,8 @@ package com.livinglogic.ul4;
 
 import java.util.Set;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
+
 public class SetProto extends Proto
 {
 	public static Proto proto = new SetProto();
@@ -40,6 +42,14 @@ public class SetProto extends Proto
 	public static int len(Set object)
 	{
 		return object.size();
+	}
+
+	protected static Set<String> attrNames = makeSet("add", "clear");
+
+	@Override
+	public Set<String> getAttrNames(Object object)
+	{
+		return attrNames;
 	}
 
 	@Override

@@ -7,6 +7,10 @@
 package com.livinglogic.ul4;
 
 import java.util.Date;
+import java.util.Set;
+
+import static com.livinglogic.utils.SetUtils.makeSet;
+
 
 public class DateProto extends Proto
 {
@@ -29,6 +33,14 @@ public class DateProto extends Proto
 	public static boolean bool(Date object)
 	{
 		return object != null;
+	}
+
+	protected static Set<String> attrNames = makeSet("year", "month", "day", "hour", "minute", "second", "microsecond", "weekday", "yearday", "week", "isoformat", "mimeformat");
+
+	@Override
+	public Set<String> getAttrNames(Object object)
+	{
+		return attrNames;
 	}
 
 	@Override

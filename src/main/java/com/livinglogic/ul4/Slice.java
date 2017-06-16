@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Slice implements UL4GetItemString, UL4Attributes, UL4Repr, UL4Type, Comparable<Slice>
+public class Slice implements UL4GetAttr, UL4Dir, UL4Repr, UL4Type, Comparable<Slice>
 {
 	protected boolean hasStart;
 	protected boolean hasStop;
@@ -121,12 +121,12 @@ public class Slice implements UL4GetItemString, UL4Attributes, UL4Repr, UL4Type,
 
 	protected static Set<String> attributes = makeSet("start", "stop");
 
-	public Set<String> getAttributeNamesUL4()
+	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{

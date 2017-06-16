@@ -16,7 +16,7 @@ import java.util.GregorianCalendar;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs, UL4GetItemString, UL4Attributes
+public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs, UL4GetAttr, UL4Dir
 {
 	private int days;
 	private int seconds;
@@ -378,12 +378,12 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 	protected static Set<String> attributes = makeSet("days", "seconds", "microseonds");
 
-	public Set<String> getAttributeNamesUL4()
+	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{

@@ -37,7 +37,7 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 import com.livinglogic.ul4on.Utils;
 
 
-public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWithContext, UL4RenderWithContext, UL4Type, UL4GetItemString, UL4Attributes
+public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWithContext, UL4RenderWithContext, UL4Type, UL4GetAttr, UL4Dir
 {
 	/**
 	 * The version number used in the UL4ON dump of the template.
@@ -1685,12 +1685,12 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "startdelim", "enddelim", "signature", "doc", "source", "parenttemplate", "renders", "render");
 
-	public Set<String> getAttributeNamesUL4()
+	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{
@@ -1715,7 +1715,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			case "render":
 				return new BoundMethodRender(this);
 			default:
-				return super.getItemStringUL4(key);
+				return super.getAttrUL4(key);
 		}
 	}
 }

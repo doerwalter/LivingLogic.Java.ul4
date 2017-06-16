@@ -13,31 +13,25 @@ import java.util.Date;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class ExceptionProto extends Proto
+public class ExceptionProto extends GenericProto
 {
-	private Class clazz;
-
 	public ExceptionProto(Class clazz)
 	{
-		this.clazz = clazz;
-	}
-
-	@Override
-	public String name()
-	{
-		return clazz.getName();
-	}
-
-	@Override
-	public boolean bool(Object object)
-	{
-		return object != null;
+		super(clazz);
 	}
 
 	@Override
 	public Object getAttr(Object object, String key)
 	{
-		return getAttr((Throwable)object, key);
+		if (object instanceof UL4GetAttr)
+			return getAttr((UL4GetAttr)object, key);
+		else
+			return getAttr((Throwable)object, key);
+	}
+
+	public static Object getAttr(UL4GetAttr object, String key)
+	{
+		return object.getAttrUL4(key);
 	}
 
 	public static Object getAttr(Throwable object, String key)

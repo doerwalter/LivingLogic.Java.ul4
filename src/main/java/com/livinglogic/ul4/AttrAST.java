@@ -99,42 +99,19 @@ public class AttrAST extends CodeAST implements LValue
 		callBitOr(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
-	public static Object call(UL4GetItem obj, String attrname)
+	public static Object call(UL4GetAttr obj, String attrname)
 	{
 		try
 		{
-			return obj.getItemUL4(attrname);
+			return obj.getAttrUL4(attrname);
 		}
 		catch (AttributeException exc)
 		{
-			return new UndefinedKey(attrname);
-		}
-	}
-
-	public static Object call(UL4Attributes obj, String attrname)
-	{
-		if ("items".equals(attrname) && obj instanceof UL4GetItemString)
-			return new BoundUL4GetAttributesMethodItems(obj);
-		else if ("values".equals(attrname) && obj instanceof UL4GetItemString)
-			return new BoundUL4GetAttributesMethodValues(obj);
-		return new UndefinedKey(attrname);
-	}
-
-	public static Object call(UL4GetItemString obj, String attrname)
-	{
-		if ("get".equals(attrname))
-			return new BoundUL4GetItemStringMethodGet(obj);
-		else if ("items".equals(attrname) && obj instanceof UL4Attributes)
-			return new BoundUL4GetAttributesMethodItems((UL4Attributes)obj);
-		else if ("values".equals(attrname) && obj instanceof UL4Attributes)
-			return new BoundUL4GetAttributesMethodValues((UL4Attributes)obj);
-		try
-		{
-			return obj.getItemStringUL4(attrname);
-		}
-		catch (AttributeException exc)
-		{
-			return new UndefinedKey(attrname);
+			if (exc.getObject() == obj)
+				return new UndefinedKey(attrname);
+			else
+				// The {@code AttributeException} originated from another object
+				throw exc;
 		}
 	}
 
@@ -170,69 +147,44 @@ public class AttrAST extends CodeAST implements LValue
 
 	public static Object call(Object obj, String attrname)
 	{
-		if (obj instanceof UL4GetItemString)
-			return call((UL4GetItemString)obj, attrname);
-		else if (obj instanceof UL4GetItem)
-			return call((UL4GetItem)obj, attrname);
-		else if (obj instanceof UL4Attributes)
-			return call((UL4Attributes)obj, attrname);
-		else if (obj instanceof Map)
-			return call((Map)obj, attrname);
-		else if (obj instanceof Set)
-			return call((Set)obj, attrname);
-		else if (obj instanceof List)
-			return call((List)obj, attrname);
-		else if (obj instanceof String)
-			return call((String)obj, attrname);
-		else if (obj instanceof Date)
-			return call((Date)obj, attrname);
-		else if (obj instanceof Exception)
-			return call((Exception)obj, attrname);
-		throw new ArgumentTypeMismatchException("{!t}.{!t} not supported", obj, attrname);
-	}
-
-	public static Object call(EvaluationContext context, UL4GetItemWithContext obj, String attrname)
-	{
 		try
 		{
-			return obj.getItemWithContextUL4(context, attrname);
+			return Proto.get(obj).getAttr(obj, attrname);
 		}
 		catch (AttributeException exc)
 		{
-			return new UndefinedKey(attrname);
+			if (exc.getObject() == obj)
+				return new UndefinedKey(attrname);
+			else
+				// The {@code AttributeException} originated from another object
+				throw exc;
 		}
 	}
 
-	public static Object call(EvaluationContext context, UL4GetItemStringWithContext obj, String attrname)
+	public static Object call(EvaluationContext context, UL4GetAttrWithContext obj, String attrname)
 	{
-		try
-		{
-			return obj.getItemStringWithContextUL4(context, attrname);
-		}
-		catch (AttributeException exc)
-		{
-			return new UndefinedKey(attrname);
-		}
+		return obj.getAttrWithContextUL4(context, attrname);
 	}
 
 	public static Object call(EvaluationContext context, Object obj, String attrname)
 	{
-		if (obj instanceof UL4GetItemStringWithContext)
-			return call(context, (UL4GetItemStringWithContext)obj, attrname);
-		else if (obj instanceof UL4GetItemWithContext)
-			return call(context, (UL4GetItemWithContext)obj, attrname);
-		else
-			return call(obj, attrname);
+		try
+		{
+			return Proto.get(obj).getAttr(context, obj, attrname);
+		}
+		catch (AttributeException exc)
+		{
+			if (exc.getObject() == obj)
+				return new UndefinedKey(attrname);
+			else
+				// The {@code AttributeException} originated from another object
+				throw exc;
+		}
 	}
 
-	public static void callSet(UL4SetItem obj, String attrname, Object value)
+	public static void callSet(UL4SetAttr obj, String attrname, Object value)
 	{
-		obj.setItemUL4(attrname, value);
-	}
-
-	public static void callSet(UL4SetItemString obj, String attrname, Object value)
-	{
-		obj.setItemStringUL4(attrname, value);
+		obj.setAttrUL4(attrname, value);
 	}
 
 	public static void callSet(Map obj, String attrname, Object value)
@@ -242,14 +194,7 @@ public class AttrAST extends CodeAST implements LValue
 
 	public static void callSet(Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4SetItemString)
-			callSet((UL4SetItemString)obj, attrname, value);
-		else if (obj instanceof UL4SetItem)
-			callSet((UL4SetItem)obj, attrname, value);
-		else if (obj instanceof Map)
-			callSet((Map)obj, attrname, value);
-		else
-			throw new ArgumentTypeMismatchException("{!t}.{!t} = {!t} not supported", obj, attrname, value);
+		Proto.get(obj).setAttr(obj, attrname, value);
 	}
 
 	private static Object getValue(EvaluationContext context, Object obj, String attrname, String excmessage, Object value)
@@ -258,10 +203,10 @@ public class AttrAST extends CodeAST implements LValue
 		// only called for augmented assignment so eventually we will try to set the attribute,
 		// so we want to throw an {@code AttributeException} for non-existant attributes
 		// and {@code ReadonlyException} for read-only ones.
-		if (obj instanceof UL4GetItemString)
-			return ((UL4GetItemString)obj).getItemStringUL4(attrname);
-		else if (obj instanceof UL4GetItemStringWithContext)
-			return ((UL4GetItemStringWithContext)obj).getItemStringWithContextUL4(context, attrname);
+		if (obj instanceof UL4GetAttr)
+			return ((UL4GetAttr)obj).getAttrUL4(attrname);
+		else if (obj instanceof UL4GetAttrWithContext)
+			return ((UL4GetAttrWithContext)obj).getAttrWithContextUL4(context, attrname);
 		else if (obj instanceof UL4GetItem)
 			return ((UL4GetItem)obj).getItemUL4(attrname);
 		else if (obj instanceof UL4GetItemWithContext)
@@ -278,10 +223,10 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		if (obj instanceof Map)
 			callAdd((Map)obj, attrname, value);
-		else if (obj instanceof UL4SetItemString)
+		else if (obj instanceof UL4SetAttr)
 		{
 			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} += {!t} not supported", value);
-			((UL4SetItemString)obj).setItemStringUL4(attrname, IAdd.call(orgvalue, value));
+			((UL4SetAttr)obj).setAttrUL4(attrname, IAdd.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
@@ -301,10 +246,10 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		if (obj instanceof Map)
 			callSub((Map)obj, attrname, value);
-		else if (obj instanceof UL4SetItemString)
+		else if (obj instanceof UL4SetAttr)
 		{
 			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} -= {!t} not supported", value);
-			((UL4SetItemString)obj).setItemStringUL4(attrname, SubAST.call(orgvalue, value));
+			((UL4SetAttr)obj).setAttrUL4(attrname, SubAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
@@ -324,10 +269,10 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		if (obj instanceof Map)
 			callMul((Map)obj, attrname, value);
-		else if (obj instanceof UL4SetItemString)
+		else if (obj instanceof UL4SetAttr)
 		{
 			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} *= {!t} not supported", value);
-			((UL4SetItemString)obj).setItemStringUL4(attrname, IMul.call(orgvalue, value));
+			((UL4SetAttr)obj).setAttrUL4(attrname, IMul.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
@@ -347,10 +292,10 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		if (obj instanceof Map)
 			callFloorDiv((Map)obj, attrname, value);
-		else if (obj instanceof UL4SetItemString)
+		else if (obj instanceof UL4SetAttr)
 		{
 			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} //= {!t} not supported", value);
-			((UL4SetItemString)obj).setItemStringUL4(attrname, FloorDivAST.call(orgvalue, value));
+			((UL4SetAttr)obj).setAttrUL4(attrname, FloorDivAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
@@ -370,10 +315,10 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		if (obj instanceof Map)
 			callTrueDiv((Map)obj, attrname, value);
-		else if (obj instanceof UL4SetItemString)
+		else if (obj instanceof UL4SetAttr)
 		{
 			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} /= {!t} not supported", value);
-			((UL4SetItemString)obj).setItemStringUL4(attrname, TrueDivAST.call(orgvalue, value));
+			((UL4SetAttr)obj).setAttrUL4(attrname, TrueDivAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
@@ -393,10 +338,10 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		if (obj instanceof Map)
 			callMod((Map)obj, attrname, value);
-		else if (obj instanceof UL4SetItemString)
+		else if (obj instanceof UL4SetAttr)
 		{
 			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} %= {!t} not supported", value);
-			((UL4SetItemString)obj).setItemStringUL4(attrname, ModAST.call(orgvalue, value));
+			((UL4SetAttr)obj).setAttrUL4(attrname, ModAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
@@ -416,10 +361,10 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		if (obj instanceof Map)
 			callShiftLeft((Map)obj, attrname, value);
-		else if (obj instanceof UL4SetItemString)
+		else if (obj instanceof UL4SetAttr)
 		{
 			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} <<= {!t} not supported", value);
-			((UL4SetItemString)obj).setItemStringUL4(attrname, ShiftLeftAST.call(orgvalue, value));
+			((UL4SetAttr)obj).setAttrUL4(attrname, ShiftLeftAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
@@ -439,10 +384,10 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		if (obj instanceof Map)
 			callShiftRight((Map)obj, attrname, value);
-		else if (obj instanceof UL4SetItemString)
+		else if (obj instanceof UL4SetAttr)
 		{
 			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} >>= {!t} not supported", value);
-			((UL4SetItemString)obj).setItemStringUL4(attrname, ShiftRightAST.call(orgvalue, value));
+			((UL4SetAttr)obj).setAttrUL4(attrname, ShiftRightAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
@@ -462,10 +407,10 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		if (obj instanceof Map)
 			callBitAnd((Map)obj, attrname, value);
-		else if (obj instanceof UL4SetItemString)
+		else if (obj instanceof UL4SetAttr)
 		{
 			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} &= {!t} not supported", value);
-			((UL4SetItemString)obj).setItemStringUL4(attrname, BitAndAST.call(orgvalue, value));
+			((UL4SetAttr)obj).setAttrUL4(attrname, BitAndAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
@@ -485,10 +430,10 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		if (obj instanceof Map)
 			callBitXOr((Map)obj, attrname, value);
-		else if (obj instanceof UL4SetItemString)
+		else if (obj instanceof UL4SetAttr)
 		{
 			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} ^= {!t} not supported", value);
-			((UL4SetItemString)obj).setItemStringUL4(attrname, BitXOrAST.call(orgvalue, value));
+			((UL4SetAttr)obj).setAttrUL4(attrname, BitXOrAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
@@ -508,10 +453,10 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		if (obj instanceof Map)
 			callBitOr((Map)obj, attrname, value);
-		else if (obj instanceof UL4SetItemString)
+		else if (obj instanceof UL4SetAttr)
 		{
 			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} |= {!t} not supported", value);
-			((UL4SetItemString)obj).setItemStringUL4(attrname, BitOrAST.call(orgvalue, value));
+			((UL4SetAttr)obj).setAttrUL4(attrname, BitOrAST.call(orgvalue, value));
 		}
 		else if (obj instanceof UL4SetItem)
 		{
@@ -543,7 +488,7 @@ public class AttrAST extends CodeAST implements LValue
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{
@@ -552,7 +497,7 @@ public class AttrAST extends CodeAST implements LValue
 			case "attrname":
 				return attrname;
 			default:
-				return super.getItemStringUL4(key);
+				return super.getAttrUL4(key);
 		}
 	}
 }

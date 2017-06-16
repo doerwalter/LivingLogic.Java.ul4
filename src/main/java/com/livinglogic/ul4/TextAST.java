@@ -75,7 +75,7 @@ public class TextAST extends AST
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{
@@ -84,7 +84,7 @@ public class TextAST extends AST
 			case "text":
 				return getCodeText();
 			default:
-				return super.getItemStringUL4(key);
+				return super.getAttrUL4(key);
 		}
 	}
 

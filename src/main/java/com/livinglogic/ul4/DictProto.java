@@ -7,6 +7,9 @@
 package com.livinglogic.ul4;
 
 import java.util.Map;
+import java.util.Set;
+
+import static com.livinglogic.utils.SetUtils.makeSet;
 
 public class DictProto extends Proto
 {
@@ -42,6 +45,14 @@ public class DictProto extends Proto
 		return object.size();
 	}
 
+	protected static Set<String> attrNames = makeSet("items", "values", "get", "update", "clear");
+
+	@Override
+	public Set<String> getAttrNames(Object object)
+	{
+		return attrNames;
+	}
+
 	@Override
 	public Object getAttr(Object object, String key)
 	{
@@ -52,22 +63,33 @@ public class DictProto extends Proto
 	{
 		switch (key)
 		{
-			case  "items":
+			case "items":
 				return new BoundDictMethodItems(object);
-			case  "values":
+			case "values":
 				return new BoundDictMethodValues(object);
-			case  "get":
+			case "get":
 				return new BoundDictMethodGet(object);
-			case  "update":
+			case "update":
 				return new BoundDictMethodUpdate(object);
-			case  "clear":
+			case "clear":
 				return new BoundDictMethodClear(object);
 			default:
 				Object result = object.get(key);
 
 				if ((result == null) && !object.containsKey(key))
-					return new UndefinedKey(key);
+					throw new AttributeException(object, key);
 				return result;
 		}
+	}
+
+	@Override
+	public void setAttr(Object object, String key, Object value)
+	{
+		setAttr((Map)object, key, value);
+	}
+
+	public static void setAttr(Map object, String key, Object value)
+	{
+		object.put(key, value);
 	}
 }

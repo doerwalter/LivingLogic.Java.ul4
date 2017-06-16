@@ -351,7 +351,11 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 			"hls", new FunctionHLS(),
 			"hsv", new FunctionHSV(),
 			"round", new FunctionRound(),
-			"md5", new FunctionMD5()
+			"md5", new FunctionMD5(),
+			"getattr", new FunctionGetAttr(),
+			"hasattr", new FunctionHasAttr(),
+			"setattr", new FunctionSetAttr(),
+			"dir", new FunctionDir()
 		);
 	}
 }

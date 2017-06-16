@@ -11,8 +11,23 @@ package com.livinglogic.ul4;
  */
 public class ReadonlyException extends RuntimeException
 {
-	public ReadonlyException(Object key)
+	protected Object object;
+	protected Object key;
+
+	public ReadonlyException(Object object, Object key)
 	{
-		super("Attribute '" + key + "' can't be set!");
+		super(Utils.formatMessage("Attribute {!r} of {!t} instance is not writable!", key, object));
+		this.object = object;
+		this.key = key;
+	}
+
+	public Object getObject()
+	{
+		return object;
+	}
+
+	public Object getKey()
+	{
+		return key;
 	}
 }

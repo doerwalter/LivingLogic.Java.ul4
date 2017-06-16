@@ -21,7 +21,7 @@ import com.livinglogic.utils.MapChain;
  * @author W. Doerwald
  */
 
-public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext, UL4Name, UL4Type, UL4GetItemString, UL4Attributes, UL4Repr
+public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext, UL4Name, UL4Type, UL4GetAttr, UL4Dir, UL4Repr
 {
 	private InterpretedTemplate template;
 	private Map<String, Object> variables;
@@ -141,12 +141,12 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 
 	protected static Set<String> attributes = InterpretedTemplate.attributes;
 
-	public Set<String> getAttributeNamesUL4()
+	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{
@@ -157,7 +157,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 			case "signature":
 				return signature;
 			default:
-				return template.getItemStringUL4(key);
+				return template.getAttrUL4(key);
 		}
 	}
 

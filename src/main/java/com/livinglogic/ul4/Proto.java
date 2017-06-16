@@ -20,7 +20,7 @@ import static com.livinglogic.utils.SetUtils.makeSet;
  * Prototype class that implements methods for a class where we can't add those
  * methods to the class itself (because it's a builtin Java class).
  */
-public abstract class Proto implements UL4GetItemString, UL4Attributes
+public abstract class Proto implements UL4GetAttr, UL4Dir
 {
 	public abstract String name();
 
@@ -31,14 +31,44 @@ public abstract class Proto implements UL4GetItemString, UL4Attributes
 		throw new ArgumentTypeMismatchException("len({!t}) not supported", object);
 	}
 
-	public Object getAttr(EvaluationContext context, Object object, String key)
+	public Set<String> getAttrNames(EvaluationContext context, Object object)
 	{
-		return getAttr(object, key);
+		return getAttrNames(object);
 	}
 
-	public Object getAttr(Object object, String key)
+	public Set<String> getAttrNames(Object object)
 	{
-		throw new AttributeException(object, key);
+		return makeSet();
+	}
+
+	public Object getAttr(EvaluationContext context, Object object, String attrname)
+	{
+		return getAttr(object, attrname);
+	}
+
+	public Object getAttr(Object object, String attrname)
+	{
+		throw new AttributeException(object, attrname);
+	}
+
+	public void setAttr(EvaluationContext context, Object object, String attrname, Object value)
+	{
+		setAttr(object, attrname, value);
+	}
+
+	public void setAttr(Object object, String attrname, Object value)
+	{
+		throw new AttributeException(object, attrname);
+	}
+
+	public boolean hasAttr(EvaluationContext context, Object object, String attrname)
+	{
+		return Proto.get(object).getAttrNames(context, object).contains(attrname);
+	}
+
+	public boolean hasAttr(Object object, String attrname)
+	{
+		return Proto.get(object).getAttrNames(object).contains(attrname);
 	}
 
 	public static Proto get(Object object)
@@ -69,12 +99,12 @@ public abstract class Proto implements UL4GetItemString, UL4Attributes
 
 	protected static Set<String> attributes = makeSet("name");
 
-	public Set<String> getAttributeNamesUL4()
+	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{

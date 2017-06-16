@@ -19,8 +19,8 @@ import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.ArgumentException;
 import com.livinglogic.ul4.Utils;
-import com.livinglogic.ul4.UL4GetItemString;
-import com.livinglogic.ul4.UL4Attributes;
+import com.livinglogic.ul4.UL4GetAttr;
+import com.livinglogic.ul4.UL4Dir;
 import com.livinglogic.ul4.BoundMethodWithContext;
 import com.livinglogic.ul4.BoundMethod;
 import com.livinglogic.ul4.AttributeException;
@@ -30,7 +30,7 @@ import com.livinglogic.ul4.BoundArguments;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Connection implements UL4GetItemString, UL4Attributes
+public class Connection implements UL4GetAttr, UL4Dir
 {
 	private java.sql.Connection connection;
 
@@ -268,12 +268,12 @@ public class Connection implements UL4GetItemString, UL4Attributes
 
 	protected static Set<String> attributes = makeSet("queryargs", "query", "execute", "int", "number", "str", "clob", "date");
 
-	public Set<String> getAttributeNamesUL4()
+	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{

@@ -116,7 +116,7 @@ abstract class BlockAST extends CodeAST
 		return attributes;
 	}
 
-	public Object getItemStringUL4(String key)
+	public Object getAttrUL4(String key)
 	{
 		switch (key)
 		{
@@ -125,7 +125,7 @@ abstract class BlockAST extends CodeAST
 			case "content":
 				return content;
 			default:
-				return super.getItemStringUL4(key);
+				return super.getAttrUL4(key);
 		}
 	}
 }
