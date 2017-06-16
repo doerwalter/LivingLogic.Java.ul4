@@ -1,3 +1,17 @@
+exp-123:
+--------
+* UL4 now longer tries a disguise objects as dictionaries. I.e. for objects
+  implementing UL4GetItemString the methods items(), keys(), values() and get()
+  are no longer synthesized. This also means that len(), list(), item access
+  and containment test no longer work on objects.
+* New functions getattr(), setattr(), hasattr() and dir() have been added, to
+  work with attributes of objects.
+* A few interfaces (and their methods) have been renamed:
+     UL4GetItemString -> UL4GetAttr
+     UL4GetItemStringWithContext -> UL4GetAttrWithContext
+     UL4Attributes -> UL4Dir
+
+
 exp-122:
 --------
 * The AttributeException constructor now has two arguments: The object and the
