@@ -302,7 +302,7 @@ public class Decoder
 
 			if (typecode == 'L')
 				loading(result);
-			
+
 			while (true)
 			{
 				typecode = nextChar();
@@ -418,7 +418,7 @@ public class Decoder
 	private int readInt() throws IOException
 	{
 		StringBuilder buffer = new StringBuilder();
-		
+
 		while (true)
 		{
 			int c = readChar();
