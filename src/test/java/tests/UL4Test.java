@@ -1540,15 +1540,46 @@ public class UL4Test
 	{
 		checkTemplateOutput("u", "<?print 'gurk'[1]?>");
 		checkTemplateOutput("u", "<?print x[1]?>", "x", "gurk");
+		checkTemplateOutput("u", "<?print x[1]?>", "x", asList("g", "u", "r", "k"));
+
 		checkTemplateOutput("u", "<?print 'gurk'[-3]?>");
 		checkTemplateOutput("u", "<?print x[-3]?>", "x", "gurk");
-		checkTemplateOutput("", "<?print 'gurk'[4]?>");
-		checkTemplateOutput("", "<?print x[4]?>", "x", "gurk");
-		checkTemplateOutput("", "<?print 'gurk'[-5]?>");
-		checkTemplateOutput("", "<?print x[-5]?>", "x", "gurk");
-		checkTemplateOutput("u", "<?print x[1]?>", "x", asList("g", "u", "r", "k"));
 		checkTemplateOutput("u", "<?print x[-3]?>", "x", asList("g", "u", "r", "k"));
+	}
+
+	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
+	public void operator_getitem_fail_pos_stringliteral()
+	{
+		checkTemplateOutput("", "<?print 'gurk'[4]?>");
+	}
+
+	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
+	public void operator_getitem_fail_pos_string()
+	{
+		checkTemplateOutput("", "<?print x[4]?>", "x", "gurk");
+	}
+
+	@CauseTest(expectedCause=ArrayIndexOutOfBoundsException.class)
+	public void operator_getitem_fail_pos_list()
+	{
 		checkTemplateOutput("", "<?print x[4]?>", "x", asList("g", "u", "r", "k"));
+	}
+
+	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
+	public void operator_getitem_fail_neg_stringliteral()
+	{
+		checkTemplateOutput("", "<?print 'gurk'[-5]?>");
+	}
+
+	@CauseTest(expectedCause=StringIndexOutOfBoundsException.class)
+	public void operator_getitem_fail_neg_string()
+	{
+		checkTemplateOutput("", "<?print x[-5]?>", "x", "gurk");
+	}
+
+	@CauseTest(expectedCause=ArrayIndexOutOfBoundsException.class)
+	public void operator_getitem_fail_neg_list()
+	{
 		checkTemplateOutput("", "<?print x[-5]?>", "x", asList("g", "u", "r", "k"));
 	}
 

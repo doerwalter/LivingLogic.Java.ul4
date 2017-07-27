@@ -103,8 +103,6 @@ public class ItemAST extends BinaryAST implements LValue
 	{
 		if (0 > index)
 			index += obj.length();
-		if (index < 0 || index >= obj.length())
-			return new UndefinedIndex(index);
 		return obj.substring(index, index+1);
 	}
 
@@ -122,8 +120,6 @@ public class ItemAST extends BinaryAST implements LValue
 	{
 		if (0 > index)
 			index += obj.size();
-		if (index < 0 || index >= obj.size())
-			return new UndefinedIndex(index);
 		return obj.get(index);
 	}
 
