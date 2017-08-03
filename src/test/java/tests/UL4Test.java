@@ -1889,6 +1889,7 @@ public class UL4Test
 		checkTemplateOutput("\"abc\"", "<?print asjson(data)?>", "data", "abc");
 		checkTemplateOutput("\"'\"", "<?print asjson(data)?>", "data", "'");
 		checkTemplateOutput("\"\\\"\"", "<?print asjson(data)?>", "data", "\"");
+		checkTemplateOutput("\"\\u003c\"", "<?print asjson(data)?>", "data", "<");
 		checkTemplateOutput("[1, 2, 3]", "<?print asjson(data)?>", "data", asList(1, 2, 3));
 		checkTemplateOutput("[1, 2, 3]", "<?print asjson(data)?>", "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("{\"one\": 1}", "<?print asjson(data)?>", "data", makeMap("one", 1));

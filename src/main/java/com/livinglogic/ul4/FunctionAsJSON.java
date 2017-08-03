@@ -53,11 +53,15 @@ public class FunctionAsJSON extends Function
 				builder.append(".0");
 		}
 		else if (obj instanceof String)
+		{
+			// We're using StringEscapeUtils.escapeJava() here, which is the same as escapeJavaScript, except that it doesn't escape ' (which is illegal in JSON strings according to json.org)
+			// Furthermore we replace "<" with "\u003c" to help XSS prevention (when the UL4ON is put inside a <script> tag).
+			String dump = StringEscapeUtils.escapeJava(((String)obj)).replace("<", "\\u003c");
 			builder
 				.append("\"")
-				// We're using StringEscapeUtils.escapeJava() here, which is the same as escapeJavaScript, except that it doesn't escape ' (which is illegal in JSON strings according to json.org)
-				.append(StringEscapeUtils.escapeJava(((String)obj)))
+				.append(dump)
 				.append("\"");
+		}
 		else if (obj instanceof Date)
 		{
 			Calendar calendar = new GregorianCalendar();
@@ -84,16 +88,20 @@ public class FunctionAsJSON extends Function
 		}
 		else if (obj instanceof InterpretedTemplate)
 		{
+			String dump = ((InterpretedTemplate)obj).dumps();
+			dump = StringEscapeUtils.escapeJavaScript(dump).replace("<", "\\u003c");
 			builder
 				.append("ul4.Template.loads(\"")
-				.append(StringEscapeUtils.escapeJavaScript(((InterpretedTemplate)obj).dumps()))
+				.append(dump)
 				.append("\")");
 		}
 		else if (obj instanceof TemplateClosure)
 		{
+			String dump = ((TemplateClosure)obj).getTemplate().dumps();
+			dump = StringEscapeUtils.escapeJavaScript(dump).replace("<", "\\u003c");
 			builder
 				.append("ul4.Template.loads(\"")
-				.append(StringEscapeUtils.escapeJavaScript(((TemplateClosure)obj).getTemplate().dumps()))
+				.append(dump)
 				.append("\")");
 		}
 		else if (obj instanceof UL4Dir && obj instanceof UL4GetAttr)
