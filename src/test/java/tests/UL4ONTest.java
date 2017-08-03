@@ -118,7 +118,7 @@ public class UL4ONTest
 		checkRoundtrip(false);
 		checkRoundtrip(42);
 		checkRoundtrip(42.666);
-		checkRoundtrip("gurk");
+		checkRoundtrip("gurk<>'\"");
 		checkRoundtrip(new Color(0x66, 0x99, 0xcc, 0xff));
 		checkRoundtrip(new Date());
 		checkRoundtrip(new TimeDelta(-1, 1, 1));
@@ -133,6 +133,12 @@ public class UL4ONTest
 		checkRoundtrip(makeSet(1, 2, 3));
 		checkRoundtrip(template);
 		checkRoundtrip(asList(asList(1, 2, 3), asList(4, 5, 6), asList(7, 8, 9)));
+	}
+
+	@Test
+	public void xss()
+	{
+		assertEquals("S'\\x3c'", dumps("<"));
 	}
 
 	@Test

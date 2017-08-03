@@ -86,7 +86,7 @@ public class Utils
 		{
 			// can't happen with StringWriter
 		}
-		
+
 		return writer.toString();
 	}
 
@@ -126,7 +126,7 @@ public class Utils
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Load an object by reading in the UL4ON object serialization format from the CLOB {@code clob}.
 	 * @param clob The CLOB that contains the object in serialized form

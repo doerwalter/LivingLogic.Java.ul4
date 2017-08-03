@@ -158,7 +158,9 @@ public class Encoder
 			else if (obj instanceof String)
 			{
 				record(obj);
-				line("S" + FunctionRepr.call((String)obj));
+				String dump = FunctionRepr.call((String)obj);
+				dump = dump.replace("<", "\\x3c");
+				line("S" + dump);
 			}
 			else if (obj instanceof Date)
 			{
