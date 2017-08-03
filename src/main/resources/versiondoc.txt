@@ -1,3 +1,9 @@
+exp-124:
+--------
+* To help will XSS prevention "<" will now be escaped as "\u003c" in JSON output
+  and as "\x3c" in UL4ON output.
+
+
 exp-123:
 --------
 * UL4 now longer tries a disguise objects as dictionaries. I.e. for objects
