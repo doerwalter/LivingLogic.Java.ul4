@@ -1,3 +1,10 @@
+exp-125:
+--------
+* Arrays.asList() returns immutables lists, and those don't support the UL4
+  method pop() for example. Creating a new mutable list from the array should
+  fix that problem.
+
+
 exp-124:
 --------
 * To help will XSS prevention "<" will now be escaped as "\u003c" in JSON output
