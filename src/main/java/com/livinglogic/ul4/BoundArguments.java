@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import static java.util.Arrays.asList;
-
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;

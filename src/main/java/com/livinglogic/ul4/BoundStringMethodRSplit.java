@@ -34,7 +34,7 @@ public class BoundStringMethodRSplit extends BoundMethod<String>
 
 	public static List<String> call(String object)
 	{
-		return Arrays.asList(StringUtils.split(object));
+		return Utils.array2List(StringUtils.split(object));
 	}
 
 	public static List<String> call(String object, int maxsplit)

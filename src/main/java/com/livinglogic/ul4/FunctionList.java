@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.ArrayList;
 import static java.util.Arrays.asList;
 
 
@@ -34,11 +34,11 @@ public class FunctionList extends Function
 		return call(args.get(0));
 	}
 
-	public static Vector call(String obj)
+	public static ArrayList call(String obj)
 	{
-		Vector result;
+		ArrayList result;
 		int length = obj.length();
-		result = new Vector(obj.length());
+		result = new ArrayList(obj.length());
 		for (int i = 0; i < length; i++)
 		{
 			result.add(String.valueOf(obj.charAt(i)));
@@ -46,35 +46,35 @@ public class FunctionList extends Function
 		return result;
 	}
 
-	public static Vector call(Collection obj)
+	public static ArrayList call(Collection obj)
 	{
-		return new Vector(obj);
+		return new ArrayList(obj);
 	}
 
-	public static Vector call(Object[] obj)
+	public static ArrayList call(Object[] obj)
 	{
-		return new Vector(asList(obj));
+		return new ArrayList(asList(obj));
 	}
 
-	public static Vector call(Map obj)
+	public static ArrayList call(Map obj)
 	{
-		return new Vector(obj.keySet());
+		return new ArrayList(obj.keySet());
 	}
 
-	public static Vector call(Iterable obj)
+	public static ArrayList call(Iterable obj)
 	{
 		return call(obj.iterator());
 	}
 
-	public static Vector call(Iterator obj)
+	public static ArrayList call(Iterator obj)
 	{
-		Vector retVal = new Vector();
+		ArrayList retVal = new ArrayList();
 		while (obj.hasNext())
 			retVal.add(obj.next());
 		return retVal;
 	}
 
-	public static Vector call(Object obj)
+	public static ArrayList call(Object obj)
 	{
 		if (obj instanceof String)
 			return call((String)obj);

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Set;
-import static java.util.Arrays.asList;
 import java.io.IOException;
 
 public class Definition

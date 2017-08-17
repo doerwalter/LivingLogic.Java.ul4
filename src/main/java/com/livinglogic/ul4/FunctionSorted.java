@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
 
@@ -70,9 +70,9 @@ public class FunctionSorted extends FunctionWithContext
 		return call(context, args.get(0), args.get(1), args.get(2));
 	}
 
-	private static Vector<SortKey> decorate(EvaluationContext context, Iterator iter, Object key)
+	private static ArrayList<SortKey> decorate(EvaluationContext context, Iterator iter, Object key)
 	{
-		Vector<SortKey> result = new Vector<SortKey>();
+		ArrayList<SortKey> result = new ArrayList<SortKey>();
 
 		while (iter.hasNext())
 		{
@@ -84,28 +84,28 @@ public class FunctionSorted extends FunctionWithContext
 		return result;
 	}
 
-	private static Vector undecorate(List<SortKey> sortResult)
+	private static ArrayList undecorate(List<SortKey> sortResult)
 	{
 		int size = sortResult.size();
-		Vector result = new Vector(size);
+		ArrayList result = new ArrayList(size);
 		for (int i = 0; i < size; ++i)
 			result.add(sortResult.get(i).object);
 		return result;
 	}
 
-	public static Vector call(EvaluationContext context, Object obj, Object key, Object reverse)
+	public static ArrayList call(EvaluationContext context, Object obj, Object key, Object reverse)
 	{
 		boolean reverseBool = FunctionBool.call(reverse);
 
 		if (key == null)
 		{
-			Vector result = FunctionList.call(obj);
+			ArrayList result = FunctionList.call(obj);
 			Collections.sort(result, new SortedComparator(reverseBool));
 			return result;
 		}
 		else
 		{
-			Vector<SortKey> sort = decorate(context, Utils.iterator(obj), key);
+			ArrayList<SortKey> sort = decorate(context, Utils.iterator(obj), key);
 			Collections.sort(sort, new SortedComparator(reverseBool));
 			return undecorate(sort);
 		}

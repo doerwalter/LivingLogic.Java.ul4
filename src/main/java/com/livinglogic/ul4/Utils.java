@@ -581,6 +581,14 @@ public class Utils
 		return bestPos;
 	}
 
+	/**
+	 * Can be used to convert an array into a real list.
+	 */
+	public static List array2List(Object[] array)
+	{
+		return new ArrayList(Arrays.asList(array));
+	}
+
 	public static String formatMessage(String template, Object... args)
 	{
 		StringBuilder buffer = new StringBuilder();

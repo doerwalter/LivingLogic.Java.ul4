@@ -8,7 +8,6 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -33,21 +32,21 @@ public class BoundStringMethodSplit extends BoundMethod<String>
 
 	public static List<String> call(String object)
 	{
-		return Arrays.asList(StringUtils.split(object));
+		return Utils.array2List(StringUtils.split(object));
 	}
 
 	public static List<String> call(String object, String separator)
 	{
 		if (separator == null)
 			return call(object);
-		return Arrays.asList(StringUtils.splitByWholeSeparatorPreserveAllTokens(object, separator));
+		return Utils.array2List(StringUtils.splitByWholeSeparatorPreserveAllTokens(object, separator));
 	}
 
 	public static List<String> call(String object, String separator, int maxsplit)
 	{
 		if (separator == null)
-			return Arrays.asList(StringUtils.splitByWholeSeparator(object, null, maxsplit+1));
-		return Arrays.asList(StringUtils.splitByWholeSeparatorPreserveAllTokens(object, separator, maxsplit+1));
+			return Utils.array2List(StringUtils.splitByWholeSeparator(object, null, maxsplit+1));
+		return Utils.array2List(StringUtils.splitByWholeSeparatorPreserveAllTokens(object, separator, maxsplit+1));
 	}
 
 	public Object evaluate(BoundArguments args)
