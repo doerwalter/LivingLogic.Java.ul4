@@ -1,3 +1,9 @@
+exp-126:
+--------
+* Use LinkedHashMap in CallAST and RenderAST to preserve the order of keyword
+  arguments.
+
+
 exp-125:
 --------
 * Arrays.asList() returns immutables lists, and those don't support the UL4

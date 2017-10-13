@@ -9,7 +9,7 @@ package com.livinglogic.ul4;
 import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import java.util.Map;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class CallAST extends CallRenderAST
 
 			List<Object> realArguments = new ArrayList<Object>();
 
-			Map<String, Object> realKeywordArguments = new HashMap<String, Object>();
+			Map<String, Object> realKeywordArguments = new LinkedHashMap<String, Object>();
 
 			for (ArgumentASTBase argument : arguments)
 				argument.decoratedEvaluateCall(context, realArguments, realKeywordArguments);
