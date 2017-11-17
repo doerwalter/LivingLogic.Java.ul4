@@ -3811,6 +3811,8 @@ public class UL4Test
 		checkTemplateOutput("True", "<?print 'gurkhurz'.startswith('gurk')?>");
 		checkTemplateOutput("False", "<?print 'gurkhurz'.startswith('hurz')?>");
 		checkTemplateOutput("False", "<?code m = 'gurkhurz'.startswith?><?print m('hurz')?>");
+		checkTemplateOutput("True", "<?print 'gurkhurz'.startswith(['hu', 'gu'])?>");
+		checkTemplateOutput("False", "<?print 'gurkhurz'.startswith(['rk', 'rz'])?>");
 
 		checkTemplateOutput("False", "<?print 'gurkhurz'.startswith(prefix='hurz')?>");
 	}
@@ -3821,6 +3823,8 @@ public class UL4Test
 		checkTemplateOutput("True", "<?print 'gurkhurz'.endswith('hurz')?>");
 		checkTemplateOutput("False", "<?print 'gurkhurz'.endswith('gurk')?>");
 		checkTemplateOutput("False", "<?code m = 'gurkhurz'.endswith?><?print m('gurk')?>");
+		checkTemplateOutput("False", "<?print 'gurkhurz'.endswith(['hu', 'gu'])?>");
+		checkTemplateOutput("True", "<?print 'gurkhurz'.endswith(['rk', 'rz'])?>");
 
 		checkTemplateOutput("False", "<?print 'gurkhurz'.endswith(suffix='gurk')?>");
 	}

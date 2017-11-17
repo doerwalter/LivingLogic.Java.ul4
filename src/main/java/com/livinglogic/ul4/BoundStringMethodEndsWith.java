@@ -8,6 +8,7 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 public class BoundStringMethodEndsWith extends BoundMethod<String>
 {
@@ -33,10 +34,48 @@ public class BoundStringMethodEndsWith extends BoundMethod<String>
 		return object.endsWith(suffix);
 	}
 
+	public static boolean call(String object, Collection<String> suffixes)
+	{
+		for (String suffix : suffixes)
+		{
+			if (object.endsWith(suffix))
+				return true;
+		}
+		return false;
+	}
+
+	public static boolean call(String object, String[] suffixes)
+	{
+		for (String suffix : suffixes)
+		{
+			if (object.endsWith(suffix))
+				return true;
+		}
+		return false;
+	}
+
+	public static boolean call(String object, Map<String, ?> suffixes)
+	{
+		for (String suffix : suffixes.keySet())
+		{
+			if (object.endsWith(suffix))
+				return true;
+		}
+		return false;
+	}
+
 	public Object evaluate(BoundArguments args)
 	{
-		if (args.get(0) instanceof String)
-			return call(object, (String)args.get(0));
+		Object arg = args.get(0);
+
+		if (arg instanceof String)
+			return call(object, (String)arg);
+		else if (arg instanceof Collection)
+			return call(object, (Collection<String>)arg);
+		else if (arg instanceof String[])
+			return call(object, (String[])arg);
+		else if (arg instanceof Map)
+			return call(object, (Map<String, ?>)arg);
 		throw new ArgumentTypeMismatchException("{!t}.endswith({!t}) not supported", object, args.get(0));
 	}
 }
