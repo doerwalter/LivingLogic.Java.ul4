@@ -1,3 +1,9 @@
+exp-127:
+--------
+* The string methods startswith() and endswith() now support list of strings
+  as arguments.
+
+
 exp-126:
 --------
 * Use LinkedHashMap in CallAST and RenderAST to preserve the order of keyword
