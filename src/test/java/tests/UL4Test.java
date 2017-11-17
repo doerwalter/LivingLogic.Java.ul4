@@ -4652,6 +4652,18 @@ public class UL4Test
 	}
 
 	@Test
+	public void template_closure_toplevel2()
+	{
+		String sourceClosure = "<?ul4 makeclosure(x)?><?def inner()?><?print x?><?end def?><?return {'inner': inner}?>";
+		InterpretedTemplate tClosure = getTemplate(sourceClosure);
+
+		String sourceMain = "<?code data = makeclosure(42)?><?render data.inner()?>";
+		InterpretedTemplate tMain = getTemplate(sourceMain);
+
+		checkTemplateOutput("42", tMain, "makeclosure", tClosure);
+	}
+
+	@Test
 	public void return_in_template()
 	{
 		checkTemplateOutput("gurk", "gurk<?return 42?>hurz");
