@@ -1383,7 +1383,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 		public boolean containsCol(int col)
 		{
-			return indentStartCol <= col && col <= indentEndCol;
+			return indentStartCol <= col && col < indentEndCol;
 		}
 	}
 

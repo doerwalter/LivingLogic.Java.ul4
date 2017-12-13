@@ -4749,6 +4749,14 @@ public class UL4Test
 		checkTemplateOutput("\tTrue\n", getTemplate(" <?if True?>\n\tTrue\n <?end if?>\n", InterpretedTemplate.Whitespace.smart));
 	}
 
+	@Test
+	public void smart_whitespace_nested() throws Exception
+	{
+		InterpretedTemplate t = getTemplate("<?whitespace smart?>\n<x>\n\t<?for i in range(2)?>\n\t\t<y>\n\t\t\t<z><?printx i?></z>\n\t\t</y>\n\t<?end for?>\n</x>");
+		System.out.println(t);
+		checkTemplateOutput("<x>\n\t<y>\n\t\t<z>0</z>\n\t</y>\n\t<y>\n\t\t<z>1</z>\n\t</y>\n</x>", "<?whitespace smart?>\n<x>\n\t<?for i in range(2)?>\n\t\t<y>\n\t\t\t<z><?printx i?></z>\n\t\t</y>\n\t<?end for?>\n</x>");
+	}
+
 	public static final class MakeVar extends Function
 	{
 		protected int value;
