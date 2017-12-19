@@ -35,6 +35,11 @@ import org.junit.runner.RunWith;
 @RunWith(CauseTestRunner.class)
 public class UL4ONTest
 {
+	static
+	{
+		InterpretedTemplate.register4UL4ON();
+	}
+
 	private static class Point implements UL4ONSerializable
 	{
 		int x;
