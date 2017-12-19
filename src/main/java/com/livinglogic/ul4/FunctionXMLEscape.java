@@ -27,9 +27,8 @@ public class FunctionXMLEscape extends Function
 		return call(args.get(0));
 	}
 
-	public static String call(Object obj)
+	public static String call(String str)
 	{
-		String str = FunctionStr.call(obj);
 		int length = str.length();
 		StringBuilder sb = new StringBuilder((int)(1.2 * length));
 		for (int offset = 0; offset < length; offset++)
@@ -73,5 +72,10 @@ public class FunctionXMLEscape extends Function
 			}
 		}
 		return sb.toString();
+	}
+
+	public static String call(Object obj)
+	{
+		return call(FunctionStr.call(obj));
 	}
 }
