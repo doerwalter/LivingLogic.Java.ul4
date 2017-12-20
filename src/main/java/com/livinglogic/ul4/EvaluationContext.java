@@ -59,6 +59,11 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	 */
 	private LinkedList<AutoCloseable> closeables;
 
+	/*
+	 * A stack of currently active escaping functions
+	 */
+	protected List<StringEscape> escapes;
+
 	/**
 	 * The maximum number of milliseconds of runtime that are allowed
 	 * using this {@code EvaluationContext} object. This can be used to limit
@@ -108,6 +113,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 		template = null;
 		allVariables = new MapChain<String, Object>(variables, functions);
 		closeables = new LinkedList<AutoCloseable>();
+		escapes = new LinkedList<StringEscape>();
 		this.milliseconds = milliseconds;
 		startMilliseconds = System.currentTimeMillis();
 	}
@@ -154,6 +160,22 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	public void registerCloseable(AutoCloseable closeable)
 	{
 		closeables.add(closeable);
+	}
+
+	/**
+	 * Push a new escaping method onto the stack.
+	 */
+	public void pushEscape(StringEscape escape)
+	{
+		escapes.add(escape);
+	}
+
+	/**
+	 * Pop the innermost escaping method from the stack.
+	 */
+	public void popEscape()
+	{
+		escapes.remove(escapes.size()-1);
 	}
 
 	/**
@@ -233,6 +255,8 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 		{
 			try
 			{
+				for (StringEscape escape : escapes)
+					string = escape.escape(string);
 				writer.write(string);
 			}
 			catch (IOException exc)

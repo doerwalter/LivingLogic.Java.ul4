@@ -47,7 +47,8 @@ public class RenderAST extends CallRenderAST
 
 	public void toString(Formatter formatter)
 	{
-		formatter.write("render ");
+		formatter.write(getType());
+		formatter.write(" ");
 		super.toString(formatter);
 		if (indent != null)
 		{

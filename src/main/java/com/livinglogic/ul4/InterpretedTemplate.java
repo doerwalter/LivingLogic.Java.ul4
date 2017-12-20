@@ -364,7 +364,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					else if (line.get(1) instanceof Tag)
 					{
 						Tag tag = (Tag)line.get(1);
-						if (!tag.tag.equals("print") && !tag.tag.equals("printx") && !tag.tag.equals("render"))
+						if (!tag.tag.equals("print") && !tag.tag.equals("printx") && !tag.tag.equals("render") && !tag.tag.equals("renderx"))
 						{
 							parts.add(tag);
 							continue;
@@ -379,9 +379,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 					if (line.get(1) instanceof Tag)
 					{
 						Tag tag = (Tag)line.get(1);
-						if (tag.tag.equals("render"))
+						if (tag.tag.equals("render") || tag.tag.equals("renderx"))
 						{
-							parts.add(line.get(0)); // This will be move into the render tag later
+							parts.add(line.get(0)); // This will be moved into the render tag later
 							parts.add(tag);
 							continue;
 						}
@@ -586,12 +586,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							break;
 						}
 						case "render":
+						case "renderx":
 						{
 							UL4Parser parser = getParser(tag);
 							CodeAST code = parser.expression();
 							if (!(code instanceof CallAST))
 								throw new RuntimeException("render call required");
-							RenderAST render = new RenderAST((CallAST)code);
+							RenderAST render = tagtype.equals("render") ? new RenderAST((CallAST)code) : new RenderXAST((CallAST)code);
 							// If we have an indentation before the {code <?render?>} tag, move it
 							// into the {@code indent} attribute of the {code RenderAST} object,
 							// because this indentation must be added to every line that the
@@ -839,7 +840,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * Internal method that renders the template when all variables are already
 	 * bound.
-	 * @param context   the EvaluationContext. May be null.
+	 * @param context   the EvaluationContext. May not be null.
 	 * @param writer    the java.io.Writer object to which the output is written.
 	 *                  Maybe null, then the context's writer will be used.
 	 * @param variables a map containing the top level variables that should be
@@ -1195,7 +1196,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public List<Line> tokenizeTags()
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|render)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderx|render)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Line> lines = new LinkedList<Line>();
 		boolean wasTag = false;
 		if (source != null)
@@ -1477,6 +1478,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		Utils.register("de.livinglogic.ul4.unpackdictarg", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.UnpackDictArgumentAST(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.call", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallAST(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.renderx", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderXAST(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate(); }});
 		Utils.register("de.livinglogic.ul4.signature", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SignatureAST(null, null); }});
 	}

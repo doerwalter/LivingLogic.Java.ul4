@@ -3946,6 +3946,12 @@ public class UL4Test
 	}
 
 	@Test
+	public void renderx()
+	{
+		checkTemplateOutput("&lt;&amp;&gt;", "<?def x?><&><?end def?><?renderx x()?>");
+	}
+
+	@Test
 	public void render_local_vars()
 	{
 		InterpretedTemplate t = getTemplate("<?code x += 1?><?print x?>");

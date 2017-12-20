@@ -1,3 +1,8 @@
+exp-129:
+--------
+* Added support for <?renderx?>.
+
+
 exp-128:
 --------
 * Fixed an off-by-one error in smart whitespace handling.
