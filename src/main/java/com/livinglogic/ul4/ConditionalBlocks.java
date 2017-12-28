@@ -19,19 +19,41 @@ class ConditionalBlocks extends BlockAST
 		startNewBlock(block);
 	}
 
+	@Override
 	public String getType()
 	{
 		return "condblock";
 	}
 
-	public boolean handleLoopControl(String name)
+	@Override
+	public IndentAST popTrailingIndent()
 	{
-		return false;
+		if (content.size() > 0)
+			return ((BlockLike)content.get(content.size()-1)).popTrailingIndent();
+		else
+			return null;
 	}
 
+	@Override
 	public void append(AST item)
 	{
 		((ConditionalBlock)content.get(content.size()-1)).append(item);
+	}
+
+	@Override
+	public void finish(Tag endtag)
+	{
+		String type = endtag.getCodeText().trim();
+		if (type != null && type.length() != 0 && !type.equals("if"))
+			throw new BlockException("if ended by end" + type);
+		super.finish(endtag);
+		((BlockAST)content.get(content.size()-1)).endtag = endtag;
+	}
+
+	@Override
+	public boolean handleLoopControl(String name)
+	{
+		return false;
 	}
 
 	public void startNewBlock(ConditionalBlock item)
@@ -58,15 +80,6 @@ class ConditionalBlocks extends BlockAST
 				throw new BlockException("duplicate else in if/elif/else chain");
 		}
 		content.add(item);
-	}
-
-	public void finish(Tag endtag)
-	{
-		super.finish(endtag);
-		((BlockAST)content.get(content.size()-1)).endtag = endtag;
-		String type = endtag.getCodeText().trim();
-		if (type != null && type.length() != 0 && !type.equals("if"))
-			throw new BlockException("if ended by end" + type);
 	}
 
 	public Object evaluate(EvaluationContext context)

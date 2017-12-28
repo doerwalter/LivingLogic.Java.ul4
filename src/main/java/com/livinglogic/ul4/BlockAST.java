@@ -16,7 +16,7 @@ import java.util.Set;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-abstract class BlockAST extends CodeAST
+abstract class BlockAST extends CodeAST implements BlockLike
 {
 	protected List<AST> content = new LinkedList<AST>();
 	protected Tag endtag = null;
@@ -26,11 +26,28 @@ abstract class BlockAST extends CodeAST
 		super(tag, pos);
 	}
 
+	@Override
+	public IndentAST popTrailingIndent()
+	{
+		if (content.size() > 0)
+		{
+			AST lastItem = content.get(content.size()-1);
+			if (lastItem instanceof IndentAST)
+			{
+				content.remove(content.size()-1);
+				return (IndentAST)lastItem;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public void append(AST item)
 	{
 		content.add(item);
 	}
 
+	@Override
 	public void finish(Tag endtag)
 	{
 		this.endtag = endtag;
@@ -78,7 +95,7 @@ abstract class BlockAST extends CodeAST
 		return null;
 	}
 
-	public void toString(Formatter formatter)
+	public static void blockToString(Formatter formatter, List<AST> content)
 	{
 		if (content.size() != 0)
 		{
@@ -93,6 +110,11 @@ abstract class BlockAST extends CodeAST
 			formatter.write("pass");
 			formatter.lf();
 		}
+	}
+
+	public void toString(Formatter formatter)
+	{
+		blockToString(formatter, content);
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException

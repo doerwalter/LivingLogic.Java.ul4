@@ -27,17 +27,19 @@ public class ForBlockAST extends BlockAST
 		this.container = container;
 	}
 
+	@Override
 	public String getType()
 	{
 		return "forblock";
 	}
 
+	@Override
 	public void finish(Tag endtag)
 	{
-		super.finish(endtag);
 		String type = endtag.getCodeText().trim();
 		if (type != null && type.length() != 0 && !type.equals("for"))
 			throw new BlockException("for ended by end" + type);
+		super.finish(endtag);
 	}
 
 	public void toString(Formatter formatter)

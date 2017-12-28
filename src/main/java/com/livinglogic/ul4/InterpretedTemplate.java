@@ -181,7 +181,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * Creates an {@code InterpretedTemplate} object. Used for subtemplates.
 	 */
-	private InterpretedTemplate(Tag tag, String name, Whitespace whitespace, String startdelim, String enddelim, SignatureAST signature)
+	public InterpretedTemplate(Tag tag, String name, Whitespace whitespace, String startdelim, String enddelim, SignatureAST signature)
 	{
 		super(tag, new Slice(false, false, -1, -1));
 		this.source = tag.getSource();
@@ -294,7 +294,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				}
 				newlines.add(new BlockLine(line, stack));
 				// Tags "opening" a block
-				if ("for".equals(tagName) || "if".equals(tagName) || "def".equals(tagName) || "elif".equals(tagName) || "else".equals(tagName))
+				if ("for".equals(tagName) || "if".equals(tagName) || "def".equals(tagName) || "elif".equals(tagName) || "else".equals(tagName) || "renderblock".equals(tagName))
 				{
 					Block block = new Block(i+1); // Block starts on the next line
 					stack.add(block);
@@ -428,7 +428,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 
 		// Stack of currently active blocks
-		Stack<BlockAST> blockStack = new Stack<BlockAST>();
+		Stack<BlockLike> blockStack = new Stack<BlockLike>();
 		blockStack.push(this);
 
 		// Stack of currently active templates
@@ -437,7 +437,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 		for (SourcePart part : parts)
 		{
-			BlockAST innerBlock = blockStack.peek();
+			BlockLike innerBlock = blockStack.peek();
 			if (part instanceof TextAST)
 			{
 				innerBlock.append((TextAST)part);
@@ -592,23 +592,38 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							CodeAST code = parser.expression();
 							if (!(code instanceof CallAST))
 								throw new RuntimeException("render call required");
-							RenderAST render = tagtype.equals("render") ? new RenderAST((CallAST)code) : new RenderXAST((CallAST)code);
-							// If we have an indentation before the {code <?render?>} tag, move it
-							// into the {@code indent} attribute of the {code RenderAST} object,
+							RenderAST render;
+							switch (tagtype)
+							{
+								case "render":
+									render = new RenderAST((CallAST)code);
+									break;
+								case "renderx":
+									render = new RenderXAST((CallAST)code);
+									break;
+								// can't happen
+								default:
+									render = null;
+									break;
+							}
+							// If we have an indentation before the render tag,
+							// move it into the {@code indent} attribute of the {@code RenderAST} object,
 							// because this indentation must be added to every line that the
 							// rendered template outputs.
-							if (innerBlock instanceof ConditionalBlocks)
-								innerBlock = (BlockAST)innerBlock.content.get(innerBlock.content.size()-1); // We can replace {@code innerBlock}, because we don't need it any more for the rest of the loop body
-							if (innerBlock.content.size() > 0)
-							{
-								AST lastNode = innerBlock.content.get(innerBlock.content.size()-1);
-								if (lastNode instanceof IndentAST)
-								{
-									render.indent = (IndentAST)lastNode;
-									innerBlock.content.remove(innerBlock.content.size()-1);
-								}
-							}
+							render.stealIndent(innerBlock);
 							innerBlock.append(render);
+							break;
+						}
+						case "renderblock":
+						{
+							UL4Parser parser = getParser(tag);
+							CodeAST code = parser.expression();
+							if (!(code instanceof CallAST))
+								throw new RuntimeException("render call required");
+							RenderBlockAST render = new RenderBlockAST(tag, (CallAST)code, whitespace, startdelim, enddelim);
+							render.stealIndent(innerBlock);
+							innerBlock.append(render);
+							blockStack.push((RenderBlockAST)render);
 							break;
 						}
 						default:
@@ -624,7 +639,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 		if (blockStack.size() > 1) // the template itself is still on the stack
 		{
-			BlockAST innerBlock = blockStack.peek();
+			BlockLike innerBlock = blockStack.peek();
 			throw new LocationException(new BlockException(innerBlock.getType() + " block unclosed"), innerBlock);
 		}
 	}
@@ -1035,6 +1050,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return null;
 	}
 
+	@Override
 	public String getType()
 	{
 		return "template";
@@ -1196,7 +1212,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public List<Line> tokenizeTags()
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderx|render)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblock|renderx|render)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Line> lines = new LinkedList<Line>();
 		boolean wasTag = false;
 		if (source != null)
@@ -1249,12 +1265,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return buffer.toString();
 	}
 
+	@Override
 	public void finish(Tag endtag)
 	{
-		super.finish(endtag);
 		String type = endtag.getCodeText().trim();
 		if (type != null && type.length() != 0 && !type.equals("def"))
 			throw new BlockException("def ended by end" + type);
+		super.finish(endtag);
 	}
 
 	public boolean handleLoopControl(String name)
@@ -1479,6 +1496,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		Utils.register("de.livinglogic.ul4.call", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.CallAST(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderAST(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.renderx", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderXAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.renderblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderBlockAST(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate(); }});
 		Utils.register("de.livinglogic.ul4.signature", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SignatureAST(null, null); }});
 	}

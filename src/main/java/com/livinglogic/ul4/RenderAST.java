@@ -57,6 +57,11 @@ public class RenderAST extends CallRenderAST
 		}
 	}
 
+	public void stealIndent(BlockLike block)
+	{
+		indent = block.popTrailingIndent();
+	}
+
 	@Override
 	public Object decoratedEvaluate(EvaluationContext context)
 	{

@@ -24,17 +24,19 @@ public class WhileBlockAST extends BlockAST
 		this.condition = condition;
 	}
 
+	@Override
 	public String getType()
 	{
 		return "whileblock";
 	}
 
+	@Override
 	public void finish(Tag endtag)
 	{
-		super.finish(endtag);
 		String type = endtag.getCodeText().trim();
 		if (type != null && type.length() != 0 && !type.equals("while"))
 			throw new BlockException("while ended by end" + type);
+		super.finish(endtag);
 	}
 
 	public void toString(Formatter formatter)
