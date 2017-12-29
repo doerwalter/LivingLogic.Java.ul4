@@ -57,6 +57,14 @@ public class RenderAST extends CallRenderAST
 		}
 	}
 
+	/**
+	 * If we have an indentation before the render tag, we remove it from the
+	 * containing block and set it as the {@code indent} attribute of the
+	 * {@code RenderAST} object, because this indentation must be added to every
+	 * line that the rendered template outputs.
+	 *
+	 * @param block the block which contains this object
+	 */
 	public void stealIndent(BlockLike block)
 	{
 		indent = block.popTrailingIndent();

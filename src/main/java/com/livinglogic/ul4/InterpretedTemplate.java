@@ -606,10 +606,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 									render = null;
 									break;
 							}
-							// If we have an indentation before the render tag,
-							// move it into the {@code indent} attribute of the {@code RenderAST} object,
-							// because this indentation must be added to every line that the
-							// rendered template outputs.
 							render.stealIndent(innerBlock);
 							innerBlock.append(render);
 							break;
