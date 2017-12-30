@@ -3958,6 +3958,12 @@ public class UL4Test
 	}
 
 	@Test
+	public void renderblocks() throws Exception
+	{
+		checkTemplateOutput("(gurk)", "<?def bracket(content, prefix='(', suffix=')')?><?printx prefix?><?render content()?><?printx suffix?><?end def?><?renderblocks bracket()?><?def content?>gurk<?end def?><?end renderblocks?>");
+	}
+
+	@Test
 	public void render_local_vars()
 	{
 		InterpretedTemplate t = getTemplate("<?code x += 1?><?print x?>");

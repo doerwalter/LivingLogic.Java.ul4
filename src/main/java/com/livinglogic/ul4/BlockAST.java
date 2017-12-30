@@ -18,8 +18,8 @@ import com.livinglogic.ul4on.Encoder;
 
 abstract class BlockAST extends CodeAST implements BlockLike
 {
-	protected List<AST> content = new LinkedList<AST>();
 	protected Tag endtag = null;
+	protected List<AST> content = new LinkedList<AST>();
 
 	public BlockAST(Tag tag, Slice pos)
 	{

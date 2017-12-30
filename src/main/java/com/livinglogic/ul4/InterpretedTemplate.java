@@ -619,7 +619,19 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							RenderBlockAST render = new RenderBlockAST(tag, (CallAST)code, whitespace, startdelim, enddelim);
 							render.stealIndent(innerBlock);
 							innerBlock.append(render);
-							blockStack.push((RenderBlockAST)render);
+							blockStack.push(render);
+							break;
+						}
+						case "renderblocks":
+						{
+							UL4Parser parser = getParser(tag);
+							CodeAST code = parser.expression();
+							if (!(code instanceof CallAST))
+								throw new RuntimeException("render call required");
+							RenderBlocksAST render = new RenderBlocksAST((CallAST)code);
+							render.stealIndent(innerBlock);
+							innerBlock.append(render);
+							blockStack.push(render);
 							break;
 						}
 						default:
@@ -1208,7 +1220,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public List<Line> tokenizeTags()
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblock|renderx|render)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblocks|renderblock|renderx|render)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
 		LinkedList<Line> lines = new LinkedList<Line>();
 		boolean wasTag = false;
 		if (source != null)
@@ -1493,6 +1505,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		Utils.register("de.livinglogic.ul4.render", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderAST(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.renderx", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderXAST(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.renderblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderBlockAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.renderblocks", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.RenderBlocksAST(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.template", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.InterpretedTemplate(); }});
 		Utils.register("de.livinglogic.ul4.signature", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.SignatureAST(null, null); }});
 	}
