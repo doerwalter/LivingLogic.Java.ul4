@@ -22,13 +22,14 @@ import com.livinglogic.ul4on.Encoder;
 
 public class RenderBlockAST extends RenderAST implements BlockLike
 {
+	protected Tag endtag;
 	protected InterpretedTemplate content;
-	protected Tag endtag = null;
 
 	public RenderBlockAST(Tag tag, Slice pos, AST obj)
 	{
 		super(tag, pos, obj);
-		this.content = null;
+		endtag = null;
+		content = null;
 	}
 
 	/**
@@ -37,7 +38,8 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 	public RenderBlockAST(Tag tag, CallAST call, InterpretedTemplate.Whitespace whitespace, String startdelim, String enddelim)
 	{
 		super(call);
-		this.content = new InterpretedTemplate(tag, "content", whitespace, startdelim, enddelim, null);
+		endtag = null;
+		content = new InterpretedTemplate(tag, "content", whitespace, startdelim, enddelim, null);
 	}
 
 	@Override
@@ -103,12 +105,14 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
+		encoder.dump(endtag);
 		encoder.dump(content);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
+		endtag = (Tag)decoder.load();
 		content = (InterpretedTemplate)decoder.load();
 	}
 
