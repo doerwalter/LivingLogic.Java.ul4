@@ -1,3 +1,8 @@
+exp-130:
+--------
+* Added support for <?renderblock?> and <?renderblocks?>.
+
+
 exp-129:
 --------
 * Added support for <?renderx?>.
