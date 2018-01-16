@@ -15,11 +15,14 @@ Implementations
 ===============
 
 Apart from this Java implementation there are implementations of UL4 and UL4ON
-for Python_, Javascript_ and PHP_.
+for Python_, Javascript_.
 
 .. _Python: https://github.com/LivingLogic/LivingLogic.Python.xist
 .. _Javascript: https://github.com/LivingLogic/LivingLogic.Javascript.ul4
-.. _PHP: https://github.com/LivingLogic/LivingLogic.PHP.ul4
+
+For UL4ON there's an implementation of UL4ON serialization for `Oracle PL/SQL`_.
+
+.. _Oracle PL/SQL: https://github.com/LivingLogic/LivingLogic.Oracle.ul4
 
 
 Documentation
