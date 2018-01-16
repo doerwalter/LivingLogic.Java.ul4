@@ -14,7 +14,7 @@ serialization format.
 Implementations
 ===============
 
-Apart from this Java implementation there are implementations of UL4ON and UL4
+Apart from this Java implementation there are implementations of UL4 and UL4ON
 for Python_, Javascript_ and PHP_.
 
 .. _Python: https://github.com/LivingLogic/LivingLogic.Python.xist
