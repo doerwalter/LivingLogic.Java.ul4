@@ -887,7 +887,7 @@ Moving to ANTLR made several syntax changes necessary:
 
 *	``<?render x()?>`` becomes ``<?print x.render()?>``;
 
-*	``<?print x.render()?>`` becomes ``<?print x.renders()?>``
+*	``<?print x.render()?>`` becomes ``<?print x.renders()?>``.
 
 UL4 templates now support the functions ``fromjson``, ``asul4on``, ``fromul4on``.
 
