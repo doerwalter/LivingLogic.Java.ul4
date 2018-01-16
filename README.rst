@@ -824,7 +824,7 @@ Added ``values`` method.
 exp-56
 ------
 
-* Merged constant loading AST classes into one class: ``Const``.
+Merged constant loading AST classes into one class: ``Const``.
 
 UL4ON can now read/write ``TimeDelta`` and ``MonthDelta`` objects.
 
