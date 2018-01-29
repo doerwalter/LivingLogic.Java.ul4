@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 import java.math.BigInteger;
+import java.util.Iterator;
 
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
@@ -30,7 +31,7 @@ import com.livinglogic.ul4.FunctionRepr;
  * A {@code Decoder} object wraps a {@code Reader} object and can read any object
  * in the UL4ON serialization format from this {@code Reader}.
  */
-public class Decoder
+public class Decoder implements Iterable<Object>
 {
 	/**
 	 * The {@code Reader} instance from where serialized objects will be read.
@@ -40,7 +41,12 @@ public class Decoder
 	/**
 	 * The current position in the UL4ON stream
 	 */
-	int position = 0;
+	private int position = 0;
+
+	/**
+	 * The next character to be read by {@code nextChar}
+	 */
+	private int bufferedChar = -1;
 
 	/**
 	 * The list of objects that have been read so far from {@code reader} and
@@ -80,83 +86,7 @@ public class Decoder
 	 */
 	public Object load() throws IOException
 	{
-		return load(-2);
-	}
-
-	/**
-	 * Record {@code obj} in the list of backreferences.
-	 */
-	private void loading(Object obj)
-	{
-		objects.add(obj);
-	}
-
-	/**
-	 * For loading custom object or immutable objects that have attributes we have a problem:
-	 * We have to record the object we're loading *now*, so that it is available for backreferences.
-	 * However until we've read the UL4ON name of the class (for custom object) or the attributes
-	 * of the object (for immutable objects with attributes), we can't create the object.
-	 * So we push {@code null} to the backreference list for now and put the right object in this spot,
-	 * once we've created it (via {@code endFakeLoading}). This shouldn't lead to problems,
-	 * because during the time the backreference is wrong, only the class name is read,
-	 * so our object won't be referenced. For immutable objects the attributes normally
-	 * don't reference the object itself.
-	*/
-	private int beginFakeLoading()
-	{
-		int oldpos = objects.size();
-		loading(null);
-		return oldpos;
-	}
-
-	/**
-	 * Fixes backreferences in object list
-	 */
-	private void endFakeLoading(int oldpos, Object value)
-	{
-		objects.set(oldpos, value);
-	}
-
-	private int readChar() throws IOException
-	{
-		int c = reader.read();
-		++position;
-		return c;
-	}
-
-	/**
-	 * Read the next not-whitespace character
-	 */
-	private char nextChar() throws IOException
-	{
-		while (true)
-		{
-			int c = readChar();
-			if (c == -1)
-				throw new DecoderException(position, "broken stream: unexpected EOF");
-
-			if (!Character.isWhitespace(c))
-				return (char)c;
-		}
-	}
-
-	private String charRepr(int c)
-	{
-		if (c < 0)
-			return "EOF";
-		else
-			return FunctionRepr.call(Character.toString((char)c));
-	}
-
-	/**
-	 * Read an object from {@link #reader} and return it.
-	 * @param typecode The typecode from a previous read or -2 if the typecode
-	 *                 has to be read from the {@link #reader}.
-	 */
-	private Object load(int typecode) throws IOException
-	{
-		if (typecode == -2)
-			typecode = nextChar();
+		char typecode = nextChar();
 
 		if (typecode == '^')
 		{
@@ -238,10 +168,10 @@ public class Decoder
 			if (typecode == 'C')
 				oldpos = beginFakeLoading();
 
-			int r = (Integer)load(-2);
-			int g = (Integer)load(-2);
-			int b = (Integer)load(-2);
-			int a = (Integer)load(-2);
+			int r = (Integer)load();
+			int g = (Integer)load();
+			int b = (Integer)load();
+			int a = (Integer)load();
 			Color result = new Color(r, g, b, a);
 
 			if (typecode == 'C')
@@ -254,13 +184,13 @@ public class Decoder
 			if (typecode == 'Z')
 				oldpos = beginFakeLoading();
 
-			int year = (Integer)load(-2);
-			int month = (Integer)load(-2);
-			int day = (Integer)load(-2);
-			int hour = (Integer)load(-2);
-			int minute = (Integer)load(-2);
-			int second = (Integer)load(-2);
-			int microsecond = (Integer)load(-2);
+			int year = (Integer)load();
+			int month = (Integer)load();
+			int day = (Integer)load();
+			int hour = (Integer)load();
+			int minute = (Integer)load();
+			int second = (Integer)load();
+			int microsecond = (Integer)load();
 			Date result = FunctionDate.call(year, month, day, hour, minute, second, microsecond);
 
 			if (typecode == 'Z')
@@ -274,9 +204,9 @@ public class Decoder
 			if (typecode == 'T')
 				oldpos = beginFakeLoading();
 
-			int days = (Integer)load(-2);
-			int seconds = (Integer)load(-2);
-			int microseconds = (Integer)load(-2);
+			int days = (Integer)load();
+			int seconds = (Integer)load();
+			int microseconds = (Integer)load();
 			TimeDelta result = new TimeDelta(days, seconds, microseconds);
 
 			if (typecode == 'T')
@@ -289,7 +219,7 @@ public class Decoder
 			if (typecode == 'M')
 				oldpos = beginFakeLoading();
 
-			int months = (Integer)load(-2);
+			int months = (Integer)load();
 			MonthDelta result = new MonthDelta(months);
 
 			if (typecode == 'M')
@@ -309,7 +239,10 @@ public class Decoder
 				if (typecode == ']')
 					return result;
 				else
-					result.add(load(typecode));
+				{
+					pushbackChar(typecode);
+					result.add(load());
+				}
 			}
 		}
 		else if (typecode == 'd' || typecode == 'D' || typecode == 'e' || typecode == 'E')
@@ -326,8 +259,9 @@ public class Decoder
 					return result;
 				else
 				{
-					Object key = load(typecode);
-					Object value = load(-2);
+					pushbackChar(typecode);
+					Object key = load();
+					Object value = load();
 					if (key instanceof String)
 					{
 						Object oldKey = keys.get(key);
@@ -356,7 +290,8 @@ public class Decoder
 					return result;
 				else
 				{
-					Object item = load(typecode);
+					pushbackChar(typecode);
+					Object item = load();
 					result.add(item);
 				}
 			}
@@ -367,8 +302,8 @@ public class Decoder
 			if (typecode == 'R')
 				oldpos = beginFakeLoading();
 
-			Object start = load(-2);
-			Object stop = load(-2);
+			Object start = load();
+			Object stop = load();
 			boolean hasStart = (start != null);
 			boolean hasStop = (stop != null);
 			int startIndex = hasStart ? com.livinglogic.ul4.Utils.toInt(start) : -1;
@@ -384,7 +319,7 @@ public class Decoder
 			if (typecode == 'O')
 				oldpos = beginFakeLoading();
 
-			String name = (String)load(-2);
+			String name = (String)load();
 
 			ObjectFactory factory = null;
 
@@ -415,6 +350,93 @@ public class Decoder
 			throw new DecoderException(position, "broken stream: unknown typecode " + charRepr(typecode));
 	}
 
+	/**
+	 * Return an iterator that reads the content of an object until the "object terminator" {@code )} is hit.
+	 * This object terminator will not be read from the input stream.
+	 * Also note, that the iterator should always be exhausted when it is read, otherwise the stream will be
+	 * in an undefined state.
+	 */
+	public Iterator<Object> iterator()
+	{
+		return new ObjectContentIterator();
+	}
+
+	/**
+	 * Record {@code obj} in the list of backreferences.
+	 */
+	private void loading(Object obj)
+	{
+		objects.add(obj);
+	}
+
+	/**
+	 * For loading custom object or immutable objects that have attributes we have a problem:
+	 * We have to record the object we're loading *now*, so that it is available for backreferences.
+	 * However until we've read the UL4ON name of the class (for custom object) or the attributes
+	 * of the object (for immutable objects with attributes), we can't create the object.
+	 * So we push {@code null} to the backreference list for now and put the right object in this spot,
+	 * once we've created it (via {@code endFakeLoading}). This shouldn't lead to problems,
+	 * because during the time the backreference is wrong, only the class name is read,
+	 * so our object won't be referenced. For immutable objects the attributes normally
+	 * don't reference the object itself.
+	*/
+	private int beginFakeLoading()
+	{
+		int oldpos = objects.size();
+		loading(null);
+		return oldpos;
+	}
+
+	/**
+	 * Fixes backreferences in object list
+	 */
+	private void endFakeLoading(int oldpos, Object value)
+	{
+		objects.set(oldpos, value);
+	}
+
+	private int readChar() throws IOException
+	{
+		int c = reader.read();
+		++position;
+		return c;
+	}
+
+	/**
+	 * Read the next not-whitespace character
+	 */
+	private char nextChar() throws IOException
+	{
+		if (bufferedChar >= 0)
+		{
+			char result = (char)bufferedChar;
+			bufferedChar = -1;
+			return result;
+		}
+		while (true)
+		{
+			int c = readChar();
+			if (c == -1)
+				throw new DecoderException(position, "broken stream: unexpected EOF");
+
+			if (!Character.isWhitespace(c))
+				return (char)c;
+		}
+	}
+
+	private void pushbackChar(char c)
+	{
+		bufferedChar = c;
+	}
+
+	private String charRepr(int c)
+	{
+		if (c < 0)
+			return "EOF";
+		else
+			return FunctionRepr.call(Character.toString((char)c));
+	}
+
 	private int readInt() throws IOException
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -442,6 +464,59 @@ public class Decoder
 				buffer.append((char)c);
 			else
 				return Double.valueOf(buffer.toString());
+		}
+	}
+
+	private class ObjectContentIterator implements Iterator
+	{
+		private char bufferedChar;
+
+		ObjectContentIterator()
+		{
+			readTypeCode();
+		}
+
+		public boolean hasNext()
+		{
+			return bufferedChar != ')';
+		}
+
+		public Object next()
+		{
+			if (bufferedChar == ')')
+				return null;
+			else
+			{
+				Object item = null;
+				try
+				{
+					item = load();
+				}
+				catch (Exception ex)
+				{
+					throw new RuntimeException(ex);
+				}
+				readTypeCode();
+				return item;
+			}
+		}
+
+		public void remove()
+		{
+			throw new UnsupportedOperationException();
+		}
+
+		private void readTypeCode()
+		{
+			try
+			{
+				bufferedChar = nextChar();
+			}
+			catch (Exception ex)
+			{
+				throw new RuntimeException(ex);
+			}
+			pushbackChar(bufferedChar);
 		}
 	}
 }
