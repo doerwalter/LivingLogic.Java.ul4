@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.math.BigInteger;
 import java.util.Iterator;
+import java.util.Stack;
 
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
@@ -67,6 +68,11 @@ public class Decoder implements Iterable<Object>
 	private Map<String, ObjectFactory> registry = null;
 
 	/**
+	 * Stack of types (used for error reporting).
+	 */
+	private Stack<String> stack = new Stack<String>();
+
+	/**
 	 * Create an {@code Decoder} object for reading serialized UL4ON dump
 	 * from the {@code Reader} {@code reader}.
 	 *
@@ -108,7 +114,7 @@ public class Decoder implements Iterable<Object>
 			else if (data == 'F')
 				result = false;
 			else
-				throw new DecoderException(position, "broken stream: expected 'T' or 'F', got " + charRepr(data));
+				throw new DecoderException(position, path(), "expected 'T' or 'F', got " + charRepr(data));
 			if (typecode == 'B')
 				loading(result);
 			++position;
@@ -168,15 +174,23 @@ public class Decoder implements Iterable<Object>
 			if (typecode == 'C')
 				oldpos = beginFakeLoading();
 
-			int r = (Integer)load();
-			int g = (Integer)load();
-			int b = (Integer)load();
-			int a = (Integer)load();
-			Color result = new Color(r, g, b, a);
+			pushType("color");
+			try
+			{
+				int r = (Integer)load();
+				int g = (Integer)load();
+				int b = (Integer)load();
+				int a = (Integer)load();
+				Color result = new Color(r, g, b, a);
 
-			if (typecode == 'C')
-				endFakeLoading(oldpos, result);
-			return result;
+				if (typecode == 'C')
+					endFakeLoading(oldpos, result);
+				return result;
+			}
+			finally
+			{
+				popType();
+			}
 		}
 		else if (typecode == 'z' || typecode == 'Z')
 		{
@@ -184,19 +198,27 @@ public class Decoder implements Iterable<Object>
 			if (typecode == 'Z')
 				oldpos = beginFakeLoading();
 
-			int year = (Integer)load();
-			int month = (Integer)load();
-			int day = (Integer)load();
-			int hour = (Integer)load();
-			int minute = (Integer)load();
-			int second = (Integer)load();
-			int microsecond = (Integer)load();
-			Date result = FunctionDate.call(year, month, day, hour, minute, second, microsecond);
+			pushType("date");
+			try
+			{
+				int year = (Integer)load();
+				int month = (Integer)load();
+				int day = (Integer)load();
+				int hour = (Integer)load();
+				int minute = (Integer)load();
+				int second = (Integer)load();
+				int microsecond = (Integer)load();
+				Date result = FunctionDate.call(year, month, day, hour, minute, second, microsecond);
 
-			if (typecode == 'Z')
-				endFakeLoading(oldpos, result);
+				if (typecode == 'Z')
+					endFakeLoading(oldpos, result);
 
-			return result;
+				return result;
+			}
+			finally
+			{
+				popType();
+			}
 		}
 		else if (typecode == 't' || typecode == 'T')
 		{
@@ -204,14 +226,22 @@ public class Decoder implements Iterable<Object>
 			if (typecode == 'T')
 				oldpos = beginFakeLoading();
 
-			int days = (Integer)load();
-			int seconds = (Integer)load();
-			int microseconds = (Integer)load();
-			TimeDelta result = new TimeDelta(days, seconds, microseconds);
+			pushType("timedelta");
+			try
+			{
+				int days = (Integer)load();
+				int seconds = (Integer)load();
+				int microseconds = (Integer)load();
+				TimeDelta result = new TimeDelta(days, seconds, microseconds);
 
-			if (typecode == 'T')
-				endFakeLoading(oldpos, result);
-			return result;
+				if (typecode == 'T')
+					endFakeLoading(oldpos, result);
+				return result;
+			}
+			finally
+			{
+				popType();
+			}
 		}
 		else if (typecode == 'm' || typecode == 'M')
 		{
@@ -219,12 +249,20 @@ public class Decoder implements Iterable<Object>
 			if (typecode == 'M')
 				oldpos = beginFakeLoading();
 
-			int months = (Integer)load();
-			MonthDelta result = new MonthDelta(months);
+			pushType("monthdelta");
+			try
+			{
+				int months = (Integer)load();
+				MonthDelta result = new MonthDelta(months);
 
-			if (typecode == 'M')
-				endFakeLoading(oldpos, result);
-			return result;
+				if (typecode == 'M')
+					endFakeLoading(oldpos, result);
+				return result;
+			}
+			finally
+			{
+				popType();
+			}
 		}
 		else if (typecode == 'l' || typecode == 'L')
 		{
@@ -233,16 +271,24 @@ public class Decoder implements Iterable<Object>
 			if (typecode == 'L')
 				loading(result);
 
-			while (true)
+			pushType("list");
+			try
 			{
-				typecode = nextChar();
-				if (typecode == ']')
-					return result;
-				else
+				while (true)
 				{
-					pushbackChar(typecode);
-					result.add(load());
+					typecode = nextChar();
+					if (typecode == ']')
+						return result;
+					else
+					{
+						pushbackChar(typecode);
+						result.add(load());
+					}
 				}
+			}
+			finally
+			{
+				popType();
 			}
 		}
 		else if (typecode == 'd' || typecode == 'D' || typecode == 'e' || typecode == 'E')
@@ -252,28 +298,36 @@ public class Decoder implements Iterable<Object>
 			if (typecode == 'D' || typecode == 'E')
 				loading(result);
 
-			while (true)
+			pushType("list");
+			try
 			{
-				typecode = nextChar();
-				if (typecode == '}')
-					return result;
-				else
+				while (true)
 				{
-					pushbackChar(typecode);
-					Object key = load();
-					Object value = load();
-					if (key instanceof String)
+					typecode = nextChar();
+					if (typecode == '}')
+						return result;
+					else
 					{
-						Object oldKey = keys.get(key);
+						pushbackChar(typecode);
+						Object key = load();
+						Object value = load();
+						if (key instanceof String)
+						{
+							Object oldKey = keys.get(key);
 
-						if (oldKey == null)
-							keys.put(key, key);
-						else
-							key = oldKey;
+							if (oldKey == null)
+								keys.put(key, key);
+							else
+								key = oldKey;
+						}
+
+						result.put(key, value);
 					}
-
-					result.put(key, value);
 				}
+			}
+			finally
+			{
+				popType();
 			}
 		}
 		else if (typecode == 'y' || typecode == 'Y')
@@ -283,17 +337,25 @@ public class Decoder implements Iterable<Object>
 			if (typecode == 'Y')
 				loading(result);
 
-			while (true)
+			pushType("set");
+			try
 			{
-				typecode = nextChar();
-				if (typecode == '}')
-					return result;
-				else
+				while (true)
 				{
-					pushbackChar(typecode);
-					Object item = load();
-					result.add(item);
+					typecode = nextChar();
+					if (typecode == '}')
+						return result;
+					else
+					{
+						pushbackChar(typecode);
+						Object item = load();
+						result.add(item);
+					}
 				}
+			}
+			finally
+			{
+				popType();
 			}
 		}
 		else if (typecode == 'r' || typecode == 'R')
@@ -302,8 +364,18 @@ public class Decoder implements Iterable<Object>
 			if (typecode == 'R')
 				oldpos = beginFakeLoading();
 
-			Object start = load();
-			Object stop = load();
+			pushType("set");
+			Object start;
+			Object stop;
+			try
+			{
+				start = load();
+				stop = load();
+			}
+			finally
+			{
+				popType();
+			}
 			boolean hasStart = (start != null);
 			boolean hasStop = (stop != null);
 			int startIndex = hasStart ? com.livinglogic.ul4.Utils.toInt(start) : -1;
@@ -330,24 +402,32 @@ public class Decoder implements Iterable<Object>
 				factory = Utils.registry.get(name);
 
 			if (factory == null)
-				throw new DecoderException(position, "can't load object of type " + FunctionRepr.call(name));
+				throw new DecoderException(position, path(), "can't load object of type " + FunctionRepr.call(name));
 
 			UL4ONSerializable result = factory.create();
 
 			if (typecode == 'O')
 				endFakeLoading(oldpos, result);
 
-			result.loadUL4ON(this);
+			pushType(name);
+			try
+			{
+				result.loadUL4ON(this);
 
-			int nextTypecode = nextChar();
+				int nextTypecode = nextChar();
 
-			if (nextTypecode != ')')
-				throw new DecoderException(position, "broken stream : object terminator ')' expected, got " + charRepr(nextTypecode));
+				if (nextTypecode != ')')
+					throw new DecoderException(position, path(), "object terminator ')' expected, got " + charRepr(nextTypecode));
 
-			return result;
+				return result;
+			}
+			finally
+			{
+				popType();
+			}
 		}
 		else
-			throw new DecoderException(position, "broken stream: unknown typecode " + charRepr(typecode));
+			throw new DecoderException(position, path(), "unknown typecode " + charRepr(typecode));
 	}
 
 	/**
@@ -417,7 +497,7 @@ public class Decoder implements Iterable<Object>
 		{
 			int c = readChar();
 			if (c == -1)
-				throw new DecoderException(position, "broken stream: unexpected EOF");
+				throw new DecoderException(position, path(), "unexpected EOF");
 
 			if (!Character.isWhitespace(c))
 				return (char)c;
@@ -465,6 +545,29 @@ public class Decoder implements Iterable<Object>
 			else
 				return Double.valueOf(buffer.toString());
 		}
+	}
+
+	private void pushType(String type)
+	{
+		stack.push(type);
+	}
+
+	private void popType()
+	{
+		stack.pop();
+	}
+
+	private String path()
+	{
+		StringBuilder buffer = new StringBuilder();
+
+		for (int i = 0; i < stack.size(); ++i)
+		{
+			if (i > 0)
+				buffer.append("/");
+			buffer.append(stack.get(i));
+		}
+		return buffer.toString();
 	}
 
 	private class ObjectContentIterator implements Iterator

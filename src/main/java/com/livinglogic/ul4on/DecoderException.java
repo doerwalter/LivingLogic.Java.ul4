@@ -11,8 +11,8 @@ package com.livinglogic.ul4on;
  */
 public class DecoderException extends RuntimeException
 {
-	public DecoderException(int position, String message)
+	public DecoderException(int position, String path, String message)
 	{
-		super(message + " (at stream position " + position + ")");
+		super("broken UL4ON stream: " + message + " (at stream position " + position + "; with path " + path + ")");
 	}
 }
