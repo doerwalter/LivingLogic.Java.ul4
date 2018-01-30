@@ -58,6 +58,12 @@ exp-123:
      UL4Attributes -> UL4Dir
 
 
+exp-122-1:
+----------
+* Backported change from exp-131: Support for loading the content of an object
+  in an UL4ON dump iteratively. (This change is not in exp-123 .. exp-130)
+
+
 exp-122:
 --------
 * The AttributeException constructor now has two arguments: The object and the
