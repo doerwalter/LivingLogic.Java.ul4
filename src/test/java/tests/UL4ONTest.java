@@ -82,6 +82,64 @@ public class UL4ONTest
 		}
 	}
 
+	private static class PointContent implements UL4ONSerializable
+	{
+		int x;
+		int y;
+
+		PointContent(int x, int y)
+		{
+			this.x = x;
+			this.y = y;
+		}
+
+		public int identity()
+		{
+			return 3;
+		}
+
+		public String getUL4ONName()
+		{
+			return "de.livingapps.appdd.test.pointcontent";
+		}
+
+		public void dumpUL4ON(Encoder encoder) throws IOException
+		{
+			if (x != 0)
+			{
+				encoder.dump(x);
+				if (y != 0)
+					encoder.dump(y);
+			}
+		}
+
+		public void loadUL4ON(Decoder decoder) throws IOException
+		{
+			int index = -1;
+
+			for (Object item : decoder)
+			{
+				switch (++index)
+				{
+					case 0:
+						x = (int)item;
+						break;
+					case 1:
+						y = (int)item;
+						break;
+				}
+			}
+
+			switch (index)
+			{
+				case -1:
+					x = 0;
+				case 0:
+					y = 0;
+			}
+		}
+	}
+
 	private static InterpretedTemplate getTemplate(String source, String name)
 	{
 		InterpretedTemplate template = new InterpretedTemplate(source, name, InterpretedTemplate.Whitespace.keep, null, null, (String)null);
@@ -150,32 +208,66 @@ public class UL4ONTest
 
 		List l2 = (List)loads(dumps(l1), null);
 
-		assertEquals(l2.size(), 1);
+		assertEquals(1, l2.size());
 		assertTrue(l2.get(0) == l2);
 	}
 
 	@Test
 	public void custom_class()
 	{
+		Map<String, ObjectFactory> registry = makeMap("de.livingapps.appdd.test.point", new ObjectFactory(){ public UL4ONSerializable create() { return new Point(0, 0); }});
+
 		Point p1 = new Point(17, 23);
 
-		Point p2 = (Point)loads(dumps(p1), makeMap("de.livingapps.appdd.test.point", new ObjectFactory(){ public UL4ONSerializable create() { return new Point(0, 0); }}));
+		Point p2 = (Point)loads(dumps(p1), registry);
 
-		assertEquals(p2.x, 17);
-		assertEquals(p2.y, 23);
-		assertEquals(p2.identity(), 1);
+		assertEquals(17, p2.x);
+		assertEquals(23, p2.y);
+		assertEquals(1, p2.identity());
+	}
+
+	@Test
+	public void custom_class_content()
+	{
+		Map<String, ObjectFactory> registry = makeMap("de.livingapps.appdd.test.pointcontent", new ObjectFactory(){ public UL4ONSerializable create() { return new PointContent(0, 0); }});
+
+		PointContent p1;
+		PointContent p2;
+
+		p1 = new PointContent(17, 23);
+		p2 = (PointContent)loads(dumps(p1), registry);
+
+		assertEquals(17, p2.x);
+		assertEquals(23, p2.y);
+		assertEquals(3, p2.identity());
+
+		p1 = new PointContent(17, 0);
+		p2 = (PointContent)loads(dumps(p1), registry);
+
+		assertEquals(17, p2.x);
+		assertEquals(0, p2.y);
+		assertEquals(3, p2.identity());
+
+		p1 = new PointContent(0, 0);
+		p2 = (PointContent)loads(dumps(p1), registry);
+
+		assertEquals(0, p2.x);
+		assertEquals(0, p2.y);
+		assertEquals(3, p2.identity());
 	}
 
 	@Test
 	public void custom_class_registry()
 	{
+		Map<String, ObjectFactory> registry = makeMap("de.livingapps.appdd.test.point", new ObjectFactory(){ public UL4ONSerializable create() { return new Point2(0, 0); }});
+
 		Point p1 = new Point(17, 23);
 
-		Point p2 = (Point)loads(dumps(p1), makeMap("de.livingapps.appdd.test.point", new ObjectFactory(){ public UL4ONSerializable create() { return new Point2(0, 0); }}));
+		Point p2 = (Point)loads(dumps(p1), registry);
 
-		assertEquals(p2.x, 17);
-		assertEquals(p2.y, 23);
-		assertEquals(p2.identity(), 2);
+		assertEquals(17, p2.x);
+		assertEquals(23, p2.y);
+		assertEquals(2, p2.identity());
 	}
 
 	@CauseTest(expectedCause=DecoderException.class)

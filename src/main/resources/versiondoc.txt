@@ -1,3 +1,9 @@
+exp-122-1:
+----------
+* Backported change from exp-131: Support for loading the content of an object
+  in an UL4ON dump iteratively.
+
+
 exp-122:
 --------
 * The AttributeException constructor now has two arguments: The object and the
