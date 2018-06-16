@@ -8,19 +8,22 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 import java.util.Date;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import static java.util.Arrays.asList;
 
-public class BoundDateMethodWeek extends BoundMethod<Date>
+public class BoundDateMethodYearWeek extends BoundMethod<Date>
 {
-	public BoundDateMethodWeek(Date object)
+	public BoundDateMethodYearWeek(Date object)
 	{
 		super(object);
 	}
 
 	public String nameUL4()
 	{
-		return "date.week";
+		return "date.yearweek";
 	}
 
 	private static final Signature signature = new Signature("firstweekday", 0, "mindaysinfirstweek", 4);
@@ -30,7 +33,7 @@ public class BoundDateMethodWeek extends BoundMethod<Date>
 		return signature;
 	}
 
-	public static int call(Date object, int firstWeekday, int minDaysInFirstWeek)
+	public static List<Integer> call(Date object, int firstWeekday, int minDaysInFirstWeek)
 	{
 		// Normalize parameters
 		firstWeekday %= 7;
@@ -44,9 +47,10 @@ public class BoundDateMethodWeek extends BoundMethod<Date>
 		calendar.setFirstDayOfWeek(DateProto.ul4Weekday2JavaWeekday(firstWeekday));
 		calendar.setMinimalDaysInFirstWeek(minDaysInFirstWeek);
 
+		int year = calendar.getWeekYear();
 		int week = calendar.get(Calendar.WEEK_OF_YEAR);
 
-		return week;
+		return asList(year, week);
 	}
 
 	public Object evaluate(BoundArguments args)

@@ -3775,7 +3775,7 @@ public class UL4Test
 		checkTemplateOutput("[]", "<?print sorted(dir(data))?>", "data", dataBool);
 		checkTemplateOutput("[]", "<?print sorted(dir(data))?>", "data", dataInt);
 		checkTemplateOutput("[]", "<?print sorted(dir(data))?>", "data", dataFloat);
-		checkTemplateOutput("['day', 'hour', 'isoformat', 'microsecond', 'mimeformat', 'minute', 'month', 'second', 'week', 'weekday', 'year', 'yearday']", "<?print sorted(dir(data))?>", "data", dataDate);
+		checkTemplateOutput("['day', 'hour', 'isoformat', 'microsecond', 'mimeformat', 'minute', 'month', 'second', 'week', 'weekday', 'year', 'yearday', 'yearweek']", "<?print sorted(dir(data))?>", "data", dataDate);
 		checkTemplateOutput("['a', 'abslum', 'b', 'g', 'hls', 'hlsa', 'hsv', 'hsva', 'lum', 'r', 'rellum', 'witha', 'withlum']", "<?print sorted(dir(data))?>", "data", dataColor);
 		checkTemplateOutput("['append', 'count', 'find', 'insert', 'pop', 'rfind']", "<?print sorted(dir(data))?>", "data", dataList);
 		checkTemplateOutput("['add', 'clear']", "<?print sorted(dir(data))?>", "data", dataSet);
@@ -4331,6 +4331,138 @@ public class UL4Test
 		checkTemplateOutput("123000", "<?print @(2010-05-12T16:47:56.123000).microsecond()?>");
 		checkTemplateOutput("123000", "<?code m = @(2010-05-12T16:47:56.123000).microsecond?><?print m()?>");
 		checkTemplateOutput("123000", "<?print d.microsecond()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56, 123000));
+	}
+
+	@Test
+	public void method_yearweek()
+	{
+		// 1996: Non-leap year, starting on Monday
+		checkTemplateOutput("[1996, 1]", "<?print repr(@(1996-01-01).yearweek())?>");
+		checkTemplateOutput("[1996, 1]", "<?print repr(@(1996-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[1996, 1]", "<?print repr(@(1996-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[1996, 1]", "<?print repr(@(1996-01-07).yearweek())?>");
+		checkTemplateOutput("[1996, 2]", "<?print repr(@(1996-01-08).yearweek())?>");
+		checkTemplateOutput("[1996, 22]", "<?print repr(@(1996-05-28).yearweek())?>");
+		checkTemplateOutput("[1997, 1]", "<?print repr(@(1996-12-30).yearweek())?>");
+		checkTemplateOutput("[1996, 52]", "<?print repr(@(1996-12-29).yearweek())?>");
+
+		// 2018: Leap year, starting on Monday
+		checkTemplateOutput("[2018, 1]", "<?print repr(@(2018-01-01).yearweek())?>");
+		checkTemplateOutput("[2018, 1]", "<?print repr(@(2018-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[2018, 1]", "<?print repr(@(2018-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[2018, 1]", "<?print repr(@(2018-01-07).yearweek())?>");
+		checkTemplateOutput("[2018, 2]", "<?print repr(@(2018-01-08).yearweek())?>");
+		checkTemplateOutput("[2018, 52]", "<?print repr(@(2018-12-30).yearweek())?>");
+		checkTemplateOutput("[2019, 1]", "<?print repr(@(2018-12-31).yearweek())?>");
+
+		// 2013: Non-leap year, starting on Tuesday
+		checkTemplateOutput("[2013, 1]", "<?print repr(@(2013-01-01).yearweek())?>");
+		checkTemplateOutput("[2013, 1]", "<?print repr(@(2013-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[2012, 53]", "<?print repr(@(2013-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[2013, 1]", "<?print repr(@(2013-01-06).yearweek())?>");
+		checkTemplateOutput("[2013, 2]", "<?print repr(@(2013-01-07).yearweek())?>");
+		checkTemplateOutput("[2013, 52]", "<?print repr(@(2013-12-29).yearweek())?>");
+		checkTemplateOutput("[2014, 1]", "<?print repr(@(2013-12-30).yearweek())?>");
+
+		// 2008: Leap year, starting on Tuesday
+		checkTemplateOutput("[2008, 1]", "<?print repr(@(2008-01-01).yearweek())?>");
+		checkTemplateOutput("[2008, 1]", "<?print repr(@(2008-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[2007, 53]", "<?print repr(@(2008-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[2008, 1]", "<?print repr(@(2008-01-06).yearweek())?>");
+		checkTemplateOutput("[2008, 2]", "<?print repr(@(2008-01-07).yearweek())?>");
+		checkTemplateOutput("[2008, 52]", "<?print repr(@(2008-12-28).yearweek())?>");
+		checkTemplateOutput("[2009, 1]", "<?print repr(@(2008-12-29).yearweek())?>");
+
+		// 2014: Non-leap year, starting on Wednesday
+		checkTemplateOutput("[2014, 1]", "<?print repr(@(2014-01-01).yearweek())?>");
+		checkTemplateOutput("[2014, 1]", "<?print repr(@(2014-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[2013, 52]", "<?print repr(@(2014-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[2014, 1]", "<?print repr(@(2014-01-05).yearweek())?>");
+		checkTemplateOutput("[2014, 2]", "<?print repr(@(2014-01-06).yearweek())?>");
+		checkTemplateOutput("[2014, 52]", "<?print repr(@(2014-12-28).yearweek())?>");
+		checkTemplateOutput("[2015, 1]", "<?print repr(@(2014-12-29).yearweek())?>");
+
+		// 1992: Leap year, starting on Wednesday
+		checkTemplateOutput("[1992, 1]", "<?print repr(@(1992-01-01).yearweek())?>");
+		checkTemplateOutput("[1992, 1]", "<?print repr(@(1992-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[1991, 52]", "<?print repr(@(1992-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[1992, 1]", "<?print repr(@(1992-01-05).yearweek())?>");
+		checkTemplateOutput("[1992, 2]", "<?print repr(@(1992-01-06).yearweek())?>");
+		checkTemplateOutput("[1992, 52]", "<?print repr(@(1992-12-27).yearweek())?>");
+		checkTemplateOutput("[1992, 53]", "<?print repr(@(1992-12-28).yearweek())?>");
+
+		// 2015: Non-leap year, starting on Thursday
+		checkTemplateOutput("[2015, 1]", "<?print repr(@(2015-01-01).yearweek())?>");
+		checkTemplateOutput("[2015, 1]", "<?print repr(@(2015-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[2014, 52]", "<?print repr(@(2015-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[2015, 1]", "<?print repr(@(2015-01-04).yearweek())?>");
+		checkTemplateOutput("[2015, 2]", "<?print repr(@(2015-01-05).yearweek())?>");
+		checkTemplateOutput("[2015, 52]", "<?print repr(@(2015-12-27).yearweek())?>");
+		checkTemplateOutput("[2015, 53]", "<?print repr(@(2015-12-28).yearweek())?>");
+
+		// 2004: Leap year, starting on Thursday
+		checkTemplateOutput("[2004, 1]", "<?print repr(@(2004-01-01).yearweek())?>");
+		checkTemplateOutput("[2004, 1]", "<?print repr(@(2004-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[2003, 52]", "<?print repr(@(2004-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[2004, 1]", "<?print repr(@(2004-01-04).yearweek())?>");
+		checkTemplateOutput("[2004, 2]", "<?print repr(@(2004-01-05).yearweek())?>");
+		checkTemplateOutput("[2004, 52]", "<?print repr(@(2004-12-26).yearweek())?>");
+		checkTemplateOutput("[2004, 53]", "<?print repr(@(2004-12-27).yearweek())?>");
+
+		// 2010: Non-leap year, starting on Friday
+		checkTemplateOutput("[2009, 53]", "<?print repr(@(2010-01-01).yearweek())?>");
+		checkTemplateOutput("[2010, 1]", "<?print repr(@(2010-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[2009, 52]", "<?print repr(@(2010-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[2009, 53]", "<?print repr(@(2010-01-03).yearweek())?>");
+		checkTemplateOutput("[2010, 1]", "<?print repr(@(2010-01-04).yearweek())?>");
+		checkTemplateOutput("[2010, 51]", "<?print repr(@(2010-12-26).yearweek())?>");
+		checkTemplateOutput("[2010, 52]", "<?print repr(@(2010-12-27).yearweek())?>");
+
+		// 2016: Leap year, starting on Friday
+		checkTemplateOutput("[2015, 53]", "<?print repr(@(2016-01-01).yearweek())?>");
+		checkTemplateOutput("[2016, 1]", "<?print repr(@(2016-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[2015, 52]", "<?print repr(@(2016-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[2015, 53]", "<?print repr(@(2016-01-03).yearweek())?>");
+		checkTemplateOutput("[2016, 1]", "<?print repr(@(2016-01-04).yearweek())?>");
+		checkTemplateOutput("[2016, 51]", "<?print repr(@(2016-12-25).yearweek())?>");
+		checkTemplateOutput("[2016, 52]", "<?print repr(@(2016-12-26).yearweek())?>");
+
+		// 2011: Non-leap year, starting on Saturday
+		checkTemplateOutput("[2010, 52]", "<?print repr(@(2011-01-01).yearweek())?>");
+		checkTemplateOutput("[2011, 1]", "<?print repr(@(2011-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[2010, 52]", "<?print repr(@(2011-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[2010, 52]", "<?print repr(@(2011-01-02).yearweek())?>");
+		checkTemplateOutput("[2011, 1]", "<?print repr(@(2011-01-03).yearweek())?>");
+		checkTemplateOutput("[2011, 51]", "<?print repr(@(2011-12-25).yearweek())?>");
+		checkTemplateOutput("[2011, 52]", "<?print repr(@(2011-12-26).yearweek())?>");
+
+		// 2000: Leap year, starting on Saturday
+		checkTemplateOutput("[1999, 52]", "<?print repr(@(2000-01-01).yearweek())?>");
+		checkTemplateOutput("[2000, 1]", "<?print repr(@(2000-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[1999, 52]", "<?print repr(@(2000-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[1999, 52]", "<?print repr(@(2000-01-02).yearweek())?>");
+		checkTemplateOutput("[2000, 1]", "<?print repr(@(2000-01-03).yearweek())?>");
+		checkTemplateOutput("[2000, 51]", "<?print repr(@(2000-12-24).yearweek())?>");
+		checkTemplateOutput("[2000, 52]", "<?print repr(@(2000-12-25).yearweek())?>");
+
+		// 2017: Non-leap year, starting on Sunday
+		checkTemplateOutput("[2016, 52]", "<?print repr(@(2017-01-01).yearweek())?>");
+		checkTemplateOutput("[2017, 1]", "<?print repr(@(2017-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[2016, 52]", "<?print repr(@(2017-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[2017, 1]", "<?print repr(@(2017-01-02).yearweek())?>");
+		checkTemplateOutput("[2017, 51]", "<?print repr(@(2017-12-24).yearweek())?>");
+		checkTemplateOutput("[2017, 52]", "<?print repr(@(2017-12-25).yearweek())?>");
+
+		// 2012: Leap year, starting on Sunday
+		checkTemplateOutput("[2011, 52]", "<?print repr(@(2012-01-01).yearweek())?>");
+		checkTemplateOutput("[2012, 1]", "<?print repr(@(2012-01-01).yearweek(6, 1))?>");
+		checkTemplateOutput("[2011, 52]", "<?print repr(@(2012-01-01).yearweek(0, 7))?>");
+		checkTemplateOutput("[2012, 1]", "<?print repr(@(2012-01-02).yearweek())?>");
+		checkTemplateOutput("[2012, 52]", "<?print repr(@(2012-12-30).yearweek())?>");
+		checkTemplateOutput("[2013, 1]", "<?print repr(@(2012-12-31).yearweek())?>");
+
+		// Make sure that the parameters have the same name in all implementations
+		checkTemplateOutput("[2018, 1]", "<?print repr(@(2018-01-01).yearweek(firstweekday=0, mindaysinfirstweek=4))?>");
 	}
 
 	@Test

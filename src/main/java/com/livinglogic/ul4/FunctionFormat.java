@@ -131,6 +131,18 @@ public class FunctionFormat extends Function
 		"ja", "%H\u6642%M\u5206%S\u79d2"
 	);
 
+	private static int week(Date object, int firstWeekday)
+	{
+		int yearday = BoundDateMethodYearday.call(object)+6;
+		int jan1Weekday = BoundDateMethodWeekday.call(FunctionDate.call(BoundDateMethodYear.call(object), 1, 1));
+		while (jan1Weekday != firstWeekday)
+		{
+			--yearday;
+			jan1Weekday = (++jan1Weekday) % 7;
+		}
+		return yearday/7;
+	}
+
 	public static String call(Date obj, String formatString, Locale locale)
 	{
 		if (locale == null)
@@ -195,13 +207,13 @@ public class FunctionFormat extends Function
 						buffer.append(twodigits.format(calendar.get(Calendar.SECOND)));
 						break;
 					case 'U':
-						buffer.append(twodigits.format(BoundDateMethodWeek.call(obj, 6)));
+						buffer.append(twodigits.format(week(obj, 6)));
 						break;
 					case 'w':
 						buffer.append(weekdayFormats.get(calendar.get(Calendar.DAY_OF_WEEK)));
 						break;
 					case 'W':
-						buffer.append(twodigits.format(BoundDateMethodWeek.call(obj, 0)));
+						buffer.append(twodigits.format(week(obj, 0)));
 						break;
 					case 'x':
 					{

@@ -25,29 +25,29 @@ public class BoundDateMethodWeekday extends BoundMethod<Date>
 		return "date.weekday";
 	}
 
-	private static HashMap<Integer, Integer> weekdays;
-
-	static
-	{
-		weekdays = new HashMap<Integer, Integer>();
-		weekdays.put(Calendar.MONDAY, 0);
-		weekdays.put(Calendar.TUESDAY, 1);
-		weekdays.put(Calendar.WEDNESDAY, 2);
-		weekdays.put(Calendar.THURSDAY, 3);
-		weekdays.put(Calendar.FRIDAY, 4);
-		weekdays.put(Calendar.SATURDAY, 5);
-		weekdays.put(Calendar.SUNDAY, 6);
-	}
-
 	public static int call(Date obj)
 	{
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(obj);
-		return weekdays.get(calendar.get(Calendar.DAY_OF_WEEK));
+		return weekDays.get(calendar.get(Calendar.DAY_OF_WEEK));
 	}
 
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
+	}
+
+	private static HashMap<Integer, Integer> weekDays;
+
+	static
+	{
+		weekDays = new HashMap<Integer, Integer>();
+		weekDays.put(Calendar.MONDAY, 0);
+		weekDays.put(Calendar.TUESDAY, 1);
+		weekDays.put(Calendar.WEDNESDAY, 2);
+		weekDays.put(Calendar.THURSDAY, 3);
+		weekDays.put(Calendar.FRIDAY, 4);
+		weekDays.put(Calendar.SATURDAY, 5);
+		weekDays.put(Calendar.SUNDAY, 6);
 	}
 }
