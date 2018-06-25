@@ -912,7 +912,7 @@ public class UL4Test
 		checkTemplateOutput("1 day, 0:00:01", source, "x", new TimeDelta(1), "y", new TimeDelta(0, 1));
 		checkTemplateOutput("1 day, 0:00:00.000001", source, "x", new TimeDelta(1), "y", new TimeDelta(0, 0, 1));
 		checkTemplateOutput("2 months", source, "x", new MonthDelta(1), "y", new MonthDelta(1));
-		// List addition is not implemented: checkTemplateOutput("(foo)(bar)(gurk)(hurz)", "<?for i in a+b?>(<?print i?>)<?end for?>", "a", asList("foo", "bar"), "b", asList("gurk", "hurz"));
+		checkTemplateOutput("(foo)(bar)(gurk)(hurz)", "<?for i in a+b?>(<?print i?>)<?end for?>", "a", asList("foo", "bar"), "b", asList("gurk", "hurz"));
 		// This checks constant folding
 		checkTemplateOutput("3", "<?print 1+2?>");
 		checkTemplateOutput("2", "<?print 1+True?>");
