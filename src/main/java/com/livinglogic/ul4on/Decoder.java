@@ -11,6 +11,8 @@ import java.io.Reader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -198,7 +200,7 @@ public class Decoder implements Iterable<Object>
 			if (typecode == 'Z')
 				oldpos = beginFakeLoading();
 
-			pushType("date");
+			pushType("datetime");
 			try
 			{
 				int year = (Integer)load();
@@ -208,9 +210,33 @@ public class Decoder implements Iterable<Object>
 				int minute = (Integer)load();
 				int second = (Integer)load();
 				int microsecond = (Integer)load();
-				Date result = FunctionDate.call(year, month, day, hour, minute, second, microsecond);
+				LocalDateTime result = LocalDateTime.of(year, month, day, hour, minute, second, 1000*microsecond);
 
 				if (typecode == 'Z')
+					endFakeLoading(oldpos, result);
+
+				return result;
+			}
+			finally
+			{
+				popType();
+			}
+		}
+		else if (typecode == 'x' || typecode == 'X')
+		{
+			int oldpos = -1;
+			if (typecode == 'X')
+				oldpos = beginFakeLoading();
+
+			pushType("date");
+			try
+			{
+				int year = (Integer)load();
+				int month = (Integer)load();
+				int day = (Integer)load();
+				LocalDate result = LocalDate.of(year, month, day);
+
+				if (typecode == 'X')
 					endFakeLoading(oldpos, result);
 
 				return result;

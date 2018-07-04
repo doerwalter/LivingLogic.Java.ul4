@@ -1,6 +1,8 @@
 package tests;
 
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
@@ -183,7 +185,8 @@ public class UL4ONTest
 		checkRoundtrip(42.666);
 		checkRoundtrip("gurk<>'\"");
 		checkRoundtrip(new Color(0x66, 0x99, 0xcc, 0xff));
-		checkRoundtrip(new Date());
+		checkRoundtrip(LocalDate.now());
+		checkRoundtrip(LocalDateTime.now());
 		checkRoundtrip(new TimeDelta(-1, 1, 1));
 		checkRoundtrip(new MonthDelta(-1));
 		checkRoundtrip(new Slice(false, false, -1, -1));

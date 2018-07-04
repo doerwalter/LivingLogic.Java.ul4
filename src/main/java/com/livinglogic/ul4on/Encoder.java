@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -167,6 +169,18 @@ public class Encoder
 				record(obj);
 				Date date = (Date)obj;
 				line("Z", BoundDateMethodYear.call(date), BoundDateMethodMonth.call(date), BoundDateMethodDay.call(date), BoundDateMethodHour.call(date), BoundDateMethodMinute.call(date), BoundDateMethodSecond.call(date), BoundDateMethodMicrosecond.call(date));
+			}
+			else if (obj instanceof LocalDate)
+			{
+				record(obj);
+				LocalDate date = (LocalDate)obj;
+				line("X", date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+			}
+			else if (obj instanceof LocalDateTime)
+			{
+				record(obj);
+				LocalDateTime datetime = (LocalDateTime)obj;
+				line("Z", datetime.getYear(), datetime.getMonthValue(), datetime.getDayOfMonth(), datetime.getHour(), datetime.getMinute(), datetime.getSecond(), datetime.getNano()/1000);
 			}
 			else if (obj instanceof TimeDelta)
 			{
