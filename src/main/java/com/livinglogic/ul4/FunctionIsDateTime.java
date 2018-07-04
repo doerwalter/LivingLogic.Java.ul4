@@ -6,13 +6,14 @@
 
 package com.livinglogic.ul4;
 
-import java.time.LocalDate;
+import java.util.Date;
+import java.time.LocalDateTime;
 
-public class FunctionIsDate extends Function
+public class FunctionIsDateTime extends Function
 {
 	public String nameUL4()
 	{
-		return "isdate";
+		return "isdatetime";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
@@ -29,6 +30,6 @@ public class FunctionIsDate extends Function
 
 	public static boolean call(Object obj)
 	{
-		return (null != obj) && (obj instanceof LocalDate);
+		return (null != obj) && ((obj instanceof Date) || (obj instanceof LocalDateTime));
 	}
 }

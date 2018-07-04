@@ -242,7 +242,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 		}
 		else
 		{
-			DecimalFormat df = new DecimalFormat("0.###", new DecimalFormatSymbols(Locale.ENGLISH));
+			DecimalFormat df = new DecimalFormat("0.###", new DecimalFormatSymbols(Locale.US));
 			return "rgba(" + Integer.toString(r) + "," + Integer.toString(g) + "," + Integer.toString(b) + "," + df.format((double)a/255.) + ")";
 		}
 	}

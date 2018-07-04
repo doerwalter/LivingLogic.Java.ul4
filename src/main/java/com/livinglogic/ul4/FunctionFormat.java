@@ -13,6 +13,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -134,7 +137,19 @@ public class FunctionFormat extends Function
 	private static int week(Date object, int firstWeekday)
 	{
 		int yearday = BoundDateMethodYearday.call(object)+6;
-		int jan1Weekday = BoundDateMethodWeekday.call(FunctionDate.call(BoundDateMethodYear.call(object), 1, 1));
+		int jan1Weekday = BoundLocalDateMethodWeekday.call(FunctionDate.call(BoundDateMethodYear.call(object), 1, 1));
+		while (jan1Weekday != firstWeekday)
+		{
+			--yearday;
+			jan1Weekday = (++jan1Weekday) % 7;
+		}
+		return yearday/7;
+	}
+
+	private static int week(LocalDate object, int firstWeekday)
+	{
+		int yearday = object.getDayOfYear()+6;
+		int jan1Weekday = BoundLocalDateMethodWeekday.call(LocalDate.of(object.getYear(), 1, 1));
 		while (jan1Weekday != firstWeekday)
 		{
 			--yearday;
@@ -146,7 +161,7 @@ public class FunctionFormat extends Function
 	public static String call(Date obj, String formatString, Locale locale)
 	{
 		if (locale == null)
-			locale = Locale.ENGLISH;
+			locale = Locale.US;
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime((Date)obj);
 		StringBuilder buffer = new StringBuilder();
@@ -236,6 +251,230 @@ public class FunctionFormat extends Function
 						break;
 					case 'Y':
 						buffer.append(fourdigits.format(calendar.get(Calendar.YEAR)));
+						break;
+					default:
+						buffer.append(c);
+						break;
+				}
+				escapeCharacterFound = false;
+			}
+			else
+			{
+				if (c == '%')
+					escapeCharacterFound = true;
+				else
+					buffer.append(c);
+				
+			}
+		}
+		if (escapeCharacterFound)
+			buffer.append('%');
+		return buffer.toString();
+	}
+
+	public static String call(LocalDate obj, String formatString, Locale locale)
+	{
+		if (locale == null)
+			locale = Locale.US;
+		StringBuilder buffer = new StringBuilder();
+		boolean escapeCharacterFound = false;
+		int formatStringLength = formatString.length();
+		for (int i = 0; i < formatStringLength; i++)
+		{
+			char c = formatString.charAt(i);
+			if (escapeCharacterFound)
+			{
+				switch (c)
+				{
+					case 'a':
+						buffer.append(DateTimeFormatter.ofPattern("EE", locale).format(obj));
+						break;
+					case 'A':
+						buffer.append(DateTimeFormatter.ofPattern("EEEE", locale).format(obj));
+						break;
+					case 'b':
+						buffer.append(DateTimeFormatter.ofPattern("MMM", locale).format(obj));
+						break;
+					case 'B':
+						buffer.append(DateTimeFormatter.ofPattern("MMMM", locale).format(obj));
+						break;
+					case 'c':
+					{
+						String format = cFormats.get(locale.getLanguage());
+						if (format == null)
+							format = cFormats.get("en");
+						buffer.append(call(obj, format, locale));
+						break;
+					}
+					case 'd':
+						buffer.append(twodigits.format(obj.getDayOfMonth()));
+						break;
+					case 'f':
+						buffer.append("000000");
+						break;
+					case 'H':
+						buffer.append("00");
+						break;
+					case 'I':
+						buffer.append("00");
+						break;
+					case 'j':
+						buffer.append(threedigits.format(obj.getDayOfYear()));
+						break;
+					case 'm':
+						buffer.append(twodigits.format(obj.getMonthValue()));
+						break;
+					case 'M':
+						buffer.append("00");
+						break;
+					case 'p':
+						buffer.append("AM");
+						break;
+					case 'S':
+						buffer.append("00");
+						break;
+					case 'U':
+						buffer.append(twodigits.format(week(obj, 6)));
+						break;
+					case 'w':
+						buffer.append(obj.getDayOfWeek().getValue() % 7);
+						break;
+					case 'W':
+						buffer.append(twodigits.format(week(obj, 0)));
+						break;
+					case 'x':
+					{
+						String format = xFormats.get(locale.getLanguage());
+						if (format == null)
+							format = xFormats.get("en");
+						buffer.append(call(obj, format, locale));
+						break;
+					}
+					case 'X':
+					{
+						String format = XFormats.get(locale.getLanguage());
+						if (format == null)
+							format = XFormats.get("en");
+						buffer.append(call(obj, format, locale));
+						break;
+					}
+					case 'y':
+						buffer.append(twodigits.format(obj.getYear() % 100));
+						break;
+					case 'Y':
+						buffer.append(fourdigits.format(obj.getYear()));
+						break;
+					default:
+						buffer.append(c);
+						break;
+				}
+				escapeCharacterFound = false;
+			}
+			else
+			{
+				if (c == '%')
+					escapeCharacterFound = true;
+				else
+					buffer.append(c);
+				
+			}
+		}
+		if (escapeCharacterFound)
+			buffer.append('%');
+		return buffer.toString();
+	}
+
+	public static String call(LocalDateTime obj, String formatString, Locale locale)
+	{
+		if (locale == null)
+			locale = Locale.US;
+		StringBuilder buffer = new StringBuilder();
+		boolean escapeCharacterFound = false;
+		int formatStringLength = formatString.length();
+		for (int i = 0; i < formatStringLength; i++)
+		{
+			char c = formatString.charAt(i);
+			if (escapeCharacterFound)
+			{
+				switch (c)
+				{
+					case 'a':
+						buffer.append(DateTimeFormatter.ofPattern("EE", locale).format(obj));
+						break;
+					case 'A':
+						buffer.append(DateTimeFormatter.ofPattern("EEEE", locale).format(obj));
+						break;
+					case 'b':
+						buffer.append(DateTimeFormatter.ofPattern("MMM", locale).format(obj));
+						break;
+					case 'B':
+						buffer.append(DateTimeFormatter.ofPattern("MMMM", locale).format(obj));
+						break;
+					case 'c':
+					{
+						String format = cFormats.get(locale.getLanguage());
+						if (format == null)
+							format = cFormats.get("en");
+						buffer.append(call(obj, format, locale));
+						break;
+					}
+					case 'd':
+						buffer.append(twodigits.format(obj.getDayOfMonth()));
+						break;
+					case 'f':
+						buffer.append(sixdigits.format(obj.getNano()/1000));
+						break;
+					case 'H':
+						buffer.append(twodigits.format(obj.getHour()));
+						break;
+					case 'I':
+						buffer.append(twodigits.format(((obj.getHour() - 1) % 12) + 1));
+						break;
+					case 'j':
+						buffer.append(threedigits.format(obj.getDayOfYear()));
+						break;
+					case 'm':
+						buffer.append(twodigits.format(obj.getMonthValue()));
+						break;
+					case 'M':
+						buffer.append(twodigits.format(obj.getMinute()));
+						break;
+					case 'p':
+						buffer.append(DateTimeFormatter.ofPattern("a", locale).format(obj));
+						break;
+					case 'S':
+						buffer.append(twodigits.format(obj.getSecond()));
+						break;
+					case 'U':
+						buffer.append(twodigits.format(week(obj.toLocalDate(), 6)));
+						break;
+					case 'w':
+						buffer.append(obj.getDayOfWeek().getValue() % 7);
+						break;
+					case 'W':
+						buffer.append(twodigits.format(week(obj.toLocalDate(), 0)));
+						break;
+					case 'x':
+					{
+						String format = xFormats.get(locale.getLanguage());
+						if (format == null)
+							format = xFormats.get("en");
+						buffer.append(call(obj, format, locale));
+						break;
+					}
+					case 'X':
+					{
+						String format = XFormats.get(locale.getLanguage());
+						if (format == null)
+							format = XFormats.get("en");
+						buffer.append(call(obj, format, locale));
+						break;
+					}
+					case 'y':
+						buffer.append(twodigits.format(obj.getYear() % 100));
+						break;
+					case 'Y':
+						buffer.append(fourdigits.format(obj.getYear()));
 						break;
 					default:
 						buffer.append(c);
@@ -400,7 +639,7 @@ public class FunctionFormat extends Function
 		IntegerFormat format = new IntegerFormat(formatString);
 
 		if (locale == null)
-			locale = Locale.ENGLISH;
+			locale = Locale.US;
 
 		String output = null;
 
@@ -443,7 +682,7 @@ public class FunctionFormat extends Function
 		IntegerFormat format = new IntegerFormat(formatString);
 
 		if (locale == null)
-			locale = Locale.ENGLISH;
+			locale = Locale.US;
 
 		String output = null;
 
@@ -485,6 +724,10 @@ public class FunctionFormat extends Function
 	{
 		if (obj instanceof Date)
 			return call((Date)obj, formatString, locale);
+		else if (obj instanceof LocalDate)
+			return call((LocalDate)obj, formatString, locale);
+		else if (obj instanceof LocalDateTime)
+			return call((LocalDateTime)obj, formatString, locale);
 		else if (obj instanceof Integer || obj instanceof Long || obj instanceof Byte || obj instanceof Short || obj instanceof Boolean)
 			return call(Utils.toLong(obj), formatString, locale);
 		else if (obj instanceof BigInteger)

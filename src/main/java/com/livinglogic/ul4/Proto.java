@@ -9,6 +9,8 @@ package com.livinglogic.ul4;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
@@ -85,6 +87,10 @@ public abstract class Proto implements UL4GetAttr, UL4Dir
 			return StrProto.proto;
 		else if (object instanceof Date)
 			return DateProto.proto;
+		else if (object instanceof LocalDateTime)
+			return LocalDateTimeProto.proto;
+		else if (object instanceof LocalDate)
+			return LocalDateProto.proto;
 		else if (object instanceof List || object instanceof Object[])
 			return ListProto.proto;
 		else if (object instanceof Map)

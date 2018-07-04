@@ -9,6 +9,10 @@ package com.livinglogic.ul4;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 public class SubAST extends BinaryAST
 {
@@ -78,6 +82,36 @@ public class SubAST extends BinaryAST
 		return new TimeDelta(0, seconds, 1000 * milliseconds);
 	}
 
+	public static TimeDelta call(Date arg1, LocalDateTime arg2)
+	{
+		return call(arg1.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), arg2);
+	}
+
+	public static TimeDelta call(LocalDate arg1, LocalDate arg2)
+	{
+		long days = ChronoUnit.DAYS.between(arg2, arg1);
+		return new TimeDelta(days, 0, 0);
+	}
+
+	public static TimeDelta call(LocalDateTime arg1, Date arg2)
+	{
+		return call(arg1, arg2.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+	}
+
+	public static TimeDelta call(LocalDateTime arg1, LocalDateTime arg2)
+	{
+		long days = ChronoUnit.DAYS.between(arg2, arg1);
+		arg2 = arg2.plusDays(days);
+		long hours = ChronoUnit.HOURS.between(arg2, arg1);
+		arg2 = arg2.plusHours(hours);
+		long minutes = ChronoUnit.MINUTES.between(arg2, arg1);
+		arg2 = arg2.plusMinutes(minutes);
+		long seconds = ChronoUnit.SECONDS.between(arg2, arg1);
+		arg2 = arg2.plusSeconds(seconds);
+		long micros = ChronoUnit.MICROS.between(arg2, arg1);
+		return new TimeDelta(days, 60 * (60 * hours + minutes) + seconds, micros);
+	}
+
 	public static TimeDelta call(TimeDelta arg1, TimeDelta arg2)
 	{
 		return arg1.subtract(arg2);
@@ -88,12 +122,32 @@ public class SubAST extends BinaryAST
 		return arg2.subtractFrom(arg1);
 	}
 
+	public static LocalDate call(LocalDate arg1, TimeDelta arg2)
+	{
+		return arg2.subtractFrom(arg1);
+	}
+
+	public static LocalDateTime call(LocalDateTime arg1, TimeDelta arg2)
+	{
+		return arg2.subtractFrom(arg1);
+	}
+
 	public static MonthDelta call(MonthDelta arg1, MonthDelta arg2)
 	{
 		return arg1.subtract(arg2);
 	}
 
 	public static Date call(Date arg1, MonthDelta arg2)
+	{
+		return arg2.subtractFrom(arg1);
+	}
+
+	public static LocalDate call(LocalDate arg1, MonthDelta arg2)
+	{
+		return arg2.subtractFrom(arg1);
+	}
+
+	public static LocalDateTime call(LocalDateTime arg1, MonthDelta arg2)
 	{
 		return arg2.subtractFrom(arg1);
 	}
@@ -180,6 +234,28 @@ public class SubAST extends BinaryAST
 				return call((Date)arg1, (MonthDelta)arg2);
 			else if (arg2 instanceof Date)
 				return call((Date)arg1, (Date)arg2);
+			else if (arg2 instanceof LocalDateTime)
+				return call((Date)arg1, (LocalDateTime)arg2);
+		}
+		else if (arg1 instanceof LocalDate)
+		{
+			if (arg2 instanceof TimeDelta)
+				return call((LocalDate)arg1, (TimeDelta)arg2);
+			else if (arg2 instanceof MonthDelta)
+				return call((LocalDate)arg1, (MonthDelta)arg2);
+			else if (arg2 instanceof LocalDate)
+				return call((LocalDate)arg1, (LocalDate)arg2);
+		}
+		else if (arg1 instanceof LocalDateTime)
+		{
+			if (arg2 instanceof TimeDelta)
+				return call((LocalDateTime)arg1, (TimeDelta)arg2);
+			else if (arg2 instanceof MonthDelta)
+				return call((LocalDateTime)arg1, (MonthDelta)arg2);
+			else if (arg2 instanceof Date)
+				return call((LocalDateTime)arg1, (Date)arg2);
+			else if (arg2 instanceof LocalDateTime)
+				return call((LocalDateTime)arg1, (LocalDateTime)arg2);
 		}
 		else if (arg1 instanceof TimeDelta)
 		{

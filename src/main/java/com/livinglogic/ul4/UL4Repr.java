@@ -12,6 +12,10 @@ import java.util.Collection;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Locale;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Stack;
 
 import java.text.SimpleDateFormat;
@@ -71,9 +75,17 @@ public interface UL4Repr
 		private StringBuilder buffer;
 		private boolean ascii; // Limit the repr output of strings to ASCII?
 
-		private static SimpleDateFormat isoReprDateFormatter = new SimpleDateFormat("@'('yyyy-MM-dd')'");
-		private static SimpleDateFormat isoReprDateTimeFormatter = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm:ss')'");
-		private static SimpleDateFormat isoReprTimestampMicroFormatter = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm:ss.SSS'000)'");
+		private static SimpleDateFormat isoReprFormatterDate0 = new SimpleDateFormat("@'('yyyy-MM-dd'T)'");
+		private static SimpleDateFormat isoReprFormatterDate1 = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm')'");
+		private static SimpleDateFormat isoReprFormatterDate2 = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm:ss')'");
+		private static SimpleDateFormat isoReprFormatterDate3 = new SimpleDateFormat("@'('yyyy-MM-dd'T'HH:mm:ss.SSS'000)'");
+
+		private static DateTimeFormatter isoReprFormatterLocalDate = DateTimeFormatter.ofPattern("@'('yyyy-MM-dd')'", Locale.US);
+
+		private static DateTimeFormatter isoReprFormatterLocalDateTime0 = DateTimeFormatter.ofPattern("@'('yyyy-MM-dd'T)'", Locale.US);
+		private static DateTimeFormatter isoReprFormatterLocalDateTime1 = DateTimeFormatter.ofPattern("@'('yyyy-MM-dd'T'HH:mm')'", Locale.US);
+		private static DateTimeFormatter isoReprFormatterLocalDateTime2 = DateTimeFormatter.ofPattern("@'('yyyy-MM-dd'T'HH:mm:ss')'", Locale.US);
+		private static DateTimeFormatter isoReprFormatterLocalDateTime3 = DateTimeFormatter.ofPattern("@'('yyyy-MM-dd'T'HH:mm:ss.SSSSSS')'", Locale.US);
 
 		/**
 		 * Creates a {@code Formatter} object.
@@ -260,6 +272,10 @@ public interface UL4Repr
 			}
 			else if (object instanceof Date)
 				visitDate((Date)object);
+			else if (object instanceof LocalDateTime)
+				visitLocalDateTime((LocalDateTime)object);
+			else if (object instanceof LocalDate)
+				visitLocalDate((LocalDate)object);
 			else
 			{
 				if (seen(object))
@@ -305,17 +321,38 @@ public interface UL4Repr
 			append(">");
 		}
 
+		private void visitLocalDateTime(LocalDateTime object)
+		{
+			DateTimeFormatter formatter;
+			if (object.getNano() != 0)
+				formatter = isoReprFormatterLocalDateTime3;
+			else if (object.getSecond() != 0)
+				formatter = isoReprFormatterLocalDateTime2;
+			else if (object.getHour() != 0 || object.getMinute() != 0)
+				formatter = isoReprFormatterLocalDateTime1;
+			else
+				formatter = isoReprFormatterLocalDateTime0;
+			append(object.format(formatter));
+		}
+
+		private void visitLocalDate(LocalDate object)
+		{
+			append(object.format(isoReprFormatterLocalDate));
+		}
+
 		private void visitDate(Date object)
 		{
+			SimpleDateFormat formatter;
 			if (BoundDateMethodMicrosecond.call(object) != 0)
-				append(isoReprTimestampMicroFormatter.format(object));
+				formatter = isoReprFormatterDate3;
+			else if (BoundDateMethodSecond.call(object) != 0)
+				formatter = isoReprFormatterDate2;
+			else if (BoundDateMethodHour.call(object) != 0 || BoundDateMethodMinute.call(object) != 0)
+				formatter = isoReprFormatterDate1;
 			else
-			{
-				if (BoundDateMethodHour.call(object) != 0 || BoundDateMethodMinute.call(object) != 0 || BoundDateMethodSecond.call(object) != 0)
-					append(isoReprDateTimeFormatter.format(object));
-				else
-					append(isoReprDateFormatter.format(object));
-			}
+				formatter = isoReprFormatterDate0;
+
+			append(formatter.format(object));
 		}
 
 		private void visitSet(Set object)

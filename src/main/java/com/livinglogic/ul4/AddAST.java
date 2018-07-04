@@ -11,6 +11,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class AddAST extends BinaryAST
 {
@@ -97,7 +99,27 @@ public class AddAST extends BinaryAST
 		return arg2.addTo(arg1);
 	}
 
+	public static LocalDate call(LocalDate arg1, TimeDelta arg2)
+	{
+		return arg2.addTo(arg1);
+	}
+
+	public static LocalDateTime call(LocalDateTime arg1, TimeDelta arg2)
+	{
+		return arg2.addTo(arg1);
+	}
+
 	public static Date call(TimeDelta arg1, Date arg2)
+	{
+		return arg1.addTo(arg2);
+	}
+
+	public static LocalDate call(TimeDelta arg1, LocalDate arg2)
+	{
+		return arg1.addTo(arg2);
+	}
+
+	public static LocalDateTime call(TimeDelta arg1, LocalDateTime arg2)
 	{
 		return arg1.addTo(arg2);
 	}
@@ -112,7 +134,27 @@ public class AddAST extends BinaryAST
 		return arg2.addTo(arg1);
 	}
 
+	public static LocalDate call(LocalDate arg1, MonthDelta arg2)
+	{
+		return arg2.addTo(arg1);
+	}
+
+	public static LocalDateTime call(LocalDateTime arg1, MonthDelta arg2)
+	{
+		return arg2.addTo(arg1);
+	}
+
 	public static Date call(MonthDelta arg1, Date arg2)
+	{
+		return arg1.addTo(arg2);
+	}
+
+	public static LocalDate call(MonthDelta arg1, LocalDate arg2)
+	{
+		return arg1.addTo(arg2);
+	}
+
+	public static LocalDateTime call(MonthDelta arg1, LocalDateTime arg2)
 	{
 		return arg1.addTo(arg2);
 	}
@@ -207,10 +249,28 @@ public class AddAST extends BinaryAST
 			else if (arg2 instanceof MonthDelta)
 				return call((Date)arg1, (MonthDelta)arg2);
 		}
+		else if (arg1 instanceof LocalDate)
+		{
+			if (arg2 instanceof TimeDelta)
+				return call((LocalDate)arg1, (TimeDelta)arg2);
+			else if (arg2 instanceof MonthDelta)
+				return call((LocalDate)arg1, (MonthDelta)arg2);
+		}
+		else if (arg1 instanceof LocalDateTime)
+		{
+			if (arg2 instanceof TimeDelta)
+				return call((LocalDateTime)arg1, (TimeDelta)arg2);
+			else if (arg2 instanceof MonthDelta)
+				return call((LocalDateTime)arg1, (MonthDelta)arg2);
+		}
 		else if (arg1 instanceof TimeDelta)
 		{
 			if (arg2 instanceof Date)
 				return call((Date)arg2, (TimeDelta)arg1);
+			else if (arg2 instanceof LocalDate)
+				return call((LocalDate)arg2, (TimeDelta)arg1);
+			else if (arg2 instanceof LocalDateTime)
+				return call((LocalDateTime)arg2, (TimeDelta)arg1);
 			else if (arg2 instanceof TimeDelta)
 				return call((TimeDelta)arg2, (TimeDelta)arg1);
 		}
@@ -218,6 +278,10 @@ public class AddAST extends BinaryAST
 		{
 			if (arg2 instanceof Date)
 				return call((Date)arg2, (MonthDelta)arg1);
+			else if (arg2 instanceof LocalDate)
+				return call((LocalDate)arg2, (MonthDelta)arg1);
+			else if (arg2 instanceof LocalDateTime)
+				return call((LocalDateTime)arg2, (MonthDelta)arg1);
 			else if (arg2 instanceof MonthDelta)
 				return call((MonthDelta)arg2, (MonthDelta)arg1);
 		}

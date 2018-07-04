@@ -9,8 +9,12 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -33,9 +37,17 @@ public class FunctionStr extends Function
 		return call(args.get(0));
 	}
 
-	public static SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy-MM-dd");
-	public static SimpleDateFormat formatterDatetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	public static SimpleDateFormat formatterTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'000'");
+	private static DateTimeFormatter formatterLocalDate = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US);
+
+	public static SimpleDateFormat formatterDate0 = new SimpleDateFormat("yyyy-MM-dd 00:00");
+	public static SimpleDateFormat formatterDate1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	public static SimpleDateFormat formatterDate2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public static SimpleDateFormat formatterDate3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'000'");
+
+	private static DateTimeFormatter formatterLocalDateTime0 = DateTimeFormatter.ofPattern("yyyy-MM-dd 00:00", Locale.US);
+	private static DateTimeFormatter formatterLocalDateTime1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.US);
+	private static DateTimeFormatter formatterLocalDateTime2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
+	private static DateTimeFormatter formatterLocalDateTime3 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS", Locale.US);
 
 	public static String call()
 	{
@@ -63,12 +75,35 @@ public class FunctionStr extends Function
 		}
 		else if (obj instanceof String)
 			return (String)obj;
+		else if (obj instanceof LocalDate)
+			return formatterLocalDate.format((LocalDate)obj);
+		else if (obj instanceof LocalDateTime)
+		{
+			LocalDateTime dateTime = (LocalDateTime)obj;
+			DateTimeFormatter formatter;
+			if (dateTime.getNano() != 0)
+				formatter = formatterLocalDateTime3;
+			else if (dateTime.getSecond() != 0)
+				formatter = formatterLocalDateTime2;
+			else if (dateTime.getMinute() != 0 || dateTime.getHour() != 0)
+				formatter = formatterLocalDateTime1;
+			else
+				formatter = formatterLocalDateTime0;
+			return formatter.format(dateTime);
+		}
 		else if (obj instanceof Date)
 		{
-			if (BoundDateMethodMicrosecond.call((Date)obj) != 0)
-				return formatterTimestamp.format(obj);
+			Date date = (Date)obj;
+			SimpleDateFormat formatter;
+			if (BoundDateMethodMicrosecond.call(date) != 0)
+				formatter = formatterDate3;
+			else if (BoundDateMethodSecond.call(date) != 0)
+				formatter = formatterDate2;
+			else if (BoundDateMethodMinute.call(date) != 0 || BoundDateMethodHour.call(date) != 0)
+				formatter = formatterDate1;
 			else
-				return formatterDatetime.format(obj);
+				formatter = formatterDate0;
+			return formatter.format(obj);
 		}
 		else if (obj instanceof Color)
 			return obj.toString();

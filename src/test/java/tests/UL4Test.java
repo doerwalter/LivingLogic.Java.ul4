@@ -16,11 +16,15 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
@@ -43,6 +47,7 @@ import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.InterpretedTemplate;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.FunctionDate;
+import com.livinglogic.ul4.FunctionDateTime;
 import com.livinglogic.ul4.FunctionRepr;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
@@ -129,6 +134,30 @@ public class UL4Test
 		{
 			return asList(1, 2, 3).iterator();
 		}
+	}
+
+	public static Date makeDate(int year, int month, int day)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.set(year, month-1, day, 0, 0, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		return calendar.getTime();
+	}
+
+	public static Date makeDate(int year, int month, int day, int hour, int minute, int second)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.set(year, month-1, day, hour, minute, second);
+		calendar.set(Calendar.MILLISECOND, 0);
+		return calendar.getTime();
+	}
+
+	public static Date makeDate(int year, int month, int day, int hour, int minute, int second, int microsecond)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.set(year, month-1, day, hour, minute, second);
+		calendar.set(Calendar.MILLISECOND, microsecond/1000);
+		return calendar.getTime();
 	}
 
 	private static InterpretedTemplate getTemplate(String source, String name, InterpretedTemplate.Whitespace whitespace, Signature signature)
@@ -219,26 +248,6 @@ public class UL4Test
 			String output2 = template2.renders(context2, makeMap(args));
 			assertEquals(expected, output2);
 		}
-	}
-
-	public static void checkTemplateOutput2(String expected1, String expected2, String source, Object... args)
-	{
-		// Render the template once by directly compiling and rendering it
-		InterpretedTemplate template1 = getTemplate(source);
-		String output1 = template1.renders(makeMap(args));
-		if (!output1.equals(expected1) && !output1.equals(expected2))
-			fail("expected <" + expected1 + "> or <" + expected2 + ">, got <" + output1 + ">");
-
-		// Recreate the template from the dump of the compiled template
-		InterpretedTemplate template2 = InterpretedTemplate.loads(template1.dumps());
-
-		// Check that the templates format the same
-		assertEquals(template1.toString(), template2.toString());
-
-		// Check that they have the same output
-		String output2 = template2.renders(makeMap(args));
-		if (!output1.equals(expected1) && !output1.equals(expected2))
-			fail("expected <" + expected1 + "> or <" + expected2 + ">, got <" + output2 + ">");
 	}
 
 	private static Object getTemplateResult(String source, Object... args)
@@ -407,10 +416,16 @@ public class UL4Test
 	public void type_date()
 	{
 		checkTemplateOutput("2000-02-29", "<?print @(2000-02-29).isoformat()?>");
-		checkTemplateOutput("2000-02-29", "<?print @(2000-02-29T).isoformat()?>");
+		checkTemplateOutput("yes", "<?if @(2000-02-29)?>yes<?else?>no<?end if?>");
+	}
+
+	@Test
+	public void type_datetime()
+	{
+		checkTemplateOutput("2000-02-29T00:00:00", "<?print @(2000-02-29T).isoformat()?>");
 		checkTemplateOutput("2000-02-29T12:34:00", "<?print @(2000-02-29T12:34).isoformat()?>");
 		checkTemplateOutput("2000-02-29T12:34:56", "<?print @(2000-02-29T12:34:56).isoformat()?>");
-		checkTemplateOutput("2000-02-29T12:34:56.987000", "<?print @(2000-02-29T12:34:56.987000).isoformat()?>");
+		checkTemplateOutput("2000-02-29T12:34:56.987654", "<?print @(2000-02-29T12:34:56.987654).isoformat()?>");
 		checkTemplateOutput("yes", "<?if @(2000-02-29T12:34:56.987654)?>yes<?else?>no<?end if?>");
 	}
 
@@ -902,12 +917,24 @@ public class UL4Test
 		checkTemplateOutput("22.0", source, "x", -1.0, "y", 23);
 		checkTemplateOutput("foobar", source, "x", "foo", "y", "bar");
 		checkTemplateOutput("[1, 2, 3, 4][1, 2][3, 4]", "<?code z = x + y?><?print z?><?print x?><?print y?>", "x", asList(1, 2), "y", asList(3, 4));
-		checkTemplateOutput("2012-10-18 00:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(1));
-		checkTemplateOutput("2013-10-17 00:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(365));
-		checkTemplateOutput("2012-10-17 12:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 12*60*60));
-		checkTemplateOutput("2012-10-17 00:00:01", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 1));
-		checkTemplateOutput("2012-10-17 00:00:00.500000", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 0, 500000));
-		checkTemplateOutput("2012-10-17 00:00:00.001000", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 0, 1000));
+		for (Object d : makeDateTimeVariants(2012, 10, 17))
+			checkTemplateOutput("2012-10-18 00:00", source, "x", d, "y", new TimeDelta(1));
+		checkTemplateOutput("2012-10-18", source, "x", LocalDate.of(2012, 10, 17), "y", new TimeDelta(1));
+		for (Object d : makeDateTimeVariants(2012, 10, 17))
+			checkTemplateOutput("2013-10-17 00:00", source, "x", d, "y", new TimeDelta(365));
+		checkTemplateOutput("2013-10-17", source, "x", LocalDate.of(2012, 10, 17), "y", new TimeDelta(365));
+		for (Object d : makeDateTimeVariants(2012, 10, 17))
+			checkTemplateOutput("2012-10-17 12:00", source, "x", d, "y", new TimeDelta(0, 12*60*60));
+		checkTemplateOutput("2012-10-17", source, "x", LocalDate.of(2012, 10, 17), "y", new TimeDelta(0, 12*60*60));
+		for (Object d : makeDateTimeVariants(2012, 10, 17))
+			checkTemplateOutput("2012-10-17 00:00:01", source, "x", d, "y", new TimeDelta(0, 1));
+		checkTemplateOutput("2012-10-17", source, "x", LocalDate.of(2012, 10, 17), "y", new TimeDelta(0, 1));
+		for (Object d : makeDateTimeVariants(2012, 10, 17))
+			checkTemplateOutput("2012-10-17 00:00:00.500000", source, "x", d, "y", new TimeDelta(0, 0, 500000));
+		checkTemplateOutput("2012-10-17", source, "x", LocalDate.of(2012, 10, 17), "y", new TimeDelta(0, 0, 500000));
+		for (Object d : makeDateTimeVariants(2012, 10, 17))
+			checkTemplateOutput("2012-10-17 00:00:00.001000", source, "x", d, "y", new TimeDelta(0, 0, 1000));
+		checkTemplateOutput("2012-10-17", source, "x", LocalDate.of(2012, 10, 17), "y", new TimeDelta(0, 0, 1000));
 		checkTemplateOutput("2 days, 0:00:00", source, "x", new TimeDelta(1), "y", new TimeDelta(1));
 		checkTemplateOutput("1 day, 0:00:01", source, "x", new TimeDelta(1), "y", new TimeDelta(0, 1));
 		checkTemplateOutput("1 day, 0:00:00.000001", source, "x", new TimeDelta(1), "y", new TimeDelta(0, 0, 1));
@@ -933,14 +960,53 @@ public class UL4Test
 		checkTemplateOutput("16.0", source, "x", 17, "y", 1.0);
 		checkTemplateOutput("-22", source, "x", true, "y", 23);
 		checkTemplateOutput("-24.0", source, "x", -1.0, "y", 23);
-		checkTemplateOutput("2012-10-16 00:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(1));
-		checkTemplateOutput("2011-10-17 00:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(366));
-		checkTemplateOutput("2012-10-16 12:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 12*60*60));
-		checkTemplateOutput("2012-10-16 23:59:59", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 1));
-		checkTemplateOutput("2012-10-16 23:59:59.500000", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 0, 500000));
-		checkTemplateOutput("2012-10-16 23:59:59.999000", source, "x", FunctionDate.call(2012, 10, 17), "y", new TimeDelta(0, 0, 1000));
-		checkTemplateOutput("2 days, 0:00:00", source, "x", FunctionDate.call(2012, 10, 17), "y", FunctionDate.call(2012, 10, 15));
-		checkTemplateOutput("730 days, 0:00:00", source, "x", FunctionDate.call(1999, 1, 1), "y", FunctionDate.call(1997, 1, 1));
+		for (Object d : makeDateTimeVariants(2012, 10, 17))
+			checkTemplateOutput("2012-10-16 00:00", source, "x", d, "y", new TimeDelta(1));
+		checkTemplateOutput("2012-10-16", source, "x", LocalDate.of(2012, 10, 17), "y", new TimeDelta(1));
+		for (Object d : makeDateTimeVariants(2012, 10, 17))
+			checkTemplateOutput("2011-10-17 00:00", source, "x", d, "y", new TimeDelta(366));
+		checkTemplateOutput("2011-10-17", source, "x", LocalDate.of(2012, 10, 17), "y", new TimeDelta(366));
+		for (Object d : makeDateTimeVariants(2012, 10, 17))
+			checkTemplateOutput("2012-10-16 12:00", source, "x", d, "y", new TimeDelta(0, 12*60*60));
+		checkTemplateOutput("2012-10-17", source, "x", LocalDate.of(2012, 10, 17), "y", new TimeDelta(0, 12*60*60));
+		for (Object d : makeDateTimeVariants(2012, 10, 17))
+			checkTemplateOutput("2012-10-16 23:59:59", source, "x", d, "y", new TimeDelta(0, 1));
+		checkTemplateOutput("2012-10-17", source, "x", LocalDate.of(2012, 10, 17), "y", new TimeDelta(0, 1));
+		for (Object d : makeDateTimeVariants(2012, 10, 17))
+			checkTemplateOutput("2012-10-16 23:59:59.500000", source, "x", d, "y", new TimeDelta(0, 0, 500000));
+		checkTemplateOutput("2012-10-17", source, "x", LocalDate.of(2012, 10, 17), "y", new TimeDelta(0, 0, 500000));
+		for (Object d : makeDateTimeVariants(2012, 10, 17))
+			checkTemplateOutput("2012-10-16 23:59:59.999000", source, "x", d, "y", new TimeDelta(0, 0, 1000));
+		checkTemplateOutput("2012-10-17", source, "x", LocalDate.of(2012, 10, 17), "y", new TimeDelta(0, 0, 1000));
+		for (Object d1 : makeDateTimeVariants(2015, 1, 2, 1, 0, 0))
+			for (Object d2 : makeDateTimeVariants(2015, 1, 1, 1, 0, 0))
+				checkTemplateOutput("1 day, 0:00:00", source, "x", d1, "y", d2);
+		for (Object d1 : makeDateTimeVariants(2015, 1, 2, 2, 0, 0))
+			for (Object d2 : makeDateTimeVariants(2015, 1, 1, 1, 0, 0))
+				checkTemplateOutput("1 day, 1:00:00", source, "x", d1, "y", d2);
+		for (Object d1 : makeDateTimeVariants(2015, 1, 2, 2, 1, 0))
+			for (Object d2 : makeDateTimeVariants(2015, 1, 1, 1, 0, 0))
+				checkTemplateOutput("1 day, 1:01:00", source, "x", d1, "y", d2);
+		for (Object d1 : makeDateTimeVariants(2015, 1, 2, 2, 1, 1))
+			for (Object d2 : makeDateTimeVariants(2015, 1, 1, 1, 0, 0))
+				checkTemplateOutput("1 day, 1:01:01", source, "x", d1, "y", d2);
+		for (Object d1 : makeDateTimeVariants(2015, 1, 2, 2, 1, 1, 1000))
+			for (Object d2 : makeDateTimeVariants(2015, 1, 1, 1, 0, 0))
+				checkTemplateOutput("1 day, 1:01:01.001000", source, "x", d1, "y", d2);
+		LocalDateTime d1Micro = LocalDateTime.of(2015, 1, 2, 2, 1, 1, 1000);
+		for (Object d2 : makeDateTimeVariants(2015, 1, 1, 1, 0, 0))
+			checkTemplateOutput("1 day, 1:01:01.000001", source, "x", d1Micro, "y", d2);
+		for (Object d1 : makeDateTimeVariants(2012, 10, 17))
+			for (Object d2 : makeDateTimeVariants(2012, 10, 15))
+				checkTemplateOutput("2 days, 0:00:00", source, "x", d1, "y", d2);
+		checkTemplateOutput("2 days, 0:00:00", source, "x", LocalDate.of(2012, 10, 17), "y", LocalDate.of(2012, 10, 15));
+		for (Object d1 : makeDateTimeVariants(1999, 1, 1))
+			for (Object d2 : makeDateTimeVariants(1997, 1, 1))
+				checkTemplateOutput("730 days, 0:00:00", source, "x", d1, "y", d2);
+		for (Object d1 : makeDateTimeVariants(2015, 1, 1, 13, 0, 0))
+			for (Object d2 : makeDateTimeVariants(2015, 1, 1, 12, 0, 0))
+				checkTemplateOutput("1:00:00", source, "x", d1, "y", d2);
+		checkTemplateOutput("730 days, 0:00:00", source, "x", LocalDate.of(1999, 1, 1), "y", LocalDate.of(1997, 1, 1));
 		checkTemplateOutput("0:00:00", source, "x", new TimeDelta(1), "y", new TimeDelta(1));
 		checkTemplateOutput("1 day, 0:00:00", source, "x", new TimeDelta(2), "y", new TimeDelta(1));
 		checkTemplateOutput("23:59:59", source, "x", new TimeDelta(1), "y", new TimeDelta(0, 1));
@@ -1734,14 +1800,20 @@ public class UL4Test
 	public void function_date()
 	{
 		checkTemplateOutput("@(2012-10-06)", "<?print repr(date(2012, 10, 6))?>");
-		checkTemplateOutput("@(2012-10-06T12:00:00)", "<?print repr(date(2012, 10, 6, 12))?>");
-		checkTemplateOutput("@(2012-10-06T12:34:00)", "<?print repr(date(2012, 10, 6, 12, 34))?>");
-		checkTemplateOutput("@(2012-10-06T12:34:56)", "<?print repr(date(2012, 10, 6, 12, 34, 56))?>");
-		checkTemplateOutput("@(2012-10-06T12:34:56.987000)", "<?print repr(date(2012, 10, 6, 12, 34, 56, 987000))?>");
-		checkTemplateOutput("@(2012-10-06T12:34:56.987000)", "<?print repr(date(year=2012, month=10, day=6, hour=12, minute=34, second=56, microsecond=987000))?>");
+	}
+
+	@Test
+	public void function_datetime()
+	{
+		checkTemplateOutput("@(2012-10-06T)", "<?print repr(datetime(2012, 10, 6))?>");
+		checkTemplateOutput("@(2012-10-06T12:00)", "<?print repr(datetime(2012, 10, 6, 12))?>");
+		checkTemplateOutput("@(2012-10-06T12:34)", "<?print repr(datetime(2012, 10, 6, 12, 34))?>");
+		checkTemplateOutput("@(2012-10-06T12:34:56)", "<?print repr(datetime(2012, 10, 6, 12, 34, 56))?>");
+		checkTemplateOutput("@(2012-10-06T12:34:56.987654)", "<?print repr(datetime(2012, 10, 6, 12, 34, 56, 987654))?>");
+		checkTemplateOutput("@(2012-10-06T12:34:56.987654)", "<?print repr(datetime(year=2012, month=10, day=6, hour=12, minute=34, second=56, microsecond=987654))?>");
 
 		// date() is the best candidate for testing a mixture of the argument passing methods
-		checkTemplateOutput("@(2012-10-06T12:34:56)", "<?print repr(date(2012, *[10], *[6], hour=12, **{'minute': 34}, **{'second': 56}))?>");
+		checkTemplateOutput("@(2012-10-06T12:34:56)", "<?print repr(datetime(2012, *[10], *[6], hour=12, **{'minute': 34}, **{'second': 56}))?>");
 	}
 
 	@Test
@@ -1894,6 +1966,8 @@ public class UL4Test
 		checkTemplateOutput("[1, 2, 3]", "<?print asjson(data)?>", "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("{\"one\": 1}", "<?print asjson(data)?>", "data", makeMap("one", 1));
 		checkTemplateOutput("null", "<?print asjson(obj=data)?>", "data", null);
+		checkTemplateOutput("ul4.Date.create(2000, 2, 29)", "<?print asjson(obj=data)?>", "data", LocalDate.of(2000, 2, 29));
+		checkTemplateOutput("new Date(2000, 1, 29, 12, 34, 56, 987)", "<?print asjson(obj=data)?>", "data", LocalDateTime.of(2000, 2, 29, 12, 34, 56, 987654321));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1978,9 +2052,11 @@ public class UL4Test
 		checkTemplateOutput("4.2", source, "data", 4.2);
 		checkTemplateOutput("foo", source, "data", "foo");
 		checkTemplateOutput("broken", source, "data", new RuntimeException("broken"));
-		checkTemplateOutput("2011-02-09 00:00:00", source, "data", FunctionDate.call(2011, 2, 9));
-		checkTemplateOutput("2011-02-09 12:34:56", source, "data", FunctionDate.call(2011, 2, 9, 12, 34, 56));
-		checkTemplateOutput("2011-02-09 12:34:56.987000", source, "data", FunctionDate.call(2011, 2, 9, 12, 34, 56, 987000));
+		checkTemplateOutput("2011-02-09", source, "data", FunctionDate.call(2011, 2, 9));
+		checkTemplateOutput("2011-02-09 00:00", source, "data", FunctionDateTime.call(2011, 2, 9));
+		checkTemplateOutput("2011-02-09 12:34", source, "data", FunctionDateTime.call(2011, 2, 9, 12, 34));
+		checkTemplateOutput("2011-02-09 12:34:56", source, "data", FunctionDateTime.call(2011, 2, 9, 12, 34, 56));
+		checkTemplateOutput("2011-02-09 12:34:56.987654", source, "data", FunctionDateTime.call(2011, 2, 9, 12, 34, 56, 987654));
 		checkTemplateOutput("foo", "<?print str(obj=data)?>", "data", "foo");
 	}
 
@@ -2533,6 +2609,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -2568,6 +2646,8 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", 4.2);
 		checkTemplateOutput("True", source, "data", "foo");
 		checkTemplateOutput("True", source, "data", new Date());
+		checkTemplateOutput("True", source, "data", LocalDate.now());
+		checkTemplateOutput("True", source, "data", LocalDateTime.now());
 		checkTemplateOutput("True", source, "data", new TimeDelta(1));
 		checkTemplateOutput("True", source, "data", new MonthDelta(1));
 		checkTemplateOutput("True", source, "data", asList());
@@ -2604,6 +2684,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -2640,6 +2722,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -2676,6 +2760,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -2712,6 +2798,8 @@ public class UL4Test
 		checkTemplateOutput("True", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -2748,6 +2836,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("True", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -2783,7 +2873,35 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 42);
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
+		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("True", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
+		checkTemplateOutput("False", source, "data", new TimeDelta(1));
+		checkTemplateOutput("False", source, "data", new MonthDelta(1));
+		checkTemplateOutput("False", source, "data", asList());
+		checkTemplateOutput("False", source, "data", makeSet());
+		checkTemplateOutput("False", source, "data", makeMap());
+		checkTemplateOutput("False", source, "data", getTemplate(""));
+		checkTemplateOutput("False", "<?print isdate(repr)?>");
+		checkTemplateOutput("False", source, "data", new Color(0, 0, 0));
+		checkTemplateOutput("False", "<?print isdate(obj=data)?>", "data", null);
+	}
+
+	@Test
+	public void function_isdatetime()
+	{
+		String source = "<?print isdatetime(data)?>";
+
+		checkTemplateOutput("False", source, "data", new UndefinedKey("foo"));
+		checkTemplateOutput("False", source, "data", null);
+		checkTemplateOutput("False", source, "data", true);
+		checkTemplateOutput("False", source, "data", false);
+		checkTemplateOutput("False", source, "data", 42);
+		checkTemplateOutput("False", source, "data", 4.2);
+		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("True", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("True", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -2821,6 +2939,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("True", source, "data", new RuntimeException("broken!"));
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -2857,6 +2977,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("True", source, "data", asList());
@@ -2894,6 +3016,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -2931,6 +3055,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -2967,6 +3093,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -3003,6 +3131,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -3039,6 +3169,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -3075,6 +3207,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("True", source, "data", new TimeDelta(1));
 		checkTemplateOutput("False", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -3111,6 +3245,8 @@ public class UL4Test
 		checkTemplateOutput("False", source, "data", 4.2);
 		checkTemplateOutput("False", source, "data", "foo");
 		checkTemplateOutput("False", source, "data", new Date());
+		checkTemplateOutput("False", source, "data", LocalDate.now());
+		checkTemplateOutput("False", source, "data", LocalDateTime.now());
 		checkTemplateOutput("False", source, "data", new TimeDelta(1));
 		checkTemplateOutput("True", source, "data", new MonthDelta(1));
 		checkTemplateOutput("False", source, "data", asList());
@@ -3184,13 +3320,18 @@ public class UL4Test
 		checkTemplateOutput("[1, 2, 3]", source, "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("{}", source, "data", makeMap());
 		checkTemplateOutput("{'a': 1}", source, "data", makeMap("a", 1));
-		checkTemplateOutput2("{'a': 1, 'b': 2}", "{'b': 2, 'a': 1}", source, "data", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("{'a': 1, 'b': 2}", source, "data", makeOrderedMap("a", 1, "b", 2));
 		checkTemplateOutput("{/}", source, "data", makeSet());
 		checkTemplateOutput("{1}", source, "data", makeSet(1));
-		checkTemplateOutput("@(2011-02-07T12:34:56.123000)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56, 123000));
-		checkTemplateOutput("@(2011-02-07T12:34:56)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56));
-		checkTemplateOutput("@(2011-02-07)", source, "data", FunctionDate.call(2011, 2, 7));
-		checkTemplateOutput("@(2011-02-07)", source, "data", FunctionDate.call(2011, 2, 7));
+		checkTemplateOutput("@(2000-02-29T)", source, "data", makeDate(2000, 2, 29));
+		checkTemplateOutput("@(2000-02-29T12:34)", source, "data", makeDate(2000, 2, 29, 12, 34, 0));
+		checkTemplateOutput("@(2000-02-29T12:34:56)", source, "data", makeDate(2000, 2, 29, 12, 34, 56));
+		checkTemplateOutput("@(2000-02-29T12:34:56.123000)", source, "data", makeDate(2000, 2, 29, 12, 34, 56, 123456));
+		checkTemplateOutput("@(2000-02-29)", source, "data", LocalDate.of(2000, 2, 29));
+		checkTemplateOutput("@(2000-02-29T)", source, "data", LocalDateTime.of(2000, 2, 29, 0, 0));
+		checkTemplateOutput("@(2000-02-29T12:34)", source, "data", LocalDateTime.of(2000, 2, 29, 12, 34));
+		checkTemplateOutput("@(2000-02-29T12:34:56)", source, "data", LocalDateTime.of(2000, 2, 29, 12, 34, 56));
+		checkTemplateOutput("@(2000-02-29T12:34:56.123456)", source, "data", LocalDateTime.of(2000, 2, 29, 12, 34, 56, 123456789));
 		checkTemplateOutput("None", "<?print repr(obj=data)?>", "data", null);
 	}
 
@@ -3240,13 +3381,18 @@ public class UL4Test
 		checkTemplateOutput("[1, 2, 3]", source, "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("{}", source, "data", makeMap());
 		checkTemplateOutput("{'a': 1}", source, "data", makeMap("a", 1));
-		checkTemplateOutput2("{'a': 1, 'b': 2}", "{'b': 2, 'a': 1}", source, "data", makeMap("a", 1, "b", 2));
+		checkTemplateOutput("{'a': 1, 'b': 2}", source, "data", makeOrderedMap("a", 1, "b", 2));
 		checkTemplateOutput("{/}", source, "data", makeSet());
 		checkTemplateOutput("{1}", source, "data", makeSet(1));
-		checkTemplateOutput("@(2011-02-07T12:34:56.123000)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56, 123000));
-		checkTemplateOutput("@(2011-02-07T12:34:56)", source, "data", FunctionDate.call(2011, 2, 7, 12, 34, 56));
-		checkTemplateOutput("@(2011-02-07)", source, "data", FunctionDate.call(2011, 2, 7));
-		checkTemplateOutput("@(2011-02-07)", source, "data", FunctionDate.call(2011, 2, 7));
+		checkTemplateOutput("@(2000-02-29T)", source, "data", makeDate(2000, 2, 29));
+		checkTemplateOutput("@(2000-02-29T12:34)", source, "data", makeDate(2000, 2, 29, 12, 34, 0));
+		checkTemplateOutput("@(2000-02-29T12:34:56)", source, "data", makeDate(2000, 2, 29, 12, 34, 56));
+		checkTemplateOutput("@(2000-02-29T12:34:56.123000)", source, "data", makeDate(2000, 2, 29, 12, 34, 56, 123456));
+		checkTemplateOutput("@(2000-02-29)", source, "data", LocalDate.of(2000, 2, 29));
+		checkTemplateOutput("@(2000-02-29T)", source, "data", LocalDateTime.of(2000, 2, 29, 0, 0));
+		checkTemplateOutput("@(2000-02-29T12:34)", source, "data", LocalDateTime.of(2000, 2, 29, 12, 34));
+		checkTemplateOutput("@(2000-02-29T12:34:56)", source, "data", LocalDateTime.of(2000, 2, 29, 12, 34, 56));
+		checkTemplateOutput("@(2000-02-29T12:34:56.123456)", source, "data", LocalDateTime.of(2000, 2, 29, 12, 34, 56, 123456789));
 		checkTemplateOutput("None", "<?print repr(obj=data)?>", "data", null);
 	}
 
@@ -3265,59 +3411,66 @@ public class UL4Test
 	@Test
 	public void function_format_date()
 	{
-		Date t = FunctionDate.call(2011, 1, 25, 13, 34, 56, 987000);
+		List dates = asList(
+			makeDate(2011, 1, 25, 13, 34, 56, 987654),
+			LocalDate.of(2011, 1, 25),
+			LocalDateTime.of(2011, 1, 25, 13, 34, 56, 987654000)
+		);
 
 		String source2 = "<?print format(data, fmt)?>";
 		String source3 = "<?print format(data, fmt, lang)?>";
 		String source3kw = "<?print format(obj=data, fmt=fmt, lang=lang)?>";
 
-		checkTemplateOutput("2011", source2, "data", t, "fmt", "%Y");
-		checkTemplateOutput("01", source2, "data", t, "fmt", "%m");
-		checkTemplateOutput("25", source2, "data", t, "fmt", "%d");
-		checkTemplateOutput("13", source2, "data", t, "fmt", "%H");
-		checkTemplateOutput("34", source2, "data", t, "fmt", "%M");
-		checkTemplateOutput("56", source2, "data", t, "fmt", "%S");
-		checkTemplateOutput("987000", source2, "data", t, "fmt", "%f");
-		checkTemplateOutput("Tue", source2, "data", t, "fmt", "%a");
-		checkTemplateOutput("Tue", source3, "data", t, "fmt", "%a", "lang", null);
-		checkTemplateOutput("Tue", source3, "data", t, "fmt", "%a", "lang", "en");
-		checkTemplateOutput("Di", source3, "data", t, "fmt", "%a", "lang", "de");
-		checkTemplateOutput("Di", source3, "data", t, "fmt", "%a", "lang", "de_DE");
-		checkTemplateOutput("Tuesday", source2, "data", t, "fmt", "%A");
-		checkTemplateOutput("Tuesday", source3, "data", t, "fmt", "%A", "lang", null);
-		checkTemplateOutput("Tuesday", source3, "data", t, "fmt", "%A", "lang", "en");
-		checkTemplateOutput("Dienstag", source3, "data", t, "fmt", "%A", "lang", "de");
-		checkTemplateOutput("Dienstag", source3, "data", t, "fmt", "%A", "lang", "de_DE");
-		checkTemplateOutput("Jan", source2, "data", t, "fmt", "%b");
-		checkTemplateOutput("Jan", source3, "data", t, "fmt", "%b", "lang", null);
-		checkTemplateOutput("Jan", source3, "data", t, "fmt", "%b", "lang", "en");
-		checkTemplateOutput("Jan", source3, "data", t, "fmt", "%b", "lang", "de");
-		checkTemplateOutput("Jan", source3, "data", t, "fmt", "%b", "lang", "de_DE");
-		checkTemplateOutput("January", source2, "data", t, "fmt", "%B");
-		checkTemplateOutput("January", source3, "data", t, "fmt", "%B", "lang", null);
-		checkTemplateOutput("January", source3, "data", t, "fmt", "%B", "lang", "en");
-		checkTemplateOutput("Januar", source3, "data", t, "fmt", "%B", "lang", "de");
-		checkTemplateOutput("Januar", source3, "data", t, "fmt", "%B", "lang", "de_DE");
-		checkTemplateOutput("01", source2, "data", t, "fmt", "%I");
-		checkTemplateOutput("025", source2, "data", t, "fmt", "%j");
-		checkTemplateOutput("PM", source2, "data", t, "fmt", "%p");
-		checkTemplateOutput("04", source2, "data", t, "fmt", "%U");
-		checkTemplateOutput("2", source2, "data", t, "fmt", "%w");
-		checkTemplateOutput("04", source2, "data", t, "fmt", "%W");
-		checkTemplateOutput("11", source2, "data", t, "fmt", "%y");
-		checkTemplateOutput("Tue 25 Jan 2011 01:34:56 PM", source2, "data", t, "fmt", "%c");
-		checkTemplateOutput("01/25/2011", source2, "data", t, "fmt", "%x");
-		checkTemplateOutput("01/25/2011", source3, "data", t, "fmt", "%x", "lang", null);
-		checkTemplateOutput("01/25/2011", source3, "data", t, "fmt", "%x", "lang", "en");
-		checkTemplateOutput("25.01.2011", source3, "data", t, "fmt", "%x", "lang", "de");
-		checkTemplateOutput("25.01.2011", source3, "data", t, "fmt", "%x", "lang", "de_DE");
-		checkTemplateOutput("13:34:56", source2, "data", t, "fmt", "%X");
-		checkTemplateOutput("13:34:56", source3, "data", t, "fmt", "%X", "lang", null);
-		checkTemplateOutput("13:34:56", source3, "data", t, "fmt", "%X", "lang", "en");
-		checkTemplateOutput("13:34:56", source3, "data", t, "fmt", "%X", "lang", "de");
-		checkTemplateOutput("13:34:56", source3, "data", t, "fmt", "%X", "lang", "de_DE");
-		checkTemplateOutput("%", source2, "fmt", "%%", "data", t);
-		checkTemplateOutput("2011", source3kw, "data", t, "fmt", "%Y", "lang", "de_DE");
+		for (Object t : dates)
+		{
+			checkTemplateOutput("2011", source2, "data", t, "fmt", "%Y");
+			checkTemplateOutput("01", source2, "data", t, "fmt", "%m");
+			checkTemplateOutput("25", source2, "data", t, "fmt", "%d");
+			checkTemplateOutput(t instanceof LocalDate ? "00" : "13", source2, "data", t, "fmt", "%H");
+			checkTemplateOutput(t instanceof LocalDate ? "00" : "34", source2, "data", t, "fmt", "%M");
+			checkTemplateOutput(t instanceof LocalDate ? "00" : "56", source2, "data", t, "fmt", "%S");
+			checkTemplateOutput(t instanceof LocalDate ? "000000" : (t instanceof Date ? "987000" : "987654"), source2, "data", t, "fmt", "%f");
+			checkTemplateOutput("Tue", source2, "data", t, "fmt", "%a");
+			checkTemplateOutput("Tue", source3, "data", t, "fmt", "%a", "lang", null);
+			checkTemplateOutput("Tue", source3, "data", t, "fmt", "%a", "lang", "en");
+			checkTemplateOutput("Di", source3, "data", t, "fmt", "%a", "lang", "de");
+			checkTemplateOutput("Di", source3, "data", t, "fmt", "%a", "lang", "de_DE");
+			checkTemplateOutput("Tuesday", source2, "data", t, "fmt", "%A");
+			checkTemplateOutput("Tuesday", source3, "data", t, "fmt", "%A", "lang", null);
+			checkTemplateOutput("Tuesday", source3, "data", t, "fmt", "%A", "lang", "en");
+			checkTemplateOutput("Dienstag", source3, "data", t, "fmt", "%A", "lang", "de");
+			checkTemplateOutput("Dienstag", source3, "data", t, "fmt", "%A", "lang", "de_DE");
+			checkTemplateOutput("Jan", source2, "data", t, "fmt", "%b");
+			checkTemplateOutput("Jan", source3, "data", t, "fmt", "%b", "lang", null);
+			checkTemplateOutput("Jan", source3, "data", t, "fmt", "%b", "lang", "en");
+			checkTemplateOutput("Jan", source3, "data", t, "fmt", "%b", "lang", "de");
+			checkTemplateOutput("Jan", source3, "data", t, "fmt", "%b", "lang", "de_DE");
+			checkTemplateOutput("January", source2, "data", t, "fmt", "%B");
+			checkTemplateOutput("January", source3, "data", t, "fmt", "%B", "lang", null);
+			checkTemplateOutput("January", source3, "data", t, "fmt", "%B", "lang", "en");
+			checkTemplateOutput("Januar", source3, "data", t, "fmt", "%B", "lang", "de");
+			checkTemplateOutput("Januar", source3, "data", t, "fmt", "%B", "lang", "de_DE");
+			checkTemplateOutput(t instanceof LocalDate ? "00" : "01", source2, "data", t, "fmt", "%I");
+			checkTemplateOutput("025", source2, "data", t, "fmt", "%j");
+			checkTemplateOutput(t instanceof LocalDate ? "AM" : "PM", source2, "data", t, "fmt", "%p");
+			checkTemplateOutput("04", source2, "data", t, "fmt", "%U");
+			checkTemplateOutput("2", source2, "data", t, "fmt", "%w");
+			checkTemplateOutput("04", source2, "data", t, "fmt", "%W");
+			checkTemplateOutput("11", source2, "data", t, "fmt", "%y");
+			checkTemplateOutput(t instanceof LocalDate ? "Tue 25 Jan 2011 00:00:00 AM" : "Tue 25 Jan 2011 01:34:56 PM", source2, "data", t, "fmt", "%c");
+			checkTemplateOutput("01/25/2011", source2, "data", t, "fmt", "%x");
+			checkTemplateOutput("01/25/2011", source3, "data", t, "fmt", "%x", "lang", null);
+			checkTemplateOutput("01/25/2011", source3, "data", t, "fmt", "%x", "lang", "en");
+			checkTemplateOutput("25.01.2011", source3, "data", t, "fmt", "%x", "lang", "de");
+			checkTemplateOutput("25.01.2011", source3, "data", t, "fmt", "%x", "lang", "de_DE");
+			checkTemplateOutput(t instanceof LocalDate ? "00:00:00" : "13:34:56", source2, "data", t, "fmt", "%X");
+			checkTemplateOutput(t instanceof LocalDate ? "00:00:00" : "13:34:56", source3, "data", t, "fmt", "%X", "lang", null);
+			checkTemplateOutput(t instanceof LocalDate ? "00:00:00" : "13:34:56", source3, "data", t, "fmt", "%X", "lang", "en");
+			checkTemplateOutput(t instanceof LocalDate ? "00:00:00" : "13:34:56", source3, "data", t, "fmt", "%X", "lang", "de");
+			checkTemplateOutput(t instanceof LocalDate ? "00:00:00" : "13:34:56", source3, "data", t, "fmt", "%X", "lang", "de_DE");
+			checkTemplateOutput("%", source2, "fmt", "%%", "data", t);
+			checkTemplateOutput("2011", source3kw, "data", t, "fmt", "%Y", "lang", "de_DE");
+		}
 	}
 
 	@Test
@@ -3572,7 +3725,9 @@ public class UL4Test
 		checkTemplateOutput("int", source, "data", 42);
 		checkTemplateOutput("float", source, "data", 4.2);
 		checkTemplateOutput("str", source, "data", "foo");
-		checkTemplateOutput("date", source, "data", new Date());
+		checkTemplateOutput("datetime", source, "data", new Date());
+		checkTemplateOutput("date", source, "data", LocalDate.now());
+		checkTemplateOutput("datetime", source, "data", LocalDateTime.now());
 		checkTemplateOutput("list", source, "data", asList(1, 2));
 		checkTemplateOutput("dict", source, "data", makeMap(1, 2));
 		checkTemplateOutput("set", source, "data", makeSet(1, 2));
@@ -3763,6 +3918,8 @@ public class UL4Test
 		Integer dataInt = 42;
 		Double dataFloat = 42.5;
 		Date dataDate = new Date();
+		LocalDate dataLocalDate = LocalDate.now();
+		LocalDateTime dataLocalDateTime = LocalDateTime.now();
 		Color dataColor = new Color(1, 2, 3, 4);
 		List dataList = asList();
 		Set dataSet = new HashSet();
@@ -3775,7 +3932,10 @@ public class UL4Test
 		checkTemplateOutput("[]", "<?print sorted(dir(data))?>", "data", dataBool);
 		checkTemplateOutput("[]", "<?print sorted(dir(data))?>", "data", dataInt);
 		checkTemplateOutput("[]", "<?print sorted(dir(data))?>", "data", dataFloat);
-		checkTemplateOutput("['day', 'hour', 'isoformat', 'microsecond', 'mimeformat', 'minute', 'month', 'second', 'week', 'weekday', 'year', 'yearday', 'yearweek']", "<?print sorted(dir(data))?>", "data", dataDate);
+		String dateTimeAttrs = "['calendar', 'day', 'hour', 'isoformat', 'microsecond', 'mimeformat', 'minute', 'month', 'second', 'week', 'weekday', 'year', 'yearday']";
+		checkTemplateOutput(dateTimeAttrs, "<?print sorted(dir(data))?>", "data", dataDate);
+		checkTemplateOutput(dateTimeAttrs, "<?print sorted(dir(data))?>", "data", dataLocalDateTime);
+		checkTemplateOutput("['calendar', 'day', 'isoformat', 'mimeformat', 'month', 'week', 'weekday', 'year', 'yearday']", "<?print sorted(dir(data))?>", "data", dataLocalDate);
 		checkTemplateOutput("['a', 'abslum', 'b', 'g', 'hls', 'hlsa', 'hsv', 'hsva', 'lum', 'r', 'rellum', 'witha', 'withlum']", "<?print sorted(dir(data))?>", "data", dataColor);
 		checkTemplateOutput("['append', 'count', 'find', 'insert', 'pop', 'rfind']", "<?print sorted(dir(data))?>", "data", dataList);
 		checkTemplateOutput("['add', 'clear']", "<?print sorted(dir(data))?>", "data", dataSet);
@@ -4032,7 +4192,7 @@ public class UL4Test
 	@Test
 	public void method_mimeformat()
 	{
-		Date t = FunctionDate.call(2010, 2, 22, 12, 34, 56);
+		Date t = makeDate(2010, 2, 22, 12, 34, 56);
 		checkTemplateOutput("Mon, 22 Feb 2010 12:34:56 GMT", "<?print data.mimeformat()?>", "data", t);
 		checkTemplateOutput("Mon, 22 Feb 2010 12:34:56 GMT", "<?code m = data.mimeformat?><?print m()?>", "data", t);
 	}
@@ -4281,24 +4441,33 @@ public class UL4Test
 	public void method_day()
 	{
 		checkTemplateOutput("12", "<?print @(2010-05-12).day()?>");
+		checkTemplateOutput("12", "<?print @(2010-05-12T).day()?>");
 		checkTemplateOutput("12", "<?code m = @(2010-05-12).day?><?print m()?>");
-		checkTemplateOutput("12", "<?print d.day()?>", "d", FunctionDate.call(2010, 5, 12));
+		checkTemplateOutput("12", "<?print d.day()?>", "d", makeDate(2010, 5, 12));
+		checkTemplateOutput("12", "<?print d.day()?>", "d", LocalDate.of(2010, 5, 12));
+		checkTemplateOutput("12", "<?print d.day()?>", "d", LocalDateTime.of(2010, 5, 12, 0, 0));
 	}
 
 	@Test
 	public void method_month()
 	{
 		checkTemplateOutput("5", "<?print @(2010-05-12).month()?>");
+		checkTemplateOutput("5", "<?print @(2010-05-12T).month()?>");
 		checkTemplateOutput("5", "<?code m = @(2010-05-12).month?><?print m()?>");
-		checkTemplateOutput("5", "<?print d.month()?>", "d", FunctionDate.call(2010, 5, 12));
+		checkTemplateOutput("5", "<?print d.month()?>", "d", makeDate(2010, 5, 12));
+		checkTemplateOutput("5", "<?print d.month()?>", "d", LocalDate.of(2010, 5, 12));
+		checkTemplateOutput("5", "<?print d.month()?>", "d", LocalDateTime.of(2010, 5, 12, 0, 0));
 	}
 
 	@Test
 	public void method_year()
 	{
 		checkTemplateOutput("2010", "<?print @(2010-05-12).year()?>");
+		checkTemplateOutput("2010", "<?print @(2010-05-12T).year()?>");
 		checkTemplateOutput("2010", "<?code m = @(2010-05-12).year?><?print m()?>");
-		checkTemplateOutput("2010", "<?print d.year()?>", "d", FunctionDate.call(2010, 5, 12));
+		checkTemplateOutput("2010", "<?print d.year()?>", "d", makeDate(2010, 5, 12));
+		checkTemplateOutput("2010", "<?print d.year()?>", "d", LocalDate.of(2010, 5, 12));
+		checkTemplateOutput("2010", "<?print d.year()?>", "d", LocalDateTime.of(2010, 5, 12, 0, 0));
 	}
 
 	@Test
@@ -4306,7 +4475,8 @@ public class UL4Test
 	{
 		checkTemplateOutput("16", "<?print @(2010-05-12T16:47:56).hour()?>");
 		checkTemplateOutput("16", "<?code m = @(2010-05-12T16:47:56).hour?><?print m()?>");
-		checkTemplateOutput("16", "<?print d.hour()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56));
+		checkTemplateOutput("16", "<?print d.hour()?>", "d", makeDate(2010, 5, 12, 16, 47, 56));
+		checkTemplateOutput("16", "<?print d.hour()?>", "d", LocalDateTime.of(2010, 5, 12, 16, 47, 56));
 	}
 
 	@Test
@@ -4314,7 +4484,8 @@ public class UL4Test
 	{
 		checkTemplateOutput("47", "<?print @(2010-05-12T16:47:56).minute()?>");
 		checkTemplateOutput("47", "<?code m = @(2010-05-12T16:47:56).minute?><?print m()?>");
-		checkTemplateOutput("47", "<?print d.minute()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56));
+		checkTemplateOutput("47", "<?print d.minute()?>", "d", makeDate(2010, 5, 12, 16, 47, 56));
+		checkTemplateOutput("47", "<?print d.minute()?>", "d", LocalDateTime.of(2010, 5, 12, 16, 47, 56));
 	}
 
 	@Test
@@ -4322,147 +4493,267 @@ public class UL4Test
 	{
 		checkTemplateOutput("56", "<?print @(2010-05-12T16:47:56).second()?>");
 		checkTemplateOutput("56", "<?code m = @(2010-05-12T16:47:56).second?><?print m()?>");
-		checkTemplateOutput("56", "<?print d.second()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56));
+		checkTemplateOutput("56", "<?print d.second()?>", "d", makeDate(2010, 5, 12, 16, 47, 56));
+		checkTemplateOutput("56", "<?print d.second()?>", "d", LocalDateTime.of(2010, 5, 12, 16, 47, 56));
 	}
 
 	@Test
 	public void method_microsecond()
 	{
-		checkTemplateOutput("123000", "<?print @(2010-05-12T16:47:56.123000).microsecond()?>");
-		checkTemplateOutput("123000", "<?code m = @(2010-05-12T16:47:56.123000).microsecond?><?print m()?>");
-		checkTemplateOutput("123000", "<?print d.microsecond()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56, 123000));
+		checkTemplateOutput("123456", "<?print @(2010-05-12T16:47:56.123456).microsecond()?>");
+		checkTemplateOutput("123456", "<?code m = @(2010-05-12T16:47:56.123456).microsecond?><?print m()?>");
+		checkTemplateOutput("123000", "<?print d.microsecond()?>", "d", makeDate(2010, 5, 12, 16, 47, 56, 123456));
+		checkTemplateOutput("123456", "<?print d.microsecond()?>", "d", LocalDateTime.of(2010, 5, 12, 16, 47, 56, 123456789));
+	}
+
+	private List makeAllDateTimeVariants(int y, int m, int d)
+	{
+		return asList(makeDate(y, m, d), LocalDate.of(y, m, d), LocalDateTime.of(y, m, d, 0, 0));
+	}
+
+	private List makeDateTimeVariants(int y, int m, int d)
+	{
+		return asList(makeDate(y, m, d), LocalDateTime.of(y, m, d, 0, 0));
+	}
+
+	private List makeDateTimeVariants(int y, int m, int d, int h, int mi, int s)
+	{
+		return asList(makeDate(y, m, d, h, mi, s), LocalDateTime.of(y, m, d, h, mi, s));
+	}
+
+	private List makeDateTimeVariants(int y, int m, int d, int h, int mi, int s, int ms)
+	{
+		return asList(makeDate(y, m, d, h, mi, s, ms), LocalDateTime.of(y, m, d, h, mi, s, ms*1000));
 	}
 
 	@Test
-	public void method_yearweek()
+	public void method_calendar()
 	{
 		// 1996: Non-leap year, starting on Monday
-		checkTemplateOutput("[1996, 1]", "<?print repr(@(1996-01-01).yearweek())?>");
-		checkTemplateOutput("[1996, 1]", "<?print repr(@(1996-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[1996, 1]", "<?print repr(@(1996-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[1996, 1]", "<?print repr(@(1996-01-07).yearweek())?>");
-		checkTemplateOutput("[1996, 2]", "<?print repr(@(1996-01-08).yearweek())?>");
-		checkTemplateOutput("[1996, 22]", "<?print repr(@(1996-05-28).yearweek())?>");
-		checkTemplateOutput("[1997, 1]", "<?print repr(@(1996-12-30).yearweek())?>");
-		checkTemplateOutput("[1996, 52]", "<?print repr(@(1996-12-29).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(1996, 1, 1))
+			checkTemplateOutput("[1996, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(1996, 1, 1))
+			checkTemplateOutput("[1996, 1, 0]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(1996, 1, 1))
+			checkTemplateOutput("[1996, 1, 0]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(1996, 1, 7))
+			checkTemplateOutput("[1996, 1, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(1996, 1, 8))
+			checkTemplateOutput("[1996, 2, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(1996, 12, 29))
+			checkTemplateOutput("[1996, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(1996, 12, 30))
+			checkTemplateOutput("[1997, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 2018: Leap year, starting on Monday
-		checkTemplateOutput("[2018, 1]", "<?print repr(@(2018-01-01).yearweek())?>");
-		checkTemplateOutput("[2018, 1]", "<?print repr(@(2018-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[2018, 1]", "<?print repr(@(2018-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[2018, 1]", "<?print repr(@(2018-01-07).yearweek())?>");
-		checkTemplateOutput("[2018, 2]", "<?print repr(@(2018-01-08).yearweek())?>");
-		checkTemplateOutput("[2018, 52]", "<?print repr(@(2018-12-30).yearweek())?>");
-		checkTemplateOutput("[2019, 1]", "<?print repr(@(2018-12-31).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(2018, 1, 1))
+			checkTemplateOutput("[2018, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2018, 1, 1))
+			checkTemplateOutput("[2018, 1, 0]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2018, 1, 1))
+			checkTemplateOutput("[2018, 1, 0]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2018, 1, 7))
+			checkTemplateOutput("[2018, 1, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2018, 1, 8))
+			checkTemplateOutput("[2018, 2, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2018, 5,28))
+			checkTemplateOutput("[2018, 22, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2018, 12, 30))
+			checkTemplateOutput("[2018, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2018, 12, 31))
+			checkTemplateOutput("[2019, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 2013: Non-leap year, starting on Tuesday
-		checkTemplateOutput("[2013, 1]", "<?print repr(@(2013-01-01).yearweek())?>");
-		checkTemplateOutput("[2013, 1]", "<?print repr(@(2013-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[2012, 53]", "<?print repr(@(2013-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[2013, 1]", "<?print repr(@(2013-01-06).yearweek())?>");
-		checkTemplateOutput("[2013, 2]", "<?print repr(@(2013-01-07).yearweek())?>");
-		checkTemplateOutput("[2013, 52]", "<?print repr(@(2013-12-29).yearweek())?>");
-		checkTemplateOutput("[2014, 1]", "<?print repr(@(2013-12-30).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(2013, 1, 1))
+			checkTemplateOutput("[2013, 1, 1]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2013, 1, 1))
+			checkTemplateOutput("[2013, 1, 1]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2013, 1, 1))
+			checkTemplateOutput("[2012, 53, 1]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2013, 1, 6))
+			checkTemplateOutput("[2013, 1, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2013, 1, 7))
+			checkTemplateOutput("[2013, 2, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2013, 12, 29))
+			checkTemplateOutput("[2013, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2013, 12, 30))
+			checkTemplateOutput("[2014, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 2008: Leap year, starting on Tuesday
-		checkTemplateOutput("[2008, 1]", "<?print repr(@(2008-01-01).yearweek())?>");
-		checkTemplateOutput("[2008, 1]", "<?print repr(@(2008-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[2007, 53]", "<?print repr(@(2008-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[2008, 1]", "<?print repr(@(2008-01-06).yearweek())?>");
-		checkTemplateOutput("[2008, 2]", "<?print repr(@(2008-01-07).yearweek())?>");
-		checkTemplateOutput("[2008, 52]", "<?print repr(@(2008-12-28).yearweek())?>");
-		checkTemplateOutput("[2009, 1]", "<?print repr(@(2008-12-29).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(2008, 1, 1))
+			checkTemplateOutput("[2008, 1, 1]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2008, 1, 1))
+			checkTemplateOutput("[2008, 1, 1]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2008, 1, 1))
+			checkTemplateOutput("[2007, 53, 1]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2008, 1, 6))
+			checkTemplateOutput("[2008, 1, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2008, 1, 7))
+			checkTemplateOutput("[2008, 2, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2008, 12, 28))
+			checkTemplateOutput("[2008, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2008, 12, 29))
+			checkTemplateOutput("[2009, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 2014: Non-leap year, starting on Wednesday
-		checkTemplateOutput("[2014, 1]", "<?print repr(@(2014-01-01).yearweek())?>");
-		checkTemplateOutput("[2014, 1]", "<?print repr(@(2014-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[2013, 52]", "<?print repr(@(2014-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[2014, 1]", "<?print repr(@(2014-01-05).yearweek())?>");
-		checkTemplateOutput("[2014, 2]", "<?print repr(@(2014-01-06).yearweek())?>");
-		checkTemplateOutput("[2014, 52]", "<?print repr(@(2014-12-28).yearweek())?>");
-		checkTemplateOutput("[2015, 1]", "<?print repr(@(2014-12-29).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(2014, 1, 1))
+			checkTemplateOutput("[2014, 1, 2]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2014, 1, 1))
+			checkTemplateOutput("[2014, 1, 2]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2014, 1, 1))
+			checkTemplateOutput("[2013, 52, 2]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2014, 1, 5))
+			checkTemplateOutput("[2014, 1, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2014, 1, 6))
+			checkTemplateOutput("[2014, 2, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2014, 12, 28))
+			checkTemplateOutput("[2014, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2014, 12, 29))
+			checkTemplateOutput("[2015, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 1992: Leap year, starting on Wednesday
-		checkTemplateOutput("[1992, 1]", "<?print repr(@(1992-01-01).yearweek())?>");
-		checkTemplateOutput("[1992, 1]", "<?print repr(@(1992-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[1991, 52]", "<?print repr(@(1992-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[1992, 1]", "<?print repr(@(1992-01-05).yearweek())?>");
-		checkTemplateOutput("[1992, 2]", "<?print repr(@(1992-01-06).yearweek())?>");
-		checkTemplateOutput("[1992, 52]", "<?print repr(@(1992-12-27).yearweek())?>");
-		checkTemplateOutput("[1992, 53]", "<?print repr(@(1992-12-28).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(1992, 1, 1))
+			checkTemplateOutput("[1992, 1, 2]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(1992, 1, 1))
+			checkTemplateOutput("[1992, 1, 2]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(1992, 1, 1))
+			checkTemplateOutput("[1991, 52, 2]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(1992, 1, 5))
+			checkTemplateOutput("[1992, 1, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(1992, 1, 6))
+			checkTemplateOutput("[1992, 2, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(1992, 12, 27))
+			checkTemplateOutput("[1992, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(1992, 12, 28))
+			checkTemplateOutput("[1992, 53, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 2015: Non-leap year, starting on Thursday
-		checkTemplateOutput("[2015, 1]", "<?print repr(@(2015-01-01).yearweek())?>");
-		checkTemplateOutput("[2015, 1]", "<?print repr(@(2015-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[2014, 52]", "<?print repr(@(2015-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[2015, 1]", "<?print repr(@(2015-01-04).yearweek())?>");
-		checkTemplateOutput("[2015, 2]", "<?print repr(@(2015-01-05).yearweek())?>");
-		checkTemplateOutput("[2015, 52]", "<?print repr(@(2015-12-27).yearweek())?>");
-		checkTemplateOutput("[2015, 53]", "<?print repr(@(2015-12-28).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(2015, 1, 1))
+			checkTemplateOutput("[2015, 1, 3]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2015, 1, 1))
+			checkTemplateOutput("[2015, 1, 3]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2015, 1, 1))
+			checkTemplateOutput("[2014, 52, 3]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2015, 1, 4))
+			checkTemplateOutput("[2015, 1, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2015, 01, 05))
+			checkTemplateOutput("[2015, 2, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2015, 12, 27))
+			checkTemplateOutput("[2015, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2015, 12, 28))
+			checkTemplateOutput("[2015, 53, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 2004: Leap year, starting on Thursday
-		checkTemplateOutput("[2004, 1]", "<?print repr(@(2004-01-01).yearweek())?>");
-		checkTemplateOutput("[2004, 1]", "<?print repr(@(2004-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[2003, 52]", "<?print repr(@(2004-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[2004, 1]", "<?print repr(@(2004-01-04).yearweek())?>");
-		checkTemplateOutput("[2004, 2]", "<?print repr(@(2004-01-05).yearweek())?>");
-		checkTemplateOutput("[2004, 52]", "<?print repr(@(2004-12-26).yearweek())?>");
-		checkTemplateOutput("[2004, 53]", "<?print repr(@(2004-12-27).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(2004, 1, 1))
+			checkTemplateOutput("[2004, 1, 3]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2004, 1, 1))
+			checkTemplateOutput("[2004, 1, 3]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2004, 1, 1))
+			checkTemplateOutput("[2003, 52, 3]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2004, 1, 4))
+			checkTemplateOutput("[2004, 1, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2004, 1, 5))
+			checkTemplateOutput("[2004, 2, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2004, 12, 26))
+			checkTemplateOutput("[2004, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2004, 12, 27))
+			checkTemplateOutput("[2004, 53, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 2010: Non-leap year, starting on Friday
-		checkTemplateOutput("[2009, 53]", "<?print repr(@(2010-01-01).yearweek())?>");
-		checkTemplateOutput("[2010, 1]", "<?print repr(@(2010-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[2009, 52]", "<?print repr(@(2010-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[2009, 53]", "<?print repr(@(2010-01-03).yearweek())?>");
-		checkTemplateOutput("[2010, 1]", "<?print repr(@(2010-01-04).yearweek())?>");
-		checkTemplateOutput("[2010, 51]", "<?print repr(@(2010-12-26).yearweek())?>");
-		checkTemplateOutput("[2010, 52]", "<?print repr(@(2010-12-27).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(2010, 1, 1))
+			checkTemplateOutput("[2009, 53, 4]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2010, 1, 1))
+			checkTemplateOutput("[2010, 1, 4]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2010, 1, 1))
+			checkTemplateOutput("[2009, 52, 4]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2010, 1, 3))
+			checkTemplateOutput("[2009, 53, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2010, 1, 4))
+			checkTemplateOutput("[2010, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2010, 12, 26))
+			checkTemplateOutput("[2010, 51, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2010, 12, 27))
+			checkTemplateOutput("[2010, 52, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 2016: Leap year, starting on Friday
-		checkTemplateOutput("[2015, 53]", "<?print repr(@(2016-01-01).yearweek())?>");
-		checkTemplateOutput("[2016, 1]", "<?print repr(@(2016-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[2015, 52]", "<?print repr(@(2016-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[2015, 53]", "<?print repr(@(2016-01-03).yearweek())?>");
-		checkTemplateOutput("[2016, 1]", "<?print repr(@(2016-01-04).yearweek())?>");
-		checkTemplateOutput("[2016, 51]", "<?print repr(@(2016-12-25).yearweek())?>");
-		checkTemplateOutput("[2016, 52]", "<?print repr(@(2016-12-26).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(2016, 1, 1))
+			checkTemplateOutput("[2015, 53, 4]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2016, 1, 1))
+			checkTemplateOutput("[2016, 1, 4]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2016, 1, 1))
+			checkTemplateOutput("[2015, 52, 4]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2016, 1, 3))
+			checkTemplateOutput("[2015, 53, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2016, 1, 4))
+			checkTemplateOutput("[2016, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2016, 12, 25))
+			checkTemplateOutput("[2016, 51, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2016, 12, 26))
+			checkTemplateOutput("[2016, 52, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 2011: Non-leap year, starting on Saturday
-		checkTemplateOutput("[2010, 52]", "<?print repr(@(2011-01-01).yearweek())?>");
-		checkTemplateOutput("[2011, 1]", "<?print repr(@(2011-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[2010, 52]", "<?print repr(@(2011-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[2010, 52]", "<?print repr(@(2011-01-02).yearweek())?>");
-		checkTemplateOutput("[2011, 1]", "<?print repr(@(2011-01-03).yearweek())?>");
-		checkTemplateOutput("[2011, 51]", "<?print repr(@(2011-12-25).yearweek())?>");
-		checkTemplateOutput("[2011, 52]", "<?print repr(@(2011-12-26).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(2011, 1, 1))
+			checkTemplateOutput("[2010, 52, 5]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2011, 1, 1))
+			checkTemplateOutput("[2011, 1, 5]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2011, 1, 1))
+			checkTemplateOutput("[2010, 52, 5]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2011, 1, 2))
+			checkTemplateOutput("[2010, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2011, 1, 3))
+			checkTemplateOutput("[2011, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2011, 12, 25))
+			checkTemplateOutput("[2011, 51, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2011, 12, 26))
+			checkTemplateOutput("[2011, 52, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 2000: Leap year, starting on Saturday
-		checkTemplateOutput("[1999, 52]", "<?print repr(@(2000-01-01).yearweek())?>");
-		checkTemplateOutput("[2000, 1]", "<?print repr(@(2000-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[1999, 52]", "<?print repr(@(2000-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[1999, 52]", "<?print repr(@(2000-01-02).yearweek())?>");
-		checkTemplateOutput("[2000, 1]", "<?print repr(@(2000-01-03).yearweek())?>");
-		checkTemplateOutput("[2000, 51]", "<?print repr(@(2000-12-24).yearweek())?>");
-		checkTemplateOutput("[2000, 52]", "<?print repr(@(2000-12-25).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(2000, 1, 1))
+			checkTemplateOutput("[1999, 52, 5]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2000, 1, 1))
+			checkTemplateOutput("[2000, 1, 5]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2000, 1, 1))
+			checkTemplateOutput("[1999, 52, 5]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2000, 1, 2))
+			checkTemplateOutput("[1999, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2000, 1, 3))
+			checkTemplateOutput("[2000, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2000, 12, 24))
+			checkTemplateOutput("[2000, 51, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2000, 12, 25))
+			checkTemplateOutput("[2000, 52, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 2017: Non-leap year, starting on Sunday
-		checkTemplateOutput("[2016, 52]", "<?print repr(@(2017-01-01).yearweek())?>");
-		checkTemplateOutput("[2017, 1]", "<?print repr(@(2017-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[2016, 52]", "<?print repr(@(2017-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[2017, 1]", "<?print repr(@(2017-01-02).yearweek())?>");
-		checkTemplateOutput("[2017, 51]", "<?print repr(@(2017-12-24).yearweek())?>");
-		checkTemplateOutput("[2017, 52]", "<?print repr(@(2017-12-25).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(2017, 1, 1))
+			checkTemplateOutput("[2016, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2017, 1, 1))
+			checkTemplateOutput("[2017, 1, 6]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2017, 1, 1))
+			checkTemplateOutput("[2016, 52, 6]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2017, 1, 2))
+			checkTemplateOutput("[2017, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2017, 12, 24))
+			checkTemplateOutput("[2017, 51, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2017, 12, 25))
+			checkTemplateOutput("[2017, 52, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// 2012: Leap year, starting on Sunday
-		checkTemplateOutput("[2011, 52]", "<?print repr(@(2012-01-01).yearweek())?>");
-		checkTemplateOutput("[2012, 1]", "<?print repr(@(2012-01-01).yearweek(6, 1))?>");
-		checkTemplateOutput("[2011, 52]", "<?print repr(@(2012-01-01).yearweek(0, 7))?>");
-		checkTemplateOutput("[2012, 1]", "<?print repr(@(2012-01-02).yearweek())?>");
-		checkTemplateOutput("[2012, 52]", "<?print repr(@(2012-12-30).yearweek())?>");
-		checkTemplateOutput("[2013, 1]", "<?print repr(@(2012-12-31).yearweek())?>");
+		for (Object d : makeAllDateTimeVariants(2012, 1, 1))
+			checkTemplateOutput("[2011, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2012, 1, 1))
+			checkTemplateOutput("[2012, 1, 6]", "<?print repr(d.calendar(6, 1))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2012, 1, 1))
+			checkTemplateOutput("[2011, 52, 6]", "<?print repr(d.calendar(0, 7))?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2012, 1, 2))
+			checkTemplateOutput("[2012, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2012, 12, 30))
+			checkTemplateOutput("[2012, 52, 6]", "<?print repr(d.calendar())?>", "d", d);
+		for (Object d : makeAllDateTimeVariants(2012, 12, 31))
+			checkTemplateOutput("[2013, 1, 0]", "<?print repr(d.calendar())?>", "d", d);
 
 		// Make sure that the parameters have the same name in all implementations
-		checkTemplateOutput("[2018, 1]", "<?print repr(@(2018-01-01).yearweek(firstweekday=0, mindaysinfirstweek=4))?>");
+		for (Object d : makeAllDateTimeVariants(2018, 1, 1))
+			checkTemplateOutput("[2018, 1, 0]", "<?print repr(d.calendar(firstweekday=0, mindaysinfirstweek=4))?>", "d", d);
 	}
 
 	@Test
@@ -4470,7 +4761,8 @@ public class UL4Test
 	{
 		checkTemplateOutput("2", "<?print @(2010-05-12).weekday()?>");
 		checkTemplateOutput("2", "<?code m = @(2010-05-12).weekday?><?print m()?>");
-		checkTemplateOutput("2", "<?print d.weekday()?>", "d", FunctionDate.call(2010, 5, 12));
+		for (Object d : makeAllDateTimeVariants(2010, 5, 21))
+			checkTemplateOutput("4", "<?print d.weekday()?>", "d", d);
 	}
 
 	@Test
@@ -4482,8 +4774,8 @@ public class UL4Test
 		checkTemplateOutput("365", "<?print @(2010-12-31).yearday()?>");
 		checkTemplateOutput("132", "<?print @(2010-05-12).yearday()?>");
 		checkTemplateOutput("132", "<?print @(2010-05-12T16:47:56).yearday()?>");
-		checkTemplateOutput("132", "<?print d.yearday()?>", "d", FunctionDate.call(2010, 5, 12));
-		checkTemplateOutput("132", "<?print d.yearday()?>", "d", FunctionDate.call(2010, 5, 12, 16, 47, 56));
+		for (Object d : makeAllDateTimeVariants(2010, 5, 12))
+			checkTemplateOutput("132", "<?print d.yearday()?>", "d", d);
 	}
 
 	@Test

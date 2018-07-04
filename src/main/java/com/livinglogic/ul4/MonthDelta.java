@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.Map;
 
@@ -66,6 +68,16 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 		return calendar.getTime();
 	}
 
+	public LocalDate addTo(LocalDate date)
+	{
+		return date.plusMonths(months);
+	}
+
+	public LocalDateTime addTo(LocalDateTime date)
+	{
+		return date.plusMonths(months);
+	}
+
 	public MonthDelta subtract(MonthDelta other)
 	{
 		return new MonthDelta(months-other.getMonths());
@@ -77,6 +89,16 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH, -months);
 		return calendar.getTime();
+	}
+
+	public LocalDate subtractFrom(LocalDate date)
+	{
+		return date.minusMonths(months);
+	}
+
+	public LocalDateTime subtractFrom(LocalDateTime date)
+	{
+		return date.minusMonths(months);
 	}
 
 	public MonthDelta negate()

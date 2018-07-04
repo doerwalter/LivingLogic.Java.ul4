@@ -13,6 +13,8 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
@@ -129,6 +131,16 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		return calendar.getTime();
 	}
 
+	public LocalDate addTo(LocalDate date)
+	{
+		return date.plusDays(days);
+	}
+
+	public LocalDateTime addTo(LocalDateTime date)
+	{
+		return date.plusDays(days).plusSeconds(seconds).plusNanos(microseconds * 1000);
+	}
+
 	public TimeDelta subtract(TimeDelta other)
 	{
 		return new TimeDelta(
@@ -146,6 +158,16 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		calendar.add(Calendar.SECOND, -seconds);
 		calendar.add(Calendar.MILLISECOND, -microseconds/1000);
 		return calendar.getTime();
+	}
+
+	public LocalDate subtractFrom(LocalDate date)
+	{
+		return date.minusDays(days);
+	}
+
+	public LocalDateTime subtractFrom(LocalDateTime date)
+	{
+		return date.minusDays(days).minusSeconds(seconds).minusNanos(microseconds * 1000);
 	}
 
 	public TimeDelta negate()

@@ -135,7 +135,10 @@ TIME
 	: DIGIT DIGIT ':' DIGIT DIGIT ( ':' DIGIT DIGIT ( '.' DIGIT DIGIT DIGIT DIGIT DIGIT DIGIT)?)?;
 
 DATE
-	: '@' '(' DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT ('T' TIME?)? ')';
+	: '@' '(' DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT ')';
+
+DATETIME
+	: '@' '(' DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT 'T' TIME? ')';
 
 COLOR
 	: '#' HEX_DIGIT HEX_DIGIT HEX_DIGIT
@@ -220,7 +223,11 @@ string returns [ConstAST node]
 	;
 
 date returns [ConstAST node]
-	: DATE { $node = new ConstAST(tag, new Slice(getStartPos($DATE), getStopPos($DATE)), Utils.isoparse($DATE.text.substring(2, $DATE.text.length()-1))); }
+	: DATE { $node = new ConstAST(tag, new Slice(getStartPos($DATE), getStopPos($DATE)), Utils.isoParseDate($DATE.text.substring(2, $DATE.text.length()-1))); }
+	;
+
+datetime returns [ConstAST node]
+	: DATETIME { $node = new ConstAST(tag, new Slice(getStartPos($DATETIME), getStopPos($DATETIME)), Utils.isoParseDateTime($DATETIME.text.substring(2, $DATETIME.text.length()-1))); }
 	;
 
 color returns [ConstAST node]
@@ -239,6 +246,7 @@ literal returns [CodeAST node]
 	| e_float=float_ { $node = $e_float.node; }
 	| e_string=string { $node = $e_string.node; }
 	| e_date=date { $node = $e_date.node; }
+	| e_datetime=datetime { $node = $e_datetime.node; }
 	| e_color=color { $node = $e_color.node; }
 	| e_name=name { $node = $e_name.node; }
 	;

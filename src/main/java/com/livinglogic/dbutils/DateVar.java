@@ -8,6 +8,8 @@ package com.livinglogic.dbutils;
 
 import java.util.List;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import java.sql.CallableStatement;
 import java.sql.Types;
@@ -37,7 +39,7 @@ public class DateVar extends Var
 
 	public void setValue(Object value)
 	{
-		if (value == null || value instanceof Date || value instanceof Timestamp)
+		if (value == null || value instanceof Date || value instanceof LocalDate || value instanceof LocalDateTime || value instanceof Timestamp)
 			this.value = value;
 		else
 			throw new ArgumentTypeMismatchException("date.value = {!t} not supported", value);
@@ -50,6 +52,10 @@ public class DateVar extends Var
 			Object timestamp;
 			if (value instanceof Date)
 				timestamp = new Timestamp(((Date)value).getTime());
+			else if (value instanceof LocalDateTime)
+				timestamp = Timestamp.valueOf((LocalDateTime)value);
+			else if (value instanceof LocalDate)
+				timestamp = Timestamp.valueOf(((LocalDate)value).atStartOfDay());
 			else
 				timestamp = value;
 			statement.setObject(position, timestamp);

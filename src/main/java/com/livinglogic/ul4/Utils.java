@@ -8,9 +8,12 @@ package com.livinglogic.ul4;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.List;
@@ -491,36 +494,30 @@ public class Utils
 		throw new NotIterableException(obj);
 	}
 
-	public static SimpleDateFormat isoDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-	public static SimpleDateFormat isoDateTime1Formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-	public static SimpleDateFormat isoDateTime2Formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-	public static SimpleDateFormat isoTimestampFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-	public static SimpleDateFormat isoTimestampMicroFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'000'");
+	public static DateTimeFormatter isoDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US);
+	public static DateTimeFormatter isoDateTime0Formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'", Locale.US);
+	public static DateTimeFormatter isoDateTime1Formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm", Locale.US);
+	public static DateTimeFormatter isoDateTime2Formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+	public static DateTimeFormatter isoDateTime3Formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.US);
 
-	public static Date isoparse(String format)
+	public static LocalDate isoParseDate(String format)
 	{
-		try
-		{
-			int length = format.length();
-			if (length == 10)
-				return isoDateFormatter.parse(format);
-			else if (length == 11)
-				return isoDateFormatter.parse(format.substring(0, 10)); // ignore the trailing 'T'
-			else if (length == 16)
-				return isoDateTime1Formatter.parse(format);
-			else if (length == 19)
-				return isoDateTime2Formatter.parse(format);
-			else
-			{
-				if (length > 23)
-					format = format.substring(0, 23); // ignore last three digits
-				return isoTimestampFormatter.parse(format);
-			}
-		}
-		catch (java.text.ParseException ex) // can not happen when reading from the binary format
-		{
+		return LocalDate.parse(format, isoDateFormatter);
+	}
+
+	public static LocalDateTime isoParseDateTime(String format)
+	{
+		int length = format.length();
+		if (length == 11)
+			return LocalDate.parse(format, isoDateTime0Formatter).atStartOfDay();
+		else if (length == 16)
+			return LocalDateTime.parse(format, isoDateTime1Formatter);
+		else if (length == 19)
+			return LocalDateTime.parse(format, isoDateTime2Formatter);
+		else if (length == 26)
+			return LocalDateTime.parse(format, isoDateTime3Formatter);
+		else
 			throw new RuntimeException("can't parse " + FunctionRepr.call(format));
-		}
 	}
 
 	public static int getSliceStartPos(int sequenceSize, int virtualPos)

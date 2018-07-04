@@ -14,16 +14,16 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import static java.util.Arrays.asList;
 
-public class BoundDateMethodYearWeek extends BoundMethod<Date>
+public class BoundDateMethodCalendar extends BoundMethod<Date>
 {
-	public BoundDateMethodYearWeek(Date object)
+	public BoundDateMethodCalendar(Date object)
 	{
 		super(object);
 	}
 
 	public String nameUL4()
 	{
-		return "date.yearweek";
+		return "date.calendar";
 	}
 
 	private static final Signature signature = new Signature("firstweekday", 0, "mindaysinfirstweek", 4);
@@ -33,7 +33,7 @@ public class BoundDateMethodYearWeek extends BoundMethod<Date>
 		return signature;
 	}
 
-	public static List<Integer> call(Date object, int firstWeekday, int minDaysInFirstWeek)
+	public static DateProto.Calendar call(Date object, int firstWeekday, int minDaysInFirstWeek)
 	{
 		// Normalize parameters
 		firstWeekday %= 7;
@@ -49,14 +49,15 @@ public class BoundDateMethodYearWeek extends BoundMethod<Date>
 
 		int year = calendar.getWeekYear();
 		int week = calendar.get(Calendar.WEEK_OF_YEAR);
+		int weekday = calendar.get(Calendar.DAY_OF_WEEK);
 
-		return asList(year, week);
+		return new DateProto.Calendar(year, week, DateProto.javaWeekday2UL4Weekday(weekday));
 	}
 
 	public Object evaluate(BoundArguments args)
 	{
 		int firstWeekday = Utils.toInt(args.get(0));
 		int minDaysInFirstWeek = Utils.toInt(args.get(1));
-		return call(object, firstWeekday, minDaysInFirstWeek);
+		return call(object, firstWeekday, minDaysInFirstWeek).asList();
 	}
 }

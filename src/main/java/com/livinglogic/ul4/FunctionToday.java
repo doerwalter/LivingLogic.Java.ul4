@@ -6,13 +6,13 @@
 
 package com.livinglogic.ul4;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-public class FunctionNow extends Function
+public class FunctionToday extends Function
 {
 	public String nameUL4()
 	{
-		return "now";
+		return "today";
 	}
 
 	public Object evaluate(BoundArguments args)
@@ -20,8 +20,8 @@ public class FunctionNow extends Function
 		return call();
 	}
 
-	public static LocalDateTime call()
+	public static LocalDate call()
 	{
-		return LocalDateTime.now();
+		return LocalDate.now();
 	}
 }

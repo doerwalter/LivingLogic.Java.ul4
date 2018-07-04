@@ -12,6 +12,8 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Set;
@@ -86,18 +88,41 @@ public class FunctionAsJSON extends Function
 			}
 			builder.append(")");
 		}
+		else if (obj instanceof LocalDate)
+		{
+			LocalDate date = (LocalDate)obj;
+			builder
+				.append("ul4.Date.create(")
+				.append(date.getYear())
+				.append(", ")
+				.append(date.getMonthValue())
+				.append(", ")
+				.append(date.getDayOfMonth())
+				.append(")");
+		}
+		else if (obj instanceof LocalDateTime)
+		{
+			LocalDateTime datetime = (LocalDateTime)obj;
+			builder
+				.append("new Date(")
+				.append(datetime.getYear())
+				.append(", ")
+				.append(datetime.getMonthValue()-1)
+				.append(", ")
+				.append(datetime.getDayOfMonth())
+				.append(", ")
+				.append(datetime.getHour())
+				.append(", ")
+				.append(datetime.getMinute())
+				.append(", ")
+				.append(datetime.getSecond())
+				.append(", ")
+				.append(datetime.getNano()/1000000)
+				.append(")");
+		}
 		else if (obj instanceof InterpretedTemplate)
 		{
 			String dump = ((InterpretedTemplate)obj).dumps();
-			dump = StringEscapeUtils.escapeJavaScript(dump).replace("<", "\\u003c");
-			builder
-				.append("ul4.Template.loads(\"")
-				.append(dump)
-				.append("\")");
-		}
-		else if (obj instanceof TemplateClosure)
-		{
-			String dump = ((TemplateClosure)obj).getTemplate().dumps();
 			dump = StringEscapeUtils.escapeJavaScript(dump).replace("<", "\\u003c");
 			builder
 				.append("ul4.Template.loads(\"")
@@ -181,6 +206,8 @@ public class FunctionAsJSON extends Function
 			}
 			builder.append("}");
 		}
+		else
+			throw new NotJSONableException(obj);
 	}
 
 	public static String call(Object obj)
