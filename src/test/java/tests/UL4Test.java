@@ -3332,6 +3332,7 @@ public class UL4Test
 		checkTemplateOutput("@(2000-02-29T12:34)", source, "data", LocalDateTime.of(2000, 2, 29, 12, 34));
 		checkTemplateOutput("@(2000-02-29T12:34:56)", source, "data", LocalDateTime.of(2000, 2, 29, 12, 34, 56));
 		checkTemplateOutput("@(2000-02-29T12:34:56.123456)", source, "data", LocalDateTime.of(2000, 2, 29, 12, 34, 56, 123456789));
+		checkTemplateOutput("timedelta(days=1, seconds=2, microseconds=3)", source, "data", new TimeDelta(1, 2, 3));
 		checkTemplateOutput("None", "<?print repr(obj=data)?>", "data", null);
 	}
 

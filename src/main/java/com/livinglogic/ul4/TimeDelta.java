@@ -283,19 +283,27 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
 		formatter.append("timedelta(");
-		if (days != 0 || seconds != 0 || microseconds != 0)
+		boolean first = true;
+		if (days != 0)
 		{
+			formatter.append("days=");
 			formatter.visit(days);
-			if (seconds != 0 || microseconds != 0)
-			{
+			first = false;
+		}
+		if (seconds != 0)
+		{
+			if (!first)
 				formatter.append(", ");
-				formatter.visit(seconds);
-				if (microseconds != 0)
-				{
-					formatter.append(", ");
-					formatter.visit(microseconds);
-				}
-			}
+			formatter.append("seconds=");
+			formatter.visit(seconds);
+			first = false;
+		}
+		if (microseconds != 0)
+		{
+			if (!first)
+				formatter.append(", ");
+			formatter.append("microseconds=");
+			formatter.visit(microseconds);
 		}
 		formatter.append(")");
 	}
