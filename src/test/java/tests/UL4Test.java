@@ -1965,9 +1965,11 @@ public class UL4Test
 		checkTemplateOutput("[1, 2, 3]", "<?print asjson(data)?>", "data", asList(1, 2, 3));
 		checkTemplateOutput("[1, 2, 3]", "<?print asjson(data)?>", "data", new Integer[]{1, 2, 3});
 		checkTemplateOutput("{\"one\": 1}", "<?print asjson(data)?>", "data", makeMap("one", 1));
+		checkTemplateOutput("new ul4.TimeDelta(1, 1, 1)", "<?print asjson(data)?>", "data", new TimeDelta(1, 1, 1));
+		checkTemplateOutput("new ul4.MonthDelta(1)", "<?print asjson(data)?>", "data", new MonthDelta(1));
+		checkTemplateOutput("new ul4.Date(2000, 2, 29)", "<?print asjson(data)?>", "data", LocalDate.of(2000, 2, 29));
+		checkTemplateOutput("new Date(2000, 1, 29, 12, 34, 56, 987)", "<?print asjson(data)?>", "data", LocalDateTime.of(2000, 2, 29, 12, 34, 56, 987654321));
 		checkTemplateOutput("null", "<?print asjson(obj=data)?>", "data", null);
-		checkTemplateOutput("ul4.Date.create(2000, 2, 29)", "<?print asjson(obj=data)?>", "data", LocalDate.of(2000, 2, 29));
-		checkTemplateOutput("new Date(2000, 1, 29, 12, 34, 56, 987)", "<?print asjson(obj=data)?>", "data", LocalDateTime.of(2000, 2, 29, 12, 34, 56, 987654321));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)

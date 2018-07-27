@@ -92,7 +92,7 @@ public class FunctionAsJSON extends Function
 		{
 			LocalDate date = (LocalDate)obj;
 			builder
-				.append("ul4.Date.create(")
+				.append("new ul4.Date(")
 				.append(date.getYear())
 				.append(", ")
 				.append(date.getMonthValue())
@@ -120,14 +120,49 @@ public class FunctionAsJSON extends Function
 				.append(datetime.getNano()/1000000)
 				.append(")");
 		}
+		// test the following classes before the tests for {@code UL4Dir}/{@code UL4GetAttr}
+		else if (obj instanceof MonthDelta)
+		{
+			MonthDelta m = (MonthDelta)obj;
+			builder
+				.append("new ul4.MonthDelta(")
+				.append(m.getMonths())
+				.append(")");
+		}
+		else if (obj instanceof TimeDelta)
+		{
+			TimeDelta t = (TimeDelta)obj;
+			builder
+				.append("new ul4.TimeDelta(")
+				.append(t.getDays())
+				.append(", ")
+				.append(t.getSeconds())
+				.append(", ")
+				.append(t.getMicroseconds())
+				.append(")");
+		}
 		else if (obj instanceof InterpretedTemplate)
 		{
 			String dump = ((InterpretedTemplate)obj).dumps();
 			dump = StringEscapeUtils.escapeJavaScript(dump).replace("<", "\\u003c");
 			builder
-				.append("ul4.Template.loads(\"")
+				.append("ul4on.loads(\"")
 				.append(dump)
 				.append("\")");
+		}
+		else if (obj instanceof Color)
+		{
+			Color c = (Color)obj;
+			builder
+				.append("new ul4.Color(")
+				.append(c.getR())
+				.append(", ")
+				.append(c.getG())
+				.append(", ")
+				.append(c.getB())
+				.append(", ")
+				.append(c.getA())
+				.append(")");
 		}
 		else if (obj instanceof UL4Dir && obj instanceof UL4GetAttr)
 		{
@@ -146,20 +181,6 @@ public class FunctionAsJSON extends Function
 				call(builder, value);
 			}
 			builder.append("}");
-		}
-		else if (obj instanceof Color)
-		{
-			Color c = (Color)obj;
-			builder
-				.append("ul4.Color.create(")
-				.append(c.getR())
-				.append(", ")
-				.append(c.getG())
-				.append(", ")
-				.append(c.getB())
-				.append(", ")
-				.append(c.getA())
-				.append(")");
 		}
 		else if (obj instanceof Collection)
 		{
