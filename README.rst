@@ -46,6 +46,12 @@ Authors
 History
 =======
 
+exp-132:
+--------
+
+Split date object into date and datetime objects and support LocalDate and
+LocalDatetime Java objects. Add today() function.
+
 exp-131:
 --------
 Added support for loading the content of an object in an UL4ON dump
