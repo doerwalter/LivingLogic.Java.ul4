@@ -304,7 +304,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			++i;
 		}
 
-		// Close open blocks (shouldn't be neccessary for properly nested templates, i.e. stack should be empty)
+		// Close open blocks (shouldn't be necessary for properly nested templates, i.e. stack should be empty)
 		int lineCount = lines.size();
 		for (Block block : stack)
 			block.endLine = lineCount;
