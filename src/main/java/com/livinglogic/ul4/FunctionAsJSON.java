@@ -146,7 +146,7 @@ public class FunctionAsJSON extends Function
 			String dump = ((InterpretedTemplate)obj).dumps();
 			dump = StringEscapeUtils.escapeJavaScript(dump).replace("<", "\\u003c");
 			builder
-				.append("ul4on.loads(\"")
+				.append("ul4.loads(\"")
 				.append(dump)
 				.append("\")");
 		}
