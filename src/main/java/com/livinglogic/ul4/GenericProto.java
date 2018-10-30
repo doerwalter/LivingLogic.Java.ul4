@@ -77,6 +77,8 @@ public class GenericProto extends Proto
 	{
 		if (object instanceof UL4GetAttrWithContext)
 			return getAttr(context, (UL4GetAttrWithContext)object, key);
+		else if (object instanceof UL4GetAttr)
+			return getAttr((UL4GetAttr)object, key);
 		else
 			return getAttr(object, key);
 	}
@@ -105,6 +107,8 @@ public class GenericProto extends Proto
 	{
 		if (object instanceof UL4SetAttrWithContext)
 			setAttr(context, (UL4SetAttrWithContext)object, key, value);
+		else if (object instanceof UL4SetAttr)
+			setAttr((UL4SetAttr)object, key, value);
 		else
 			setAttr(object, key, value);
 	}

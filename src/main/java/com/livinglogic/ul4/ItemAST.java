@@ -214,6 +214,8 @@ public class ItemAST extends BinaryAST implements LValue
 	{
 		if (obj instanceof UL4GetItemWithContext)
 			return call(context, (UL4GetItemWithContext)obj, index);
+		else if (obj instanceof UL4GetItem)
+			return call((UL4GetItem)obj, index);
 		else
 			return call(obj, index);
 	}
@@ -266,10 +268,10 @@ public class ItemAST extends BinaryAST implements LValue
 
 	private static Object getValue(EvaluationContext context, Object obj, Object key, String excmessage, Object value)
 	{
-		if (obj instanceof UL4GetItem)
-			return ((UL4GetItem)obj).getItemUL4(key);
-		else if (obj instanceof UL4GetItemWithContext)
+		if (obj instanceof UL4GetItemWithContext)
 			return ((UL4GetItemWithContext)obj).getItemWithContextUL4(context, key);
+		else if (obj instanceof UL4GetItem)
+			return ((UL4GetItem)obj).getItemUL4(key);
 		else
 			throw new ArgumentTypeMismatchException(excmessage, obj, key, value);
 	}
@@ -288,15 +290,20 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static void callAdd(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof Map)
-			callAdd((Map)obj, index, value);
-		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
-			callAdd((List)obj, Utils.toInt(index), value);
-		else if (obj instanceof UL4SetItem)
+		if (obj instanceof UL4SetItemWithContext)
+		{
+			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] += {!t} not supported", value);
+			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, index, IAdd.call(orgvalue, value));
+		}
+		if (obj instanceof UL4SetItem)
 		{
 			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] += {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(index, IAdd.call(orgvalue, value));
 		}
+		if (obj instanceof Map)
+			callAdd((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callAdd((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{!t}[{!t}] += {!t} not supported", obj, index, value);
 	}
@@ -315,15 +322,20 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static void callSub(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof Map)
-			callSub((Map)obj, index, value);
-		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
-			callSub((List)obj, Utils.toInt(index), value);
-		else if (obj instanceof UL4SetItem)
+		if (obj instanceof UL4SetItemWithContext)
+		{
+			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] -= {!t} not supported", value);
+			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, index, SubAST.call(orgvalue, value));
+		}
+		if (obj instanceof UL4SetItem)
 		{
 			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] -= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(index, SubAST.call(orgvalue, value));
 		}
+		else if (obj instanceof Map)
+			callSub((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callSub((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{!t}[{!t}] -= {!t} not supported", obj, index, value);
 	}
@@ -342,15 +354,20 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static void callMul(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof Map)
-			callMul((Map)obj, index, value);
-		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
-			callMul((List)obj, Utils.toInt(index), value);
+		if (obj instanceof UL4SetItemWithContext)
+		{
+			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] *= {!t} not supported", value);
+			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, index, IMul.call(orgvalue, value));
+		}
 		else if (obj instanceof UL4SetItem)
 		{
 			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] *= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(index, IMul.call(orgvalue, value));
 		}
+		else if (obj instanceof Map)
+			callMul((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callMul((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{!t}[{!t}] *= {!t} not supported", obj, index, value);
 	}
@@ -367,18 +384,22 @@ public class ItemAST extends BinaryAST implements LValue
 		obj.put(index, FloorDivAST.call(call(obj, index), value));
 	}
 
-
 	public static void callFloorDiv(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof Map)
-			callFloorDiv((Map)obj, index, value);
-		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
-			callFloorDiv((List)obj, Utils.toInt(index), value);
+		if (obj instanceof UL4SetItemWithContext)
+		{
+			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] //= {!t} not supported", value);
+			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, index, FloorDivAST.call(orgvalue, value));
+		}
 		else if (obj instanceof UL4SetItem)
 		{
 			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] //= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(index, FloorDivAST.call(orgvalue, value));
 		}
+		else if (obj instanceof Map)
+			callFloorDiv((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callFloorDiv((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{!t}[{!t}] //= {!t}", obj, index, value);
 	}
@@ -397,15 +418,20 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static void callTrueDiv(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof Map)
-			callTrueDiv((Map)obj, index, value);
-		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
-			callTrueDiv((List)obj, Utils.toInt(index), value);
+		if (obj instanceof UL4SetItemWithContext)
+		{
+			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] /= {!t} not supported", value);
+			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, index, TrueDivAST.call(orgvalue, value));
+		}
 		else if (obj instanceof UL4SetItem)
 		{
 			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] /= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(index, TrueDivAST.call(orgvalue, value));
 		}
+		else if (obj instanceof Map)
+			callTrueDiv((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callTrueDiv((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{!t}[{!t}] /= {!t} not supported", obj, index, value);
 	}
@@ -424,15 +450,20 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static void callMod(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof Map)
-			callMod((Map)obj, index, value);
-		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
-			callMod((List)obj, Utils.toInt(index), value);
+		if (obj instanceof UL4SetItemWithContext)
+		{
+			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] %= {!t} not supported", value);
+			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, index, ModAST.call(orgvalue, value));
+		}
 		else if (obj instanceof UL4SetItem)
 		{
 			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] %= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(index, ModAST.call(orgvalue, value));
 		}
+		else if (obj instanceof Map)
+			callMod((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callMod((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{!t}[{!t}] %= {!t} not supported", obj, index, value);
 	}
@@ -451,15 +482,20 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static void callShiftLeft(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof Map)
-			callShiftLeft((Map)obj, index, value);
-		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
-			callShiftLeft((List)obj, Utils.toInt(index), value);
+		if (obj instanceof UL4SetItemWithContext)
+		{
+			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] <<= {!t} not supported", value);
+			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, index, ShiftLeftAST.call(orgvalue, value));
+		}
 		else if (obj instanceof UL4SetItem)
 		{
 			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] <<= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(index, ShiftLeftAST.call(orgvalue, value));
 		}
+		else if (obj instanceof Map)
+			callShiftLeft((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callShiftLeft((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{!t}[{!t}] <<= {!t} not supported", obj, index, value);
 	}
@@ -478,15 +514,20 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static void callShiftRight(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof Map)
-			callShiftRight((Map)obj, index, value);
-		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
-			callShiftRight((List)obj, Utils.toInt(index), value);
+		if (obj instanceof UL4SetItemWithContext)
+		{
+			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] >>= {!t} not supported", value);
+			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, index, ShiftRightAST.call(orgvalue, value));
+		}
 		else if (obj instanceof UL4SetItem)
 		{
 			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] >>= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(index, ShiftRightAST.call(orgvalue, value));
 		}
+		else if (obj instanceof Map)
+			callShiftRight((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callShiftRight((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{!t}[{!t}] >>= {!t} not supported", obj, index, value);
 	}
@@ -505,15 +546,20 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static void callBitAnd(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof Map)
-			callBitAnd((Map)obj, index, value);
-		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
-			callBitAnd((List)obj, Utils.toInt(index), value);
+		if (obj instanceof UL4SetItemWithContext)
+		{
+			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] &= {!t} not supported", value);
+			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, index, BitAndAST.call(orgvalue, value));
+		}
 		else if (obj instanceof UL4SetItem)
 		{
 			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] &= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(index, BitAndAST.call(orgvalue, value));
 		}
+		else if (obj instanceof Map)
+			callBitAnd((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callBitAnd((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{!t}[{!t}] &= {!t} not supported", obj, index, value);
 	}
@@ -532,15 +578,20 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static void callBitXOr(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof Map)
-			callBitXOr((Map)obj, index, value);
-		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
-			callBitXOr((List)obj, Utils.toInt(index), value);
+		if (obj instanceof UL4SetItemWithContext)
+		{
+			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] ^= {!t} not supported", value);
+			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, index, BitXOrAST.call(orgvalue, value));
+		}
 		else if (obj instanceof UL4SetItem)
 		{
 			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] ^= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(index, BitXOrAST.call(orgvalue, value));
 		}
+		else if (obj instanceof Map)
+			callBitXOr((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callBitXOr((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{!t}[{!t}] ^= {!t} not supported", obj, index, value);
 	}
@@ -559,15 +610,20 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static void callBitOr(EvaluationContext context, Object obj, Object index, Object value)
 	{
-		if (obj instanceof Map)
-			callBitOr((Map)obj, index, value);
-		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
-			callBitOr((List)obj, Utils.toInt(index), value);
+		if (obj instanceof UL4SetItemWithContext)
+		{
+			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] |= {!t} not supported", value);
+			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, index, BitOrAST.call(orgvalue, value));
+		}
 		else if (obj instanceof UL4SetItem)
 		{
 			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] |= {!t} not supported", value);
 			((UL4SetItem)obj).setItemUL4(index, BitOrAST.call(orgvalue, value));
 		}
+		else if (obj instanceof Map)
+			callBitOr((Map)obj, index, value);
+		else if (obj instanceof List && (index instanceof Boolean || index instanceof Number))
+			callBitOr((List)obj, Utils.toInt(index), value);
 		else
 			throw new ArgumentTypeMismatchException("{!t}[{!t}] |= {!t} not supported", obj, index, value);
 	}
