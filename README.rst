@@ -46,6 +46,15 @@ Authors
 History
 =======
 
+exp-133 (2018-11-02)
+--------------------
+
+Code in ``AttrAST`` and ``ItemAST`` has been reordered so that implementations
+of the ``UL4GetAttrWithContext``, ``UL4GetAttr``, ``UL4GetItemWithContext`` and
+``UL4GetItem`` interfaces are preferred over implementation of the ``Map``
+interface.
+
+
 exp-132 (2018-09-14)
 --------------------
 
