@@ -54,6 +54,10 @@ of the ``UL4GetAttrWithContext``, ``UL4GetAttr``, ``UL4GetItemWithContext`` and
 ``UL4GetItem`` interfaces are preferred over implementation of the ``Map``
 interface.
 
+For backwards compatibility reasons the UL4 function ``date`` now again accepts
+3-7 arguments again (and returns a ``datetime`` object when non-zero hours,
+minutes, seconds or microsecond are passed in).
+
 
 exp-132 (2018-09-14)
 --------------------
