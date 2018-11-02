@@ -1800,6 +1800,9 @@ public class UL4Test
 	public void function_date()
 	{
 		checkTemplateOutput("@(2012-10-06)", "<?print repr(date(2012, 10, 6))?>");
+		// The following is only implemented for backwards compatibility
+		// and will go away again.
+		checkTemplateOutput("@(2012-10-06T12:34:56.987654)", "<?print repr(date(2012, 10, 6, 12, 34, 56, 987654))?>");
 	}
 
 	@Test
