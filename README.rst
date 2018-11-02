@@ -62,8 +62,8 @@ minutes, seconds or microsecond are passed in).
 exp-132 (2018-09-14)
 --------------------
 
-Split date object into date and datetime objects and support LocalDate and
-LocalDatetime Java objects. Add today() function.
+Split date object into date and datetime objects and support ``LocalDate`` and
+``LocalDatetime`` Java objects. Add ``today()`` function.
 
 
 exp-131 (2018-02-07)
