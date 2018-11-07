@@ -118,7 +118,7 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 		for (String key : variables.keySet())
 		{
 			if (kwargs.containsKey(key))
-				throw new DuplicateArgumentException(content, key);
+				throw new DuplicateArgumentException(obj, key);
 		}
 		kwargs.putAll(variables);
 		super.call(context, obj, args, kwargs);
