@@ -46,6 +46,22 @@ Authors
 History
 =======
 
+exp-134 (2018-11-08)
+--------------------
+
+The chaining of UL4 exceptions has been inverted. This means that the exception
+that will get raised from the UL4 template is the original innermost exception.
+``LocationException`` instances will be added as the "cause" of each exception
+to specify the exact location in the UL4 source.
+
+The structure of compiled UL4 templates has been simplified internally: Each
+``AST`` instance has attributes ``template`` and ``pos`` that directly reference
+the template and the source code location of the ``AST`` node. The ``Tag``
+objects are gone (they will only be used internally during compilation).
+Also ``AST`` nodes have gained a ``source`` property which returns the source
+code of the node itself.
+
+
 exp-133 (2018-11-02)
 --------------------
 
