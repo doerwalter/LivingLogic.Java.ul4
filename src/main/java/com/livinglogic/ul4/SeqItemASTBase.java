@@ -34,16 +34,10 @@ public abstract class SeqItemASTBase extends CodeAST
 		{
 			throw ex;
 		}
-		catch (RuntimeException ex)
+		catch (Exception ex)
 		{
 			decorateException(ex);
 			throw ex;
-		}
-		catch (Exception ex)
-		{
-			RuntimeException newex = new RuntimeException(ex);
-			decorateException(newex);
-			throw newex;
 		}
 	}
 
@@ -60,16 +54,10 @@ public abstract class SeqItemASTBase extends CodeAST
 		{
 			throw ex;
 		}
-		catch (RuntimeException ex)
+		catch (Exception ex)
 		{
 			decorateException(ex);
 			throw ex;
-		}
-		catch (Exception ex)
-		{
-			RuntimeException newex = new RuntimeException(ex);
-			decorateException(newex);
-			throw newex;
 		}
 	}
 

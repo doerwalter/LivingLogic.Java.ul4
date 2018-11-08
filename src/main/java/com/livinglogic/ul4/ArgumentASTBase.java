@@ -33,16 +33,10 @@ public abstract class ArgumentASTBase extends CodeAST
 		{
 			throw ex;
 		}
-		catch (RuntimeException ex)
+		catch (Exception ex)
 		{
 			decorateException(ex);
 			throw ex;
-		}
-		catch (Exception ex)
-		{
-			RuntimeException newex = new RuntimeException(ex);
-			decorateException(newex);
-			throw newex;
 		}
 	}
 
