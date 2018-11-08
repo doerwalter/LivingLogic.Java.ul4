@@ -41,7 +41,7 @@ public class KeywordArgumentAST extends ArgumentASTBase
 	public void evaluateCall(EvaluationContext context, List<Object> arguments, Map<String, Object> keywordArguments)
 	{
 		Object oldValue = keywordArguments.get(name);
-		if (oldValue != null && keywordArguments.containsKey(name))
+		if (oldValue != null || keywordArguments.containsKey(name))
 			throw new DuplicateArgumentException(name);
 
 		keywordArguments.put(name, value.decoratedEvaluate(context));
