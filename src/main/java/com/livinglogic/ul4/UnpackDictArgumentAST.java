@@ -79,7 +79,7 @@ public class UnpackDictArgumentAST extends ArgumentASTBase
 			throw new ArgumentException(exceptionMessage);
 
 		Object oldValue = keywordArguments.get(key);
-		if (oldValue != null && keywordArguments.containsKey(key))
+		if (oldValue != null || keywordArguments.containsKey(key))
 			throw new DuplicateArgumentException((String)key);
 
 		keywordArguments.put((String)key, value);
