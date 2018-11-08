@@ -11,9 +11,9 @@ import java.util.Map;
 
 public abstract class ArgumentASTBase extends CodeAST
 {
-	public ArgumentASTBase(InterpretedTemplate tempalte, Slice pos)
+	public ArgumentASTBase(InterpretedTemplate template, Slice pos)
 	{
-		super(tempalte, pos);
+		super(template, pos);
 	}
 
 	public Object evaluate(EvaluationContext context)
