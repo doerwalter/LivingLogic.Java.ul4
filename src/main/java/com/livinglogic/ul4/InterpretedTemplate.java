@@ -589,7 +589,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						{
 							UL4Parser parser = getParser(tag);
 							Definition definition = parser.definition();
-							// Copy over all the attributes, however passing a {@link Tag} will prevent compilation
+							// Copy over all the attributes, however passing an {@link InterpretedTemplate} will prevent compilation
 							InterpretedTemplate subtemplate = new InterpretedTemplate(tag.getTemplate(), definition.getName(), whitespace, startdelim, enddelim, definition.getSignature());
 							innerBlock.append(subtemplate);
 							blockStack.push(subtemplate);
