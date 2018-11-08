@@ -62,7 +62,7 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		int line = 1;
 		int col;
 		InterpretedTemplate template = location.getTemplate();
-		String source = template.getSource();
+		String source = template.getFullSource();
 		int lastLineFeed = source.lastIndexOf("\n", offset);
 
 		if (lastLineFeed == -1)
@@ -93,7 +93,7 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 	private static String sourcePrefix(SourcePart location)
 	{
 		InterpretedTemplate template = location.getTemplate();
-		String source = template.getSource();
+		String source = template.getFullSource();
 		int outerStartPos = location.getPos().getStart();
 		int innerStartPos = outerStartPos;
 		int maxPrefix = 40;
@@ -124,7 +124,7 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 	private static String sourceSuffix(SourcePart location)
 	{
 		InterpretedTemplate template = location.getTemplate();
-		String source = template.getSource();
+		String source = template.getFullSource();
 		int outerStopPos = location.getPos().getStop();
 		int innerStopPos = outerStopPos;
 		int maxSuffix = 40;
@@ -157,7 +157,7 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		StringBuilder buffer = new StringBuilder();
 		Slice pos = location.getPos();
 		InterpretedTemplate template = location.getTemplate();
-		String source = template.getSource();
+		String source = template.getFullSource();
 
 		String prefix = rawRepr(sourcePrefix(location));
 		String code = rawRepr(location.getSource());

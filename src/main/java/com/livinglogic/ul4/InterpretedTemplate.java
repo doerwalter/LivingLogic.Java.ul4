@@ -186,7 +186,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public InterpretedTemplate(InterpretedTemplate template, String name, Whitespace whitespace, String startdelim, String enddelim, SignatureAST signature)
 	{
 		super(template, new Slice(false, false, -1, -1));
-		this.source = template.getSource();
+		// Copy the full source instead of calling {@link getSource} (the full source is the source of the outermost template)
+		this.source = template.getFullSource();
 		this.name = name;
 		this.whitespace = whitespace;
 		this.startdelim = startdelim != null ? startdelim : "<?";
@@ -658,13 +659,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				}
 				catch (RuntimeException ex)
 				{
-					decorateException(ex);
+					tag.decorateException(ex);
 					throw ex;
 				}
 				catch (Exception ex)
 				{
 					RuntimeException newex = new RuntimeException(ex);
-					decorateException(newex);
+					tag.decorateException(newex);
 					throw newex;
 				}
 			}
@@ -697,11 +698,16 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		this.name = name;
 	}
 
+	public String getFullSource()
+	{
+		return source;
+	}
+
 	// We have to implement this, otherwise {@code AST.getSource()} would lead to infinite recursions.
 	@Override
 	public String getSource()
 	{
-		return source;
+		return pos.getFrom(source);
 	}
 
 	public Whitespace getWhitespace()
@@ -1760,8 +1766,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				return signature;
 			case "doc":
 				return getDoc();
-			case "source":
-				return source;
 			case "parenttemplate":
 				return parentTemplate;
 			case "renders":

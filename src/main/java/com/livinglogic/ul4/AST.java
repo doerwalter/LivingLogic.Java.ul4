@@ -63,7 +63,9 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, Sour
 
 	public String getSource()
 	{
-		return pos.getFrom(getTemplate().getSource());
+		// Use the full source, as positions are realtive to that
+		// (and not to the source of any inner template in which {@this} might live)
+		return pos.getFrom(getTemplate().getFullSource());
 	}
 
 	/**

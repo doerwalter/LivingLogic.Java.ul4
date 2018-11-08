@@ -70,6 +70,6 @@ public class Tag extends AST
 
 	public String getCode()
 	{
-		return codePos.getFrom(template.getSource());
+		return codePos.getFrom(template.getFullSource());
 	}
 }
