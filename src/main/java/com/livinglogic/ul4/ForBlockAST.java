@@ -20,9 +20,9 @@ public class ForBlockAST extends BlockAST
 	protected Object varname;
 	protected CodeAST container;
 
-	public ForBlockAST(Tag tag, Slice pos, Object varname, CodeAST container)
+	public ForBlockAST(InterpretedTemplate template, Slice pos, Object varname, CodeAST container)
 	{
-		super(tag, pos);
+		super(template, pos);
 		this.varname = varname;
 		this.container = container;
 	}
@@ -36,7 +36,7 @@ public class ForBlockAST extends BlockAST
 	@Override
 	public void finish(Tag endtag)
 	{
-		String type = endtag.getCodeText().trim();
+		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("for"))
 			throw new BlockException("for ended by end" + type);
 		super.finish(endtag);

@@ -6,12 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Date;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 public class ExceptionProto extends GenericProto
 {
@@ -38,7 +32,7 @@ public class ExceptionProto extends GenericProto
 	{
 		switch (key)
 		{
-			case "cause":
+			case "context":
 				return object.getCause();
 			default:
 				throw new AttributeException(object, key);

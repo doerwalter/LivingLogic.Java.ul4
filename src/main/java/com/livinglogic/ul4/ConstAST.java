@@ -18,9 +18,9 @@ public class ConstAST extends CodeAST
 {
 	protected Object value;
 
-	public ConstAST(Tag tag, Slice pos, Object value)
+	public ConstAST(InterpretedTemplate template, Slice pos, Object value)
 	{
-		super(tag, pos);
+		super(template, pos);
 		this.value = value;
 	}
 

@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 abstract class ConditionalBlock extends BlockAST
 {
-	public ConditionalBlock(Tag tag, Slice pos)
+	public ConditionalBlock(InterpretedTemplate template, Slice pos)
 	{
-		super(tag, pos);
+		super(template, pos);
 	}
 
 	abstract public boolean hasToBeExecuted(EvaluationContext context);

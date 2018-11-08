@@ -19,9 +19,9 @@ public class DictAST extends CodeAST
 {
 	protected List<DictItemASTBase> items = new LinkedList<DictItemASTBase>();
 
-	public DictAST(Tag tag, Slice pos)
+	public DictAST(InterpretedTemplate template, Slice pos)
 	{
-		super(tag, pos);
+		super(template, pos);
 	}
 
 	public void append(DictItemASTBase item)

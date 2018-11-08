@@ -21,9 +21,9 @@ public class KeywordArgumentAST extends ArgumentASTBase
 	String name;
 	AST value;
 
-	public KeywordArgumentAST(Tag tag, Slice pos, String name, AST value)
+	public KeywordArgumentAST(InterpretedTemplate template, Slice pos, String name, AST value)
 	{
-		super(tag, pos);
+		super(template, pos);
 		this.name = name;
 		this.value = value;
 	}

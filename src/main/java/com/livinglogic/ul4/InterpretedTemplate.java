@@ -96,6 +96,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 * The slice for the docstring (from a {@code <?doc?>} tag).
 	 */
 	public Slice docPos = null;
+
 	/**
 	 * The template/function source (of the top-level template, i.e. subtemplates always get the full source).
 	 */
@@ -129,6 +130,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim)
 	{
 		super(null, new Slice(false, false, -1, -1));
+		this.template = this;
 		this.source = source;
 		this.name = name;
 		this.whitespace = whitespace;
@@ -181,10 +183,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * Creates an {@code InterpretedTemplate} object. Used for subtemplates.
 	 */
-	public InterpretedTemplate(Tag tag, String name, Whitespace whitespace, String startdelim, String enddelim, SignatureAST signature)
+	public InterpretedTemplate(InterpretedTemplate template, String name, Whitespace whitespace, String startdelim, String enddelim, SignatureAST signature)
 	{
-		super(tag, new Slice(false, false, -1, -1));
-		this.source = tag.getSource();
+		super(template, new Slice(false, false, -1, -1));
+		this.source = template.getSource();
 		this.name = name;
 		this.whitespace = whitespace;
 		this.startdelim = startdelim != null ? startdelim : "<?";
@@ -198,14 +200,14 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		for (Line line : lines)
 		{
-			for (SourcePart part : line)
+			for (AST part : line)
 			{
 				if (part instanceof Tag)
 				{
 					Tag tag = (Tag)part;
 					String tagtype = tag.getTag();
 					if (tagtype.equals("whitespace"))
-						whitespace = Whitespace.fromString(tag.getCodeText());
+						whitespace = Whitespace.fromString(tag.getCode());
 					else if (tagtype.equals("ul4"))
 					{
 						UL4Parser parser = getParser(tag);
@@ -214,9 +216,16 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						{
 							definition = parser.definition();
 						}
+						catch (RuntimeException exc)
+						{
+							decorateException(exc);
+							throw exc;
+						}
 						catch (Exception exc)
 						{
-							throw new LocationException(exc, tag);
+							RuntimeException newexc = new RuntimeException(exc);
+							decorateException(newexc);
+							throw newexc;
 						}
 						name = definition.getName();
 						SignatureAST signatureAST = definition.getSignature();
@@ -235,25 +244,25 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 	}
 
-	private List<SourcePart> handleWhitespaceKeep(List<Line> lines)
+	private List<AST> handleWhitespaceKeep(List<Line> lines)
 	{
-		List<SourcePart> parts = new LinkedList<SourcePart>();
+		List<AST> parts = new LinkedList<AST>();
 		for (Line line : lines)
 		{
-			for (SourcePart part : line)
+			for (AST part : line)
 				parts.add(part);
 		}
 		return parts;
 	}
 
-	private List<SourcePart> handleWhitespaceStrip(List<Line> lines)
+	private List<AST> handleWhitespaceStrip(List<Line> lines)
 	{
-		List<SourcePart> parts = new LinkedList<SourcePart>();
+		List<AST> parts = new LinkedList<AST>();
 
 		boolean first = true;
 		for (Line line : lines)
 		{
-			for (SourcePart part : line)
+			for (AST part : line)
 			{
 				if (first || !(part instanceof IndentAST || part instanceof LineEndAST))
 				{
@@ -265,7 +274,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return parts;
 	}
 
-	private List<SourcePart> handleWhitespaceSmart(List<Line> lines)
+	private List<AST> handleWhitespaceSmart(List<Line> lines)
 	{
 		// Step 1: Determine the block structure of the lines
 		List<Block> blocks = new LinkedList<Block>(); // List of all blocks
@@ -349,7 +358,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		}
 
 		// Step 4: Drop whitespace from empty lines or lines that only contain indentation and block tags
-		List<SourcePart> parts = new LinkedList<SourcePart>();
+		List<AST> parts = new LinkedList<AST>();
 		for (Line line : lines)
 		{
 			if (line.size() == 2)
@@ -394,7 +403,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				}
 			}
 			// We get here when we never run into a "continue", i.e. when we didn't encounter a special case
-			for (SourcePart part : line)
+			for (AST part : line)
 				parts.add(part);
 		}
 		return parts;
@@ -405,11 +414,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		if (source == null)
 			return;
 
+		pos = new Slice(0, source.length());
+
 		List<Line> lines = tokenizeTags();
 
 		handleSpecialTags(lines);
 
-		List<SourcePart> parts;
+		List<AST> parts;
 
 		switch (whitespace)
 		{
@@ -435,7 +446,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		Stack<InterpretedTemplate> templateStack = new Stack<InterpretedTemplate>();
 		templateStack.push(this);
 
-		for (SourcePart part : parts)
+		for (AST part : parts)
 		{
 			BlockLike innerBlock = blockStack.peek();
 			if (part instanceof TextAST)
@@ -446,6 +457,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			else
 			{
 				Tag tag = (Tag)part;
+				// Update {@code tag.template} to reference the innermost template
+				// (Originally it referenced the outermost one)
 				tag.setTemplate(templateStack.peek());
 				try
 				{
@@ -473,13 +486,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						case "print":
 						{
 							UL4Parser parser = getParser(tag);
-							innerBlock.append(new PrintAST(tag, tag.getCodePos(), parser.expression()));
+							innerBlock.append(new PrintAST(tag.getTemplate(), tag.getPos(), parser.expression()));
 							break;
 						}
 						case "printx":
 						{
 							UL4Parser parser = getParser(tag);
-							innerBlock.append(new PrintXAST(tag, tag.getCodePos(), parser.expression()));
+							innerBlock.append(new PrintXAST(tag.getTemplate(), tag.getPos(), parser.expression()));
 							break;
 						}
 						case "code":
@@ -491,7 +504,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						case "if":
 						{
 							UL4Parser parser = getParser(tag);
-							ConditionalBlocks node = new ConditionalBlocks(tag, tag.getCodePos(), new IfBlockAST(tag, tag.getCodePos(), parser.expression()));
+							ConditionalBlocks node = new ConditionalBlocks(tag.getTemplate(), tag.getPos(), new IfBlockAST(tag.getTemplate(), tag.getPos(), parser.expression()));
 							innerBlock.append(node);
 							blockStack.push(node);
 							break;
@@ -501,7 +514,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							if (innerBlock instanceof ConditionalBlocks)
 							{
 								UL4Parser parser = getParser(tag);
-								((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(tag, tag.getCodePos(), parser.expression()));
+								((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(tag.getTemplate(), tag.getPos(), parser.expression()));
 							}
 							else
 								throw new BlockException("elif doesn't match any if");
@@ -511,7 +524,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						{
 							if (innerBlock instanceof ConditionalBlocks)
 							{
-								((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(tag, tag.getCodePos()));
+								((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(tag.getTemplate(), tag.getPos()));
 							}
 							else
 								throw new BlockException("else doesn't match any if");
@@ -541,7 +554,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						case "while":
 						{
 							UL4Parser parser = getParser(tag);
-							WhileBlockAST node = new WhileBlockAST(tag, tag.getCodePos(), parser.expression());
+							WhileBlockAST node = new WhileBlockAST(tag.getTemplate(), tag.getPos(), parser.expression());
 							innerBlock.append(node);
 							blockStack.push(node);
 							break;
@@ -553,7 +566,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 								if (blockStack.get(i).handleLoopControl("break"))
 									break;
 							}
-							innerBlock.append(new BreakAST(tag, tag.getCodePos()));
+							innerBlock.append(new BreakAST(tag.getTemplate(), tag.getPos()));
 							break;
 						}
 						case "continue":
@@ -563,13 +576,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 								if (blockStack.get(i).handleLoopControl("continue"))
 									break;
 							}
-							innerBlock.append(new ContinueAST(tag, tag.getCodePos()));
+							innerBlock.append(new ContinueAST(tag.getTemplate(), tag.getPos()));
 							break;
 						}
 						case "return":
 						{
 							UL4Parser parser = getParser(tag);
-							innerBlock.append(new ReturnAST(tag, tag.getCodePos(), parser.expression()));
+							innerBlock.append(new ReturnAST(tag.getTemplate(), tag.getPos(), parser.expression()));
 							break;
 						}
 						case "def":
@@ -577,10 +590,12 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							UL4Parser parser = getParser(tag);
 							Definition definition = parser.definition();
 							// Copy over all the attributes, however passing a {@link Tag} will prevent compilation
-							InterpretedTemplate subtemplate = new InterpretedTemplate(tag, definition.getName(), whitespace, startdelim, enddelim, definition.getSignature());
+							InterpretedTemplate subtemplate = new InterpretedTemplate(tag.getTemplate(), definition.getName(), whitespace, startdelim, enddelim, definition.getSignature());
 							innerBlock.append(subtemplate);
 							blockStack.push(subtemplate);
-							subtemplate.parentTemplate = templateStack.peek();
+							subtemplate.parentTemplate = tag.getTemplate();
+							subtemplate.setTemplate(subtemplate);
+							subtemplate.setPos(tag.getPos());
 							tag.setTemplate(subtemplate);
 							templateStack.push(subtemplate);
 							break;
@@ -616,7 +631,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							CodeAST code = parser.expression();
 							if (!(code instanceof CallAST))
 								throw new RuntimeException("render call required");
-							RenderBlockAST render = new RenderBlockAST(tag, (CallAST)code, whitespace, startdelim, enddelim);
+							RenderBlockAST render = new RenderBlockAST(templateStack.peek(), (CallAST)code, whitespace, startdelim, enddelim);
 							render.stealIndent(innerBlock);
 							innerBlock.append(render);
 							blockStack.push(render);
@@ -639,22 +654,31 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							throw new RuntimeException("unknown tag " + tagtype);
 					}
 				}
+				catch (RuntimeException ex)
+				{
+					decorateException(ex);
+					throw ex;
+				}
 				catch (Exception ex)
 				{
-					throw new LocationException(ex, tag);
+					RuntimeException newex = new RuntimeException(ex);
+					decorateException(newex);
+					throw newex;
 				}
 			}
 		}
 		if (blockStack.size() > 1) // the template itself is still on the stack
 		{
 			BlockLike innerBlock = blockStack.peek();
-			throw new LocationException(new BlockException(innerBlock.getType() + " block unclosed"), innerBlock);
+			BlockException ex = new BlockException(innerBlock.getType() + " block unclosed");
+			innerBlock.decorateException(ex);
+			throw ex;
 		}
 	}
 
 	private static UL4Parser getParser(Tag tag)
 	{
-		ANTLRStringStream input = new ANTLRStringStream(tag.getCodeText());
+		ANTLRStringStream input = new ANTLRStringStream(tag.getCode());
 		UL4Lexer lexer = new UL4Lexer(tag, input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		UL4Parser parser = new UL4Parser(tag, tokens);
@@ -671,6 +695,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		this.name = name;
 	}
 
+	// We have to implement this, otherwise {@code AST.getSource()} would lead to infinite recursions.
+	@Override
 	public String getSource()
 	{
 		return source;
@@ -1117,7 +1143,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return c == '\u2007' || c == '\u202F' || c == '\f' || c == '\r' || c == '\n';
 	}
 
-	private void addPart2Lines(List<Line> lines, SourcePart part)
+	private void addPart2Lines(List<Line> lines, AST part)
 	{
 		int lineCount = lines.size();
 		Line lastLine;
@@ -1141,7 +1167,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	private void addText2Lines(List<Line> lines, TextAST text, int initialState)
 	{
-		String source = text.getSource();
 		int startPos = text.getPos().getStart();
 		int stopPos = text.getPos().getStop();
 		int pos = startPos;
@@ -1276,7 +1301,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	@Override
 	public void finish(Tag endtag)
 	{
-		String type = endtag.getCodeText().trim();
+		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("def"))
 			throw new BlockException("def ended by end" + type);
 		super.finish(endtag);
@@ -1287,32 +1312,32 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		throw new BlockException(name + " outside of for/while loop");
 	}
 
-	private static class Line implements Iterable<SourcePart>
+	private static class Line implements Iterable<AST>
 	{
-		private List<SourcePart> parts;
+		private List<AST> parts;
 
 		public Line()
 		{
-			parts = new LinkedList<SourcePart>();
+			parts = new LinkedList<AST>();
 		}
 
 		public String indent()
 		{
 			if (size() > 0)
 			{
-				SourcePart start = get(0);
+				AST start = get(0);
 				if (start instanceof IndentAST)
-					return ((IndentAST)start).getCodeText();
+					return ((IndentAST)start).getText();
 			}
 			return "";
 		}
 
-		public void add(SourcePart part)
+		public void add(AST part)
 		{
 			parts.add(part);
 		}
 
-		public Iterator<SourcePart> iterator()
+		public Iterator<AST> iterator()
 		{
 			return parts.iterator();
 		}
@@ -1322,14 +1347,14 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			return parts.size();
 		}
 
-		public SourcePart get(int i)
+		public AST get(int i)
 		{
 			return parts.get(i);
 		}
 
 		public boolean isEmpty()
 		{
-			for (SourcePart part : parts)
+			for (AST part : parts)
 			{
 				if (!(part instanceof IndentAST) && !(part instanceof LineEndAST))
 					return false;
@@ -1427,7 +1452,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	static public void register4UL4ON()
 	{
-		Utils.register("de.livinglogic.ul4.tag", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.Tag(null, null, null, null); }});
 		Utils.register("de.livinglogic.ul4.text", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.TextAST(null, null); }});
 		Utils.register("de.livinglogic.ul4.indent", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IndentAST(null, null, null); }});
 		Utils.register("de.livinglogic.ul4.lineend", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.LineEndAST(null, null); }});
@@ -1580,8 +1604,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 			// remove old attributes, set new ones, and recompile the template
 			this.pos = new Slice(false, false, -1, -1);
-			this.tag = null;
-			this.endtag = null;
+			this.template = this;
 			this.content.clear();
 			this.name = name;
 			this.whitespace = Whitespace.fromString(whitespace);

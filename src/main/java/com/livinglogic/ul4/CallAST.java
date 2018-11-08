@@ -21,9 +21,9 @@ import com.livinglogic.ul4on.Encoder;
 
 public class CallAST extends CallRenderAST
 {
-	public CallAST(Tag tag, Slice pos, AST obj)
+	public CallAST(InterpretedTemplate template, Slice pos, AST obj)
 	{
-		super(tag, pos, obj);
+		super(template, pos, obj);
 	}
 
 	public String getType()
@@ -34,15 +34,12 @@ public class CallAST extends CallRenderAST
 	@Override
 	public Object decoratedEvaluate(EvaluationContext context)
 	{
-		boolean addFrame = false;
-		// Overwrite with a version that rewraps LocationException too, because we want to see the call in the exception chain (but only if its a call to a template).
+		Object realObject = null;
+		// Overwrite with a version that attaches a new stackframe when the called object is a template, because we want to see the call in the exception chain.
 		try
 		{
 			context.tick();
-			Object realObject = obj.decoratedEvaluate(context);
-
-			if (FunctionIsTemplate.call(realObject))
-				addFrame = true;
+			realObject = obj.decoratedEvaluate(context);
 
 			List<Object> realArguments = new ArrayList<Object>();
 
@@ -57,16 +54,10 @@ public class CallAST extends CallRenderAST
 		{
 			throw ex;
 		}
-		catch (LocationException ex)
-		{
-			if (addFrame)
-				throw new LocationException(ex, this);
-			else
-				throw ex;
-		}
 		catch (Exception ex)
 		{
-			throw new LocationException(ex, this);
+			decorateException(ex, realObject);
+			throw ex;
 		}
 	}
 

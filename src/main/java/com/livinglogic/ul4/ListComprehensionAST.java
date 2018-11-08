@@ -22,9 +22,9 @@ public class ListComprehensionAST extends CodeAST
 	protected CodeAST container;
 	protected CodeAST condition;
 
-	public ListComprehensionAST(Tag tag, Slice pos, CodeAST item, Object varname, CodeAST container, CodeAST condition)
+	public ListComprehensionAST(InterpretedTemplate template, Slice pos, CodeAST item, Object varname, CodeAST container, CodeAST condition)
 	{
-		super(tag, pos);
+		super(template, pos);
 		this.item = item;
 		this.varname = varname;
 		this.container = container;

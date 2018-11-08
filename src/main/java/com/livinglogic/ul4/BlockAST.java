@@ -18,12 +18,11 @@ import com.livinglogic.ul4on.Encoder;
 
 abstract class BlockAST extends CodeAST implements BlockLike
 {
-	protected Tag endtag = null;
 	protected List<AST> content = new LinkedList<AST>();
 
-	public BlockAST(Tag tag, Slice pos)
+	public BlockAST(InterpretedTemplate template, Slice pos)
 	{
-		super(tag, pos);
+		super(template, pos);
 	}
 
 	@Override
@@ -47,15 +46,9 @@ abstract class BlockAST extends CodeAST implements BlockLike
 		content.add(item);
 	}
 
-	@Override
 	public void finish(Tag endtag)
 	{
-		this.endtag = endtag;
-	}
-
-	public Tag getEndTag()
-	{
-		return endtag;
+		setStopPos(endtag.getPos().stop);
 	}
 
 	public List<AST> getContent()
@@ -71,22 +64,6 @@ abstract class BlockAST extends CodeAST implements BlockLike
 	 * For {@code InterpretedTemplate} an exception is thrown.
 	 */
 	abstract public boolean handleLoopControl(String name);
-
-	public Object decoratedEvaluate(EvaluationContext context)
-	{
-		try
-		{
-			return evaluate(context);
-		}
-		catch (BreakException|ContinueException|ReturnException|LocationException ex)
-		{
-			throw ex;
-		}
-		catch (Exception ex)
-		{
-			throw new LocationException(ex, this);
-		}
-	}
 
 	public Object evaluate(EvaluationContext context)
 	{
@@ -120,18 +97,16 @@ abstract class BlockAST extends CodeAST implements BlockLike
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(endtag);
 		encoder.dump(content);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		endtag = (Tag)decoder.load();
 		content = (List<AST>)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "endtag", "content");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "content");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -142,8 +117,6 @@ abstract class BlockAST extends CodeAST implements BlockLike
 	{
 		switch (key)
 		{
-			case "endtag":
-				return endtag;
 			case "content":
 				return content;
 			default:

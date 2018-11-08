@@ -21,7 +21,7 @@ class LineEndAST extends TextAST
 	public void toString(Formatter formatter)
 	{
 		formatter.write("lineend ");
-		formatter.write(FunctionRepr.call(getCodeText()));
+		formatter.write(FunctionRepr.call(getText()));
 	}
 
 	public String getType()

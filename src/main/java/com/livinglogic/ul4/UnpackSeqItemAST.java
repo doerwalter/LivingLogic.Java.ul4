@@ -20,9 +20,9 @@ public class UnpackSeqItemAST extends SeqItemASTBase
 {
 	protected AST value;
 
-	public UnpackSeqItemAST(Tag tag, Slice pos, AST value)
+	public UnpackSeqItemAST(InterpretedTemplate template, Slice pos, AST value)
 	{
-		super(tag, pos);
+		super(template, pos);
 		this.value = value;
 	}
 

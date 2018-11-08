@@ -18,9 +18,9 @@ public class SetAST extends CodeAST
 {
 	protected List<SeqItemASTBase> items = new LinkedList<SeqItemASTBase>();
 
-	public SetAST(Tag tag, Slice pos)
+	public SetAST(InterpretedTemplate template, Slice pos)
 	{
-		super(tag, pos);
+		super(template, pos);
 	}
 
 	public void append(SeqItemASTBase item)

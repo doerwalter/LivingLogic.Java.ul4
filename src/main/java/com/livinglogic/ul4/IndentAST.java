@@ -26,9 +26,9 @@ class IndentAST extends TextAST
 	}
 
 	@Override
-	public String getCodeText()
+	public String getText()
 	{
-		return text != null ? text : super.getCodeText();
+		return text != null ? text : super.getText();
 	}
 
 	public void setText(String text)
@@ -41,14 +41,14 @@ class IndentAST extends TextAST
 	{
 		for (String indent : context.indents)
 			context.write(indent);
-		context.write(getCodeText());
+		context.write(getText());
 		return null;
 	}
 
 	public void toString(Formatter formatter)
 	{
 		formatter.write("indent ");
-		formatter.write(FunctionRepr.call(getCodeText()));
+		formatter.write(FunctionRepr.call(getText()));
 	}
 
 	public String getType()

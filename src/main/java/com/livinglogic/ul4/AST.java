@@ -22,6 +22,11 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, SourcePart, UL4Repr
 {
 	/**
+	 * The template to which this node belongs
+	 */
+	protected InterpretedTemplate template;
+
+	/**
 	 * The start/end index of this node in the source
 	 */
 	protected Slice pos;
@@ -30,27 +35,35 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, Sour
 	 * Create a new {@code AST} object.
 	 * @param pos The slice in the template source, where the source for this object is located.
 	 */
-	public AST(Slice pos)
+	public AST(InterpretedTemplate template, Slice pos)
 	{
+		this.template = template;
 		this.pos = pos;
 	}
 
 	/**
-	 * The template. This is abstract, because for literal text the
-	 * template is a member of {@code TextAST}, but for node that are created
-	 * by compiling the source inside a tag, the template is only referenced
-	 * from the {@code Tag} object (to which {@code CodeAST} has a reference)
+	 * Return the template to which this node belongs.
 	 */
-	abstract public InterpretedTemplate getTemplate();
+	public InterpretedTemplate getTemplate()
+	{
+		return template;
+	}
+
+	// Used by {@link InterpretedTemplate#compile} to fix the template references for inner templates
+	void setTemplate(InterpretedTemplate template)
+	{
+		this.template = template;
+	}
+
+	// Used by {@link InterpretedTemplate#compile} to fix the position for inner templates
+	void setPos(Slice pos)
+	{
+		this.pos = pos;
+	}
 
 	public String getSource()
 	{
-		return getTemplate().getSource();
-	}
-
-	public String getCodeText()
-	{
-		return pos.getFrom(getSource());
+		return pos.getFrom(getTemplate().getSource());
 	}
 
 	/**
@@ -89,7 +102,8 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, Sour
 		}
 		catch (Exception ex)
 		{
-			throw new LocationException(ex, this);
+			decorateException(ex);
+			throw ex;
 		}
 	}
 
@@ -179,7 +193,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, Sour
 
 	public void toStringFromSource(Formatter formatter)
 	{
-		formatter.write(getCodeText());
+		formatter.write(getSource());
 	}
 
 	public String getUL4ONName()
@@ -189,15 +203,17 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, Sour
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
+		encoder.dump(template);
 		encoder.dump(pos);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
+		template = (InterpretedTemplate)decoder.load();
 		pos = (Slice)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeSet("type", "pos");
+	protected static Set<String> attributes = makeSet("type", "template", "pos", "source");
 
 	public Set<String> dirUL4()
 	{
@@ -210,8 +226,12 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, Sour
 		{
 			case "type":
 				return getType();
+			case "template":
+				return template;
 			case "pos":
 				return pos;
+			case "source":
+				return getSource();
 			default:
 				throw new AttributeException(this, key);
 		}

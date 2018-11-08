@@ -15,9 +15,9 @@ import org.apache.commons.lang.StringUtils;
 
 public class MulAST extends BinaryAST
 {
-	public MulAST(Tag tag, Slice pos, CodeAST obj1, CodeAST obj2)
+	public MulAST(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
-		super(tag, pos, obj1, obj2);
+		super(template, pos, obj1, obj2);
 	}
 
 	public String getType()
@@ -25,15 +25,15 @@ public class MulAST extends BinaryAST
 		return "mul";
 	}
 
-	public static CodeAST make(Tag tag, Slice pos, CodeAST obj1, CodeAST obj2)
+	public static CodeAST make(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{
 			Object result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
 			if (!(result instanceof Undefined))
-				return new ConstAST(tag, pos, result);
+				return new ConstAST(template, pos, result);
 		}
-		return new MulAST(tag, pos, obj1, obj2);
+		return new MulAST(template, pos, obj1, obj2);
 	}
 
 	public Object evaluate(EvaluationContext context)

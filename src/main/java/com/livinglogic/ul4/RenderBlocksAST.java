@@ -22,13 +22,11 @@ import com.livinglogic.ul4on.Encoder;
 
 public class RenderBlocksAST extends RenderAST implements BlockLike
 {
-	protected Tag endtag;
 	protected List<AST> content;
 
-	public RenderBlocksAST(Tag tag, Slice pos, AST obj)
+	public RenderBlocksAST(InterpretedTemplate template, Slice pos, AST obj)
 	{
-		super(tag, pos, obj);
-		endtag = null;
+		super(template, pos, obj);
 		content = new LinkedList<AST>();
 	}
 
@@ -38,7 +36,6 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 	public RenderBlocksAST(CallAST call)
 	{
 		super(call);
-		endtag = null;
 		content = new LinkedList<AST>();
 	}
 
@@ -56,7 +53,7 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 		if (indent != null)
 		{
 			formatter.write(" with indent ");
-			formatter.write(FunctionRepr.call(indent.getCodeText()));
+			formatter.write(FunctionRepr.call(indent.getText()));
 		}
 		formatter.indent();
 		BlockAST.blockToString(formatter, content);
@@ -87,10 +84,10 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 	@Override
 	public void finish(Tag endtag)
 	{
-		String type = endtag.getCodeText().trim();
+		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("renderblocks"))
 			throw new BlockException("renderblocks ended by end" + type);
-		this.endtag = endtag;
+		setStopPos(endtag.getPos().stop);
 	}
 
 	@Override
@@ -127,14 +124,12 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(endtag);
 		encoder.dump(content);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		endtag = (Tag)decoder.load();
 		content = (List<AST>)decoder.load();
 	}
 
@@ -149,8 +144,6 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 	{
 		switch (key)
 		{
-			case "endtag":
-				return endtag;
 			case "content":
 				return content;
 			default:

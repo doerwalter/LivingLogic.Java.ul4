@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 class ContinueAST extends CodeAST
 {
-	public ContinueAST(Tag tag, Slice pos)
+	public ContinueAST(InterpretedTemplate template, Slice pos)
 	{
-		super(tag, pos);
+		super(template, pos);
 	}
 
 	public String getType()

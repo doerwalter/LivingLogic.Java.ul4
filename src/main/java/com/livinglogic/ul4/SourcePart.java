@@ -14,4 +14,17 @@ public interface SourcePart
 	InterpretedTemplate getTemplate();
 
 	Slice getPos();
+
+	default void decorateException(Throwable ex)
+	{
+		while (ex.getCause() != null)
+			ex = ex.getCause();
+		if (!(ex instanceof LocationException))
+			ex.initCause(new LocationException(this));
+	}
+
+	default String getSource()
+	{
+		return getPos().getFrom(getTemplate().getSource());
+	}
 }

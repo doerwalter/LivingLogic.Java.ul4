@@ -18,9 +18,9 @@ public class WhileBlockAST extends BlockAST
 {
 	protected AST condition;
 
-	public WhileBlockAST(Tag tag, Slice pos, AST condition)
+	public WhileBlockAST(InterpretedTemplate template, Slice pos, AST condition)
 	{
-		super(tag, pos);
+		super(template, pos);
 		this.condition = condition;
 	}
 
@@ -33,7 +33,7 @@ public class WhileBlockAST extends BlockAST
 	@Override
 	public void finish(Tag endtag)
 	{
-		String type = endtag.getCodeText().trim();
+		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("while"))
 			throw new BlockException("while ended by end" + type);
 		super.finish(endtag);

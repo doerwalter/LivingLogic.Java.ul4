@@ -11,9 +11,9 @@ import java.util.Map;
 
 public abstract class ArgumentASTBase extends CodeAST
 {
-	public ArgumentASTBase(Tag tag, Slice pos)
+	public ArgumentASTBase(InterpretedTemplate tempalte, Slice pos)
 	{
-		super(tag, pos);
+		super(tempalte, pos);
 	}
 
 	public Object evaluate(EvaluationContext context)
@@ -33,9 +33,16 @@ public abstract class ArgumentASTBase extends CodeAST
 		{
 			throw ex;
 		}
+		catch (RuntimeException ex)
+		{
+			decorateException(ex);
+			throw ex;
+		}
 		catch (Exception ex)
 		{
-			throw new LocationException(ex, this);
+			RuntimeException newex = new RuntimeException(ex);
+			decorateException(newex);
+			throw newex;
 		}
 	}
 

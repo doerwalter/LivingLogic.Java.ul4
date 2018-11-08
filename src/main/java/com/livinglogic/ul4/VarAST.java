@@ -18,9 +18,9 @@ public class VarAST extends CodeAST implements LValue
 {
 	protected String name;
 
-	public VarAST(Tag tag, Slice pos, String name)
+	public VarAST(InterpretedTemplate template, Slice pos, String name)
 	{
-		super(tag, pos);
+		super(template, pos);
 		this.name = name;
 	}
 

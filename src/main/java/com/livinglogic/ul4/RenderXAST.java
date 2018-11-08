@@ -22,9 +22,9 @@ import com.livinglogic.ul4on.Encoder;
 
 public class RenderXAST extends RenderAST
 {
-	public RenderXAST(Tag tag, Slice pos, AST obj)
+	public RenderXAST(InterpretedTemplate template, Slice pos, AST obj)
 	{
-		super(tag, pos, obj);
+		super(template, pos, obj);
 	}
 
 	public RenderXAST(CallAST call)

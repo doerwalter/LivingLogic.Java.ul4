@@ -19,30 +19,20 @@ import com.livinglogic.ul4on.Encoder;
  */
 public class TextAST extends AST
 {
-	protected InterpretedTemplate template;
-
 	public TextAST(InterpretedTemplate template, Slice pos)
 	{
-		super(pos);
-		this.template = template;
-	}
-
-	@Override
-	public InterpretedTemplate getTemplate()
-	{
-		return template;
-	}
-
-	// Used by {@link InterpretedTemplate#compile} to fix the template references for inner templates
-	void setTemplate(InterpretedTemplate template)
-	{
-		this.template = template;
+		super(template, pos);
 	}
 
 	public void toString(Formatter formatter)
 	{
 		formatter.write("text ");
-		formatter.write(FunctionRepr.call(getCodeText()));
+		formatter.write(FunctionRepr.call(getText()));
+	}
+
+	public String getText()
+	{
+		return getSource();
 	}
 
 	public String getType()
@@ -64,7 +54,7 @@ public class TextAST extends AST
 
 	public Object evaluate(EvaluationContext context)
 	{
-		context.write(getCodeText());
+		context.write(getText());
 		return null;
 	}
 
@@ -79,10 +69,8 @@ public class TextAST extends AST
 	{
 		switch (key)
 		{
-			case "template":
-				return template;
 			case "text":
-				return getCodeText();
+				return getText();
 			default:
 				return super.getAttrUL4(key);
 		}
@@ -97,7 +85,7 @@ public class TextAST extends AST
 		formatter.append(":");
 		formatter.visit(pos.getStop());
 		formatter.append(") text=");
-		formatter.visit(getCodeText());
+		formatter.visit(getText());
 		formatter.append(">");
 	}
 }

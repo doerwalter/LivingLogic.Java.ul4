@@ -24,9 +24,9 @@ public class RenderAST extends CallRenderAST
 {
 	protected IndentAST indent;
 
-	public RenderAST(Tag tag, Slice pos, AST obj)
+	public RenderAST(InterpretedTemplate template, Slice pos, AST obj)
 	{
-		super(tag, pos, obj);
+		super(template, pos, obj);
 		this.indent = null;
 	}
 
@@ -35,7 +35,7 @@ public class RenderAST extends CallRenderAST
 	 */
 	public RenderAST(CallAST call)
 	{
-		super(call.tag, call.pos, call.obj);
+		super(call.template, call.pos, call.obj);
 		this.indent = null;
 		this.arguments = call.arguments;
 	}
@@ -53,7 +53,7 @@ public class RenderAST extends CallRenderAST
 		if (indent != null)
 		{
 			formatter.write(" with indent ");
-			formatter.write(FunctionRepr.call(indent.getCodeText()));
+			formatter.write(FunctionRepr.call(indent.getText()));
 		}
 	}
 
@@ -73,15 +73,12 @@ public class RenderAST extends CallRenderAST
 	@Override
 	public Object decoratedEvaluate(EvaluationContext context)
 	{
-		boolean addFrame = false;
-		// Overwrite with a version that rewraps LocationException too, because we want to see the call in the exception chain (but only if its a call to a template).
+		// Overwrite with a version that attaches a new stackframe when the render object is a template, because we want to see the call in the exception chain.
+		Object realObject = null;
 		try
 		{
 			context.tick();
-			Object realObject = obj.decoratedEvaluate(context);
-
-			if (FunctionIsTemplate.call(realObject))
-				addFrame = true;
+			realObject = obj.decoratedEvaluate(context);
 
 			List<Object> realArguments = new ArrayList<Object>();
 
@@ -97,16 +94,10 @@ public class RenderAST extends CallRenderAST
 		{
 			throw ex;
 		}
-		catch (LocationException ex)
-		{
-			if (addFrame)
-				throw new LocationException(ex, this);
-			else
-				throw ex;
-		}
 		catch (Exception ex)
 		{
-			throw new LocationException(ex, this);
+			decorateException(ex, realObject);
+			throw ex;
 		}
 	}
 
@@ -121,7 +112,7 @@ public class RenderAST extends CallRenderAST
 		if (obj == null)
 			throw new NotRenderableException(obj);
 		if (indent != null)
-			context.pushIndent(indent.getCodeText());
+			context.pushIndent(indent.getText());
 		obj.renderUL4(context, args, kwargs);
 		if (indent != null)
 			context.popIndent();

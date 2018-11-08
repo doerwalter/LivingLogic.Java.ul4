@@ -10,9 +10,9 @@ import java.math.BigInteger;
 
 public class BitOrAST extends BinaryAST
 {
-	public BitOrAST(Tag tag, Slice pos, CodeAST obj1, CodeAST obj2)
+	public BitOrAST(InterpretedTemplate InterpretedTemplate, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
-		super(tag, pos, obj1, obj2);
+		super(InterpretedTemplate, pos, obj1, obj2);
 	}
 
 	public String getType()
@@ -20,15 +20,15 @@ public class BitOrAST extends BinaryAST
 		return "bitor";
 	}
 
-	public static CodeAST make(Tag tag, Slice pos, CodeAST obj1, CodeAST obj2)
+	public static CodeAST make(InterpretedTemplate InterpretedTemplate, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{
 			Object result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
 			if (!(result instanceof Undefined))
-				return new ConstAST(tag, pos, result);
+				return new ConstAST(InterpretedTemplate, pos, result);
 		}
-		return new BitOrAST(tag, pos, obj1, obj2);
+		return new BitOrAST(InterpretedTemplate, pos, obj1, obj2);
 	}
 
 	public Object evaluate(EvaluationContext context)

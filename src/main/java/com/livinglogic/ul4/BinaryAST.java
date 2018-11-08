@@ -31,13 +31,13 @@ abstract class BinaryAST extends CodeAST
 
 	/**
 	 * Create a new {@code BinaryAST} object
-	 * @param location The source code location where this node appears in.
+	 * @param template The template this node belongs to.
 	 * @param obj1 The left operand
 	 * @param obj2 The right operand
 	 */
-	public BinaryAST(Tag tag, Slice pos, CodeAST obj1, CodeAST obj2)
+	public BinaryAST(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
-		super(tag, pos);
+		super(template, pos);
 		this.obj1 = obj1;
 		this.obj2 = obj2;
 	}

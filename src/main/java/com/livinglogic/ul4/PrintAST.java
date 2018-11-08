@@ -12,9 +12,9 @@ package com.livinglogic.ul4;
  */
 public class PrintAST extends UnaryAST
 {
-	public PrintAST(Tag tag, Slice pos, CodeAST obj)
+	public PrintAST(InterpretedTemplate template, Slice pos, CodeAST obj)
 	{
-		super(tag, pos, obj);
+		super(template, pos, obj);
 	}
 
 	public void toString(Formatter formatter)

@@ -22,9 +22,9 @@ public class SetVarAST extends CodeAST
 	protected Object lvalue;
 	protected AST value;
 
-	public SetVarAST(Tag tag, Slice pos, Object lvalue, AST value)
+	public SetVarAST(InterpretedTemplate template, Slice pos, Object lvalue, AST value)
 	{
-		super(tag, pos);
+		super(template, pos);
 		this.lvalue = lvalue;
 		this.value = value;
 	}

@@ -26,12 +26,13 @@ abstract class UnaryAST extends CodeAST
 
 	/**
 	 * Create a new {@code UnaryAST} object
-	 * @param tag The tag where this node appears in.
+	 * @param template The template where this node appears in.
+	 * @param slice The position of this node in the sourcecode of the template
 	 * @param obj The operand
 	 */
-	public UnaryAST(Tag tag, Slice pos, CodeAST obj)
+	public UnaryAST(InterpretedTemplate template, Slice pos, CodeAST obj)
 	{
-		super(tag, pos);
+		super(template, pos);
 		this.obj = obj;
 	}
 

@@ -11,9 +11,9 @@ import java.util.Map;
 
 public abstract class DictItemASTBase extends CodeAST
 {
-	public DictItemASTBase(Tag tag, Slice pos)
+	public DictItemASTBase(InterpretedTemplate template, Slice pos)
 	{
-		super(tag, pos);
+		super(template, pos);
 	}
 
 	public Object evaluate(EvaluationContext context)
@@ -33,9 +33,16 @@ public abstract class DictItemASTBase extends CodeAST
 		{
 			throw ex;
 		}
+		catch (RuntimeException ex)
+		{
+			decorateException(ex);
+			throw ex;
+		}
 		catch (Exception ex)
 		{
-			throw new LocationException(ex, this);
+			RuntimeException newex = new RuntimeException(ex);
+			decorateException(newex);
+			throw newex;
 		}
 	}
 

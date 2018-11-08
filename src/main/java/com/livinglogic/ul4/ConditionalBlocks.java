@@ -8,14 +8,14 @@ package com.livinglogic.ul4;
 
 class ConditionalBlocks extends BlockAST
 {
-	public ConditionalBlocks(Tag tag, Slice pos)
+	public ConditionalBlocks(InterpretedTemplate template, Slice pos)
 	{
-		super(tag, pos);
+		super(template, pos);
 	}
 
-	public ConditionalBlocks(Tag tag, Slice pos, IfBlockAST block)
+	public ConditionalBlocks(InterpretedTemplate template, Slice pos, IfBlockAST block)
 	{
-		super(tag, pos);
+		super(template, pos);
 		startNewBlock(block);
 	}
 
@@ -40,14 +40,24 @@ class ConditionalBlocks extends BlockAST
 		((ConditionalBlock)content.get(content.size()-1)).append(item);
 	}
 
+	private BlockAST getLastBlock()
+	{
+		if (content.size() != 0)
+			return (BlockAST)content.get(content.size()-1);
+		else
+			return null;
+	}
+
 	@Override
 	public void finish(Tag endtag)
 	{
-		String type = endtag.getCodeText().trim();
+		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("if"))
 			throw new BlockException("if ended by end" + type);
 		super.finish(endtag);
-		((BlockAST)content.get(content.size()-1)).endtag = endtag;
+		BlockAST lastBlock = getLastBlock();
+		if (lastBlock != null)
+			lastBlock.setStopPos(endtag.getPos().start);
 	}
 
 	@Override
@@ -67,17 +77,22 @@ class ConditionalBlocks extends BlockAST
 		{
 			if (content.size() == 0)
 				throw new BlockException("elif can't be first in if/elif/else chain");
-			AST last = content.get(content.size()-1);
-			if (last instanceof ElseBlockAST)
+			BlockAST lastBlock = getLastBlock();
+			if (lastBlock instanceof ElseBlockAST)
 				throw new BlockException("elif can't follow else in if/elif/else chain");
 		}
 		else if (item instanceof ElseBlockAST)
 		{
 			if (content.size() == 0)
 				throw new BlockException("else can't be first in if/elif/else chain");
-			AST last = (BlockAST)content.get(content.size()-1);
-			if (last instanceof ElseBlockAST)
+			BlockAST lastBlock = getLastBlock();
+			if (lastBlock instanceof ElseBlockAST)
 				throw new BlockException("duplicate else in if/elif/else chain");
+		}
+		if (content.size() != 0)
+		{
+			BlockAST lastBlock = getLastBlock();
+			lastBlock.setStopPos(item.getPos().start);
 		}
 		content.add(item);
 	}

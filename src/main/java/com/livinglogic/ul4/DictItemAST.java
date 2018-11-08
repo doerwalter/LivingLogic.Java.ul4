@@ -20,9 +20,9 @@ public class DictItemAST extends DictItemASTBase
 	protected AST key;
 	protected AST value;
 
-	public DictItemAST(Tag tag, Slice pos, AST key, AST value)
+	public DictItemAST(InterpretedTemplate template, Slice pos, AST key, AST value)
 	{
-		super(tag, pos);
+		super(template, pos);
 		this.key = key;
 		this.value = value;
 	}

@@ -4949,26 +4949,26 @@ public class UL4Test
 		checkTemplateOutput("broken", "<?print exc?>", "exc", new RuntimeException("broken"));
 		checkTemplateOutput("<java.lang.RuntimeException>", "<?print repr(exc)?>", "exc", new RuntimeException("broken"));
 		checkTemplateOutput("broken", "<?print exc?>", "exc", new RuntimeException("broken"));
-		checkTemplateOutput("None", "<?print repr(exc.cause)?>", "exc", new RuntimeException("broken"));
-		checkTemplateOutput("because", "<?print exc.cause?>", "exc", new RuntimeException("broken", new RuntimeException("because")));
-		checkTemplateOutput("None", "<?print repr(exc.cause.cause)?>", "exc", new RuntimeException("broken", new RuntimeException("because")));
+		checkTemplateOutput("None", "<?print repr(exc.context)?>", "exc", new RuntimeException("broken"));
+		checkTemplateOutput("because", "<?print exc.context?>", "exc", new RuntimeException("broken", new RuntimeException("because")));
+		checkTemplateOutput("None", "<?print repr(exc.context.context)?>", "exc", new RuntimeException("broken", new RuntimeException("because")));
 
 		try
 		{
 			String s = t.renders();
 		}
-		catch (LocationException exc)
+		catch (Exception exc)
 		{
-			checkTemplateOutput("<com.livinglogic.ul4.MulAST pos=(8:11)>", "<?print repr(exc.location)?>", "exc", exc);
+			checkTemplateOutput("<com.livinglogic.ul4.MulAST pos=(8:11)>", "<?print repr(exc.context.location)?>", "exc", exc);
 		}
 
 		try
 		{
-			getTemplate("<?if x?>", "t");
+			getTemplate("?<?if x?>?", "t");
 		}
-		catch (LocationException exc)
+		catch (Exception exc)
 		{
-			checkTemplateOutput("<com.livinglogic.ul4.ConditionalBlocks pos=(5:6)>", "<?print repr(exc.location)?>", "exc", exc);
+			checkTemplateOutput("<com.livinglogic.ul4.ConditionalBlocks pos=(1:9)>", "<?print repr(exc.context.location)?>", "exc", exc);
 		}
 	}
 
@@ -4984,11 +4984,10 @@ public class UL4Test
 		checkTemplateOutput(source, "<?print template.source?>", "template", t);
 		checkTemplateOutput("2", "<?print len(template.content)?>", "template", t);
 		checkTemplateOutput("t", "<?print template.content[0].template.name?>", "template", t);
-		checkTemplateOutput("t", "<?print template.content[1].tag.template.name?>", "template", t);
 		// Test the second item, because the first one is an empty indent node
 		checkTemplateOutput("print", "<?print template.content[1].type?>", "template", t);
-		checkTemplateOutput(source, "<?print template.content[1].tag.text?>", "template", t);
-		checkTemplateOutput("x", "<?print template.content[1].tag.code?>", "template", t);
+		checkTemplateOutput(source, "<?print template.content[1].source?>", "template", t);
+		checkTemplateOutput("x", "<?print template.content[1].obj.source?>", "template", t);
 		checkTemplateOutput("var", "<?print template.content[1].obj.type?>", "template", t);
 		checkTemplateOutput("x", "<?print template.content[1].obj.name?>", "template", t);
 	}
@@ -5028,7 +5027,7 @@ public class UL4Test
 	{
 		String source = "<?def lower?><?print t.lower()?><?end def?>";
 
-		checkTemplateOutput(source + "<?print lower.source?>", source + "<?print lower.source?>");
+		checkTemplateOutput(source, source + "<?print lower.source?>");
 		checkTemplateOutput(source, source + "<?print lower.source[lower.tag.pos.start:lower.endtag.pos.stop]?>");
 		checkTemplateOutput("<?print t.lower()?>", source + "<?print lower.source[lower.tag.pos.stop:lower.endtag.pos.start]?>");
 		checkTemplateOutput("lower", source + "<?print lower.name?>");

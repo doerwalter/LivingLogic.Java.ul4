@@ -22,59 +22,12 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 public abstract class CodeAST extends AST
 {
 	/**
-	 * The {@code Tag} object this node belongs to.
-	 */
-	protected Tag tag;
-
-	/**
 	 * Create a new {@code CodeAST} object.
-	 * @param tag The {@code Tag} object this node belongs to.
+	 * @param template The {@code InterpretedTemplate} object this node belongs to.
 	 * @param pos The slice in the template source, where the source for this object is located.
 	 */
-	public CodeAST(Tag tag, Slice pos)
+	public CodeAST(InterpretedTemplate template, Slice pos)
 	{
-		super(pos);
-		this.tag = tag;
-	}
-
-	@Override
-	public InterpretedTemplate getTemplate()
-	{
-		return tag.getTemplate();
-	}
-
-	public Tag getTag()
-	{
-		return tag;
-	}
-
-	public void dumpUL4ON(Encoder encoder) throws IOException
-	{
-		super.dumpUL4ON(encoder);
-		encoder.dump(tag);
-	}
-
-	public void loadUL4ON(Decoder decoder) throws IOException
-	{
-		super.loadUL4ON(decoder);
-		tag = (Tag)decoder.load();
-	}
-
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "tag");
-
-	public Set<String> getAttributeNamesUL4()
-	{
-		return attributes;
-	}
-
-	public Object getAttrUL4(String key)
-	{
-		switch (key)
-		{
-			case "tag":
-				return tag;
-			default:
-				return super.getAttrUL4(key);
-		}
+		super(template, pos);
 	}
 }

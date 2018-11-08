@@ -16,9 +16,9 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 {
 	protected SourcePart location;
 
-	public LocationException(Throwable cause, SourcePart location)
+	public LocationException(SourcePart location)
 	{
-		super(makeMessage(location), cause);
+		super(makeMessage(location));
 		this.location = location;
 	}
 
@@ -28,50 +28,12 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		return string.substring(1, string.length()-1);
 	}
 
-	private static void makeCodeSnippet(StringBuilder buffer, SourcePart location)
-	{
-		String source = location.getTemplate().getSource();
-		Slice tagPos, codePos;
-
-		if (location instanceof Tag)
-		{
-			tagPos = ((Tag)location).getPos();
-			codePos = tagPos;
-		}
-		else // AST
-		{
-			codePos = location.getPos();
-			if (location instanceof CodeAST)
-			{
-				Tag tag = ((CodeAST)location).getTag();
-				// top level templates have no tag
-				tagPos = tag == null ? codePos : tag.getPos();
-			}
-			else // TextAST
-			{
-				tagPos = codePos;
-			}
-		}
-		String prefix = rawRepr(source.substring(tagPos.getStart(), codePos.getStart()));
-		String code = rawRepr(source.substring(codePos.getStart(), codePos.getStop()));
-		String suffix = rawRepr(source.substring(codePos.getStop(), tagPos.getStop()));
-		buffer.append(prefix);
-		buffer.append(code);
-		buffer.append(suffix);
-		buffer.append("\n");
-		buffer.append(StringUtils.repeat(" ", prefix.length()));
-		buffer.append(StringUtils.repeat("~", code.length()));
-	}
-
-	private static String makeMessage(SourcePart location)
+	private static String templateDescription(SourcePart location)
 	{
 		StringBuilder buffer = new StringBuilder();
 		String name = null;
 		InterpretedTemplate template = location.getTemplate();
-		if (template.parentTemplate != null)
-			buffer.insert(0, "in local template ");
-		else
-			buffer.insert(0, "in template ");
+		buffer.append(template.parentTemplate != null ? "in local template " : "in template ");
 		boolean first = true;
 		while (template != null)
 		{
@@ -80,22 +42,27 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 			else
 				buffer.append(" in ");
 			name = template.nameUL4();
-			if (name == null)
-				buffer.append("(unnamed)");
-			else
-				buffer.append(FunctionRepr.call(name));
+			buffer.append(name == null ? "(unnamed)" : FunctionRepr.call(name));
 			template = template.parentTemplate;
 		}
-		buffer.append(": offset ");
-		int offset = location.getPos().getStart();
+		return buffer.toString();
+	}
+
+	private static String locationDescription(SourcePart location)
+	{
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("offset ");
+		Slice pos = location.getPos();
+		int offset = pos.getStart();
 		buffer.append(offset);
 		buffer.append(":");
-		buffer.append(location.getPos().getStop());
+		buffer.append(pos.getStop());
 
 		// Determine line and column number
 		int line = 1;
 		int col;
-		String source = location.getTemplate().getSource();
+		InterpretedTemplate template = location.getTemplate();
+		String source = template.getSource();
 		int lastLineFeed = source.lastIndexOf("\n", offset);
 
 		if (lastLineFeed == -1)
@@ -120,35 +87,102 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		buffer.append(line);
 		buffer.append("; col ");
 		buffer.append(col);
-		buffer.append("\n");
-		makeCodeSnippet(buffer, location);
 		return buffer.toString();
 	}
 
-	public Slice getOuterPos()
+	private static String sourcePrefix(SourcePart location)
 	{
-		if (location instanceof Tag)
-			return ((Tag)location).getPos();
-		else // AST
+		InterpretedTemplate template = location.getTemplate();
+		String source = template.getSource();
+		int outerStartPos = location.getPos().getStart();
+		int innerStartPos = outerStartPos;
+		int maxPrefix = 40;
+		boolean found = false; // Have we found a natural stopping position?
+		while (maxPrefix > 0)
 		{
-			Slice codePos = location.getPos();
-			if (location instanceof CodeAST)
+			// We arrived at the start of the source code
+			if (outerStartPos == 0)
 			{
-				Tag tag = ((CodeAST)location).getTag();
-				// top level templates have no tag
-				return  tag == null ? codePos : tag.getPos();
+				found = true;
+				break;
 			}
-			else // TextAST
-				return codePos;
+			// We arrived at the start of the line
+			if (source.charAt(outerStartPos-1) == '\n')
+			{
+				found = true;
+				break;
+			}
+			--maxPrefix;
+			--outerStartPos;
 		}
+		String result = source.substring(outerStartPos, innerStartPos);
+		if (!found)
+			result = "..." + result;
+		return result;
 	}
 
-	public Slice getInnerPos()
+	private static String sourceSuffix(SourcePart location)
 	{
-		return location.getPos();
+		InterpretedTemplate template = location.getTemplate();
+		String source = template.getSource();
+		int outerStopPos = location.getPos().getStop();
+		int innerStopPos = outerStopPos;
+		int maxSuffix = 40;
+		boolean found = false; // Have we found a natural stopping position?
+		while (maxSuffix > 0)
+		{
+			// We arrived at the end of the source code
+			if (outerStopPos >= source.length())
+			{
+				found = true;
+				break;
+			}
+			// We arrived at the end of the line
+			if (source.charAt(outerStopPos) == '\n')
+			{
+				found = true;
+				break;
+			}
+			--maxSuffix;
+			++outerStopPos;
+		}
+		String result = source.substring(innerStopPos, outerStopPos);
+		if (!found)
+			result += "...";
+		return result;
 	}
 
-	protected static Set<String> attributes = makeSet("cause", "location", "template", "outerpos", "innerpos");
+	private static String sourceSnippet(SourcePart location)
+	{
+		StringBuilder buffer = new StringBuilder();
+		Slice pos = location.getPos();
+		InterpretedTemplate template = location.getTemplate();
+		String source = template.getSource();
+
+		String prefix = rawRepr(sourcePrefix(location));
+		String code = rawRepr(location.getSource());
+		String suffix = rawRepr(sourceSuffix(location));
+		buffer.append(prefix);
+		buffer.append(code);
+		buffer.append(suffix);
+		buffer.append("\n");
+		buffer.append(StringUtils.repeat(" ", prefix.length()));
+		buffer.append(StringUtils.repeat("~", code.length()));
+		return buffer.toString();
+	}
+
+	private static String makeMessage(SourcePart location)
+	{
+		StringBuilder buffer = new StringBuilder();
+		buffer.append(templateDescription(location));
+		buffer.append(": ");
+		buffer.append(locationDescription(location));
+		buffer.append("\n");
+		buffer.append(sourceSnippet(location));
+		return buffer.toString();
+	}
+
+	protected static Set<String> attributes = makeSet("context", "location");
 
 	public Set<String> dirUL4()
 	{
@@ -159,16 +193,10 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 	{
 		switch (key)
 		{
-			case "cause":
+			case "context":
 				return getCause();
 			case "location":
 				return location;
-			case "template":
-				return location.getTemplate();
-			case "outerpos":
-				return getOuterPos();
-			case "innerpos":
-				return getInnerPos();
 			default:
 				throw new AttributeException(this, key);
 		}

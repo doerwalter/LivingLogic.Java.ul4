@@ -22,24 +22,21 @@ import com.livinglogic.ul4on.Encoder;
 
 public class RenderBlockAST extends RenderAST implements BlockLike
 {
-	protected Tag endtag;
 	protected InterpretedTemplate content;
 
-	public RenderBlockAST(Tag tag, Slice pos, AST obj)
+	public RenderBlockAST(InterpretedTemplate template, Slice pos, AST obj)
 	{
-		super(tag, pos, obj);
-		endtag = null;
+		super(template, pos, obj);
 		content = null;
 	}
 
 	/**
 	 * This is used to "convert" a {@link CallAST} that comes out of the parser into a {@code RenderBlockAST}
 	 */
-	public RenderBlockAST(Tag tag, CallAST call, InterpretedTemplate.Whitespace whitespace, String startdelim, String enddelim)
+	public RenderBlockAST(InterpretedTemplate template, CallAST call, InterpretedTemplate.Whitespace whitespace, String startdelim, String enddelim)
 	{
 		super(call);
-		endtag = null;
-		content = new InterpretedTemplate(tag, "content", whitespace, startdelim, enddelim, null);
+		content = new InterpretedTemplate(template, "content", whitespace, startdelim, enddelim, null);
 	}
 
 	@Override
@@ -56,7 +53,7 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 		if (indent != null)
 		{
 			formatter.write(" with indent ");
-			formatter.write(FunctionRepr.call(indent.getCodeText()));
+			formatter.write(FunctionRepr.call(indent.getText()));
 		}
 		formatter.indent();
 		BlockAST.blockToString(formatter, content.getContent());
@@ -80,11 +77,11 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 	@Override
 	public void finish(Tag endtag)
 	{
-		String type = endtag.getCodeText().trim();
+		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("renderblock"))
 			throw new BlockException("renderblock ended by end" + type);
-		content.endtag = endtag;
-		this.endtag = endtag;
+		setStopPos(endtag.pos.stop);
+		content.setStopPos(endtag.pos.start);
 	}
 
 	@Override
@@ -105,18 +102,16 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(endtag);
 		encoder.dump(content);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		endtag = (Tag)decoder.load();
 		content = (InterpretedTemplate)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(RenderAST.attributes, "content", "endtag");
+	protected static Set<String> attributes = makeExtendedSet(RenderAST.attributes, "content");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -129,8 +124,6 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 		{
 			case "content":
 				return content;
-			case "endtag":
-				return endtag;
 			default:
 				return super.getAttrUL4(key);
 		}

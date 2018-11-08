@@ -27,10 +27,19 @@ public abstract class CallRenderAST extends CodeAST
 	protected AST obj;
 	protected List<ArgumentASTBase> arguments = new LinkedList<ArgumentASTBase>();
 
-	public CallRenderAST(Tag tag, Slice pos, AST obj)
+	public CallRenderAST(InterpretedTemplate template, Slice pos, AST obj)
 	{
-		super(tag, pos);
+		super(template, pos);
 		this.obj = obj;
+	}
+
+	protected void decorateException(Throwable ex, Object obj)
+	{
+		while (ex.getCause() != null)
+			ex = ex.getCause();
+
+		if (FunctionIsTemplate.call(obj))
+			ex.initCause(new LocationException(this));
 	}
 
 	public void addArgument(ArgumentASTBase argument)

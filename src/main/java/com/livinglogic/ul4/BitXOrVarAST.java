@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class BitXOrVarAST extends ChangeVarAST
 {
-	public BitXOrVarAST(Tag tag, Slice pos, LValue lvalue, AST value)
+	public BitXOrVarAST(InterpretedTemplate template, Slice pos, LValue lvalue, AST value)
 	{
-		super(tag, pos, lvalue, value);
+		super(template, pos, lvalue, value);
 	}
 
 	public String getType()

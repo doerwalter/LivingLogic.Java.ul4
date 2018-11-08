@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 public class ShiftRightVarAST extends ChangeVarAST
 {
-	public ShiftRightVarAST(Tag tag, Slice pos, LValue lvalue, AST value)
+	public ShiftRightVarAST(InterpretedTemplate template, Slice pos, LValue lvalue, AST value)
 	{
-		super(tag, pos, lvalue, value);
+		super(template, pos, lvalue, value);
 	}
 
 	public String getType()

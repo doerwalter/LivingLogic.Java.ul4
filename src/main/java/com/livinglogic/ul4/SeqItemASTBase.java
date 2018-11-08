@@ -12,9 +12,9 @@ import java.util.Set;
 
 public abstract class SeqItemASTBase extends CodeAST
 {
-	public SeqItemASTBase(Tag tag, Slice pos)
+	public SeqItemASTBase(InterpretedTemplate template, Slice pos)
 	{
-		super(tag, pos);
+		super(template, pos);
 	}
 
 	public Object evaluate(EvaluationContext context)
@@ -34,9 +34,16 @@ public abstract class SeqItemASTBase extends CodeAST
 		{
 			throw ex;
 		}
+		catch (RuntimeException ex)
+		{
+			decorateException(ex);
+			throw ex;
+		}
 		catch (Exception ex)
 		{
-			throw new LocationException(ex, this);
+			RuntimeException newex = new RuntimeException(ex);
+			decorateException(newex);
+			throw newex;
 		}
 	}
 
@@ -53,9 +60,16 @@ public abstract class SeqItemASTBase extends CodeAST
 		{
 			throw ex;
 		}
+		catch (RuntimeException ex)
+		{
+			decorateException(ex);
+			throw ex;
+		}
 		catch (Exception ex)
 		{
-			throw new LocationException(ex, this);
+			RuntimeException newex = new RuntimeException(ex);
+			decorateException(newex);
+			throw newex;
 		}
 	}
 

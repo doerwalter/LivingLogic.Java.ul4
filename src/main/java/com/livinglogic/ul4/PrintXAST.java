@@ -14,9 +14,9 @@ package com.livinglogic.ul4;
  */
 public class PrintXAST extends UnaryAST
 {
-	public PrintXAST(Tag tag, Slice pos, CodeAST obj)
+	public PrintXAST(InterpretedTemplate template, Slice pos, CodeAST obj)
 	{
-		super(tag, pos, obj);
+		super(template, pos, obj);
 	}
 
 	public void toString(Formatter formatter)
