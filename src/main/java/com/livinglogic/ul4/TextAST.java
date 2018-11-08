@@ -40,25 +40,13 @@ public class TextAST extends AST
 		return "text";
 	}
 
-	public void dumpUL4ON(Encoder encoder) throws IOException
-	{
-		super.dumpUL4ON(encoder);
-		encoder.dump(template);
-	}
-
-	public void loadUL4ON(Decoder decoder) throws IOException
-	{
-		super.loadUL4ON(decoder);
-		template = (InterpretedTemplate)decoder.load();
-	}
-
 	public Object evaluate(EvaluationContext context)
 	{
 		context.write(getText());
 		return null;
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "template", "text");
+	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "text");
 
 	public Set<String> getAttributeNamesUL4()
 	{
