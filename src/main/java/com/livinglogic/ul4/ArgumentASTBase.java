@@ -46,7 +46,13 @@ public abstract class ArgumentASTBase extends CodeAST
 		}
 	}
 
+	/**
+	 * Used by the parser to attach this node to it's parent.
+	 */
 	public abstract void addToCall(CallRenderAST call);
 
+	/**
+	 * Used during AST evaluation.
+	 */
 	public abstract void evaluateCall(EvaluationContext context, List<Object> arguments, Map<String, Object> keywordArguments);
 }
