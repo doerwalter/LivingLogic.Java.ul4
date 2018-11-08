@@ -41,7 +41,7 @@ public abstract class ArgumentASTBase extends CodeAST
 	}
 
 	/**
-	 * Used by the parser to attach this node to it's parent.
+	 * Used by the parser to attach this node to its parent.
 	 */
 	public abstract void addToCall(CallRenderAST call);
 
