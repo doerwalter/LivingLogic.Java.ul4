@@ -632,6 +632,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							if (!(code instanceof CallAST))
 								throw new RuntimeException("render call required");
 							RenderBlockAST render = new RenderBlockAST(templateStack.peek(), (CallAST)code, whitespace, startdelim, enddelim);
+							render.setPos(tag.getPos());
 							render.stealIndent(innerBlock);
 							innerBlock.append(render);
 							blockStack.push(render);
@@ -644,6 +645,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							if (!(code instanceof CallAST))
 								throw new RuntimeException("render call required");
 							RenderBlocksAST render = new RenderBlocksAST((CallAST)code);
+							render.setPos(tag.getPos());
 							render.stealIndent(innerBlock);
 							innerBlock.append(render);
 							blockStack.push(render);
