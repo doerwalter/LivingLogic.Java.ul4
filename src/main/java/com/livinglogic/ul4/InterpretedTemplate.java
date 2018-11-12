@@ -415,7 +415,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		if (source == null)
 			return;
 
-		pos = new Slice(0, source.length());
+		pos = new Slice(false, false, -1, -1);
 
 		List<Line> lines = tokenizeTags();
 
