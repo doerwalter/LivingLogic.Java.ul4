@@ -413,9 +413,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	protected void compile()
 	{
-		if (source == null)
-			return;
-
 		List<Line> lines = tokenizeTags();
 
 		handleSpecialTags(lines);
