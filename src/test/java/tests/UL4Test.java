@@ -5480,6 +5480,12 @@ public class UL4Test
 	}
 
 	@Test
+	public void empty_template()
+	{
+		checkTemplateOutput("", (String)null);
+	}
+
+	@Test
 	public void signature_positional_argument() throws Exception
 	{
 		String source = "<?def border_radius(radius)?>border-radius: <?print radius?>px;<?end def?><?render border_radius(5)?>";
