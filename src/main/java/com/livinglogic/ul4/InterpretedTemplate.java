@@ -183,7 +183,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * Creates an {@code InterpretedTemplate} object. Used for subtemplates.
 	 */
-	public InterpretedTemplate(InterpretedTemplate template, String name, Whitespace whitespace, String startdelim, String enddelim, SignatureAST signature)
+	InterpretedTemplate(InterpretedTemplate template, String name, Whitespace whitespace, String startdelim, String enddelim, SignatureAST signature)
 	{
 		super(template, new Slice(false, false, -1, -1));
 		// Copy the full source instead of calling {@link getSource} (the full source is the source of the outermost template)
