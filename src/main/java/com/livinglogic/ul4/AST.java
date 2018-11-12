@@ -63,9 +63,14 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, Sour
 
 	public String getSource()
 	{
-		// Use the full source, as positions are realtive to that
+		// Use the full source, as positions are relative to that
 		// (and not to the source of any inner template in which {@this} might live)
-		return pos.getFrom(getTemplate().getFullSource());
+		return pos.getFrom(getFullSource());
+	}
+
+	public String getFullSource()
+	{
+		return getTemplate().getFullSource();
 	}
 
 	/**
@@ -215,7 +220,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, Sour
 		pos = (Slice)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeSet("type", "template", "pos", "source");
+	protected static Set<String> attributes = makeSet("type", "template", "pos", "source", "fullsource");
 
 	public Set<String> dirUL4()
 	{
@@ -234,6 +239,8 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, Sour
 				return pos;
 			case "source":
 				return getSource();
+			case "fullsource":
+				return getFullSource();
 			default:
 				throw new AttributeException(this, key);
 		}
