@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
@@ -66,6 +67,13 @@ public class Encoder
 	 * have been output before this object is.
 	 */
 	private Map<Object, Integer> object2id = new IdentityHashMap<Object, Integer>();
+
+	/**
+	 * A {@code Map} that maps string to strings of the same value. This is used
+	 * to make sure that strings (under a certain length) always use the same
+	 * string object.
+	 */
+	private Map<String, String> strings = new HashMap<String, String>();
 
 	/**
 	 * Create an {@code Encoder} object for writing serialized UL4ON output
@@ -131,6 +139,23 @@ public class Encoder
 			writer.write("\n");
 	}
 
+	private Object internString(Object obj)
+	{
+		if (obj instanceof String)
+		{
+			String str = (String)obj;
+			if (str.length() < 200)
+			{
+				String oldStr = strings.get(str);
+				if (oldStr != null)
+					obj = oldStr;
+				else
+					strings.put(str, str);
+			}
+		}
+		return obj;
+	}
+
 	/**
 	 * Writes the object {@code obj} to the writer in the UL4ON object serialization format.
 	 * @param obj the object to be dumped.
@@ -139,6 +164,7 @@ public class Encoder
 	public void dump(Object obj) throws IOException
 	{
 		// Have we serialized this object before?
+		obj = internString(obj);
 		Integer index = object2id.get(obj);
 		if (index != null)
 		{
