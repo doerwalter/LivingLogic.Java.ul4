@@ -131,7 +131,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		super(null, new Slice(false, false, -1, -1));
 		this.template = this;
-		this.source = source;
+		this.source = source != null ? source : "";
 		this.name = name;
 		this.whitespace = whitespace;
 		this.startdelim = startdelim != null ? startdelim : "<?";
