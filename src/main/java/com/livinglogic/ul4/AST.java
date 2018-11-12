@@ -189,6 +189,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, Sour
 			return builder.toString();
 		}
 	}
+
 	/**
 	 * Format this object using a Formatter object.
 	 * @param formatter the Formatter object
