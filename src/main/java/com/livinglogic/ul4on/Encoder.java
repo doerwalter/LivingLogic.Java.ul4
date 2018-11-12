@@ -70,8 +70,7 @@ public class Encoder
 
 	/**
 	 * A {@code Map} that maps string to strings of the same value. This is used
-	 * to make sure that strings (under a certain length) always use the same
-	 * string object.
+	 * to make sure that strings always use the same string object.
 	 */
 	private Map<String, String> strings = new HashMap<String, String>();
 
@@ -144,14 +143,11 @@ public class Encoder
 		if (obj instanceof String)
 		{
 			String str = (String)obj;
-			if (str.length() < 200)
-			{
-				String oldStr = strings.get(str);
-				if (oldStr != null)
-					obj = oldStr;
-				else
-					strings.put(str, str);
-			}
+			String oldStr = strings.get(str);
+			if (oldStr != null)
+				obj = oldStr;
+			else
+				strings.put(str, str);
 		}
 		return obj;
 	}
