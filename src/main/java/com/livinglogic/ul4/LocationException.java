@@ -24,6 +24,11 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		this.location = location;
 	}
 
+	public AST getLocation()
+	{
+		return location;
+	}
+
 	private static String rawRepr(String string)
 	{
 		string = FunctionRepr.call(string);
