@@ -694,7 +694,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		this.name = name;
 	}
 
-	publice InterpretedTemplate getParentTemplate()
+	public InterpretedTemplate getParentTemplate()
 	{
 		return parentTemplate;
 	}
