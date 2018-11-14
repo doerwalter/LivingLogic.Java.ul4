@@ -116,7 +116,8 @@ public class Slice implements UL4GetAttr, UL4Dir, UL4Repr, UL4Type, Comparable<S
 		formatter.visit(getStart());
 		formatter.append(", ");
 		formatter.visit(getStop());
-		formatter.append(")");
+		// We have no step attribute yet.
+		formatter.append(", None)");
 	}
 
 	protected static Set<String> attributes = makeSet("start", "stop");

@@ -82,6 +82,7 @@ public class UnpackListArgumentAST extends ArgumentASTBase
 	{
 		formatter.append("<");
 		formatter.append(getClass().getName());
+		reprPosLineCol(formatter);
 		formatter.append(" value=");
 		formatter.visit(value);
 		formatter.append(">");

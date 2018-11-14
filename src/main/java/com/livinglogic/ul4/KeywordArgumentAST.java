@@ -85,6 +85,7 @@ public class KeywordArgumentAST extends ArgumentASTBase
 	{
 		formatter.append("<");
 		formatter.append(getClass().getName());
+		reprPosLineCol(formatter);
 		formatter.append(" name=");
 		formatter.visit(name);
 		formatter.append(" value=");

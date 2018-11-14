@@ -68,11 +68,8 @@ public class TextAST extends AST
 	{
 		formatter.append("<");
 		formatter.append(getClass().getName());
-		formatter.append(" pos=(");
-		formatter.visit(pos.getStart());
-		formatter.append(":");
-		formatter.visit(pos.getStop());
-		formatter.append(") text=");
+		reprPosLineCol(formatter);
+		formatter.append(" text=");
 		formatter.visit(getText());
 		formatter.append(">");
 	}

@@ -14,9 +14,11 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 
 public class LocationException extends RuntimeException implements UL4Dir, UL4GetAttr
 {
-	protected SourcePart location;
+	protected AST location;
+	int line;
+	int col;
 
-	public LocationException(SourcePart location)
+	public LocationException(AST location)
 	{
 		super(makeMessage(location));
 		this.location = location;
@@ -28,7 +30,7 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		return string.substring(1, string.length()-1);
 	}
 
-	private static String templateDescription(SourcePart location)
+	private static String templateDescription(AST location)
 	{
 		StringBuilder buffer = new StringBuilder();
 		String name = null;
@@ -48,120 +50,31 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		return buffer.toString();
 	}
 
-	private static String locationDescription(SourcePart location)
+	private static String locationDescription(AST location)
 	{
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("offset ");
 		Slice pos = location.getPos();
-		int offset = pos.getStart();
-		buffer.append(offset);
+		buffer.append(pos.getStart());
 		buffer.append(":");
 		buffer.append(pos.getStop());
-
-		// Determine line and column number
-		int line = 1;
-		int col;
-		InterpretedTemplate template = location.getTemplate();
-		String source = template.getFullSource();
-		int lastLineFeed = source.lastIndexOf("\n", offset);
-
-		if (lastLineFeed == -1)
-		{
-			col = offset+1;
-		}
-		else
-		{
-			col = 1;
-			for (int i = 0; i < offset; ++i)
-			{
-				if (source.charAt(i) == '\n')
-				{
-					++line;
-					col = 0;
-				}
-				++col;
-			}
-		}
-
 		buffer.append("; line ");
-		buffer.append(line);
+		buffer.append(location.getLine());
 		buffer.append("; col ");
-		buffer.append(col);
+		buffer.append(location.getCol());
 		return buffer.toString();
 	}
 
-	private static String sourcePrefix(SourcePart location)
-	{
-		InterpretedTemplate template = location.getTemplate();
-		String source = template.getFullSource();
-		int outerStartPos = location.getPos().getStart();
-		int innerStartPos = outerStartPos;
-		int maxPrefix = 40;
-		boolean found = false; // Have we found a natural stopping position?
-		while (maxPrefix > 0)
-		{
-			// We arrived at the start of the source code
-			if (outerStartPos == 0)
-			{
-				found = true;
-				break;
-			}
-			// We arrived at the start of the line
-			if (source.charAt(outerStartPos-1) == '\n')
-			{
-				found = true;
-				break;
-			}
-			--maxPrefix;
-			--outerStartPos;
-		}
-		String result = source.substring(outerStartPos, innerStartPos);
-		if (!found)
-			result = "..." + result;
-		return result;
-	}
-
-	private static String sourceSuffix(SourcePart location)
-	{
-		InterpretedTemplate template = location.getTemplate();
-		String source = template.getFullSource();
-		int outerStopPos = location.getPos().getStop();
-		int innerStopPos = outerStopPos;
-		int maxSuffix = 40;
-		boolean found = false; // Have we found a natural stopping position?
-		while (maxSuffix > 0)
-		{
-			// We arrived at the end of the source code
-			if (outerStopPos >= source.length())
-			{
-				found = true;
-				break;
-			}
-			// We arrived at the end of the line
-			if (source.charAt(outerStopPos) == '\n')
-			{
-				found = true;
-				break;
-			}
-			--maxSuffix;
-			++outerStopPos;
-		}
-		String result = source.substring(innerStopPos, outerStopPos);
-		if (!found)
-			result += "...";
-		return result;
-	}
-
-	private static String sourceSnippet(SourcePart location)
+	private static String sourceSnippet(AST location)
 	{
 		StringBuilder buffer = new StringBuilder();
 		Slice pos = location.getPos();
 		InterpretedTemplate template = location.getTemplate();
 		String source = template.getFullSource();
 
-		String prefix = rawRepr(sourcePrefix(location));
+		String prefix = rawRepr(location.getSourcePrefix());
 		String code = rawRepr(location.getSource());
-		String suffix = rawRepr(sourceSuffix(location));
+		String suffix = rawRepr(location.getSourceSuffix());
 		buffer.append(prefix);
 		buffer.append(code);
 		buffer.append(suffix);
@@ -171,7 +84,7 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		return buffer.toString();
 	}
 
-	private static String makeMessage(SourcePart location)
+	private static String makeMessage(AST location)
 	{
 		StringBuilder buffer = new StringBuilder();
 		buffer.append(templateDescription(location));
@@ -182,7 +95,10 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		return buffer.toString();
 	}
 
-	protected static Set<String> attributes = makeSet("context", "location");
+	protected static Set<String> attributes = makeSet(
+		"context",
+		"location"
+	);
 
 	public Set<String> dirUL4()
 	{

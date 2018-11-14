@@ -18,9 +18,26 @@ package com.livinglogic.ul4;
  * {@see RenderBlockAST} itself contains the content template. Appending to the
  * {@class RenderBlockAST} object appends to the template itself.
  */
-public interface BlockLike extends SourcePart
+public interface BlockLike
 {
+	InterpretedTemplate getTemplate();
+
+	Slice getPos();
+
 	String getType();
+
+	default void decorateException(Throwable ex)
+	{
+		while (ex.getCause() != null)
+			ex = ex.getCause();
+		if (!(ex instanceof LocationException))
+			ex.initCause(new LocationException((AST)this));
+	}
+
+	default String getSource()
+	{
+		return getPos().getFrom(getTemplate().getSource());
+	}
 
 	void append(AST item);
 
@@ -36,4 +53,5 @@ public interface BlockLike extends SourcePart
 	 * For {@code InterpretedTemplate} and {code RenderBlockAST} an exception is thrown.
 	 */
 	boolean handleLoopControl(String name);
+
 }

@@ -4944,7 +4944,7 @@ public class UL4Test
 	@Test
 	public void exception()
 	{
-		InterpretedTemplate t = getTemplate("<?print 2*x?>", "t");
+		InterpretedTemplate t = getTemplate("foo<?print 2*x?>bar", "t");
 
 		checkTemplateOutput("broken", "<?print exc?>", "exc", new RuntimeException("broken"));
 		checkTemplateOutput("<java.lang.RuntimeException>", "<?print repr(exc)?>", "exc", new RuntimeException("broken"));
@@ -4959,7 +4959,11 @@ public class UL4Test
 		}
 		catch (Exception exc)
 		{
-			checkTemplateOutput("<com.livinglogic.ul4.MulAST pos=(8:11)>", "<?print repr(exc.context.location)?>", "exc", exc);
+			checkTemplateOutput("<com.livinglogic.ul4.MulAST pos=(11:14) line=1 col=12>", "<?print repr(exc.context.location)?>", "exc", exc);
+			checkTemplateOutput("1", "<?print exc.context.location.line?>", "exc", exc);
+			checkTemplateOutput("12", "<?print exc.context.location.col?>", "exc", exc);
+			checkTemplateOutput("foo<?print ", "<?print exc.context.location.sourceprefix?>", "exc", exc);
+			checkTemplateOutput("?>bar", "<?print exc.context.location.sourcesuffix?>", "exc", exc);
 		}
 
 		try
@@ -4968,7 +4972,7 @@ public class UL4Test
 		}
 		catch (Exception exc)
 		{
-			checkTemplateOutput("<com.livinglogic.ul4.ConditionalBlocks pos=(1:9)>", "<?print repr(exc.context.location)?>", "exc", exc);
+			checkTemplateOutput("<com.livinglogic.ul4.ConditionalBlocks pos=(1:9) line=1 col=2>", "<?print repr(exc.context.location)?>", "exc", exc);
 		}
 	}
 
