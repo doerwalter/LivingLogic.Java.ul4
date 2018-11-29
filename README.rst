@@ -46,6 +46,31 @@ Authors
 History
 =======
 
+exp-135-3 (2018-11-14)
+----------------------
+
+Fix typo in ``InterpretedTemplate``.
+
+
+exp-135-2 (2018-11-14)
+----------------------
+
+Add method ``InterpretedTemplate.getParentTemplate()``.
+
+
+exp-135-1 (2018-11-14)
+----------------------
+
+Add method ``LocationException.getLocation()``.
+
+
+exp-135 (2018-11-14)
+--------------------
+
+Move information required for printing UL4 exceptions into the base class
+``AST``.
+
+
 exp-134 (2018-11-08)
 --------------------
 
