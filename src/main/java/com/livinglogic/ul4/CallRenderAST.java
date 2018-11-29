@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
+import static com.livinglogic.ul4.Utils.findInnermostException;
 
 /**
  * Common base class of {@link CallAST} and {@link RenderAST}
@@ -35,11 +36,11 @@ public abstract class CallRenderAST extends CodeAST
 
 	protected void decorateException(Throwable ex, Object obj)
 	{
-		while (ex.getCause() != null)
-			ex = ex.getCause();
-
 		if (FunctionIsTemplate.call(obj))
-			ex.initCause(new LocationException(this));
+		{
+			ex = findInnermostException(ex);
+			ex.addSuppressed(new LocationException(this));
+		}
 	}
 
 	public void addArgument(ArgumentASTBase argument)

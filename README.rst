@@ -46,12 +46,17 @@ Authors
 History
 =======
 
-HEAD (2018-11-29)
------------------
+exp-136 (2018-11-29)
+--------------------
 
 If constant folding in the compiler fails, the compiler will now create an AST
 node for the original operator (which means that the error will only surface
-when the template gets executed).
+when the template gets executed, not when it gets compiled).
+
+Exception chaining has been changed from chaining the exception object via
+``initCause()`` to do it via ``addSuppressed()``. The reason is that there might
+be exceptions that already have a cause, so calling ``initCause`` again will
+fail. Using ``addSuppressed()`` should work in much more cases.
 
 
 exp-135-3 (2018-11-14)

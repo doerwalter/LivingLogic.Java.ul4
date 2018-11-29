@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import static com.livinglogic.ul4.Utils.getInnerException;
+
 
 public class ExceptionProto extends GenericProto
 {
@@ -33,7 +35,7 @@ public class ExceptionProto extends GenericProto
 		switch (key)
 		{
 			case "context":
-				return object.getCause();
+				return getInnerException(object);
 			default:
 				throw new AttributeException(object, key);
 		}

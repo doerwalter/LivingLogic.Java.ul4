@@ -14,6 +14,7 @@ import java.util.Set;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.UL4ONSerializable;
+import static com.livinglogic.ul4.Utils.findInnermostException;
 
 /**
  * The base class of all syntax tree nodes. This can be either literal text
@@ -203,10 +204,9 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 
 	public void decorateException(Throwable ex)
 	{
-		while (ex.getCause() != null)
-			ex = ex.getCause();
+		ex = findInnermostException(ex);
 		if (!(ex instanceof LocationException))
-			ex.initCause(new LocationException(this));
+			ex.addSuppressed(new LocationException(this));
 	}
 
 	/**

@@ -842,4 +842,34 @@ public class Utils
 		}
 		return result;
 	}
+
+	public static Throwable getInnerException(Throwable ex)
+	{
+		Throwable[] suppressed = ex.getSuppressed();
+
+		// Try to find a {@code LocationException}
+		for (Throwable t : suppressed)
+		{
+			if (t instanceof LocationException)
+				return t;
+		}
+		Throwable cause = ex.getCause();
+		if (cause instanceof LocationException)
+			return cause;
+		// otherwise take the next best one
+		if (suppressed.length > 0)
+			return suppressed[0];
+		return cause;
+	}
+
+	public static Throwable findInnermostException(Throwable ex)
+	{
+		while (true)
+		{
+			Throwable innerEx = getInnerException(ex);
+			if (innerEx == null)
+				return ex;
+			ex = innerEx;
+		}
+	}
 }

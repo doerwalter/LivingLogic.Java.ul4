@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import static com.livinglogic.ul4.Utils.findInnermostException;
+
 /**
  * A {@code BlockLike} object behaves like a block,
  * i.e. like {@see BlockAST}, but we have two special cases
@@ -28,10 +30,9 @@ public interface BlockLike
 
 	default void decorateException(Throwable ex)
 	{
-		while (ex.getCause() != null)
-			ex = ex.getCause();
+		ex = findInnermostException(ex);
 		if (!(ex instanceof LocationException))
-			ex.initCause(new LocationException((AST)this));
+			ex.addSuppressed(new LocationException((AST)this));
 	}
 
 	default String getSource()
