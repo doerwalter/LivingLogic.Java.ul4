@@ -46,6 +46,14 @@ Authors
 History
 =======
 
+HEAD (2018-11-29)
+-----------------
+
+If constant folding in the compiler fails, the compiler will now create an AST
+node for the original operator (which means that the error will only surface
+when the template gets executed).
+
+
 exp-135-3 (2018-11-14)
 ----------------------
 
