@@ -22,9 +22,16 @@ public class NotAST extends UnaryAST
 	{
 		if (obj instanceof ConstAST)
 		{
-			Object result = call(((ConstAST)obj).value);
-			if (!(result instanceof Undefined))
-				return new ConstAST(template, pos, result);
+			try
+			{
+				Object result = call(((ConstAST)obj).value);
+				if (!(result instanceof Undefined))
+					return new ConstAST(template, pos, result);
+			}
+			catch (Exception ex)
+			{
+				// fall through to create a real {@code NotAST} object
+			}
 		}
 		return new NotAST(template, pos, obj);
 	}

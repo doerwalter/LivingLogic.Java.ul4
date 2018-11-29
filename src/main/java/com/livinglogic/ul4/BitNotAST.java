@@ -24,9 +24,16 @@ public class BitNotAST extends UnaryAST
 	{
 		if (obj instanceof ConstAST)
 		{
-			Object result = call(((ConstAST)obj).value);
-			if (!(result instanceof Undefined))
-				return new ConstAST(template, pos, result);
+			try
+			{
+				Object result = call(((ConstAST)obj).value);
+				if (!(result instanceof Undefined))
+					return new ConstAST(template, pos, result);
+			}
+			catch (Exception ex)
+			{
+				// fall through to create a real {@code BitNotAST} object
+			}
 		}
 		return new BitNotAST(template, pos, obj);
 	}

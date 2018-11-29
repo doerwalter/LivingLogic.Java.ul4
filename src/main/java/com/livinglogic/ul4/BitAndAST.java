@@ -24,9 +24,16 @@ public class BitAndAST extends BinaryAST
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{
-			Object result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
-			if (!(result instanceof Undefined))
-				return new ConstAST(template, pos, result);
+			try
+			{
+				Object result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
+				if (!(result instanceof Undefined))
+					return new ConstAST(template, pos, result);
+			}
+			catch (Exception ex)
+			{
+				// fall through to create a real {@code BitAndAST} object
+			}
 		}
 		return new BitAndAST(template, pos, obj1, obj2);
 	}

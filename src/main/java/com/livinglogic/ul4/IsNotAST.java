@@ -22,9 +22,9 @@ public class IsNotAST extends BinaryAST
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{
-			Object result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
-			if (!(result instanceof Undefined))
-				return new ConstAST(template, pos, result);
+			// No need to catch any exception here or check for {@code Undefined}, the "is not" oparator can't fail
+			boolean result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
+			return new ConstAST(template, pos, result);
 		}
 		return new IsNotAST(template, pos, obj1, obj2);
 	}

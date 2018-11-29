@@ -25,9 +25,16 @@ public class NegAST extends UnaryAST
 	{
 		if (obj instanceof ConstAST)
 		{
-			Object result = call(((ConstAST)obj).value);
-			if (!(result instanceof Undefined))
-				return new ConstAST(template, pos, result);
+			try
+			{
+				Object result = call(((ConstAST)obj).value);
+				if (!(result instanceof Undefined))
+					return new ConstAST(template, pos, result);
+			}
+			catch (Exception ex)
+			{
+				// fall through to create a real {@code NegAST} object
+			}
 		}
 		return new NegAST(template, pos, obj);
 	}

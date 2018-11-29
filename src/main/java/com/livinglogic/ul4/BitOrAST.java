@@ -24,9 +24,16 @@ public class BitOrAST extends BinaryAST
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{
-			Object result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
-			if (!(result instanceof Undefined))
-				return new ConstAST(InterpretedTemplate, pos, result);
+			try
+			{
+				Object result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
+				if (!(result instanceof Undefined))
+					return new ConstAST(InterpretedTemplate, pos, result);
+			}
+			catch (Exception ex)
+			{
+				// fall through to create a real {@code BitOrAST} object
+			}
 		}
 		return new BitOrAST(InterpretedTemplate, pos, obj1, obj2);
 	}

@@ -41,7 +41,16 @@ public class IfAST extends CodeAST
 			Object cond = ((ConstAST)objCond).value;
 
 			if (!(cond instanceof Undefined))
-				return FunctionBool.call(cond) ? objIf : objElse;
+			{
+				try
+				{
+					return FunctionBool.call(cond) ? objIf : objElse;
+				}
+				catch (Exception ex)
+				{
+					// fall through to create a real {@code IfAST} object
+				}
+			}
 		}
 		return new IfAST(template, pos, objIf, objCond, objElse);
 	}
