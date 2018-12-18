@@ -46,6 +46,13 @@ Authors
 History
 =======
 
+exp-136-1 (2018-12-18)
+----------------------
+Fixed exception decoration in ``CallRenderAST``: Even if the call is not from a
+template, the decorating must be done when the innermost exception is not a
+LocationException, because this is the original location of the error.
+
+
 exp-136 (2018-11-29)
 --------------------
 
