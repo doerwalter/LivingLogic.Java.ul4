@@ -46,6 +46,12 @@ Authors
 History
 =======
 
+exp-136-2 (2018-12-18)
+----------------------
+Fixed the UL4 attribute ``context`` for ``LocationException`` to use
+``getInnerException`` instead of ``getCause``.
+
+
 exp-136-1 (2018-12-18)
 ----------------------
 Fixed exception decoration in ``CallRenderAST``: Even if the call is not from a
