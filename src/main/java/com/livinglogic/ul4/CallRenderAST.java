@@ -36,11 +36,9 @@ public abstract class CallRenderAST extends CodeAST
 
 	protected void decorateException(Throwable ex, Object obj)
 	{
-		if (FunctionIsTemplate.call(obj))
-		{
-			ex = findInnermostException(ex);
+		ex = findInnermostException(ex);
+		if (FunctionIsTemplate.call(obj) || (!(ex instanceof LocationException)))
 			ex.addSuppressed(new LocationException(this));
-		}
 	}
 
 	public void addArgument(ArgumentASTBase argument)
