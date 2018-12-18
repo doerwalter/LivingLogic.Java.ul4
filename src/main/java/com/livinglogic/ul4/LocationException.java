@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
+import static com.livinglogic.ul4.Utils.getInnerException;
 
 public class LocationException extends RuntimeException implements UL4Dir, UL4GetAttr
 {
@@ -115,7 +116,7 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		switch (key)
 		{
 			case "context":
-				return getCause();
+				return getInnerException(this);
 			case "location":
 				return location;
 			default:
