@@ -228,7 +228,7 @@ public class Encoder
 			else if (obj instanceof UL4ONSerializable) // check this before Collection and Map
 			{
 				record(obj);
-				line("O", ((UL4ONSerializable)obj).getUL4ONName());
+				line("O", internString(((UL4ONSerializable)obj).getUL4ONName()));
 				++level;
 				((UL4ONSerializable)obj).dumpUL4ON(this);
 				--level;

@@ -46,6 +46,11 @@ Authors
 History
 =======
 
+exp-136-3 (2019-01-08)
+----------------------
+Type names are now "interned" when writing an UL4ON dump.
+
+
 exp-136-2 (2018-12-18)
 ----------------------
 Fixed the UL4 attribute ``context`` for ``LocationException`` to use
