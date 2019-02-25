@@ -46,6 +46,11 @@ Authors
 History
 =======
 
+exp-137 (2019-02-26)
+----------------------
+Added ``com.livinglogic.utils.ListUtils`` (with the method ``makeExtendedList``).
+
+
 exp-136-3 (2019-01-08)
 ----------------------
 Type names are now "interned" when writing an UL4ON dump.
