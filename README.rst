@@ -46,6 +46,12 @@ Authors
 History
 =======
 
+exp-138 (2019-02-26)
+----------------------
+Added ``com.livinglogic.utils.ArrayUtils`` (with the method
+``makeExtendedStringArray``).
+
+
 exp-137 (2019-02-26)
 ----------------------
 Added ``com.livinglogic.utils.ListUtils`` (with the method ``makeExtendedList``).
