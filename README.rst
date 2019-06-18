@@ -46,30 +46,41 @@ Authors
 History
 =======
 
-exp-138 (2019-02-26)
+HEAD (2019-06-18)
 ----------------------
+
+Expose the attribute ``items`` of ``com.livinglogic.ul4.SetAST`` to UL4.
+
+
+exp-138 (2019-02-26)
+--------------------
+
 Added ``com.livinglogic.utils.ArrayUtils`` (with the method
 ``makeExtendedStringArray``).
 
 
 exp-137 (2019-02-26)
-----------------------
+--------------------
+
 Added ``com.livinglogic.utils.ListUtils`` (with the method ``makeExtendedList``).
 
 
 exp-136-3 (2019-01-08)
 ----------------------
+
 Type names are now "interned" when writing an UL4ON dump.
 
 
 exp-136-2 (2018-12-18)
 ----------------------
+
 Fixed the UL4 attribute ``context`` for ``LocationException`` to use
 ``getInnerException`` instead of ``getCause``.
 
 
 exp-136-1 (2018-12-18)
 ----------------------
+
 Fixed exception decoration in ``CallRenderAST``: Even if the call is not from a
 template, the decorating must be done when the innermost exception is not a
 LocationException, because this is the original location of the error.
@@ -1167,6 +1178,7 @@ Fixed problems with linefeeds in comments for tag code in
 
 exp-27 (2010-11-05)
 -------------------
+
 Added a new method ``InterpretedTemplate.javascriptSource()`` that generates
 Javascript source from the template.
 
