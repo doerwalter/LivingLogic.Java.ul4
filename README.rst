@@ -46,8 +46,8 @@ Authors
 History
 =======
 
-HEAD (2019-06-18)
-----------------------
+exp-139 (2019-06-18)
+--------------------
 
 Expose the attribute ``items`` of ``com.livinglogic.ul4.SetAST`` to UL4.
 
