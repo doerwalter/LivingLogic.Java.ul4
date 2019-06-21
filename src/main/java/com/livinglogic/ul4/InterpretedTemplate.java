@@ -42,7 +42,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * The version number used in the UL4ON dump of the template.
 	 */
-	public static final String VERSION = "46";
+	public static final String VERSION = "47";
 
 	/**
 	 * The name of the template/function (defaults to {@code null})
@@ -112,7 +112,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	private InterpretedTemplate()
 	{
-		super(null, new Slice(false, false, -1, -1));
+		super(null, new Slice(0, 0), null);
 		this.source = null;
 		this.name = null;
 		this.whitespace = Whitespace.keep;
@@ -129,7 +129,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public InterpretedTemplate(String source, String name, Whitespace whitespace, String startdelim, String enddelim)
 	{
-		super(null, new Slice(false, false, -1, -1));
+		super(null, new Slice(0, 0), null);
+		int stop = source != null ? source.length() : 0; 
+		setStopPos(stop, stop);
 		this.template = this;
 		// Make sure that the source is always a string (so that {@code getSource()} works)
 		this.source = source != null ? source : "";
@@ -186,9 +188,11 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	InterpretedTemplate(InterpretedTemplate template, String name, Whitespace whitespace, String startdelim, String enddelim, SignatureAST signature)
 	{
-		super(template, new Slice(false, false, -1, -1));
+		super(template, new Slice(0, 0), null);
 		// Copy the full source instead of calling {@link getSource} (the full source is the source of the outermost template)
 		this.source = template.getFullSource();
+		int stop = source.length();
+		setStopPos(stop, stop);
 		this.name = name;
 		this.whitespace = whitespace;
 		this.startdelim = startdelim != null ? startdelim : "<?";
@@ -483,13 +487,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						case "print":
 						{
 							UL4Parser parser = getParser(tag);
-							innerBlock.append(new PrintAST(tag.getTemplate(), tag.getPos(), parser.expression()));
+							innerBlock.append(new PrintAST(tag.getTemplate(), tag.getStartPos(), parser.expression()));
 							break;
 						}
 						case "printx":
 						{
 							UL4Parser parser = getParser(tag);
-							innerBlock.append(new PrintXAST(tag.getTemplate(), tag.getPos(), parser.expression()));
+							innerBlock.append(new PrintXAST(tag.getTemplate(), tag.getStartPos(), parser.expression()));
 							break;
 						}
 						case "code":
@@ -501,7 +505,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						case "if":
 						{
 							UL4Parser parser = getParser(tag);
-							ConditionalBlocks node = new ConditionalBlocks(tag.getTemplate(), tag.getPos(), new IfBlockAST(tag.getTemplate(), tag.getPos(), parser.expression()));
+							ConditionalBlocks node = new ConditionalBlocks(tag.getTemplate(), tag.getStartPos(), null, new IfBlockAST(tag.getTemplate(), tag.getStartPos(), null, parser.expression()));
 							innerBlock.append(node);
 							blockStack.push(node);
 							break;
@@ -511,7 +515,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							if (innerBlock instanceof ConditionalBlocks)
 							{
 								UL4Parser parser = getParser(tag);
-								((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(tag.getTemplate(), tag.getPos(), parser.expression()));
+								((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(tag.getTemplate(), tag.getStartPos(), null, parser.expression()));
 							}
 							else
 								throw new BlockException("elif doesn't match any if");
@@ -521,7 +525,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						{
 							if (innerBlock instanceof ConditionalBlocks)
 							{
-								((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(tag.getTemplate(), tag.getPos()));
+								((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(tag.getTemplate(), tag.getStartPos(), null));
 							}
 							else
 								throw new BlockException("else doesn't match any if");
@@ -551,7 +555,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						case "while":
 						{
 							UL4Parser parser = getParser(tag);
-							WhileBlockAST node = new WhileBlockAST(tag.getTemplate(), tag.getPos(), parser.expression());
+							WhileBlockAST node = new WhileBlockAST(tag.getTemplate(), tag.getStartPos(), null, parser.expression());
 							innerBlock.append(node);
 							blockStack.push(node);
 							break;
@@ -563,7 +567,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 								if (blockStack.get(i).handleLoopControl("break"))
 									break;
 							}
-							innerBlock.append(new BreakAST(tag.getTemplate(), tag.getPos()));
+							innerBlock.append(new BreakAST(tag.getTemplate(), tag.getStartPos()));
 							break;
 						}
 						case "continue":
@@ -573,13 +577,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 								if (blockStack.get(i).handleLoopControl("continue"))
 									break;
 							}
-							innerBlock.append(new ContinueAST(tag.getTemplate(), tag.getPos()));
+							innerBlock.append(new ContinueAST(tag.getTemplate(), tag.getStartPos()));
 							break;
 						}
 						case "return":
 						{
 							UL4Parser parser = getParser(tag);
-							innerBlock.append(new ReturnAST(tag.getTemplate(), tag.getPos(), parser.expression()));
+							innerBlock.append(new ReturnAST(tag.getTemplate(), tag.getStartPos(), parser.expression()));
 							break;
 						}
 						case "def":
@@ -592,7 +596,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							blockStack.push(subtemplate);
 							subtemplate.parentTemplate = tag.getTemplate();
 							subtemplate.setTemplate(subtemplate);
-							subtemplate.setPos(tag.getPos());
+							subtemplate.setStartPos(tag.getStartPos());
 							tag.setTemplate(subtemplate);
 							templateStack.push(subtemplate);
 							break;
@@ -629,7 +633,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							if (!(code instanceof CallAST))
 								throw new RuntimeException("render call required");
 							RenderBlockAST render = new RenderBlockAST(templateStack.peek(), (CallAST)code, whitespace, startdelim, enddelim);
-							render.setPos(tag.getPos());
+							render.setStartPos(tag.getStartPos());
 							render.stealIndent(innerBlock);
 							innerBlock.append(render);
 							blockStack.push(render);
@@ -642,7 +646,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 							if (!(code instanceof CallAST))
 								throw new RuntimeException("render call required");
 							RenderBlocksAST render = new RenderBlocksAST((CallAST)code);
-							render.setPos(tag.getPos());
+							render.setStartPos(tag.getStartPos());
 							render.stealIndent(innerBlock);
 							innerBlock.append(render);
 							blockStack.push(render);
@@ -699,16 +703,11 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return parentTemplate;
 	}
 
+	// We have to implement this, otherwise {@code AST.getFullSource()} would lead to infinite recursions.
+	@Override
 	public String getFullSource()
 	{
 		return source;
-	}
-
-	// We have to implement this, otherwise {@code AST.getSource()} would lead to infinite recursions.
-	@Override
-	public String getSource()
-	{
-		return pos.getFrom(source);
 	}
 
 	public Whitespace getWhitespace()
@@ -1167,7 +1166,10 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 		// If we're adding to an empty line ensure that it starts with an indentation
 		if (!(part instanceof IndentAST) && lastLine.size() == 0)
-			lastLine.add(new IndentAST(this, new Slice(part.getPos().getStart(), part.getPos().getStart()), null));
+		{
+			int start = part.getStartPos().getStart();
+			lastLine.add(new IndentAST(this, new Slice(start, start), null));
+		}
 		lastLine.add(part);
 		// If we added a line end append a new empty line
 		if (part instanceof LineEndAST)
@@ -1176,8 +1178,8 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 	private void addText2Lines(List<Line> lines, TextAST text, int initialState)
 	{
-		int startPos = text.getPos().getStart();
-		int stopPos = text.getPos().getStop();
+		int startPos = text.getStartPos().getStart();
+		int stopPos = text.getStartPos().getStop();
 		int pos = startPos;
 		int state = initialState; // 0 for indentation, 1 for text and 2 for lineend
 		boolean wasR = false;
@@ -1477,12 +1479,12 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		Utils.register("de.livinglogic.ul4.dictcomp", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.DictComprehensionAST(null, null, null, null, null, null, null); }});
 		Utils.register("de.livinglogic.ul4.genexpr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.GeneratorExpressionAST(null, null, null, null, null, null); }});
 		Utils.register("de.livinglogic.ul4.var", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.VarAST(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.condblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConditionalBlocks(null, null); }});
-		Utils.register("de.livinglogic.ul4.ifblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IfBlockAST(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.elifblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElIfBlockAST(null, null, null); }});
-		Utils.register("de.livinglogic.ul4.elseblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElseBlockAST(null, null); }});
-		Utils.register("de.livinglogic.ul4.forblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ForBlockAST(null, null, null, null); }});
-		Utils.register("de.livinglogic.ul4.whileblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.WhileBlockAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.condblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ConditionalBlocks(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.ifblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.IfBlockAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.elifblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElIfBlockAST(null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.elseblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ElseBlockAST(null, null, null); }});
+		Utils.register("de.livinglogic.ul4.forblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ForBlockAST(null, null, null, null, null); }});
+		Utils.register("de.livinglogic.ul4.whileblock", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.WhileBlockAST(null, null, null, null); }});
 		Utils.register("de.livinglogic.ul4.break", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.BreakAST(null, null); }});
 		Utils.register("de.livinglogic.ul4.continue", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.ContinueAST(null, null); }});
 		Utils.register("de.livinglogic.ul4.attr", new ObjectFactory(){ public UL4ONSerializable create() { return new com.livinglogic.ul4.AttrAST(null, null, null, null); }});
@@ -1612,7 +1614,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 				enddelim = "?>";
 
 			// remove old attributes, set new ones, and recompile the template
-			this.pos = new Slice(false, false, -1, -1);
+			setStartPos(0, 0);
+			int stop = source.length();
+			setStopPos(stop, stop);
 			this.template = this;
 			this.content.clear();
 			this.name = name;

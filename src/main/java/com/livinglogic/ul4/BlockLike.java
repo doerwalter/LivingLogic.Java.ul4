@@ -24,7 +24,9 @@ public interface BlockLike
 {
 	InterpretedTemplate getTemplate();
 
-	Slice getPos();
+	Slice getStartPos();
+
+	Slice getStopPos();
 
 	String getType();
 
@@ -35,9 +37,9 @@ public interface BlockLike
 			ex.addSuppressed(new LocationException((AST)this));
 	}
 
-	default String getSource()
+	default String getStartSource()
 	{
-		return getPos().getFrom(getTemplate().getSource());
+		return getStartPos().getFrom(getTemplate().getSource());
 	}
 
 	void append(AST item);

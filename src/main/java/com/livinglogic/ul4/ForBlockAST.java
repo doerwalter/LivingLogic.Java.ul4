@@ -20,9 +20,9 @@ public class ForBlockAST extends BlockAST
 	protected Object varname;
 	protected CodeAST container;
 
-	public ForBlockAST(InterpretedTemplate template, Slice pos, Object varname, CodeAST container)
+	public ForBlockAST(InterpretedTemplate template, Slice startPos, Slice stopPos, Object varname, CodeAST container)
 	{
-		super(template, pos);
+		super(template, startPos, stopPos);
 		this.varname = varname;
 		this.container = container;
 	}
@@ -76,7 +76,7 @@ public class ForBlockAST extends BlockAST
 			}
 			catch (BreakException ex)
 			{
-				break; // breaking this while loop breaks the evaluated for loop
+				break; // breaking the evaluated for loop
 			}
 			catch (ContinueException ex)
 			{

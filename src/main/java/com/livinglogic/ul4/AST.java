@@ -28,28 +28,56 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 	protected InterpretedTemplate template;
 
 	/**
-	 * The start/end index of this node in the source
+	 * The start/end index of this node in the source (or of the start tag of a block)
 	 */
-	protected Slice pos;
+	protected Slice startPos;
 
 	/**
 	 * Source position as a line number/column number pair.
-	 * Will be "uninitialized" (i.e. -1), but will be calculated on the first
-	 * call to {@see getLine} or {@see getCol}.
+	 * Will be {@code null}, but will be calculated on the first
+	 * call to {@see getStartLine} or {@see getStartCol}.
 	 */
-	int line;
-	int col;
+	protected LineCol startLineCol;
 
 	/**
-	 * Create a new {@code AST} object.
-	 * @param pos The slice in the template source, where the source for this object is located.
+	 * The start/end index of this end tag for this node in the source (or
+	 * ``null`` if this is not a block).
 	 */
-	public AST(InterpretedTemplate template, Slice pos)
+	protected Slice stopPos;
+
+	/**
+	 * Source position of the end tag (if this is a blog) as a line
+	 * number/column number pair.
+	 * Will be {@code null}, but will be calculated on the first
+	 * call to {@see getStopLine} or {@see getStopCol}.
+	 */
+	protected LineCol stopLineCol;
+
+	/**
+	 * Create a new {@code AST} object for a block (i.e. something with
+	 * a start and end tag).
+	 * @param startPos The slice in the template source, where the source for
+	 *                 this object (or its start tag) is located.
+	 * @param stopPos The slice in the template source, where the end tag is
+	 *                located (or ``null`` if this is not a block).
+	 */
+	protected AST(InterpretedTemplate template, Slice startPos, Slice stopPos)
 	{
 		this.template = template;
-		this.pos = pos;
-		this.line = -1;
-		this.col = -1;
+		this.startPos = startPos;
+		this.startLineCol = null;
+		this.stopPos = stopPos;
+		this.stopLineCol = null;
+	}
+
+	/**
+	 * Create a new {@code AST} object for a non-block.
+	 * @param startPos The slice in the template source, where the source for
+	 *                 this object (or its start tag) is located.
+	 */
+	public AST(InterpretedTemplate template, Slice startPos)
+	{
+		this(template, startPos, null);
 	}
 
 	/**
@@ -66,35 +94,81 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 		this.template = template;
 	}
 
-	public Slice getPos()
+	public Slice getStartPos()
 	{
-		return pos;
+		return startPos;
 	}
 
 	// Used by {@link InterpretedTemplate#compile} to fix the position for inner templates
-	void setPos(Slice pos)
+	void setStartPos(Slice pos)
 	{
-		this.pos = pos;
+		this.startPos = pos;
 		// Reset line and column information
-		line = -1;
-		col = -1;
+		startLineCol = null;
 	}
 
-	public void setStartPos(int startPos)
+	void setStartPos(int start, int stop)
 	{
-		setPos(pos == null ? new Slice(true, false, startPos, -1) : pos.withStart(startPos));
+		setStartPos(new Slice(start, stop));
 	}
 
-	public void setStopPos(int stopPos)
+	public void setStartPosStart(int start)
 	{
-		setPos(pos == null ? new Slice(false, true, -1, stopPos) : pos.withStop(stopPos));
+		setStartPos(startPos == null ? new Slice(true, false, start, -1) : startPos.withStart(start));
+	}
+
+	public void setStartPosStop(int stop)
+	{
+		setStartPos(startPos == null ? new Slice(false, true, -1, stop) : startPos.withStop(stop));
+	}
+
+	public Slice getStopPos()
+	{
+		return stopPos;
+	}
+
+	void setStopPos(Slice pos)
+	{
+		this.stopPos = pos;
+		// Reset line and column information
+		stopLineCol = null;
+	}
+
+	void setStopPos(int start, int stop)
+	{
+		setStopPos(new Slice(start, stop));
+	}
+
+	public void setStopPosStart(int start)
+	{
+		setStopPos(stopPos == null ? new Slice(true, false, start, -1) : stopPos.withStart(start));
+	}
+
+	public void setStopPosStop(int stop)
+	{
+		setStopPos(stopPos == null ? new Slice(false, true, -1, stop) : stopPos.withStop(stop));
+	}
+
+	private Slice getPos()
+	{
+		return stopPos == null ? startPos : new Slice(startPos.getStart(), stopPos.getStop());
+	}
+
+	public String getStartSource()
+	{
+		// Use the full source, as positions are relative to that
+		// (and not to the source of any inner template in which {@this} might live)
+		return startPos.getFrom(getFullSource());
 	}
 
 	public String getSource()
 	{
-		// Use the full source, as positions are relative to that
-		// (and not to the source of any inner template in which {@this} might live)
-		return pos.getFrom(getFullSource());
+		return getPos().getFrom(getFullSource());
+	}
+
+	public String getStopSource()
+	{
+		return stopPos == null ? null : stopPos.getFrom(getFullSource());
 	}
 
 	public String getFullSource()
@@ -104,102 +178,64 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 
 	public String getSourcePrefix()
 	{
-		String source = getFullSource();
-		int outerStartPos = getPos().getStart();
-		int innerStartPos = outerStartPos;
-		int maxPrefix = 40;
-		boolean found = false; // Have we found a natural stopping position?
-		while (maxPrefix > 0)
-		{
-			// We arrived at the start of the source code
-			if (outerStartPos == 0)
-			{
-				found = true;
-				break;
-			}
-			// We arrived at the start of the line
-			if (source.charAt(outerStartPos-1) == '\n')
-			{
-				found = true;
-				break;
-			}
-			--maxPrefix;
-			--outerStartPos;
-		}
-		String result = source.substring(outerStartPos, innerStartPos);
-		if (!found)
-			result = "\u2026" + result;
-		return result;
+		return Utils.getSourcePrefix(getFullSource(), getPos().getStart());
 	}
 
 	public String getSourceSuffix()
 	{
-		String source = getFullSource();
-		int outerStopPos = getPos().getStop();
-		int innerStopPos = outerStopPos;
-		int maxSuffix = 40;
-		boolean found = false; // Have we found a natural stopping position?
-		while (maxSuffix > 0)
-		{
-			// We arrived at the end of the source code
-			if (outerStopPos >= source.length())
-			{
-				found = true;
-				break;
-			}
-			// We arrived at the end of the line
-			if (source.charAt(outerStopPos) == '\n')
-			{
-				found = true;
-				break;
-			}
-			--maxSuffix;
-			++outerStopPos;
-		}
-		String result = source.substring(innerStopPos, outerStopPos);
-		if (!found)
-			result += "\u2026";
-		return result;
+		return Utils.getSourceSuffix(getFullSource(), getPos().getStop());
 	}
 
-	private void calculateLineCol()
+	public String getStartSourcePrefix()
 	{
-		String source = getFullSource();
-		int offset = pos.getStart();
-		int lastLineFeed = source.lastIndexOf("\n", offset);
-
-		line = 1;
-		if (lastLineFeed == -1)
-		{
-			col = offset+1;
-		}
-		else
-		{
-			col = 1;
-			for (int i = 0; i < offset; ++i)
-			{
-				if (source.charAt(i) == '\n')
-				{
-					++line;
-					col = 0;
-				}
-				++col;
-			}
-		}
+		return Utils.getSourcePrefix(getFullSource(), startPos.getStart());
 	}
 
-	public int getLine()
+	public String getStartSourceSuffix()
 	{
-		if (line == -1)
-			calculateLineCol();
-		return line;
+		return Utils.getSourceSuffix(getFullSource(), startPos.getStop());
 	}
 
-	public int getCol()
+	public String getStopSourcePrefix()
 	{
-		if (col == -1)
-			calculateLineCol();
-		return col;
+		return stopPos != null ? Utils.getSourcePrefix(getFullSource(), stopPos.getStart()) : null;
+	}
+
+	public String getStopSourceSuffix()
+	{
+		return stopPos != null ? Utils.getSourceSuffix(getFullSource(), stopPos.getStop()) : null;
+	}
+
+	public int getStartLine()
+	{
+		if (startLineCol == null)
+			startLineCol = new LineCol(getFullSource(), getStartPos().getStart());
+		return startLineCol.getLine();
+	}
+
+	public int getStartCol()
+	{
+		if (startLineCol == null)
+			startLineCol = new LineCol(getFullSource(), getStartPos().getStart());
+		return startLineCol.getCol();
+	}
+
+	public int getStopLine()
+	{
+		if (stopPos == null)
+			return -1;
+		if (stopLineCol == null)
+			stopLineCol = new LineCol(getFullSource(), getStopPos().getStop());
+		return stopLineCol.getLine();
+	}
+
+	public int getStopCol()
+	{
+		if (stopPos == null)
+			return -1;
+		if (stopLineCol == null)
+			stopLineCol = new LineCol(getFullSource(), getStopPos().getStop());
+		return stopLineCol.getCol();
 	}
 
 	public void decorateException(Throwable ex)
@@ -333,18 +369,17 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		encoder.dump(template);
-		encoder.dump(pos);
+		encoder.dump(startPos);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		template = (InterpretedTemplate)decoder.load();
-		pos = (Slice)decoder.load();
-		line = -1;
-		col = -1;
+		setStartPos((Slice)decoder.load());
+		setStopPos(null);
 	}
 
-	protected static Set<String> attributes = makeSet("type", "template", "pos", "line", "col", "fullsource", "source", "sourceprefix", "sourcesuffix");
+	protected static Set<String> attributes = makeSet("type", "template", "pos", "startpos", "startline", "startcol", "fullsource", "startsource", "source", "sourceprefix", "sourcesuffix", "startsourceprefix", "startsourcesuffix");
 
 	public Set<String> dirUL4()
 	{
@@ -360,19 +395,27 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 			case "template":
 				return template;
 			case "pos":
-				return pos;
-			case "line":
-				return getLine();
-			case "col":
-				return getCol();
+				return getPos();
+			case "startpos":
+				return getStartPos();
+			case "startline":
+				return getStartLine();
+			case "startcol":
+				return getStartCol();
 			case "fullsource":
 				return getFullSource();
+			case "startsource":
+				return getStartSource();
 			case "source":
 				return getSource();
 			case "sourceprefix":
 				return getSourcePrefix();
 			case "sourcesuffix":
 				return getSourceSuffix();
+			case "startsourceprefix":
+				return getStartSourcePrefix();
+			case "startsourcesuffix":
+				return getStartSourceSuffix();
 			default:
 				throw new AttributeException(this, key);
 		}
@@ -381,13 +424,14 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 	protected void reprPosLineCol(UL4Repr.Formatter formatter)
 	{
 		formatter.append(" pos=(");
+		Slice pos = getPos();
 		formatter.visit(pos.getStart());
 		formatter.append(":");
 		formatter.visit(pos.getStop());
 		formatter.append(") line=");
-		formatter.visit(getLine());
+		formatter.visit(getStartLine());
 		formatter.append(" col=");
-		formatter.visit(getCol());
+		formatter.visit(getStartCol());
 	}
 
 	public void reprUL4(UL4Repr.Formatter formatter)

@@ -35,7 +35,7 @@ public class RenderAST extends CallRenderAST
 	 */
 	public RenderAST(CallAST call)
 	{
-		super(call.template, call.pos, call.obj);
+		super(call.template, call.startPos, call.obj);
 		this.indent = null;
 		this.arguments = call.arguments;
 	}

@@ -261,10 +261,10 @@ literal returns [CodeAST node]
 fragment
 seqitem returns [SeqItemASTBase node]
 	:
-		e=expr_if { $node = new SeqItemAST(tag.getTemplate(), $e.node.getPos().withStop($e.node.getPos().getStop()), $e.node); }
+		e=expr_if { $node = new SeqItemAST(tag.getTemplate(), $e.node.getStartPos().withStop($e.node.getStartPos().getStop()), $e.node); }
 	|
 		star='*'
-		es=expr_if { $node = new UnpackSeqItemAST(tag.getTemplate(), new Slice(getStartPos($star), $es.node.getPos().getStop()), $es.node); }
+		es=expr_if { $node = new UnpackSeqItemAST(tag.getTemplate(), new Slice(getStartPos($star), $es.node.getStartPos().getStop()), $es.node); }
 	;
 
 list returns [ListAST node]
@@ -279,7 +279,7 @@ list returns [ListAST node]
 			e2=seqitem { $node.append($e2.node); }
 		)*
 		','?
-		close=']' { $node.setStopPos(getStopPos($close)); }
+		close=']' { $node.setStartPosStop(getStopPos($close)); }
 	;
 
 listcomprehension returns [ListComprehensionAST node]
@@ -315,7 +315,7 @@ set returns [SetAST node]
 			e2=seqitem { $node.append($e2.node); }
 		)*
 		','?
-		close='}' { $node.setStopPos(getStopPos($close)); }
+		close='}' { $node.setStartPosStop(getStopPos($close)); }
 	;
 
 setcomprehension returns [SetComprehensionAST node]
@@ -343,10 +343,10 @@ dictitem returns [DictItemASTBase node]
 	:
 		k=expr_if
 		':'
-		v=expr_if { $node = new DictItemAST(tag.getTemplate(), new Slice($k.node.getPos().getStart(), $v.node.getPos().getStop()), $k.node, $v.node); }
+		v=expr_if { $node = new DictItemAST(tag.getTemplate(), new Slice($k.node.getStartPos().getStart(), $v.node.getStartPos().getStop()), $k.node, $v.node); }
 	|
 		star='**'
-		e=expr_if { $node = new UnpackDictItemAST(tag.getTemplate(), new Slice(getStartPos($star), $e.node.getPos().getStop()), $e.node); }
+		e=expr_if { $node = new UnpackDictItemAST(tag.getTemplate(), new Slice(getStartPos($star), $e.node.getStartPos().getStop()), $e.node); }
 	;
 
 dict returns [DictAST node]
@@ -361,7 +361,7 @@ dict returns [DictAST node]
 			i2=dictitem { $node.append($i2.node); }
 		)*
 		','?
-		close='}' { $node.setStopPos(getStopPos($close)); }
+		close='}' { $node.setStartPosStop(getStopPos($close)); }
 	;
 
 dictcomprehension returns [DictComprehensionAST node]
@@ -396,11 +396,11 @@ generatorexpression returns [GeneratorExpressionAST node]
 		'for'
 		n=nestedlvalue
 		'in'
-		container=expr_if { _end = $container.node.getPos().getStop(); }
+		container=expr_if { _end = $container.node.getStartPos().getStop(); }
 		(
 			'if'
-			condition=expr_if { _condition = $condition.node; _end = $condition.node.getPos().getStop(); }
-		)? { $node = new GeneratorExpressionAST(tag.getTemplate(), new Slice($item.node.getPos().getStart(), _end), $item.node, $n.lvalue, $container.node, _condition); }
+			condition=expr_if { _condition = $condition.node; _end = $condition.node.getStartPos().getStop(); }
+		)? { $node = new GeneratorExpressionAST(tag.getTemplate(), new Slice($item.node.getStartPos().getStart(), _end), $item.node, $n.lvalue, $container.node, _condition); }
 	;
 
 atom returns [CodeAST node]
@@ -411,8 +411,8 @@ atom returns [CodeAST node]
 	| e_setcomp=setcomprehension { $node = $e_setcomp.node; }
 	| e_dict=dict { $node = $e_dict.node; }
 	| e_dictcomp=dictcomprehension { $node = $e_dictcomp.node; }
-	| open='(' e_genexpr=generatorexpression close=')' { $node = $e_genexpr.node; $node.setStartPos(getStartPos($open)); $node.setStopPos(getStopPos($close)); }
-	| open='(' e_bracket=expr_if close=')' { $node = $e_bracket.node; $node.setStartPos(getStartPos($open)); $node.setStopPos(getStopPos($close)); }
+	| open='(' e_genexpr=generatorexpression close=')' { $node = $e_genexpr.node; $node.setStartPosStart(getStartPos($open)); $node.setStartPosStop(getStopPos($close)); }
+	| open='(' e_bracket=expr_if close=')' { $node = $e_bracket.node; $node.setStartPosStart(getStartPos($open)); $node.setStartPosStop(getStopPos($close)); }
 	;
 
 /* For variable unpacking in assignments and for loops */
@@ -446,7 +446,7 @@ slice returns [SliceAST node]
 	}
 	:
 		(
-			e1=expr_if { startIndex = $e1.node; startPos = $e1.node.getPos().getStart(); }
+			e1=expr_if { startIndex = $e1.node; startPos = $e1.node.getStartPos().getStart(); }
 		)?
 		colon=':' {
 			if (startPos == -1)
@@ -454,7 +454,7 @@ slice returns [SliceAST node]
 			endPos = getStopPos($colon);
 		}
 		(
-			e2=expr_if { stopIndex = $e2.node; endPos = $e2.node.getPos().getStop(); }
+			e2=expr_if { stopIndex = $e2.node; endPos = $e2.node.getStartPos().getStop(); }
 		)? { $node = new SliceAST(tag.getTemplate(), new Slice(startPos, endPos), startIndex, stopIndex); }
 	;
 
@@ -463,15 +463,15 @@ slice returns [SliceAST node]
 fragment
 argument returns [ArgumentASTBase node]
 	:
-		e=exprarg { $node = new PositionalArgumentAST(tag.getTemplate(), $e.node.getPos(), $e.node); }
+		e=exprarg { $node = new PositionalArgumentAST(tag.getTemplate(), $e.node.getStartPos(), $e.node); }
 	|
-		en=name '=' ev=exprarg { $node = new KeywordArgumentAST(tag.getTemplate(), new Slice($en.node.getPos().getStart(), $ev.node.getPos().getStop()), $en.text, $ev.node); }
+		en=name '=' ev=exprarg { $node = new KeywordArgumentAST(tag.getTemplate(), new Slice($en.node.getStartPos().getStart(), $ev.node.getStartPos().getStop()), $en.text, $ev.node); }
 	|
 		star='*'
-		es=exprarg { $node = new UnpackListArgumentAST(tag.getTemplate(), new Slice(getStartPos($star), $es.node.getPos().getStop()), $es.node); }
+		es=exprarg { $node = new UnpackListArgumentAST(tag.getTemplate(), new Slice(getStartPos($star), $es.node.getStartPos().getStop()), $es.node); }
 	|
 		star='**'
-		ess=exprarg { $node = new UnpackDictArgumentAST(tag.getTemplate(), new Slice(getStartPos($star), $ess.node.getPos().getStop()), $ess.node); }
+		ess=exprarg { $node = new UnpackDictArgumentAST(tag.getTemplate(), new Slice(getStartPos($star), $ess.node.getStartPos().getStop()), $ess.node); }
 	;
 
 expr_subscript returns [CodeAST node]
@@ -480,10 +480,10 @@ expr_subscript returns [CodeAST node]
 		(
 			/* Attribute access */
 			'.'
-			n=name { $node = new AttrAST(tag.getTemplate(), new Slice($e1.node.getPos().getStart(), $n.node.getPos().getStop()), $node, $n.text); }
+			n=name { $node = new AttrAST(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), $n.node.getStartPos().getStop()), $node, $n.text); }
 		|
 			/* Function/method call */
-			'(' { $node = new CallAST(tag.getTemplate(), new Slice($e1.node.getPos().getStart()), $node); }
+			'(' { $node = new CallAST(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart()), $node); }
 			(
 				a1=argument { $a1.node.addToCall((CallAST)$node); }
 				(
@@ -492,17 +492,17 @@ expr_subscript returns [CodeAST node]
 				)*
 				','?
 			)*
-			close=')' { $node.setStopPos(getStopPos($close)); }
+			close=')' { $node.setStartPosStop(getStopPos($close)); }
 		|
 			/* Item access */
 			'['
 			e2_if=expr_if
-			close=']' { $node = ItemAST.make(tag.getTemplate(), new Slice($e1.node.getPos().getStart(), getStopPos($close)), $node, $e2_if.node); }
+			close=']' { $node = ItemAST.make(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), getStopPos($close)), $node, $e2_if.node); }
 		|
 			/* Slice access */
 			'['
 			e2_slice=slice
-			close=']' { $node = ItemAST.make(tag.getTemplate(), new Slice($e1.node.getPos().getStart(), getStopPos($close)), $node, $e2_slice.node); }
+			close=']' { $node = ItemAST.make(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), getStopPos($close)), $node, $e2_slice.node); }
 		)*
 	;
 
@@ -511,9 +511,9 @@ expr_unary returns [CodeAST node]
 	:
 		e1=expr_subscript { $node = $e1.node; }
 	|
-		minus='-' e2=expr_unary { $node = NegAST.make(tag.getTemplate(), new Slice(getStartPos($minus), $e2.node.getPos().getStop()), $e2.node); }
+		minus='-' e2=expr_unary { $node = NegAST.make(tag.getTemplate(), new Slice(getStartPos($minus), $e2.node.getStartPos().getStop()), $e2.node); }
 	|
-		bitnot='~' e2=expr_unary { $node = BitNotAST.make(tag.getTemplate(), new Slice(getStartPos($bitnot), $e2.node.getPos().getStop()), $e2.node); }
+		bitnot='~' e2=expr_unary { $node = BitNotAST.make(tag.getTemplate(), new Slice(getStartPos($bitnot), $e2.node.getStartPos().getStop()), $e2.node); }
 	;
 
 /* Multiplication, division, modulo */
@@ -536,7 +536,7 @@ expr_mul returns [CodeAST node]
 				'%' { opcode = 3; }
 			)
 			e2=expr_unary {
-				pos = new Slice($node.getPos().getStart(), $e2.node.getPos().getStop());
+				pos = new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop());
 				switch (opcode)
 				{
 					case 0:
@@ -572,7 +572,7 @@ expr_add returns [CodeAST node]
 				'-' { add = false; }
 			)
 			e2=expr_mul {
-				pos = new Slice($node.getPos().getStart(), $e2.node.getPos().getStop());
+				pos = new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop());
 				$node = add ? AddAST.make(tag.getTemplate(), pos, $node, $e2.node) : SubAST.make(tag.getTemplate(), pos, $node, $e2.node);
 			}
 		)*
@@ -594,7 +594,7 @@ expr_bitshift returns [CodeAST node]
 				'>>' { left = false; }
 			)
 			e2=expr_add {
-				pos = new Slice($node.getPos().getStart(), $e2.node.getPos().getStop());
+				pos = new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop());
 				$node = left ? ShiftLeftAST.make(tag.getTemplate(), pos, $node, $e2.node) : ShiftRightAST.make(tag.getTemplate(), pos, $node, $e2.node); }
 		)*
 	;
@@ -605,7 +605,7 @@ expr_bitand returns [CodeAST node]
 		e1=expr_bitshift { $node = $e1.node; }
 		(
 			'&'
-			e2=expr_bitshift { $node = BitAndAST.make(tag.getTemplate(), new Slice($node.getPos().getStart(), $e2.node.getPos().getStop()), $node, $e2.node); }
+			e2=expr_bitshift { $node = BitAndAST.make(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
 		)*
 	;
 
@@ -615,7 +615,7 @@ expr_bitxor returns [CodeAST node]
 		e1=expr_bitand { $node = $e1.node; }
 		(
 			'^'
-			e2=expr_bitand { $node = BitXOrAST.make(tag.getTemplate(), new Slice($node.getPos().getStart(), $e2.node.getPos().getStop()), $node, $e2.node); }
+			e2=expr_bitand { $node = BitXOrAST.make(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
 		)*
 	;
 
@@ -625,7 +625,7 @@ expr_bitor returns [CodeAST node]
 		e1=expr_bitxor { $node = $e1.node; }
 		(
 			'|'
-			e2=expr_bitxor { $node = BitOrAST.make(tag.getTemplate(), new Slice($node.getPos().getStart(), $e2.node.getPos().getStop()), $node, $e2.node); }
+			e2=expr_bitxor { $node = BitOrAST.make(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
 		)*
 	;
 
@@ -661,7 +661,7 @@ expr_cmp returns [CodeAST node]
 				'is' 'not' { opcode = 9; }
 			)
 			e2=expr_bitor {
-				pos = new Slice($node.getPos().getStart(), $e2.node.getPos().getStop());
+				pos = new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop());
 				switch (opcode)
 					{
 						case 0:
@@ -704,7 +704,7 @@ expr_not returns [CodeAST node]
 	:
 		e1=expr_cmp { $node = $e1.node; }
 	|
-		n='not' e2=expr_not { $node = NotAST.make(tag.getTemplate(), new Slice(getStartPos($n), $e2.node.getPos().getStop()), $e2.node); }
+		n='not' e2=expr_not { $node = NotAST.make(tag.getTemplate(), new Slice(getStartPos($n), $e2.node.getStartPos().getStop()), $e2.node); }
 	;
 
 /* And operator */
@@ -713,7 +713,7 @@ expr_and returns [CodeAST node]
 		e1=expr_not { $node = $e1.node; }
 		(
 			'and'
-			e2=expr_not { $node = AndAST.make(tag.getTemplate(), new Slice($node.getPos().getStart(), $e2.node.getPos().getStop()), $node, $e2.node); }
+			e2=expr_not { $node = AndAST.make(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
 		)*
 	;
 
@@ -723,7 +723,7 @@ expr_or returns [CodeAST node]
 		e1=expr_and { $node = $e1.node; }
 		(
 			'or'
-			e2=expr_and { $node = OrAST.make(tag.getTemplate(), new Slice($node.getPos().getStart(), $e2.node.getPos().getStop()), $node, $e2.node); }
+			e2=expr_and { $node = OrAST.make(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
 		)*
 	;
 
@@ -735,7 +735,7 @@ expr_if returns [CodeAST node]
 			'if'
 			e2=expr_or
 			'else'
-			e3=expr_or { $node = IfAST.make(tag.getTemplate(), new Slice($e1.node.getPos().getStart(), $e3.node.getPos().getStop()), $e1.node, $e2.node, $e3.node); }
+			e3=expr_or { $node = IfAST.make(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), $e3.node.getStartPos().getStop()), $e1.node, $e2.node, $e3.node); }
 		)?
 	;
 
@@ -756,7 +756,7 @@ for_ returns [ForBlockAST node]
 	:
 		n=nestedlvalue
 		'in'
-		e=expr_if { $node = new ForBlockAST(tag.getTemplate(), tag.getCodePos(), $n.lvalue, $e.node); }
+		e=expr_if { $node = new ForBlockAST(tag.getTemplate(), tag.getStartPos(), null, $n.lvalue, $e.node); }
 		EOF
 	;
 
@@ -841,7 +841,7 @@ signature returns [SignatureAST node]
 		)?
 		','?
 	)
-	close=')' { $node.setStopPos(getStopPos($close)); }
+	close=')' { $node.setStartPosStop(getStopPos($close)); }
 ;
 
 

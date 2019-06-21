@@ -8,14 +8,14 @@ package com.livinglogic.ul4;
 
 class ConditionalBlocks extends BlockAST
 {
-	public ConditionalBlocks(InterpretedTemplate template, Slice pos)
+	public ConditionalBlocks(InterpretedTemplate template, Slice startPos, Slice stopPos)
 	{
-		super(template, pos);
+		super(template, startPos, stopPos);
 	}
 
-	public ConditionalBlocks(InterpretedTemplate template, Slice pos, IfBlockAST block)
+	public ConditionalBlocks(InterpretedTemplate template, Slice startPos, Slice stopPos, IfBlockAST block)
 	{
-		super(template, pos);
+		super(template, startPos, stopPos);
 		startNewBlock(block);
 	}
 
@@ -57,7 +57,10 @@ class ConditionalBlocks extends BlockAST
 		super.finish(endtag);
 		BlockAST lastBlock = getLastBlock();
 		if (lastBlock != null)
-			lastBlock.setStopPos(endtag.getPos().start);
+		{
+			int stop = endtag.getStartPos().getStart();
+			lastBlock.setStopPos(stop, stop);
+		}
 	}
 
 	@Override
@@ -92,7 +95,8 @@ class ConditionalBlocks extends BlockAST
 		if (content.size() != 0)
 		{
 			BlockAST lastBlock = getLastBlock();
-			lastBlock.setStopPos(item.getPos().start);
+			int start = item.getStartPos().getStart();
+			lastBlock.setStopPos(start, start);
 		}
 		content.add(item);
 	}

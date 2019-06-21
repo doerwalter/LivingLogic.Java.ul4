@@ -87,7 +87,7 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("renderblocks"))
 			throw new BlockException("renderblocks ended by end" + type);
-		setStopPos(endtag.getPos().stop);
+		setStopPos(endtag.getStartPos());
 	}
 
 	@Override
@@ -124,16 +124,18 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
+		encoder.dump(stopPos);
 		encoder.dump(content);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
+		setStopPos((Slice)decoder.load());
 		content = (List<AST>)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(RenderAST.attributes, "endtag", "content");
+	protected static Set<String> attributes = makeExtendedSet(RenderAST.attributes, "stoppos", "stopline", "stopcol", "stopsource", "stopsourceprefix", "stopsourcesuffix", "content");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -144,6 +146,18 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 	{
 		switch (key)
 		{
+			case "stoppos":
+				return stopPos;
+			case "stopline":
+				return getStopLine();
+			case "stopcol":
+				return getStopCol();
+			case "stopsource":
+				return getStopSource();
+			case "stopsourceprefix":
+				return getStopSourcePrefix();
+			case "stopsourcesuffix":
+				return getStopSourceSuffix();
 			case "content":
 				return content;
 			default:

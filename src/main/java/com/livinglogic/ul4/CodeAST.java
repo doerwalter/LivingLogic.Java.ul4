@@ -21,13 +21,18 @@ import com.livinglogic.ul4on.UL4ONSerializable;
  */
 public abstract class CodeAST extends AST
 {
+	protected CodeAST(InterpretedTemplate template, Slice startPos, Slice stopPos)
+	{
+		super(template, startPos, stopPos);
+	}
+
 	/**
 	 * Create a new {@code CodeAST} object.
 	 * @param template The {@code InterpretedTemplate} object this node belongs to.
 	 * @param pos The slice in the template source, where the source for this object is located.
 	 */
-	public CodeAST(InterpretedTemplate template, Slice pos)
+	public CodeAST(InterpretedTemplate template, Slice startPos)
 	{
-		super(template, pos);
+		super(template, startPos);
 	}
 }

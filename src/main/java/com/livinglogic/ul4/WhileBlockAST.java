@@ -18,9 +18,9 @@ public class WhileBlockAST extends BlockAST
 {
 	protected AST condition;
 
-	public WhileBlockAST(InterpretedTemplate template, Slice pos, AST condition)
+	public WhileBlockAST(InterpretedTemplate template, Slice startPos, Slice stopPos, AST condition)
 	{
-		super(template, pos);
+		super(template, startPos, stopPos);
 		this.condition = condition;
 	}
 

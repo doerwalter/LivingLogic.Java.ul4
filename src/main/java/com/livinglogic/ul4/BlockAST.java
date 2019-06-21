@@ -20,9 +20,9 @@ abstract class BlockAST extends CodeAST implements BlockLike
 {
 	protected List<AST> content = new LinkedList<AST>();
 
-	public BlockAST(InterpretedTemplate template, Slice pos)
+	public BlockAST(InterpretedTemplate template, Slice startPos, Slice stopPos)
 	{
-		super(template, pos);
+		super(template, startPos, stopPos);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ abstract class BlockAST extends CodeAST implements BlockLike
 
 	public void finish(Tag endtag)
 	{
-		setStopPos(endtag.getPos().stop);
+		setStopPos(endtag.getStartPos());
 	}
 
 	public List<AST> getContent()
@@ -97,16 +97,18 @@ abstract class BlockAST extends CodeAST implements BlockLike
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
+		encoder.dump(stopPos);
 		encoder.dump(content);
 	}
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
+		setStopPos((Slice)decoder.load());
 		content = (List<AST>)decoder.load();
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "content");
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "stoppos", "stopline", "stopcol", "stopsource", "stopsourceprefix", "stopsourcesuffix", "content");
 
 	public Set<String> getAttributeNamesUL4()
 	{
@@ -117,6 +119,18 @@ abstract class BlockAST extends CodeAST implements BlockLike
 	{
 		switch (key)
 		{
+			case "stoppos":
+				return stopPos;
+			case "stopline":
+				return stopPos == null ? null : getStopLine();
+			case "stopcol":
+				return stopPos == null ? null : getStopCol();
+			case "stopsource":
+				return getStopSource();
+			case "stopsourceprefix":
+				return getStopSourcePrefix();
+			case "stopsourcesuffix":
+				return getStopSourceSuffix();
 			case "content":
 				return content;
 			default:

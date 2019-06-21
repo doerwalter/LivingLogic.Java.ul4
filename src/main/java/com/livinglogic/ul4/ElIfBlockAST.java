@@ -8,9 +8,9 @@ package com.livinglogic.ul4;
 
 class ElIfBlockAST extends ConditionalBlockWithCondition
 {
-	public ElIfBlockAST(InterpretedTemplate template, Slice pos, CodeAST condition)
+	public ElIfBlockAST(InterpretedTemplate template, Slice startPos, Slice stopPos, CodeAST condition)
 	{
-		super(template, pos, condition);
+		super(template, startPos, stopPos, condition);
 	}
 
 	public String getType()

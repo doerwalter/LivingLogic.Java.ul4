@@ -60,27 +60,27 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 	{
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("offset ");
-		Slice pos = location.getPos();
+		Slice pos = location.getStartPos();
 		buffer.append(pos.getStart());
 		buffer.append(":");
 		buffer.append(pos.getStop());
 		buffer.append("; line ");
-		buffer.append(location.getLine());
+		buffer.append(location.getStartLine());
 		buffer.append("; col ");
-		buffer.append(location.getCol());
+		buffer.append(location.getStartCol());
 		return buffer.toString();
 	}
 
 	private static String sourceSnippet(AST location)
 	{
 		StringBuilder buffer = new StringBuilder();
-		Slice pos = location.getPos();
+		Slice pos = location.getStartPos();
 		InterpretedTemplate template = location.getTemplate();
 		String source = template.getFullSource();
 
-		String prefix = rawRepr(location.getSourcePrefix());
-		String code = rawRepr(location.getSource());
-		String suffix = rawRepr(location.getSourceSuffix());
+		String prefix = rawRepr(location.getStartSourcePrefix());
+		String code = rawRepr(location.getStartSource());
+		String suffix = rawRepr(location.getStartSourceSuffix());
 		buffer.append(prefix);
 		buffer.append(code);
 		buffer.append(suffix);

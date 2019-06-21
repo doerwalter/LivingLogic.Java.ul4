@@ -4960,10 +4960,10 @@ public class UL4Test
 		catch (Exception exc)
 		{
 			checkTemplateOutput("<com.livinglogic.ul4.MulAST pos=(11:14) line=1 col=12>", "<?print repr(exc.context.location)?>", "exc", exc);
-			checkTemplateOutput("1", "<?print exc.context.location.line?>", "exc", exc);
-			checkTemplateOutput("12", "<?print exc.context.location.col?>", "exc", exc);
-			checkTemplateOutput("foo<?print ", "<?print exc.context.location.sourceprefix?>", "exc", exc);
-			checkTemplateOutput("?>bar", "<?print exc.context.location.sourcesuffix?>", "exc", exc);
+			checkTemplateOutput("1", "<?print exc.context.location.startline?>", "exc", exc);
+			checkTemplateOutput("12", "<?print exc.context.location.startcol?>", "exc", exc);
+			checkTemplateOutput("foo<?print ", "<?print exc.context.location.startsourceprefix?>", "exc", exc);
+			checkTemplateOutput("?>bar", "<?print exc.context.location.startsourcesuffix?>", "exc", exc);
 		}
 
 		try
@@ -5032,8 +5032,8 @@ public class UL4Test
 		String source = "<?def lower?><?print t.lower()?><?end def?>";
 
 		checkTemplateOutput(source, source + "<?print lower.source?>");
-		checkTemplateOutput(source, source + "<?print lower.parenttemplate.source[lower.pos]?>");
-		checkTemplateOutput("<?print t.lower()?>", source + "<?print lower.parenttemplate.source[lower.content[0].pos.start:lower.content[-1].pos.stop]?>");
+		checkTemplateOutput("<?def lower?>", source + "<?print lower.parenttemplate.source[lower.startpos]?>");
+		checkTemplateOutput("<?print t.lower()?>", source + "<?print lower.parenttemplate.source[lower.startpos.stop:lower.stoppos.start]?>");
 		checkTemplateOutput("lower", source + "<?print lower.name?>");
 		checkTemplateOutput("None", source + "<?print repr(lower.parenttemplate.name)?>");
 	}

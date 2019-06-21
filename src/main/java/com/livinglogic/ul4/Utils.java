@@ -872,4 +872,62 @@ public class Utils
 			ex = innerEx;
 		}
 	}
+
+	public static String getSourcePrefix(String source, int pos)
+	{
+		int outerStartPos = pos;
+		int innerStartPos = outerStartPos;
+		int maxPrefix = 40;
+		boolean found = false; // Have we found a natural stopping position?
+		while (maxPrefix > 0)
+		{
+			// We arrived at the start of the source code
+			if (outerStartPos == 0)
+			{
+				found = true;
+				break;
+			}
+			// We arrived at the start of the line
+			if (source.charAt(outerStartPos-1) == '\n')
+			{
+				found = true;
+				break;
+			}
+			--maxPrefix;
+			--outerStartPos;
+		}
+		String result = source.substring(outerStartPos, innerStartPos);
+		if (!found)
+			result = "\u2026" + result;
+		return result;
+	}
+
+	public static String getSourceSuffix(String source, int pos)
+	{
+		int outerStopPos = pos;
+		int innerStopPos = outerStopPos;
+		int maxSuffix = 40;
+		boolean found = false; // Have we found a natural stopping position?
+		while (maxSuffix > 0)
+		{
+			// We arrived at the end of the source code
+			if (outerStopPos >= source.length())
+			{
+				found = true;
+				break;
+			}
+			// We arrived at the end of the line
+			if (source.charAt(outerStopPos) == '\n')
+			{
+				found = true;
+				break;
+			}
+			--maxSuffix;
+			++outerStopPos;
+		}
+		String result = source.substring(innerStopPos, outerStopPos);
+		if (!found)
+			result += "\u2026";
+		return result;
+	}
 }
