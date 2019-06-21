@@ -92,7 +92,7 @@ public class FunctionAsJSON extends Function
 		{
 			LocalDate date = (LocalDate)obj;
 			builder
-				.append("new ul4.Date(")
+				.append("new ul4.Date_(")
 				.append(date.getYear())
 				.append(", ")
 				.append(date.getMonthValue())
