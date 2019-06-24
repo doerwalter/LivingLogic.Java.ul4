@@ -1,7 +1,5 @@
-exp-139 (2019-06-??)
+exp-140 (2019-06-24)
 --------------------
-
-Expose the attribute ``items`` of ``com.livinglogic.ul4.SetAST`` to UL4.
 
 Added the following UL4 attributes to ``AST``: ``startpos``, ``startline``,
 ``stopcol``, ``startsource``, ``startsourceprefix`` and ``startsourcesuffix``.
@@ -9,6 +7,12 @@ Added the following UL4 attributes to ``AST``: ``startpos``, ``startline``,
 Added the following UL4 attributes to block like AST nodes: ``stoppos``,
 ``stopline``, ``stopcol``, ``stopsource``, ``stopsourceprefix`` and
 ``stopsourcesuffix``.
+
+
+exp-139 (2019-06-18)
+--------------------
+
+Expose the attribute ``items`` of ``com.livinglogic.ul4.SetAST`` to UL4.
 
 
 exp-138 (2019-02-26)
