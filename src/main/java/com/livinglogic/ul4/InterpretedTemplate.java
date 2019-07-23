@@ -1440,7 +1440,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 						innerIndent = commonPrefix(innerIndent, indentString);
 				}
 			}
-			indentEndCol = innerIndent.length();
+			indentEndCol = innerIndent != null ? innerIndent.length() : indentStartCol;
 		}
 
 		public boolean containsCol(int col)
