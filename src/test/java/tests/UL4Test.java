@@ -5606,7 +5606,7 @@ public class UL4Test
 	public void whitespace_smart_empty_block()
 	{
 		String source = "<?whitespace smart?>\n<?if bug?>\n<?end if?>\n";
-		checkTemplateOutput("42", source, "data", 42);
+		checkTemplateOutput("", source);
 	}
 
 	@Test
