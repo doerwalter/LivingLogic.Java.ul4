@@ -1,7 +1,13 @@
+exp-142 (2019-07-23)
+--------------------
+
+Fixed version number in ``pom.xml``.
+
+
 exp-141 (2019-07-23)
 --------------------
 
-Fixed a ``NullPointerException`` in ``InterpretedTemplate.Block.setIndent``..
+Fixed a ``NullPointerException`` in ``InterpretedTemplate.Block.setIndent``.
 
 
 exp-140 (2019-06-24)
