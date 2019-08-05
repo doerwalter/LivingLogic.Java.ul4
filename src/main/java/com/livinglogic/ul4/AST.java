@@ -149,7 +149,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 		setStopPos(stopPos == null ? new Slice(false, true, -1, stop) : stopPos.withStop(stop));
 	}
 
-	private Slice getPos()
+	public Slice getPos()
 	{
 		return stopPos == null ? startPos : new Slice(startPos.getStart(), stopPos.getStop());
 	}
