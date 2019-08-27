@@ -1,3 +1,12 @@
+exp-145 (2019-08-27)
+--------------------
+
+Implemented or exposed the following methods in the ``Utils`` class:
+``exceptionAsMap()``, ``getExceptionChainAsList()``,
+``getExceptionChainAsJSON()``, ``getExceptionChainAsText()`` and
+``getExceptionChainAsHTML()``.
+
+
 exp-144 (2019-08-27)
 --------------------
 

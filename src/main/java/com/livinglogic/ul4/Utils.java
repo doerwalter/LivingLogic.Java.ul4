@@ -1010,7 +1010,15 @@ public class Utils
 		buffer.append("<li>");
 		if (t instanceof LocationException)
 		{
-
+			AST ast = ((LocationException)t).getLocation();
+			buffer.append("<p>");
+			buffer.append(ast.getTemplateDescriptionHTML());
+			buffer.append(": ");
+			buffer.append(ast.getLocationDescriptionHTML());
+			buffer.append("<p>");
+			buffer.append("<pre>");
+			buffer.append(ast.getSourceSnippetHTML());
+			buffer.append("</pre>");
 		}
 		else
 		{
@@ -1019,6 +1027,7 @@ public class Utils
 			buffer.append(FunctionXMLEscape.call(t.getClass().getName()));
 			buffer.append("</b>: ");
 			buffer.append(FunctionXMLEscape.call(t.toString()));
+			buffer.append("</p>");
 		}
 		buffer.append("</li>");
 	}
