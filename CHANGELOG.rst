@@ -1,3 +1,11 @@
+exp-145-1 (2019-08-27)
+----------------------
+
+Make the following methods in ``Utils`` public: ``getExceptionChainAsList()``,
+``getExceptionChainAsJSON()``, ``getExceptionChainAsText()`` and
+``getExceptionChainAsHTML()``.
+
+
 exp-145 (2019-08-27)
 --------------------
 

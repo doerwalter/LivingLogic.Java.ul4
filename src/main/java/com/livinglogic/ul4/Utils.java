@@ -976,7 +976,7 @@ public class Utils
 		return chain;
 	}
 
-	private static String getExceptionChainAsJSON(Throwable t)
+	public static String getExceptionChainAsJSON(Throwable t)
 	{
 		List<Map<String, Object>> chain = getExceptionChainAsList(t);
 		return FunctionAsJSON.call(chain);
@@ -993,7 +993,7 @@ public class Utils
 		buffer.append(t.toString());
 	}
 
-	private static String getExceptionChainAsText(Throwable t)
+	public static String getExceptionChainAsText(Throwable t)
 	{
 		StringBuilder buffer = new StringBuilder();
 		addExceptionText2Buffer(buffer, t);
@@ -1032,7 +1032,7 @@ public class Utils
 		buffer.append("</li>");
 	}
 
-	private static String getExceptionChainAsHTML(Throwable t)
+	public static String getExceptionChainAsHTML(Throwable t)
 	{
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("<ul>");
