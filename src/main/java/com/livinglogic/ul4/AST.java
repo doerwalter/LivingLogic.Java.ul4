@@ -371,9 +371,9 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 		InterpretedTemplate template = getTemplate();
 		String source = template.getFullSource();
 
-		String prefix = rawRepr(getStartSourcePrefix());
-		String code = rawRepr(getStartSource());
-		String suffix = rawRepr(getStartSourceSuffix());
+		String prefix = getStartSourcePrefix();
+		String code = getStartSource();
+		String suffix = getStartSourceSuffix();
 		buffer.append(FunctionXMLEscape.call(prefix));
 		buffer.append("<u>");
 		buffer.append(FunctionXMLEscape.call(code));
