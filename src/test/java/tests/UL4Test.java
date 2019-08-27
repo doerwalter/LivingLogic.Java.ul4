@@ -4959,7 +4959,7 @@ public class UL4Test
 		}
 		catch (Exception exc)
 		{
-			checkTemplateOutput("<com.livinglogic.ul4.MulAST pos=(11:14) line=1 col=12>", "<?print repr(exc.context.location)?>", "exc", exc);
+			checkTemplateOutput("<com.livinglogic.ul4.MulAST pos=(11:14) line=1 column=12>", "<?print repr(exc.context.location)?>", "exc", exc);
 			checkTemplateOutput("1", "<?print exc.context.location.startline?>", "exc", exc);
 			checkTemplateOutput("12", "<?print exc.context.location.startcol?>", "exc", exc);
 			checkTemplateOutput("foo<?print ", "<?print exc.context.location.startsourceprefix?>", "exc", exc);
@@ -4972,7 +4972,7 @@ public class UL4Test
 		}
 		catch (Exception exc)
 		{
-			checkTemplateOutput("<com.livinglogic.ul4.ConditionalBlocks pos=(1:9) line=1 col=2>", "<?print repr(exc.context.location)?>", "exc", exc);
+			checkTemplateOutput("<com.livinglogic.ul4.ConditionalBlocks pos=(1:9) line=1 column=2>", "<?print repr(exc.context.location)?>", "exc", exc);
 		}
 	}
 

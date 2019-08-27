@@ -1,3 +1,12 @@
+exp-144 (2019-08-27)
+--------------------
+
+Added the following methods to the class ``AST``:
+``getTemplateDescriptionText()``, ``getTemplateDescriptionHTML()``,
+``getLocationDescriptionText()``, ``getLocationDescriptionHTML()``,
+``getSourceSnippetText()`` and ``getSourceSnippetHTML()``.
+
+
 exp-143-1 (2019-08-05)
 ----------------------
 

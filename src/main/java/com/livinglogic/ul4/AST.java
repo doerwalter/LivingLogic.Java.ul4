@@ -11,6 +11,8 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 import java.io.IOException;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.UL4ONSerializable;
@@ -238,6 +240,148 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 		return stopLineCol.getCol();
 	}
 
+	private static String rawRepr(String string)
+	{
+		string = FunctionRepr.call(string);
+		return string.substring(1, string.length()-1);
+	}
+
+	/**
+	 * Return a description of the template that this AST node is part of
+	 * in text form.
+	 *
+	 * The return value looks something like this:
+	 * <code>in local template 'foo' in 'bar'</code>.
+	 */
+	public String getTemplateDescriptionText()
+	{
+		StringBuilder buffer = new StringBuilder();
+		String name = null;
+		InterpretedTemplate template = getTemplate();
+		buffer.append(template.parentTemplate != null ? "in local template " : "in template ");
+		boolean first = true;
+		while (template != null)
+		{
+			if (first)
+				first = false;
+			else
+				buffer.append(" in ");
+			name = template.nameUL4();
+			buffer.append(name == null ? "(unnamed)" : FunctionRepr.call(name));
+			template = template.parentTemplate;
+		}
+		return buffer.toString();
+	}
+
+	/**
+	 * Return a description of the template that this AST node is part of
+	 * in HTML form.
+	 *
+	 * The return value looks something like this:
+	 * <code>in local template &lt;b&gt;foo&lt;/b&gt; in &lt;b&gt;bar&lt;/b&gt;</code>.
+	 */
+	public String getTemplateDescriptionHTML()
+	{
+		StringBuilder buffer = new StringBuilder();
+		String name = null;
+		InterpretedTemplate template = getTemplate();
+		buffer.append(template.parentTemplate != null ? "in local template " : "in template ");
+		boolean first = true;
+		while (template != null)
+		{
+			if (first)
+				first = false;
+			else
+				buffer.append(" in ");
+			buffer.append("<b>");
+			name = template.nameUL4();
+			buffer.append(name == null ? "(unnamed)" : FunctionXMLEscape.call(rawRepr(name)));
+			buffer.append("</b>");
+			template = template.parentTemplate;
+		}
+		return buffer.toString();
+	}
+
+	/**
+	 * Return a description of the location of this AST node in text form.
+	 *
+	 * The return value looks something like this:
+	 * <code>offset 75:88; line 5, column 10</code>.
+	 */
+	public String getLocationDescriptionText()
+	{
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("offset ");
+		Slice pos = getStartPos();
+		buffer.append(pos.getStart());
+		buffer.append(":");
+		buffer.append(pos.getStop());
+		buffer.append("; line ");
+		buffer.append(getStartLine());
+		buffer.append("; column ");
+		buffer.append(getStartCol());
+		return buffer.toString();
+	}
+
+	/**
+	 * Return a description of the location of this AST node in HTML form.
+	 *
+	 * The return value looks something like this:
+	 * <code>offset &lt;b&gt;75:88&lt;/b&gt;; line &lt;b&gt;5&lt;/b&gt;, column &lt;b&gt;10&lt;/b&gt;</code>.
+	 */
+	public String getLocationDescriptionHTML()
+	{
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("offset <b>");
+		Slice pos = getStartPos();
+		buffer.append(pos.getStart());
+		buffer.append(":");
+		buffer.append(pos.getStop());
+		buffer.append("</b>; line <b>");
+		buffer.append(getStartLine());
+		buffer.append("</b>; column <b>");
+		buffer.append(getStartCol());
+		buffer.append("</b>");
+		return buffer.toString();
+	}
+
+	public String getSourceSnippetText()
+	{
+		StringBuilder buffer = new StringBuilder();
+		Slice pos = getStartPos();
+		InterpretedTemplate template = getTemplate();
+		String source = template.getFullSource();
+
+		String prefix = rawRepr(getStartSourcePrefix());
+		String code = rawRepr(getStartSource());
+		String suffix = rawRepr(getStartSourceSuffix());
+		buffer.append(prefix);
+		buffer.append(code);
+		buffer.append(suffix);
+		buffer.append("\n");
+		buffer.append(StringUtils.repeat(" ", prefix.length()));
+		buffer.append(StringUtils.repeat("~", code.length()));
+		return buffer.toString();
+	}
+
+	public String getSourceSnippetHTML()
+	{
+		StringBuilder buffer = new StringBuilder();
+		Slice pos = getStartPos();
+		InterpretedTemplate template = getTemplate();
+		String source = template.getFullSource();
+
+		String prefix = rawRepr(getStartSourcePrefix());
+		String code = rawRepr(getStartSource());
+		String suffix = rawRepr(getStartSourceSuffix());
+		buffer.append(FunctionXMLEscape.call(prefix));
+		buffer.append("<u>");
+		buffer.append(FunctionXMLEscape.call(code));
+		buffer.append("</u>");
+		buffer.append(FunctionXMLEscape.call(suffix));
+		return buffer.toString();
+	}
+
 	public void decorateException(Throwable ex)
 	{
 		ex = findInnermostException(ex);
@@ -430,7 +574,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 		formatter.visit(pos.getStop());
 		formatter.append(") line=");
 		formatter.visit(getStartLine());
-		formatter.append(" col=");
+		formatter.append(" column=");
 		formatter.visit(getStartCol());
 	}
 

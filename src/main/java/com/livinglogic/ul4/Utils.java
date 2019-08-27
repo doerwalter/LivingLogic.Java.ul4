@@ -18,8 +18,11 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.List;
 import java.util.ArrayList;
+import static java.util.Arrays.asList;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import static com.livinglogic.utils.MapUtils.makeMap;
 
 
 class StringIterator implements Iterator<String>
@@ -929,5 +932,103 @@ public class Utils
 		if (!found)
 			result += "\u2026";
 		return result;
+	}
+
+	public static Map<String, Object> exceptionAsMap(Throwable t)
+	{
+		Map<String, Object> result = makeMap(
+			"type", t.getClass().getName(),
+			"message", t.getMessage()
+		);
+		if (t instanceof LocationException)
+		{
+			AST ast = ((LocationException)t).getLocation();
+			result.put("pos", asList(ast.getPos().getStart(), ast.getPos().getStop()));
+			result.put("line", ast.getStartLine());
+			result.put("col", ast.getStartCol());
+			result.put("source", ast.getStartSource());
+			result.put("sourceprefix", ast.getStartSourcePrefix());
+			result.put("sourcesuffix", ast.getStartSourceSuffix());
+			List<String> names = new ArrayList<String>();
+			InterpretedTemplate template = ast.getTemplate();
+			while (template != null)
+			{
+				names.add(template.nameUL4());
+				template = template.getParentTemplate();
+			}
+			result.put("names", names);
+		}
+		return result;
+	}
+
+	private static void addChainedExceptionToList(Throwable t, ArrayList<Map<String, Object>> chain)
+	{
+		Throwable inner = getInnerException(t);
+		if (inner != null)
+			addChainedExceptionToList(inner, chain);
+		chain.add(exceptionAsMap(t));
+	}
+
+	public static List<Map<String, Object>> getExceptionChainAsList(Throwable t)
+	{
+		ArrayList<Map<String, Object>> chain = new ArrayList<Map<String, Object>>();
+		addChainedExceptionToList(t, chain);
+		return chain;
+	}
+
+	private static String getExceptionChainAsJSON(Throwable t)
+	{
+		List<Map<String, Object>> chain = getExceptionChainAsList(t);
+		return FunctionAsJSON.call(chain);
+	}
+
+	private static void addExceptionText2Buffer(StringBuilder buffer, Throwable t)
+	{
+		Throwable inner = getInnerException(t);
+		if (inner != null)
+		{
+			addExceptionText2Buffer(buffer, inner);
+			buffer.append("\n\n");
+		}
+		buffer.append(t.toString());
+	}
+
+	private static String getExceptionChainAsText(Throwable t)
+	{
+		StringBuilder buffer = new StringBuilder();
+		addExceptionText2Buffer(buffer, t);
+		return buffer.toString();
+	}
+
+	private static void addExceptionHTML2Buffer(StringBuilder buffer, Throwable t)
+	{
+		Throwable inner = getInnerException(t);
+		if (inner != null)
+		{
+			addExceptionHTML2Buffer(buffer, inner);
+		}
+		buffer.append("<li>");
+		if (t instanceof LocationException)
+		{
+
+		}
+		else
+		{
+			buffer.append("<p>");
+			buffer.append("<b>");
+			buffer.append(FunctionXMLEscape.call(t.getClass().getName()));
+			buffer.append("</b>: ");
+			buffer.append(FunctionXMLEscape.call(t.toString()));
+		}
+		buffer.append("</li>");
+	}
+
+	private static String getExceptionChainAsHTML(Throwable t)
+	{
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("<ul>");
+		addExceptionHTML2Buffer(buffer, t);
+		buffer.append("</ul>");
+		return buffer.toString();
 	}
 }
