@@ -361,7 +361,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 		public String nameUL4()
 		{
-			return "timedelta.days";
+			return "days";
 		}
 
 		public Object evaluate(BoundArguments args)
@@ -379,7 +379,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 		public String nameUL4()
 		{
-			return "timedelta.seconds";
+			return "seconds";
 		}
 
 		public Object evaluate(BoundArguments args)
@@ -397,7 +397,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 		public String nameUL4()
 		{
-			return "timedelta.microseconds";
+			return "microseconds";
 		}
 
 		public Object evaluate(BoundArguments args)

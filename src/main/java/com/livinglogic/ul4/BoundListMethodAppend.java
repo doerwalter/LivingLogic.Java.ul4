@@ -18,7 +18,7 @@ public class BoundListMethodAppend extends BoundMethod<List>
 
 	public String nameUL4()
 	{
-		return "list.append";
+		return "append";
 	}
 
 	private static final Signature signature = new Signature("items", Signature.remainingParameters);

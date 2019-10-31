@@ -21,7 +21,7 @@ public class BoundDateMethodMinute extends BoundMethod<Date>
 
 	public String nameUL4()
 	{
-		return "date.minute";
+		return "minute";
 	}
 
 	public static int call(Date obj)

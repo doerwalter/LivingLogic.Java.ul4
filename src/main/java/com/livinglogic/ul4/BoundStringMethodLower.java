@@ -18,7 +18,7 @@ public class BoundStringMethodLower extends BoundMethod<String>
 
 	public String nameUL4()
 	{
-		return "str.lower";
+		return "lower";
 	}
 
 	public static String call(String object)

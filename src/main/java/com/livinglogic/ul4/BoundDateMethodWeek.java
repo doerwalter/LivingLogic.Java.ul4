@@ -20,7 +20,7 @@ public class BoundDateMethodWeek extends BoundMethod<Date>
 
 	public String nameUL4()
 	{
-		return "date.week";
+		return "week";
 	}
 
 	private static final Signature signature = new Signature("firstweekday", 0, "mindaysinfirstweek", 4);

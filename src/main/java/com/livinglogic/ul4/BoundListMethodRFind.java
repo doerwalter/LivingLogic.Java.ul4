@@ -18,7 +18,7 @@ public class BoundListMethodRFind extends BoundMethod<List>
 
 	public String nameUL4()
 	{
-		return "list.rfind";
+		return "rfind";
 	}
 
 	private static final Signature signature = new Signature("sub", Signature.required, "start", null, "end", null);

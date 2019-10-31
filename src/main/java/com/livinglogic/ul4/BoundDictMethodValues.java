@@ -19,7 +19,7 @@ public class BoundDictMethodValues extends BoundMethod<Map>
 
 	public String nameUL4()
 	{
-		return "dict.values";
+		return "values";
 	}
 
 	public static Object call(Map object)

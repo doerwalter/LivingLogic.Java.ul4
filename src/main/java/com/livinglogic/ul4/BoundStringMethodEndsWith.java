@@ -19,7 +19,7 @@ public class BoundStringMethodEndsWith extends BoundMethod<String>
 
 	public String nameUL4()
 	{
-		return "str.endswith";
+		return "endswith";
 	}
 
 	private static final Signature signature = new Signature("suffix", Signature.required);

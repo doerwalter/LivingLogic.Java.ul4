@@ -21,7 +21,7 @@ public class BoundDateMethodMIMEFormat extends BoundMethod<Date>
 
 	public String nameUL4()
 	{
-		return "date.mimeformat";
+		return "mimeformat";
 	}
 
 	private static SimpleDateFormat mimeDateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);

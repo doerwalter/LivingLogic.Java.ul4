@@ -18,7 +18,7 @@ public class BoundSetMethodClear extends BoundMethod<Set>
 
 	public String nameUL4()
 	{
-		return "set.clear";
+		return "clear";
 	}
 
 	public static void call(Set object)

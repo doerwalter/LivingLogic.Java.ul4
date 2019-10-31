@@ -20,7 +20,7 @@ public class BoundDictMethodPop extends BoundMethod<Map>
 
 	public String nameUL4()
 	{
-		return "dict.pop";
+		return "pop";
 	}
 
 	public static Object call(Map object)

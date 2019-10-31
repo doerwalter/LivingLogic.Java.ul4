@@ -99,8 +99,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 
 		public String nameUL4()
 		{
-			String name = object.nameUL4();
-			return (name != null ? name : "template") + ".renders";
+			return "renders";
 		}
 
 		public Signature getSignature()
@@ -123,8 +122,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 
 		public String nameUL4()
 		{
-			String name = object.nameUL4();
-			return (name != null ? name : "template") + ".render";
+			return "render";
 		}
 
 		public Signature getSignature()

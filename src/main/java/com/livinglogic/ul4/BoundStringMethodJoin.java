@@ -19,7 +19,7 @@ public class BoundStringMethodJoin extends BoundMethod<String>
 
 	public String nameUL4()
 	{
-		return "str.join";
+		return "join";
 	}
 
 	private static final Signature signature = new Signature("iterable", Signature.required);

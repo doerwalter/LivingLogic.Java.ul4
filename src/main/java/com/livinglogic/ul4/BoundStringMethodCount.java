@@ -18,7 +18,7 @@ public class BoundStringMethodCount extends BoundMethod<String>
 
 	public String nameUL4()
 	{
-		return "str.count";
+		return "count";
 	}
 
 	private static final Signature signature = new Signature("sub", Signature.required, "start", null, "end", null);

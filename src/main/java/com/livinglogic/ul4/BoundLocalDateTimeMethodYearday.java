@@ -17,7 +17,7 @@ public class BoundLocalDateTimeMethodYearday extends BoundMethod<LocalDateTime>
 
 	public String nameUL4()
 	{
-		return "datetime.yearday";
+		return "yearday";
 	}
 
 	public static int call(LocalDateTime obj)

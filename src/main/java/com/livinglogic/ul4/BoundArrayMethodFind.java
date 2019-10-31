@@ -18,7 +18,7 @@ public class BoundArrayMethodFind extends BoundMethod<Object[]>
 
 	public String nameUL4()
 	{
-		return "list.find";
+		return "find";
 	}
 
 	private static final Signature signature = new Signature("sub", Signature.required, "start", null, "end", null);

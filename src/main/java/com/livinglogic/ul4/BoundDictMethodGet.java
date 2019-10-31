@@ -18,7 +18,7 @@ public class BoundDictMethodGet extends BoundMethod<Map>
 
 	public String nameUL4()
 	{
-		return "dict.get";
+		return "get";
 	}
 
 	private static final Signature signature = new Signature("key", Signature.required, "default", null);

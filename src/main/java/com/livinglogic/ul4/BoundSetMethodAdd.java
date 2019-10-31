@@ -18,7 +18,7 @@ public class BoundSetMethodAdd extends BoundMethod<Set>
 
 	public String nameUL4()
 	{
-		return "set.add";
+		return "add";
 	}
 
 	private static final Signature signature = new Signature("object", Signature.remainingParameters);

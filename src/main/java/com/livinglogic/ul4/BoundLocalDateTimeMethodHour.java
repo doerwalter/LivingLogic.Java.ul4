@@ -20,7 +20,7 @@ public class BoundLocalDateTimeMethodHour extends BoundMethod<LocalDateTime>
 
 	public String nameUL4()
 	{
-		return "datetime.hour";
+		return "hour";
 	}
 
 	public static int call(LocalDateTime obj)

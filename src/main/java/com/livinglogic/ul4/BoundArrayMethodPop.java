@@ -18,7 +18,7 @@ public class BoundArrayMethodPop extends BoundMethod<Object[]>
 
 	public String nameUL4()
 	{
-		return "list.pop";
+		return "pop";
 	}
 
 	private static final Signature signature = new Signature("pos", -1);

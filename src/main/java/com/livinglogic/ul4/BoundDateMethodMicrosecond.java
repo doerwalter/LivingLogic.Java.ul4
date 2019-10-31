@@ -21,7 +21,7 @@ public class BoundDateMethodMicrosecond extends BoundMethod<Date>
 
 	public String nameUL4()
 	{
-		return "date.microsecond";
+		return "microsecond";
 	}
 
 	public static int call(Date obj)

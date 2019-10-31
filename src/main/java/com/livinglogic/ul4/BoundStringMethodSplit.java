@@ -20,7 +20,7 @@ public class BoundStringMethodSplit extends BoundMethod<String>
 
 	public String nameUL4()
 	{
-		return "str.split";
+		return "split";
 	}
 
 	private static final Signature signature = new Signature("sep", null, "count", null);

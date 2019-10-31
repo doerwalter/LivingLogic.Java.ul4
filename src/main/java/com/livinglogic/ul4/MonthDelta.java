@@ -179,7 +179,7 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 
 		public String nameUL4()
 		{
-			return "monthdelta.months";
+			return "months";
 		}
 
 		public Object evaluate(BoundArguments args)

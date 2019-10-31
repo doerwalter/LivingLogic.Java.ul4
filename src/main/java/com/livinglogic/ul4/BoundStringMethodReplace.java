@@ -20,7 +20,7 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 
 	public String nameUL4()
 	{
-		return "str.replace";
+		return "replace";
 	}
 
 	private static final Signature signature = new Signature("old", Signature.required, "new", Signature.required, "count", null);

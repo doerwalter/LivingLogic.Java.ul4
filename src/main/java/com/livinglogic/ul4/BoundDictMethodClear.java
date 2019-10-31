@@ -18,7 +18,7 @@ public class BoundDictMethodClear extends BoundMethod<Map>
 
 	public String nameUL4()
 	{
-		return "dict.clear";
+		return "clear";
 	}
 
 	public static void call(Map object)

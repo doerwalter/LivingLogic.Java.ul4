@@ -20,7 +20,7 @@ public class BoundDateMethodISOFormat extends BoundMethod<Date>
 
 	public String nameUL4()
 	{
-		return "date.isoformat";
+		return "isoformat";
 	}
 
 	private static SimpleDateFormat formatter0 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");

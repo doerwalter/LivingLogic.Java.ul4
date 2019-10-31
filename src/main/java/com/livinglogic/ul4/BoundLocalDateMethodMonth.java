@@ -21,7 +21,7 @@ public class BoundLocalDateMethodMonth extends BoundMethod<LocalDate>
 
 	public String nameUL4()
 	{
-		return "date.month";
+		return "month";
 	}
 
 	public static int call(LocalDate obj)

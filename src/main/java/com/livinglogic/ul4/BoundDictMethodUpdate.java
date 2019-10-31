@@ -18,7 +18,7 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 
 	public String nameUL4()
 	{
-		return "dict.update";
+		return "update";
 	}
 
 	private static final Signature signature = new Signature("others", Signature.remainingParameters, "kwargs", Signature.remainingKeywordParameters);

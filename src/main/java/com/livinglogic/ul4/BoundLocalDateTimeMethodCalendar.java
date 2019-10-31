@@ -18,7 +18,7 @@ public class BoundLocalDateTimeMethodCalendar extends BoundMethod<LocalDateTime>
 
 	public String nameUL4()
 	{
-		return "datetime.calendar";
+		return "calendar";
 	}
 
 	private static final Signature signature = new Signature("firstweekday", 0, "mindaysinfirstweek", 4);

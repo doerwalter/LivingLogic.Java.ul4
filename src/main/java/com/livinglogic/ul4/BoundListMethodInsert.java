@@ -18,7 +18,7 @@ public class BoundListMethodInsert extends BoundMethod<List>
 
 	public String nameUL4()
 	{
-		return "list.insert";
+		return "insert";
 	}
 
 	private static final Signature signature = new Signature("pos", Signature.required, "items", Signature.remainingParameters);

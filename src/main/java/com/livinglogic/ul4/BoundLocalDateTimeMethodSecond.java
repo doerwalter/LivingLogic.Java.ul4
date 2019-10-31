@@ -17,7 +17,7 @@ public class BoundLocalDateTimeMethodSecond extends BoundMethod<LocalDateTime>
 
 	public String nameUL4()
 	{
-		return "datetime.second";
+		return "second";
 	}
 
 	public static int call(LocalDateTime obj)

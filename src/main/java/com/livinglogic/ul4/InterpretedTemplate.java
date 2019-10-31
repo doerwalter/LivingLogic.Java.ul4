@@ -1706,8 +1706,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 		public String nameUL4()
 		{
-			String name = object.nameUL4();
-			return (name != null ? name : "template") + ".renders";
+			return "renders";
 		}
 
 		public Signature getSignature()
@@ -1732,8 +1731,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 
 		public String nameUL4()
 		{
-			String name = object.nameUL4();
-			return (name != null ? name : "template") + ".render";
+			return "render";
 		}
 
 		public Signature getSignature()

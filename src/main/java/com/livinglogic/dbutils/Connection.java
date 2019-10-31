@@ -197,7 +197,7 @@ public class Connection implements UL4GetAttr, UL4Dir
 
 		public String nameUL4()
 		{
-			return "connection.queryargs";
+			return "queryargs";
 		}
 
 		private static final Signature signature = new Signature("query", Signature.required, "args", Signature.remainingParameters);
@@ -224,7 +224,7 @@ public class Connection implements UL4GetAttr, UL4Dir
 
 		public String nameUL4()
 		{
-			return "connection.query";
+			return "query";
 		}
 
 		private static final Signature signature = new Signature("args", Signature.remainingParameters);
@@ -249,7 +249,7 @@ public class Connection implements UL4GetAttr, UL4Dir
 
 		public String nameUL4()
 		{
-			return "connection.execute";
+			return "execute";
 		}
 
 		private static final Signature signature = new Signature("args", Signature.remainingParameters);

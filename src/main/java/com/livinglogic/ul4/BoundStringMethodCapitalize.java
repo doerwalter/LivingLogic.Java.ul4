@@ -18,7 +18,7 @@ public class BoundStringMethodCapitalize extends BoundMethod<String>
 
 	public String nameUL4()
 	{
-		return "str.capitalize";
+		return "capitalize";
 	}
 
 	public static String call(String object)

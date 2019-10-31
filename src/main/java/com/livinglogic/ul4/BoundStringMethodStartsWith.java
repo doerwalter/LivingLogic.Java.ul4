@@ -19,7 +19,7 @@ public class BoundStringMethodStartsWith extends BoundMethod<String>
 
 	public String nameUL4()
 	{
-		return "str.startswith";
+		return "startswith";
 	}
 
 	private static final Signature signature = new Signature("prefix", Signature.required);

@@ -20,7 +20,7 @@ public class BoundStringMethodStrip extends BoundMethod<String>
 
 	public String nameUL4()
 	{
-		return "str.strip";
+		return "strip";
 	}
 
 	private static final Signature signature = new Signature("chars", null);

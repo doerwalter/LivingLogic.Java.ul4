@@ -19,7 +19,7 @@ public class BoundLocalDateMethodMIMEFormat extends BoundMethod<LocalDate>
 
 	public String nameUL4()
 	{
-		return "date.mimeformat";
+		return "mimeformat";
 	}
 
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy", Locale.US);

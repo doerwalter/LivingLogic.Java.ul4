@@ -22,7 +22,7 @@ public class BoundDateMethodWeekday extends BoundMethod<Date>
 
 	public String nameUL4()
 	{
-		return "date.weekday";
+		return "weekday";
 	}
 
 	public static int call(Date obj)

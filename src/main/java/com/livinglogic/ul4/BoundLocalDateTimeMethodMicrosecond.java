@@ -17,7 +17,7 @@ public class BoundLocalDateTimeMethodMicrosecond extends BoundMethod<LocalDateTi
 
 	public String nameUL4()
 	{
-		return "datetime.microsecond";
+		return "microsecond";
 	}
 
 	public static int call(LocalDateTime obj)

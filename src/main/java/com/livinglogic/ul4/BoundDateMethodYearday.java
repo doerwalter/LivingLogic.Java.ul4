@@ -21,7 +21,7 @@ public class BoundDateMethodYearday extends BoundMethod<Date>
 
 	public String nameUL4()
 	{
-		return "date.yearday";
+		return "yearday";
 	}
 
 	public static int call(Date obj)

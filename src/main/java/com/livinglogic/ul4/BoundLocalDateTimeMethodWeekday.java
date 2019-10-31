@@ -17,7 +17,7 @@ public class BoundLocalDateTimeMethodWeekday extends BoundMethod<LocalDateTime>
 
 	public String nameUL4()
 	{
-		return "datetime.weekday";
+		return "weekday";
 	}
 
 	public static int call(LocalDateTime obj)

@@ -1,3 +1,9 @@
+HEAD (2019-11-??)
+-----------------
+
+Removed the "type name" from ``nameUL4`` for all bound methods.
+
+
 exp-145-1 (2019-08-27)
 ----------------------
 

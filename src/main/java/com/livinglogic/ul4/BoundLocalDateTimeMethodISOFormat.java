@@ -19,7 +19,7 @@ public class BoundLocalDateTimeMethodISOFormat extends BoundMethod<LocalDateTime
 
 	public String nameUL4()
 	{
-		return "datetime.isoformat";
+		return "isoformat";
 	}
 
 	private static DateTimeFormatter formatter0 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss", Locale.US);

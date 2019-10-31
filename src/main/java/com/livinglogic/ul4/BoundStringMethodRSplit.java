@@ -22,7 +22,7 @@ public class BoundStringMethodRSplit extends BoundMethod<String>
 
 	public String nameUL4()
 	{
-		return "str.rsplit";
+		return "rsplit";
 	}
 
 	private static final Signature signature = new Signature("sep", null, "count", null);

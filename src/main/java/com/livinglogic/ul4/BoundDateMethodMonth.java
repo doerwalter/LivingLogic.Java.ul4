@@ -21,7 +21,7 @@ public class BoundDateMethodMonth extends BoundMethod<Date>
 
 	public String nameUL4()
 	{
-		return "date.month";
+		return "month";
 	}
 
 	public static int call(Date obj)

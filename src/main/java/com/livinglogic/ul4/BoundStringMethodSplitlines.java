@@ -21,7 +21,7 @@ public class BoundStringMethodSplitlines extends BoundMethod<String>
 
 	public String nameUL4()
 	{
-		return "str.splitlines";
+		return "splitlines";
 	}
 
 	private static final Signature signature = new Signature("keepends", false);

@@ -18,7 +18,7 @@ public class BoundStringMethodUpper extends BoundMethod<String>
 
 	public String nameUL4()
 	{
-		return "str.upper";
+		return "upper";
 	}
 
 	public static String call(String object)

@@ -724,7 +724,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.r";
+			return "r";
 		}
 
 		public Object evaluate(BoundArguments args)
@@ -742,7 +742,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.g";
+			return "g";
 		}
 
 		public Object evaluate(BoundArguments args)
@@ -760,7 +760,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.b";
+			return "b";
 		}
 
 		public Object evaluate(BoundArguments args)
@@ -778,7 +778,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.a";
+			return "a";
 		}
 
 		public Object evaluate(BoundArguments args)
@@ -796,7 +796,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.lum";
+			return "lum";
 		}
 
 		public Object evaluate(BoundArguments args)
@@ -814,7 +814,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.hls";
+			return "hls";
 		}
 
 		public Object evaluate(BoundArguments args)
@@ -832,7 +832,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.hlsa";
+			return "hlsa";
 		}
 
 		public Object evaluate(BoundArguments args)
@@ -850,7 +850,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.hsv";
+			return "hsv";
 		}
 
 		public Object evaluate(BoundArguments args)
@@ -868,7 +868,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.hsva";
+			return "hsva";
 		}
 
 		public Object evaluate(BoundArguments args)
@@ -886,7 +886,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.witha";
+			return "witha";
 		}
 
 		private static final Signature signature = new Signature("a", Signature.required);
@@ -911,7 +911,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.withlum";
+			return "withlum";
 		}
 
 		private static final Signature signature = new Signature("lum", Signature.required);
@@ -936,7 +936,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.abslum";
+			return "abslum";
 		}
 
 		private static final Signature signature = new Signature("f", Signature.required);
@@ -961,7 +961,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		public String nameUL4()
 		{
-			return "color.rellum";
+			return "rellum";
 		}
 
 		private static final Signature signature = new Signature("f", Signature.required);
