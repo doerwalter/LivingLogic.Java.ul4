@@ -31,7 +31,7 @@ public abstract class BoundMethodWithContext<T> extends FunctionWithContext
 
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
-		formatter.append("<method ");
+		formatter.append("<bound method ");
 		formatter.append(nameUL4());
 		formatter.append(" of ");
 		formatter.append(Utils.objectType(object));
