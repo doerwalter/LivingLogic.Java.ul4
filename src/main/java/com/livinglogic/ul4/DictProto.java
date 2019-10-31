@@ -73,6 +73,8 @@ public class DictProto extends Proto
 				return new BoundDictMethodUpdate(object);
 			case "clear":
 				return new BoundDictMethodClear(object);
+			case "pop":
+				return new BoundDictMethodPop(object);
 			default:
 				Object result = object.get(key);
 

@@ -4803,6 +4803,8 @@ public class UL4Test
 	{
 		checkTemplateOutput("42;17;23;", "<?code l = [17, 23, 42]?><?print l.pop()?>;<?print l.pop(-2)?>;<?print l.pop(0)?>;");
 		checkTemplateOutput("42;17;23;", "<?code l = [17, 23, 42]?><?code m = l.pop?><?print m()?>;<?print m(-2)?>;<?print m(0)?>;");
+		checkTemplateOutput("23;73;{}", "<?code d = {17: 23, 42: 73}?><?print d.pop(17)?>;<?print d.pop(42)?>;<?print d?>");
+		checkTemplateOutput("23;42;{42: 73}", "<?code d = {17: 23, 42: 73}?><?print d.pop(17)?>;<?print d.pop(43, 42)?>;<?print d?>");
 	}
 
 	@Test
