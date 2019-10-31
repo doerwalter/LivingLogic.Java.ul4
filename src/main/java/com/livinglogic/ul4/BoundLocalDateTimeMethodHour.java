@@ -18,6 +18,7 @@ public class BoundLocalDateTimeMethodHour extends BoundMethod<LocalDateTime>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "hour";
@@ -28,6 +29,7 @@ public class BoundLocalDateTimeMethodHour extends BoundMethod<LocalDateTime>
 		return obj.getHour();
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

@@ -18,6 +18,7 @@ public class BoundDateMethodWeek extends BoundMethod<Date>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "week";
@@ -25,6 +26,7 @@ public class BoundDateMethodWeek extends BoundMethod<Date>
 
 	private static final Signature signature = new Signature("firstweekday", 0, "mindaysinfirstweek", 4);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -49,6 +51,7 @@ public class BoundDateMethodWeek extends BoundMethod<Date>
 		return week;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		int firstWeekday = Utils.toInt(args.get(0));

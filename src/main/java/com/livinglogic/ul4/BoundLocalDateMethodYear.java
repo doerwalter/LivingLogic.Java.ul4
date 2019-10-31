@@ -19,6 +19,7 @@ public class BoundLocalDateMethodYear extends BoundMethod<LocalDate>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "year";
@@ -29,6 +30,7 @@ public class BoundLocalDateMethodYear extends BoundMethod<LocalDate>
 		return obj.getYear();
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

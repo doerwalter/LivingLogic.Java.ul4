@@ -16,6 +16,7 @@ public class BoundSetMethodAdd extends BoundMethod<Set>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "add";
@@ -23,6 +24,7 @@ public class BoundSetMethodAdd extends BoundMethod<Set>
 
 	private static final Signature signature = new Signature("object", Signature.remainingParameters);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -33,6 +35,7 @@ public class BoundSetMethodAdd extends BoundMethod<Set>
 		set.addAll(objects);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		call(object, (List<Object>)args.get(0));

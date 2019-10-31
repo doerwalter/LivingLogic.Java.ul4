@@ -15,6 +15,7 @@ public class BoundLocalDateTimeMethodWeekday extends BoundMethod<LocalDateTime>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "weekday";
@@ -25,6 +26,7 @@ public class BoundLocalDateTimeMethodWeekday extends BoundMethod<LocalDateTime>
 		return obj.getDayOfWeek().getValue()-1;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

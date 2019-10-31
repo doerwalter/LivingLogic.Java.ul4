@@ -16,6 +16,7 @@ public class BoundLocalDateTimeMethodCalendar extends BoundMethod<LocalDateTime>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "calendar";
@@ -23,6 +24,7 @@ public class BoundLocalDateTimeMethodCalendar extends BoundMethod<LocalDateTime>
 
 	private static final Signature signature = new Signature("firstweekday", 0, "mindaysinfirstweek", 4);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -33,6 +35,7 @@ public class BoundLocalDateTimeMethodCalendar extends BoundMethod<LocalDateTime>
 		return BoundLocalDateMethodCalendar.call(object.toLocalDate(), firstWeekday, minDaysInFirstWeek);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		int firstWeekday = Utils.toInt(args.get(0));

@@ -15,6 +15,7 @@ public class BoundLocalDateTimeMethodYearday extends BoundMethod<LocalDateTime>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "yearday";
@@ -25,6 +26,7 @@ public class BoundLocalDateTimeMethodYearday extends BoundMethod<LocalDateTime>
 		return obj.getDayOfYear();
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

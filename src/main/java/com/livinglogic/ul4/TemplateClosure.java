@@ -97,16 +97,19 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "renders";
 		}
 
+		@Override
 		public Signature getSignature()
 		{
 			return object.signature;
 		}
 
+		@Override
 		public Object evaluate(EvaluationContext context, BoundArguments arguments)
 		{
 			return object.renders(context, arguments.byName());
@@ -120,16 +123,19 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "render";
 		}
 
+		@Override
 		public Signature getSignature()
 		{
 			return object.signature;
 		}
 
+		@Override
 		public Object evaluate(EvaluationContext context, BoundArguments arguments)
 		{
 			object.render(context, arguments.byName());

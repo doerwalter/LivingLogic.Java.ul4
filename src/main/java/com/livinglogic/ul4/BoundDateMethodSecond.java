@@ -19,6 +19,7 @@ public class BoundDateMethodSecond extends BoundMethod<Date>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "second";
@@ -31,6 +32,7 @@ public class BoundDateMethodSecond extends BoundMethod<Date>
 		return calendar.get(Calendar.SECOND);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

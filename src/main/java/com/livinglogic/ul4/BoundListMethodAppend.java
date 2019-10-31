@@ -16,6 +16,7 @@ public class BoundListMethodAppend extends BoundMethod<List>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "append";
@@ -23,6 +24,7 @@ public class BoundListMethodAppend extends BoundMethod<List>
 
 	private static final Signature signature = new Signature("items", Signature.remainingParameters);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -33,6 +35,7 @@ public class BoundListMethodAppend extends BoundMethod<List>
 		object.addAll(items);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		call(object, (List<Object>)args.get(0));

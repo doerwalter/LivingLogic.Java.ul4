@@ -19,6 +19,7 @@ public class BoundDateMethodHour extends BoundMethod<Date>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "hour";
@@ -31,6 +32,7 @@ public class BoundDateMethodHour extends BoundMethod<Date>
 		return calendar.get(Calendar.HOUR_OF_DAY);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

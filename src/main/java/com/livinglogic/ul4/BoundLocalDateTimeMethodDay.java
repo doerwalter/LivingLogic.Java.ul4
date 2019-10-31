@@ -19,6 +19,7 @@ public class BoundLocalDateTimeMethodDay extends BoundMethod<LocalDateTime>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "day";
@@ -29,6 +30,7 @@ public class BoundLocalDateTimeMethodDay extends BoundMethod<LocalDateTime>
 		return obj.getDayOfMonth();
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

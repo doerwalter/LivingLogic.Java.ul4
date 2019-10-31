@@ -16,6 +16,7 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "update";
@@ -23,6 +24,7 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 
 	private static final Signature signature = new Signature("others", Signature.remainingParameters, "kwargs", Signature.remainingKeywordParameters);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -51,6 +53,7 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 		object.putAll(kwargs);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		call(object, (List<Object>)args.get(0), (Map<String, Object>)args.get(1));

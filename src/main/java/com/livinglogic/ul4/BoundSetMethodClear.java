@@ -16,6 +16,7 @@ public class BoundSetMethodClear extends BoundMethod<Set>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "clear";
@@ -26,6 +27,7 @@ public class BoundSetMethodClear extends BoundMethod<Set>
 		object.clear();
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		call(object);

@@ -195,6 +195,7 @@ public class Connection implements UL4GetAttr, UL4Dir
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "queryargs";
@@ -202,11 +203,13 @@ public class Connection implements UL4GetAttr, UL4Dir
 
 		private static final Signature signature = new Signature("query", Signature.required, "args", Signature.remainingParameters);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			if (!(args.get(0) instanceof String))
@@ -222,6 +225,7 @@ public class Connection implements UL4GetAttr, UL4Dir
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "query";
@@ -229,11 +233,13 @@ public class Connection implements UL4GetAttr, UL4Dir
 
 		private static final Signature signature = new Signature("args", Signature.remainingParameters);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.query(context, (List)args.get(0));
@@ -247,6 +253,7 @@ public class Connection implements UL4GetAttr, UL4Dir
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "execute";
@@ -254,11 +261,13 @@ public class Connection implements UL4GetAttr, UL4Dir
 
 		private static final Signature signature = new Signature("args", Signature.remainingParameters);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			object.execute(context, (List)args.get(0));

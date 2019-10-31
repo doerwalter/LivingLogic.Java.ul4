@@ -16,6 +16,7 @@ public class BoundStringMethodLower extends BoundMethod<String>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "lower";
@@ -26,6 +27,7 @@ public class BoundStringMethodLower extends BoundMethod<String>
 		return object.toLowerCase();
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

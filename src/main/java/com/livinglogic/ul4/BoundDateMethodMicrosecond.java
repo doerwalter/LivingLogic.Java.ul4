@@ -19,6 +19,7 @@ public class BoundDateMethodMicrosecond extends BoundMethod<Date>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "microsecond";
@@ -31,6 +32,7 @@ public class BoundDateMethodMicrosecond extends BoundMethod<Date>
 		return calendar.get(Calendar.MILLISECOND)*1000;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

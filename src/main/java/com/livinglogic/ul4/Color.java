@@ -722,11 +722,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "r";
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return (int)object.r;
@@ -740,11 +742,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "g";
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return (int)object.g;
@@ -758,11 +762,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "b";
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return (int)object.b;
@@ -776,11 +782,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "a";
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return (int)object.a;
@@ -794,11 +802,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "lum";
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return object.lum();
@@ -812,11 +822,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "hls";
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return object.hls();
@@ -830,11 +842,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "hlsa";
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return object.hlsa();
@@ -848,11 +862,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "hsv";
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return object.hsv();
@@ -866,11 +882,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "hsva";
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return object.hsva();
@@ -884,6 +902,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "witha";
@@ -891,11 +910,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		private static final Signature signature = new Signature("a", Signature.required);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return object.witha(Utils.toInt(args.get(0)));
@@ -909,6 +930,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "withlum";
@@ -916,11 +938,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		private static final Signature signature = new Signature("lum", Signature.required);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return object.withlum(Utils.toDouble(args.get(0)));
@@ -934,6 +958,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "abslum";
@@ -941,11 +966,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		private static final Signature signature = new Signature("f", Signature.required);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return object.abslum(Utils.toDouble(args.get(0)));
@@ -959,6 +986,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "rellum";
@@ -966,11 +994,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		private static final Signature signature = new Signature("f", Signature.required);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return object.rellum(Utils.toDouble(args.get(0)));

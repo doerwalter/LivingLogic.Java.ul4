@@ -17,6 +17,7 @@ public class BoundStringMethodStartsWith extends BoundMethod<String>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "startswith";
@@ -24,6 +25,7 @@ public class BoundStringMethodStartsWith extends BoundMethod<String>
 
 	private static final Signature signature = new Signature("prefix", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -64,6 +66,7 @@ public class BoundStringMethodStartsWith extends BoundMethod<String>
 		return false;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		Object arg = args.get(0);

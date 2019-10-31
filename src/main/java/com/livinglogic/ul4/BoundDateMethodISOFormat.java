@@ -18,6 +18,7 @@ public class BoundDateMethodISOFormat extends BoundMethod<Date>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "isoformat";
@@ -34,6 +35,7 @@ public class BoundDateMethodISOFormat extends BoundMethod<Date>
 			return formatter0.format(object);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

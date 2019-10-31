@@ -19,6 +19,7 @@ public class BoundStringMethodSplitlines extends BoundMethod<String>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "splitlines";
@@ -26,6 +27,7 @@ public class BoundStringMethodSplitlines extends BoundMethod<String>
 
 	private static final Signature signature = new Signature("keepends", false);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -79,6 +81,7 @@ public class BoundStringMethodSplitlines extends BoundMethod<String>
 		}
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		Object keepEnds = args.get(0);

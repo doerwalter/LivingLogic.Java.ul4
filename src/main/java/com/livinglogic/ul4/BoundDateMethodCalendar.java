@@ -21,6 +21,7 @@ public class BoundDateMethodCalendar extends BoundMethod<Date>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "calendar";
@@ -28,6 +29,7 @@ public class BoundDateMethodCalendar extends BoundMethod<Date>
 
 	private static final Signature signature = new Signature("firstweekday", 0, "mindaysinfirstweek", 4);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -54,6 +56,7 @@ public class BoundDateMethodCalendar extends BoundMethod<Date>
 		return new DateProto.Calendar(year, week, DateProto.javaWeekday2UL4Weekday(weekday));
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		int firstWeekday = Utils.toInt(args.get(0));

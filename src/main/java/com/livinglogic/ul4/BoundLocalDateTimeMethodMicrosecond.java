@@ -15,6 +15,7 @@ public class BoundLocalDateTimeMethodMicrosecond extends BoundMethod<LocalDateTi
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "microsecond";
@@ -25,6 +26,7 @@ public class BoundLocalDateTimeMethodMicrosecond extends BoundMethod<LocalDateTi
 		return obj.getNano()/1000;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

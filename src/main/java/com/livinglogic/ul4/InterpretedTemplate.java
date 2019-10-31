@@ -1704,16 +1704,19 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "renders";
 		}
 
+		@Override
 		public Signature getSignature()
 		{
 			return object.signature;
 		}
 
+		@Override
 		public Object evaluate(EvaluationContext context, BoundArguments arguments)
 		{
 			Writer writer = new StringWriter();
@@ -1729,16 +1732,19 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "render";
 		}
 
+		@Override
 		public Signature getSignature()
 		{
 			return object.signature;
 		}
 
+		@Override
 		public Object evaluate(EvaluationContext context, BoundArguments arguments)
 		{
 			object.renderBound(context, null, arguments.byName());

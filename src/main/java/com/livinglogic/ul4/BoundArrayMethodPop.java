@@ -16,6 +16,7 @@ public class BoundArrayMethodPop extends BoundMethod<Object[]>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "pop";
@@ -23,11 +24,13 @@ public class BoundArrayMethodPop extends BoundMethod<Object[]>
 
 	private static final Signature signature = new Signature("pos", -1);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		throw new ArgumentTypeMismatchException("{!t}.pop(...) not supported!", object);

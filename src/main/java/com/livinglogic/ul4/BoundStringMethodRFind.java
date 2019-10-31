@@ -16,6 +16,7 @@ public class BoundStringMethodRFind extends BoundMethod<String>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "rfind";
@@ -23,6 +24,7 @@ public class BoundStringMethodRFind extends BoundMethod<String>
 
 	private static final Signature signature = new Signature("sub", Signature.required, "start", null, "end", null);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -55,6 +57,7 @@ public class BoundStringMethodRFind extends BoundMethod<String>
 		return result;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		if (args.get(0) instanceof String)

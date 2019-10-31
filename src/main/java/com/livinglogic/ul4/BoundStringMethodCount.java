@@ -16,6 +16,7 @@ public class BoundStringMethodCount extends BoundMethod<String>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "count";
@@ -23,6 +24,7 @@ public class BoundStringMethodCount extends BoundMethod<String>
 
 	private static final Signature signature = new Signature("sub", Signature.required, "start", null, "end", null);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -75,6 +77,7 @@ public class BoundStringMethodCount extends BoundMethod<String>
 		return count;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		if (args.get(0) instanceof String)

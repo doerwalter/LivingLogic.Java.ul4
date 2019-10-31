@@ -16,6 +16,7 @@ public class BoundStringMethodCapitalize extends BoundMethod<String>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "capitalize";
@@ -26,6 +27,7 @@ public class BoundStringMethodCapitalize extends BoundMethod<String>
 		return String.valueOf(Character.toTitleCase(object.charAt(0))) + object.substring(1).toLowerCase();
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

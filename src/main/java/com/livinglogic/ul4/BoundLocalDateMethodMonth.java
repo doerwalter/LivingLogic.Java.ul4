@@ -19,6 +19,7 @@ public class BoundLocalDateMethodMonth extends BoundMethod<LocalDate>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "month";
@@ -29,6 +30,7 @@ public class BoundLocalDateMethodMonth extends BoundMethod<LocalDate>
 		return obj.getMonthValue();
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

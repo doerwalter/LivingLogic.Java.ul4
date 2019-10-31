@@ -17,6 +17,7 @@ public class BoundDictMethodValues extends BoundMethod<Map>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "values";
@@ -27,6 +28,7 @@ public class BoundDictMethodValues extends BoundMethod<Map>
 		return object.values();
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call((Map)object);

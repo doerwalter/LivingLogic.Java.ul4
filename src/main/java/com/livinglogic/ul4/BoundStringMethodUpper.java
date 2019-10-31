@@ -16,6 +16,7 @@ public class BoundStringMethodUpper extends BoundMethod<String>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "upper";
@@ -26,6 +27,7 @@ public class BoundStringMethodUpper extends BoundMethod<String>
 		return object.toUpperCase();
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

@@ -19,6 +19,7 @@ public class BoundDateMethodMinute extends BoundMethod<Date>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "minute";
@@ -31,6 +32,7 @@ public class BoundDateMethodMinute extends BoundMethod<Date>
 		return calendar.get(Calendar.MINUTE);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

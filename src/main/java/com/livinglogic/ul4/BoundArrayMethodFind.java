@@ -16,6 +16,7 @@ public class BoundArrayMethodFind extends BoundMethod<Object[]>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "find";
@@ -23,6 +24,7 @@ public class BoundArrayMethodFind extends BoundMethod<Object[]>
 
 	private static final Signature signature = new Signature("sub", Signature.required, "start", null, "end", null);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -67,6 +69,7 @@ public class BoundArrayMethodFind extends BoundMethod<Object[]>
 		return -1;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;

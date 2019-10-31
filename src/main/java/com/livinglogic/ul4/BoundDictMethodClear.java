@@ -16,6 +16,7 @@ public class BoundDictMethodClear extends BoundMethod<Map>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "clear";
@@ -26,6 +27,7 @@ public class BoundDictMethodClear extends BoundMethod<Map>
 		object.clear();
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		call(object);

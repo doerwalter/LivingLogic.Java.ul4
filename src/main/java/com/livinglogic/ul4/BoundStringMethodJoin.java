@@ -17,6 +17,7 @@ public class BoundStringMethodJoin extends BoundMethod<String>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "join";
@@ -24,6 +25,7 @@ public class BoundStringMethodJoin extends BoundMethod<String>
 
 	private static final Signature signature = new Signature("iterable", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -49,6 +51,7 @@ public class BoundStringMethodJoin extends BoundMethod<String>
 		return call(object, Utils.iterator(iterable));
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object, args.get(0));

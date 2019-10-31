@@ -18,6 +18,7 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "replace";
@@ -25,6 +26,7 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 
 	private static final Signature signature = new Signature("old", Signature.required, "new", Signature.required, "count", null);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -40,6 +42,7 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 		return StringUtils.replace(object, search, replace, count);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		Object arg1 = args.get(0);

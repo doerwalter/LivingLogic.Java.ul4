@@ -16,6 +16,7 @@ public class BoundDictMethodGet extends BoundMethod<Map>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "get";
@@ -23,6 +24,7 @@ public class BoundDictMethodGet extends BoundMethod<Map>
 
 	private static final Signature signature = new Signature("key", Signature.required, "default", null);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -36,6 +38,7 @@ public class BoundDictMethodGet extends BoundMethod<Map>
 		return result;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object, args.get(0), args.get(1));

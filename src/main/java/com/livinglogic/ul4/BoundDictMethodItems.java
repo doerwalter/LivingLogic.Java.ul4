@@ -18,6 +18,7 @@ public class BoundDictMethodItems extends BoundMethod<Map>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "items";
@@ -28,6 +29,7 @@ public class BoundDictMethodItems extends BoundMethod<Map>
 		return new MapItemIterator(object);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);
@@ -42,11 +44,13 @@ public class BoundDictMethodItems extends BoundMethod<Map>
 			iterator = map.entrySet().iterator();
 		}
 
+		@Override
 		public boolean hasNext()
 		{
 			return iterator.hasNext();
 		}
 
+		@Override
 		public Vector next()
 		{
 			Vector retVal = new Vector(2);
@@ -56,6 +60,7 @@ public class BoundDictMethodItems extends BoundMethod<Map>
 			return retVal;
 		}
 
+		@Override
 		public void remove()
 		{
 			iterator.remove();

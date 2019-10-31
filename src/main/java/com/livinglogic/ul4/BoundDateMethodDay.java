@@ -19,6 +19,7 @@ public class BoundDateMethodDay extends BoundMethod<Date>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "day";
@@ -31,6 +32,7 @@ public class BoundDateMethodDay extends BoundMethod<Date>
 		return calendar.get(Calendar.DAY_OF_MONTH);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

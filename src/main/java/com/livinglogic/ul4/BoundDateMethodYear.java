@@ -19,6 +19,7 @@ public class BoundDateMethodYear extends BoundMethod<Date>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "year";
@@ -31,6 +32,7 @@ public class BoundDateMethodYear extends BoundMethod<Date>
 		return calendar.get(Calendar.YEAR);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

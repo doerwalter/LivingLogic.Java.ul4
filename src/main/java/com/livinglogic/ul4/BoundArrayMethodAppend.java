@@ -16,6 +16,7 @@ public class BoundArrayMethodAppend extends BoundMethod<Object[]>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "append";
@@ -23,11 +24,13 @@ public class BoundArrayMethodAppend extends BoundMethod<Object[]>
 
 	private static final Signature signature = new Signature("items", Signature.remainingParameters);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		throw new ArgumentTypeMismatchException("{!t}.append(...) not supported!", object);

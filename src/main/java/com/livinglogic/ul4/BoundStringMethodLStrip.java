@@ -18,6 +18,7 @@ public class BoundStringMethodLStrip extends BoundMethod<String>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "lstrip";
@@ -25,6 +26,7 @@ public class BoundStringMethodLStrip extends BoundMethod<String>
 
 	private static final Signature signature = new Signature("chars", null);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -40,6 +42,7 @@ public class BoundStringMethodLStrip extends BoundMethod<String>
 		return StringUtils.stripStart(object, chars);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		Object arg = args.get(0);

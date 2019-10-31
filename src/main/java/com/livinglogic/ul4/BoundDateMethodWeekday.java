@@ -20,6 +20,7 @@ public class BoundDateMethodWeekday extends BoundMethod<Date>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "weekday";
@@ -32,6 +33,7 @@ public class BoundDateMethodWeekday extends BoundMethod<Date>
 		return weekDays.get(calendar.get(Calendar.DAY_OF_WEEK));
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object);

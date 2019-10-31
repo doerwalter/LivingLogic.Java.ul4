@@ -16,6 +16,7 @@ public class BoundListMethodPop extends BoundMethod<List>
 		super(object);
 	}
 
+	@Override
 	public String nameUL4()
 	{
 		return "pop";
@@ -23,6 +24,7 @@ public class BoundListMethodPop extends BoundMethod<List>
 
 	private static final Signature signature = new Signature("pos", -1);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -35,6 +37,7 @@ public class BoundListMethodPop extends BoundMethod<List>
 		return obj.remove(pos);
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(object, Utils.toInt(args.get(0)));

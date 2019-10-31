@@ -359,11 +359,13 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "days";
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return object.days;
@@ -377,11 +379,13 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "seconds";
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return object.seconds;
@@ -395,11 +399,13 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 			super(object);
 		}
 
+		@Override
 		public String nameUL4()
 		{
 			return "microseconds";
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return object.microseconds;
