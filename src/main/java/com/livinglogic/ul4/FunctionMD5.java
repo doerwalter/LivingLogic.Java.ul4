@@ -26,37 +26,37 @@ public class FunctionMD5 extends Function
 
 	public Object evaluate(BoundArguments args)
 	{
-		return call(args.get(0));
+		Object arg0 = args.get(0);
+
+		if (arg0 instanceof String)
+			return call((String)arg0);
+		throw new ArgumentTypeMismatchException("md5({!t}) not supported", arg0);
 	}
 
-	public static Object call(Object obj)
+	public static Object call(String obj)
 	{
-		if (obj instanceof String)
+		MessageDigest md;
+		try
 		{
-			MessageDigest md;
-			try
-			{
-				md = MessageDigest.getInstance("MD5");
-			}
-			catch (NoSuchAlgorithmException ex)
-			{
-				throw new RuntimeException(ex);
-			}
-			byte[] hash;
-			try
-			{
-				hash = md.digest(((String)obj).getBytes("UTF-8"));
-			}
-			catch (UnsupportedEncodingException ex)
-			{
-				throw new RuntimeException(ex);
-			}
-
-			StringBuilder buffer = new StringBuilder();
-			for (int i = 0; i < hash.length; ++i)
-				buffer.append(Integer.toHexString((hash[i] & 0xFF) | 0x100).substring(1, 3));
-			return buffer.toString();
+			md = MessageDigest.getInstance("MD5");
 		}
-		throw new ArgumentTypeMismatchException("md5({!t}) not supported", obj);
+		catch (NoSuchAlgorithmException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+		byte[] hash;
+		try
+		{
+			hash = md.digest(((String)obj).getBytes("UTF-8"));
+		}
+		catch (UnsupportedEncodingException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+
+		StringBuilder buffer = new StringBuilder();
+		for (int i = 0; i < hash.length; ++i)
+			buffer.append(Integer.toHexString((hash[i] & 0xFF) | 0x100).substring(1, 3));
+		return buffer.toString();
 	}
 }
