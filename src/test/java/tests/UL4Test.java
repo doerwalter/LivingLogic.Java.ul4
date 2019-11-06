@@ -3874,6 +3874,14 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_scrypt()
+	{
+		String result = "468b5b132508a02f1868576247763abed96ac41db9287d21c8b5379ad71fbe2a2bf77fd3a738dda0572e0761938149f5b91b58d2ff87b9482680540606a710943d2a69f66fe89e2693361300c914b42c24abb29a80ef8840b6a0b67c96e5960292cc38cd959017931fe28e2a921107ade2f845e09a7590e9bf6755bd04ec51af";
+		checkTemplateOutput(result, "<?print scrypt('foo', 'bar')?>");
+		checkTemplateOutput(result, "<?print scrypt(string='foo', salt='bar')?>");
+	}
+
+	@Test
 	public void function_getattr()
 	{
 		checkTemplateOutput("GURK", "<?print getattr('gurk', 'upper')()?>");

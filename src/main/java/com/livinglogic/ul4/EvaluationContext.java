@@ -379,6 +379,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 			"hsv", new FunctionHSV(),
 			"round", new FunctionRound(),
 			"md5", new FunctionMD5(),
+			"scrypt", new FunctionScrypt(),
 			"getattr", new FunctionGetAttr(),
 			"hasattr", new FunctionHasAttr(),
 			"setattr", new FunctionSetAttr(),

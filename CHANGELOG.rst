@@ -5,6 +5,8 @@ Removed the "type name" from ``nameUL4`` for all bound methods.
 
 Implemented the dict method ``pop()``.
 
+Implemented the function ``scrypt()``.
+
 
 exp-145-1 (2019-08-27)
 ----------------------
