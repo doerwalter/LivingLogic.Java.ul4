@@ -1,3 +1,9 @@
+exp-147 (2019-11-14)
+--------------------
+
+``com.livinglogic.dbutils.Connection`` now implements ``AutoCloseable``.
+
+
 exp-146 (2019-11-11)
 --------------------
 

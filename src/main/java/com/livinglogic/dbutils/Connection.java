@@ -30,13 +30,19 @@ import com.livinglogic.ul4.BoundArguments;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Connection implements UL4GetAttr, UL4Dir
+public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 {
 	private java.sql.Connection connection;
 
 	public Connection(java.sql.Connection connection)
 	{
 		this.connection = connection;
+	}
+
+	@Override
+	public void close() throws SQLException
+	{
+		connection.close();
 	}
 
 	public Iterator<Map<String, Object>> queryargs(CloseableRegistry closeableRegistry, String query, List args)
