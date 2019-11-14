@@ -1,5 +1,5 @@
-HEAD (2019-11-??)
------------------
+exp-146 (2019-11-11)
+--------------------
 
 Removed the "type name" from ``nameUL4`` for all bound methods.
 
