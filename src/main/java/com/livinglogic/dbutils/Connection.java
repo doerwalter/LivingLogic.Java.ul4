@@ -11,9 +11,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Iterator;
+import java.math.BigInteger;
+import java.math.BigDecimal;
+
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Clob;
+import static java.sql.Types.DATE;
+import static java.sql.Types.TIMESTAMP;
+
+import org.apache.commons.collections.map.CaseInsensitiveMap;
 
 import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.Signature;
@@ -77,10 +86,8 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		return queryargs(null, query, args);
 	}
 
-	public Iterator<Map<String, Object>> query(CloseableRegistry closeableRegistry, List args)
+	private void buildQueryAndParameters(List args, StringBuilder query, List<Object> parameters)
 	{
-		StringBuilder query = new StringBuilder();
-		ArrayList<Object> parameters = new ArrayList<Object>(args.size()/2);
 		int i = 0;
 		for (Object arg : args)
 		{
@@ -97,6 +104,14 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 			}
 			++i;
 		}
+	}
+
+	public Iterator<Map<String, Object>> query(CloseableRegistry closeableRegistry, List args)
+	{
+		StringBuilder query = new StringBuilder();
+		ArrayList<Object> parameters = new ArrayList<Object>(args.size()/2);
+
+		buildQueryAndParameters(args, query, parameters);
 
 		final CallableStatement statement;
 		final ResultSet resultSet;
@@ -127,6 +142,33 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 	public Iterator<Map<String, Object>> query(List args)
 	{
 		return query((CloseableRegistry)null, args);
+	}
+
+	public Map<String, Object> queryone(List args)
+	{
+		StringBuilder query = new StringBuilder();
+		ArrayList<Object> parameters = new ArrayList<Object>(args.size()/2);
+
+		buildQueryAndParameters(args, query, parameters);
+
+		try (CallableStatement statement = connection.prepareCall(query.toString()))
+		{
+			registerParameters(statement, parameters);
+
+			try (ResultSet resultSet = statement.executeQuery())
+			{
+				fetchParameters(statement, parameters);
+
+				if (resultSet.next())
+					return makeRecord(resultSet, resultSet.getMetaData());
+				else
+					return null;
+			}
+		}
+		catch (SQLException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 
 	public void execute(CloseableRegistry closeableRegistry, List args)
@@ -194,6 +236,49 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		}
 	}
 
+	public static Map<String, Object> makeRecord(ResultSet resultSet, ResultSetMetaData metaData) throws SQLException
+	{
+		Map<String, Object> record = new CaseInsensitiveMap();
+
+		int numberOfColumns = metaData.getColumnCount();
+		for (int i = 1; i <= numberOfColumns; ++i)
+		{
+			String key = metaData.getColumnLabel(i);
+			int type = metaData.getColumnType(i);
+			Object value;
+			if (type == DATE)
+				value = resultSet.getDate(i);
+			else if (type == TIMESTAMP
+				      // Don't use the constants from oracle.jdbc.OracleTypes, so that we don't require ojdbc.jar
+				      || type == -102 // oracle.jdbc.OracleTypes.TIMESTAMPLTZ
+				      || type == -100 // oracle.jdbc.OracleTypes.TIMESTAMPNS
+				      || type == -101) // oracle.jdbc.OracleTypes.TIMESTAMPTZ
+				value = resultSet.getTimestamp(i);
+			else
+			{
+				value = resultSet.getObject(i);
+				if (value instanceof Clob)
+				{
+					String stringValue = ((Clob)value).getSubString(1L, (int)((Clob)value).length());
+					try
+					{
+						((Clob)value).free();
+					}
+					catch (SQLException ex)
+					{
+					}
+					value = stringValue;
+				}
+				else if (value instanceof BigDecimal)
+					value = Utils.narrowBigDecimal((BigDecimal)value);
+				else if (value instanceof BigInteger)
+					value = Utils.narrowBigInteger((BigInteger)value);
+			}
+			record.put(key, value);
+		}
+		return record;
+	}
+
 	private static class BoundMethodQueryArgs extends BoundMethodWithContext<Connection>
 	{
 		public BoundMethodQueryArgs(Connection object)
@@ -252,6 +337,34 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		}
 	}
 
+	private static class BoundMethodQueryOne extends BoundMethod<Connection>
+	{
+		public BoundMethodQueryOne(Connection object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String nameUL4()
+		{
+			return "queryone";
+		}
+
+		private static final Signature signature = new Signature("args", Signature.remainingParameters);
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object evaluate(BoundArguments args)
+		{
+			return object.queryone((List)args.get(0));
+		}
+	}
+
 	private static class BoundMethodExecute extends BoundMethodWithContext<Connection>
 	{
 		public BoundMethodExecute(Connection object)
@@ -281,7 +394,7 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		}
 	}
 
-	protected static Set<String> attributes = makeSet("queryargs", "query", "execute", "int", "number", "str", "clob", "date");
+	protected static Set<String> attributes = makeSet("queryargs", "query", "queryone", "execute", "int", "number", "str", "clob", "date");
 
 	public Set<String> dirUL4()
 	{
@@ -296,6 +409,8 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 				return new BoundMethodQueryArgs(this);
 			case "query":
 				return new BoundMethodQuery(this);
+			case "queryone":
+				return new BoundMethodQueryOne(this);
 			case "execute":
 				return new BoundMethodExecute(this);
 			case "int":

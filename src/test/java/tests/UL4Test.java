@@ -5397,6 +5397,52 @@ public class UL4Test
 	}
 
 	@Test
+	public void db_queryone_record() throws Exception
+	{
+		String source = 
+			"<?code db.execute('create table ul4test(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" +
+			"<?code db.execute('insert into ul4test values(1, ', 'first', ', ', 10000*'first', ')')?>\n" +
+			"<?code vin = db.int(2)?>\n" +
+			"<?code row = db.queryone('select * from ul4test where ul4_int <= ', vin, ' order by ul4_int')?>\n" +
+			"<?print row.ul4_int?>|\n" +
+			"<?print row.ul4_char?>|\n" +
+			"<?print row.ul4_clob?>" +
+			"<?code db.execute('drop table ul4test')?>\n"
+		;
+
+		Connection db = getDatabaseConnection();
+
+		if (db != null)
+		{
+			checkTemplateOutput(
+				"1|first|" + StringUtils.repeat("first", 10000),
+				source,
+				"db",
+				db
+			);
+		}
+	}
+
+	@Test
+	public void db_queryone_norecord() throws Exception
+	{
+		String source = 
+			"<?code db.execute('create table ul4test(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" +
+			"<?code vin = db.int(2)?>\n" +
+			"<?code row = db.queryone('select * from ul4test where ul4_int <= ', vin, ' order by ul4_int')?>\n" +
+			"<?print row is None?>" +
+			"<?code db.execute('drop table ul4test')?>\n"
+		;
+
+		Connection db = getDatabaseConnection();
+
+		if (db != null)
+		{
+			checkTemplateOutput("True", source, "db", db);
+		}
+	}
+
+	@Test
 	public void db_execute_function() throws Exception
 	{
 		String source = 

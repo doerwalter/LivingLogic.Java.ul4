@@ -1,3 +1,10 @@
+exp-148 (2019-11-15)
+--------------------
+
+Added an (UL4 accessible) method ``queryone`` to
+``com.livinglogic.dbutils.Connection``.
+
+
 exp-147 (2019-11-14)
 --------------------
 

@@ -6,19 +6,12 @@
 
 package com.livinglogic.dbutils;
 
-import static java.sql.Types.DATE;
-import static java.sql.Types.TIMESTAMP;
-
-import java.math.BigInteger;
-import java.math.BigDecimal;
-import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import org.apache.commons.collections.map.CaseInsensitiveMap;
 
 import com.livinglogic.ul4.Utils;
 
@@ -68,44 +61,7 @@ public class ResultSetMapIterator implements Iterator<Map<String, Object>>
 		{
 			if (resultSet.next())
 			{
-				Map<String, Object> record = new CaseInsensitiveMap();
-
-				for (int i = 1; i <= numberOfColumns; ++i)
-				{
-					String key = metaData.getColumnLabel(i);
-					int type = metaData.getColumnType(i);
-					Object value;
-					if (type == DATE)
-						value = resultSet.getDate(i);
-					else if (type == TIMESTAMP
-					         // Don't use the constants from oracle.jdbc.OracleTypes, so that we don't require ojdbc.jar
-					         || type == -102 // oracle.jdbc.OracleTypes.TIMESTAMPLTZ
-					         || type == -100 // oracle.jdbc.OracleTypes.TIMESTAMPNS
-					         || type == -101) // oracle.jdbc.OracleTypes.TIMESTAMPTZ
-						value = resultSet.getTimestamp(i);
-					else
-					{
-						value = resultSet.getObject(i);
-						if (value instanceof Clob)
-						{
-							String stringValue = ((Clob)value).getSubString(1L, (int)((Clob)value).length());
-							try
-							{
-								((Clob)value).free();
-							}
-							catch (SQLException ex)
-							{
-							}
-							value = stringValue;
-						}
-						else if (value instanceof BigDecimal)
-							value = Utils.narrowBigDecimal((BigDecimal)value);
-						else if (value instanceof BigInteger)
-							value = Utils.narrowBigInteger((BigInteger)value);
-					}
-					record.put(key, value);
-				}
-				nextRecord = record;
+				nextRecord = Connection.makeRecord(resultSet, metaData);
 			}
 			else
 			{
