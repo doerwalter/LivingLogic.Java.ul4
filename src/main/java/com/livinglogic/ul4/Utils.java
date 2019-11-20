@@ -1000,6 +1000,41 @@ public class Utils
 		return buffer.toString();
 	}
 
+	private static void addExceptionMarkdown2Buffer(StringBuilder buffer, Throwable t)
+	{
+		Throwable inner = getInnerException(t);
+		if (inner != null)
+		{
+			addExceptionMarkdown2Buffer(buffer, inner);
+			buffer.append("\n");
+		}
+
+		buffer.append("`");
+		buffer.append(t.getClass().getName());
+		buffer.append("`: ");
+
+		if (t instanceof LocationException)
+		{
+			AST location = ((LocationException)t).getLocation();
+			buffer.append(location.getTemplateDescriptionMarkdown());
+			buffer.append(": ");
+			buffer.append(location.getLocationDescriptionMarkdown());
+			buffer.append("\n");
+			buffer.append(location.getSourceSnippetMarkdown());
+		}
+		else
+		{
+			buffer.append(t.toString());
+		}
+	}
+
+	public static String getExceptionChainAsMarkdown(Throwable t)
+	{
+		StringBuilder buffer = new StringBuilder();
+		addExceptionMarkdown2Buffer(buffer, t);
+		return buffer.toString();
+	}
+
 	private static void addExceptionHTML2Buffer(StringBuilder buffer, Throwable t)
 	{
 		Throwable inner = getInnerException(t);

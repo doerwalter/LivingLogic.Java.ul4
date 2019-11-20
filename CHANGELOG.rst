@@ -1,3 +1,10 @@
+exp-149 (2019-11-20)
+--------------------
+
+Added ``com.livinglogic.ul4.Utils.getExceptionChainAsMarkdown()`` which returns
+an UL4 stacktrace in Markdown format.
+
+
 exp-148 (2019-11-15)
 --------------------
 

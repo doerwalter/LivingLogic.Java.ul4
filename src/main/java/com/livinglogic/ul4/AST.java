@@ -246,6 +246,21 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 		return string.substring(1, string.length()-1);
 	}
 
+	private static String maskString(String string, char mask)
+	{
+		int length = string.length();
+		StringBuilder buffer = new StringBuilder(length);
+		for (int offset = 0; offset < length; offset++)
+		{
+			char c = string.charAt(offset);
+			if (c == '\t')
+				buffer.append(c);
+			else
+				buffer.append(mask);
+		}
+		return buffer.toString();
+	}
+
 	/**
 	 * Return a description of the template that this AST node is part of
 	 * in text form.
@@ -275,6 +290,40 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 
 	/**
 	 * Return a description of the template that this AST node is part of
+	 * in Markdown form.
+	 *
+	 * The return value looks something like this:
+	 * <code>in local template `foo` in `bar`</code>.
+	 */
+	public String getTemplateDescriptionMarkdown()
+	{
+		StringBuilder buffer = new StringBuilder();
+		String name = null;
+		InterpretedTemplate template = getTemplate();
+		buffer.append(template.parentTemplate != null ? "in local template " : "in template ");
+		boolean first = true;
+		while (template != null)
+		{
+			if (first)
+				first = false;
+			else
+				buffer.append(" in ");
+			name = template.nameUL4();
+			if (name == null)
+				buffer.append("(unnamed)");
+			else
+			{
+				buffer.append("`");
+				buffer.append(rawRepr(name));
+				buffer.append("`");
+			}
+			template = template.parentTemplate;
+		}
+		return buffer.toString();
+	}
+
+	/**
+	 * Return a description of the template that this AST node is part of
 	 * in HTML form.
 	 *
 	 * The return value looks something like this:
@@ -293,10 +342,13 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 				first = false;
 			else
 				buffer.append(" in ");
-			buffer.append("<b>");
 			name = template.nameUL4();
-			buffer.append(name == null ? "(unnamed)" : FunctionXMLEscape.call(rawRepr(name)));
-			buffer.append("</b>");
+			buffer.append("<code>");
+			if (name == null)
+				buffer.append("(unnamed)");
+			else
+				buffer.append(FunctionXMLEscape.call(rawRepr(name)));
+			buffer.append("</code>");
 			template = template.parentTemplate;
 		}
 		return buffer.toString();
@@ -320,6 +372,33 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 		buffer.append(getStartLine());
 		buffer.append("; column ");
 		buffer.append(getStartCol());
+		return buffer.toString();
+	}
+
+	/**
+	 * Return a description of the location of this AST node in Markdown form.
+	 *
+	 * The return value looks something like this:
+	 * <code>offset **75:88**; line **5**, column **10**</code>.
+	 */
+	public String getLocationDescriptionMarkdown()
+	{
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("offset ");
+		Slice pos = getStartPos();
+		buffer.append("**");
+		buffer.append(pos.getStart());
+		buffer.append(":");
+		buffer.append(pos.getStop());
+		buffer.append("**");
+		buffer.append("; line ");
+		buffer.append("**");
+		buffer.append(getStartLine());
+		buffer.append("**");
+		buffer.append("; column ");
+		buffer.append("**");
+		buffer.append(getStartCol());
+		buffer.append("**");
 		return buffer.toString();
 	}
 
@@ -352,15 +431,36 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 		InterpretedTemplate template = getTemplate();
 		String source = template.getFullSource();
 
-		String prefix = rawRepr(getStartSourcePrefix());
-		String code = rawRepr(getStartSource());
-		String suffix = rawRepr(getStartSourceSuffix());
+		String prefix = getStartSourcePrefix();
+		String code = getStartSource();
+		String suffix = getStartSourceSuffix();
 		buffer.append(prefix);
 		buffer.append(code);
 		buffer.append(suffix);
 		buffer.append("\n");
-		buffer.append(StringUtils.repeat(" ", prefix.length()));
-		buffer.append(StringUtils.repeat("~", code.length()));
+		buffer.append(maskString(prefix, ' '));
+		buffer.append(maskString(code, '~'));
+		return buffer.toString();
+	}
+
+	public String getSourceSnippetMarkdown()
+	{
+		StringBuilder buffer = new StringBuilder();
+		Slice pos = getStartPos();
+		InterpretedTemplate template = getTemplate();
+		String source = template.getFullSource();
+
+		String prefix = getStartSourcePrefix().replace("```", "");
+		String code = getStartSource().replace("```", "");
+		String suffix = getStartSourceSuffix().replace("```", "");
+		buffer.append("```\n");
+		buffer.append(prefix);
+		buffer.append(code);
+		buffer.append(suffix);
+		buffer.append("\n");
+		buffer.append(maskString(prefix, ' '));
+		buffer.append(maskString(code, '~'));
+		buffer.append("\n```\n");
 		return buffer.toString();
 	}
 
