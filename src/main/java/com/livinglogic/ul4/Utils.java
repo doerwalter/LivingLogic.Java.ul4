@@ -1024,7 +1024,7 @@ public class Utils
 		}
 		else
 		{
-			buffer.append(t.toString());
+			buffer.append(t.getMessage());
 		}
 	}
 

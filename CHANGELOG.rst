@@ -1,3 +1,10 @@
+exp-149-1 (2019-11-20)
+----------------------
+
+Fixed duplicate class name in
+``com.livinglogic.ul4.Utils.getExceptionChainAsMarkdown()``.
+
+
 exp-149 (2019-11-20)
 --------------------
 
