@@ -25,6 +25,8 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.io.IOException;
 
+import org.apache.commons.lang.StringUtils;
+
 import static com.livinglogic.utils.MapUtils.makeMap;
 
 
@@ -1079,14 +1081,62 @@ public class Utils
 		return buffer.toString();
 	}
 
-	public static String getStacktraceAsText(Throwable t)
+	public static String getStacktraceAsText(Throwable t, int maxLines, String overflowMessage)
 	{
 		try (StringWriter stringWriter = new StringWriter())
 		{
 			try (PrintWriter printWriter = new PrintWriter(stringWriter))
 			{
 				t.printStackTrace(printWriter);
-				return stringWriter.toString();
+				String stackTrace = stringWriter.toString();
+				if (maxLines != 0)
+				{
+					int pos = StringUtils.ordinalIndexOf(stackTrace, "\n", maxLines);
+					if (pos >= 0)
+						stackTrace = stackTrace.substring(0, pos+1) + "...\n" + overflowMessage;
+				}
+				return stackTrace;
+			}
+		}
+		catch (IOException exc)
+		{
+			throw new RuntimeException(exc);
+		}
+	}
+
+	public static String getStacktraceAsText(Throwable t)
+	{
+		return getStacktraceAsText(t, 0, null);
+	}
+
+	public static String getStacktraceAsMarkdown(Throwable t, int maxLines, String overflowMessage)
+	{
+		try (StringWriter stringWriter = new StringWriter())
+		{
+			try (PrintWriter printWriter = new PrintWriter(stringWriter))
+			{
+				t.printStackTrace(printWriter);
+				String stackTrace = stringWriter.toString();
+
+				int pos = -1;
+				if (maxLines != 0)
+					pos = StringUtils.ordinalIndexOf(stackTrace, "\n", maxLines);
+
+				StringBuilder buffer = new StringBuilder(8 + stackTrace.length());
+				buffer.append("```\n");
+				// This is not ideal, because it tampers with the stacktrace,
+				// but better a (slightly) wrong stacktrace than a broken
+				// Markdown markup (Also there are probably never any backticks
+				// in the stacktrace anyway).
+				buffer.append(stackTrace.replace("```", "'''"));
+				if (!stackTrace.endsWith("\n"))
+					buffer.append("\n");
+				if (pos >= 0)
+					buffer.append("...\n");
+				buffer.append("```\n");
+				if (pos >= 0)
+					buffer.append(overflowMessage);
+				return buffer.toString();
 			}
 		}
 		catch (IOException exc)
@@ -1097,28 +1147,6 @@ public class Utils
 
 	public static String getStacktraceAsMarkdown(Throwable t)
 	{
-		try (StringWriter stringWriter = new StringWriter())
-		{
-			try (PrintWriter printWriter = new PrintWriter(stringWriter))
-			{
-				t.printStackTrace(printWriter);
-				String textStackTrace = stringWriter.toString();
-				StringBuilder buffer = new StringBuilder(8 + textStackTrace.length());
-				buffer.append("```\n");
-				// This is not ideal, because it tampers with the stacktrace,
-				// but better a (slightly) wrong stacktrace than a broken
-				// Markdown markup (Also there are probably never any backticks
-				// in the stacktrace anyway).
-				buffer.append(textStackTrace.replace("```", "'''"));
-				if (!textStackTrace.endsWith("\n"))
-					buffer.append("\n");
-				buffer.append("```\n");
-				return buffer.toString();
-			}
-		}
-		catch (IOException exc)
-		{
-			throw new RuntimeException(exc);
-		}
+		return getStacktraceAsMarkdown(t, 0, null);
 	}
 }
