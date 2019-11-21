@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import static java.util.Arrays.asList;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.io.StringWriter;
+import java.io.PrintWriter;
+import java.io.IOException;
 
 import static com.livinglogic.utils.MapUtils.makeMap;
 
@@ -1074,5 +1077,48 @@ public class Utils
 		addExceptionHTML2Buffer(buffer, t);
 		buffer.append("</ul>");
 		return buffer.toString();
+	}
+
+	public static String getStacktraceAsText(Throwable t)
+	{
+		try (StringWriter stringWriter = new StringWriter())
+		{
+			try (PrintWriter printWriter = new PrintWriter(stringWriter))
+			{
+				t.printStackTrace(printWriter);
+				return stringWriter.toString();
+			}
+		}
+		catch (IOException exc)
+		{
+			throw new RuntimeException(exc);
+		}
+	}
+
+	public static String getStacktraceAsMarkdown(Throwable t)
+	{
+		try (StringWriter stringWriter = new StringWriter())
+		{
+			try (PrintWriter printWriter = new PrintWriter(stringWriter))
+			{
+				t.printStackTrace(printWriter);
+				String textStackTrace = stringWriter.toString();
+				StringBuilder buffer = new StringBuilder(8 + textStackTrace.length());
+				buffer.append("```\n");
+				// This is not ideal, because it tampers with the stacktrace,
+				// but better a (slightly) wrong stacktrace than a broken
+				// Markdown markup (Also there are probably never any backticks
+				// in the stacktrace anyway).
+				buffer.append(textStackTrace.replace("```", "'''"));
+				if (!textStackTrace.endsWith("\n"))
+					buffer.append("\n");
+				buffer.append("```\n");
+				return buffer.toString();
+			}
+		}
+		catch (IOException exc)
+		{
+			throw new RuntimeException(exc);
+		}
 	}
 }

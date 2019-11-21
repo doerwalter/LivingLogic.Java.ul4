@@ -1,3 +1,11 @@
+exp-150 (2019-11-21)
+---------------------
+
+Added ``com.livinglogic.ul4.Utils.getStacktraceAsText()`` and
+``com.livinglogic.ul4.Utils.getStacktraceAsMarkdown()`` for returning a
+complete Java stacktrace as a plain text or Markdown string.
+
+
 exp-149-1 (2019-11-20)
 ----------------------
 
