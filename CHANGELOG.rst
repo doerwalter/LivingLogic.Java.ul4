@@ -1,3 +1,10 @@
+exp-151-1 (2019-11-21)
+----------------------
+
+Actually clip the stack trace in
+``com.livinglogic.ul4.Utils.getStacktraceAsMarkdown()``.
+
+
 exp-151 (2019-11-21)
 --------------------
 

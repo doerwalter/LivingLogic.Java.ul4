@@ -1120,7 +1120,11 @@ public class Utils
 
 				int pos = -1;
 				if (maxLines != 0)
+				{
 					pos = StringUtils.ordinalIndexOf(stackTrace, "\n", maxLines);
+					if (pos >= 0)
+						stackTrace = stackTrace.substring(0, pos+1);
+				}
 
 				StringBuilder buffer = new StringBuilder(8 + stackTrace.length());
 				buffer.append("```\n");
