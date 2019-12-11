@@ -37,6 +37,11 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	protected List<String> indents;
 
 	/**
+	 * A map containing the global variables
+	 */
+	protected Map<String, Object> globalVariables;
+
+	/**
 	 * A map containing the currently defined variables
 	 */
 	protected Map<String, Object> variables;
@@ -48,8 +53,8 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 
 	/**
 	 * A {@link com.livinglogic.utils.MapChain} object chaining all variables:
-	 * The user defined ones from {@link #variables} and the map containing the
-	 * global functions.
+	 * The user defined ones from {@link #variables}, the global ones from
+	 * {@link #globalVariables} and the map containing the global functions.
 	 */
 	protected MapChain<String, Object> allVariables;
 
@@ -107,11 +112,63 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	 */
 	public EvaluationContext(Writer writer, long milliseconds)
 	{
+		this(writer, milliseconds, null);
+	}
+
+	/**
+	 * Create a new {@code EvaluationContext} object.
+	 * @param globalVariables The global variables that should be available in
+	 *                        the template and any called recursively.
+	 */
+	public EvaluationContext(Map<String, Object> globalVariables)
+	{
+		this(null, -1, globalVariables);
+	}
+
+	/**
+	 * Create a new {@code EvaluationContext} object.
+	 * @param writer The output stream where the template output will be written
+	 * @param globalVariables The global variables that should be available in
+	 *                        the template and any called recursively.
+	 */
+	public EvaluationContext(Writer writer, Map<String, Object> globalVariables)
+	{
+		this(writer, -1, globalVariables);
+	}
+
+	/**
+	 * Create a new {@code EvaluationContext} object.
+	 * @param milliseconds The maximum number of milliseconds allowed for
+	 *                     templates using this {@code EvaluationContext}.
+	 * @param globalVariables The global variables that should be available in
+	 *                        the template and any called recursively.
+	 */
+	public EvaluationContext(long milliseconds, Map<String, Object> globalVariables)
+	{
+		this(null, milliseconds, globalVariables);
+	}
+
+	/**
+	 * Create a new {@code EvaluationContext} object.
+	 * @param writer The output stream where the template output will be written
+	 * @param milliseconds The maximum number of milliseconds allowed for
+	 *                     templates using this {@code EvaluationContext}.
+	 * @param globalVariables The global variables that should be available in
+	 *                        the template and any called recursively.
+	 */
+	public EvaluationContext(Writer writer, long milliseconds, Map<String, Object> globalVariables)
+	{
 		this.writer = writer;
 		this.indents = new LinkedList<String>();
 		variables = new HashMap<String, Object>();
+		if (globalVariables == null)
+			globalVariables = new HashMap<String, Object>();
+		this.globalVariables = globalVariables;
 		template = null;
-		allVariables = new MapChain<String, Object>(variables, functions);
+		allVariables = new MapChain<String, Object>(
+			variables,
+			new MapChain<String, Object>(globalVariables, functions)
+		);
 		closeables = new LinkedList<AutoCloseable>();
 		escapes = new LinkedList<StringEscape>();
 		this.milliseconds = milliseconds;
@@ -228,6 +285,27 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
+	 * Return the map containing the global variables.
+	 */
+	public Map<String, Object> getGlobalVariables()
+	{
+		return globalVariables;
+	}
+
+	/**
+	 * Set a new map containing the global variables and return the previous one.
+	 */
+	public Map<String, Object> setGlobalVariables(Map<String, Object> globalVariables)
+	{
+		if (globalVariables == null)
+			globalVariables = new HashMap<String, Object>();
+		Map<String, Object> result = this.globalVariables;
+		this.globalVariables = globalVariables;
+		((MapChain<String, Object>)allVariables.getSecond()).setFirst(globalVariables);
+		return result;
+	}
+
+	/**
 	 * Replace the map containing the template variables with a new map that
 	 * defers non-existant keys to the previous one and return the previous one.
 	 */
@@ -296,6 +374,66 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	public void remove(String key)
 	{
 		variables.remove(key);
+	}
+
+	/**
+	 * Log a message on level <code>debug</code>
+	 * Can be overwritten in subclasses. The default does nothing.
+	 *
+	 * @param mesage The log message.
+	 */
+	public void logDebug(String message)
+	{
+	}
+
+	/**
+	 * Log a message on level <code>info</code>
+	 * Can be overwritten in subclasses. The default does nothing.
+	 *
+	 * @param mesage The log message.
+	 */
+	public void logInfo(String message)
+	{
+	}
+
+	/**
+	 * Log a message on level <code>notice</code>
+	 * Can be overwritten in subclasses. The default does nothing.
+	 *
+	 * @param mesage The log message.
+	 */
+	public void logNotice(String message)
+	{
+	}
+
+	/**
+	 * Log a message on level <code>warning</code>
+	 * Can be overwritten in subclasses. The default does nothing.
+	 *
+	 * @param mesage The log message.
+	 */
+	public void logWarning(String message)
+	{
+	}
+
+	/**
+	 * Log a message on level <code>error</code>
+	 * Can be overwritten in subclasses. The default does nothing.
+	 *
+	 * @param mesage The log message.
+	 */
+	public void logError(String message)
+	{
+	}
+
+	/**
+	 * Log an exception (on level <code>exc</code>)
+	 * Can be overwritten in subclasses. The default does nothing.
+	 *
+	 * @param exception The exception to log.
+	 */
+	public void logException(Throwable exception)
+	{
 	}
 
 	private static Map<String, Object> functions = new HashMap<String, Object>();
