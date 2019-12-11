@@ -82,7 +82,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	 */
 	public EvaluationContext()
 	{
-		this(null, -1);
+		this(null, -1, null);
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	 */
 	public EvaluationContext(Writer writer)
 	{
-		this(writer, -1);
+		this(writer, -1, null);
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	 */
 	public EvaluationContext(long milliseconds)
 	{
-		this(null, milliseconds);
+		this(null, milliseconds, null);
 	}
 
 	/**
