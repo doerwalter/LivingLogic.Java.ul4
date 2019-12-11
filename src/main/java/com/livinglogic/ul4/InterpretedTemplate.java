@@ -828,6 +828,23 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return renders(context, null);
 	}
 
+	/**
+	 * Renders the template using the passed in variables and returns the resulting string.
+	 * @param context   the EvaluationContext. May be null.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the function code. May be null.
+	 *                  These variables will be checked against the signature
+	 *                  of the template (if a signature is defined, otherwise
+	 *                  all variables will be accepted)
+	 * @return The rendered output as a string.
+	 */
+	public String renders(EvaluationContext context, Map<String, Object> variables)
+	{
+		StringWriter output = new StringWriter();
+		render(context, output, variables);
+		return output.toString();
+	}
+
 	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
 		BoundArguments arguments = new BoundArguments(signature, this, args, kwargs);
@@ -851,23 +868,6 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		{
 			return renders(context, variables);
 		}
-	}
-
-	/**
-	 * Renders the template using the passed in variables and returns the resulting string.
-	 * @param context   the EvaluationContext. May be null.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 * @return The rendered output as a string.
-	 */
-	public String renders(EvaluationContext context, Map<String, Object> variables)
-	{
-		StringWriter output = new StringWriter();
-		render(context, output, variables);
-		return output.toString();
 	}
 
 	/**
