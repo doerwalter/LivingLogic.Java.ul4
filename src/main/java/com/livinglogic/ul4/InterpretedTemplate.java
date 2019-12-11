@@ -800,14 +800,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public void render(java.io.Writer writer, Map<String, Object> variables)
 	{
-		EvaluationContext context = new EvaluationContext();
-		try
+		try (EvaluationContext context = new EvaluationContext())
 		{
 			render(context, writer, variables);
-		}
-		finally
-		{
-			context.close();
 		}
 	}
 
@@ -1021,14 +1016,9 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public Object call(Map<String, Object> variables)
 	{
-		EvaluationContext context = new EvaluationContext();
-		try
+		try (EvaluationContext context = new EvaluationContext())
 		{
 			return call(context, variables);
-		}
-		finally
-		{
-			context.close();
 		}
 	}
 
