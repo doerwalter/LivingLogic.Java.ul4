@@ -849,6 +849,38 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 * Renders the template and returns the resulting string.
 	 * @param milliseconds The maximum number of milliseconds this template
 	 *                     may run.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the function code. May be null.
+	 *                  These variables will be checked against the signature
+	 *                  of the template (if a signature is defined, otherwise
+	 *                  all variables will be accepted)
+	 * @return The rendered output as a string.
+	 */
+	public String renders(long milliseconds, Map<String, Object> variables)
+	{
+		return renders(milliseconds, null, variables);
+	}
+
+	/**
+	 * Renders the template and returns the resulting string.
+	 * @param globalVariables The global variables that should be available in
+	 *                        the template and any called recursively.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the function code. May be null.
+	 *                  These variables will be checked against the signature
+	 *                  of the template (if a signature is defined, otherwise
+	 *                  all variables will be accepted)
+	 * @return The rendered output as a string.
+	 */
+	public String renders(Map<String, Object> globalVariables, Map<String, Object> variables)
+	{
+		return renders(-1, globalVariables, variables);
+	}
+
+	/**
+	 * Renders the template and returns the resulting string.
+	 * @param milliseconds The maximum number of milliseconds this template
+	 *                     may run.
 	 * @param globalVariables The global variables that should be available in
 	 *                        the template and any called recursively.
 	 * @param variables a map containing the top level variables that should be
