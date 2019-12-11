@@ -3,8 +3,8 @@ exp-152 (2019-12-??)
 
 Add methods ``logDebug``, ``logInfo``, ``logNotice``, ``logWarning``,
 ``logError`` and ``logException`` to ``EvaluationContext``. With this UL4
-client can log deprecations. To really have an effect, a subclass of
-``EvaluationContext`` must be used, that overwrites these methods.
+clients can log deprecations. To really have an effect, a subclass of
+``EvaluationContext`` must be used that overwrites these methods.
 
 
 exp-151-1 (2019-11-21)
