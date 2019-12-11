@@ -1,10 +1,15 @@
-exp-152 (2019-12-??)
+exp-152 (2019-12-11)
 --------------------
 
 Add methods ``logDebug``, ``logInfo``, ``logNotice``, ``logWarning``,
 ``logError`` and ``logException`` to ``EvaluationContext``. With this UL4
 clients can log deprecations. To really have an effect, a subclass of
 ``EvaluationContext`` must be used that overwrites these methods.
+
+Added support for global variables.
+
+The set of variants of the methods ``renders``, ``render`` and ``call`` in
+``InterpretedTemplate`` has changed.
 
 
 exp-151-1 (2019-11-21)

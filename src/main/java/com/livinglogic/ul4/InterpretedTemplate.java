@@ -781,13 +781,13 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	}
 
 	/**
-	 * Renders the template.
-	 * @param context   the EvaluationContext.
+	 * Renders the template to a java.io.Writer object.
+	 * @param writer    the java.io.Writer object to which the output is written.
 	 */
-	public void render(EvaluationContext context)
+	public void render(java.io.Writer writer)
 	{
-		render(context, null, null);
- 	}
+		render(writer, -1, null, null);
+	}
 
 	/**
 	 * Renders the template to a java.io.Writer object.
@@ -800,9 +800,25 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public void render(java.io.Writer writer, Map<String, Object> variables)
 	{
-		try (EvaluationContext context = new EvaluationContext())
+		render(writer, -1, null, variables);
+	}
+
+	public void render(Writer writer, long milliseconds, Map<String, Object> globalVariables, Map<String, Object> variables)
+	{
+		try (EvaluationContext context = new EvaluationContext(writer, milliseconds, globalVariables))
 		{
-			render(context, writer, variables);
+			render(context, variables);
+		}
+	}
+
+	public void render(EvaluationContext context, Map<String, Object> variables)
+	{
+		try (
+			BoundArguments arguments = new BoundArguments(signature, this, null, variables);
+		)
+		{
+			context.registerCloseable(arguments);
+			renderBound(context, arguments.byName());
 		}
 	}
 
@@ -812,20 +828,42 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public String renders()
 	{
-		try (EvaluationContext context = new EvaluationContext())
-		{
-			return renders(context, null);
-		}
+		return renders(-1, null, null);
 	}
 
 	/**
 	 * Renders the template and returns the resulting string.
-	 * @param context   the EvaluationContext. May be null.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the function code. May be null.
+	 *                  These variables will be checked against the signature
+	 *                  of the template (if a signature is defined, otherwise
+	 *                  all variables will be accepted)
 	 * @return The rendered output as a string.
 	 */
-	public String renders(EvaluationContext context)
+	public String renders(Map<String, Object> variables)
 	{
-		return renders(context, null);
+		return renders(-1, null, variables);
+	}
+
+	/**
+	 * Renders the template and returns the resulting string.
+	 * @param milliseconds The maximum number of milliseconds this template
+	 *                     may run.
+	 * @param globalVariables The global variables that should be available in
+	 *                        the template and any called recursively.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the function code. May be null.
+	 *                  These variables will be checked against the signature
+	 *                  of the template (if a signature is defined, otherwise
+	 *                  all variables will be accepted)
+	 * @return The rendered output as a string.
+	 */
+	public String renders(long milliseconds, Map<String, Object> globalVariables, Map<String, Object> variables)
+	{
+		try (EvaluationContext context = new EvaluationContext(milliseconds, globalVariables))
+		{
+			return renders(context, variables);
+		}
 	}
 
 	/**
@@ -840,9 +878,20 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	 */
 	public String renders(EvaluationContext context, Map<String, Object> variables)
 	{
-		StringWriter output = new StringWriter();
-		render(context, output, variables);
-		return output.toString();
+		try (
+			StringWriter output = new StringWriter();
+			BoundArguments arguments = new BoundArguments(signature, this, null, variables);
+		)
+		{
+			context.registerCloseable(arguments);
+			renderBound(context, output, arguments.byName());
+			return output.toString();
+		}
+		catch (IOException exc)
+		{
+			// can't happen anyway
+			throw new RuntimeException(exc);
+		}
 	}
 
 	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
@@ -854,39 +903,32 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	}
 
 	/**
-	 * Renders the template and returns the resulting string.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 * @return The rendered output as a string.
-	 */
-	public String renders(Map<String, Object> variables)
-	{
-		try (EvaluationContext context = new EvaluationContext())
-		{
-			return renders(context, variables);
-		}
-	}
-
-	/**
-	 * Renders the template using the passed in variables.
-	 * @param context   the EvaluationContext. May be null.
+	 * Internal method that renders the template when all variables are already
+	 * bound.
+	 * @param context   the EvaluationContext. May not be null.
 	 * @param writer    the java.io.Writer object to which the output is written.
 	 *                  Maybe null, then the context's writer will be used.
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
 	 */
-	public void render(EvaluationContext context, Writer writer, Map<String, Object> variables)
+	public void renderBound(EvaluationContext context, Map<String, Object> variables)
 	{
-		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
-		context.registerCloseable(arguments);
-		renderBound(context, writer, arguments.byName());
-		// no cleanup here, as the render call might leak a closure to the outside world
+		Map<String, Object> oldVariables = context.setVariables(variables);
+		InterpretedTemplate oldTemplate = context.setTemplate(this);
+
+		try
+		{
+			super.evaluate(context);
+		}
+		catch (ReturnException ex)
+		{
+			// ignore return value and end rendering
+		}
+		finally
+		{
+			context.setTemplate(oldTemplate);
+			context.setVariables(oldVariables);
+		}
 	}
 
 	/**
@@ -902,29 +944,17 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		Writer oldWriter = null;
 
-		Map<String, Object> oldVariables = context.setVariables(variables);
-
 		if (writer != null)
 			oldWriter = context.setWriter(writer);
 
-		InterpretedTemplate oldTemplate = context.setTemplate(this);
-
 		try
 		{
-			super.evaluate(context);
-		}
-		catch (ReturnException ex)
-		{
-			// ignore return value and end rendering
+			renderBound(context, variables);
 		}
 		finally
 		{
-			context.setTemplate(oldTemplate);
-
 			if (writer != null)
 				context.setWriter(oldWriter);
-
-			context.setVariables(oldVariables);
 		}
 	}
 
@@ -972,59 +1002,85 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		return reader;
 	}
 
-	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
-	{
-		BoundArguments arguments = new BoundArguments(signature, this, args, kwargs);
-		context.registerCloseable(arguments);
-		Object result = null;
-		result = callBound(context, arguments.byName());
-		// no cleanup here, as the result might be a closure that still needs the local variables
-		return result;
-	}
-
 	/**
-	 * Executes the function.
+	 * Executes the function and returns the return value.
 	 * @return the return value of the function
 	 */
 	public Object call()
 	{
-		try (EvaluationContext context = new EvaluationContext())
-		{
-			return call(context, null);
-		}
+		return call(-1, null, null);
 	}
 
 	/**
-	 * Executes the function.
-	 * @param context   the EvaluationContext.
-	 * @return the return value of the function
-	 */
-	public Object call(EvaluationContext context)
-	{
-		return call(context, null);
-	}
-
-	/**
-	 * Executes the function.
+	 * Executes the function and returns the return value.
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the function code. May be null.
 	 *                  These variables will be checked against the signature
 	 *                  of the template (if a signature is defined, otherwise
 	 *                  all variables will be accepted)
-	 *                 
 	 * @return the return value of the function
 	 */
 	public Object call(Map<String, Object> variables)
 	{
-		try (EvaluationContext context = new EvaluationContext())
+		return call(-1, null, variables);
+	}
+
+	/**
+	 * Executes the function and returns the return value.
+	 * @param milliseconds The maximum number of milliseconds this template
+	 *                     may run.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the function code. May be null.
+	 *                  These variables will be checked against the signature
+	 *                  of the template (if a signature is defined, otherwise
+	 *                  all variables will be accepted)
+	 * @return the return value of the function
+	 */
+	public Object call(long milliseconds, Map<String, Object> variables)
+	{
+		return call(milliseconds, null, variables);
+	}
+
+	/**
+	 * Executes the function and returns the return value.
+	 * @param globalVariables The global variables that should be available in
+	 *                        the template and any called recursively.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the function code. May be null.
+	 *                  These variables will be checked against the signature
+	 *                  of the template (if a signature is defined, otherwise
+	 *                  all variables will be accepted)
+	 * @return the return value of the function
+	 */
+	public Object call(Map<String, Object> globalVariables, Map<String, Object> variables)
+	{
+		return call(-1, globalVariables, variables);
+	}
+
+	/**
+	 * Executes the function and returns the return value.
+	 * @param milliseconds The maximum number of milliseconds this template
+	 *                     may run.
+	 * @param globalVariables The global variables that should be available in
+	 *                        the template and any called recursively.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the function code. May be null.
+	 *                  These variables will be checked against the signature
+	 *                  of the template (if a signature is defined, otherwise
+	 *                  all variables will be accepted)
+	 * @return the return value of the function
+	 */
+	public Object call(long milliseconds, Map<String, Object> globalVariables, Map<String, Object> variables)
+	{
+		try (EvaluationContext context = new EvaluationContext(milliseconds, globalVariables))
 		{
 			return call(context, variables);
 		}
 	}
 
 	/**
-	 * Executes the function using the passed in variables.
-	 * @param context   the EvaluationContext. May be null.
+	 * Executes the function and returns the return value.
+	 * @param context   the EvaluationContext.
 	 * @param variables a map containing the top level variables that should be
 	 *                  available to the function code. May be null.
 	 *                  These variables will be checked against the signature
@@ -1036,7 +1092,14 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
 		context.registerCloseable(arguments);
-		Object result = null;
+		return callBound(context, arguments.byName());
+		// no cleanup here, as the result might be a closure that still needs the local variables
+	}
+
+	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
+	{
+		BoundArguments arguments = new BoundArguments(signature, this, args, kwargs);
+		context.registerCloseable(arguments);
 		return callBound(context, arguments.byName());
 		// no cleanup here, as the result might be a closure that still needs the local variables
 	}
@@ -1052,9 +1115,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	public Object callBound(EvaluationContext context, Map<String, Object> variables)
 	{
 		Map<String, Object> oldVariables = context.setVariables(variables);
-
 		Writer oldWriter = context.setWriter(null);
-
 		InterpretedTemplate oldTemplate = context.setTemplate(this);
 
 		try
@@ -1069,9 +1130,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 		finally
 		{
 			context.setTemplate(oldTemplate);
-
 			context.setWriter(oldWriter);
-
 			context.setVariables(oldVariables);
 		}
 	}
