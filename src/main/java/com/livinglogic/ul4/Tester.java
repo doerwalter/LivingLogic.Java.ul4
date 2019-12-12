@@ -55,23 +55,26 @@ public class Tester
 		else
 			template = (InterpretedTemplate)templateString;
 
+		Map<String, Object> globalVariables = (Map<String, Object>)data.get("globalvariables");
 		Map<String, Object> variables = (Map<String, Object>)data.get("variables");
+		Integer milliSecondsObj = (Integer)data.get("milliseconds");
+		int milliSeconds = milliSecondsObj != null ? ((int)milliSecondsObj) : -1;
 
 		String output;
 
 		if (command.equals("render"))
 		{
 			java.io.Writer writer = new java.io.StringWriter();
-			template.render(writer, variables);
+			template.render(writer, milliSeconds, globalVariables, variables);
 			output = writer.toString();
 		}
 		else if (command.equals("renders"))
 		{
-			output = template.renders(variables);
+			output = template.renders(milliSeconds, globalVariables, variables);
 		}
 		else if (command.equals("call"))
 		{
-			Object outputObject = template.call(variables);
+			Object outputObject = template.call(milliSeconds, globalVariables, variables);
 			output = com.livinglogic.ul4on.Utils.dumps(outputObject);
 		}
 		else
