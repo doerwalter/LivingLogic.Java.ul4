@@ -1,3 +1,9 @@
+exp-152-1 (2019-12-12)
+----------------------
+
+Implemented ``InterpretedTemplate.reader(globalVariables, variables)``.
+
+
 exp-152 (2019-12-12)
 --------------------
 

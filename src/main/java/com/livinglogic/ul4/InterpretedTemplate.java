@@ -994,19 +994,21 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		protected InterpretedTemplate template;
 		protected Writer writer;
+		protected Map<String, Object> globalVariables;
 		protected Map<String, Object> variables;
 
-		public RenderRunnable(InterpretedTemplate template, Writer writer, Map<String, Object> variables)
+		public RenderRunnable(InterpretedTemplate template, Writer writer, Map<String, Object> globalVariables, Map<String, Object> variables)
 		{
 			this.template = template;
 			this.writer = writer;
+			this.globalVariables = globalVariables;
 			this.variables = variables;
 		}
 
 		@Override
 		public void run()
 		{
-			template.render(writer, variables);
+			template.render(writer, -1, globalVariables, variables);
 			try
 			{
 				writer.close();
@@ -1030,7 +1032,25 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	{
 		PipedReader reader = new PipedReader(10);
 		PipedWriter writer = new PipedWriter(reader);
-		new Thread(new RenderRunnable(this, writer, variables)).start();
+		new Thread(new RenderRunnable(this, writer, null, variables)).start();
+		return reader;
+	}
+
+	/**
+	 * Renders the template and returns a Reader object from which the template
+	 * output can be read.
+	 * @param globalVariables The global variables that should be available in
+	 *                        the template and any called recursively.
+	 * @param variables a map containing the top level variables that should be
+	 *                  available to the template code. May be null
+	 * @return The reader from which the template output can be read.
+	 * @throws IOException
+	 */
+	public Reader reader(Map<String, Object> globalVariables, Map<String, Object> variables) throws IOException
+	{
+		PipedReader reader = new PipedReader(10);
+		PipedWriter writer = new PipedWriter(reader);
+		new Thread(new RenderRunnable(this, writer, globalVariables, variables)).start();
 		return reader;
 	}
 
