@@ -1,4 +1,4 @@
-exp-152 (2019-12-11)
+exp-152 (2019-12-12)
 --------------------
 
 Add methods ``logDebug``, ``logInfo``, ``logNotice``, ``logWarning``,
