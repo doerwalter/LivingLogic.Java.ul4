@@ -42,7 +42,7 @@ public class InterpretedTemplate extends BlockAST implements UL4Name, UL4CallWit
 	/**
 	 * The version number used in the UL4ON dump of the template.
 	 */
-	public static final String VERSION = "48";
+	public static final String VERSION = "49";
 
 	/**
 	 * The name of the template/function (defaults to {@code null})
