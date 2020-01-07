@@ -29,7 +29,7 @@ exp-151 (2019-11-21)
 --------------------
 
 Added version of ``com.livinglogic.ul4.Utils.getStacktraceAsText()`` and
-``com.livinglogic.ul4.Utils.getStacktraceAsMarkdown()`` whee the number of
+``com.livinglogic.ul4.Utils.getStacktraceAsMarkdown()`` where the number of
 lines can be limited.
 
 
