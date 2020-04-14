@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2019 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2020 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -98,7 +98,7 @@ public class ModuleUL4ON implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type, UL4Nam
 			return "dumps";
 		}
 
-		private static final Signature signature = new Signature("obj", Signature.required);
+		private static final Signature signature = new Signature("obj", Signature.required, "indent", null);
 
 		@Override
 		public Signature getSignature()
@@ -108,8 +108,13 @@ public class ModuleUL4ON implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type, UL4Nam
 
 		public Object evaluate(BoundArguments arguments)
 		{
-			Object arg = arguments.get(0);
-			return Utils.dumps(arg, null);
+			Object obj = arguments.get(0);
+			Object indent = arguments.get(1);
+
+			if (indent != null && !(indent instanceof String))
+				throw new ArgumentTypeMismatchException("dumps({!t}, {!t}) not supported", obj, indent);
+
+			return Utils.dumps(obj, (String)indent);
 		}
 	}
 
@@ -132,12 +137,12 @@ public class ModuleUL4ON implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type, UL4Nam
 
 		public Object evaluate(BoundArguments arguments)
 		{
-			Object arg = arguments.get(0);
+			Object indent = arguments.get(0);
 
-			if (arg != null && !(arg instanceof String))
-				throw new ArgumentTypeMismatchException("Encoder({!t}) not supported", arg);
+			if (indent != null && !(indent instanceof String))
+				throw new ArgumentTypeMismatchException("Encoder({!t}) not supported", indent);
 
-			return new Encoder((String)arg);
+			return new Encoder((String)indent);
 		}
 	}
 
