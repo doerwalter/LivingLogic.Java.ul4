@@ -5733,11 +5733,18 @@ public class UL4Test
 		checkOutput("", T("<?print ul4on.dumps()?>"));
 	}
 
-	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	@Test
-	public void module_ul4on_dumps_2_args()
+	public void module_ul4on_dumps_2_bad_args()
 	{
 		checkOutput("", T("<?print ul4on.dumps(1, 2)?>"));
+	}
+
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	@Test
+	public void module_ul4on_dumps_3_args()
+	{
+		checkOutput("", T("<?print ul4on.dumps(1, 2, 3)?>"));
 	}
 
 	@Test
