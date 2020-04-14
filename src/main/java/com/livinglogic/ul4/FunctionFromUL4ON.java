@@ -15,7 +15,7 @@ public class FunctionFromUL4ON extends Function
 		return "fromul4on";
 	}
 
-	private static final Signature signature = new Signature("string", Signature.required);
+	private static final Signature signature = new Signature("dump", Signature.required);
 
 	public Signature getSignature()
 	{

@@ -289,4 +289,30 @@ public class UL4ONTest
 	{
 		Object x = loads("l i42 k23 ]", null);
 	}
+
+	@Test
+	public void multiple_encoder_calls()
+	{
+		Encoder encoder = new Encoder();
+		String s1 = "gurk";
+		String s2 = "hurz";
+
+		assertEquals("S'gurk'", encoder.dumps(s1));
+		assertEquals("S'hurz'", encoder.dumps(s2));
+		assertEquals("^0", encoder.dumps(s1));
+		assertEquals("^1", encoder.dumps(s2));
+	}
+
+	@Test
+	public void multiple_decoder_calls()
+	{
+		Decoder decoder = new Decoder();
+		String s1 = "gurk";
+		String s2 = "hurz";
+
+		assertEquals("gurk", decoder.loads("S'gurk'"));
+		assertEquals("hurz", decoder.loads("S'hurz'"));
+		assertEquals("gurk", decoder.loads("^0"));
+		assertEquals("hurz", decoder.loads("^1"));
+	}
 }

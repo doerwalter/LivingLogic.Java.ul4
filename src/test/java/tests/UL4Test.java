@@ -2035,6 +2035,34 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_fromul4on()
+	{
+		checkOutput("None", T("<?print repr(fromul4on(dump))?>"), V("dump", dumps(null)));
+		checkOutput("False", T("<?print repr(fromul4on(dump))?>"), V("dump", dumps(false)));
+		checkOutput("True", T("<?print repr(fromul4on(dump))?>"), V("dump", dumps(true)));
+		checkOutput("42", T("<?print repr(fromul4on(dump))?>"), V("dump", dumps(42)));
+		checkOutput("42.5", T("<?print repr(fromul4on(dump))?>"), V("dump", dumps(42.5)));
+		checkOutput("'abc'", T("<?print repr(fromul4on(dump))?>"), V("dump", dumps("abc")));
+		checkOutput("[1, 2, 3]", T("<?print repr(fromul4on(dump))?>"), V("dump", dumps(asList(1, 2, 3))));
+		checkOutput("{'one': 1}", T("<?print repr(fromul4on(dump))?>"), V("dump", dumps(V("one", 1))));
+		checkOutput("None", T("<?print repr(fromul4on(dump=data))?>"), V("data", dumps(null)));
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	@Test
+	public void function_fromul4on_0_args()
+	{
+		checkOutput("", T("<?print fromul4on()?>"));
+	}
+
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	@Test
+	public void function_fromul4on_2_args()
+	{
+		checkOutput("", T("<?print fromul4on(1, 2)?>"));
+	}
+
+	@Test
 	public void function_str()
 	{
 		InterpretedTemplate t = T("<?print str(data)?>");
@@ -5682,5 +5710,73 @@ public class UL4Test
 
 		checkOutput("<com.livinglogic.ul4.Signature (x=17, y=@(2000-02-29))>", T("<?def f(x=17, y=@(2000-02-29))?><?return x+y?><?end def?><?print repr(f.signature)?>"));
 		checkOutput("<com.livinglogic.ul4.Signature (bad=[...])>", T("<?code bad = []?><?code bad.append(bad)?><?def f(bad=bad)?><?end def?><?print repr(f.signature)?>"));
+	}
+
+	@Test
+	public void module_ul4on_dumps()
+	{
+		checkOutput(dumps(null), T("<?print ul4on.dumps(data)?>"), V("data", null));
+		checkOutput(dumps(false), T("<?print ul4on.dumps(data)?>"), V("data", false));
+		checkOutput(dumps(true), T("<?print ul4on.dumps(data)?>"), V("data", true));
+		checkOutput(dumps(42), T("<?print ul4on.dumps(data)?>"), V("data", 42));
+		checkOutput(dumps(42.5), T("<?print ul4on.dumps(data)?>"), V("data", 42.5));
+		checkOutput(dumps("abc"), T("<?print ul4on.dumps(data)?>"), V("data", "abc"));
+		checkOutput(dumps(asList(1, 2, 3)), T("<?print ul4on.dumps(data)?>"), V("data", asList(1, 2, 3)));
+		checkOutput(dumps(makeMap("one", 1)), T("<?print ul4on.dumps(data)?>"), V("data", V("one", 1)));
+		checkOutput(dumps(null), T("<?print ul4on.dumps(obj=data)?>"), V("data", null));
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	@Test
+	public void module_ul4on_dumps_0_args()
+	{
+		checkOutput("", T("<?print ul4on.dumps()?>"));
+	}
+
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	@Test
+	public void module_ul4on_dumps_2_args()
+	{
+		checkOutput("", T("<?print ul4on.dumps(1, 2)?>"));
+	}
+
+	@Test
+	public void module_ul4on_loads()
+	{
+		checkOutput("None", T("<?print repr(ul4on.loads(dump))?>"), V("dump", dumps(null)));
+		checkOutput("False", T("<?print repr(ul4on.loads(dump))?>"), V("dump", dumps(false)));
+		checkOutput("True", T("<?print repr(ul4on.loads(dump))?>"), V("dump", dumps(true)));
+		checkOutput("42", T("<?print repr(ul4on.loads(dump))?>"), V("dump", dumps(42)));
+		checkOutput("42.5", T("<?print repr(ul4on.loads(dump))?>"), V("dump", dumps(42.5)));
+		checkOutput("'abc'", T("<?print repr(ul4on.loads(dump))?>"), V("dump", dumps("abc")));
+		checkOutput("[1, 2, 3]", T("<?print repr(ul4on.loads(dump))?>"), V("dump", dumps(asList(1, 2, 3))));
+		checkOutput("{'one': 1}", T("<?print repr(ul4on.loads(dump))?>"), V("dump", dumps(V("one", 1))));
+		checkOutput("None", T("<?print repr(ul4on.loads(dump=data))?>"), V("data", dumps(null)));
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	@Test
+	public void module_ul4on_loads_0_args()
+	{
+		checkOutput("", T("<?print ul4on.loads()?>"));
+	}
+
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	@Test
+	public void module_ul4on_loads_2_args()
+	{
+		checkOutput("", T("<?print ul4on.loads(1, 2)?>"));
+	}
+
+	@Test
+	public void module_encoder_multiple_dumps()
+	{
+		checkOutput("S'gurk' S'hurz' ^0 ^1", T("<?code e = ul4on.Encoder()?><?print e.dumps('gurk')?> <?print e.dumps('hurz')?> <?print e.dumps('gurk')?> <?print e.dumps('hurz')?>"));
+	}
+
+	@Test
+	public void module_decoder_multiple_loads()
+	{
+		checkOutput("gurk hurz gurk hurz", T("<?code d = ul4on.Decoder()?><?print d.loads('S\"gurk\"')?> <?print d.loads('S\"hurz\"')?> <?print d.loads('^0')?> <?print d.loads('^1')?>"));
 	}
 }

@@ -1,3 +1,11 @@
+exp-153 (2020-12-12)
+--------------------
+
+Implemented a "module" ``ul4on`` with the attributes ``loads``, ``dumps``,
+``Encoder`` and ``Decoder``. ``Encoder`` and ``Decoder`` can be used to
+dump/load multiple objects/dumps using the same encoding/decoding context.
+
+
 exp-152-1 (2019-12-12)
 ----------------------
 

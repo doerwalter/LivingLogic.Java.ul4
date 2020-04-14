@@ -105,9 +105,10 @@ public interface UL4Repr
 		 *
 		 * @param string The string to append.
 		 */
-		public void append(String string)
+		public Formatter append(String string)
 		{
 			buffer.append(string);
+			return this;
 		}
 
 		/**
@@ -115,17 +116,18 @@ public interface UL4Repr
 		 *
 		 * @param c The character to append.
 		 */
-		public void append(char c)
+		public Formatter append(char c)
 		{
 			buffer.append(c);
+			return this;
 		}
 
-		private void appendHex(int value, int length)
+		private Formatter appendHex(int value, int length)
 		{
 			String s = Integer.toHexString(value);
 			for (int i = s.length(); i < length; ++i)
 				append("0");
-			append(s);
+			return append(s);
 		}
 
 		/**

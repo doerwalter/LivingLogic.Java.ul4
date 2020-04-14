@@ -167,7 +167,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 		template = null;
 		allVariables = new MapChain<String, Object>(
 			variables,
-			new MapChain<String, Object>(globalVariables, functions)
+			new MapChain<String, Object>(globalVariables, builtins)
 		);
 		closeables = new LinkedList<AutoCloseable>();
 		escapes = new LinkedList<StringEscape>();
@@ -436,12 +436,12 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	{
 	}
 
-	private static Map<String, Object> functions = new HashMap<String, Object>();
+	private static Map<String, Object> builtins = new HashMap<String, Object>();
 
 	static
 	{
 		MapUtils.putMap(
-			functions,
+			builtins,
 			"now", new FunctionNow(),
 			"utcnow", new FunctionUTCNow(),
 			"today", new FunctionToday(),
@@ -521,7 +521,8 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 			"getattr", new FunctionGetAttr(),
 			"hasattr", new FunctionHasAttr(),
 			"setattr", new FunctionSetAttr(),
-			"dir", new FunctionDir()
+			"dir", new FunctionDir(),
+			"ul4on", new ModuleUL4ON()
 		);
 	}
 }

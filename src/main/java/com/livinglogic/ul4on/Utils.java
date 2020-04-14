@@ -76,18 +76,8 @@ public class Utils
 	 */
 	public static String dumps(Object data, String indent)
 	{
-		StringWriter writer = new StringWriter();
-		Encoder encoder = new Encoder(writer, indent);
-		try
-		{
-			encoder.dump(data);
-		}
-		catch (IOException ioe)
-		{
-			// can't happen with StringWriter
-		}
-
-		return writer.toString();
+		Encoder encoder = new Encoder(indent);
+		return encoder.dumps(data);
 	}
 
 	/**
@@ -98,15 +88,8 @@ public class Utils
 	 */
 	public static Object load(Reader reader, Map<String, ObjectFactory> registry) throws IOException
 	{
-		try
-		{
-			return new Decoder(reader, registry).load();
-		}
-		catch (IOException e)
-		{
-			// can't happen
-			return null; // keeps the compiler happy
-		}
+		Decoder decoder = new Decoder(registry);
+		return decoder.load(reader);
 	}
 
 	/**
@@ -116,15 +99,8 @@ public class Utils
 	 */
 	public static Object loads(String s, Map<String, ObjectFactory> registry)
 	{
-		try
-		{
-			return load(new StringReader(s), registry);
-		}
-		catch (IOException e)
-		{
-			// can only happen on short reads
-			throw new RuntimeException(e);
-		}
+		Decoder decoder = new Decoder(registry);
+		return decoder.loads(s);
 	}
 
 	/**
@@ -132,7 +108,7 @@ public class Utils
 	 * @param clob The CLOB that contains the object in serialized form
 	 * @return the deserialized object
 	 */
-	public static Object load(Clob clob, Map<String, ObjectFactory> registry) throws IOException, SQLException
+	public static Object loads(Clob clob, Map<String, ObjectFactory> registry) throws IOException, SQLException
 	{
 		return load(clob.getCharacterStream(), registry);
 	}

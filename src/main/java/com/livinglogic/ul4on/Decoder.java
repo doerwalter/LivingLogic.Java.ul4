@@ -8,6 +8,7 @@ package com.livinglogic.ul4on;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,21 +24,35 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Stack;
 
+import com.livinglogic.ul4.UL4Repr;
+import com.livinglogic.ul4.UL4GetAttr;
+import com.livinglogic.ul4.UL4Dir;
+import com.livinglogic.ul4.UL4Type;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.Slice;
 import com.livinglogic.ul4.FunctionDate;
 import com.livinglogic.ul4.FunctionRepr;
+import com.livinglogic.ul4.BoundMethod;
+import com.livinglogic.ul4.Signature;
+import com.livinglogic.ul4.BoundArguments;
+import com.livinglogic.ul4.AttributeException;
+import com.livinglogic.ul4.ArgumentTypeMismatchException;
+
+import static com.livinglogic.utils.SetUtils.makeSet;
 
 /**
  * A {@code Decoder} object wraps a {@code Reader} object and can read any object
  * in the UL4ON serialization format from this {@code Reader}.
  */
-public class Decoder implements Iterable<Object>
+public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, UL4Type
 {
 	/**
-	 * The {@code Reader} instance from where serialized objects will be read.
+	 * The {@code Reader} instance from where serialized objects currently will
+	 * be read.
+	 * Set temporarily during calls to {@code load}, so that the argument doesn't
+	 * have to be passed around.
 	 */
 	private Reader reader = null;
 
@@ -75,20 +90,67 @@ public class Decoder implements Iterable<Object>
 	private Stack<String> stack = new Stack<String>();
 
 	/**
-	 * Create an {@code Decoder} object for reading serialized UL4ON dump
-	 * from the {@code Reader} {@code reader}.
-	 *
-	 * @param reader the {@code Reader} from which the UL4ON dump will be read.
-	 * @param registry custom type registry.
+	 * Create an {@code Decoder} object for reading serialized UL4ON dumps.
 	 */
-	public Decoder(Reader reader, Map<String, ObjectFactory> registry)
+	public Decoder()
 	{
-		this.reader = reader;
-		this.registry = registry;
 	}
 
 	/**
+	 * Create an {@code Decoder} object for reading serialized UL4ON dumps.
+	 * @param registry custom type registry.
+	 */
+	public Decoder(Map<String, ObjectFactory> registry)
+	{
+		this.registry = registry;
+	}
+
+	private void reset(Reader reader)
+	{
+		this.reader = reader;
+		position = 0;
+		bufferedChar = -1;
+	}
+
+	/**
+	 * Reads a object in the UL4ON dump from the reader and return the deserialized object.
+	 * @param reader the {@code Reader} from which the UL4ON dump will be read.
+	 * @param obj the object to be dumped.
+	 */
+	public Object load(Reader reader) throws IOException
+	{
+		reset(reader);
+		Object result = load();
+		this.reader = null;
+		return result;
+	}
+
+	/**
+	 * Reads a object in the UL4ON dump from a string and return the deserialized object.
+	 * @param dump the UL4ON dump.
+	 * @return the object read from the dump
+	 */
+	public Object loads(String dump)
+	{
+		try (StringReader reader = new StringReader(dump))
+		{
+			reset(reader);
+			Object result = load();
+			this.reader = null;
+			return result;
+		}
+		catch (IOException exc)
+		{
+			// can't happen anyway
+			throw new RuntimeException(exc);
+		}
+	}
+
+
+	/**
 	 * Reads a object in the UL4ON dump from the reader and returns it.
+	 * This is called by implementations of {@see UL4ONSerializable}, but should
+	 * not be called from outside, as {@code reader} may not be set in this case.
 	 * @return the object read from the stream
 	 * @throws IOException if reading from the stream fails
 	 */
@@ -647,5 +709,73 @@ public class Decoder implements Iterable<Object>
 			}
 			pushbackChar(bufferedChar);
 		}
+	}
+
+	@Override
+	public void reprUL4(UL4Repr.Formatter formatter)
+	{
+		formatter
+			.append("< ")
+			.append(getClass().getName())
+			.append(">")
+		;
+	}
+
+	protected static Set<String> attributes = makeSet("loads");
+
+	@Override
+	public Set<String> dirUL4()
+	{
+		return attributes;
+	}
+
+	@Override
+	public Object getAttrUL4(String key)
+	{
+		switch (key)
+		{
+			case "loads":
+				return new BoundMethodLoadS(this);
+			default:
+				throw new AttributeException(this, key);
+		}
+	}
+
+	private static class BoundMethodLoadS extends BoundMethod<Decoder>
+	{
+		public BoundMethodLoadS(Decoder object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String nameUL4()
+		{
+			return "loads";
+		}
+
+		private static final Signature signature = new Signature("dump", Signature.required);
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object evaluate(BoundArguments arguments)
+		{
+			Object arg = arguments.get(0);
+
+			if (!(arg instanceof String))
+				throw new ArgumentTypeMismatchException("loads({!t}) not supported", arg);
+			return object.loads((String)arg);
+		}
+	}
+
+	@Override
+	public String typeUL4()
+	{
+		return "ul4on.Decoder";
 	}
 }

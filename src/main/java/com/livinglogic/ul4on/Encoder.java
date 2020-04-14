@@ -8,6 +8,7 @@ package com.livinglogic.ul4on;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -20,6 +21,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
+import com.livinglogic.ul4.UL4Repr;
+import com.livinglogic.ul4.UL4GetAttr;
+import com.livinglogic.ul4.UL4Dir;
+import com.livinglogic.ul4.UL4Type;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
@@ -32,15 +37,25 @@ import com.livinglogic.ul4.BoundDateMethodHour;
 import com.livinglogic.ul4.BoundDateMethodMinute;
 import com.livinglogic.ul4.BoundDateMethodSecond;
 import com.livinglogic.ul4.BoundDateMethodMicrosecond;
+import com.livinglogic.ul4.AttributeException;
+import com.livinglogic.ul4.BoundMethod;
+import com.livinglogic.ul4.Signature;
+import com.livinglogic.ul4.BoundArguments;
+
+import static com.livinglogic.utils.SetUtils.makeSet;
+
 
 /**
- * An {@code Encoder} object wraps a {@code Writer} object and can dump any object
- * to this {@code Writer} in the UL4ON serialization format.
+ * An {@code Encoder} object is used for writing any object to a
+ * {@code Writer} object using the UL4ON serialization format (or returning
+ * such an object dump as a string).
  */
-public class Encoder
+public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type
 {
 	/**
-	 * The {@code Writer} instance where the final output will be written.
+	 * The {@code Writer} instance where the final output currently will be written.
+	 * Set temporarily during calls to {@code dump}, so that the argument doesn't
+	 * have to be passed around.
 	 */
 	private Writer writer = null;
 
@@ -78,9 +93,8 @@ public class Encoder
 	 * Create an {@code Encoder} object for writing serialized UL4ON output
 	 * to the {@code Writer} {@code writer}
 	 */
-	public Encoder(Writer writer, String indent)
+	public Encoder(String indent)
 	{
-		this.writer = writer;
 		this.indent = indent;
 		this.level = 0;
 		this.first = true;
@@ -90,9 +104,16 @@ public class Encoder
 	 * Create an {@code Encoder} object for writing serialized UL4ON output
 	 * to the {@code Writer} {@code writer}
 	 */
-	public Encoder(Writer writer)
+	public Encoder()
 	{
-		this(writer, null);
+		this(null);
+	}
+
+	private void reset(Writer writer)
+	{
+		this.writer = writer;
+		level = 0;
+		first = true;
 	}
 
 	/**
@@ -153,7 +174,43 @@ public class Encoder
 	}
 
 	/**
+	 * Create an UL4ON dump of an object and write it to an output writer.
+	 * @param writer the output stream to which the dump should be written.
+	 * @param obj the object to be dumped.
+	 */
+	public void dump(Writer writer, Object obj) throws IOException
+	{
+		reset(writer);
+		dump(obj);
+		this.writer = null;
+	}
+
+	/**
+	 * Create an UL4ON dump of an object and return the dump as a string.
+	 * @param obj the object to be dumped.
+	 * @return the UL4ON dump of the object
+	 */
+	public String dumps(Object obj)
+	{
+		try (StringWriter writer = new StringWriter())
+		{
+			reset(writer);
+			dump(obj);
+			String result = writer.toString();
+			this.writer = null;
+			return result;
+		}
+		catch (IOException exc)
+		{
+			// can't happen anyway
+			throw new RuntimeException(exc);
+		}
+	}
+
+	/**
 	 * Writes the object {@code obj} to the writer in the UL4ON object serialization format.
+	 * This is called by implementations of {@see UL4ONSerializable}, but should
+	 * not be called from outside, as {@code writer} may not be set in this case.
 	 * @param obj the object to be dumped.
 	 * @throws IOException if writing to the stream fails
 	 */
@@ -274,5 +331,71 @@ public class Encoder
 				throw new RuntimeException("unknown type " + obj.getClass());
 			}
 		}
+	}
+
+	@Override
+	public void reprUL4(UL4Repr.Formatter formatter)
+	{
+		formatter
+			.append("< ")
+			.append(getClass().getName())
+			.append(" indent=")
+			.visit(indent)
+			.append(">")
+		;
+	}
+
+	protected static Set<String> attributes = makeSet("dumps");
+
+	@Override
+	public Set<String> dirUL4()
+	{
+		return attributes;
+	}
+
+	@Override
+	public Object getAttrUL4(String key)
+	{
+		switch (key)
+		{
+			case "dumps":
+				return new BoundMethodDumpS(this);
+			default:
+				throw new AttributeException(this, key);
+		}
+	}
+
+	private static class BoundMethodDumpS extends BoundMethod<Encoder>
+	{
+		public BoundMethodDumpS(Encoder object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String nameUL4()
+		{
+			return "dumps";
+		}
+
+		private static final Signature signature = new Signature("obj", Signature.required);
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object evaluate(BoundArguments arguments)
+		{
+			return object.dumps(arguments.get(0));
+		}
+	}
+
+	@Override
+	public String typeUL4()
+	{
+		return "ul4on.Encoder";
 	}
 }
