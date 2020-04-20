@@ -1,3 +1,10 @@
+exp-153-1 (2020-04-20)
+----------------------
+
+Arrays are now dumped as lists by the UL4ON machinery (Note that this means that
+they don't roundtrip, as they will be deserialized as lists again.)
+
+
 exp-153 (2020-04-14)
 --------------------
 

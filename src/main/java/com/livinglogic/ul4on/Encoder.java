@@ -313,6 +313,16 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type
 				--level;
 				line("]");
 			}
+			else if (obj instanceof Object[])
+			{
+				record(obj);
+				line("L");
+				++level;
+				for (Object o: (Object[])obj)
+					dump(o);
+				--level;
+				line("]");
+			}
 			else if (obj instanceof Map)
 			{
 				record(obj);
