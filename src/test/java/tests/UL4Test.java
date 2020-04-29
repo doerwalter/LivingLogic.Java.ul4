@@ -5786,4 +5786,12 @@ public class UL4Test
 	{
 		checkOutput("gurk hurz gurk hurz", T("<?code d = ul4on.Decoder()?><?print d.loads('S\"gurk\"')?> <?print d.loads('S\"hurz\"')?> <?print d.loads('^0')?> <?print d.loads('^1')?>"));
 	}
+
+	@Test
+	public void narrow_big_integer()
+	{
+		BigInteger x = new BigInteger("99999999999999999999999999999999999999");
+		checkOutput("99999999999999999999999999999999999999", T("<?print int(x)?>"), V("x", x));
+		checkOutput("100000000000000000000000000000000000000", T("<?print int(x+1)?>"), V("x", x));
+	}
 }
