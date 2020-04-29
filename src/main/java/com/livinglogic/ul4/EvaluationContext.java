@@ -387,12 +387,32 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
+	 * Log an exception on level <code>debug</code>
+	 * Can be overwritten in subclasses. The default does nothing.
+	 *
+	 * @param exception The exception to log.
+	 */
+	public void logDebug(Throwable exception)
+	{
+	}
+
+	/**
 	 * Log a message on level <code>info</code>
 	 * Can be overwritten in subclasses. The default does nothing.
 	 *
 	 * @param mesage The log message.
 	 */
 	public void logInfo(String message)
+	{
+	}
+
+	/**
+	 * Log an exception on level <code>info</code>
+	 * Can be overwritten in subclasses. The default does nothing.
+	 *
+	 * @param exception The exception to log.
+	 */
+	public void logInfo(Throwable exception)
 	{
 	}
 
@@ -407,12 +427,32 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
+	 * Log an exception on level <code>notice</code>
+	 * Can be overwritten in subclasses. The default does nothing.
+	 *
+	 * @param exception The exception to log.
+	 */
+	public void logNotice(Throwable exception)
+	{
+	}
+
+	/**
 	 * Log a message on level <code>warning</code>
 	 * Can be overwritten in subclasses. The default does nothing.
 	 *
 	 * @param mesage The log message.
 	 */
 	public void logWarning(String message)
+	{
+	}
+
+	/**
+	 * Log an exception on level <code>warning</code>
+	 * Can be overwritten in subclasses. The default does nothing.
+	 *
+	 * @param exception The exception to log.
+	 */
+	public void logWarning(Throwable exception)
 	{
 	}
 
@@ -427,12 +467,12 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
-	 * Log an exception (on level <code>exc</code>)
+	 * Log an exception on level <code>error</code>
 	 * Can be overwritten in subclasses. The default does nothing.
 	 *
 	 * @param exception The exception to log.
 	 */
-	public void logException(Throwable exception)
+	public void logError(Throwable exception)
 	{
 	}
 
