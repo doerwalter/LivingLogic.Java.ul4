@@ -28,12 +28,18 @@
 	<scm>
 		<url>https://github.com/LivingLogic/LivingLogic.Java.ul4</url>
 	</scm>
+	</repositories>
 	<distributionManagement>
 		<repository>
-			<id>LL</id>
-			<name>LL Nexus Repository</name>
-			<url>http://nexus.intern.livinglogic.de/content/repositories/LL</url>
+			<id>nexus-new</id>
+			<name>LivingLogic Nexus Maven Releases</name>
+			<url>http://nexus.livinglogic.de/repository/maven-releases</url>
 		</repository>
+		<snapshotRepository>
+			<id>nexus-new</id>
+			<name>LivingLogic Nexus Maven Snapshot</name>
+			<url>http://nexus.livinglogic.de/repository/maven-snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -110,9 +116,9 @@
 			<version>1.4.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.oracle</groupId>
+			<groupId>com.oracle.database.jdbc</groupId>
 			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.4.0</version>
+			<version>11.2.0.4</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
