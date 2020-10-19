@@ -28,6 +28,7 @@
 	<scm>
 		<url>https://github.com/LivingLogic/LivingLogic.Java.ul4</url>
 	</scm>
+	<repositories>
 	</repositories>
 	<distributionManagement>
 		<repository>
