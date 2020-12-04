@@ -73,6 +73,12 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	private List<Object> objects = new ArrayList<Object>();
 
 	/**
+	 * Stores persistent objects (i.e. those that implement
+	 * {@link UL4ONSerializablePersistent}).
+	 */
+	private Map<String, Map<String, UL4ONSerializablePersistent>> persistentObjects = new HashMap<String, Map<String, UL4ONSerializablePersistent>>();
+
+	/**
 	 * A {@code Map} that maps string to strings of the same value. This is used
 	 * to make sure that string keys in a map always use the same string objects.
 	 */
@@ -83,6 +89,13 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	 * looked up in the globals registry {@link Utils#registry}
 	 */
 	private Map<String, ObjectFactory> registry = null;
+
+	/**
+	 * Custom type registry for persistent objects. Any type name not found in
+	 * this registry will be looked up in the globals registry
+	 * {@link Utils#persistentRegistry}
+	 */
+	private Map<String, PersistentObjectFactory> persistentRegistry = null;
 
 	/**
 	 * Stack of types (used for error reporting).
@@ -105,11 +118,24 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 		this.registry = registry;
 	}
 
-	private void reset(Reader reader)
+	/**
+	 * Create an {@code Decoder} object for reading serialized UL4ON dumps.
+	 * @param registry custom type registry.
+	 * @param persistentRegistry custom type registry for persistent objects.
+	 */
+	public Decoder(Map<String, ObjectFactory> registry, Map<String, PersistentObjectFactory> persistentRegistry)
 	{
-		this.reader = reader;
-		position = 0;
-		bufferedChar = -1;
+		this.registry = registry;
+		this.persistentRegistry = persistentRegistry;
+	}
+
+	/**
+	 * Clear the internal cache for backreferences.
+	 * However the cache for persistent objects will not be cleared.
+	 */
+	public void reset()
+	{
+		objects.clear();
 	}
 
 	/**
@@ -119,7 +145,9 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	 */
 	public Object load(Reader reader) throws IOException
 	{
-		reset(reader);
+		this.reader = reader;
+		position = 0;
+		bufferedChar = -1;
 		Object result = load();
 		this.reader = null;
 		return result;
@@ -134,10 +162,7 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	{
 		try (StringReader reader = new StringReader(dump))
 		{
-			reset(reader);
-			Object result = load();
-			this.reader = null;
-			return result;
+			return load(reader);
 		}
 		catch (IOException exc)
 		{
@@ -145,7 +170,6 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 			throw new RuntimeException(exc);
 		}
 	}
-
 
 	/**
 	 * Reads a object in the UL4ON dump from the reader and returns it.
@@ -490,11 +514,58 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 				factory = Utils.registry.get(name);
 
 			if (factory == null)
-				throw new DecoderException(position, path(), "can't load object of type " + FunctionRepr.call(name));
+				throw new DecoderException(position, path(), com.livinglogic.ul4.Utils.formatMessage("can't load object of type {!r}", name));
 
 			UL4ONSerializable result = factory.create();
 
 			if (typecode == 'O')
+				endFakeLoading(oldpos, result);
+
+			pushType(name);
+			try
+			{
+				result.loadUL4ON(this);
+
+				int nextTypecode = nextChar();
+
+				if (nextTypecode != ')')
+					throw new DecoderException(position, path(), "object terminator ')' expected, got " + charRepr(nextTypecode));
+
+				return result;
+			}
+			finally
+			{
+				popType();
+			}
+		}
+		else if (typecode == 'p' || typecode == 'P')
+		{
+			int oldpos = -1;
+			if (typecode == 'P')
+				oldpos = beginFakeLoading();
+
+			String name = (String)load();
+			String id = (String)load();
+
+			UL4ONSerializablePersistent result = getPersistentObject(name, id);
+			if (result == null)
+			{
+				PersistentObjectFactory factory = null;
+
+				if (persistentRegistry != null)
+					factory = persistentRegistry.get(name);
+
+				if (factory == null)
+					factory = Utils.persistentRegistry.get(name);
+
+				if (factory == null)
+					throw new DecoderException(position, path(), com.livinglogic.ul4.Utils.formatMessage("can't load object of type {!r} with id {!r}", name, id));
+
+				result = factory.create(id);
+			}
+			storePersistentObject(result);
+
+			if (typecode == 'P')
 				endFakeLoading(oldpos, result);
 
 			pushType(name);
@@ -635,6 +706,26 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 		}
 	}
 
+	private UL4ONSerializablePersistent getPersistentObject(String type, String id)
+	{
+		Map<String, UL4ONSerializablePersistent> objects = persistentObjects.get(type);
+		if (objects == null)
+			return null;
+		return objects.get(id);
+	}
+
+	private void storePersistentObject(UL4ONSerializablePersistent object)
+	{
+		String type = object.getUL4ONName();
+		Map<String, UL4ONSerializablePersistent> objects = persistentObjects.get(type);
+		if (objects == null)
+		{
+			objects = new HashMap<String, UL4ONSerializablePersistent>();
+			persistentObjects.put(type, objects);
+		}
+		objects.put(object.getUL4ONID(), object);
+	}
+
 	private void pushType(String type)
 	{
 		stack.push(type);
@@ -770,6 +861,27 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 			if (!(arg instanceof String))
 				throw new ArgumentTypeMismatchException("loads({!t}) not supported", arg);
 			return object.loads((String)arg);
+		}
+	}
+
+	private static class BoundMethodReset extends BoundMethod<Decoder>
+	{
+		public BoundMethodReset(Decoder object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String nameUL4()
+		{
+			return "reset";
+		}
+
+		@Override
+		public Object evaluate(BoundArguments arguments)
+		{
+			object.reset();
+			return null;
 		}
 	}
 

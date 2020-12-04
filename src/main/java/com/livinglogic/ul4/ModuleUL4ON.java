@@ -85,7 +85,7 @@ public class ModuleUL4ON implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type, UL4Nam
 
 			if (!(arg instanceof String))
 				throw new ArgumentTypeMismatchException("loads({!t}) not supported", arg);
-			return Utils.loads((String)arg, null);
+			return Utils.loads((String)arg, null, null);
 		}
 	}
 

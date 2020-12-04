@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.livinglogic</groupId>
 	<artifactId>ul4</artifactId>
-	<version>0.154</version>
+	<version>0.155</version>
 	<packaging>jar</packaging>
 	<name>UL4</name>
 	<description>Java implementation of the UL4 templating language</description>
@@ -29,6 +29,10 @@
 		<url>https://github.com/LivingLogic/LivingLogic.Java.ul4</url>
 	</scm>
 	<repositories>
+		<repository>
+			<id>gitlab-maven</id>
+			<url>https://gitlab.livinglogic.de/api/v4/packages/maven</url>
+		</repository>
 	</repositories>
 	<distributionManagement>
 		<repository>

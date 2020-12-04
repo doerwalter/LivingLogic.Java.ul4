@@ -18,7 +18,9 @@ import static org.junit.Assert.assertTrue;
 import com.livinglogic.ul4on.DecoderException;
 
 import com.livinglogic.ul4on.UL4ONSerializable;
+import com.livinglogic.ul4on.UL4ONSerializablePersistent;
 import com.livinglogic.ul4on.ObjectFactory;
+import com.livinglogic.ul4on.PersistentObjectFactory;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
 import static com.livinglogic.ul4on.Utils.dumps;
@@ -147,6 +149,47 @@ public class UL4ONTest
 		}
 	}
 
+	private static class PersistentPoint implements UL4ONSerializablePersistent
+	{
+		String id;
+		int x;
+		int y;
+
+		PersistentPoint(String id, int x, int y)
+		{
+			this.id = id;
+			this.x = x;
+			this.y = y;
+		}
+
+		public int identity()
+		{
+			return 4;
+		}
+
+		public String getUL4ONName()
+		{
+			return "de.livingapps.appdd.test.persistentpoint";
+		}
+
+		public String getUL4ONID()
+		{
+			return id;
+		}
+
+		public void dumpUL4ON(Encoder encoder) throws IOException
+		{
+			encoder.dump(x);
+			encoder.dump(y);
+		}
+
+		public void loadUL4ON(Decoder decoder) throws IOException
+		{
+			x = (int)decoder.load();
+			y = (int)decoder.load();
+		}
+	}
+
 	private static InterpretedTemplate getTemplate(String source, String name)
 	{
 		InterpretedTemplate template = new InterpretedTemplate(source, name, InterpretedTemplate.Whitespace.keep, null, null, (String)null);
@@ -162,7 +205,7 @@ public class UL4ONTest
 	private static void checkRoundtrip(Object object)
 	{
 		String output = dumps(object);
-		Object recreated = loads(output, null);
+		Object recreated = loads(output, null, null);
 
 		// If we have an InterpretedTemplate, check the output instead
 		if ((recreated instanceof InterpretedTemplate) && (object instanceof InterpretedTemplate))
@@ -210,7 +253,7 @@ public class UL4ONTest
 	@Test
 	public void template_from_source()
 	{
-		InterpretedTemplate template = (InterpretedTemplate)loads("o s'de.livinglogic.ul4.template' n s'test' s'<?print x + y?>' s'x, y=23' s'keep' n n )", null);
+		InterpretedTemplate template = (InterpretedTemplate)loads("o s'de.livinglogic.ul4.template' n s'test' s'<?print x + y?>' s'x, y=23' s'keep' n n )", null, null);
 		assertEquals("40", template.renders(makeMap("x", 17)));
 	}
 
@@ -220,7 +263,7 @@ public class UL4ONTest
 		List l1 = new ArrayList();
 		l1.add(l1);
 
-		List l2 = (List)loads(dumps(l1), null);
+		List l2 = (List)loads(dumps(l1), null, null);
 
 		assertEquals(1, l2.size());
 		assertTrue(l2.get(0) == l2);
@@ -233,7 +276,7 @@ public class UL4ONTest
 
 		Point p1 = new Point(17, 23);
 
-		Point p2 = (Point)loads(dumps(p1), registry);
+		Point p2 = (Point)loads(dumps(p1), registry, null);
 
 		assertEquals(17, p2.x);
 		assertEquals(23, p2.y);
@@ -249,21 +292,21 @@ public class UL4ONTest
 		PointContent p2;
 
 		p1 = new PointContent(17, 23);
-		p2 = (PointContent)loads(dumps(p1), registry);
+		p2 = (PointContent)loads(dumps(p1), registry, null);
 
 		assertEquals(17, p2.x);
 		assertEquals(23, p2.y);
 		assertEquals(3, p2.identity());
 
 		p1 = new PointContent(17, 0);
-		p2 = (PointContent)loads(dumps(p1), registry);
+		p2 = (PointContent)loads(dumps(p1), registry, null);
 
 		assertEquals(17, p2.x);
 		assertEquals(0, p2.y);
 		assertEquals(3, p2.identity());
 
 		p1 = new PointContent(0, 0);
-		p2 = (PointContent)loads(dumps(p1), registry);
+		p2 = (PointContent)loads(dumps(p1), registry, null);
 
 		assertEquals(0, p2.x);
 		assertEquals(0, p2.y);
@@ -277,17 +320,46 @@ public class UL4ONTest
 
 		Point p1 = new Point(17, 23);
 
-		Point p2 = (Point)loads(dumps(p1), registry);
+		Point p2 = (Point)loads(dumps(p1), registry, null);
 
 		assertEquals(17, p2.x);
 		assertEquals(23, p2.y);
 		assertEquals(2, p2.identity());
 	}
 
+	@Test
+	public void custom_persistent_class()
+	{
+		Map<String, PersistentObjectFactory> registry = makeMap("de.livingapps.appdd.test.persistentpoint", new PersistentObjectFactory(){ public UL4ONSerializablePersistent create(String id) { return new PersistentPoint(id, 0, 0); }});
+
+		PersistentPoint p1 = new PersistentPoint("foo", 17, 23);
+
+		Encoder encoder = new Encoder();
+		String dump = encoder.dumps(p1);
+
+		Decoder decoder = new Decoder(null, registry);
+		PersistentPoint p2 = (PersistentPoint)decoder.loads(dump);
+		assert(p1 != p2);
+		assertEquals(17, p2.x);
+		assertEquals(23, p2.y);
+		assertEquals("foo", p2.getUL4ONID());
+		assertEquals(4, p2.identity());
+
+		decoder.reset();
+
+		dump = dump.replace(" i23 ", " i24 ");
+		PersistentPoint p3 = (PersistentPoint)decoder.loads(dump);
+		assert(p2 == p3);
+		assertEquals(17, p2.x);
+		assertEquals(24, p2.y);
+		assertEquals("foo", p2.getUL4ONID());
+		assertEquals(4, p2.identity());
+	}
+
 	@CauseTest(expectedCause=DecoderException.class)
 	public void broken()
 	{
-		Object x = loads("l i42 k23 ]", null);
+		Object x = loads("l i42 k23 ]", null, null);
 	}
 
 	@Test
