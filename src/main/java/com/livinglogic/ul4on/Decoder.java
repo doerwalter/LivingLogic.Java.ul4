@@ -602,6 +602,41 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	}
 
 	/**
+	 * Return the persistent object with the type {@code type} and the id {@code id},
+	 * or {@code null}, when the decoder hasn't encountered that object yet.
+	 * @param type the UL4ON type name of the object to look up.
+	 * @param id the UL4ON id of the object to look up.
+	 * @return the object with the passed in type and id (or {@code null}).
+	 */
+	public UL4ONSerializablePersistent getPersistentObject(String type, String id)
+	{
+		Map<String, UL4ONSerializablePersistent> objects = persistentObjects.get(type);
+		if (objects == null)
+			return null;
+		return objects.get(id);
+	}
+
+	/**
+	 * Store the persistent object {@code object} in the persistent object
+	 * cache. This way, when a persistent object with the same type and id as
+	 * {@code object} encoutered again while deserializing an UL4ON stream,
+	 * {@code object} will be reused and updated, instead of creating a new
+	 * object with this type and id.
+	 * @param object the object to be stored in the persistent object cache.
+	 */
+	public void storePersistentObject(UL4ONSerializablePersistent object)
+	{
+		String type = object.getUL4ONName();
+		Map<String, UL4ONSerializablePersistent> objects = persistentObjects.get(type);
+		if (objects == null)
+		{
+			objects = new HashMap<String, UL4ONSerializablePersistent>();
+			persistentObjects.put(type, objects);
+		}
+		objects.put(object.getUL4ONID(), object);
+	}
+
+	/**
 	 * Record {@code obj} in the list of backreferences.
 	 */
 	private void loading(Object obj)
@@ -705,26 +740,6 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 			else
 				return Double.valueOf(buffer.toString());
 		}
-	}
-
-	private UL4ONSerializablePersistent getPersistentObject(String type, String id)
-	{
-		Map<String, UL4ONSerializablePersistent> objects = persistentObjects.get(type);
-		if (objects == null)
-			return null;
-		return objects.get(id);
-	}
-
-	private void storePersistentObject(UL4ONSerializablePersistent object)
-	{
-		String type = object.getUL4ONName();
-		Map<String, UL4ONSerializablePersistent> objects = persistentObjects.get(type);
-		if (objects == null)
-		{
-			objects = new HashMap<String, UL4ONSerializablePersistent>();
-			persistentObjects.put(type, objects);
-		}
-		objects.put(object.getUL4ONID(), object);
 	}
 
 	private void pushType(String type)
