@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.io.IOException;
 
 import static java.util.Arrays.asList;
@@ -190,6 +193,24 @@ public class UL4ONTest
 		}
 	}
 
+	private static class PersistentPoint2 extends PersistentPoint
+	{
+		PersistentPoint2(String id, int x, int y)
+		{
+			super(id, x, y);
+		}
+
+		public int identity()
+		{
+			return 5;
+		}
+
+		public String getUL4ONName()
+		{
+			return "de.livingapps.appdd.test.persistentpoint2";
+		}
+	}
+
 	private static InterpretedTemplate getTemplate(String source, String name)
 	{
 		InterpretedTemplate template = new InterpretedTemplate(source, name, InterpretedTemplate.Whitespace.keep, null, null, (String)null);
@@ -354,6 +375,40 @@ public class UL4ONTest
 		assertEquals(24, p2.y);
 		assertEquals("foo", p2.getUL4ONID());
 		assertEquals(4, p2.identity());
+	}
+
+	private Set setFromIterator(Iterator iterator)
+	{
+		Set set = new HashSet();
+		while (iterator.hasNext())
+		{
+			set.add(iterator.next());
+		}
+		return set;
+	}
+
+	@Test
+	public void persistent_object_cache()
+	{
+		PersistentPoint p1 = new PersistentPoint("hinz", 17, 23);
+		PersistentPoint p2 = new PersistentPoint("kunz", 23, 42);
+		PersistentPoint p3 = new PersistentPoint2("gurk", 42, 105);
+		PersistentPoint p4 = new PersistentPoint2("hurz", 105, 17);
+
+		Decoder decoder = new Decoder();
+		assertEquals(setFromIterator(decoder.allPersistentObjects()), makeSet());
+
+		decoder.storePersistentObject(p1);
+		assertEquals(setFromIterator(decoder.allPersistentObjects()), makeSet(p1));
+
+		decoder.storePersistentObject(p2);
+		assertEquals(setFromIterator(decoder.allPersistentObjects()), makeSet(p1, p2));
+
+		decoder.storePersistentObject(p3);
+		assertEquals(setFromIterator(decoder.allPersistentObjects()), makeSet(p1, p2, p3));
+
+		decoder.storePersistentObject(p4);
+		assertEquals(setFromIterator(decoder.allPersistentObjects()), makeSet(p1, p2, p3, p4));
 	}
 
 	@CauseTest(expectedCause=DecoderException.class)
