@@ -619,7 +619,7 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	/**
 	 * Store the persistent object {@code object} in the persistent object
 	 * cache. This way, when a persistent object with the same type and id as
-	 * {@code object} encoutered again while deserializing an UL4ON stream,
+	 * {@code object} is encountered again while deserializing an UL4ON stream,
 	 * {@code object} will be reused and updated, instead of creating a new
 	 * object with this type and id.
 	 * @param object the object to be stored in the persistent object cache.
