@@ -131,15 +131,6 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	}
 
 	/**
-	 * Clear the internal cache for backreferences.
-	 * However the cache for persistent objects will not be cleared.
-	 */
-	public void reset()
-	{
-		objects.clear();
-	}
-
-	/**
 	 * Reads a object in the UL4ON dump from the reader and return the deserialized object.
 	 * @param reader the {@code Reader} from which the UL4ON dump will be read.
 	 * @param obj the object to be dumped.
@@ -588,6 +579,15 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 		}
 		else
 			throw new DecoderException(position, path(), "unknown typecode " + charRepr(typecode));
+	}
+
+	/**
+	 * Clear the internal cache for backreferences.
+	 * However the cache for persistent objects will not be cleared.
+	 */
+	public void reset()
+	{
+		objects.clear();
 	}
 
 	/**
