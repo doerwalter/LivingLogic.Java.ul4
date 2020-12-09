@@ -80,7 +80,8 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 
 	/**
 	 * A {@code Map} that maps string to strings of the same value. This is used
-	 * to make sure that string keys in a map always use the same string objects.
+	 * to make sure that string keys in a map always use the same string objects,
+	 * i.e. we're doing our own string deduplication here.
 	 */
 	private Map<Object, Object> keys = new HashMap<Object, Object>();
 
@@ -91,9 +92,9 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	private Map<String, ObjectFactory> registry = null;
 
 	/**
-	 * Custom type registry for persistent objects. Any type name not found in
-	 * this registry will be looked up in the globals registry
-	 * {@link Utils#persistentRegistry}
+	 * Custom type registry for persistent objects. Any type name for a
+	 * persistent object not found in this registry will be looked up in the
+	 * globals registry {@link Utils#persistentRegistry}
 	 */
 	private Map<String, PersistentObjectFactory> persistentRegistry = null;
 
