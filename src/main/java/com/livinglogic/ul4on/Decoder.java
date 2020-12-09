@@ -637,6 +637,15 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	}
 
 	/**
+	 * Return an iterator over all objects in the persistent object cache.
+	 * @return the iterator
+	 */
+	public Iterator<UL4ONSerializablePersistent> allPersistentObjects()
+	{
+		return new PersistentObjectIterator();
+	}
+
+	/**
 	 * Record {@code obj} in the list of backreferences.
 	 */
 	private void loading(Object obj)
@@ -815,6 +824,68 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 				throw new RuntimeException(ex);
 			}
 			pushbackChar(bufferedChar);
+		}
+	}
+
+	private class PersistentObjectIterator implements Iterator<UL4ONSerializablePersistent>
+	{
+		/**
+		 * Iterator over the outer map
+		 */
+		private Iterator<Map<String, UL4ONSerializablePersistent>> outerIterator;
+
+		/**
+		 * Iterator over the inner map
+		 * If the {@code PersistentObjectIterator} is exhausted, this will be {@code null}.
+		 */
+		private Iterator<UL4ONSerializablePersistent> innerIterator;
+
+		PersistentObjectIterator()
+		{
+			outerIterator = persistentObjects.values().iterator();
+			innerIterator = outerIterator.hasNext() ? outerIterator.next().values().iterator() : null;
+		}
+
+		public boolean hasNext()
+		{
+			skip();
+			return innerIterator != null;
+		}
+
+		public UL4ONSerializablePersistent next()
+		{
+			UL4ONSerializablePersistent result = innerIterator.next();
+			skip();
+			return result;
+		}
+
+		public void remove()
+		{
+			throw new UnsupportedOperationException();
+		}
+
+		/**
+		 * If {@code this} isn't exhausted, but the {@code innerIterator} is,
+		 * move the {@code outerIterator} until its corresponding
+		 * {@code innerIterator} can give as values. If no such
+		 * {@code innerIterator} exists, the iteration is finished and we
+		 * set {@code innerIterator} to {@code null} to mark that fact.
+		 */
+		private void skip()
+		{
+			if (innerIterator != null)
+			{
+				if (!innerIterator.hasNext())
+				{
+					while (outerIterator.hasNext())
+					{
+						innerIterator = outerIterator.next().values().iterator();
+						if (innerIterator.hasNext())
+							return;
+					}
+					innerIterator = null;
+				}
+			}
 		}
 	}
 
