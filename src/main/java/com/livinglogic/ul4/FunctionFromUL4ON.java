@@ -29,7 +29,7 @@ public class FunctionFromUL4ON extends Function
 
 	public static Object call(String obj)
 	{
-		return com.livinglogic.ul4on.Utils.loads(obj, null, null);
+		return com.livinglogic.ul4on.Utils.loads(obj, null);
 	}
 
 	public static Object call(Object obj)

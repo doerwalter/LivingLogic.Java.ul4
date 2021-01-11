@@ -21,9 +21,7 @@ import static org.junit.Assert.assertTrue;
 import com.livinglogic.ul4on.DecoderException;
 
 import com.livinglogic.ul4on.UL4ONSerializable;
-import com.livinglogic.ul4on.UL4ONSerializablePersistent;
 import com.livinglogic.ul4on.ObjectFactory;
-import com.livinglogic.ul4on.PersistentObjectFactory;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
 import static com.livinglogic.ul4on.Utils.dumps;
@@ -63,17 +61,20 @@ public class UL4ONTest
 			return 1;
 		}
 
+		@Override
 		public String getUL4ONName()
 		{
 			return "de.livingapps.appdd.test.point";
 		}
 
+		@Override
 		public void dumpUL4ON(Encoder encoder) throws IOException
 		{
 			encoder.dump(x);
 			encoder.dump(y);
 		}
 
+		@Override
 		public void loadUL4ON(Decoder decoder) throws IOException
 		{
 			x = (int)decoder.load();
@@ -88,6 +89,7 @@ public class UL4ONTest
 			super(x, y);
 		}
 
+		@Override
 		public int identity()
 		{
 			return 2;
@@ -110,11 +112,13 @@ public class UL4ONTest
 			return 3;
 		}
 
+		@Override
 		public String getUL4ONName()
 		{
 			return "de.livingapps.appdd.test.pointcontent";
 		}
 
+		@Override
 		public void dumpUL4ON(Encoder encoder) throws IOException
 		{
 			if (x != 0)
@@ -125,6 +129,7 @@ public class UL4ONTest
 			}
 		}
 
+		@Override
 		public void loadUL4ON(Decoder decoder) throws IOException
 		{
 			int index = -1;
@@ -152,7 +157,7 @@ public class UL4ONTest
 		}
 	}
 
-	private static class PersistentPoint implements UL4ONSerializablePersistent
+	private static class PersistentPoint implements UL4ONSerializable
 	{
 		String id;
 		int x;
@@ -170,22 +175,26 @@ public class UL4ONTest
 			return 4;
 		}
 
+		@Override
 		public String getUL4ONName()
 		{
 			return "de.livingapps.appdd.test.persistentpoint";
 		}
 
+		@Override
 		public String getUL4ONID()
 		{
 			return id;
 		}
 
+		@Override
 		public void dumpUL4ON(Encoder encoder) throws IOException
 		{
 			encoder.dump(x);
 			encoder.dump(y);
 		}
 
+		@Override
 		public void loadUL4ON(Decoder decoder) throws IOException
 		{
 			x = (int)decoder.load();
@@ -200,11 +209,13 @@ public class UL4ONTest
 			super(id, x, y);
 		}
 
+		@Override
 		public int identity()
 		{
 			return 5;
 		}
 
+		@Override
 		public String getUL4ONName()
 		{
 			return "de.livingapps.appdd.test.persistentpoint2";
@@ -226,7 +237,7 @@ public class UL4ONTest
 	private static void checkRoundtrip(Object object)
 	{
 		String output = dumps(object);
-		Object recreated = loads(output, null, null);
+		Object recreated = loads(output, null);
 
 		// If we have an InterpretedTemplate, check the output instead
 		if ((recreated instanceof InterpretedTemplate) && (object instanceof InterpretedTemplate))
@@ -274,7 +285,7 @@ public class UL4ONTest
 	@Test
 	public void template_from_source()
 	{
-		InterpretedTemplate template = (InterpretedTemplate)loads("o s'de.livinglogic.ul4.template' n s'test' s'<?print x + y?>' s'x, y=23' s'keep' n n )", null, null);
+		InterpretedTemplate template = (InterpretedTemplate)loads("o s'de.livinglogic.ul4.template' n s'test' s'<?print x + y?>' s'x, y=23' s'keep' n n )", null);
 		assertEquals("40", template.renders(makeMap("x", 17)));
 	}
 
@@ -284,7 +295,7 @@ public class UL4ONTest
 		List l1 = new ArrayList();
 		l1.add(l1);
 
-		List l2 = (List)loads(dumps(l1), null, null);
+		List l2 = (List)loads(dumps(l1), null);
 
 		assertEquals(1, l2.size());
 		assertTrue(l2.get(0) == l2);
@@ -293,11 +304,11 @@ public class UL4ONTest
 	@Test
 	public void custom_class()
 	{
-		Map<String, ObjectFactory> registry = makeMap("de.livingapps.appdd.test.point", new ObjectFactory(){ public UL4ONSerializable create() { return new Point(0, 0); }});
+		Map<String, ObjectFactory> registry = makeMap("de.livingapps.appdd.test.point", new ObjectFactory(){ public UL4ONSerializable create(String id) { return new Point(0, 0); }});
 
 		Point p1 = new Point(17, 23);
 
-		Point p2 = (Point)loads(dumps(p1), registry, null);
+		Point p2 = (Point)loads(dumps(p1), registry);
 
 		assertEquals(17, p2.x);
 		assertEquals(23, p2.y);
@@ -307,27 +318,27 @@ public class UL4ONTest
 	@Test
 	public void custom_class_content()
 	{
-		Map<String, ObjectFactory> registry = makeMap("de.livingapps.appdd.test.pointcontent", new ObjectFactory(){ public UL4ONSerializable create() { return new PointContent(0, 0); }});
+		Map<String, ObjectFactory> registry = makeMap("de.livingapps.appdd.test.pointcontent", new ObjectFactory(){ public UL4ONSerializable create(String id) { return new PointContent(0, 0); }});
 
 		PointContent p1;
 		PointContent p2;
 
 		p1 = new PointContent(17, 23);
-		p2 = (PointContent)loads(dumps(p1), registry, null);
+		p2 = (PointContent)loads(dumps(p1), registry);
 
 		assertEquals(17, p2.x);
 		assertEquals(23, p2.y);
 		assertEquals(3, p2.identity());
 
 		p1 = new PointContent(17, 0);
-		p2 = (PointContent)loads(dumps(p1), registry, null);
+		p2 = (PointContent)loads(dumps(p1), registry);
 
 		assertEquals(17, p2.x);
 		assertEquals(0, p2.y);
 		assertEquals(3, p2.identity());
 
 		p1 = new PointContent(0, 0);
-		p2 = (PointContent)loads(dumps(p1), registry, null);
+		p2 = (PointContent)loads(dumps(p1), registry);
 
 		assertEquals(0, p2.x);
 		assertEquals(0, p2.y);
@@ -337,11 +348,11 @@ public class UL4ONTest
 	@Test
 	public void custom_class_registry()
 	{
-		Map<String, ObjectFactory> registry = makeMap("de.livingapps.appdd.test.point", new ObjectFactory(){ public UL4ONSerializable create() { return new Point2(0, 0); }});
+		Map<String, ObjectFactory> registry = makeMap("de.livingapps.appdd.test.point", new ObjectFactory(){ public UL4ONSerializable create(String id) { return new Point2(0, 0); }});
 
 		Point p1 = new Point(17, 23);
 
-		Point p2 = (Point)loads(dumps(p1), registry, null);
+		Point p2 = (Point)loads(dumps(p1), registry);
 
 		assertEquals(17, p2.x);
 		assertEquals(23, p2.y);
@@ -351,14 +362,14 @@ public class UL4ONTest
 	@Test
 	public void custom_persistent_class()
 	{
-		Map<String, PersistentObjectFactory> registry = makeMap("de.livingapps.appdd.test.persistentpoint", new PersistentObjectFactory(){ public UL4ONSerializablePersistent create(String id) { return new PersistentPoint(id, 0, 0); }});
+		Map<String, ObjectFactory> registry = makeMap("de.livingapps.appdd.test.persistentpoint", new ObjectFactory(){ public UL4ONSerializable create(String id) { return new PersistentPoint(id, 0, 0); }});
 
 		PersistentPoint p1 = new PersistentPoint("foo", 17, 23);
 
 		Encoder encoder = new Encoder();
 		String dump = encoder.dumps(p1);
 
-		Decoder decoder = new Decoder(null, registry);
+		Decoder decoder = new Decoder(registry);
 		PersistentPoint p2 = (PersistentPoint)decoder.loads(dump);
 		assert(p1 != p2);
 		assertEquals(17, p2.x);
@@ -371,19 +382,17 @@ public class UL4ONTest
 		dump = dump.replace(" i23 ", " i24 ");
 		PersistentPoint p3 = (PersistentPoint)decoder.loads(dump);
 		assert(p2 == p3);
-		assertEquals(17, p2.x);
-		assertEquals(24, p2.y);
-		assertEquals("foo", p2.getUL4ONID());
-		assertEquals(4, p2.identity());
+		assertEquals(17, p3.x);
+		assertEquals(24, p3.y);
+		assertEquals("foo", p3.getUL4ONID());
+		assertEquals(4, p3.identity());
 	}
 
 	private Set setFromIterator(Iterator iterator)
 	{
 		Set set = new HashSet();
 		while (iterator.hasNext())
-		{
 			set.add(iterator.next());
-		}
 		return set;
 	}
 
@@ -414,7 +423,7 @@ public class UL4ONTest
 	@CauseTest(expectedCause=DecoderException.class)
 	public void broken()
 	{
-		Object x = loads("l i42 k23 ]", null, null);
+		Object x = loads("l i42 k23 ]", null);
 	}
 
 	@Test

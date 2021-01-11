@@ -12,7 +12,6 @@ import java.io.UnsupportedEncodingException;
 
 import org.antlr.runtime.RecognitionException;
 
-import com.livinglogic.ul4on.UL4ONSerializablePersistent;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
 
@@ -48,7 +47,7 @@ public class Tester
 	{
 		InterpretedTemplate.register4UL4ON();
 
-		Map<String, Object> data = (Map<String, Object>)loads(readStdIn(), null, null);
+		Map<String, Object> data = (Map<String, Object>)loads(readStdIn(), null);
 
 		String command = (String)data.get("command");
 		Object templateString = data.get("template");

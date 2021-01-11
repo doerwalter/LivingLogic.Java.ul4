@@ -46,12 +46,6 @@ public class Utils
 	public static Map<String, ObjectFactory> registry = new HashMap<String, ObjectFactory>();
 
 	/**
-	 * Registry where all {@link PersistentObjectFactory} objects registered via
-	 * {@link #register} are stored.
-	 */
-	public static Map<String, PersistentObjectFactory> persistentRegistry = new HashMap<String, PersistentObjectFactory>();
-
-	/**
 	 * Register a class for the UL4ON serialization machinery.
 	 *
 	 * @param name the name of the class as returned by its
@@ -62,19 +56,6 @@ public class Utils
 	public static void register(String name, ObjectFactory factory)
 	{
 		registry.put(name, factory);
-	}
-
-	/**
-	 * Register a class for the UL4ON serialization machinery for persistent objects.
-	 *
-	 * @param name the name of the class as returned by its
-	 *             {@link UL4ONSerializable#getUL4ONName}.
-	 * @param factory An {@link PersistentObjectFactory} object that will be used
-	 *                to create an "empty" instance of the class.
-	 */
-	public static void register(String name, PersistentObjectFactory factory)
-	{
-		persistentRegistry.put(name, factory);
 	}
 
 	/**
@@ -103,12 +84,11 @@ public class Utils
 	 * Load an object by reading in the UL4ON object serialization format from {@code reader}.
 	 * @param reader The Reader from which to read the object
 	 * @param registry custom type registry
-	 * @param persistentRegistry custom type registry for persistent objects
 	 * @return the deserialized object
 	 */
-	public static Object load(Reader reader, Map<String, ObjectFactory> registry, Map<String, PersistentObjectFactory> persistentRegistry) throws IOException
+	public static Object load(Reader reader, Map<String, ObjectFactory> registry) throws IOException
 	{
-		Decoder decoder = new Decoder(registry, persistentRegistry);
+		Decoder decoder = new Decoder(registry);
 		return decoder.load(reader);
 	}
 
@@ -116,12 +96,11 @@ public class Utils
 	 * Load an object by reading in the UL4ON object serialization format from the string {@code s}.
 	 * @param s The object in serialized form
 	 * @param registry custom type registry
-	 * @param persistentRegistry custom type registry for persistent objects
 	 * @return the deserialized object
 	 */
-	public static Object loads(String s, Map<String, ObjectFactory> registry, Map<String, PersistentObjectFactory> persistentRegistry)
+	public static Object loads(String s, Map<String, ObjectFactory> registry)
 	{
-		Decoder decoder = new Decoder(registry, persistentRegistry);
+		Decoder decoder = new Decoder(registry);
 		return decoder.loads(s);
 	}
 
@@ -129,12 +108,11 @@ public class Utils
 	 * Load an object by reading in the UL4ON object serialization format from the CLOB {@code clob}.
 	 * @param clob The CLOB that contains the object in serialized form
 	 * @param registry custom type registry
-	 * @param persistentRegistry custom type registry for persistent objects
 	 * @return the deserialized object
 	 */
-	public static Object loads(Clob clob, Map<String, ObjectFactory> registry, Map<String, PersistentObjectFactory> persistentRegistry) throws IOException, SQLException
+	public static Object loads(Clob clob, Map<String, ObjectFactory> registry) throws IOException, SQLException
 	{
-		return load(clob.getCharacterStream(), registry, persistentRegistry);
+		return load(clob.getCharacterStream(), registry);
 	}
 
 	private static String readChars(Reader reader, int count) throws IOException

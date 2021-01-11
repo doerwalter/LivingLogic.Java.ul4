@@ -282,24 +282,18 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type
 			{
 				line("r", ((Slice)obj).getStart(), ((Slice)obj).getStop());
 			}
-			else if (obj instanceof UL4ONSerializablePersistent) // check this before UL4ONSerializable
-			{
-				UL4ONSerializablePersistent persObj = (UL4ONSerializablePersistent)obj;
-				record(obj);
-				String type = persObj.getUL4ONName();
-				String id = persObj.getUL4ONID();
-				line("P", internString(type), internString(id));
-				++level;
-				persObj.dumpUL4ON(this);
-				--level;
-				line(")");
-			}
 			else if (obj instanceof UL4ONSerializable) // check this before Collection and Map
 			{
 				record(obj);
-				line("O", internString(((UL4ONSerializable)obj).getUL4ONName()));
+				UL4ONSerializable serObj = (UL4ONSerializable)obj;
+				String type = serObj.getUL4ONName();
+				String id = serObj.getUL4ONID();
+				if (id != null)
+					line("P", internString(type), internString(id));
+				else
+					line("O", internString(type));
 				++level;
-				((UL4ONSerializable)obj).dumpUL4ON(this);
+				serObj.dumpUL4ON(this);
 				--level;
 				line(")");
 			}

@@ -11,6 +11,15 @@ import java.io.IOException;
 /**
  * Classes whose instances should be serializable with the UL4ON infrastructure
  * must implement this interface.
+ *
+ * If their {@link #getUL4ONID} implementation does return an identifier that is
+ * not {@code null}, the object is considered to be "persistent".
+ *
+ * Persistent objects will survive multiple calls to
+ * {@link Decoder#load(Reader)} or {@link Decoder@loads(String)}.
+ * When such an object gets deserialized, and it already exists in the
+ * {@code Decoder} object, the object will not be created again, but
+ * {@link UL4ONSerializable#loadUL4ON(Decoder} will be called for it.
  */
 public interface UL4ONSerializable
 {
@@ -21,6 +30,15 @@ public interface UL4ONSerializable
 	 * classes which might change over time).
 	 */
 	public String getUL4ONName();
+
+	/**
+	 * Return a unique identifier for the calling instance. If this string
+	 * is not {@code null} it must be unique among all objects of the same type.
+	 */
+	default public String getUL4ONID()
+	{
+		return null;
+	}
 
 	/**
 	 * Serialize the calling instance by writing instance data to the

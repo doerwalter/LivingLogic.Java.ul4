@@ -73,10 +73,10 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	private List<Object> objects = new ArrayList<Object>();
 
 	/**
-	 * Stores persistent objects (i.e. those that implement
-	 * {@link UL4ONSerializablePersistent}).
+	 * Stores persistent objects (i.e. those whose
+	 * {@link UL4ONSerializable#getUL$ONID} returns a non-{@code null} string).
 	 */
-	private Map<String, Map<String, UL4ONSerializablePersistent>> persistentObjects = new HashMap<String, Map<String, UL4ONSerializablePersistent>>();
+	private Map<String, Map<String, UL4ONSerializable>> persistentObjects = new HashMap<String, Map<String, UL4ONSerializable>>();
 
 	/**
 	 * A {@code Map} that maps string to strings of the same value. This is used
@@ -90,13 +90,6 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	 * looked up in the globals registry {@link Utils#registry}
 	 */
 	private Map<String, ObjectFactory> registry = null;
-
-	/**
-	 * Custom type registry for persistent objects. Any type name for a
-	 * persistent object not found in this registry will be looked up in the
-	 * globals registry {@link Utils#persistentRegistry}
-	 */
-	private Map<String, PersistentObjectFactory> persistentRegistry = null;
 
 	/**
 	 * Stack of types (used for error reporting).
@@ -117,17 +110,6 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	public Decoder(Map<String, ObjectFactory> registry)
 	{
 		this.registry = registry;
-	}
-
-	/**
-	 * Create an {@code Decoder} object for reading serialized UL4ON dumps.
-	 * @param registry custom type registry.
-	 * @param persistentRegistry custom type registry for persistent objects.
-	 */
-	public Decoder(Map<String, ObjectFactory> registry, Map<String, PersistentObjectFactory> persistentRegistry)
-	{
-		this.registry = registry;
-		this.persistentRegistry = persistentRegistry;
 	}
 
 	/**
@@ -497,18 +479,9 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 
 			String name = (String)load();
 
-			ObjectFactory factory = null;
-
-			if (registry != null)
-				factory = registry.get(name);
-
-			if (factory == null)
-				factory = Utils.registry.get(name);
-
-			if (factory == null)
+			UL4ONSerializable result = createObject(name, null);
+			if (result == null)
 				throw new DecoderException(position, path(), com.livinglogic.ul4.Utils.formatMessage("can't load object of type {!r}", name));
-
-			UL4ONSerializable result = factory.create();
 
 			if (typecode == 'O')
 				endFakeLoading(oldpos, result);
@@ -539,23 +512,11 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 			String name = (String)load();
 			String id = (String)load();
 
-			UL4ONSerializablePersistent result = getPersistentObject(name, id);
+			UL4ONSerializable result = createObject(name, id);
 			if (result == null)
 			{
-				PersistentObjectFactory factory = null;
-
-				if (persistentRegistry != null)
-					factory = persistentRegistry.get(name);
-
-				if (factory == null)
-					factory = Utils.persistentRegistry.get(name);
-
-				if (factory == null)
-					throw new DecoderException(position, path(), com.livinglogic.ul4.Utils.formatMessage("can't load object of type {!r} with id {!r}", name, id));
-
-				result = factory.create(id);
+				throw new DecoderException(position, path(), com.livinglogic.ul4.Utils.formatMessage("can't load object of type {!r} with id {!r}", name, id));
 			}
-			storePersistentObject(result);
 
 			if (typecode == 'P')
 				endFakeLoading(oldpos, result);
@@ -608,9 +569,9 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	 * @param id the UL4ON id of the object to look up.
 	 * @return the object with the passed in type and id (or {@code null}).
 	 */
-	public UL4ONSerializablePersistent getPersistentObject(String type, String id)
+	public UL4ONSerializable getPersistentObject(String type, String id)
 	{
-		Map<String, UL4ONSerializablePersistent> objects = persistentObjects.get(type);
+		Map<String, UL4ONSerializable> objects = persistentObjects.get(type);
 		if (objects == null)
 			return null;
 		return objects.get(id);
@@ -624,13 +585,13 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	 * object with this type and id.
 	 * @param object the object to be stored in the persistent object cache.
 	 */
-	public void storePersistentObject(UL4ONSerializablePersistent object)
+	public void storePersistentObject(UL4ONSerializable object)
 	{
 		String type = object.getUL4ONName();
-		Map<String, UL4ONSerializablePersistent> objects = persistentObjects.get(type);
+		Map<String, UL4ONSerializable> objects = persistentObjects.get(type);
 		if (objects == null)
 		{
-			objects = new HashMap<String, UL4ONSerializablePersistent>();
+			objects = new HashMap<String, UL4ONSerializable>();
 			persistentObjects.put(type, objects);
 		}
 		objects.put(object.getUL4ONID(), object);
@@ -640,7 +601,7 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	 * Return an iterator over all objects in the persistent object cache.
 	 * @return the iterator
 	 */
-	public Iterator<UL4ONSerializablePersistent> allPersistentObjects()
+	public Iterator<UL4ONSerializable> allPersistentObjects()
 	{
 		return new PersistentObjectIterator();
 	}
@@ -751,6 +712,33 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 		}
 	}
 
+	private UL4ONSerializable createObject(String type, String id)
+	{
+		UL4ONSerializable result = null;
+
+		if (id != null)
+			result = getPersistentObject(type, id);
+
+		if (result != null)
+			return result;
+
+		ObjectFactory factory = null;
+
+		if (registry != null)
+			factory = registry.get(type);
+
+		if (factory == null)
+			factory = Utils.registry.get(type);
+
+		if (factory != null)
+		{
+			result = factory.create(id);
+			if (result != null && id != null)
+				storePersistentObject(result);
+		}
+		return result;
+	}
+
 	private void pushType(String type)
 	{
 		stack.push(type);
@@ -827,18 +815,18 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 		}
 	}
 
-	private class PersistentObjectIterator implements Iterator<UL4ONSerializablePersistent>
+	private class PersistentObjectIterator implements Iterator<UL4ONSerializable>
 	{
 		/**
 		 * Iterator over the outer map
 		 */
-		private Iterator<Map<String, UL4ONSerializablePersistent>> outerIterator;
+		private Iterator<Map<String, UL4ONSerializable>> outerIterator;
 
 		/**
 		 * Iterator over the inner map
 		 * If the {@code PersistentObjectIterator} is exhausted, this will be {@code null}.
 		 */
-		private Iterator<UL4ONSerializablePersistent> innerIterator;
+		private Iterator<UL4ONSerializable> innerIterator;
 
 		PersistentObjectIterator()
 		{
@@ -852,9 +840,9 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 			return innerIterator != null;
 		}
 
-		public UL4ONSerializablePersistent next()
+		public UL4ONSerializable next()
 		{
-			UL4ONSerializablePersistent result = innerIterator.next();
+			UL4ONSerializable result = innerIterator.next();
 			skip();
 			return result;
 		}
