@@ -1,3 +1,9 @@
+HEAD (2021-01-??)
+-----------------
+
+Added a ``date`` method to ``date`` and ``datetime`` objects.
+
+
 exp-154 (2020-04-29)
 --------------------
 

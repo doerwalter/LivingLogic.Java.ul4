@@ -37,7 +37,7 @@ public class LocalDateProto extends Proto
 		return object != null;
 	}
 
-	protected static Set<String> attrNames = makeSet("year", "month", "day", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat");
+	protected static Set<String> attrNames = makeSet("year", "month", "day", "date", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat");
 
 	@Override
 	public Set<String> getAttrNames(Object object)
@@ -61,6 +61,8 @@ public class LocalDateProto extends Proto
 				return new BoundLocalDateMethodMonth(object);
 			case "day":
 				return new BoundLocalDateMethodDay(object);
+			case "date":
+				return new BoundLocalDateMethodDate(object);
 			case "weekday":
 				return new BoundLocalDateMethodWeekday(object);
 			case "yearday":

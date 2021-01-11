@@ -39,7 +39,7 @@ public class DateProto extends Proto
 		return object != null;
 	}
 
-	protected static Set<String> attrNames = makeSet("year", "month", "day", "hour", "minute", "second", "microsecond", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat");
+	protected static Set<String> attrNames = makeSet("year", "month", "day", "hour", "minute", "second", "microsecond", "date", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat");
 
 	@Override
 	public Set<String> getAttrNames(Object object)
@@ -71,6 +71,8 @@ public class DateProto extends Proto
 				return new BoundDateMethodSecond(object);
 			case "microsecond":
 				return new BoundDateMethodMicrosecond(object);
+			case "date":
+				return new BoundDateMethodDate(object);
 			case "weekday":
 				return new BoundDateMethodWeekday(object);
 			case "yearday":

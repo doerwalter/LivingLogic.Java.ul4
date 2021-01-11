@@ -3969,10 +3969,10 @@ public class UL4Test
 		checkOutput("[]", T("<?print sorted(dir(data))?>"), V("data", dataBool));
 		checkOutput("[]", T("<?print sorted(dir(data))?>"), V("data", dataInt));
 		checkOutput("[]", T("<?print sorted(dir(data))?>"), V("data", dataFloat));
-		String dateTimeAttrs = "['calendar', 'day', 'hour', 'isoformat', 'microsecond', 'mimeformat', 'minute', 'month', 'second', 'week', 'weekday', 'year', 'yearday']";
+		String dateTimeAttrs = "['calendar', 'date', 'day', 'hour', 'isoformat', 'microsecond', 'mimeformat', 'minute', 'month', 'second', 'week', 'weekday', 'year', 'yearday']";
 		checkOutput(dateTimeAttrs, T("<?print sorted(dir(data))?>"), V("data", dataDate));
 		checkOutput(dateTimeAttrs, T("<?print sorted(dir(data))?>"), V("data", dataLocalDateTime));
-		checkOutput("['calendar', 'day', 'isoformat', 'mimeformat', 'month', 'week', 'weekday', 'year', 'yearday']", T("<?print sorted(dir(data))?>"), V("data", dataLocalDate));
+		checkOutput("['calendar', 'date', 'day', 'isoformat', 'mimeformat', 'month', 'week', 'weekday', 'year', 'yearday']", T("<?print sorted(dir(data))?>"), V("data", dataLocalDate));
 		checkOutput("['a', 'abslum', 'b', 'g', 'hls', 'hlsa', 'hsv', 'hsva', 'lum', 'r', 'rellum', 'witha', 'withlum']", T("<?print sorted(dir(data))?>"), V("data", dataColor));
 		checkOutput("['append', 'count', 'find', 'insert', 'pop', 'rfind']", T("<?print sorted(dir(data))?>"), V("data", dataList));
 		checkOutput("['add', 'clear']", T("<?print sorted(dir(data))?>"), V("data", dataSet));
@@ -4545,6 +4545,14 @@ public class UL4Test
 		checkOutput("123456", T("<?code m = @(2010-05-12T16:47:56.123456).microsecond?><?print m()?>"));
 		checkOutput("123000", T("<?print d.microsecond()?>"), V("d", makeDate(2010, 5, 12, 16, 47, 56, 123456)));
 		checkOutput("123456", T("<?print d.microsecond()?>"), V("d", LocalDateTime.of(2010, 5, 12, 16, 47, 56, 123456789)));
+	}
+
+	@Test
+	public void method_date()
+	{
+		checkOutput("2000-02-29", T("<?print d.date()?>"), V("d", makeDate(2000, 2, 29)));
+		checkOutput("2000-02-29", T("<?print d.date()?>"), V("d", LocalDate.of(2000, 2, 29)));
+		checkOutput("2000-02-29", T("<?print d.date()?>"), V("d", LocalDateTime.of(2000, 2, 29, 12, 34, 56)));
 	}
 
 	private List makeAllDateTimeVariants(int y, int m, int d)
