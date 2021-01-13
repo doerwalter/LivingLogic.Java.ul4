@@ -87,6 +87,16 @@ public class Utils
 		return new BigInteger(Long.toString(arg));
 	}
 
+	public static BigDecimal toBigDecimal(int arg)
+	{
+		return new BigDecimal(Integer.toString(arg));
+	}
+
+	public static BigDecimal toBigDecimal(long arg)
+	{
+		return new BigDecimal(Long.toString(arg));
+	}
+
 	public static int toInt(Object arg)
 	{
 		if (arg instanceof Boolean)
