@@ -7,6 +7,8 @@ Added ``Utils.toBigDecimal(int)`` and ``Utils.toBigDecimal(long)``.
 
 Always raise an ArithmeticException when dividing by zero.
 
+Implemented support for ``timedelta // timedelta``.
+
 
 exp-154 (2020-04-29)
 --------------------

@@ -328,6 +328,11 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		return new TimeDelta(0, 0, resultMicroSeconds.longValueExact());
 	}
 
+	public long floordiv(TimeDelta divisor)
+	{
+		return totalMicroseconds()/divisor.totalMicroseconds();
+	}
+
 	public boolean boolUL4()
 	{
 		return days != 0 || seconds != 0 || microseconds != 0;

@@ -213,6 +213,8 @@ public class FloorDivAST extends BinaryAST
 				return ((TimeDelta)arg1).floordiv(Utils.toInt(arg2));
 			else if (arg2 instanceof Long)
 				return ((TimeDelta)arg1).floordiv(Utils.toLong(arg2));
+			else if (arg2 instanceof TimeDelta)
+				return ((TimeDelta)arg1).floordiv((TimeDelta)arg2);
 			else if (arg2 instanceof BigInteger)
 				return ((TimeDelta)arg1).floordiv((BigInteger)arg2);
 			else if (arg2 instanceof BigDecimal)
