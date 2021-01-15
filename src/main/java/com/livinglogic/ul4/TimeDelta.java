@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
@@ -204,6 +206,8 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 	public TimeDelta truediv(int divisor)
 	{
+		if (divisor == 0)
+			throw new ArithmeticException("division by zero");
 		return new TimeDelta(
 			days/((double)divisor),
 			seconds/((double)divisor),
@@ -213,6 +217,8 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 	public TimeDelta truediv(long divisor)
 	{
+		if (divisor == 0)
+			throw new ArithmeticException("division by zero");
 		return new TimeDelta(
 			days/((double)divisor),
 			seconds/((double)divisor),
@@ -222,6 +228,19 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 	public TimeDelta truediv(float divisor)
 	{
+		if (divisor == 0.0)
+			throw new ArithmeticException("division by zero");
+		return new TimeDelta(
+			days/divisor,
+			seconds/divisor,
+			microseconds/divisor
+		);
+	}
+
+	public TimeDelta truediv(double divisor)
+	{
+		if (divisor == 0.0)
+			throw new ArithmeticException("division by zero");
 		return new TimeDelta(
 			days/divisor,
 			seconds/divisor,
@@ -231,6 +250,8 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 
 	public double truediv(TimeDelta divisor)
 	{
+		if (!divisor.boolUL4())
+			throw new ArithmeticException("division by zero");
 		double myValue = days;
 		double divisorValue = divisor.getDays();
 		boolean hasSeconds = seconds != 0 || divisor.getSeconds() != 0;
@@ -248,31 +269,63 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		return myValue/divisorValue;
 	}
 
-	public TimeDelta truediv(double divisor)
+	public TimeDelta truediv(BigInteger divisor)
 	{
+		if (divisor.compareTo(BigInteger.ZERO) == 0)
+			throw new ArithmeticException("division by zero");
+		BigDecimal decimalDivisor = new BigDecimal(divisor);
+		BigDecimal resultDays = Utils.toBigDecimal(days).divide(decimalDivisor);
+		BigDecimal resultSeconds = Utils.toBigDecimal(seconds).divide(decimalDivisor);
+		BigDecimal resultMicroseconds = Utils.toBigDecimal(microseconds).divide(decimalDivisor);
 		return new TimeDelta(
-			days/divisor,
-			seconds/divisor,
-			microseconds/divisor
+			resultDays.doubleValue(),
+			resultSeconds.doubleValue(),
+			resultMicroseconds.doubleValue()
+		);
+	}
+
+	public TimeDelta truediv(BigDecimal divisor)
+	{
+		if (divisor.compareTo(BigDecimal.ZERO) == 0)
+			throw new ArithmeticException("division by zero");
+		BigDecimal resultDays = Utils.toBigDecimal(days).divide(divisor);
+		BigDecimal resultSeconds = Utils.toBigDecimal(seconds).divide(divisor);
+		BigDecimal resultMicroseconds = Utils.toBigDecimal(microseconds).divide(divisor);
+		return new TimeDelta(
+			resultDays.doubleValue(),
+			resultSeconds.doubleValue(),
+			resultMicroseconds.doubleValue()
 		);
 	}
 
 	public TimeDelta floordiv(int divisor)
 	{
-		return new TimeDelta(
-			days/((double)divisor),
-			seconds/((double)divisor),
-			microseconds/((double)divisor)
-		);
+		if (divisor == 0)
+			throw new ArithmeticException("division by zero");
+		return new TimeDelta(0, 0, totalMicroseconds()/divisor);
 	}
 
 	public TimeDelta floordiv(long divisor)
 	{
-		return new TimeDelta(
-			days/((double)divisor),
-			seconds/((double)divisor),
-			microseconds/((double)divisor)
-		);
+		if (divisor == 0)
+			throw new ArithmeticException("division by zero");
+		return new TimeDelta(0, 0, totalMicroseconds()/divisor);
+	}
+
+	public TimeDelta floordiv(BigInteger divisor)
+	{
+		if (divisor.compareTo(BigInteger.ZERO) == 0)
+			throw new ArithmeticException("division by zero");
+		BigInteger resultMicroSeconds = Utils.toBigInteger(totalMicroseconds()).divide(divisor);
+		return new TimeDelta(0, 0, resultMicroSeconds.longValueExact());
+	}
+
+	public TimeDelta floordiv(BigDecimal divisor)
+	{
+		if (divisor.compareTo(BigDecimal.ZERO) == 0)
+			throw new ArithmeticException("division by zero");
+		BigInteger resultMicroSeconds = Utils.toBigDecimal(totalMicroseconds()).divideToIntegralValue(divisor).toBigInteger();
+		return new TimeDelta(0, 0, resultMicroSeconds.longValueExact());
 	}
 
 	public boolean boolUL4()
@@ -350,6 +403,16 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 	public TimeDelta absUL4()
 	{
 		return days < 0 ? new TimeDelta(-days, -seconds, -microseconds) : this;
+	}
+
+	public long totalSeconds()
+	{
+		return (24*60*60) * days + seconds;
+	}
+
+	public long totalMicroseconds()
+	{
+		return totalSeconds() * 1000000 + microseconds;
 	}
 
 	private static class BoundMethodDays extends BoundMethod<TimeDelta>

@@ -89,22 +89,37 @@ public class FloorDivAST extends BinaryAST
 				}
 			}
 			else if (arg2 instanceof Float)
+			{
+				Utils.checkZeroDivisorFloat((Number)arg2);
 				return Math.floor(Utils.toInt(arg1) / Utils.toFloat(arg2));
+			}
 			else if (arg2 instanceof Double)
+			{
+				Utils.checkZeroDivisorFloat((Number)arg2);
 				return Math.floor(Utils.toInt(arg1) / Utils.toDouble(arg2));
+			}
 			else if (arg2 instanceof BigInteger)
 				return Utils.toBigInteger(Utils.toInt(arg1)).divide((BigInteger)arg2);
 			else if (arg2 instanceof BigDecimal)
+			{
+				Utils.checkZeroDivisorBigDecimal((BigDecimal)arg2);
 				return new BigDecimal(Utils.toDouble(arg1)).divideToIntegralValue((BigDecimal)arg2);
+			}
 		}
 		else if (arg1 instanceof Long)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
 				return Utils.toLong(arg1) / Utils.toLong(arg2);
 			else if (arg2 instanceof Float)
+			{
+				Utils.checkZeroDivisorFloat((Number)arg2);
 				return Math.floor(Utils.toLong(arg1) / Utils.toFloat(arg2));
+			}
 			else if (arg2 instanceof Double)
+			{
+				Utils.checkZeroDivisorFloat((Number)arg2);
 				return Math.floor(Utils.toLong(arg1) / Utils.toDouble(arg2));
+			}
 			else if (arg2 instanceof BigInteger)
 				return Utils.toBigInteger(Utils.toLong(arg1)).divide((BigInteger)arg2);
 			else if (arg2 instanceof BigDecimal)
@@ -112,10 +127,26 @@ public class FloorDivAST extends BinaryAST
 		}
 		else if (arg1 instanceof Float)
 		{
-			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float)
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short)
+			{
+				Utils.checkZeroDivisorInteger((Number)arg2);
 				return Math.floor(Utils.toFloat(arg1) / Utils.toFloat(arg2));
+			}
+			else if (arg2 instanceof Boolean)
+			{
+				Utils.checkZeroDivisorBoolean((Boolean)arg2);
+				return Math.floor(Utils.toFloat(arg1) / Utils.toFloat(arg2));
+			}
+			else if (arg2 instanceof Float)
+			{
+				Utils.checkZeroDivisorFloat((Number)arg2);
+				return Math.floor(Utils.toFloat(arg1) / Utils.toFloat(arg2));
+			}
 			else if (arg2 instanceof Double)
+			{
+				Utils.checkZeroDivisorFloat((Number)arg2);
 				return Math.floor(Utils.toDouble(arg1) / (((Double)arg2).doubleValue()));
+			}
 			else if (arg2 instanceof BigInteger)
 				return new BigDecimal(Utils.toDouble(arg1)).divideToIntegralValue(new BigDecimal((BigInteger)arg2));
 			else if (arg2 instanceof BigDecimal)
@@ -124,8 +155,21 @@ public class FloorDivAST extends BinaryAST
 		else if (arg1 instanceof Double)
 		{
 			double value1 = (((Double)arg1).doubleValue());
-			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short)
+			{
+				Utils.checkZeroDivisorInteger((Number)arg2);
 				return Math.floor(value1 / Utils.toDouble(arg2));
+			}
+			else if (arg2 instanceof Boolean)
+			{
+				Utils.checkZeroDivisorBoolean((Boolean)arg2);
+				return Math.floor(value1 / Utils.toDouble(arg2));
+			}
+			else if (arg2 instanceof Float || arg2 instanceof Double)
+			{
+				Utils.checkZeroDivisorFloat((Number)arg2);
+				return Math.floor(value1 / Utils.toDouble(arg2));
+			}
 			else if (arg2 instanceof BigInteger)
 				return new BigDecimal(value1).divideToIntegralValue(new BigDecimal((BigInteger)arg2));
 			else if (arg2 instanceof BigDecimal)
@@ -151,17 +195,17 @@ public class FloorDivAST extends BinaryAST
 		{
 			BigDecimal value1 = (BigDecimal)arg1;
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return value1.divideToIntegralValue(new BigDecimal(Integer.toString(Utils.toInt(arg2))));
+				return value1.divideToIntegralValue(Utils.toBigDecimal(Utils.toInt(arg2))).toBigInteger();
 			else if (arg2 instanceof Long)
-				return value1.divideToIntegralValue(new BigDecimal(Long.toString(Utils.toLong(arg2))));
+				return value1.divideToIntegralValue(Utils.toBigDecimal(Utils.toLong(arg2))).toBigInteger();
 			else if (arg2 instanceof Float)
-				return value1.divideToIntegralValue(new BigDecimal(((Float)arg2).doubleValue()));
+				return value1.divideToIntegralValue(new BigDecimal(((Float)arg2).doubleValue())).toBigInteger();
 			else if (arg2 instanceof Double)
-				return value1.divideToIntegralValue(new BigDecimal(((Double)arg2).doubleValue()));
+				return value1.divideToIntegralValue(new BigDecimal(((Double)arg2).doubleValue())).toBigInteger();
 			else if (arg2 instanceof BigInteger)
-				return value1.divideToIntegralValue(new BigDecimal((BigInteger)arg2));
+				return value1.divideToIntegralValue(new BigDecimal((BigInteger)arg2)).toBigInteger();
 			else if (arg2 instanceof BigDecimal)
-				return value1.divideToIntegralValue((BigDecimal)arg2);
+				return value1.divideToIntegralValue((BigDecimal)arg2).toBigInteger();
 		}
 		else if (arg1 instanceof TimeDelta)
 		{
@@ -169,6 +213,10 @@ public class FloorDivAST extends BinaryAST
 				return ((TimeDelta)arg1).floordiv(Utils.toInt(arg2));
 			else if (arg2 instanceof Long)
 				return ((TimeDelta)arg1).floordiv(Utils.toLong(arg2));
+			else if (arg2 instanceof BigInteger)
+				return ((TimeDelta)arg1).floordiv((BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return ((TimeDelta)arg1).floordiv((BigDecimal)arg2);
 		}
 		else if (arg1 instanceof MonthDelta)
 		{

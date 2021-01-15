@@ -49,12 +49,31 @@ public class TrueDivAST extends BinaryAST
 	{
 		if (arg1 instanceof Integer || arg1 instanceof Long || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean || arg1 instanceof Float || arg1 instanceof Double)
 		{
-			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
+			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short)
+			{
+				Utils.checkZeroDivisorInteger((Number)arg2);
 				return Utils.toDouble(arg1) / Utils.toDouble(arg2);
+			}
+			if (arg2 instanceof Boolean)
+			{
+				Utils.checkZeroDivisorBoolean((Boolean)arg2);
+				return Utils.toDouble(arg1) / Utils.toDouble(arg2);
+			}
+			if (arg2 instanceof Float || arg2 instanceof Double)
+			{
+				Utils.checkZeroDivisorFloat((Number)arg2);
+				return Utils.toDouble(arg1) / Utils.toDouble(arg2);
+			}
 			else if (arg2 instanceof BigInteger)
+			{
+				Utils.checkZeroDivisorBigInteger((BigInteger)arg2);
 				return new BigDecimal(Utils.toDouble(arg1)).divide(new BigDecimal((BigInteger)arg2), MathContext.DECIMAL128);
+			}
 			else if (arg2 instanceof BigDecimal)
+			{
+				Utils.checkZeroDivisorBigDecimal((BigDecimal)arg2);
 				return new BigDecimal(Utils.toDouble(arg1)).divide((BigDecimal)arg2, MathContext.DECIMAL128);
+			}
 		}
 		else if (arg1 instanceof BigInteger)
 		{
@@ -84,6 +103,10 @@ public class TrueDivAST extends BinaryAST
 				return ((TimeDelta)arg1).truediv(Utils.toFloat(arg2));
 			else if (arg2 instanceof Double)
 				return ((TimeDelta)arg1).truediv(Utils.toDouble(arg2));
+			else if (arg2 instanceof BigInteger)
+				return ((TimeDelta)arg1).truediv((BigInteger)arg2);
+			else if (arg2 instanceof BigDecimal)
+				return ((TimeDelta)arg1).truediv((BigDecimal)arg2);
 			else if (arg2 instanceof TimeDelta)
 				return ((TimeDelta)arg1).truediv((TimeDelta)arg2);
 		}

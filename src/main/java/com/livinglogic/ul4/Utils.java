@@ -325,9 +325,9 @@ public class Utils
 		{
 			BigDecimal value1 = (BigDecimal)arg1;
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return cmp(value1, new BigDecimal(Integer.toString(toInt(arg2))));
+				return cmp(value1, toBigDecimal(toInt(arg2)));
 			else if (arg2 instanceof Long)
-				return cmp(value1, new BigDecimal(Long.toString(toLong(arg2))));
+				return cmp(value1, toBigDecimal(toLong(arg2)));
 			else if (arg2 instanceof Float)
 				return cmp(value1, new BigDecimal(((Float)arg2).doubleValue()));
 			else if (arg2 instanceof Double)
@@ -602,6 +602,36 @@ public class Utils
 	public static List array2List(Object[] array)
 	{
 		return new ArrayList(Arrays.asList(array));
+	}
+
+	public static void checkZeroDivisorBoolean(Boolean value)
+	{
+		if (!value.booleanValue())
+			throw new ArithmeticException("division by zero");
+	}
+
+	public static void checkZeroDivisorInteger(Number value)
+	{
+		if (((Number)value).longValue() == 0)
+			throw new ArithmeticException("division by zero");
+	}
+
+	public static void checkZeroDivisorFloat(Number value)
+	{
+		if (((Number)value).doubleValue() == 0)
+			throw new ArithmeticException("division by zero");
+	}
+
+	public static void checkZeroDivisorBigInteger(BigInteger value)
+	{
+		if (value.compareTo(BigInteger.ZERO) == 0)
+			throw new ArithmeticException("division by zero");
+	}
+
+	public static void checkZeroDivisorBigDecimal(BigDecimal value)
+	{
+		if (value.compareTo(BigDecimal.ZERO) == 0)
+			throw new ArithmeticException("division by zero");
 	}
 
 	public static String formatMessage(String template, Object... args)

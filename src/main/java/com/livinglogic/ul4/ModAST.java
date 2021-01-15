@@ -166,9 +166,9 @@ public class ModAST extends BinaryAST
 		{
 			BigDecimal value1 = (BigDecimal)arg1;
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return call(value1, new BigDecimal(Integer.toString(Utils.toInt(arg2))));
+				return call(value1, Utils.toBigDecimal(Utils.toInt(arg2)));
 			else if (arg2 instanceof Long)
-				return call(value1, new BigDecimal(Long.toString(Utils.toLong(arg2))));
+				return call(value1, Utils.toBigDecimal(Utils.toLong(arg2)));
 			else if (arg2 instanceof Float)
 				return call(value1, new BigDecimal(((Float)arg2).doubleValue()));
 			else if (arg2 instanceof Double)

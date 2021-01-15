@@ -3,6 +3,10 @@ HEAD (2021-01-??)
 
 Added a ``date`` method to ``date`` and ``datetime`` objects.
 
+Added ``Utils.toBigDecimal(int)`` and ``Utils.toBigDecimal(long)``.
+
+Always raise an ArithmeticException when dividing by zero.
+
 
 exp-154 (2020-04-29)
 --------------------

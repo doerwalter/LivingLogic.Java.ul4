@@ -237,9 +237,9 @@ public class AddAST extends BinaryAST
 		{
 			BigDecimal value1 = (BigDecimal)arg1;
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return value1.add(new BigDecimal(Integer.toString(Utils.toInt(arg2))));
+				return value1.add(Utils.toBigDecimal(Utils.toInt(arg2)));
 			else if (arg2 instanceof Long)
-				return value1.add(new BigDecimal(Long.toString(Utils.toLong(arg2))));
+				return value1.add(Utils.toBigDecimal(Utils.toLong(arg2)));
 			else if (arg2 instanceof Float)
 				return value1.add(new BigDecimal(((Float)arg2).doubleValue()));
 			else if (arg2 instanceof Double)

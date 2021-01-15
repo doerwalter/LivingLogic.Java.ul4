@@ -32,6 +32,7 @@ import org.junit.runner.RunWith;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.livinglogic.ul4.Utils;
 import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.MissingArgumentException;
@@ -1092,9 +1093,12 @@ public class UL4Test
 		checkOutput("2 days, 0:00:00", t, V("x", new TimeDelta(8), "y", 4));
 		checkOutput("12:00:00", t, V("x", new TimeDelta(4), "y", 8));
 		checkOutput("0:00:00.500000", t, V("x", new TimeDelta(0, 4), "y", 8));
+		checkOutput("0:00:00.500000", t, V("x", new TimeDelta(0, 4), "y", new BigInteger("8")));
 		checkOutput("2 days, 0:00:00", t, V("x", new TimeDelta(1), "y", 0.5));
+		checkOutput("2 days, 0:00:00", t, V("x", new TimeDelta(1), "y", new BigDecimal("0.5")));
+		checkOutput("19:12:00", t, V("x", new TimeDelta(2), "y", new BigDecimal("2.5")));
 		checkOutput("9:36:00", t, V("x", new TimeDelta(1), "y", 2.5));
-		// This checks constant folding
+		// This checks constant foldingd
 		checkOutput("0.5", T("<?print 1/2?>"));
 		checkOutput("2.0", T("<?print 2.0/True?>"));
 	}
@@ -5801,5 +5805,64 @@ public class UL4Test
 		BigInteger x = new BigInteger("99999999999999999999999999999999999999");
 		checkOutput("99999999999999999999999999999999999999", T("<?print int(x)?>"), V("x", x));
 		checkOutput("100000000000000000000000000000000000000", T("<?print int(x+1)?>"), V("x", x));
+	}
+
+	private void do_zerodivision_truediv(Object dividend, Object divisor)
+	{
+		InterpretedTemplate t = T("<?print dividend / divisor?>");
+
+		try
+		{
+			t.renders(V("dividend", dividend, "divisor", divisor));
+		}
+		catch (ArithmeticException exc)
+		{
+			return;
+		}
+		throw new RuntimeException(Utils.formatMessage("true division {!r} / {!r} (with types {!t} and {!t}) didn't raise ArithmeticException", dividend, divisor, dividend, divisor));
+	}
+
+	@Test
+	public void zerodivision_truediv()
+	{
+		InterpretedTemplate t = T("<?print dividend/divisor?>");
+
+		List<Object> dividends = asList(true, (byte)1, (short)2, 3, 4l, 5.5f, 6.5d, new BigInteger("7"), new BigDecimal("8.5"), new TimeDelta(9));
+		List<Object> divisors = asList(false, (byte)0, (short)0, 0, 0l, 0.0f, 0.0d, new BigInteger("0"), new BigDecimal("0"));
+
+		for (Object dividend : dividends)
+			for (Object divisor : divisors)
+				do_zerodivision_truediv(dividend, divisor);
+	}
+
+	private void do_zerodivision_floordiv(Object dividend, Object divisor)
+	{
+		InterpretedTemplate t = T("<?print dividend // divisor?>");
+		try
+		{
+			t.renders(V("dividend", dividend, "divisor", divisor));
+		}
+		catch (ArithmeticException exc)
+		{
+			return;
+		}
+		throw new RuntimeException(Utils.formatMessage("floor division {!r} // {!r} (with types {!t} and {!t}) didn't raise ArithmeticException", dividend, divisor, dividend, divisor));
+	}
+
+	@Test
+	public void zerodivision_floordiv()
+	{
+		List<Object> dividends = asList(true, (byte)1, (short)2, 3, 4l, 5.5f, 6.5d, new BigInteger("7"), new BigDecimal("8.5"));
+		List<Object> divisors = asList(false, (byte)0, (short)0, 0, 0l, 0.0f, 0.0d, new BigInteger("0"), new BigDecimal("0"));
+
+		for (Object dividend : dividends)
+			for (Object divisor : divisors)
+				do_zerodivision_floordiv(dividend, divisor);
+
+		TimeDelta timeDelta = new TimeDelta(42);
+		List<Object> divisorsTimeDelta = asList(false, (byte)0, (short)0, 0, 0l, new BigInteger("0"));
+
+		for (Object divisor : divisorsTimeDelta)
+			do_zerodivision_floordiv(timeDelta, divisor);
 	}
 }
