@@ -126,14 +126,14 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 		return new MonthDelta((int)(months/divisor));
 	}
 
-	public double truediv(MonthDelta divisor)
-	{
-		return (double)months/divisor.getMonths();
-	}
-
 	public int floordiv(MonthDelta divisor)
 	{
 		return months/divisor.getMonths();
+	}
+
+	public double truediv(MonthDelta divisor)
+	{
+		return (double)months/divisor.getMonths();
 	}
 
 	public boolean boolUL4()
