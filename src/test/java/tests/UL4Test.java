@@ -4819,8 +4819,10 @@ public class UL4Test
 	{
 		checkOutput("2", T("<?print @(2010-05-12).weekday()?>"));
 		checkOutput("2", T("<?code m = @(2010-05-12).weekday?><?print m()?>"));
+
+		InterpretedTemplate t = T("<?print d.weekday()?>");
 		for (Object d : makeAllDateTimeVariants(2010, 5, 21))
-			checkOutput("4", T("<?print d.weekday()?>"), V("d", d));
+			checkOutput("4", t, V("d", d));
 	}
 
 	@Test
@@ -4832,8 +4834,9 @@ public class UL4Test
 		checkOutput("365", T("<?print @(2010-12-31).yearday()?>"));
 		checkOutput("132", T("<?print @(2010-05-12).yearday()?>"));
 		checkOutput("132", T("<?print @(2010-05-12T16:47:56).yearday()?>"));
+		InterpretedTemplate t = T("<?print d.yearday()?>");
 		for (Object d : makeAllDateTimeVariants(2010, 5, 12))
-			checkOutput("132", T("<?print d.yearday()?>"), V("d", d));
+			checkOutput("132", t, V("d", d));
 	}
 
 	@Test
