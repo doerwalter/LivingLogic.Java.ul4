@@ -5807,10 +5807,8 @@ public class UL4Test
 		checkOutput("100000000000000000000000000000000000000", T("<?print int(x+1)?>"), V("x", x));
 	}
 
-	private void do_zerodivision_truediv(Object dividend, Object divisor)
+	private void expect_arithmetic_exception(InterpretedTemplate t, String message, Object dividend, Object divisor)
 	{
-		InterpretedTemplate t = T("<?print dividend / divisor?>");
-
 		try
 		{
 			t.renders(V("dividend", dividend, "divisor", divisor));
@@ -5819,50 +5817,40 @@ public class UL4Test
 		{
 			return;
 		}
-		throw new RuntimeException(Utils.formatMessage("true division {!r} / {!r} (with types {!t} and {!t}) didn't raise ArithmeticException", dividend, divisor, dividend, divisor));
+		throw new RuntimeException(Utils.formatMessage(message, dividend, divisor, dividend, divisor));
 	}
 
 	@Test
 	public void zerodivision_truediv()
 	{
-		InterpretedTemplate t = T("<?print dividend/divisor?>");
+		InterpretedTemplate t = T("<?print dividend / divisor?>");
+		String message = "true division {!r} / {!r} (with types {!t} and {!t}) didn't raise ArithmeticException";
 
 		List<Object> dividends = asList(true, (byte)1, (short)2, 3, 4l, 5.5f, 6.5d, new BigInteger("7"), new BigDecimal("8.5"), new TimeDelta(9));
 		List<Object> divisors = asList(false, (byte)0, (short)0, 0, 0l, 0.0f, 0.0d, new BigInteger("0"), new BigDecimal("0"));
 
 		for (Object dividend : dividends)
 			for (Object divisor : divisors)
-				do_zerodivision_truediv(dividend, divisor);
-	}
-
-	private void do_zerodivision_floordiv(Object dividend, Object divisor)
-	{
-		InterpretedTemplate t = T("<?print dividend // divisor?>");
-		try
-		{
-			t.renders(V("dividend", dividend, "divisor", divisor));
-		}
-		catch (ArithmeticException exc)
-		{
-			return;
-		}
-		throw new RuntimeException(Utils.formatMessage("floor division {!r} // {!r} (with types {!t} and {!t}) didn't raise ArithmeticException", dividend, divisor, dividend, divisor));
+				expect_arithmetic_exception(t, message, dividend, divisor);
 	}
 
 	@Test
 	public void zerodivision_floordiv()
 	{
+		InterpretedTemplate t = T("<?print dividend // divisor?>");
+		String message = "floor division {!r} // {!r} (with types {!t} and {!t}) didn't raise ArithmeticException";
+
 		List<Object> dividends = asList(true, (byte)1, (short)2, 3, 4l, 5.5f, 6.5d, new BigInteger("7"), new BigDecimal("8.5"));
 		List<Object> divisors = asList(false, (byte)0, (short)0, 0, 0l, 0.0f, 0.0d, new BigInteger("0"), new BigDecimal("0"));
 
 		for (Object dividend : dividends)
 			for (Object divisor : divisors)
-				do_zerodivision_floordiv(dividend, divisor);
+				expect_arithmetic_exception(t, message, dividend, divisor);
 
 		TimeDelta timeDelta = new TimeDelta(42);
 		List<Object> divisorsTimeDelta = asList(false, (byte)0, (short)0, 0, 0l, new BigInteger("0"));
 
 		for (Object divisor : divisorsTimeDelta)
-			do_zerodivision_floordiv(timeDelta, divisor);
+			expect_arithmetic_exception(t, message, timeDelta, divisor);
 	}
 }
