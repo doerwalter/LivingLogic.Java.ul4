@@ -4582,231 +4582,236 @@ public class UL4Test
 	@Test
 	public void method_calendar()
 	{
+		InterpretedTemplate t = T("<?print repr(d.calendar())?>");
+		InterpretedTemplate t_0_7 = T("<?print repr(d.calendar(0, 7))?>");
+		InterpretedTemplate t_6_1 = T("<?print repr(d.calendar(6, 1))?>");
+
 		// 1996: Non-leap year, starting on Monday
 		for (Object d : makeAllDateTimeVariants(1996, 1, 1))
-			checkOutput("[1996, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[1996, 1, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(1996, 1, 1))
-			checkOutput("[1996, 1, 0]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[1996, 1, 0]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(1996, 1, 1))
-			checkOutput("[1996, 1, 0]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[1996, 1, 0]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(1996, 1, 7))
-			checkOutput("[1996, 1, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[1996, 1, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(1996, 1, 8))
-			checkOutput("[1996, 2, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[1996, 2, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(1996, 12, 29))
-			checkOutput("[1996, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[1996, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(1996, 12, 30))
-			checkOutput("[1997, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[1997, 1, 0]", t, V("d", d));
 
 		// 2018: Leap year, starting on Monday
 		for (Object d : makeAllDateTimeVariants(2018, 1, 1))
-			checkOutput("[2018, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2018, 1, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2018, 1, 1))
-			checkOutput("[2018, 1, 0]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[2018, 1, 0]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2018, 1, 1))
-			checkOutput("[2018, 1, 0]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[2018, 1, 0]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2018, 1, 7))
-			checkOutput("[2018, 1, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2018, 1, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2018, 1, 8))
-			checkOutput("[2018, 2, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2018, 2, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2018, 5,28))
-			checkOutput("[2018, 22, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2018, 22, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2018, 12, 30))
-			checkOutput("[2018, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2018, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2018, 12, 31))
-			checkOutput("[2019, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2019, 1, 0]", t, V("d", d));
 
 		// 2013: Non-leap year, starting on Tuesday
 		for (Object d : makeAllDateTimeVariants(2013, 1, 1))
-			checkOutput("[2013, 1, 1]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2013, 1, 1]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2013, 1, 1))
-			checkOutput("[2013, 1, 1]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[2013, 1, 1]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2013, 1, 1))
-			checkOutput("[2012, 53, 1]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[2012, 53, 1]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2013, 1, 6))
-			checkOutput("[2013, 1, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2013, 1, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2013, 1, 7))
-			checkOutput("[2013, 2, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2013, 2, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2013, 12, 29))
-			checkOutput("[2013, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2013, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2013, 12, 30))
-			checkOutput("[2014, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2014, 1, 0]", t, V("d", d));
 
 		// 2008: Leap year, starting on Tuesday
 		for (Object d : makeAllDateTimeVariants(2008, 1, 1))
-			checkOutput("[2008, 1, 1]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2008, 1, 1]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2008, 1, 1))
-			checkOutput("[2008, 1, 1]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[2008, 1, 1]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2008, 1, 1))
-			checkOutput("[2007, 53, 1]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[2007, 53, 1]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2008, 1, 6))
-			checkOutput("[2008, 1, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2008, 1, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2008, 1, 7))
-			checkOutput("[2008, 2, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2008, 2, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2008, 12, 28))
-			checkOutput("[2008, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2008, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2008, 12, 29))
-			checkOutput("[2009, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2009, 1, 0]", t, V("d", d));
 
 		// 2014: Non-leap year, starting on Wednesday
 		for (Object d : makeAllDateTimeVariants(2014, 1, 1))
-			checkOutput("[2014, 1, 2]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2014, 1, 2]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2014, 1, 1))
-			checkOutput("[2014, 1, 2]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[2014, 1, 2]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2014, 1, 1))
-			checkOutput("[2013, 52, 2]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[2013, 52, 2]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2014, 1, 5))
-			checkOutput("[2014, 1, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2014, 1, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2014, 1, 6))
-			checkOutput("[2014, 2, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2014, 2, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2014, 12, 28))
-			checkOutput("[2014, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2014, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2014, 12, 29))
-			checkOutput("[2015, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2015, 1, 0]", t, V("d", d));
 
 		// 1992: Leap year, starting on Wednesday
 		for (Object d : makeAllDateTimeVariants(1992, 1, 1))
-			checkOutput("[1992, 1, 2]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[1992, 1, 2]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(1992, 1, 1))
-			checkOutput("[1992, 1, 2]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[1992, 1, 2]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(1992, 1, 1))
-			checkOutput("[1991, 52, 2]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[1991, 52, 2]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(1992, 1, 5))
-			checkOutput("[1992, 1, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[1992, 1, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(1992, 1, 6))
-			checkOutput("[1992, 2, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[1992, 2, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(1992, 12, 27))
-			checkOutput("[1992, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[1992, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(1992, 12, 28))
-			checkOutput("[1992, 53, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[1992, 53, 0]", t, V("d", d));
 
 		// 2015: Non-leap year, starting on Thursday
 		for (Object d : makeAllDateTimeVariants(2015, 1, 1))
-			checkOutput("[2015, 1, 3]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2015, 1, 3]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2015, 1, 1))
-			checkOutput("[2015, 1, 3]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[2015, 1, 3]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2015, 1, 1))
-			checkOutput("[2014, 52, 3]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[2014, 52, 3]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2015, 1, 4))
-			checkOutput("[2015, 1, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2015, 1, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2015, 01, 05))
-			checkOutput("[2015, 2, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2015, 2, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2015, 12, 27))
-			checkOutput("[2015, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2015, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2015, 12, 28))
-			checkOutput("[2015, 53, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2015, 53, 0]", t, V("d", d));
 
 		// 2004: Leap year, starting on Thursday
 		for (Object d : makeAllDateTimeVariants(2004, 1, 1))
-			checkOutput("[2004, 1, 3]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2004, 1, 3]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2004, 1, 1))
-			checkOutput("[2004, 1, 3]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[2004, 1, 3]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2004, 1, 1))
-			checkOutput("[2003, 52, 3]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[2003, 52, 3]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2004, 1, 4))
-			checkOutput("[2004, 1, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2004, 1, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2004, 1, 5))
-			checkOutput("[2004, 2, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2004, 2, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2004, 12, 26))
-			checkOutput("[2004, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2004, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2004, 12, 27))
-			checkOutput("[2004, 53, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2004, 53, 0]", t, V("d", d));
 
 		// 2010: Non-leap year, starting on Friday
 		for (Object d : makeAllDateTimeVariants(2010, 1, 1))
-			checkOutput("[2009, 53, 4]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2009, 53, 4]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2010, 1, 1))
-			checkOutput("[2010, 1, 4]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[2010, 1, 4]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2010, 1, 1))
-			checkOutput("[2009, 52, 4]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[2009, 52, 4]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2010, 1, 3))
-			checkOutput("[2009, 53, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2009, 53, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2010, 1, 4))
-			checkOutput("[2010, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2010, 1, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2010, 12, 26))
-			checkOutput("[2010, 51, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2010, 51, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2010, 12, 27))
-			checkOutput("[2010, 52, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2010, 52, 0]", t, V("d", d));
 
 		// 2016: Leap year, starting on Friday
 		for (Object d : makeAllDateTimeVariants(2016, 1, 1))
-			checkOutput("[2015, 53, 4]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2015, 53, 4]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2016, 1, 1))
-			checkOutput("[2016, 1, 4]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[2016, 1, 4]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2016, 1, 1))
-			checkOutput("[2015, 52, 4]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[2015, 52, 4]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2016, 1, 3))
-			checkOutput("[2015, 53, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2015, 53, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2016, 1, 4))
-			checkOutput("[2016, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2016, 1, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2016, 12, 25))
-			checkOutput("[2016, 51, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2016, 51, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2016, 12, 26))
-			checkOutput("[2016, 52, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2016, 52, 0]", t, V("d", d));
 
 		// 2011: Non-leap year, starting on Saturday
 		for (Object d : makeAllDateTimeVariants(2011, 1, 1))
-			checkOutput("[2010, 52, 5]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2010, 52, 5]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2011, 1, 1))
-			checkOutput("[2011, 1, 5]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[2011, 1, 5]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2011, 1, 1))
-			checkOutput("[2010, 52, 5]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[2010, 52, 5]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2011, 1, 2))
-			checkOutput("[2010, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2010, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2011, 1, 3))
-			checkOutput("[2011, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2011, 1, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2011, 12, 25))
-			checkOutput("[2011, 51, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2011, 51, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2011, 12, 26))
-			checkOutput("[2011, 52, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2011, 52, 0]", t, V("d", d));
 
 		// 2000: Leap year, starting on Saturday
 		for (Object d : makeAllDateTimeVariants(2000, 1, 1))
-			checkOutput("[1999, 52, 5]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[1999, 52, 5]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2000, 1, 1))
-			checkOutput("[2000, 1, 5]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[2000, 1, 5]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2000, 1, 1))
-			checkOutput("[1999, 52, 5]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[1999, 52, 5]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2000, 1, 2))
-			checkOutput("[1999, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[1999, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2000, 1, 3))
-			checkOutput("[2000, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2000, 1, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2000, 12, 24))
-			checkOutput("[2000, 51, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2000, 51, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2000, 12, 25))
-			checkOutput("[2000, 52, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2000, 52, 0]", t, V("d", d));
 
 		// 2017: Non-leap year, starting on Sunday
 		for (Object d : makeAllDateTimeVariants(2017, 1, 1))
-			checkOutput("[2016, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2016, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2017, 1, 1))
-			checkOutput("[2017, 1, 6]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[2017, 1, 6]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2017, 1, 1))
-			checkOutput("[2016, 52, 6]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[2016, 52, 6]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2017, 1, 2))
-			checkOutput("[2017, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2017, 1, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2017, 12, 24))
-			checkOutput("[2017, 51, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2017, 51, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2017, 12, 25))
-			checkOutput("[2017, 52, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2017, 52, 0]", t, V("d", d));
 
 		// 2012: Leap year, starting on Sunday
 		for (Object d : makeAllDateTimeVariants(2012, 1, 1))
-			checkOutput("[2011, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2011, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2012, 1, 1))
-			checkOutput("[2012, 1, 6]", T("<?print repr(d.calendar(6, 1))?>"), V("d", d));
+			checkOutput("[2012, 1, 6]", t_6_1, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2012, 1, 1))
-			checkOutput("[2011, 52, 6]", T("<?print repr(d.calendar(0, 7))?>"), V("d", d));
+			checkOutput("[2011, 52, 6]", t_0_7, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2012, 1, 2))
-			checkOutput("[2012, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2012, 1, 0]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2012, 12, 30))
-			checkOutput("[2012, 52, 6]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2012, 52, 6]", t, V("d", d));
 		for (Object d : makeAllDateTimeVariants(2012, 12, 31))
-			checkOutput("[2013, 1, 0]", T("<?print repr(d.calendar())?>"), V("d", d));
+			checkOutput("[2013, 1, 0]", t, V("d", d));
 
 		// Make sure that the parameters have the same name in all implementations
+		t = T("<?print repr(d.calendar(firstweekday=0, mindaysinfirstweek=4))?>");
 		for (Object d : makeAllDateTimeVariants(2018, 1, 1))
-			checkOutput("[2018, 1, 0]", T("<?print repr(d.calendar(firstweekday=0, mindaysinfirstweek=4))?>"), V("d", d));
+			checkOutput("[2018, 1, 0]", t, V("d", d));
 	}
 
 	@Test
