@@ -109,7 +109,19 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type
 		this(null);
 	}
 
-	private void reset(Writer writer)
+	/**
+	 * Clear the internal cache for backreferences and reset internal state.
+	 * After the call the {@code Encoder} is in the same state as it was after
+	 * it has been created. The class registry be will kept.
+	 */
+	public void reset()
+	{
+		resetInternal(null);
+		object2id = new IdentityHashMap<Object, Integer>();
+		strings = new HashMap<String, String>();
+	}
+
+	private void resetInternal(Writer writer)
 	{
 		this.writer = writer;
 		level = 0;
@@ -180,7 +192,7 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type
 	 */
 	public void dump(Writer writer, Object obj) throws IOException
 	{
-		reset(writer);
+		resetInternal(writer);
 		dump(obj);
 		this.writer = null;
 	}
@@ -194,7 +206,7 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type
 	{
 		try (StringWriter writer = new StringWriter())
 		{
-			reset(writer);
+			resetInternal(writer);
 			dump(obj);
 			String result = writer.toString();
 			this.writer = null;
