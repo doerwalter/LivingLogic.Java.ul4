@@ -548,7 +548,12 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 	 */
 	public void reset()
 	{
-		objects.clear();
+		reader = null;
+		position = 0;
+		bufferedChar = -1;
+		objects = new ArrayList<Object>();
+		keys = new HashMap<Object, Object>();
+		stack = new Stack<String>();
 	}
 
 	/**
