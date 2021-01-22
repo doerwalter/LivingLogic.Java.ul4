@@ -9,6 +9,8 @@ Always raise an ArithmeticException when dividing by zero.
 
 Implemented support for ``timedelta // timedelta``.
 
+Added a convenience method ``UL4Repr.repr()``.
+
 
 exp-154 (2020-04-29)
 --------------------

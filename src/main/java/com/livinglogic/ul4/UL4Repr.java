@@ -66,6 +66,19 @@ public interface UL4Repr
 	void reprUL4(Formatter formatter);
 
 	/**
+	 * <p>Output this object in "repr" format.</p>
+	 *
+	 * <p>This is a convenience method that implicitely creates a
+	 * {@code Formatter}.</p>
+	 *
+	 * @return The "repr" representation of this object.
+	 */
+	default String repr()
+	{
+		return FunctionRepr.call(this);
+	}
+
+	/**
 	 * The {@code Formatter} class provides helper methods that classes can
 	 * use when implementing the {@link UL4Repr} interface;
 	 */
