@@ -54,6 +54,16 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		connection.close();
 	}
 
+	public void commit() throws SQLException
+	{
+		connection.commit();
+	}
+
+	public void rollback() throws SQLException
+	{
+		connection.rollback();
+	}
+
 	public Iterator<Map<String, Object>> queryargs(CloseableRegistry closeableRegistry, String query, List args)
 	{
 		final CallableStatement statement;

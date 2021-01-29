@@ -11,6 +11,8 @@ Implemented support for ``timedelta // timedelta``.
 
 Added a convenience method ``UL4Repr.repr()``.
 
+Added methods ``Connection.commit()`` and ``Connection.rollback()``.
+
 
 exp-154 (2020-04-29)
 --------------------
