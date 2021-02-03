@@ -13,6 +13,11 @@ Added a convenience method ``UL4Repr.repr()``.
 
 Added methods ``Connection.commit()`` and ``Connection.rollback()``.
 
+``com.livinglogic.ul4.utils.formatMessage()`` no supports argument indexes in
+the placeholder strings, i.e. you can use ``{0}`` instead of ``{}`` to output
+the first argument. This makes it possible to output the argument in a different
+order.
+
 
 exp-154 (2020-04-29)
 --------------------

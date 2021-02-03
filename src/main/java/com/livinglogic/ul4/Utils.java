@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.StringTokenizer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -634,37 +635,56 @@ public class Utils
 			throw new ArithmeticException("division by zero");
 	}
 
+	/**
+	 * Format a message replacing placeholders of the form {}, {!r}, {!r} or
+	 * {0}, {0!r}, {0!t}.
+	 */
 	public static String formatMessage(String template, Object... args)
 	{
 		StringBuilder buffer = new StringBuilder();
 		int argIndex = 0;
 
-		for (int fromIndex = 0;;)
-		{
-			int index = indexOf(template, fromIndex, "{}", "{!r}", "{!t}");
+		StringTokenizer tokenizer = new StringTokenizer(template, "{}", true);
 
-			if (index == -1)
+		boolean outsidePlaceholder = true;
+
+		while (tokenizer.hasMoreTokens())
+		{
+			String token = tokenizer.nextToken();
+			if ("{".equals(token))
+				outsidePlaceholder = false;
+			else if ("}".equals(token))
+				outsidePlaceholder = true;
+			else if (outsidePlaceholder)
+				buffer.append(token);
+			else
 			{
-				buffer.append(template.substring(fromIndex));
-				break;
-			}
-			if (index != fromIndex)
-				buffer.append(template.substring(fromIndex, index));
-			if (template.startsWith("{}", index))
-			{
-				Object arg = args[argIndex++];
-				buffer.append(arg != null ? arg.toString() : "null");
-				fromIndex = index + 2;
-			}
-			else if (template.startsWith("{!r}", index))
-			{
-				buffer.append(FunctionRepr.call(args[argIndex++]));
-				fromIndex = index + 4;
-			}
-			else /* {!t} */
-			{
-				buffer.append(objectType(args[argIndex++]));
-				fromIndex = index + 4;
+				int form;
+				if (token.endsWith("!r"))
+				{
+					form = 1;
+					token = token.substring(0, token.length() - 2);
+				}
+				else if (token.endsWith("!t"))
+				{
+					form = 2;
+					token = token.substring(0, token.length() - 2);
+				}
+				else
+					form = 0;
+				Object arg = args[token.length() == 0 ? argIndex++ : Integer.parseInt(token)];
+				switch (form)
+				{
+					case 0:
+						buffer.append(arg != null ? arg.toString() : "null");
+						break;
+					case 1:
+						buffer.append(FunctionRepr.call(arg));
+						break;
+					case 2:
+						buffer.append(objectType(arg));
+						break;
+				}
 			}
 		}
 		return buffer.toString();
