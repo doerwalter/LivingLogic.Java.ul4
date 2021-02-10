@@ -648,31 +648,20 @@ public class Utils
 
 		boolean outsidePlaceholder = true;
 
+		int form = 0;
+		String position = null;
 		while (tokenizer.hasMoreTokens())
 		{
 			String token = tokenizer.nextToken();
 			if ("{".equals(token))
-				outsidePlaceholder = false;
-			else if ("}".equals(token))
-				outsidePlaceholder = true;
-			else if (outsidePlaceholder)
-				buffer.append(token);
-			else
 			{
-				int form;
-				if (token.endsWith("!r"))
-				{
-					form = 1;
-					token = token.substring(0, token.length() - 2);
-				}
-				else if (token.endsWith("!t"))
-				{
-					form = 2;
-					token = token.substring(0, token.length() - 2);
-				}
-				else
-					form = 0;
-				Object arg = args[token.length() == 0 ? argIndex++ : Integer.parseInt(token)];
+				outsidePlaceholder = false;
+				form = 0;
+				token = null;
+			}
+			else if ("}".equals(token))
+			{
+				Object arg = args[position == null || position.length() == 0 ? argIndex++ : Integer.parseInt(position)];
 				switch (form)
 				{
 					case 0:
@@ -684,6 +673,27 @@ public class Utils
 					case 2:
 						buffer.append(objectType(arg));
 						break;
+				}
+				outsidePlaceholder = true;
+			}
+			else if (outsidePlaceholder)
+				buffer.append(token);
+			else
+			{
+				if (token.endsWith("!r"))
+				{
+					form = 1;
+					position = token.substring(0, token.length() - 2);
+				}
+				else if (token.endsWith("!t"))
+				{
+					form = 2;
+					position = token.substring(0, token.length() - 2);
+				}
+				else
+				{
+					form = 0;
+					position = token;
 				}
 			}
 		}
