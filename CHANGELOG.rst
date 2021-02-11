@@ -18,6 +18,8 @@ the placeholder strings, i.e. you can use ``{0}`` instead of ``{}`` to output
 the first argument. This makes it possible to output the argument in a different
 order.
 
+Updated Apache Commons Lang to 3.11 and use Apache Commons Text 1.9.
+
 
 exp-154 (2020-04-29)
 --------------------

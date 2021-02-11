@@ -30,7 +30,7 @@ import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.livinglogic.ul4.Utils;
 import com.livinglogic.ul4.ArgumentCountMismatchException;

@@ -10,7 +10,7 @@ import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 public class FunctionInt extends Function
 {

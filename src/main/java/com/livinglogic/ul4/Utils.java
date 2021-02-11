@@ -26,7 +26,7 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.io.IOException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import static com.livinglogic.utils.MapUtils.makeMap;
 

@@ -6,7 +6,7 @@
 
 package com.livinglogic.ul4;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A class that holds the data for formatting a code snippet (i.e. code

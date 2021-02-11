@@ -11,7 +11,7 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 import java.io.IOException;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;

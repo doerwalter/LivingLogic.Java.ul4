@@ -20,7 +20,7 @@ import java.util.Stack;
 
 import java.text.SimpleDateFormat;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * <p>Interface for implementing support for the UL4 function {@code repr}

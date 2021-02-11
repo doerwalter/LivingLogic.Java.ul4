@@ -18,7 +18,8 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
+
 
 public class FunctionAsJSON extends Function
 {
@@ -144,7 +145,7 @@ public class FunctionAsJSON extends Function
 		else if (obj instanceof InterpretedTemplate)
 		{
 			String dump = ((InterpretedTemplate)obj).dumps();
-			dump = StringEscapeUtils.escapeJavaScript(dump).replace("<", "\\u003c");
+			dump = StringEscapeUtils.escapeJson(dump).replace("<", "\\u003c");
 			builder
 				.append("ul4.loads(\"")
 				.append(dump)
