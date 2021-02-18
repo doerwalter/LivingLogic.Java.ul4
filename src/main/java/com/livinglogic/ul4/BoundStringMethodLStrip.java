@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+
 public class BoundStringMethodLStrip extends BoundMethod<String>
 {
 	public BoundStringMethodLStrip(String object)
