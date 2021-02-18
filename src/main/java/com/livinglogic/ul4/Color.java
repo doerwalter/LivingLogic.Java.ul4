@@ -217,6 +217,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		return a;
 	}
 
+	@Override
 	public String toString()
 	{
 		if (a == 255)
@@ -247,6 +248,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 	}
 
+	@Override
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
 		formatter.append("#");
@@ -555,21 +557,25 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 	}
 
 	// Collection interface
+	@Override
 	public boolean add(Object o)
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean addAll(Collection c)
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void clear()
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean contains(Object o)
 	{
 		if (o == null || !(o instanceof Integer))
@@ -579,6 +585,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		return ((r == ov) || (g == ov) || (b == ov) || (a == ov));
 	}
 
+	@Override
 	public boolean containsAll(Collection c)
 	{
 		for (Object o : c)
@@ -589,6 +596,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		return true;
 	}
 
+	@Override
 	public boolean equals(Object o)
 	{
 		if (o == null || !(o instanceof Color))
@@ -597,11 +605,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		return ((r == co.r) && (g == co.g) && (b == co.b) && (a == co.a));
 	}
 
+	@Override
 	public boolean isEmpty()
 	{
 		return false;
 	}
 
+	@Override
 	public int hashCode()
 	{
 		return r ^ g ^ b ^ a;
@@ -616,11 +626,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 			index = 0;
 		}
 
+		@Override
 		public boolean hasNext()
 		{
 			return index < 4;
 		}
 
+		@Override
 		public Object next()
 		{
 			switch (index++)
@@ -638,32 +650,38 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 			}
 		}
 
+		@Override
 		public void remove()
 		{
 			throw new UnsupportedOperationException("Colors don't support component removal!");
 		}
 	};
 
+	@Override
 	public Iterator iterator()
 	{
 		return new ColorIterator();
 	}
 
+	@Override
 	public boolean remove(Object o)
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean removeAll(Collection c)
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean retainAll(Collection c)
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public Object[] toArray()
 	{
 		Object[] retVal = new Object[4];
@@ -674,21 +692,25 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		return retVal;
 	}
 
+	@Override
 	public Object[] toArray(Object[] a)
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public int size()
 	{
 		return 4;
 	}
 
+	@Override
 	public int lenUL4()
 	{
 		return 4;
 	}
 
+	@Override
 	public String typeUL4()
 	{
 		return "color";
@@ -1009,11 +1031,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 
 	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "lum", "hls", "hlsa", "hsv", "hsva", "witha", "withlum", "abslum", "rellum");
 
+	@Override
 	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)
