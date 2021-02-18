@@ -11,8 +11,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
-import java.util.Vector;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -21,7 +21,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, UL4Type
+public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Dir, UL4Len, UL4Type
 {
 	private char r;
 	private char g;
@@ -397,7 +397,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 		return new Color(r, g, b, a);
 	}
 
-	public Vector<Double> hls()
+	public ArrayList<Double> hls()
 	{
 		int maxc = NumberUtils.max((int)r, (int)g, (int)b);
 		int minc = NumberUtils.min((int)r, (int)g, (int)b);
@@ -409,7 +409,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 		if (minc == maxc)
 		{
-			Vector retVal = new Vector(3);
+			ArrayList retVal = new ArrayList(3);
 			retVal.add(new Double(0.0));
 			retVal.add(new Double(l));
 			retVal.add(new Double(0.0));
@@ -430,21 +430,21 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			h = 4.0+gc-rc;
 		h = (h/6.0) % 1.0;
 
-		Vector retVal = new Vector(3);
+		ArrayList retVal = new ArrayList(3);
 		retVal.add(new Double(h));
 		retVal.add(new Double(l));
 		retVal.add(new Double(s));
 		return retVal;
 	}
 
-	public Vector<Double> hlsa()
+	public ArrayList<Double> hlsa()
 	{
-		Vector retVal = hls();
+		ArrayList retVal = hls();
 		retVal.add(new Double(a/255.));
 		return retVal;
 	}
 
-	public Vector<Double> hsv()
+	public ArrayList<Double> hsv()
 	{
 		int maxc = NumberUtils.max((int)r, (int)g, (int)b);
 		int minc = NumberUtils.min((int)r, (int)g, (int)b);
@@ -455,7 +455,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 		double v = dmaxc;
 		if (minc == maxc)
 		{
-			Vector retVal = new Vector(3);
+			ArrayList retVal = new ArrayList(3);
 			retVal.add(0.0d);
 			retVal.add(0.0d);
 			retVal.add(v);
@@ -476,16 +476,16 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 			h = 4.0+gc-rc;
 		h = (h/6.0) % 1.0;
 
-		Vector retVal = new Vector(3);
+		ArrayList retVal = new ArrayList(3);
 		retVal.add(h);
 		retVal.add(s);
 		retVal.add(v);
 		return retVal;
 	}
 
-	public Vector<Double> hsva()
+	public ArrayList<Double> hsva()
 	{
-		Vector retVal = hsv();
+		ArrayList retVal = hsv();
 		retVal.add(new Double(a/255.));
 		return retVal;
 	}
@@ -539,13 +539,13 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4Dir, UL4Len, U
 
 	public Color abslum(double f)
 	{
-		Vector<Double> v = hlsa();
+		ArrayList<Double> v = hlsa();
 		return fromhls(v.get(0), v.get(1)+f, v.get(2), v.get(3));
 	}
 
 	public Color rellum(double f)
 	{
-		Vector<Double> v = hlsa();
+		ArrayList<Double> v = hlsa();
 		double newlum = v.get(1);
 		if (f > 0)
 			newlum += (1-newlum)*f;
