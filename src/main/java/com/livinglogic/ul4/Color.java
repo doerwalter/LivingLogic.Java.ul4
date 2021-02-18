@@ -716,7 +716,30 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		return "color";
 	}
 
-	int getItemIntegerUL4(int index)
+	@Override
+	public Object getItemUL4(Object key)
+	{
+		if (key instanceof Boolean)
+			return (int)(((Boolean)key).booleanValue() ? g : r);
+		else if (key instanceof Number)
+			return getItemInteger(((Number)key).intValue());
+		else if (key instanceof Slice)
+		{
+			Slice slice = (Slice)key;
+			int startIndex = slice.getStartIndex(4);
+			int endIndex = slice.getStopIndex(4);
+			if (endIndex < startIndex)
+				endIndex = startIndex;
+			ArrayList<Integer> result = new ArrayList<Integer>(endIndex - startIndex);
+			for (int index = startIndex; index < endIndex; ++index)
+				result.set(index - startIndex, getItemInteger(index));
+			return result;
+		}
+		else
+			throw new ArgumentTypeMismatchException("color[{!t}]", key);
+	}
+
+	private int getItemInteger(int index)
 	{
 		switch (index)
 		{

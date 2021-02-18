@@ -140,7 +140,6 @@ public class ItemAST extends BinaryAST implements LValue
 		return new ArrayList(obj.subList(startIndex, endIndex));
 	}
 
-
 	public static Object call(UL4GetItem obj, Object key)
 	{
 		try
@@ -155,11 +154,6 @@ public class ItemAST extends BinaryAST implements LValue
 				// The {@code AttributeException} originated from another object
 				throw exc;
 		}
-	}
-
-	public static int call(Color obj, int index)
-	{
-		return obj.getItemIntegerUL4(index);
 	}
 
 	public static Object call(Map obj, Object index)
@@ -199,8 +193,6 @@ public class ItemAST extends BinaryAST implements LValue
 				return call((String)obj, Utils.toInt(index));
 			else if (obj instanceof List)
 				return call((List)obj, Utils.toInt(index));
-			else if (obj instanceof Color)
-				return call((Color)obj, Utils.toInt(index));
 		}
 		throw new ArgumentTypeMismatchException("{!t}[{!t}] not supported", obj, index);
 	}
