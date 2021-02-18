@@ -32,7 +32,7 @@ public class BoundArguments implements AutoCloseable
 		}
 		else
 		{
-			int size = signature.size() + (signature.hasRemainingParameters() ? 1 : 0) + (signature.hasRemainingKeywordParameters() ? 1 : 0);;
+			int size = signature.size() + (signature.hasRemainingParameters() ? 1 : 0) + (signature.hasRemainingKeywordParameters() ? 1 : 0);
 			argumentsByPosition = new ArrayList<Object>(size);
 			argumentsByName = null; // will be created on demand
 
