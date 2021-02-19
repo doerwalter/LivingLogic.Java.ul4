@@ -69,6 +69,10 @@ public class ResultSetMapIterator implements Iterator<Map<String, Object>>
 				resultSet.close();
 			}
 		}
+		catch (RuntimeException ex)
+		{
+			throw ex;
+		}
 		catch (Exception ex)
 		{
 			throw new RuntimeException(ex);

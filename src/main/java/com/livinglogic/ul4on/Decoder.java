@@ -792,6 +792,10 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 				{
 					item = load();
 				}
+				catch (RuntimeException ex)
+				{
+					throw ex;
+				}
 				catch (Exception ex)
 				{
 					throw new RuntimeException(ex);
@@ -811,6 +815,10 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 			try
 			{
 				bufferedChar = nextChar();
+			}
+			catch (RuntimeException ex)
+			{
+				throw ex;
 			}
 			catch (Exception ex)
 			{
