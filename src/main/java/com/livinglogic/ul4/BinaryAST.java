@@ -19,6 +19,35 @@ import com.livinglogic.ul4on.Encoder;
  */
 abstract class BinaryAST extends CodeAST
 {
+	protected static class Type extends CodeAST.Type
+	{
+		@Override
+		public String getNameUL4()
+		{
+			return "BinaryAST";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A binary expression (i.e. an expression with two operands).";
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof BinaryAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	/**
 	 * The AST node for the left operand.
 	 */

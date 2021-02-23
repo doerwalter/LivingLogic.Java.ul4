@@ -22,12 +22,6 @@ public class UnpackListArgumentAST extends ArgumentASTBase
 	protected static class Type extends ArgumentASTBase.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "UnpackListArgumentAST";

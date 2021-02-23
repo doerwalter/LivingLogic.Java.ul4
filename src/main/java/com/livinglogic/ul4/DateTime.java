@@ -15,9 +15,16 @@ import java.util.Locale;
 
 public class DateTime extends AbstractType
 {
-	protected DateTime()
+	@Override
+	public String getNameUL4()
 	{
-		super(null, "datetime", null, "A date (i.e. year/month/day");
+		return "datetime";
+	}
+
+	@Override
+	public String getDoc()
+	{
+		return "A date (i.e. year/month/day";
 	}
 
 	private static final Signature signature = new Signature("year", Signature.required, "month", Signature.required, "day", Signature.required, "hour", 0, "minute", 0, "second", 0, "microsecond", 0);

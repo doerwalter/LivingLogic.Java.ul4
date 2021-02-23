@@ -19,9 +19,16 @@ import static java.util.Arrays.asList;
 
 public class List_ extends AbstractType
 {
-	protected List_()
+	@Override
+	public String getNameUL4()
 	{
-		super(null, "list", null, "A ordered collection of objects.");
+		return "list";
+	}
+
+	@Override
+	public String getDoc()
+	{
+		return "A ordered collection of objects.";
 	}
 
 	@Override

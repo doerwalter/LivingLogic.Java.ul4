@@ -17,9 +17,16 @@ import static java.util.Arrays.asList;
 
 public class Set_ extends AbstractType
 {
-	protected Set_()
+	@Override
+	public String getNameUL4()
 	{
-		super(null, "set", null, "A collection that contains no duplicate elements.");
+		return "set";
+	}
+
+	@Override
+	public String getDoc()
+	{
+		return "A collection that contains no duplicate elements.";
 	}
 
 	@Override

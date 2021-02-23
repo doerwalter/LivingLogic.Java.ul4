@@ -19,9 +19,16 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 {
 	protected static class Type extends AbstractInstanceType
 	{
-		public Type()
+		@Override
+		public String getNameUL4()
 		{
-			super(null, "Signature", null, "The signature of a function or callable.");
+			return "Signature";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "The signature of a function or callable.";
 		}
 
 		@Override

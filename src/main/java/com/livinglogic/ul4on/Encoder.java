@@ -57,9 +57,22 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 {
 	protected static class Type extends AbstractInstanceType
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4on", "Encoder", null, "An UL4ON encoder");
+			return "ul4on";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "Encoder";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An UL4ON encoder";
 		}
 
 		private static final Signature signature = new Signature("indent", null);

@@ -21,9 +21,16 @@ public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 {
 	protected static class Type extends AbstractInstanceType
 	{
-		public Type()
+		@Override
+		public String getNameUL4()
 		{
-			super(null, "function", null, "A callable object (i.e. a function etc.).");
+			return "function";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A callable object (i.e. a function etc.).";
 		}
 
 		@Override

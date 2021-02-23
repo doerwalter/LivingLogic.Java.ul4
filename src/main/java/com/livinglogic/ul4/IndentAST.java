@@ -20,12 +20,6 @@ public class IndentAST extends TextAST
 	protected static class Type extends TextAST.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "IndentAST";

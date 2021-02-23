@@ -19,12 +19,6 @@ public class SubAST extends BinaryAST
 	protected static class Type extends BinaryAST.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "SubAST";

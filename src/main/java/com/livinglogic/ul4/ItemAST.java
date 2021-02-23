@@ -16,12 +16,6 @@ public class ItemAST extends BinaryAST implements LValue
 	protected static class Type extends BinaryAST.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "ItemAST";

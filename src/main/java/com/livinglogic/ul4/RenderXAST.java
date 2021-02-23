@@ -25,12 +25,6 @@ public class RenderXAST extends RenderAST
 	protected static class Type extends RenderAST.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "RenderXAST";

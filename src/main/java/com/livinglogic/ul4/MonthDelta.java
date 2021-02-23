@@ -21,9 +21,16 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 {
 	protected static class Type extends AbstractInstanceType
 	{
-		public Type()
+		@Override
+		public String getNameUL4()
 		{
-			super(null, "MonthDelta", null, "A time span of a number of months.");
+			return "MonthDelta";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A time span of a number of months.";
 		}
 
 		@Override

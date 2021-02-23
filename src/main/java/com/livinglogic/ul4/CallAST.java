@@ -24,12 +24,6 @@ public class CallAST extends CallRenderAST
 	protected static class Type extends CallRenderAST.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "CallAST";

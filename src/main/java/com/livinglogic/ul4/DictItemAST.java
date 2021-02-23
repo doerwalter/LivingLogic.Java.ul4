@@ -20,12 +20,6 @@ public class DictItemAST extends DictItemASTBase
 	protected static class Type extends DictItemASTBase.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "DictItemAST";

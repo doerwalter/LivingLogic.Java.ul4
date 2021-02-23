@@ -8,14 +8,8 @@ package com.livinglogic.ul4;
 
 public class AndAST extends BinaryAST
 {
-	protected static class Type extends BinarAST.Type
+	protected static class Type extends BinaryAST.Type
 	{
-		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
 		@Override
 		public String getNameUL4()
 		{

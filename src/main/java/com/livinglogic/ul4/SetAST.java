@@ -21,13 +21,6 @@ public class SetAST extends CodeAST
 {
 	protected static class Type extends CodeAST.Type
 	{
-
-		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
 		@Override
 		public String getNameUL4()
 		{

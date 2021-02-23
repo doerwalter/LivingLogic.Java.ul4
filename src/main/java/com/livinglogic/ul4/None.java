@@ -9,9 +9,16 @@ package com.livinglogic.ul4;
 
 public class None extends AbstractType
 {
-	protected None()
+	@Override
+	public String getNameUL4()
 	{
-		super(null, "None", null, "The constant `None`.");
+		return "None";
+	}
+
+	@Override
+	public String getDoc()
+	{
+		return "The constant `None`.";
 	}
 
 	@Override

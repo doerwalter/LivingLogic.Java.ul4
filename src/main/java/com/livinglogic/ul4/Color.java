@@ -25,9 +25,16 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 {
 	protected static class Type extends AbstractInstanceType
 	{
-		public Type()
+		@Override
+		public String getNameUL4()
 		{
-			super(null, "color", null, "An RGBA color.");
+			return "color";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An RGBA color (with 8-bit red, green, blue and alpha values).";
 		}
 
 		@Override

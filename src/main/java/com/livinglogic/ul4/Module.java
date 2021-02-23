@@ -18,9 +18,16 @@ public class Module implements UL4Instance, UL4Repr, UL4GetAttr, UL4Dir, UL4Name
 {
 	protected static class Type extends AbstractInstanceType
 	{
-		public Type()
+		@Override
+		public String getNameUL4()
 		{
-			super(null, "module", null, "A package containing other object (function, types, etc.)");
+			return "module";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An object containing other objects (functions, types, etc.)";
 		}
 
 		@Override

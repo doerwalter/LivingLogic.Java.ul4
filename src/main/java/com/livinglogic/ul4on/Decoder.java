@@ -52,9 +52,22 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 {
 	protected static class Type extends AbstractInstanceType
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4on", "Decoder", null, "An UL4ON decoder");
+			return "ul4on";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "Decoder";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An UL4ON decoder";
 		}
 
 		@Override

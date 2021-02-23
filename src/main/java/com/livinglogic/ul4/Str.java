@@ -11,9 +11,16 @@ import java.math.BigInteger;
 
 public class Str extends AbstractType
 {
-	protected Str()
+	@Override
+	public String getNameUL4()
 	{
-		super(null, "str", null, "A string");
+		return "str";
+	}
+
+	@Override
+	public String getDoc()
+	{
+		return "A string";
 	}
 
 	private static final Signature signature = new Signature("obj", "");

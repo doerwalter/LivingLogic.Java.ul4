@@ -12,12 +12,18 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 
 public class Slice implements UL4Instance, UL4GetAttr, UL4Dir, UL4Repr, Comparable<Slice>
 {
-
 	protected static class Type extends AbstractInstanceType
 	{
-		public Type()
+		@Override
+		public String getNameUL4()
 		{
-			super(null, "slice", null, "A slice specification.");
+			return "slice";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A slice specification.";
 		}
 
 		@Override

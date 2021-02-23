@@ -22,7 +22,10 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 
 public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 {
-	String getUL4ONName();
+	default String getUL4ONName()
+	{
+		return null;
+	}
 
 	boolean toBool(Object object);
 

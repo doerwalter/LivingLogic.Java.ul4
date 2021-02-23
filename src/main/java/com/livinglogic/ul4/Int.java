@@ -12,9 +12,16 @@ import java.math.BigDecimal;
 
 public class Int extends AbstractType
 {
-	protected Int()
+	@Override
+	public String getNameUL4()
 	{
-		super(null, "int", null, "An integer value");
+		return "int";
+	}
+
+	@Override
+	public String getDoc()
+	{
+		return "An integer value";
 	}
 
 	private static final Signature signature = new Signature("obj", 0, "base", null);

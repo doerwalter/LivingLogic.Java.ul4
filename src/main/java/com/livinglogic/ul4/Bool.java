@@ -11,9 +11,16 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 public class Bool extends AbstractType
 {
-	protected Bool()
+	@Override
+	public String getNameUL4()
 	{
-		super(null, "bool", null, "A boolean value (`True` or `False`)");
+		return "bool";
+	}
+
+	@Override
+	public String getDoc()
+	{
+		return "A boolean value (`True` or `False`)";
 	}
 
 	private static final Signature signature = new Signature("obj", false);

@@ -11,12 +11,6 @@ public class ElseBlockAST extends ConditionalBlock
 	protected static class Type extends ConditionalBlock.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "ElseBlockAST";

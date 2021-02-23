@@ -17,12 +17,6 @@ public class ForBlockAST extends BlockAST
 	protected static class Type extends BlockAST.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "ForBlockAST";

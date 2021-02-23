@@ -11,12 +11,6 @@ public class ElIfBlockAST extends ConditionalBlockWithCondition
 	protected static class Type extends ConditionalBlockWithCondition.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "ElIfBlockAST";

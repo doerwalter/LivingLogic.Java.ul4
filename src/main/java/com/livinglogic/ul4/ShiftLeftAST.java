@@ -14,14 +14,8 @@ import java.util.Date;
 
 public class ShiftLeftAST extends BinaryAST
 {
-	protected static class Type extends ShiftLeftAST.Type
+	protected static class Type extends BinaryAST.Type
 	{
-		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
 		@Override
 		public String getNameUL4()
 		{

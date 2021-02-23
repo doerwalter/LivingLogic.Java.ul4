@@ -15,12 +15,6 @@ public class ReturnAST extends UnaryAST
 	protected static class Type extends UnaryAST.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "ReturnAST";

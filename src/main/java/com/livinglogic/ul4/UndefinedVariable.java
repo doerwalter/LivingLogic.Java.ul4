@@ -10,9 +10,16 @@ public class UndefinedVariable extends Undefined
 {
 	private static class Type extends Undefined.Type
 	{
-		public Type()
+		@Override
+		public String getNameUL4()
 		{
-			super(null, "undefinedvariable", null, "The result of accessing an undefined variable.");
+			return "undefinedvariable";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "The result of accessing an undefined variable.";
 		}
 
 		@Override

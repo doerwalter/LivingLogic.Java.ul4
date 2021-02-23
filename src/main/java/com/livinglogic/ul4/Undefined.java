@@ -10,9 +10,16 @@ public abstract class Undefined implements UL4Instance, UL4Bool, UL4Repr
 {
 	protected static class Type extends AbstractInstanceType
 	{
-		public Type()
+		@Override
+		public String getNameUL4()
 		{
-			super(null, "undefined", null, "The result of accessing an undefined variable, attribute, dictionary key or list index.");
+			return "undefined";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "The result of accessing an undefined variable, attribute, dictionary key or list index.";
 		}
 
 		@Override

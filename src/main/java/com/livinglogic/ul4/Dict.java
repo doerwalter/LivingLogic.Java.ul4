@@ -11,9 +11,16 @@ import java.util.Map;
 
 public class Dict extends AbstractType
 {
-	protected Dict()
+	@Override
+	public String getNameUL4()
 	{
-		super(null, "dict", null, "An object that maps keys to values.");
+		return "dict";
+	}
+
+	@Override
+	public String getDoc()
+	{
+		return "An object that maps keys to values.";
 	}
 
 	@Override

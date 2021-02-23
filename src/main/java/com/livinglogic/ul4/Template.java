@@ -42,12 +42,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	protected static class Type extends BlockAST.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "Template";

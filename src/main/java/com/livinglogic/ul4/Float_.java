@@ -13,9 +13,16 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Float_ extends AbstractType
 {
-	protected Float_()
+	@Override
+	public String getNameUL4()
 	{
-		super(null, "float", null, "An floating point number");
+		return "float";
+	}
+
+	@Override
+	public String getDoc()
+	{
+		return "An floating point number";
 	}
 
 	private static final Signature signature = new Signature("obj", 0.0);

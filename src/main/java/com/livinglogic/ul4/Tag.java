@@ -15,12 +15,6 @@ public class Tag extends AST
 	protected static class Type extends AST.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "Tag";

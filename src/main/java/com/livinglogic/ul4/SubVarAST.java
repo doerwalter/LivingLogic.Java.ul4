@@ -11,12 +11,6 @@ public class SubVarAST extends ChangeVarAST
 	protected static class Type extends ChangeVarAST.Type
 	{
 		@Override
-		public String getModuleName()
-		{
-			return "ul4";
-		}
-
-		@Override
 		public String getNameUL4()
 		{
 			return "SubVarAST";

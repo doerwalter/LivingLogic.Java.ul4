@@ -75,9 +75,16 @@ public class UL4Test
 	{
 		protected static class Type extends AbstractInstanceType
 		{
-			public Type()
+			@Override
+			public String getNameUL4()
 			{
-				super(null, "Point", null, "A 2D point");
+				return "Point";
+			}
+
+			@Override
+			public String getDoc()
+			{
+				return "A 2D point";
 			}
 
 			@Override
@@ -3850,7 +3857,7 @@ public class UL4Test
 	{
 		Template t = T("<?print type(data)?>");
 
-		checkOutput("<type com.livinglogic.ul4.UndefinedVariable>", t);
+		checkOutput("<type undefinedvariable>", t);
 		checkOutput("<type None>", t, V("data", null));
 		checkOutput("<type bool>", t, V("data", false));
 		checkOutput("<type bool>", t, V("data", true));

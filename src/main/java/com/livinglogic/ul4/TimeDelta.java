@@ -24,9 +24,16 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 {
 	protected static class Type extends AbstractInstanceType
 	{
-		public Type()
+		@Override
+		public String getNameUL4()
 		{
-			super(null, "TimeDelta", null, "A time span (days/seconds/microseconds).");
+			return "TimeDelta";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A time span (days/seconds/microseconds).";
 		}
 
 		@Override

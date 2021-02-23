@@ -17,8 +17,37 @@ import com.livinglogic.ul4on.Encoder;
 /**
  * The base class of all nodes that model unary operations.
  */
-abstract class UnaryAST extends CodeAST
+public abstract class UnaryAST extends CodeAST
 {
+	protected static class Type extends CodeAST.Type
+	{
+		@Override
+		public String getNameUL4()
+		{
+			return "UnaryAST";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An unary expression (i.e. an expression with one operand).";
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof UnaryAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	/**
 	 * The operand of the unary operation
 	 */

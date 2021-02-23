@@ -10,9 +10,16 @@ public class UndefinedKey extends Undefined
 {
 	protected static class Type extends Undefined.Type
 	{
-		public Type()
+		@Override
+		public String getNameUL4()
 		{
-			super(null, "undefinedkey", null, "The result of accessing an undefined attribute, dictionary key or list index.");
+			return "undefinedkey";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "The result of accessing an undefined attribute, dictionary key or list index.";
 		}
 
 		@Override
@@ -48,6 +55,6 @@ public class UndefinedKey extends Undefined
 
 	public String toString()
 	{
-		return "UndefinedKey(" + FunctionRepr.call(key) + ")";
+		return Utils.formatMessage("UndefinedKey({!r})", key);
 	}
 }
