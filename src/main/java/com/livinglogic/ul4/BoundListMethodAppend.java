@@ -17,7 +17,7 @@ public class BoundListMethodAppend extends BoundMethod<List>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "append";
 	}

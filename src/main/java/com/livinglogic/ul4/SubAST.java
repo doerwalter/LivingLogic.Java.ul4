@@ -16,7 +16,35 @@ import java.time.temporal.ChronoUnit;
 
 public class SubAST extends BinaryAST
 {
-	public SubAST(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "SubAST", "de.livinglogic.ul4.sub", "A subtraction expression (x - y).");
+		}
+
+		@Override
+		public SubAST create(String id)
+		{
+			return new SubAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof SubAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public SubAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		super(template, pos, obj1, obj2);
 	}
@@ -26,7 +54,7 @@ public class SubAST extends BinaryAST
 		return "sub";
 	}
 
-	public static CodeAST make(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public static CodeAST make(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{

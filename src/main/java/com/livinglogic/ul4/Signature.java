@@ -15,8 +15,31 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Collection;
 
-public class Signature implements UL4Repr, Iterable<ParameterDescription>
+public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescription>
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super(null, "Signature", null, "The signature of a function or callable.");
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof Signature;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+
 	/**
 	 * All parameters in the order they were specified in the constructor.
 	 */

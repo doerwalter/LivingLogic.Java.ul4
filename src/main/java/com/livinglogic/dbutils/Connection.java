@@ -297,7 +297,7 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "queryargs";
 		}
@@ -327,7 +327,7 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "query";
 		}
@@ -355,7 +355,7 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "queryone";
 		}
@@ -383,7 +383,7 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "execute";
 		}

@@ -11,18 +11,21 @@ import java.util.Iterator;
 
 public class FunctionMin extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "min";
 	}
 
 	private static final Signature signature = new Signature("args", Signature.remainingParameters);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		List<Object> argList = (List<Object>)args.get(0);
@@ -52,4 +55,6 @@ public class FunctionMin extends Function
 			throw new UnsupportedOperationException("min() arg is an empty sequence!");
 		return minValue;
 	}
+
+	public static Function function = new FunctionMin();
 }

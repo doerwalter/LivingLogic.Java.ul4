@@ -17,10 +17,38 @@ import com.livinglogic.ul4on.Encoder;
 
 public class DictItemAST extends DictItemASTBase
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "DictItemAST", "de.livinglogic.ul4.distitem", "A dictionary item.");
+		}
+
+		@Override
+		public DictItemAST create(String id)
+		{
+			return new DictItemAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof DictItemAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected AST key;
 	protected AST value;
 
-	public DictItemAST(InterpretedTemplate template, Slice pos, AST key, AST value)
+	public DictItemAST(Template template, Slice pos, AST key, AST value)
 	{
 		super(template, pos);
 		this.key = key;

@@ -12,7 +12,8 @@ import java.util.Vector;
 
 public class FunctionIsFirstLast extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "isfirstlast";
 	}
@@ -66,4 +67,6 @@ public class FunctionIsFirstLast extends Function
 			sequenceIterator.remove();
 		}
 	}
+
+	public static Function function = new FunctionIsFirstLast();
 }

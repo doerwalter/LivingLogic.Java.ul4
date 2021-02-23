@@ -70,18 +70,21 @@ public class DateVar extends Var
 
 	private static class FunctionDate extends Function
 	{
-		public String nameUL4()
+		@Override
+		public String getNameUL4()
 		{
-			return "connection.date";
+			return "date";
 		}
 
 		private static final Signature signature = new Signature("value", noValue);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return new DateVar(args.get(0));

@@ -8,7 +8,35 @@ package com.livinglogic.ul4;
 
 public class AddVarAST extends ChangeVarAST
 {
-	public AddVarAST(InterpretedTemplate template, Slice pos, LValue lvalue, AST value)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "AddVarAST", "de.livinglogic.ul4.addvar", "An augmented addition assignment (x += y).");
+		}
+
+		@Override
+		public AddVarAST create(String id)
+		{
+			return new AddVarAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof AddVarAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public AddVarAST(Template template, Slice pos, LValue lvalue, AST value)
 	{
 		super(template, pos, lvalue, value);
 	}

@@ -11,11 +11,13 @@ import java.time.Clock;
 
 public class FunctionUTCNow extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "utcnow";
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call();
@@ -25,4 +27,6 @@ public class FunctionUTCNow extends Function
 	{
 		return LocalDateTime.now(Clock.systemUTC());
 	}
+
+	public static Function function = new FunctionUTCNow();
 }

@@ -8,7 +8,35 @@ package com.livinglogic.ul4;
 
 public class NotAST extends UnaryAST
 {
-	public NotAST(InterpretedTemplate template, Slice pos, CodeAST obj)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "NotAST", "de.livinglogic.ul4.not", "Boolean neagtion.");
+		}
+
+		@Override
+		public NotAST create(String id)
+		{
+			return new NotAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof NotAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public NotAST(Template template, Slice pos, CodeAST obj)
 	{
 		super(template, pos, obj);
 	}
@@ -18,7 +46,7 @@ public class NotAST extends UnaryAST
 		return "not";
 	}
 
-	public static CodeAST make(InterpretedTemplate template, Slice pos, CodeAST obj)
+	public static CodeAST make(Template template, Slice pos, CodeAST obj)
 	{
 		if (obj instanceof ConstAST)
 		{

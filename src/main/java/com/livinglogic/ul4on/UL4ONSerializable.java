@@ -8,6 +8,9 @@ package com.livinglogic.ul4on;
 
 import java.io.IOException;
 
+import com.livinglogic.ul4.Utils;
+
+
 /**
  * Classes whose instances should be serializable with the UL4ON infrastructure
  * must implement this interface.
@@ -16,7 +19,7 @@ import java.io.IOException;
  * not {@code null}, the object is considered to be "persistent".
  *
  * Persistent objects will survive multiple calls to
- * {@link Decoder#load(Reader)} or {@link Decoder@loads(String)}.
+ * {@link Decoder#load(Reader)} or {@link Decoder#loads(String)}.
  * When such an object gets deserialized, and it already exists in the
  * {@code Decoder} object, the object will not be created again, but
  * {@link UL4ONSerializable#loadUL4ON(Decoder} will be called for it.
@@ -46,12 +49,19 @@ public interface UL4ONSerializable
 	 * write all data to the {@link Encoder} that is required to recreate the
 	 * object.
 	 */
-	public void dumpUL4ON(Encoder encoder) throws IOException;
+	default public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		throw new UnsupportedOperationException(Utils.formatMessage("Can't create UL4ON dumps for {!t} instances", this));
+	}
 
 	/**
 	 * Initialize the calling instance by deserializing instance data from the
 	 * {@link Decoder} object. This method usually uses {@link Decoder#load} to
 	 * read the data that has been written by {@link #dumpUL4ON}.
 	 */
-	public void loadUL4ON(Decoder decoder) throws IOException;
+	default public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		throw new UnsupportedOperationException(Utils.formatMessage("Can't load {!t} instances from UL4ON dumps", this));
+
+	}
 }

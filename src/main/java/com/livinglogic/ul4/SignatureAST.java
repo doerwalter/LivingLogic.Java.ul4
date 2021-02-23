@@ -22,9 +22,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SignatureAST extends CodeAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "SignatureAST", "de.livinglogic.ul4.signature", "The signature of a function.");
+		}
+
+		@Override
+		public SignatureAST create(String id)
+		{
+			return new SignatureAST(null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof SignatureAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected List<Parameter> parameters;
 
-	public SignatureAST(InterpretedTemplate template, Slice pos)
+	public SignatureAST(Template template, Slice pos)
 	{
 		super(template, pos);
 		parameters = new LinkedList<Parameter>();

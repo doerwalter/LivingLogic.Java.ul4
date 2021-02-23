@@ -21,17 +21,58 @@ import com.livinglogic.ul4on.UL4ONSerializable;
  */
 public abstract class CodeAST extends AST
 {
-	protected CodeAST(InterpretedTemplate template, Slice startPos, Slice stopPos)
+	protected static class Type extends AST.Type
+	{
+		@Override
+		public String getModuleName()
+		{
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "class";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.codeast";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "Base type of all UL4 syntax tree nodes that may appear in a template tag";
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof CodeAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	protected CodeAST(Template template, Slice startPos, Slice stopPos)
 	{
 		super(template, startPos, stopPos);
 	}
 
 	/**
 	 * Create a new {@code CodeAST} object.
-	 * @param template The {@code InterpretedTemplate} object this node belongs to.
+	 * @param template The {@code Template} object this node belongs to.
 	 * @param pos The slice in the template source, where the source for this object is located.
 	 */
-	public CodeAST(InterpretedTemplate template, Slice startPos)
+	public CodeAST(Template template, Slice startPos)
 	{
 		super(template, startPos);
 	}

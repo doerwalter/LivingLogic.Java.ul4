@@ -18,13 +18,36 @@ import java.util.Map;
  * {@link #evaluate}. Also when the function requires arguments
  * {@link #getSignature} must be overwritten.</p>
  */
-public abstract class FunctionWithContext implements UL4CallWithContext, UL4Name, UL4Type, UL4Repr
+public abstract class FunctionWithContext implements UL4Instance, UL4CallWithContext, UL4Name, UL4Repr
 {
-	public abstract String nameUL4();
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return Function.type;
+	}
 
-	public String typeUL4()
+	protected FunctionWithContext()
+	{
+	}
+
+	public String getModuleName()
+	{
+		return null;
+	}
+
+	public abstract String getNameUL4();
+
+	public String getTypeNameUL4()
 	{
 		return "function";
+	}
+
+	public String nameUL4()
+	{
+		String moduleName = getModuleName();
+		if (moduleName != null)
+			return moduleName + "." + getNameUL4();
+		return getNameUL4();
 	}
 
 	private static final Signature signature = new Signature(); // default signature: no arguments

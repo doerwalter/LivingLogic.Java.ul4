@@ -13,18 +13,21 @@ import java.math.MathContext;
 
 public class FunctionRound extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "round";
 	}
 
 	private static final Signature signature = new Signature("x", Signature.required, "digits", 0);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0), args.get(1));
@@ -171,4 +174,6 @@ public class FunctionRound extends Function
 		}
 		throw new ArgumentTypeMismatchException("round({!t}, {!t}) not supported", x, digits);
 	}
+
+	public static Function function = new FunctionRound();
 }

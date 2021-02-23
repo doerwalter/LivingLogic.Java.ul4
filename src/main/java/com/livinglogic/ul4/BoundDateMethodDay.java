@@ -20,7 +20,7 @@ public class BoundDateMethodDay extends BoundMethod<Date>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "day";
 	}

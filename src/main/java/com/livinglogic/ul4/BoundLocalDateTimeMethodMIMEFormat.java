@@ -18,7 +18,7 @@ public class BoundLocalDateTimeMethodMIMEFormat extends BoundMethod<LocalDateTim
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "mimeformat";
 	}

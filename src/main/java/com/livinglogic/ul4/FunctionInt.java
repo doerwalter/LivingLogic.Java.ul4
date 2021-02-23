@@ -14,18 +14,21 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 public class FunctionInt extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "int";
 	}
 
 	private static final Signature signature = new Signature("obj", 0, "base", null);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0), args.get(1));

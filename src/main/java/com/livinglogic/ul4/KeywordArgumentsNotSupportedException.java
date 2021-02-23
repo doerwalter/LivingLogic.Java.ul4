@@ -18,6 +18,6 @@ public class KeywordArgumentsNotSupportedException extends ArgumentException
 
 	public KeywordArgumentsNotSupportedException(UL4Name object)
 	{
-		this(object.nameUL4());
+		this(object.getFullNameUL4());
 	}
 }

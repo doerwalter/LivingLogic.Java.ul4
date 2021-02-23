@@ -21,8 +21,49 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Dir, UL4Len, UL4Type
+public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4GetItem, UL4Dir, UL4Len
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super(null, "color", null, "An RGBA color.");
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof Color;
+		}
+
+		private static Signature signature = new Signature("r", Signature.required, "g", Signature.required, "b", Signature.required, "a", 255);
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Color create(BoundArguments args)
+		{
+			int r = Utils.toInt(args.get(0));
+			int g = Utils.toInt(args.get(1));
+			int b = Utils.toInt(args.get(2));
+			int a = Utils.toInt(args.get(3));
+
+			return new Color(r, g, b, a);
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	private char r;
 	private char g;
 	private char b;
@@ -711,12 +752,6 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 	}
 
 	@Override
-	public String typeUL4()
-	{
-		return "color";
-	}
-
-	@Override
 	public Object getItemUL4(Object key)
 	{
 		if (key instanceof Boolean)
@@ -768,7 +803,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "r";
 		}
@@ -788,7 +823,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "g";
 		}
@@ -808,7 +843,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "b";
 		}
@@ -828,7 +863,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "a";
 		}
@@ -848,7 +883,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "lum";
 		}
@@ -868,7 +903,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "hls";
 		}
@@ -888,7 +923,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "hlsa";
 		}
@@ -908,7 +943,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "hsv";
 		}
@@ -928,7 +963,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "hsva";
 		}
@@ -948,7 +983,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "witha";
 		}
@@ -976,7 +1011,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "withlum";
 		}
@@ -1004,7 +1039,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "abslum";
 		}
@@ -1032,7 +1067,7 @@ public class Color implements Collection, UL4Repr, UL4GetAttr, UL4GetItem, UL4Di
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "rellum";
 		}

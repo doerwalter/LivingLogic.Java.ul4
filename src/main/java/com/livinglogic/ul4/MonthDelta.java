@@ -17,8 +17,44 @@ import java.util.Map;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs, UL4GetAttr, UL4Dir
+public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL4Abs, UL4GetAttr, UL4Dir
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super(null, "MonthDelta", null, "A time span of a number of months.");
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof MonthDelta;
+		}
+
+		private static final Signature signature = new Signature("months", 0);
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object create(BoundArguments args)
+		{
+			return new MonthDelta(Utils.toInt(args.get(0)));
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	private int months;
 
 	public MonthDelta()
@@ -136,11 +172,13 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 		return (double)months/divisor.getMonths();
 	}
 
+	@Override
 	public boolean boolUL4()
 	{
 		return months != 0;
 	}
 
+	@Override
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
 		formatter.append("monthdelta(");
@@ -149,6 +187,7 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 		formatter.append(")");
 	}
 
+	@Override
 	public String toString()
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -160,7 +199,7 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 		return buffer.toString();
 	}
 
-	public String typeUL4()
+	public String getTypeNameUL4()
 	{
 		return "monthdelta";
 	}
@@ -178,7 +217,7 @@ public class MonthDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "months";
 		}

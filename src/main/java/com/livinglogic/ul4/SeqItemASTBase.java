@@ -12,7 +12,7 @@ import java.util.Set;
 
 public abstract class SeqItemASTBase extends CodeAST
 {
-	public SeqItemASTBase(InterpretedTemplate template, Slice pos)
+	public SeqItemASTBase(Template template, Slice pos)
 	{
 		super(template, pos);
 	}

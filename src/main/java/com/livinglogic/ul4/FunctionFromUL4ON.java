@@ -10,18 +10,21 @@ import java.util.List;
 
 public class FunctionFromUL4ON extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "fromul4on";
 	}
 
 	private static final Signature signature = new Signature("dump", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -38,4 +41,6 @@ public class FunctionFromUL4ON extends Function
 			return call((String)obj);
 		throw new ArgumentTypeMismatchException("fromul4on({!t}) not supported", obj);
 	}
+
+	public static Function function = new FunctionFromUL4ON();
 }

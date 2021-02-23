@@ -12,18 +12,21 @@ import java.math.BigInteger;
 
 public class FunctionFloat extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "float";
 	}
 
 	private static final Signature signature = new Signature("obj", 0.0);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));

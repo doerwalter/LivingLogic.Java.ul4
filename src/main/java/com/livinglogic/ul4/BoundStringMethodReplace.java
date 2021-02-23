@@ -19,7 +19,7 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "replace";
 	}

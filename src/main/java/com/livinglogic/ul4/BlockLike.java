@@ -22,7 +22,7 @@ import static com.livinglogic.ul4.Utils.findInnermostException;
  */
 public interface BlockLike
 {
-	InterpretedTemplate getTemplate();
+	Template getTemplate();
 
 	Slice getStartPos();
 
@@ -53,7 +53,7 @@ public interface BlockLike
 	 * or whether the decision should be delegated to the parent block ({@code false}).
 	 * Returns {@code true} for {@code for} and {@code while} blocks and
 	 * {@code false} for {@code if}/{@code elif}/{@code else}.
-	 * For {@code InterpretedTemplate} and {code RenderBlockAST} an exception is thrown.
+	 * For {@code Template} and {code RenderBlockAST} an exception is thrown.
 	 */
 	boolean handleLoopControl(String name);
 

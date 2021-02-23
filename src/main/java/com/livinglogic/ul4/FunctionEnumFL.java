@@ -12,7 +12,8 @@ import java.util.Vector;
 
 public class FunctionEnumFL extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "enumfl";
 	}
@@ -73,4 +74,6 @@ public class FunctionEnumFL extends Function
 			sequenceIterator.remove();
 		}
 	}
+
+	public static Function function = new FunctionEnumFL();
 }

@@ -104,7 +104,7 @@ public class Utils
 			return ((Boolean)arg).booleanValue() ? 1 : 0;
 		else if (arg instanceof Number)
 			return ((Number)arg).intValue();
-		throw new UnsupportedOperationException("can't convert " + objectType(arg) + " to int!");
+		throw new UnsupportedOperationException(formatMessage("Can't convert {!t} to int!", arg));
 	}
 
 	public static long toLong(Object arg)
@@ -113,7 +113,7 @@ public class Utils
 			return ((Boolean)arg).booleanValue() ? 1L : 0L;
 		else if (arg instanceof Number)
 			return ((Number)arg).longValue();
-		throw new UnsupportedOperationException("can't convert " + objectType(arg) + " to long!");
+		throw new UnsupportedOperationException(formatMessage("Can't convert {!t} to long!", arg));
 	}
 
 	public static float toFloat(Object arg)
@@ -122,7 +122,7 @@ public class Utils
 			return ((Boolean)arg).booleanValue() ? 1.0f : 0.0f;
 		else if (arg instanceof Number)
 			return ((Number)arg).floatValue();
-		throw new UnsupportedOperationException("can't convert " + objectType(arg) + " to float!");
+		throw new UnsupportedOperationException(formatMessage("Can't convert {!t} to float!", arg));
 	}
 
 	public static double toDouble(Object arg)
@@ -131,7 +131,7 @@ public class Utils
 			return ((Boolean)arg).booleanValue() ? 1.0d : 0.0d;
 		else if (arg instanceof Number)
 			return ((Number)arg).doubleValue();
-		throw new UnsupportedOperationException("can't convert " + objectType(arg) + " to double!");
+		throw new UnsupportedOperationException(formatMessage("Can't convert {!t} to double!", arg));
 	}
 
 	private static BigInteger intMinValue = new BigInteger(String.valueOf(Integer.MIN_VALUE));
@@ -1025,10 +1025,10 @@ public class Utils
 			result.put("sourceprefix", ast.getStartSourcePrefix());
 			result.put("sourcesuffix", ast.getStartSourceSuffix());
 			List<String> names = new ArrayList<String>();
-			InterpretedTemplate template = ast.getTemplate();
+			Template template = ast.getTemplate();
 			while (template != null)
 			{
-				names.add(template.nameUL4());
+				names.add(template.getFullNameUL4());
 				template = template.getParentTemplate();
 			}
 			result.put("names", names);

@@ -12,18 +12,21 @@ import java.net.URLDecoder;
 
 public class FunctionURLUnquote extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "urlunquote";
 	}
 
 	private static final Signature signature = new Signature("string", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -48,4 +51,6 @@ public class FunctionURLUnquote extends Function
 			return call((String)obj);
 		throw new ArgumentTypeMismatchException("urlunquote({!t}) not supported", obj);
 	}
+
+	public static Function function = new FunctionURLUnquote();
 }

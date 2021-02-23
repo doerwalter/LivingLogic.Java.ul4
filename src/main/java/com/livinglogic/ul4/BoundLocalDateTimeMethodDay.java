@@ -20,7 +20,7 @@ public class BoundLocalDateTimeMethodDay extends BoundMethod<LocalDateTime>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "day";
 	}

@@ -6,14 +6,42 @@
 
 package com.livinglogic.ul4;
 
-class ConditionalBlocks extends BlockAST
+public class ConditionalBlocks extends BlockAST
 {
-	public ConditionalBlocks(InterpretedTemplate template, Slice startPos, Slice stopPos)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "BlockAST", "de.livinglogic.ul4.condblock", "An if/elif/else block.");
+		}
+
+		@Override
+		public ConditionalBlocks create(String id)
+		{
+			return new ConditionalBlocks(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof ConditionalBlocks;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public ConditionalBlocks(Template template, Slice startPos, Slice stopPos)
 	{
 		super(template, startPos, stopPos);
 	}
 
-	public ConditionalBlocks(InterpretedTemplate template, Slice startPos, Slice stopPos, IfBlockAST block)
+	public ConditionalBlocks(Template template, Slice startPos, Slice stopPos, IfBlockAST block)
 	{
 		super(template, startPos, stopPos);
 		startNewBlock(block);

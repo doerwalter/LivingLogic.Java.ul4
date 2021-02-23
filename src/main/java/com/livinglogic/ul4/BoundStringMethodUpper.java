@@ -17,7 +17,7 @@ public class BoundStringMethodUpper extends BoundMethod<String>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "upper";
 	}

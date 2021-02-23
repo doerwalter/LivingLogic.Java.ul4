@@ -20,8 +20,51 @@ import java.math.BigInteger;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs, UL4GetAttr, UL4Dir
+public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4Abs, UL4GetAttr, UL4Dir
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super(null, "TimeDelta", null, "A time span (days/seconds/microseconds).");
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof TimeDelta;
+		}
+
+		private static final Signature signature = new Signature("days", 0, "seconds", 0, "microseconds", 0);
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object create(BoundArguments args)
+		{
+			Object days = args.get(0);
+			Object seconds = args.get(1);
+			Object microseconds = args.get(2);
+
+			if (days instanceof Float || days instanceof Double || seconds instanceof Float || seconds instanceof Double || microseconds instanceof Float || microseconds instanceof Double)
+				return new TimeDelta(Utils.toDouble(days), Utils.toDouble(seconds), Utils.toDouble(microseconds));
+			else
+				return new TimeDelta(Utils.toInt(days), Utils.toLong(seconds), Utils.toLong(microseconds));
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	private int days;
 	private int seconds;
 	private int microseconds;
@@ -400,7 +443,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		return buffer.toString();
 	}
 
-	public String typeUL4()
+	public String getTypeNameUL4()
 	{
 		return "timedelta";
 	}
@@ -428,7 +471,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "days";
 		}
@@ -448,7 +491,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "seconds";
 		}
@@ -468,7 +511,7 @@ public class TimeDelta implements Comparable, UL4Bool, UL4Repr, UL4Type, UL4Abs,
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "microseconds";
 		}

@@ -55,18 +55,21 @@ public class StrVar extends Var
 
 	private static class FunctionStr extends Function
 	{
-		public String nameUL4()
+		@Override
+		public String getNameUL4()
 		{
-			return "connection.str";
+			return "str";
 		}
 
 		private static final Signature signature = new Signature("value", noValue);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return new StrVar(args.get(0));

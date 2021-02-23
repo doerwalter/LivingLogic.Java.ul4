@@ -17,7 +17,7 @@ public class BoundArrayMethodAppend extends BoundMethod<Object[]>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "append";
 	}

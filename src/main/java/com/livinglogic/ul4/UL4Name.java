@@ -8,5 +8,10 @@ package com.livinglogic.ul4;
 
 public interface UL4Name
 {
-	String nameUL4();
+	String getNameUL4();
+
+	default String getFullNameUL4()
+	{
+		return getNameUL4();
+	}
 }

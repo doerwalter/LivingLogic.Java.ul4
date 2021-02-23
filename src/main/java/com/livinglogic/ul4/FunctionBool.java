@@ -15,18 +15,21 @@ import java.util.Map;
 
 public class FunctionBool extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "bool";
 	}
 
 	private static final Signature signature = new Signature("obj", false);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));

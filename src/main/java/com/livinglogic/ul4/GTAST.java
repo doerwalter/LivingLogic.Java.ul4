@@ -8,7 +8,35 @@ package com.livinglogic.ul4;
 
 public class GTAST extends BinaryAST
 {
-	public GTAST(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "GTAST", "de.livinglogic.ul4.gt", "A \"greater than\" comparison (x > y).");
+		}
+
+		@Override
+		public GTAST create(String id)
+		{
+			return new GTAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof GTAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public GTAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		super(template, pos, obj1, obj2);
 	}
@@ -18,7 +46,7 @@ public class GTAST extends BinaryAST
 		return "gt";
 	}
 
-	public static CodeAST make(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public static CodeAST make(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{

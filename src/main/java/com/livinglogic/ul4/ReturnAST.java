@@ -12,7 +12,35 @@ package com.livinglogic.ul4;
  */
 public class ReturnAST extends UnaryAST
 {
-	public ReturnAST(InterpretedTemplate template, Slice pos, CodeAST obj)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "ReturnAST", "de.livinglogic.ul4.return", "A return tag.");
+		}
+
+		@Override
+		public ReturnAST create(String id)
+		{
+			return new ReturnAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof ReturnAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public ReturnAST(Template template, Slice pos, CodeAST obj)
 	{
 		super(template, pos, obj);
 	}

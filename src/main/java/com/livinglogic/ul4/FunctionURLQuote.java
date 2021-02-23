@@ -12,18 +12,21 @@ import java.net.URLEncoder;
 
 public class FunctionURLQuote extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "urlquote";
 	}
 
 	private static final Signature signature = new Signature("string", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -48,4 +51,6 @@ public class FunctionURLQuote extends Function
 			return call((String)obj);
 		throw new ArgumentTypeMismatchException("urlquote({!t}) not supported", obj);
 	}
+
+	public static Function function = new FunctionURLQuote();
 }

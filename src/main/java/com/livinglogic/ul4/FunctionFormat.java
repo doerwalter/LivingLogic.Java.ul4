@@ -26,18 +26,21 @@ import com.livinglogic.utils.MapUtils;
 
 public class FunctionFormat extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "format";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required, "fmt", Signature.required, "lang", null);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0), args.get(1), args.get(2));
@@ -764,4 +767,6 @@ public class FunctionFormat extends Function
 	{
 		return call(obj, formatString, null);
 	}
+
+	public static Function function = new FunctionFormat();
 }

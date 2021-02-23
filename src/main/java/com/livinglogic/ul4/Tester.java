@@ -37,26 +37,26 @@ public class Tester
 		return buffer.toString();
 	}
 
-	public static InterpretedTemplate compileTemplate(String source, String name, InterpretedTemplate.Whitespace whitespace, String signature)
+	public static Template compileTemplate(String source, String name, Template.Whitespace whitespace, String signature)
 	{
-		return new InterpretedTemplate(source, name, whitespace, null, null, signature);
+		return new Template(source, name, whitespace, null, null, signature);
 	}
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws IOException, UnsupportedEncodingException
 	{
-		InterpretedTemplate.register4UL4ON();
+		Template.register4UL4ON();
 
 		Map<String, Object> data = (Map<String, Object>)loads(readStdIn(), null);
 
 		String command = (String)data.get("command");
 		Object templateString = data.get("template");
-		InterpretedTemplate template = null;
+		Template template = null;
 
 		if (templateString instanceof String)
-			template = compileTemplate((String)templateString, (String)data.get("name"), InterpretedTemplate.Whitespace.fromString((String)data.get("whitespace")), (String)data.get("signature"));
+			template = compileTemplate((String)templateString, (String)data.get("name"), Template.Whitespace.fromString((String)data.get("whitespace")), (String)data.get("signature"));
 		else
-			template = (InterpretedTemplate)templateString;
+			template = (Template)templateString;
 
 		Map<String, Object> globalVariables = (Map<String, Object>)data.get("globalvariables");
 		Map<String, Object> variables = (Map<String, Object>)data.get("variables");

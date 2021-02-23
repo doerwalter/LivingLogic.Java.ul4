@@ -30,7 +30,7 @@ import static com.livinglogic.utils.MapUtils.makeMap;
 import static com.livinglogic.utils.SetUtils.makeSet;
 
 import com.livinglogic.ul4.Color;
-import com.livinglogic.ul4.InterpretedTemplate;
+import com.livinglogic.ul4.Template;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.Slice;
@@ -42,7 +42,7 @@ public class UL4ONTest
 {
 	static
 	{
-		InterpretedTemplate.register4UL4ON();
+		Template.register4UL4ON();
 	}
 
 	private static class Point implements UL4ONSerializable
@@ -222,14 +222,14 @@ public class UL4ONTest
 		}
 	}
 
-	private static InterpretedTemplate getTemplate(String source, String name)
+	private static Template getTemplate(String source, String name)
 	{
-		InterpretedTemplate template = new InterpretedTemplate(source, name, InterpretedTemplate.Whitespace.keep, null, null, (String)null);
+		Template template = new Template(source, name, Template.Whitespace.keep, null, null, (String)null);
 		// System.out.println(template);
 		return template;
 	}
 
-	private static InterpretedTemplate getTemplate(String source)
+	private static Template getTemplate(String source)
 	{
 		return getTemplate(source, null);
 	}
@@ -239,11 +239,11 @@ public class UL4ONTest
 		String output = dumps(object);
 		Object recreated = loads(output, null);
 
-		// If we have an InterpretedTemplate, check the output instead
-		if ((recreated instanceof InterpretedTemplate) && (object instanceof InterpretedTemplate))
+		// If we have an Template, check the output instead
+		if ((recreated instanceof Template) && (object instanceof Template))
 		{
-			recreated = ((InterpretedTemplate)recreated).renders((Map<String, Object>)null);
-			object = ((InterpretedTemplate)object).renders((Map<String, Object>)null);
+			recreated = ((Template)recreated).renders((Map<String, Object>)null);
+			object = ((Template)object).renders((Map<String, Object>)null);
 		}
 		assertEquals(object, recreated);
 	}
@@ -251,7 +251,7 @@ public class UL4ONTest
 	@Test
 	public void roundtrip()
 	{
-		InterpretedTemplate template = getTemplate("<?for i in range(10)?>[<?print i?>]<?end for?>");
+		Template template = getTemplate("<?for i in range(10)?>[<?print i?>]<?end for?>");
 
 		checkRoundtrip(null);
 		checkRoundtrip(true);
@@ -285,7 +285,7 @@ public class UL4ONTest
 	@Test
 	public void template_from_source()
 	{
-		InterpretedTemplate template = (InterpretedTemplate)loads("o s'de.livinglogic.ul4.template' n s'test' s'<?print x + y?>' s'x, y=23' s'keep' n n )", null);
+		Template template = (Template)loads("o s'de.livinglogic.ul4.template' n s'test' s'<?print x + y?>' s'x, y=23' s'keep' n n )", null);
 		assertEquals("40", template.renders(makeMap("x", 17)));
 	}
 

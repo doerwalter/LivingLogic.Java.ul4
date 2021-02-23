@@ -30,7 +30,7 @@ abstract class UnaryAST extends CodeAST
 	 * @param slice The position of this node in the sourcecode of the template
 	 * @param obj The operand
 	 */
-	public UnaryAST(InterpretedTemplate template, Slice pos, CodeAST obj)
+	public UnaryAST(Template template, Slice pos, CodeAST obj)
 	{
 		super(template, pos);
 		this.obj = obj;

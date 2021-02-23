@@ -16,13 +16,41 @@ import com.livinglogic.ul4on.Encoder;
 
 public class DictComprehensionAST extends CodeAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "DictComprehensionAST", "de.livinglogic.ul4.dictcomp", "A dictionary comprehension.");
+		}
+
+		@Override
+		public DictComprehensionAST create(String id)
+		{
+			return new DictComprehensionAST(null, null, null, null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof DictComprehensionAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected CodeAST key;
 	protected CodeAST value;
 	protected Object varname;
 	protected CodeAST container;
 	protected CodeAST condition;
 
-	public DictComprehensionAST(InterpretedTemplate template, Slice pos, CodeAST key, CodeAST value, Object varname, CodeAST container, CodeAST condition)
+	public DictComprehensionAST(Template template, Slice pos, CodeAST key, CodeAST value, Object varname, CodeAST container, CodeAST condition)
 	{
 		super(template, pos);
 		this.key = key;

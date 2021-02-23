@@ -22,6 +22,13 @@ public abstract class BoundMethod<T> extends Function
 {
 	protected T object = null;
 
+	@Override
+	public String getFullNameUL4()
+	{
+		String typeName = object instanceof UL4Instance ? ((UL4Instance)object).getTypeUL4().getFullNameUL4() : Utils.objectType(object);
+		return typeName + "." + getNameUL4();
+	}
+
 	/**
 	 * Return a new {@code BoundMethod} object bound to {@code object}.
 	 *
@@ -35,7 +42,7 @@ public abstract class BoundMethod<T> extends Function
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
 		formatter.append("<method ");
-		formatter.append(nameUL4());
+		formatter.append(getFullNameUL4());
 		formatter.append(" of ");
 		formatter.append(Utils.objectType(object));
 		formatter.append(" object>");

@@ -19,9 +19,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SetAST extends CodeAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "SetAST", "de.livinglogic.ul4.set", "A set \"literal\".");
+		}
+
+		@Override
+		public SetAST create(String id)
+		{
+			return new SetAST(null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof SetAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected List<SeqItemASTBase> items = new LinkedList<SeqItemASTBase>();
 
-	public SetAST(InterpretedTemplate template, Slice pos)
+	public SetAST(Template template, Slice pos)
 	{
 		super(template, pos);
 	}

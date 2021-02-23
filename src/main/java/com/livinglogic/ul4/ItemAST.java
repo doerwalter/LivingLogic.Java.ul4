@@ -13,7 +13,35 @@ import java.util.Iterator;
 
 public class ItemAST extends BinaryAST implements LValue
 {
-	public ItemAST(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "ItemAST", "de.livinglogic.ul4.item", "An item acess.");
+		}
+
+		@Override
+		public ItemAST create(String id)
+		{
+			return new ItemAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof ItemAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public ItemAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		super(template, pos, obj1, obj2);
 	}
@@ -23,7 +51,7 @@ public class ItemAST extends BinaryAST implements LValue
 		return "item";
 	}
 
-	public static CodeAST make(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public static CodeAST make(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{

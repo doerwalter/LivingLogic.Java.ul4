@@ -22,9 +22,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class RenderAST extends CallRenderAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "RenderAST", "de.livinglogic.ul4.render", "A render tag.");
+		}
+
+		@Override
+		public RenderAST create(String id)
+		{
+			return new RenderAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof RenderAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected IndentAST indent;
 
-	public RenderAST(InterpretedTemplate template, Slice pos, AST obj)
+	public RenderAST(Template template, Slice pos, AST obj)
 	{
 		super(template, pos, obj);
 		this.indent = null;

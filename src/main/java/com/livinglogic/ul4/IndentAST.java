@@ -15,11 +15,39 @@ import com.livinglogic.ul4on.Encoder;
  * An IndentAST is a literal text in the template source that represents the
  * indentation at the beginning of a line. For "smart" whitespace mode
  */
-class IndentAST extends TextAST
+public class IndentAST extends TextAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "IndentAST", "de.livinglogic.ul4.indent", "Base type of all literal text in the template source");
+		}
+
+		@Override
+		public IndentAST create(String id)
+		{
+			return new IndentAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof IndentAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected String text;
 
-	public IndentAST(InterpretedTemplate template, Slice pos, String text)
+	public IndentAST(Template template, Slice pos, String text)
 	{
 		super(template, pos);
 		this.text = text;

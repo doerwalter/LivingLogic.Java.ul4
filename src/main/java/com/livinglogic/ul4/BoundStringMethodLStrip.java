@@ -20,7 +20,7 @@ public class BoundStringMethodLStrip extends BoundMethod<String>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "lstrip";
 	}

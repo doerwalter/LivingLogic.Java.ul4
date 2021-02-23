@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 public class FunctionSetAttr extends FunctionWithContext
 {
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "setattr";
 	}
@@ -60,4 +60,6 @@ public class FunctionSetAttr extends FunctionWithContext
 			throw new ArgumentTypeMismatchException("setattr({!t}, {!t}, {!t}) not supported", obj, attrname, value);
 		call(context, obj, (String)attrname, value);
 	}
+
+	public static FunctionWithContext function = new FunctionSetAttr();
 }

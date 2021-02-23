@@ -17,18 +17,21 @@ import static java.util.Arrays.asList;
 
 public class FunctionList extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "list";
 	}
 
 	private static final Signature signature = new Signature("iterable", Collections.EMPTY_LIST);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -90,4 +93,6 @@ public class FunctionList extends Function
 			return call((Iterator)obj);
 		throw new ArgumentTypeMismatchException("list({!t}) not supported", obj);
 	}
+
+	public static Function function = new FunctionList();
 }

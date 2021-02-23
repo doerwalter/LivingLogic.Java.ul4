@@ -10,11 +10,13 @@ import java.time.LocalDate;
 
 public class FunctionToday extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "today";
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call();
@@ -24,4 +26,6 @@ public class FunctionToday extends Function
 	{
 		return LocalDate.now();
 	}
+
+	public static Function function = new FunctionToday();
 }

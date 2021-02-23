@@ -21,27 +21,38 @@ import com.livinglogic.utils.MapChain;
  * @author W. Doerwald
  */
 
-public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext, UL4Name, UL4Type, UL4GetAttr, UL4Dir, UL4Repr
+public class TemplateClosure implements UL4Instance, UL4CallWithContext, UL4RenderWithContext, UL4Name, UL4GetAttr, UL4Dir, UL4Repr
 {
-	private InterpretedTemplate template;
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return Template.type;
+	}
+
+	private Template template;
 	private Map<String, Object> variables;
 	private Signature signature;
 
-	public TemplateClosure(InterpretedTemplate template, EvaluationContext context)
+	public TemplateClosure(Template template, EvaluationContext context)
 	{
 		this.template = template;
 		this.variables = context.getVariables();
 		signature = template.signatureAST != null ? template.signatureAST.evaluate(context) : null;
 	}
 
-	public InterpretedTemplate getTemplate()
+	public Template getTemplate()
 	{
 		return template;
 	}
 
-	public String nameUL4()
+	public String getNameUL4()
 	{
-		return template.nameUL4();
+		return template.getNameUL4();
+	}
+
+	public String getFullNameUL4()
+	{
+		return template.getFullNameUL4();
 	}
 
 	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
@@ -85,11 +96,6 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 		return writer.toString();
 	}
 
-	public String typeUL4()
-	{
-		return "template";
-	}
-
 	private static class BoundMethodRenderS extends BoundMethodWithContext<TemplateClosure>
 	{
 		public BoundMethodRenderS(TemplateClosure object)
@@ -98,7 +104,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "renders";
 		}
@@ -124,7 +130,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "render";
 		}
@@ -143,7 +149,7 @@ public class TemplateClosure implements UL4CallWithContext, UL4RenderWithContext
 		}
 	}
 
-	protected static Set<String> attributes = InterpretedTemplate.attributes;
+	protected static Set<String> attributes = Template.attributes;
 
 	public Set<String> dirUL4()
 	{

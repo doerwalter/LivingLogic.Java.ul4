@@ -18,9 +18,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class PositionalArgumentAST extends ArgumentASTBase
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "PositionalArgumentAST", "de.livinglogic.ul4.posarg", "A positional argument.");
+		}
+
+		@Override
+		public PositionalArgumentAST create(String id)
+		{
+			return new PositionalArgumentAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof PositionalArgumentAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	AST value;
 
-	public PositionalArgumentAST(InterpretedTemplate template, Slice pos, AST value)
+	public PositionalArgumentAST(Template template, Slice pos, AST value)
 	{
 		super(template, pos);
 		this.value = value;

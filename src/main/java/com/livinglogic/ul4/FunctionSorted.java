@@ -18,13 +18,15 @@ import static java.util.Arrays.asList;
 
 public class FunctionSorted extends FunctionWithContext
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "sorted";
 	}
 
 	private static final Signature signature = new Signature("iterable", Signature.required, "key", null, "reverse", false);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
@@ -110,4 +112,6 @@ public class FunctionSorted extends FunctionWithContext
 			return undecorate(sort);
 		}
 	}
+
+	public static FunctionWithContext function = new FunctionSorted();
 }

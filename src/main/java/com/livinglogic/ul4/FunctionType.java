@@ -15,28 +15,30 @@ import java.math.BigInteger;
 
 public class FunctionType extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "type";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
 	}
 
-	public static String call(Object obj)
+	public UL4Type call(Object obj)
 	{
-		if (obj instanceof UL4Type)
-			return ((UL4Type)obj).typeUL4();
-		else
-			return Proto.get(obj).name();
+		return UL4Type.getType(obj);
 	}
+
+	public static Function function = new FunctionType();
 }

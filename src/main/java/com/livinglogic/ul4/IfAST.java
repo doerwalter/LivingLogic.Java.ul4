@@ -17,11 +17,39 @@ import com.livinglogic.ul4on.Encoder;
 
 public class IfAST extends CodeAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "IfAST", "de.livinglogic.ul4.if", "An if/else expression.");
+		}
+
+		@Override
+		public IfAST create(String id)
+		{
+			return new IfAST(null, null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof IfAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	private CodeAST objIf;
 	private CodeAST objCond;
 	private CodeAST objElse;
 
-	public IfAST(InterpretedTemplate template, Slice pos, CodeAST objIf, CodeAST objCond, CodeAST objElse)
+	public IfAST(Template template, Slice pos, CodeAST objIf, CodeAST objCond, CodeAST objElse)
 	{
 		super(template, pos);
 		this.objIf = objIf;
@@ -34,7 +62,7 @@ public class IfAST extends CodeAST
 		return "if";
 	}
 
-	public static CodeAST make(InterpretedTemplate template, Slice pos, CodeAST objIf, CodeAST objCond, CodeAST objElse)
+	public static CodeAST make(Template template, Slice pos, CodeAST objIf, CodeAST objCond, CodeAST objElse)
 	{
 		if (objCond instanceof ConstAST)
 		{

@@ -8,6 +8,28 @@ package com.livinglogic.ul4;
 
 public class UndefinedVariable extends Undefined
 {
+	private static class Type extends Undefined.Type
+	{
+		public Type()
+		{
+			super(null, "undefinedvariable", null, "The result of accessing an undefined variable.");
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof UndefinedVariable;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	private String varname;
 
 	public UndefinedVariable(String varname)

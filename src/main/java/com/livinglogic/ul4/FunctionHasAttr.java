@@ -16,18 +16,21 @@ import org.apache.commons.lang3.StringUtils;
 
 public class FunctionHasAttr extends FunctionWithContext
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "hasattr";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required, "attrname", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(context, args.get(0), args.get(1));
@@ -56,4 +59,6 @@ public class FunctionHasAttr extends FunctionWithContext
 			throw new ArgumentTypeMismatchException("hasattr({!t}, {!t}, {!t}) not supported", obj, attrname);
 		return call(context, obj, (String)attrname);
 	}
+
+	public static FunctionWithContext function = new FunctionHasAttr();
 }

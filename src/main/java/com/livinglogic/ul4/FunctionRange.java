@@ -103,4 +103,6 @@ public class FunctionRange implements UL4Call
 			return length;
 		}
 	}
+
+	public static UL4Call function = new FunctionRange();
 }

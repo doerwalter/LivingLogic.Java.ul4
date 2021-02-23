@@ -11,18 +11,21 @@ import java.util.Iterator;
 
 public class FunctionFirst extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "first";
 	}
 
 	private static final Signature signature = new Signature("iterable", Signature.required, "default", null);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0), args.get(1));
@@ -36,4 +39,6 @@ public class FunctionFirst extends Function
 			return iter.next();
 		return defaultValue;
 	}
+
+	public static Function function = new FunctionFirst();
 }

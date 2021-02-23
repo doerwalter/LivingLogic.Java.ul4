@@ -13,18 +13,21 @@ import java.util.Map;
 
 public class FunctionAll extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "all";
 	}
 
 	private static final Signature signature = new Signature("iterable", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -85,4 +88,6 @@ public class FunctionAll extends Function
 			return call((Map)obj);
 		throw new ArgumentTypeMismatchException("all({!t}) not supported", obj);
 	}
+
+	public static Function function = new FunctionAll();
 }

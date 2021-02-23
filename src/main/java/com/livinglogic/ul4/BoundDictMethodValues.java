@@ -18,7 +18,7 @@ public class BoundDictMethodValues extends BoundMethod<Map>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "values";
 	}

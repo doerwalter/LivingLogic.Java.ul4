@@ -21,7 +21,7 @@ public class BoundDictMethodPop extends BoundMethod<Map>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "pop";
 	}

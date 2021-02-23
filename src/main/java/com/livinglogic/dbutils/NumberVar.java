@@ -55,18 +55,21 @@ public class NumberVar extends Var
 
 	private static class FunctionNumber extends Function
 	{
-		public String nameUL4()
+		@Override
+		public String getNameUL4()
 		{
-			return "connection.number";
+			return "number";
 		}
 
 		private static final Signature signature = new Signature("value", noValue);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return new NumberVar(args.get(0));

@@ -15,58 +15,31 @@ import com.livinglogic.ul4on.Decoder;
 import static com.livinglogic.utils.SetUtils.makeSet;
 
 
-public class ModuleUL4ON implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type, UL4Name
+public class ModuleUL4ON extends Module
 {
-	@Override
-	public void reprUL4(UL4Repr.Formatter formatter)
+	public ModuleUL4ON()
 	{
-		formatter
-			.append("<module ")
-			.append(getClass().getName())
-			.append(">")
-		;
+		super("ul4on", "Object serialization");
+		addObject(new FunctionLoadS());
+		addObject(new FunctionDumpS());
+		addObject(Decoder.type);
+		addObject(Encoder.type);
 	}
 
-	protected static Set<String> attributes = makeSet("loads", "dumps", "Encoder", "Decoder");
-
-	@Override
-	public Set<String> dirUL4()
+	private static abstract class ModuleFunction extends Function
 	{
-		return attributes;
-	}
-
-	@Override
-	public Object getAttrUL4(String key)
-	{
-		switch (key)
+		@Override
+		public String getModuleName()
 		{
-			case "loads":
-				return functionLoadS;
-			case "dumps":
-				return functionDumpS;
-			case "Encoder":
-				return functionEncoder;
-			case "Decoder":
-				return functionDecoder;
-			default:
-				throw new AttributeException(this, key);
+			return "ul4on";
 		}
 	}
 
-	@Override
-	public String typeUL4()
+	private static class FunctionLoadS extends ModuleFunction
 	{
-		return "module";
-	}
 
-	public String nameUL4()
-	{
-		return "ul4on";
-	}
-
-	private static class FunctionLoadS extends Function
-	{
-		public String nameUL4()
+		@Override
+		public String getNameUL4()
 		{
 			return "loads";
 		}
@@ -79,6 +52,7 @@ public class ModuleUL4ON implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type, UL4Nam
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(BoundArguments arguments)
 		{
 			Object arg = arguments.get(0);
@@ -89,11 +63,10 @@ public class ModuleUL4ON implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type, UL4Nam
 		}
 	}
 
-	private static FunctionLoadS functionLoadS = new FunctionLoadS();
-
-	private static class FunctionDumpS extends Function
+	private static class FunctionDumpS extends ModuleFunction
 	{
-		public String nameUL4()
+		@Override
+		public String getNameUL4()
 		{
 			return "dumps";
 		}
@@ -106,6 +79,7 @@ public class ModuleUL4ON implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type, UL4Nam
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(BoundArguments arguments)
 		{
 			Object obj = arguments.get(0);
@@ -118,48 +92,5 @@ public class ModuleUL4ON implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type, UL4Nam
 		}
 	}
 
-	private static FunctionDumpS functionDumpS = new FunctionDumpS();
-
-	private static class FunctionEncoder extends Function
-	{
-		public String nameUL4()
-		{
-			return "Encoder";
-		}
-
-		private static final Signature signature = new Signature("indent", null);
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		public Object evaluate(BoundArguments arguments)
-		{
-			Object indent = arguments.get(0);
-
-			if (indent != null && !(indent instanceof String))
-				throw new ArgumentTypeMismatchException("Encoder({!t}) not supported", indent);
-
-			return new Encoder((String)indent);
-		}
-	}
-
-	private static FunctionEncoder functionEncoder = new FunctionEncoder();
-
-	private static class FunctionDecoder extends Function
-	{
-		public String nameUL4()
-		{
-			return "Decoder";
-		}
-
-		public Object evaluate(BoundArguments arguments)
-		{
-			return new Decoder();
-		}
-	}
-
-	private static FunctionDecoder functionDecoder = new FunctionDecoder();
+	public static Module module = new ModuleUL4ON();
 }

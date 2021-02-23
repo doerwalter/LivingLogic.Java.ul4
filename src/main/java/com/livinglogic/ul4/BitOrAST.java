@@ -10,9 +10,37 @@ import java.math.BigInteger;
 
 public class BitOrAST extends BinaryAST
 {
-	public BitOrAST(InterpretedTemplate InterpretedTemplate, Slice pos, CodeAST obj1, CodeAST obj2)
+	protected static class Type extends AbstractInstanceType
 	{
-		super(InterpretedTemplate, pos, obj1, obj2);
+		public Type()
+		{
+			super("ul4", "BitOrAST", "de.livinglogic.ul4.bitor", "A bit or expression.");
+		}
+
+		@Override
+		public BitOrAST create(String id)
+		{
+			return new BitOrAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof BitOrAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public BitOrAST(Template Template, Slice pos, CodeAST obj1, CodeAST obj2)
+	{
+		super(Template, pos, obj1, obj2);
 	}
 
 	public String getType()
@@ -20,7 +48,7 @@ public class BitOrAST extends BinaryAST
 		return "bitor";
 	}
 
-	public static CodeAST make(InterpretedTemplate InterpretedTemplate, Slice pos, CodeAST obj1, CodeAST obj2)
+	public static CodeAST make(Template Template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{
@@ -28,14 +56,14 @@ public class BitOrAST extends BinaryAST
 			{
 				Object result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
 				if (!(result instanceof Undefined))
-					return new ConstAST(InterpretedTemplate, pos, result);
+					return new ConstAST(Template, pos, result);
 			}
 			catch (Exception ex)
 			{
 				// fall through to create a real {@code BitOrAST} object
 			}
 		}
-		return new BitOrAST(InterpretedTemplate, pos, obj1, obj2);
+		return new BitOrAST(Template, pos, obj1, obj2);
 	}
 
 	public Object evaluate(EvaluationContext context)

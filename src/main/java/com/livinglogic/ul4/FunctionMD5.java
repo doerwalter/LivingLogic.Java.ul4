@@ -12,18 +12,21 @@ import java.io.UnsupportedEncodingException;
 
 public class FunctionMD5 extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "md5";
 	}
 
 	private static final Signature signature = new Signature("string", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		Object arg0 = args.get(0);
@@ -59,4 +62,6 @@ public class FunctionMD5 extends Function
 			buffer.append(Integer.toHexString((hash[i] & 0xFF) | 0x100).substring(1, 3));
 		return buffer.toString();
 	}
+
+	public static Function function = new FunctionMD5();
 }

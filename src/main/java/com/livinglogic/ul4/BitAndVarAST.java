@@ -8,7 +8,35 @@ package com.livinglogic.ul4;
 
 public class BitAndVarAST extends ChangeVarAST
 {
-	public BitAndVarAST(InterpretedTemplate template, Slice pos, LValue lvalue, AST value)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "BitAndVarAST", "de.livinglogic.ul4.bitandvar", "An augmented \"binary and\" assignment (x &= y).");
+		}
+
+		@Override
+		public BitAndVarAST create(String id)
+		{
+			return new BitAndVarAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof BitAndVarAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public BitAndVarAST(Template template, Slice pos, LValue lvalue, AST value)
 	{
 		super(template, pos, lvalue, value);
 	}

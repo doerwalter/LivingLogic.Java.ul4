@@ -57,18 +57,21 @@ public class IntVar extends Var
 
 	private static class FunctionInt extends Function
 	{
-		public String nameUL4()
+		@Override
+		public String getNameUL4()
 		{
-			return "connection.int";
+			return "int";
 		}
 
 		private static final Signature signature = new Signature("value", noValue);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return new IntVar(args.get(0));

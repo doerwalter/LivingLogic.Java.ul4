@@ -11,18 +11,21 @@ import java.util.Random;
 
 public class FunctionRandChoice extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "randchoice";
 	}
 
 	private static final Signature signature = new Signature("sequence", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -70,4 +73,6 @@ public class FunctionRandChoice extends Function
 			return call((Color)obj);
 		throw new ArgumentTypeMismatchException("randchoice({!t}) not supported", obj);
 	}
+
+	public static Function function = new FunctionRandChoice();
 }

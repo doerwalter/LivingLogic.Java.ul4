@@ -10,18 +10,21 @@ import java.util.List;
 
 public class FunctionIsColor extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "iscolor";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -31,4 +34,6 @@ public class FunctionIsColor extends Function
 	{
 		return (null != obj) && (obj instanceof Color);
 	}
+
+	public static Function function = new FunctionIsColor();
 }

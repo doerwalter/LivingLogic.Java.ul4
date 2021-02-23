@@ -8,7 +8,35 @@ package com.livinglogic.ul4;
 
 public class MulVarAST extends ChangeVarAST
 {
-	public MulVarAST(InterpretedTemplate template, Slice pos, LValue lvalue, AST value)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "MulVarAST", "de.livinglogic.ul4.mulvar", "An augmented multiplication assignment (x *= y).");
+		}
+
+		@Override
+		public MulVarAST create(String id)
+		{
+			return new MulVarAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof MulVarAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public MulVarAST(Template template, Slice pos, LValue lvalue, AST value)
 	{
 		super(template, pos, lvalue, value);
 	}

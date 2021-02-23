@@ -143,4 +143,6 @@ public class FunctionSlice implements UL4Call
 				next = stop;
 		}
 	}
+
+	public static UL4Call function = new FunctionSlice();
 }

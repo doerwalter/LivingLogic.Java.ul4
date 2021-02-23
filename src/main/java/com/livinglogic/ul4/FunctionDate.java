@@ -11,18 +11,21 @@ import java.time.LocalDateTime;
 
 public class FunctionDate extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "date";
 	}
 
 	private static final Signature signature = new Signature("year", Signature.required, "month", Signature.required, "day", Signature.required, "hour", 0, "minute", 0, "second", 0, "microsecond", 0);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		if (((Integer)args.get(3) == 0) && ((Integer)args.get(4) == 0) && ((Integer)args.get(5) == 0) && ((Integer)args.get(6) == 0))

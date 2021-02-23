@@ -12,18 +12,21 @@ import java.math.BigInteger;
 
 public class FunctionHex extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "hex";
 	}
 
 	private static final Signature signature = new Signature("number", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -63,4 +66,6 @@ public class FunctionHex extends Function
 		}
 		throw new ArgumentTypeMismatchException("hex({!t}) not supported", obj);
 	}
+
+	public static Function function = new FunctionHex();
 }

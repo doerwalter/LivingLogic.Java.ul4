@@ -16,7 +16,7 @@ public class BoundLocalDateMethodWeekday extends BoundMethod<LocalDate>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "weekday";
 	}

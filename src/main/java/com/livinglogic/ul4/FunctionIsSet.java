@@ -11,18 +11,21 @@ import java.util.Set;
 
 public class FunctionIsSet extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "isset";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -32,4 +35,6 @@ public class FunctionIsSet extends Function
 	{
 		return (null != obj) && (obj instanceof Set);
 	}
+
+	public static Function function = new FunctionIsSet();
 }

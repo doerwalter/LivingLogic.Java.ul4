@@ -28,12 +28,12 @@ public class DuplicateArgumentException extends ArgumentException
 
 	public DuplicateArgumentException(UL4Name object, String parameterName)
 	{
-		this(object.nameUL4(), parameterName);
+		this(object.getFullNameUL4(), parameterName);
 	}
 
 	public DuplicateArgumentException(Object object, String parameterName)
 	{
-		this(object instanceof UL4Name ? ((UL4Name)object).nameUL4() : Utils.objectType(object), parameterName);
+		this(object instanceof UL4Name ? ((UL4Name)object).getFullNameUL4() : Utils.objectType(object), parameterName);
 	}
 
 	public DuplicateArgumentException(String name, ParameterDescription parameter)
@@ -43,6 +43,6 @@ public class DuplicateArgumentException extends ArgumentException
 
 	public DuplicateArgumentException(UL4Name object, ParameterDescription parameter)
 	{
-		this(object.nameUL4(), parameter);
+		this(object.getFullNameUL4(), parameter);
 	}
 }

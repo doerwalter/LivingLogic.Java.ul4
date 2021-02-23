@@ -12,18 +12,21 @@ import java.math.BigInteger;
 
 public class FunctionAbs extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "abs";
 	}
 
 	private static final Signature signature = new Signature("number", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -85,4 +88,6 @@ public class FunctionAbs extends Function
 			return ((UL4Abs)arg).absUL4();
 		throw new ArgumentTypeMismatchException("abs({!t}) not supported", arg);
 	}
+
+	public static Function function = new FunctionAbs();
 }

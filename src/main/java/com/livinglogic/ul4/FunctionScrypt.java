@@ -13,18 +13,21 @@ import com.lambdaworks.crypto.SCrypt;
 
 public class FunctionScrypt extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "scrypt";
 	}
 
 	private static final Signature signature = new Signature("string", Signature.required, "salt", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		Object arg0 = args.get(0);
@@ -62,4 +65,6 @@ public class FunctionScrypt extends Function
 		}
 		return buffer.toString();
 	}
+
+	public static Function function = new FunctionScrypt();
 }

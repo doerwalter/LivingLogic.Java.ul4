@@ -12,6 +12,28 @@ package com.livinglogic.ul4;
  */
 public class Tag extends AST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "Tag", "de.livinglogic.ul4.tag", "A template tag in an UL4 template");
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof Tag;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	/**
 	 * The tag type ("print", "printx", "for", "if", "end", etc.)
 	 */
@@ -29,7 +51,7 @@ public class Tag extends AST
 	 * @param tagPos The slice in the template source, where the source for this tag is located.
 	 * @param codePos The slice in the template source where the code inside the tag starts.
 	 */
-	public Tag(InterpretedTemplate template, String tag, Slice tagPos, Slice codePos)
+	public Tag(Template template, String tag, Slice tagPos, Slice codePos)
 	{
 		super(template, tagPos);
 		this.tag = tag;
@@ -53,7 +75,7 @@ public class Tag extends AST
 		throw new UnsupportedOperationException("not implemented");
 	}
 
-	public InterpretedTemplate getTemplate()
+	public Template getTemplate()
 	{
 		return template;
 	}

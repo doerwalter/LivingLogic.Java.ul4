@@ -17,9 +17,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SeqItemAST extends SeqItemASTBase
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "SeqItemAST", "de.livinglogic.ul4.seqitem", "An item in a sequence.");
+		}
+
+		@Override
+		public SeqItemAST create(String id)
+		{
+			return new SeqItemAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof SeqItemAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected AST value;
 
-	public SeqItemAST(InterpretedTemplate template, Slice pos, AST value)
+	public SeqItemAST(Template template, Slice pos, AST value)
 	{
 		super(template, pos);
 		this.value = value;

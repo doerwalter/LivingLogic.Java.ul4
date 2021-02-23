@@ -12,18 +12,21 @@ import java.util.NoSuchElementException;
 
 public class FunctionReversed extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "reversed";
 	}
 
 	private static final Signature signature = new Signature("sequence", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -107,4 +110,6 @@ public class FunctionReversed extends Function
 			list.remove(index);
 		}
 	}
+
+	public static Function function = new FunctionReversed();
 }

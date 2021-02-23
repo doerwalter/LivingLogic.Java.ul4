@@ -13,18 +13,21 @@ import org.json.simple.JSONValue;
 
 public class FunctionFromJSON extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "fromjson";
 	}
 
 	private static final Signature signature = new Signature("string", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -41,4 +44,6 @@ public class FunctionFromJSON extends Function
 			return call((String)obj);
 		throw new ArgumentTypeMismatchException("fromjson({!t}) not supported", obj);
 	}
+
+	public static Function function = new FunctionFromJSON();
 }

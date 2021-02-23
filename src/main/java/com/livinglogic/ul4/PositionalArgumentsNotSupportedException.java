@@ -18,6 +18,6 @@ public class PositionalArgumentsNotSupportedException extends ArgumentException
 
 	public PositionalArgumentsNotSupportedException(UL4Name object)
 	{
-		this(object.nameUL4());
+		this(object.getFullNameUL4());
 	}
 }

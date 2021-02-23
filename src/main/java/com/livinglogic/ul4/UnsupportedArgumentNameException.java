@@ -18,6 +18,6 @@ public class UnsupportedArgumentNameException extends ArgumentException
 
 	public UnsupportedArgumentNameException(UL4Name object, String argumentName)
 	{
-		this(object.nameUL4(), argumentName);
+		this(object.getFullNameUL4(), argumentName);
 	}
 }

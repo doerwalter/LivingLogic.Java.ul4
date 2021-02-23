@@ -20,10 +20,38 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SliceAST extends CodeAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "SliceAST", "de.livinglogic.ul4.slice", "A slice access.");
+		}
+
+		@Override
+		public SliceAST create(String id)
+		{
+			return new SliceAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof SliceAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected AST index1;
 	protected AST index2;
 
-	public SliceAST(InterpretedTemplate template, Slice pos, AST index1, AST index2)
+	public SliceAST(Template template, Slice pos, AST index1, AST index2)
 	{
 		super(template, pos);
 		this.index1 = index1;
@@ -35,7 +63,7 @@ public class SliceAST extends CodeAST
 		return "slice";
 	}
 
-	public static AST make(InterpretedTemplate template, Slice pos, AST obj, AST index1, AST index2)
+	public static AST make(Template template, Slice pos, AST obj, AST index1, AST index2)
 	{
 		if (obj instanceof ConstAST)
 		{

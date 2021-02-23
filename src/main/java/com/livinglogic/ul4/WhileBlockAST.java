@@ -16,9 +16,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class WhileBlockAST extends BlockAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "WhileBlockAST", "de.livinglogic.ul4.whileblock", "A while loop.");
+		}
+
+		@Override
+		public WhileBlockAST create(String id)
+		{
+			return new WhileBlockAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof WhileBlockAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected AST condition;
 
-	public WhileBlockAST(InterpretedTemplate template, Slice startPos, Slice stopPos, AST condition)
+	public WhileBlockAST(Template template, Slice startPos, Slice stopPos, AST condition)
 	{
 		super(template, startPos, stopPos);
 		this.condition = condition;

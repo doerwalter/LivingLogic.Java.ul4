@@ -20,7 +20,7 @@ public class BoundDateMethodMinute extends BoundMethod<Date>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "minute";
 	}

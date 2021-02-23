@@ -28,7 +28,7 @@ public abstract class CallRenderAST extends CodeAST
 	protected AST obj;
 	protected List<ArgumentASTBase> arguments = new LinkedList<ArgumentASTBase>();
 
-	public CallRenderAST(InterpretedTemplate template, Slice pos, AST obj)
+	public CallRenderAST(Template template, Slice pos, AST obj)
 	{
 		super(template, pos);
 		this.obj = obj;

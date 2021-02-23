@@ -16,7 +16,7 @@ public class BoundLocalDateTimeMethodSecond extends BoundMethod<LocalDateTime>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "second";
 	}

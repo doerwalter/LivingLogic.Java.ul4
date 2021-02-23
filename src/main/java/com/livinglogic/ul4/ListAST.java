@@ -19,9 +19,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class ListAST extends CodeAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "ListAST", "de.livinglogic.ul4.list", "A list \"literal\".");
+		}
+
+		@Override
+		public ListAST create(String id)
+		{
+			return new ListAST(null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof ListAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected List<SeqItemASTBase> items = new LinkedList<SeqItemASTBase>();
 
-	public ListAST(InterpretedTemplate template, Slice pos)
+	public ListAST(Template template, Slice pos)
 	{
 		super(template, pos);
 	}

@@ -17,12 +17,40 @@ import com.livinglogic.ul4on.Encoder;
 
 public class ListComprehensionAST extends CodeAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "ListComprehensionAST", "de.livinglogic.ul4.listcomp", "An list comprehension.");
+		}
+
+		@Override
+		public ListComprehensionAST create(String id)
+		{
+			return new ListComprehensionAST(null, null, null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof ListComprehensionAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected CodeAST item;
 	protected Object varname;
 	protected CodeAST container;
 	protected CodeAST condition;
 
-	public ListComprehensionAST(InterpretedTemplate template, Slice pos, CodeAST item, Object varname, CodeAST container, CodeAST condition)
+	public ListComprehensionAST(Template template, Slice pos, CodeAST item, Object varname, CodeAST container, CodeAST condition)
 	{
 		super(template, pos);
 		this.item = item;

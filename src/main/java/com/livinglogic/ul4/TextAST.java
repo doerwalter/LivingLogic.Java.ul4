@@ -19,7 +19,35 @@ import com.livinglogic.ul4on.Encoder;
  */
 public class TextAST extends AST
 {
-	public TextAST(InterpretedTemplate template, Slice pos)
+	protected static class Type extends AST.Type
+	{
+		public Type()
+		{
+			super("ul4", "TextAST", "de.livinglogic.ul4.text", "Base type of all literal text in the template source");
+		}
+
+		@Override
+		public TextAST create(String id)
+		{
+			return new TextAST(null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof TextAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public TextAST(Template template, Slice pos)
 	{
 		super(template, pos);
 	}

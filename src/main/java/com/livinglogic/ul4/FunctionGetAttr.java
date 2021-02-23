@@ -16,7 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class FunctionGetAttr extends FunctionWithContext
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "getattr";
 	}
@@ -25,11 +26,13 @@ public class FunctionGetAttr extends FunctionWithContext
 
 	private static final Signature signature = new Signature("obj", Signature.required, "attrname", Signature.required, "default", noDefaultValue);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(context, args.get(0), args.get(1), args.get(2));
@@ -90,4 +93,6 @@ public class FunctionGetAttr extends FunctionWithContext
 			throw new ArgumentTypeMismatchException("getattr({!t}, {!t}, {!t}) not supported", obj, attrname, defaultValue);
 		return call(context, obj, (String)attrname, defaultValue);
 	}
+
+	public static FunctionWithContext function = new FunctionGetAttr();
 }

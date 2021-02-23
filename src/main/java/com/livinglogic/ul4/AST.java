@@ -22,12 +22,53 @@ import static com.livinglogic.ul4.Utils.findInnermostException;
  * The base class of all syntax tree nodes. This can be either literal text
  * ({@link TextAST}) between the tags, or compiled tag content ({@link CodeAST}).
  */
-public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4Repr
+public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr, UL4Dir, UL4Repr
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		@Override
+		public String getModuleName()
+		{
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "AST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.ast";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "Base type of all UL4 syntax tree nodes";
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof AST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	/**
 	 * The template to which this node belongs
 	 */
-	protected InterpretedTemplate template;
+	protected Template template;
 
 	/**
 	 * The start/end index of this node in the source (or of the start tag of a block)
@@ -63,7 +104,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 	 * @param stopPos The slice in the template source, where the end tag is
 	 *                located (or ``null`` if this is not a block).
 	 */
-	protected AST(InterpretedTemplate template, Slice startPos, Slice stopPos)
+	protected AST(Template template, Slice startPos, Slice stopPos)
 	{
 		this.template = template;
 		this.startPos = startPos;
@@ -77,7 +118,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 	 * @param startPos The slice in the template source, where the source for
 	 *                 this object (or its start tag) is located.
 	 */
-	public AST(InterpretedTemplate template, Slice startPos)
+	public AST(Template template, Slice startPos)
 	{
 		this(template, startPos, null);
 	}
@@ -85,13 +126,13 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 	/**
 	 * Return the template to which this node belongs.
 	 */
-	public InterpretedTemplate getTemplate()
+	public Template getTemplate()
 	{
 		return template;
 	}
 
-	// Used by {@link InterpretedTemplate#compile} to fix the template references for inner templates
-	void setTemplate(InterpretedTemplate template)
+	// Used by {@link Template#compile} to fix the template references for inner templates
+	void setTemplate(Template template)
 	{
 		this.template = template;
 	}
@@ -101,7 +142,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 		return startPos;
 	}
 
-	// Used by {@link InterpretedTemplate#compile} to fix the position for inner templates
+	// Used by {@link Template#compile} to fix the position for inner templates
 	void setStartPos(Slice pos)
 	{
 		this.startPos = pos;
@@ -272,7 +313,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 	{
 		StringBuilder buffer = new StringBuilder();
 		String name = null;
-		InterpretedTemplate template = getTemplate();
+		Template template = getTemplate();
 		buffer.append(template.parentTemplate != null ? "in local template " : "in template ");
 		boolean first = true;
 		while (template != null)
@@ -281,7 +322,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 				first = false;
 			else
 				buffer.append(" in ");
-			name = template.nameUL4();
+			name = template.getFullNameUL4();
 			buffer.append(name == null ? "(unnamed)" : FunctionRepr.call(name));
 			template = template.parentTemplate;
 		}
@@ -299,7 +340,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 	{
 		StringBuilder buffer = new StringBuilder();
 		String name = null;
-		InterpretedTemplate template = getTemplate();
+		Template template = getTemplate();
 		buffer.append(template.parentTemplate != null ? "in local template " : "in template ");
 		boolean first = true;
 		while (template != null)
@@ -308,7 +349,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 				first = false;
 			else
 				buffer.append(" in ");
-			name = template.nameUL4();
+			name = template.getFullNameUL4();
 			if (name == null)
 				buffer.append("(unnamed)");
 			else
@@ -333,7 +374,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 	{
 		StringBuilder buffer = new StringBuilder();
 		String name = null;
-		InterpretedTemplate template = getTemplate();
+		Template template = getTemplate();
 		buffer.append(template.parentTemplate != null ? "in local template " : "in template ");
 		boolean first = true;
 		while (template != null)
@@ -342,7 +383,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 				first = false;
 			else
 				buffer.append(" in ");
-			name = template.nameUL4();
+			name = template.getFullNameUL4();
 			buffer.append("<code>");
 			if (name == null)
 				buffer.append("(unnamed)");
@@ -428,7 +469,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 	{
 		StringBuilder buffer = new StringBuilder();
 		Slice pos = getStartPos();
-		InterpretedTemplate template = getTemplate();
+		Template template = getTemplate();
 		String source = template.getFullSource();
 
 		String prefix = getStartSourcePrefix();
@@ -447,7 +488,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 	{
 		StringBuilder buffer = new StringBuilder();
 		Slice pos = getStartPos();
-		InterpretedTemplate template = getTemplate();
+		Template template = getTemplate();
 		String source = template.getFullSource();
 
 		String prefix = getStartSourcePrefix().replace("```", "");
@@ -468,7 +509,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 	{
 		StringBuilder buffer = new StringBuilder();
 		Slice pos = getStartPos();
-		InterpretedTemplate template = getTemplate();
+		Template template = getTemplate();
 		String source = template.getFullSource();
 
 		String prefix = getStartSourcePrefix();
@@ -607,7 +648,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 
 	public String getUL4ONName()
 	{
-		return "de.livinglogic.ul4." + getType();
+		return getTypeUL4().getUL4ONName();
 	}
 
 	public void dumpUL4ON(Encoder encoder) throws IOException
@@ -618,7 +659,7 @@ public abstract class AST implements UL4ONSerializable, UL4GetAttr, UL4Dir, UL4R
 
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
-		template = (InterpretedTemplate)decoder.load();
+		template = (Template)decoder.load();
 		setStartPos((Slice)decoder.load());
 		setStopPos(null);
 	}

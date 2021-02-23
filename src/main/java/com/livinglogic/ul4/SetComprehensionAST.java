@@ -17,12 +17,40 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SetComprehensionAST extends CodeAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "SetComprehensionAST", "de.livinglogic.ul4.setcomp", "An set comprehension.");
+		}
+
+		@Override
+		public SetComprehensionAST create(String id)
+		{
+			return new SetComprehensionAST(null, null, null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof SetComprehensionAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected CodeAST item;
 	protected Object varname;
 	protected CodeAST container;
 	protected CodeAST condition;
 
-	public SetComprehensionAST(InterpretedTemplate template, Slice pos, CodeAST item, Object varname, CodeAST container, CodeAST condition)
+	public SetComprehensionAST(Template template, Slice pos, CodeAST item, Object varname, CodeAST container, CodeAST condition)
 	{
 		super(template, pos);
 		this.item = item;

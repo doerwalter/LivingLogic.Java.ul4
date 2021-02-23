@@ -17,13 +17,48 @@ import java.util.Map;
  * Also when the function requires arguments {@link #getSignature} must be
  * overwritten.</p>
  */
-public abstract class Function implements UL4Call, UL4Name, UL4Type, UL4Repr
+public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 {
-	public abstract String nameUL4();
-
-	public String typeUL4()
+	protected static class Type extends AbstractInstanceType
 	{
-		return "function";
+		public Type()
+		{
+			super(null, "function", null, "A callable object (i.e. a function etc.).");
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof Function || object instanceof FunctionWithContext;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	protected Function()
+	{
+	}
+
+	public String getModuleName()
+	{
+		return null;
+	}
+
+	public abstract String getNameUL4();
+
+	@Override
+	public String getFullNameUL4()
+	{
+		String moduleName = getModuleName();
+		if (moduleName != null)
+			return moduleName + "." + getNameUL4();
+		return getNameUL4();
 	}
 
 	private static final Signature signature = new Signature(); // default signature: no arguments
@@ -59,7 +94,7 @@ public abstract class Function implements UL4Call, UL4Name, UL4Type, UL4Repr
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
 		formatter.append("<function ");
-		formatter.append(nameUL4());
+		formatter.append(getFullNameUL4());
 		formatter.append(">");
 	}
 }

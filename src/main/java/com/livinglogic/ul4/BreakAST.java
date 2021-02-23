@@ -6,9 +6,37 @@
 
 package com.livinglogic.ul4;
 
-class BreakAST extends CodeAST
+public class BreakAST extends CodeAST
 {
-	public BreakAST(InterpretedTemplate template, Slice pos)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "BreakAST", "de.livinglogic.ul4.break", "A break tag.");
+		}
+
+		@Override
+		public BreakAST create(String id)
+		{
+			return new BreakAST(null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof BreakAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public BreakAST(Template template, Slice pos)
 	{
 		super(template, pos);
 	}

@@ -19,9 +19,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class UnpackDictArgumentAST extends ArgumentASTBase
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "UnpackDictArgumentAST", "de.livinglogic.ul4.unpackdictarg", "A keyword unpacking argument.");
+		}
+
+		@Override
+		public UnpackDictArgumentAST create(String id)
+		{
+			return new UnpackDictArgumentAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof UnpackDictArgumentAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	AST value;
 
-	public UnpackDictArgumentAST(InterpretedTemplate template, Slice pos, AST value)
+	public UnpackDictArgumentAST(Template template, Slice pos, AST value)
 	{
 		super(template, pos);
 		this.value = value;

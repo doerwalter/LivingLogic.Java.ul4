@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 abstract class ConditionalBlock extends BlockAST
 {
-	public ConditionalBlock(InterpretedTemplate template, Slice startPos, Slice stopPos)
+	public ConditionalBlock(Template template, Slice startPos, Slice stopPos)
 	{
 		super(template, startPos, stopPos);
 	}

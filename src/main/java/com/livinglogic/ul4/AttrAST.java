@@ -19,10 +19,38 @@ import com.livinglogic.ul4on.Encoder;
 
 public class AttrAST extends CodeAST implements LValue
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "AttrAST", "de.livinglogic.ul4.attr", "An attribute access.");
+		}
+
+		@Override
+		public AttrAST create(String id)
+		{
+			return new AttrAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof AttrAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected AST obj;
 	protected String attrname;
 
-	public AttrAST(InterpretedTemplate template, Slice pos, AST obj, String attrname)
+	public AttrAST(Template template, Slice pos, AST obj, String attrname)
 	{
 		super(template, pos);
 		this.obj = obj;

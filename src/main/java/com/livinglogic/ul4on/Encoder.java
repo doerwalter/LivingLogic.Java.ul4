@@ -25,6 +25,8 @@ import com.livinglogic.ul4.UL4Repr;
 import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.UL4Dir;
 import com.livinglogic.ul4.UL4Type;
+import com.livinglogic.ul4.UL4Instance;
+import com.livinglogic.ul4.AbstractInstanceType;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
@@ -38,6 +40,7 @@ import com.livinglogic.ul4.BoundDateMethodMinute;
 import com.livinglogic.ul4.BoundDateMethodSecond;
 import com.livinglogic.ul4.BoundDateMethodMicrosecond;
 import com.livinglogic.ul4.AttributeException;
+import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.BoundMethod;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.BoundArguments;
@@ -50,8 +53,49 @@ import static com.livinglogic.utils.SetUtils.makeSet;
  * {@code Writer} object using the UL4ON serialization format (or returning
  * such an object dump as a string).
  */
-public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type
+public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4on", "Encoder", null, "An UL4ON encoder");
+		}
+
+		private static final Signature signature = new Signature("indent", null);
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object create(BoundArguments arguments)
+		{
+			Object indent = arguments.get(0);
+
+			if (indent != null && !(indent instanceof String))
+				throw new ArgumentTypeMismatchException("{}({!t}) not supported", getFullNameUL4(), indent);
+
+			return new Encoder((String)indent);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof Encoder;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	/**
 	 * The {@code Writer} instance where the final output currently will be written.
 	 * Set temporarily during calls to {@code dump}, so that the argument doesn't
@@ -401,7 +445,7 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "dumps";
 		}
@@ -419,11 +463,5 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Type
 		{
 			return object.dumps(arguments.get(0));
 		}
-	}
-
-	@Override
-	public String typeUL4()
-	{
-		return "ul4on.Encoder";
 	}
 }

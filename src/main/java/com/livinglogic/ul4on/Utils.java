@@ -18,6 +18,8 @@ import java.util.Map;
 
 import com.livinglogic.ul4.FunctionRepr;
 import com.livinglogic.ul4.SyntaxException;
+import com.livinglogic.ul4.UL4Type;
+
 
 /**
  * Utility class for reading and writing the UL4ON object serialization format.
@@ -56,6 +58,18 @@ public class Utils
 	public static void register(String name, ObjectFactory factory)
 	{
 		registry.put(name, factory);
+	}
+
+	/**
+	 * Register a class for the UL4ON serialization machinery via an
+	 * {@link UL4Type} object. The UL4ON type name will be the name of the type
+	 * object, and the type object itself will be the object factory.
+	 *
+	 * @param type a {@link UL4Type} for the target class.
+	 */
+	public static void register(UL4Type type)
+	{
+		registry.put(type.getUL4ONName(), type);
 	}
 
 	/**

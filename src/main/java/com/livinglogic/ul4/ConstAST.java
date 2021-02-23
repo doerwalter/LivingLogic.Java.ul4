@@ -16,9 +16,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class ConstAST extends CodeAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "ConstAST", "de.livinglogic.ul4.const", "A constant.");
+		}
+
+		@Override
+		public ConstAST create(String id)
+		{
+			return new ConstAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof ConstAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected Object value;
 
-	public ConstAST(InterpretedTemplate template, Slice startPos, Object value)
+	public ConstAST(Template template, Slice startPos, Object value)
 	{
 		super(template, startPos);
 		this.value = value;

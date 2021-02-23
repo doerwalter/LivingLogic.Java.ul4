@@ -16,9 +16,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class VarAST extends CodeAST implements LValue
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "VarAST", "de.livinglogic.ul4.var", "A variable.");
+		}
+
+		@Override
+		public VarAST create(String id)
+		{
+			return new VarAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof VarAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected String name;
 
-	public VarAST(InterpretedTemplate template, Slice pos, String name)
+	public VarAST(Template template, Slice pos, String name)
 	{
 		super(template, pos);
 		this.name = name;

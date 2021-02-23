@@ -10,18 +10,21 @@ import java.util.List;
 
 public class FunctionXMLEscape extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "xmlescape";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -78,4 +81,6 @@ public class FunctionXMLEscape extends Function
 	{
 		return call(FunctionStr.call(obj));
 	}
+
+	public static Function function = new FunctionXMLEscape();
 }

@@ -10,18 +10,21 @@ import java.util.List;
 
 public class FunctionIsNone extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "isnone";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -31,4 +34,6 @@ public class FunctionIsNone extends Function
 	{
 		return obj == null;
 	}
+
+	public static Function function = new FunctionIsNone();
 }

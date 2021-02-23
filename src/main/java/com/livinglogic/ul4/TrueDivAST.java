@@ -12,7 +12,35 @@ import java.math.MathContext;
 
 public class TrueDivAST extends BinaryAST
 {
-	public TrueDivAST(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "TrueDivAST", "de.livinglogic.ul4.truediv", "An \"true division\" expression (x / y).");
+		}
+
+		@Override
+		public TrueDivAST create(String id)
+		{
+			return new TrueDivAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof TrueDivAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public TrueDivAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		super(template, pos, obj1, obj2);
 	}
@@ -22,7 +50,7 @@ public class TrueDivAST extends BinaryAST
 		return "truediv";
 	}
 
-	public static CodeAST make(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public static CodeAST make(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{

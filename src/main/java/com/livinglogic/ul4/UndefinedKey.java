@@ -8,6 +8,28 @@ package com.livinglogic.ul4;
 
 public class UndefinedKey extends Undefined
 {
+	protected static class Type extends Undefined.Type
+	{
+		public Type()
+		{
+			super(null, "undefinedkey", null, "The result of accessing an undefined attribute, dictionary key or list index.");
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof UndefinedKey;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	private Object key;
 
 	public UndefinedKey(Object key)

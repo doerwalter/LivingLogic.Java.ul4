@@ -18,9 +18,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class UnpackSeqItemAST extends SeqItemASTBase
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "UnpackSeqItemAST", "de.livinglogic.ul4.unpackseqitem", "An item in a sequence that unpacks another sequence.");
+		}
+
+		@Override
+		public UnpackSeqItemAST create(String id)
+		{
+			return new UnpackSeqItemAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof UnpackSeqItemAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected AST value;
 
-	public UnpackSeqItemAST(InterpretedTemplate template, Slice pos, AST value)
+	public UnpackSeqItemAST(Template template, Slice pos, AST value)
 	{
 		super(template, pos);
 		this.value = value;

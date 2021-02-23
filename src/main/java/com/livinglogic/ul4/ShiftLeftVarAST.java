@@ -8,7 +8,35 @@ package com.livinglogic.ul4;
 
 public class ShiftLeftVarAST extends ChangeVarAST
 {
-	public ShiftLeftVarAST(InterpretedTemplate template, Slice pos, LValue lvalue, AST value)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "ShiftLeftVarAST", "de.livinglogic.ul4.shiftleftvar", "An augmented left shift assignment (x <<= y).");
+		}
+
+		@Override
+		public ShiftLeftVarAST create(String id)
+		{
+			return new ShiftLeftVarAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof ShiftLeftVarAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public ShiftLeftVarAST(Template template, Slice pos, LValue lvalue, AST value)
 	{
 		super(template, pos, lvalue, value);
 	}

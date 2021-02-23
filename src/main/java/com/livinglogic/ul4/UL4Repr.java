@@ -454,4 +454,6 @@ public interface UL4Repr
 			return false;
 		}
 	}
+
+	public static Function function = new FunctionRepr();
 }

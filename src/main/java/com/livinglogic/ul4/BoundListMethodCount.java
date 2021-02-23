@@ -17,7 +17,7 @@ public class BoundListMethodCount extends BoundMethod<List>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "count";
 	}

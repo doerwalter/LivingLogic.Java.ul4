@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -33,6 +34,9 @@ import org.junit.runner.RunWith;
 import org.apache.commons.lang3.StringUtils;
 
 import com.livinglogic.ul4.Utils;
+import com.livinglogic.ul4.UL4Type;
+import com.livinglogic.ul4.UL4Instance;
+import com.livinglogic.ul4.AbstractInstanceType;
 import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.MissingArgumentException;
@@ -45,7 +49,7 @@ import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.SyntaxException;
 import com.livinglogic.ul4.LocationException;
 import com.livinglogic.ul4.EvaluationContext;
-import com.livinglogic.ul4.InterpretedTemplate;
+import com.livinglogic.ul4.Template;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.FunctionDate;
 import com.livinglogic.ul4.FunctionDateTime;
@@ -67,8 +71,30 @@ import com.livinglogic.dbutils.Connection;
 @RunWith(CauseTestRunner.class)
 public class UL4Test
 {
-	private static class Point implements UL4Bool, UL4GetAttr, UL4SetAttr, UL4Dir
+	private static class Point implements UL4Instance, UL4Bool, UL4GetAttr, UL4SetAttr, UL4Dir
 	{
+		protected static class Type extends AbstractInstanceType
+		{
+			public Type()
+			{
+				super(null, "Point", null, "A 2D point");
+			}
+
+			@Override
+			public boolean instanceCheck(Object object)
+			{
+				return object instanceof Point;
+			}
+		}
+
+		public static UL4Type type = new Type();
+
+		@Override
+		public UL4Type getTypeUL4()
+		{
+			return type;
+		}
+
 		int x;
 		int y;
 
@@ -166,74 +192,74 @@ public class UL4Test
 		return makeMap(args);
 	}
 
-	private static InterpretedTemplate T(String source)
+	private static Template T(String source)
 	{
-		return T(source, null, InterpretedTemplate.Whitespace.strip, (Signature)null);
+		return T(source, null, Template.Whitespace.strip, (Signature)null);
 	}
 
 
-	private static InterpretedTemplate T(String source, String name)
+	private static Template T(String source, String name)
 	{
-		return T(source, name, InterpretedTemplate.Whitespace.strip, (Signature)null);
+		return T(source, name, Template.Whitespace.strip, (Signature)null);
 	}
 
-	private static InterpretedTemplate T(String source, InterpretedTemplate.Whitespace whitespace)
+	private static Template T(String source, Template.Whitespace whitespace)
 	{
 		return T(source, null, whitespace, (Signature)null);
 	}
 
-	private static InterpretedTemplate T(String source, String name, InterpretedTemplate.Whitespace whitespace)
+	private static Template T(String source, String name, Template.Whitespace whitespace)
 	{
 		return T(source, name, whitespace, (Signature)null);
 	}
 
-	private static InterpretedTemplate T(String source, String name, InterpretedTemplate.Whitespace whitespace, String signature)
+	private static Template T(String source, String name, Template.Whitespace whitespace, String signature)
 	{
-		InterpretedTemplate template = new InterpretedTemplate(source, name, whitespace, null, null, signature);
+		Template template = new Template(source, name, whitespace, null, null, signature);
 		// System.out.println(template);
 		return template;
 	}
 
-	private static InterpretedTemplate T(String source, String name, InterpretedTemplate.Whitespace whitespace, Signature signature)
+	private static Template T(String source, String name, Template.Whitespace whitespace, Signature signature)
 	{
-		InterpretedTemplate template = new InterpretedTemplate(source, name, whitespace, null, null, signature);
+		Template template = new Template(source, name, whitespace, null, null, signature);
 		// System.out.println(template);
 		return template;
 	}
 
-	public static void checkOutput(String expected, InterpretedTemplate template)
+	public static void checkOutput(String expected, Template template)
 	{
 		checkOutput(expected, template, -1, null, null);
 	}
 
-	public static void checkOutput(String expected, InterpretedTemplate template, Map<String, Object> variables)
+	public static void checkOutput(String expected, Template template, Map<String, Object> variables)
 	{
 		checkOutput(expected, template, -1, null, variables);
 	}
 
-	public static void checkOutput(String expected, InterpretedTemplate template, long milliseconds)
+	public static void checkOutput(String expected, Template template, long milliseconds)
 	{
 		checkOutput(expected, template, milliseconds, null, null);
 	}
 
-	public static void checkOutput(String expected, InterpretedTemplate template, long milliseconds, Map<String, Object> variables)
+	public static void checkOutput(String expected, Template template, long milliseconds, Map<String, Object> variables)
 	{
 		checkOutput(expected, template, milliseconds, null, variables);
 	}
 
-	public static void checkOutput(String expected, InterpretedTemplate template, Map<String, Object> globalVariables, Map<String, Object> variables)
+	public static void checkOutput(String expected, Template template, Map<String, Object> globalVariables, Map<String, Object> variables)
 	{
 		checkOutput(expected, template, -1, globalVariables, variables);
 	}
 
-	public static void checkOutput(String expected, InterpretedTemplate template, long milliseconds, Map<String, Object> globalVariables, Map<String, Object> variables)
+	public static void checkOutput(String expected, Template template, long milliseconds, Map<String, Object> globalVariables, Map<String, Object> variables)
 	{
 		// Render the template once directly
 		String output1 = template.renders(milliseconds, globalVariables, variables);
 		assertEquals(expected, output1);
 
 		// Recreate the template from the dump of the compiled template
-		InterpretedTemplate template2 = InterpretedTemplate.loads(template.dumps());
+		Template template2 = Template.loads(template.dumps());
 
 		// Check that the templates format the same
 		assertEquals(template.toString(), template2.toString());
@@ -243,19 +269,19 @@ public class UL4Test
 		assertEquals(expected, output2);
 	}
 
-	private static void checkResult(Object expected, InterpretedTemplate template)
+	private static void checkResult(Object expected, Template template)
 	{
 		checkResult(expected, template, null);
 	}
 
-	private static void checkResult(Object expected, InterpretedTemplate template, Map<String, Object> variables)
+	private static void checkResult(Object expected, Template template, Map<String, Object> variables)
 	{
 		// Execute the template once by directly compiling and calling it
 		Object output1 = template.call(variables);
 		assertEquals(expected, output1);
 
 		// Recreate the template from the dump of the compiled template
-		InterpretedTemplate template2 = InterpretedTemplate.loads(template.dumps());
+		Template template2 = Template.loads(template.dumps());
 
 		// Check that the templates format the same
 		assertEquals(template.toString(), template2.toString());
@@ -543,7 +569,7 @@ public class UL4Test
 	@Test
 	public void addvar()
 	{
-		InterpretedTemplate t = T("<?code x += y?><?print x?>");
+		Template t = T("<?code x += y?><?print x?>");
 		checkOutput("40", t, V("x", 17, "y", 23));
 		checkOutput("40.0", t, V("x", 17, "y", 23.0));
 		checkOutput("40.0", t, V("x", 17.0, "y", 23));
@@ -558,7 +584,7 @@ public class UL4Test
 	@Test
 	public void subvar()
 	{
-		InterpretedTemplate t = T("<?code x -= y?><?print x?>");
+		Template t = T("<?code x -= y?><?print x?>");
 		checkOutput("-6", t, V("x", 17, "y", 23));
 		checkOutput("-6.0", t, V("x", 17, "y", 23.0));
 		checkOutput("-6.0", t, V("x", 17.0, "y", 23));
@@ -572,7 +598,7 @@ public class UL4Test
 	@Test
 	public void mulvar()
 	{
-		InterpretedTemplate t = T("<?code x *= y?><?print x?>");
+		Template t = T("<?code x *= y?><?print x?>");
 		checkOutput("391", t, V("x", 17, "y", 23));
 		checkOutput("391.0", t, V("x", 17, "y", 23.0));
 		checkOutput("391.0", t, V("x", 17.0, "y", 23));
@@ -592,7 +618,7 @@ public class UL4Test
 	@Test
 	public void floordivvar()
 	{
-		InterpretedTemplate t = T("<?code x //= y?><?print x?>");
+		Template t = T("<?code x //= y?><?print x?>");
 		checkOutput("2", t, V("x", 5, "y", 2));
 		checkOutput("-3", t, V("x", 5, "y", -2));
 		checkOutput("-3", t, V("x", -5, "y", 2));
@@ -608,7 +634,7 @@ public class UL4Test
 	@Test
 	public void truedivvar()
 	{
-		InterpretedTemplate t = T("<?code x /= y?><?print x?>");
+		Template t = T("<?code x /= y?><?print x?>");
 		checkOutput("2.5", t, V("x", 5, "y", 2));
 		checkOutput("-2.5", t, V("x", 5, "y", -2));
 		checkOutput("-2.5", t, V("x", -5, "y", 2));
@@ -625,7 +651,7 @@ public class UL4Test
 	@Test
 	public void modvar()
 	{
-		InterpretedTemplate t = T("<?code x %= y?><?print x?>");
+		Template t = T("<?code x %= y?><?print x?>");
 		checkOutput("4", t, V("x", 1729, "y", 23));
 		checkOutput("19", t, V("x", -1729, "y", 23));
 		checkOutput("19", t, V("x", -1729, "y", 23));
@@ -641,7 +667,7 @@ public class UL4Test
 	@Test
 	public void leftshiftvar()
 	{
-		InterpretedTemplate t = T("<?code x <<= y?><?print x?>");
+		Template t = T("<?code x <<= y?><?print x?>");
 
 		checkOutput("1", t, V("x", true, "y", false));
 		checkOutput("2", t, V("x", true, "y", true));
@@ -656,7 +682,7 @@ public class UL4Test
 	@Test
 	public void rightshiftvar()
 	{
-		InterpretedTemplate t = T("<?code x >>= y?><?print x?>");
+		Template t = T("<?code x >>= y?><?print x?>");
 
 		checkOutput("1", t, V("x", true, "y", false));
 		checkOutput("0", t, V("x", true, "y", true));
@@ -671,7 +697,7 @@ public class UL4Test
 	@Test
 	public void bitandvar()
 	{
-		InterpretedTemplate t = T("<?code x &= y?><?print x?>");
+		Template t = T("<?code x &= y?><?print x?>");
 
 		checkOutput("0", t, V("x", false, "y", false));
 		checkOutput("0", t, V("x", false, "y", true));
@@ -686,7 +712,7 @@ public class UL4Test
 	@Test
 	public void bitxorvar()
 	{
-		InterpretedTemplate t = T("<?code x ^= y?><?print x?>");
+		Template t = T("<?code x ^= y?><?print x?>");
 
 		checkOutput("0", t, V("x", false, "y", false));
 		checkOutput("1", t, V("x", false, "y", true));
@@ -701,7 +727,7 @@ public class UL4Test
 	@Test
 	public void bitorvar()
 	{
-		InterpretedTemplate t = T("<?code x |= y?><?print x?>");
+		Template t = T("<?code x |= y?><?print x?>");
 
 		checkOutput("0", t, V("x", false, "y", false));
 		checkOutput("1", t, V("x", false, "y", true));
@@ -716,7 +742,7 @@ public class UL4Test
 	@Test
 	public void tag_for_string()
 	{
-		InterpretedTemplate t = T("<?for c in data?>(<?print c?>)<?end for?>");
+		Template t = T("<?for c in data?>(<?print c?>)<?end for?>");
 		checkOutput("", t, V("data", ""));
 		checkOutput("(g)(u)(r)(k)", t, V("data", "gurk"));
 	}
@@ -724,7 +750,7 @@ public class UL4Test
 	@Test
 	public void tag_for_list()
 	{
-		InterpretedTemplate t = T("<?for c in data?>(<?print c?>)<?end for?>");
+		Template t = T("<?for c in data?>(<?print c?>)<?end for?>");
 		checkOutput("", t, V("data", asList()));
 		checkOutput("(g)(u)(r)(k)", t, V("data", asList("g", "u", "r", "k")));
 	}
@@ -732,7 +758,7 @@ public class UL4Test
 	@Test
 	public void tag_for_dict()
 	{
-		InterpretedTemplate t = T("<?for c in sorted(data)?>(<?print c?>)<?end for?>");
+		Template t = T("<?for c in sorted(data)?>(<?print c?>)<?end for?>");
 		checkOutput("", t, V("data", V()));
 		checkOutput("(a)(b)(c)", t, V("data", V("a", 1, "b", 2, "c", 3)));
 	}
@@ -740,7 +766,7 @@ public class UL4Test
 	@Test
 	public void tag_for_nested_loop()
 	{
-		InterpretedTemplate t = T("<?for list in data?>[<?for n in list?>(<?print n?>)<?end for?>]<?end for?>");
+		Template t = T("<?for list in data?>[<?for n in list?>(<?print n?>)<?end for?>]<?end for?>");
 		checkOutput("[(1)(2)][(3)(4)]", t, V("data", asList(asList(1, 2), asList(3, 4))));
 	}
 
@@ -858,7 +884,7 @@ public class UL4Test
 	@Test
 	public void tag_else()
 	{
-		InterpretedTemplate t = T("<?if data?><?print data?><?else?>no<?end if?>");
+		Template t = T("<?if data?><?print data?><?else?>no<?end if?>");
 		checkOutput("42", t, V("data", 42));
 		checkOutput("no", t, V("data", 0));
 	}
@@ -895,7 +921,7 @@ public class UL4Test
 	@Test
 	public void operator_add()
 	{
-		InterpretedTemplate t = T("<?print x + y?>");
+		Template t = T("<?print x + y?>");
 
 		checkOutput("0", t, V("x", false, "y", false));
 		checkOutput("1", t, V("x", false, "y", true));
@@ -940,7 +966,7 @@ public class UL4Test
 	@Test
 	public void operator_sub()
 	{
-		InterpretedTemplate t = T("<?print x - y?>");
+		Template t = T("<?print x - y?>");
 
 		checkOutput("0", t, V("x", false, "y", false));
 		checkOutput("-1", t, V("x", false, "y", true));
@@ -1013,7 +1039,7 @@ public class UL4Test
 	@Test
 	public void operator_neg()
 	{
-		InterpretedTemplate t = T("<?print -x?>");
+		Template t = T("<?print -x?>");
 
 		checkOutput("0", t, V("x", false));
 		checkOutput("-1", t, V("x", true));
@@ -1033,7 +1059,7 @@ public class UL4Test
 	@Test
 	public void operator_bitnot()
 	{
-		InterpretedTemplate t = T("<?print ~x?>");
+		Template t = T("<?print ~x?>");
 
 		checkOutput("-1", t, V("x", false));
 		checkOutput("-2", t, V("x", true));
@@ -1047,7 +1073,7 @@ public class UL4Test
 	@Test
 	public void operator_mul()
 	{
-		InterpretedTemplate t = T("<?print x * y?>");
+		Template t = T("<?print x * y?>");
 
 		checkOutput("0", t, V("x", false, "y", false));
 		checkOutput("0", t, V("x", false, "y", false));
@@ -1081,7 +1107,7 @@ public class UL4Test
 	@Test
 	public void operator_truediv()
 	{
-		InterpretedTemplate t = T("<?print x / y?>");
+		Template t = T("<?print x / y?>");
 
 		checkOutput("0.0", t, V("x", false, "y", true));
 		checkOutput("1.0", t, V("x", true, "y", true));
@@ -1106,7 +1132,7 @@ public class UL4Test
 	@Test
 	public void operator_floordiv()
 	{
-		InterpretedTemplate t = T("<?print x // y?>");
+		Template t = T("<?print x // y?>");
 
 		checkOutput("0", t, V("x", false, "y", true));
 		checkOutput("1", t, V("x", true, "y", true));
@@ -1126,7 +1152,7 @@ public class UL4Test
 	@Test
 	public void operator_mod()
 	{
-		InterpretedTemplate t = T("<?print x % y?>");
+		Template t = T("<?print x % y?>");
 
 		checkOutput("0", t, V("x", false, "y", true));
 		checkOutput("0", t, V("x", true, "y", true));
@@ -1140,7 +1166,7 @@ public class UL4Test
 	@Test
 	public void operator_leftshift()
 	{
-		InterpretedTemplate t = T("<?print x << y?>");
+		Template t = T("<?print x << y?>");
 
 		checkOutput("1", t, V("x", true, "y", false));
 		checkOutput("2", t, V("x", true, "y", true));
@@ -1158,7 +1184,7 @@ public class UL4Test
 	@Test
 	public void operator_rightshift()
 	{
-		InterpretedTemplate t = T("<?print x >> y?>");
+		Template t = T("<?print x >> y?>");
 
 		checkOutput("1", t, V("x", true, "y", false));
 		checkOutput("0", t, V("x", true, "y", true));
@@ -1176,7 +1202,7 @@ public class UL4Test
 	@Test
 	public void operator_bitand()
 	{
-		InterpretedTemplate t = T("<?print x & y?>");
+		Template t = T("<?print x & y?>");
 
 		checkOutput("2", T("<?print 3 & 6?>"));
 		checkOutput("1", T("<?print True & True?>"));
@@ -1193,7 +1219,7 @@ public class UL4Test
 	@Test
 	public void operator_bitxor()
 	{
-		InterpretedTemplate t = T("<?print x ^ y?>");
+		Template t = T("<?print x ^ y?>");
 
 		checkOutput("5", T("<?print 3 ^ 6?>"));
 		checkOutput("0", T("<?print True ^ True?>"));
@@ -1210,7 +1236,7 @@ public class UL4Test
 	@Test
 	public void operator_bitor()
 	{
-		InterpretedTemplate t = T("<?print x | y?>");
+		Template t = T("<?print x | y?>");
 
 		checkOutput("7", T("<?print 3 | 6?>"));
 		checkOutput("1", T("<?print False | True?>"));
@@ -1227,7 +1253,7 @@ public class UL4Test
 	@Test
 	public void operator_is()
 	{
-		InterpretedTemplate t = T("<?print x is y?>");
+		Template t = T("<?print x is y?>");
 
 		checkOutput("True", t, V("x", null, "y", null));
 
@@ -1245,7 +1271,7 @@ public class UL4Test
 	@Test
 	public void operator_isnot()
 	{
-		InterpretedTemplate t = T("<?print x is not y?>");
+		Template t = T("<?print x is not y?>");
 
 		checkOutput("False", t, V("x", null, "y", null));
 
@@ -1263,7 +1289,7 @@ public class UL4Test
 	@Test
 	public void operator_eq()
 	{
-		InterpretedTemplate t = T("<?print x == y?>");
+		Template t = T("<?print x == y?>");
 
 		checkOutput("True", t, V("x", null, "y", null));
 		checkOutput("False", t, V("x", null, "y", 42));
@@ -1329,7 +1355,7 @@ public class UL4Test
 	@Test
 	public void operator_ne()
 	{
-		InterpretedTemplate t = T("<?print x != y?>");
+		Template t = T("<?print x != y?>");
 
 		checkOutput("False", t, V("x", null, "y", null));
 		checkOutput("True", t, V("x", null, "y", 42));
@@ -1388,7 +1414,7 @@ public class UL4Test
 	@Test
 	public void operator_lt()
 	{
-		InterpretedTemplate t = T("<?print x < y?>");
+		Template t = T("<?print x < y?>");
 
 		checkOutput("True", t, V("x", false, "y", true));
 		checkOutput("False", t, V("x", true, "y", true));
@@ -1420,7 +1446,7 @@ public class UL4Test
 	@Test
 	public void operator_le()
 	{
-		InterpretedTemplate t = T("<?print x <= y?>");
+		Template t = T("<?print x <= y?>");
 
 		checkOutput("True", t, V("x", false, "y", true));
 		checkOutput("True", t, V("x", true, "y", true));
@@ -1456,7 +1482,7 @@ public class UL4Test
 	@Test
 	public void operator_gt()
 	{
-		InterpretedTemplate t = T("<?print x > y?>");
+		Template t = T("<?print x > y?>");
 
 		checkOutput("False", t, V("x", false, "y", true));
 		checkOutput("False", t, V("x", true, "y", true));
@@ -1490,7 +1516,7 @@ public class UL4Test
 	@Test
 	public void operator_ge()
 	{
-		InterpretedTemplate t = T("<?print x >= y?>");
+		Template t = T("<?print x >= y?>");
 
 		checkOutput("False", t, V("x", false, "y", true));
 		checkOutput("True", t, V("x", true, "y", true));
@@ -1526,7 +1552,7 @@ public class UL4Test
 	@Test
 	public void operator_contains()
 	{
-		InterpretedTemplate t = T("<?print x in y?>");
+		Template t = T("<?print x in y?>");
 
 		checkOutput("True", t, V("x", 2, "y", asList(1, 2, 3)));
 		checkOutput("False", t, V("x", 4, "y", asList(1, 2, 3)));
@@ -1543,7 +1569,7 @@ public class UL4Test
 	@Test
 	public void operator_notcontains()
 	{
-		InterpretedTemplate t = T("<?print x not in y?>");
+		Template t = T("<?print x not in y?>");
 
 		checkOutput("False", t, V("x", 2, "y", asList(1, 2, 3)));
 		checkOutput("True", t, V("x", 4, "y", asList(1, 2, 3)));
@@ -1560,7 +1586,7 @@ public class UL4Test
 	@Test
 	public void operator_and()
 	{
-		InterpretedTemplate t = T("<?print x and y?>");
+		Template t = T("<?print x and y?>");
 
 		checkOutput("False", t, V("x", false, "y", false));
 		checkOutput("False", t, V("x", false, "y", true));
@@ -1570,7 +1596,7 @@ public class UL4Test
 	@Test
 	public void operator_or()
 	{
-		InterpretedTemplate t = T("<?print x or y?>");
+		Template t = T("<?print x or y?>");
 
 		checkOutput("False", t, V("x", false, "y", false));
 		checkOutput("True", t, V("x", false, "y", true));
@@ -1580,7 +1606,7 @@ public class UL4Test
 	@Test
 	public void operator_not()
 	{
-		InterpretedTemplate t = T("<?print not x?>");
+		Template t = T("<?print not x?>");
 
 		checkOutput("True", t, V("x", false));
 		checkOutput("False", t, V("x", 42));
@@ -1589,7 +1615,7 @@ public class UL4Test
 	@Test
 	public void expression_if()
 	{
-		InterpretedTemplate t = T("<?print x if y else z?>");
+		Template t = T("<?print x if y else z?>");
 
 		checkOutput("23", t, V("x", 17, "y", false, "z", 23));
 		checkOutput("17", t, V("x", 17, "y", true, "z", 23));
@@ -1837,6 +1863,7 @@ public class UL4Test
 		checkOutput("-1 day, 23:59:59.500000", T("<?print timedelta(0, -0.5)?>"));
 		checkOutput("1 day, 0:00:01.000001", T("<?print timedelta(days=1, seconds=1, microseconds=1)?>"));
 	}
+
 	@Test
 	public void function_monthdelta()
 	{
@@ -1845,6 +1872,14 @@ public class UL4Test
 		checkOutput("2 months", T("<?print monthdelta(2)?>"));
 		checkOutput("-1 month", T("<?print monthdelta(-1)?>"));
 		checkOutput("1 month", T("<?print monthdelta(months=1)?>"));
+	}
+
+	@Test
+	public void function_color()
+	{
+		checkOutput("#000", T("<?print repr(color(0, 0, 0))?>"));
+		checkOutput("#0000", T("<?print repr(color(0, 0, 0, 0))?>"));
+		checkOutput("#369c", T("<?print repr(color(51, 102, 153, 204))?>"));
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
@@ -2069,7 +2104,7 @@ public class UL4Test
 	@Test
 	public void function_str()
 	{
-		InterpretedTemplate t = T("<?print str(data)?>");
+		Template t = T("<?print str(data)?>");
 
 		checkOutput("", T("<?print str()?>"));
 		checkOutput("", t, V("data", null));
@@ -2098,7 +2133,7 @@ public class UL4Test
 	public void function_bool()
 	{
 		checkOutput("False", T("<?print bool()?>"));
-		InterpretedTemplate t = T("<?print bool(data)?>");
+		Template t = T("<?print bool(data)?>");
 
 		checkOutput("True", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -2175,7 +2210,7 @@ public class UL4Test
 	@Test
 	public void function_float()
 	{
-		InterpretedTemplate t = T("<?print float(data)?>");
+		Template t = T("<?print float(data)?>");
 
 		checkOutput("0.0", T("<?print float()?>"));
 		checkOutput("1.0", t, V("data", true));
@@ -2207,7 +2242,7 @@ public class UL4Test
 	public void function_list()
 	{
 		checkOutput("[]", T("<?print list()?>"));
-		InterpretedTemplate t = T("<?print list(data)?>");
+		Template t = T("<?print list(data)?>");
 
 		checkOutput("[1, 2]", t, V("data", asList(1, 2)));
 		checkOutput("['g', 'u', 'r', 'k']", t, V("data", "gurk"));
@@ -2227,7 +2262,7 @@ public class UL4Test
 	@Test
 	public void function_len()
 	{
-		InterpretedTemplate t = T("<?print len(data)?>");
+		Template t = T("<?print len(data)?>");
 
 		checkOutput("3", t, V("data", "foo"));
 		checkOutput("3", t, V("data", asList(1, 2, 3)));
@@ -2343,15 +2378,15 @@ public class UL4Test
 	@Test
 	public void function_enumerate()
 	{
-		InterpretedTemplate template1 = T("<?for (i, value) in enumerate(data)?>(<?print value?>=<?print i?>)<?end for?>");
+		Template template1 = T("<?for (i, value) in enumerate(data)?>(<?print value?>=<?print i?>)<?end for?>");
 		checkOutput("(f=0)(o=1)(o=2)", template1, V("data", "foo"));
 		checkOutput("(foo=0)(bar=1)", template1, V("data", asList("foo", "bar")));
 		checkOutput("(foo=0)", template1, V("data", V("foo", true)));
 
-		InterpretedTemplate template2 = T("<?for (i, value) in enumerate(data, 42)?>(<?print value?>=<?print i?>)<?end for?>");
+		Template template2 = T("<?for (i, value) in enumerate(data, 42)?>(<?print value?>=<?print i?>)<?end for?>");
 		checkOutput("(f=42)(o=43)(o=44)", template2, V("data", "foo"));
 
-		InterpretedTemplate template2kw = T("<?for (i, value) in enumerate(iterable=data, start=42)?>(<?print value?>=<?print i?>)<?end for?>");
+		Template template2kw = T("<?for (i, value) in enumerate(iterable=data, start=42)?>(<?print value?>=<?print i?>)<?end for?>");
 		checkOutput("(f=42)(o=43)(o=44)", template2kw, V("data", "foo"));
 	}
 
@@ -2400,17 +2435,17 @@ public class UL4Test
 	@Test
 	public void function_enumfl()
 	{
-		InterpretedTemplate template1 = T("<?for (i, f, l, value) in enumfl(data)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>");
+		Template template1 = T("<?for (i, f, l, value) in enumfl(data)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>");
 		checkOutput("", template1, V("data", ""));
 		checkOutput("[(?=0)]", template1, V("data", "?"));
 		checkOutput("[(f=0)(o=1)(o=2)]", template1, V("data", "foo"));
 		checkOutput("[(foo=0)(bar=1)]", template1, V("data", asList("foo", "bar")));
 		checkOutput("[(foo=0)]", template1, V("data", V("foo", true)));
 
-		InterpretedTemplate template2 = T("<?for (i, f, l, value) in enumfl(data, 42)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>");
+		Template template2 = T("<?for (i, f, l, value) in enumfl(data, 42)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>");
 		checkOutput("[(f=42)(o=43)(o=44)]", template2, V("data", "foo"));
 
-		InterpretedTemplate template2kw = T("<?for (i, f, l, value) in enumfl(iterable=data, start=42)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>");
+		Template template2kw = T("<?for (i, f, l, value) in enumfl(iterable=data, start=42)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>");
 		checkOutput("[(f=42)(o=43)(o=44)]", template2kw, V("data", "foo"));
 	}
 
@@ -2459,7 +2494,7 @@ public class UL4Test
 	@Test
 	public void function_isfirstlast()
 	{
-		InterpretedTemplate t = T("<?for (f, l, value) in isfirstlast(data)?><?if f?>[<?end if?>(<?print value?>)<?if l?>]<?end if?><?end for?>");
+		Template t = T("<?for (f, l, value) in isfirstlast(data)?><?if f?>[<?end if?>(<?print value?>)<?if l?>]<?end if?><?end for?>");
 
 		checkOutput("", t, V("data", ""));
 		checkOutput("[(?)]", t, V("data", "?"));
@@ -2467,7 +2502,7 @@ public class UL4Test
 		checkOutput("[(foo)(bar)]", t, V("data", asList("foo", "bar")));
 		checkOutput("[(foo)]", t, V("data", V("foo", true)));
 
-		InterpretedTemplate templatekw = T("<?for (f, l, value) in isfirstlast(iterable=data)?><?if f?>[<?end if?>(<?print value?>)<?if l?>]<?end if?><?end for?>");
+		Template templatekw = T("<?for (f, l, value) in isfirstlast(iterable=data)?><?if f?>[<?end if?>(<?print value?>)<?if l?>]<?end if?><?end for?>");
 		checkOutput("[(f)(o)(o)]", templatekw, V("data", "foo"));
 	}
 
@@ -2516,7 +2551,7 @@ public class UL4Test
 	@Test
 	public void function_isfirst()
 	{
-		InterpretedTemplate t = T("<?for (f, value) in isfirst(data)?><?if f?>[<?end if?>(<?print value?>)<?end for?>");
+		Template t = T("<?for (f, value) in isfirst(data)?><?if f?>[<?end if?>(<?print value?>)<?end for?>");
 
 		checkOutput("", t, V("data", ""));
 		checkOutput("[(?)", t, V("data", "?"));
@@ -2524,7 +2559,7 @@ public class UL4Test
 		checkOutput("[(foo)(bar)", t, V("data", asList("foo", "bar")));
 		checkOutput("[(foo)", t, V("data", V("foo", true)));
 
-		InterpretedTemplate templatekw = T("<?for (f, value) in isfirst(iterable=data)?><?if f?>[<?end if?>(<?print value?>)<?end for?>");
+		Template templatekw = T("<?for (f, value) in isfirst(iterable=data)?><?if f?>[<?end if?>(<?print value?>)<?end for?>");
 		checkOutput("[(f)(o)(o)", templatekw, V("data", "foo"));
 	}
 
@@ -2573,7 +2608,7 @@ public class UL4Test
 	@Test
 	public void function_islast()
 	{
-		InterpretedTemplate t = T("<?for (l, value) in islast(data)?>(<?print value?>)<?if l?>]<?end if?><?end for?>");
+		Template t = T("<?for (l, value) in islast(data)?>(<?print value?>)<?if l?>]<?end if?><?end for?>");
 
 		checkOutput("", t, V("data", ""));
 		checkOutput("(?)]", t, V("data", "?"));
@@ -2581,7 +2616,7 @@ public class UL4Test
 		checkOutput("(foo)(bar)]", t, V("data", asList("foo", "bar")));
 		checkOutput("(foo)]", t, V("data", V("foo", true)));
 
-		InterpretedTemplate templatekw = T("<?for (l, value) in islast(iterable=data)?>(<?print value?>)<?if l?>]<?end if?><?end for?>");
+		Template templatekw = T("<?for (l, value) in islast(iterable=data)?>(<?print value?>)<?if l?>]<?end if?><?end for?>");
 		checkOutput("(f)(o)(o)]", templatekw, V("data", "foo"));
 	}
 
@@ -2630,7 +2665,7 @@ public class UL4Test
 	@Test
 	public void function_isundefined()
 	{
-		InterpretedTemplate t = T("<?print isundefined(data)?>");
+		Template t = T("<?print isundefined(data)?>");
 
 		checkOutput("True", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -2667,7 +2702,7 @@ public class UL4Test
 	@Test
 	public void function_isdefined()
 	{
-		InterpretedTemplate t = T("<?print isdefined(data)?>");
+		Template t = T("<?print isdefined(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("True", t, V("data", null));
@@ -2705,7 +2740,7 @@ public class UL4Test
 	@Test
 	public void function_isnone()
 	{
-		InterpretedTemplate t = T("<?print isnone(data)?>");
+		Template t = T("<?print isnone(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("True", t, V("data", null));
@@ -2743,7 +2778,7 @@ public class UL4Test
 	@Test
 	public void function_isbool()
 	{
-		InterpretedTemplate t = T("<?print isbool(data)?>");
+		Template t = T("<?print isbool(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -2781,7 +2816,7 @@ public class UL4Test
 	@Test
 	public void function_isint()
 	{
-		InterpretedTemplate t = T("<?print isint(data)?>");
+		Template t = T("<?print isint(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -2819,7 +2854,7 @@ public class UL4Test
 	@Test
 	public void function_isfloat()
 	{
-		InterpretedTemplate t = T("<?print isfloat(data)?>");
+		Template t = T("<?print isfloat(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -2857,7 +2892,7 @@ public class UL4Test
 	@Test
 	public void function_isstr()
 	{
-		InterpretedTemplate t = T("<?print isstr(data)?>");
+		Template t = T("<?print isstr(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -2895,7 +2930,7 @@ public class UL4Test
 	@Test
 	public void function_isdate()
 	{
-		InterpretedTemplate t = T("<?print isdate(data)?>");
+		Template t = T("<?print isdate(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -2921,7 +2956,7 @@ public class UL4Test
 	@Test
 	public void function_isdatetime()
 	{
-		InterpretedTemplate t = T("<?print isdatetime(data)?>");
+		Template t = T("<?print isdatetime(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -2959,7 +2994,7 @@ public class UL4Test
 	@Test
 	public void function_isexception()
 	{
-		InterpretedTemplate t = T("<?print isexception(data)?>");
+		Template t = T("<?print isexception(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -2998,7 +3033,7 @@ public class UL4Test
 	@Test
 	public void function_islist()
 	{
-		InterpretedTemplate t = T("<?print islist(data)?>");
+		Template t = T("<?print islist(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -3037,7 +3072,7 @@ public class UL4Test
 	@Test
 	public void function_isset()
 	{
-		InterpretedTemplate t = T("<?print isset(data)?>");
+		Template t = T("<?print isset(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -3076,7 +3111,7 @@ public class UL4Test
 	@Test
 	public void function_isdict()
 	{
-		InterpretedTemplate t = T("<?print isdict(data)?>");
+		Template t = T("<?print isdict(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -3114,7 +3149,7 @@ public class UL4Test
 	@Test
 	public void function_istemplate()
 	{
-		InterpretedTemplate t = T("<?print istemplate(data)?>");
+		Template t = T("<?print istemplate(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -3152,7 +3187,7 @@ public class UL4Test
 	@Test
 	public void function_isfunction()
 	{
-		InterpretedTemplate t = T("<?print isfunction(data)?>");
+		Template t = T("<?print isfunction(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -3190,7 +3225,7 @@ public class UL4Test
 	@Test
 	public void function_iscolor()
 	{
-		InterpretedTemplate t = T("<?print iscolor(data)?>");
+		Template t = T("<?print iscolor(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -3228,7 +3263,7 @@ public class UL4Test
 	@Test
 	public void function_istimedelta()
 	{
-		InterpretedTemplate t = T("<?print istimedelta(data)?>");
+		Template t = T("<?print istimedelta(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -3266,7 +3301,7 @@ public class UL4Test
 	@Test
 	public void function_ismonthdelta()
 	{
-		InterpretedTemplate t = T("<?print ismonthdelta(data)?>");
+		Template t = T("<?print ismonthdelta(data)?>");
 
 		checkOutput("False", t, V("data", new UndefinedKey("foo")));
 		checkOutput("False", t, V("data", null));
@@ -3301,6 +3336,62 @@ public class UL4Test
 		checkOutput("", T("<?print ismonthdelta(1, 2)?>"));
 	}
 
+	@Test
+	public void function_isinstance()
+	{
+		Map<String, List<Object>> info = makeMap(
+			"type(None)", asList((Object)null), // Cast to {@code Object}: otherwise we'd get a {@code NullPointerException}
+			"bool", asList(true, false),
+			"int", asList(42),
+			"float", asList(42.5),
+			"str", asList("foo"),
+			"exception", asList(new RuntimeException("broken!")),
+			"date", asList(LocalDate.now()),
+			"datetime", asList(new Date(), LocalDateTime.now()),
+			"timedelta", asList(new TimeDelta(1)),
+			"monthdelta", asList(new MonthDelta(1)),
+			"list", asList(asList()),
+			"set", asList(makeSet()),
+			"dict", asList(V()),
+			"ul4.Template", asList(T("")),
+			"function", asList(FunctionRepr.function),
+			"color", asList(new Color(0, 0, 0))
+		);
+
+		for (String type : info.keySet())
+		{
+			if (!type.equals("exception"))
+			{
+				Template t = T("<?print isinstance(data, " + type + ")?>");
+				for (Map.Entry<String, List<Object>> entryInstance : info.entrySet())
+				{
+					String output = type.equals(entryInstance.getKey()) ? "True" : "False";
+
+					for (Object value : entryInstance.getValue())
+						checkOutput(output, t, V("data", value));
+				}
+			}
+		}
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	public void function_isinstance_0_args()
+	{
+		checkOutput("", T("<?print isinstance()?>"));
+	}
+
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
+	public void function_isinstance_2_args()
+	{
+		checkOutput("", T("<?print isinstance(1, 2)?>"));
+	}
+
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	public void function_isinstance_3_args()
+	{
+		checkOutput("", T("<?print isinstance(1, 2, 3)?>"));
+	}
+
 	private String codePoint(int value)
 	{
 		return String.valueOf((char)value);
@@ -3309,7 +3400,7 @@ public class UL4Test
 	@Test
 	public void function_repr()
 	{
-		InterpretedTemplate t = T("<?print repr(data)?>");
+		Template t = T("<?print repr(data)?>");
 
 		java.util.List list = new java.util.ArrayList();
 		list.add(list);
@@ -3371,7 +3462,7 @@ public class UL4Test
 	@Test
 	public void function_ascii()
 	{
-		InterpretedTemplate t = T("<?print ascii(data)?>");
+		Template t = T("<?print ascii(data)?>");
 
 		java.util.List list = new java.util.ArrayList();
 		list.add(list);
@@ -3449,9 +3540,9 @@ public class UL4Test
 			LocalDateTime.of(2011, 1, 25, 13, 34, 56, 987654000)
 		);
 
-		InterpretedTemplate t2 = T("<?print format(data, fmt)?>");
-		InterpretedTemplate t3 = T("<?print format(data, fmt, lang)?>");
-		InterpretedTemplate t3kw = T("<?print format(obj=data, fmt=fmt, lang=lang)?>");
+		Template t2 = T("<?print format(data, fmt)?>");
+		Template t3 = T("<?print format(data, fmt, lang)?>");
+		Template t3kw = T("<?print format(obj=data, fmt=fmt, lang=lang)?>");
 
 		for (Object t : dates)
 		{
@@ -3508,8 +3599,8 @@ public class UL4Test
 	@Test
 	public void function_format_int()
 	{
-		InterpretedTemplate t2 = T("<?print format(data, fmt)?>");
-		InterpretedTemplate t3 = T("<?print format(data, fmt, lang)?>");
+		Template t2 = T("<?print format(data, fmt)?>");
+		Template t3 = T("<?print format(data, fmt, lang)?>");
 
 		checkOutput("42", t2, V("data", 42, "fmt", ""));
 		checkOutput("-42", t2, V("data", -42, "fmt", ""));
@@ -3535,79 +3626,79 @@ public class UL4Test
 	@Test
 	public void function_chr()
 	{
-		InterpretedTemplate t = T("<?print chr(data)?>");
+		Template t = T("<?print chr(data)?>");
 		checkOutput("\u0000", t, V("data", 0));
 		checkOutput("a", t, V("data", (int)'a'));
 		checkOutput("\u20ac", t, V("data", 0x20ac));
 
-		InterpretedTemplate templatekw = T("<?print chr(i=data)?>");
+		Template templatekw = T("<?print chr(i=data)?>");
 		checkOutput("\u0000", templatekw, V("data", 0));
 	}
 
 	@Test
 	public void function_ord()
 	{
-		InterpretedTemplate t = T("<?print ord(data)?>");
+		Template t = T("<?print ord(data)?>");
 		checkOutput("0", t, V("data", "\u0000"));
 		checkOutput("97", t, V("data", "a"));
 		checkOutput("8364", t, V("data", "\u20ac"));
 
-		InterpretedTemplate templatekw = T("<?print ord(c=data)?>");
+		Template templatekw = T("<?print ord(c=data)?>");
 		checkOutput("0", templatekw, V("data", "\u0000"));
 	}
 
 	@Test
 	public void function_hex()
 	{
-		InterpretedTemplate t = T("<?print hex(data)?>");
+		Template t = T("<?print hex(data)?>");
 		checkOutput("0x0", t, V("data", 0));
 		checkOutput("0xff", t, V("data", 0xff));
 		checkOutput("0xffff", t, V("data", 0xffff));
 		checkOutput("-0xffff", t, V("data", -0xffff));
 
-		InterpretedTemplate templatekw = T("<?print hex(number=data)?>");
+		Template templatekw = T("<?print hex(number=data)?>");
 		checkOutput("0x0", templatekw, V("data", 0));
 	}
 
 	@Test
 	public void function_oct()
 	{
-		InterpretedTemplate t = T("<?print oct(data)?>");
+		Template t = T("<?print oct(data)?>");
 		checkOutput("0o0", t, V("data", 0));
 		checkOutput("0o77", t, V("data", 077));
 		checkOutput("0o7777", t, V("data", 07777));
 		checkOutput("-0o7777", t, V("data", -07777));
 
 
-		InterpretedTemplate templatekw = T("<?print oct(number=data)?>");
+		Template templatekw = T("<?print oct(number=data)?>");
 		checkOutput("0o0", templatekw, V("data", 0));
 	}
 
 	@Test
 	public void function_bin()
 	{
-		InterpretedTemplate t = T("<?print bin(data)?>");
+		Template t = T("<?print bin(data)?>");
 
 		checkOutput("0b0", t, V("data", 0));
 		checkOutput("0b11", t, V("data", 3));
 		checkOutput("-0b1111", t, V("data", -15));
 
 
-		InterpretedTemplate templatekw = T("<?print bin(number=data)?>");
+		Template templatekw = T("<?print bin(number=data)?>");
 		checkOutput("0b0", templatekw, V("data", 0));
 	}
 
 	@Test
 	public void function_abs()
 	{
-		InterpretedTemplate t = T("<?print abs(data)?>");
+		Template t = T("<?print abs(data)?>");
 		checkOutput("0", t, V("data", 0));
 		checkOutput("42", t, V("data", 42));
 		checkOutput("42", t, V("data", -42));
 		checkOutput("1 month", t, V("data", new MonthDelta(-1)));
 		checkOutput("1 day, 0:00:01.000001", t, V("data", new TimeDelta(-1, -1, -1)));
 
-		InterpretedTemplate templatekw = T("<?print abs(number=data)?>");
+		Template templatekw = T("<?print abs(number=data)?>");
 		checkOutput("0", templatekw, V("data", 0));
 	}
 
@@ -3683,22 +3774,22 @@ public class UL4Test
 	@Test
 	public void function_sorted()
 	{
-		InterpretedTemplate t = T("<?for i in sorted(data)?><?print i?><?end for?>");
+		Template t = T("<?for i in sorted(data)?><?print i?><?end for?>");
 		checkOutput("gkru", t, V("data", "gurk"));
 		checkOutput("24679", t, V("data", "92746"));
 		checkOutput("172342", t, V("data", asList(42, 17, 23)));
 		checkOutput("012", t, V("data", V(0, "zero", 1, "one", 2, "two")));
 
-		InterpretedTemplate templatekw = T("<?for i in sorted(iterable=data)?><?print i?><?end for?>");
+		Template templatekw = T("<?for i in sorted(iterable=data)?><?print i?><?end for?>");
 		checkOutput("gkru", templatekw, V("data", "gurk"));
 	}
 
 	@Test
 	public void function_range()
 	{
-		InterpretedTemplate t1 = T("<?for i in range(data)?><?print i?>;<?end for?>");
-		InterpretedTemplate t2 = T("<?for i in range(data[0], data[1])?><?print i?>;<?end for?>");
-		InterpretedTemplate t3 = T("<?for i in range(data[0], data[1], data[2])?><?print i?>;<?end for?>");
+		Template t1 = T("<?for i in range(data)?><?print i?>;<?end for?>");
+		Template t2 = T("<?for i in range(data[0], data[1])?><?print i?>;<?end for?>");
+		Template t3 = T("<?for i in range(data[0], data[1], data[2])?><?print i?>;<?end for?>");
 
 		checkOutput("", t1, V("data", -10));
 		checkOutput("", t1, V("data", 0));
@@ -3720,9 +3811,9 @@ public class UL4Test
 	@Test
 	public void function_slice()
 	{
-		InterpretedTemplate t2 = T("<?for i in slice(data[0], data[1])?><?print i?>;<?end for?>");
-		InterpretedTemplate t3 = T("<?for i in slice(data[0], data[1], data[2])?><?print i?>;<?end for?>");
-		InterpretedTemplate t4 = T("<?for i in slice(data[0], data[1], data[2], data[3])?><?print i?>;<?end for?>");
+		Template t2 = T("<?for i in slice(data[0], data[1])?><?print i?>;<?end for?>");
+		Template t3 = T("<?for i in slice(data[0], data[1], data[2])?><?print i?>;<?end for?>");
+		Template t4 = T("<?for i in slice(data[0], data[1], data[2], data[3])?><?print i?>;<?end for?>");
 
 		checkOutput("g;u;r;k;", t2, V("data", asList("gurk", null)));
 		checkOutput("g;u;", t2, V("data", asList("gurk", 2)));
@@ -3735,8 +3826,8 @@ public class UL4Test
 	@Test
 	public void function_zip()
 	{
-		InterpretedTemplate t2 = T("<?for (ix, iy) in zip(x, y)?><?print ix?>-<?print iy?>;<?end for?>");
-		InterpretedTemplate t3 = T("<?for (ix, iy, iz) in zip(x, y, z)?><?print ix?>-<?print iy?>+<?print iz?>;<?end for?>");
+		Template t2 = T("<?for (ix, iy) in zip(x, y)?><?print ix?>-<?print iy?>;<?end for?>");
+		Template t3 = T("<?for (ix, iy, iz) in zip(x, y, z)?><?print ix?>-<?print iy?>+<?print iz?>;<?end for?>");
 
 		checkOutput("", t2, V("x", asList(), "y", asList()));
 		checkOutput("1-3;2-4;", t2, V("x", asList(1, 2), "y", asList(3, 4)));
@@ -3747,39 +3838,47 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_type2()
+	{
+		String source = "<?print 2*v?>";
+		Template t = T("<?code t2 = type(t)(source)?><?render t2(v=v)?>");
+		checkOutput("84", t, V("t", t, "v", 42, "source", source));
+	}
+
+	@Test
 	public void function_type()
 	{
-		InterpretedTemplate t = T("<?print type(data)?>");
+		Template t = T("<?print type(data)?>");
 
-		checkOutput("undefined", t);
-		checkOutput("none", t, V("data", null));
-		checkOutput("bool", t, V("data", false));
-		checkOutput("bool", t, V("data", true));
-		checkOutput("int", t, V("data", 42));
-		checkOutput("float", t, V("data", 4.2));
-		checkOutput("str", t, V("data", "foo"));
-		checkOutput("datetime", t, V("data", new Date()));
-		checkOutput("date", t, V("data", LocalDate.now()));
-		checkOutput("datetime", t, V("data", LocalDateTime.now()));
-		checkOutput("list", t, V("data", asList(1, 2)));
-		checkOutput("dict", t, V("data", V(1, 2)));
-		checkOutput("set", t, V("data", makeSet(1, 2)));
-		checkOutput("template", t, V("data", T("")));
-		checkOutput("color", t, V("data", new Color(0, 0, 0)));
-		checkOutput("java.lang.RuntimeException", t, V("data", new RuntimeException("broken")));
+		checkOutput("<type com.livinglogic.ul4.UndefinedVariable>", t);
+		checkOutput("<type None>", t, V("data", null));
+		checkOutput("<type bool>", t, V("data", false));
+		checkOutput("<type bool>", t, V("data", true));
+		checkOutput("<type int>", t, V("data", 42));
+		checkOutput("<type float>", t, V("data", 4.2));
+		checkOutput("<type str>", t, V("data", "foo"));
+		checkOutput("<type datetime>", t, V("data", new Date()));
+		checkOutput("<type date>", t, V("data", LocalDate.now()));
+		checkOutput("<type datetime>", t, V("data", LocalDateTime.now()));
+		checkOutput("<type list>", t, V("data", asList(1, 2)));
+		checkOutput("<type dict>", t, V("data", V(1, 2)));
+		checkOutput("<type set>", t, V("data", makeSet(1, 2)));
+		checkOutput("<type ul4.Template>", t, V("data", T("")));
+		checkOutput("<type color>", t, V("data", new Color(0, 0, 0)));
+		checkOutput("<type java.lang.RuntimeException>", t, V("data", new RuntimeException("broken")));
 
-		InterpretedTemplate tkw = T("<?print type(obj=data)?>");
-		checkOutput("none", tkw, V("data", null));
+		Template tkw = T("<?print type(obj=data)?>");
+		checkOutput("<type None>", tkw, V("data", null));
 	}
 
 	@Test
 	public void function_reversed()
 	{
-		InterpretedTemplate t = T("<?for i in reversed(x)?>(<?print i?>)<?end for?>");
+		Template t = T("<?for i in reversed(x)?>(<?print i?>)<?end for?>");
 		checkOutput("(3)(2)(1)", t, V("x", "123"));
 		checkOutput("(3)(2)(1)", t, V("x", asList(1, 2, 3)));
 
-		InterpretedTemplate tkw = T("<?for i in reversed(sequence=x)?>(<?print i?>)<?end for?>");
+		Template tkw = T("<?for i in reversed(sequence=x)?>(<?print i?>)<?end for?>");
 		checkOutput("(3)(2)(1)", tkw, V("x", "123"));
 	}
 
@@ -3837,9 +3936,9 @@ public class UL4Test
 		checkOutput("True", T("<?print round(x, 1) == 42?>"), V("x", 42));
 		checkOutput("True", T("<?print round(x, -1) == 40?>"), V("x", 42));
 		checkOutput("True", T("<?print round(x, -1) == 50?>"), V("x", 48));
-		checkOutput("int", T("<?print type(round(x))?>"), V("x", 42));
-		checkOutput("int", T("<?print type(round(x, 1))?>"), V("x", 42));
-		checkOutput("int", T("<?print type(round(x, -1))?>"), V("x", 42));
+		checkOutput("<type int>", T("<?print type(round(x))?>"), V("x", 42));
+		checkOutput("<type int>", T("<?print type(round(x, 1))?>"), V("x", 42));
+		checkOutput("<type int>", T("<?print type(round(x, -1))?>"), V("x", 42));
 
 		checkOutput("True", T("<?print round(x) == 42?>"), V("x", new Long(42)));
 		checkOutput("True", T("<?print round(x, 1) == 42?>"), V("x", new Long(42)));
@@ -3855,13 +3954,13 @@ public class UL4Test
 		checkOutput("True", T("<?print round(x) == 43?>"), V("x", 42.6));
 		checkOutput("True", T("<?print round(x) == -42?>"), V("x", -42.4));
 		checkOutput("True", T("<?print round(x) == -43?>"), V("x", -42.6));
-		checkOutput("int", T("<?print type(round(x))?>"), V("x", 42.5));
+		checkOutput("<type int>", T("<?print type(round(x))?>"), V("x", 42.5));
 
 		checkOutput("True", T("<?print round(x, -1) == 40?>"), V("x", 42.4));
 		checkOutput("True", T("<?print round(x, -1) == 50?>"), V("x", 46.2));
 		checkOutput("True", T("<?print round(x, -1) == -40?>"), V("x", -42.4));
 		checkOutput("True", T("<?print round(x, -1) == -50?>"), V("x", -46.2));
-		checkOutput("int", T("<?print type(round(x, -1))?>"), V("x", 42.5));
+		checkOutput("<type int>", T("<?print type(round(x, -1))?>"), V("x", 42.5));
 
 		checkOutput("True", T("<?print round(x, 1) == 43.0?>"), V("x", 42.987));
 		checkOutput("True", T("<?print round(x, 1) == 42.1?>"), V("x", 42.123));
@@ -3871,7 +3970,7 @@ public class UL4Test
 		checkOutput("True", T("<?print round(x, 2) == 42.12?>"), V("x", 42.123));
 		// checkOutput("True", T("<?print round(x, 2) == -42.59?>"), V("x", -42.589));
 		checkOutput("True", T("<?print round(x, 2) == -42.12?>"), V("x", -42.123));
-		checkOutput("float", T("<?print type(round(x, 1))?>"), V("x", 42.5));
+		checkOutput("<type float>", T("<?print type(round(x, 1))?>"), V("x", 42.5));
 
 		checkOutput("True", T("<?print round(x) == 42?>"), V("x", new BigDecimal("42")));
 		checkOutput("True", T("<?print round(x, 1) == 42?>"), V("x", new BigDecimal("42")));
@@ -4123,12 +4222,12 @@ public class UL4Test
 	@Test
 	public void method_renders()
 	{
-		InterpretedTemplate t1 = T("(<?print data?>)", "t1");
+		Template t1 = T("(<?print data?>)", "t1");
 
 		checkOutput("(GURK)", T("<?print t.renders(data='gurk').upper()?>"), V("t", t1));
 		checkOutput("(GURK)", T("<?code m = t.renders?><?print m(data='gurk').upper()?>"), V("t", t1));
 
-		InterpretedTemplate t2 = T("(gurk)", "t2");
+		Template t2 = T("(gurk)", "t2");
 		checkOutput("(GURK)", T("<?print t.renders().upper()?>"), V("t", t2));
 	}
 
@@ -4137,8 +4236,8 @@ public class UL4Test
 	{
 		checkOutput("gurk", T("<?def x?>gurk<?end def?><?render x()?>"));
 
-		InterpretedTemplate t1 = T("<?print prefix?><?print data?><?print suffix?>");
-		InterpretedTemplate t2 = T("<?print 'foo'?>");
+		Template t1 = T("<?print prefix?><?print data?><?print suffix?>");
+		Template t2 = T("<?print 'foo'?>");
 
 		checkOutput("(f)(o)(o)", T("<?for c in data?><?render t(data=c, prefix='(', suffix=')')?><?end for?>"), V("t", t1, "data", "foo"));
 		checkOutput("foo", T("<?render t()?>"), V("t", t2));
@@ -4171,7 +4270,7 @@ public class UL4Test
 	@Test
 	public void render_local_vars()
 	{
-		InterpretedTemplate t = T("<?code x += 1?><?print x?>");
+		Template t = T("<?code x += 1?><?print x?>");
 
 		checkOutput("42,43,42", T("<?print x?>,<?render t(x=x)?>,<?print x?>"), V("t", t, "x", 42));
 	}
@@ -4187,8 +4286,8 @@ public class UL4Test
 	{
 		checkOutput("gurk", T("<?def x?>gurk<?end def?><?code x.render()?>"));
 
-		InterpretedTemplate t1 = T("<?print prefix?><?print data?><?print suffix?>");
-		InterpretedTemplate t2 = T("<?print 'foo'?>");
+		Template t1 = T("<?print prefix?><?print data?><?print suffix?>");
+		Template t2 = T("<?print 'foo'?>");
 
 		checkOutput("(f)(o)(o)", T("<?for c in data?><?code t.render(data=c, prefix='(', suffix=')')?><?end for?>"), V("t", t1, "data", "foo"));
 		checkOutput("foo", T("<?render t()?>"), V("t", t2));
@@ -4203,7 +4302,7 @@ public class UL4Test
 	@Test
 	public void deprecated_rendermethod_local_vars()
 	{
-		InterpretedTemplate t = T("<?code x += 1?><?print x?>");
+		Template t = T("<?code x += 1?><?print x?>");
 
 		checkOutput("42,43,42", T("<?print x?>,<?code t.render(x=x)?>,<?print x?>"), V("t", t, "x", 42));
 	}
@@ -4211,7 +4310,7 @@ public class UL4Test
 	@Test
 	public void render_nested()
 	{
-		InterpretedTemplate t = T(
+		Template t = T(
 			"<?def outer?>" +
 				"<?def inner?>" +
 					"<?code x += 1?>" +
@@ -4385,7 +4484,7 @@ public class UL4Test
 	@Test
 	public void method_count()
 	{
-		InterpretedTemplate t = T("<?print haystack.count(needle, start, end)?>");
+		Template t = T("<?print haystack.count(needle, start, end)?>");
 
 		checkOutput("3", t, V("haystack", "aaa", "needle", "a", "start", null, "end", null));
 		checkOutput("0", t, V("haystack", "aaa", "needle", "b", "start", null, "end", null));
@@ -4582,9 +4681,9 @@ public class UL4Test
 	@Test
 	public void method_calendar()
 	{
-		InterpretedTemplate t = T("<?print repr(d.calendar())?>");
-		InterpretedTemplate t_0_7 = T("<?print repr(d.calendar(0, 7))?>");
-		InterpretedTemplate t_6_1 = T("<?print repr(d.calendar(6, 1))?>");
+		Template t = T("<?print repr(d.calendar())?>");
+		Template t_0_7 = T("<?print repr(d.calendar(0, 7))?>");
+		Template t_6_1 = T("<?print repr(d.calendar(6, 1))?>");
 
 		// 1996: Non-leap year, starting on Monday
 		for (Object d : makeAllDateTimeVariants(1996, 1, 1))
@@ -4820,7 +4919,7 @@ public class UL4Test
 		checkOutput("2", T("<?print @(2010-05-12).weekday()?>"));
 		checkOutput("2", T("<?code m = @(2010-05-12).weekday?><?print m()?>"));
 
-		InterpretedTemplate t = T("<?print d.weekday()?>");
+		Template t = T("<?print d.weekday()?>");
 		for (Object d : makeAllDateTimeVariants(2010, 5, 21))
 			checkOutput("4", t, V("d", d));
 	}
@@ -4834,7 +4933,7 @@ public class UL4Test
 		checkOutput("365", T("<?print @(2010-12-31).yearday()?>"));
 		checkOutput("132", T("<?print @(2010-05-12).yearday()?>"));
 		checkOutput("132", T("<?print @(2010-05-12T16:47:56).yearday()?>"));
-		InterpretedTemplate t = T("<?print d.yearday()?>");
+		Template t = T("<?print d.yearday()?>");
 		for (Object d : makeAllDateTimeVariants(2010, 5, 12))
 			checkOutput("132", t, V("d", d));
 	}
@@ -4991,7 +5090,7 @@ public class UL4Test
 	@Test
 	public void tag_doc()
 	{
-		InterpretedTemplate t = T("<?doc foo?><?def inner?><?doc innerfoo?><?doc innerbar?><?end def?><?doc bar?><?printx inner.doc?>", "t");
+		Template t = T("<?doc foo?><?def inner?><?doc innerfoo?><?doc innerbar?><?end def?><?doc bar?><?printx inner.doc?>", "t");
 
 		assertEquals("foo", t.getDoc());
 
@@ -5001,7 +5100,7 @@ public class UL4Test
 	@Test
 	public void exception()
 	{
-		InterpretedTemplate t = T("foo<?print 2*x?>bar", "t");
+		Template t = T("foo<?print 2*x?>bar", "t");
 
 		checkOutput("broken", T("<?print exc?>"), V("exc", new RuntimeException("broken")));
 		checkOutput("<java.lang.RuntimeException>", T("<?print repr(exc)?>"), V("exc", new RuntimeException("broken")));
@@ -5037,7 +5136,7 @@ public class UL4Test
 	public void templateattributes_1()
 	{
 		String source = "<?print x?>";
-		InterpretedTemplate t = T(source, "t");
+		Template t = T(source, "t");
 
 		checkOutput("<com.livinglogic.ul4.UndefinedKey 'foo'>", T("<?print repr(template.foo)?>"), V("template", t));
 		checkOutput("<?", T("<?print template.startdelim?>"), V("template", t));
@@ -5056,7 +5155,7 @@ public class UL4Test
 	@Test
 	public void templateattributes_2()
 	{
-		InterpretedTemplate t = T("<?printx 42?>");
+		Template t = T("<?printx 42?>");
 
 		checkOutput("printx", T("<?print template.content[1].type?>"), V("template", t));
 		checkOutput("const", T("<?print template.content[1].obj.type?>"), V("template", t));
@@ -5066,7 +5165,7 @@ public class UL4Test
 	@Test
 	public void templateattributes_3()
 	{
-		InterpretedTemplate t = T("foo");
+		Template t = T("foo");
 
 		checkOutput("text", T("<?print template.content[1].type?>"), V("template", t));
 		checkOutput("foo", T("<?print template.content[1].text?>"), V("template", t));
@@ -5075,7 +5174,7 @@ public class UL4Test
 	@Test
 	public void templateattributes_4()
 	{
-		InterpretedTemplate t = T("<?doc foo?>");
+		Template t = T("<?doc foo?>");
 
 		checkOutput("foo", T("<?print template.doc?>"), V("template", t));
 	}
@@ -5148,11 +5247,11 @@ public class UL4Test
 	@Test
 	public void template_closure_toplevel()
 	{
-		InterpretedTemplate tOther = T("<?ul4 other(loc, x)?><?print loc()?>");
+		Template tOther = T("<?ul4 other(loc, x)?><?print loc()?>");
 
-		InterpretedTemplate tFinal = T("<?ul4 final(x)?><?return x == 42?>");
+		Template tFinal = T("<?ul4 final(x)?><?return x == 42?>");
 
-		InterpretedTemplate tInitial = T("<?ul4 initial?><?def local()?><?if final(x)?><?return 'OK'?><?else?><?return 'FAIL'?><?end if?><?end def?><?render other(local, x)?>");
+		Template tInitial = T("<?ul4 initial?><?def local()?><?if final(x)?><?return 'OK'?><?else?><?return 'FAIL'?><?end if?><?end def?><?render other(local, x)?>");
 
 		checkOutput("OK", tInitial, V("x", 42, "other", tOther, "final", tFinal));
 	}
@@ -5160,9 +5259,9 @@ public class UL4Test
 	@Test
 	public void template_closure_toplevel2()
 	{
-		InterpretedTemplate tClosure = T("<?ul4 makeclosure(x)?><?def inner()?><?print x?><?end def?><?return {'inner': inner}?>");
+		Template tClosure = T("<?ul4 makeclosure(x)?><?def inner()?><?print x?><?end def?><?return {'inner': inner}?>");
 
-		InterpretedTemplate tMain = T("<?code data = makeclosure(42)?><?render data.inner()?>");
+		Template tMain = T("<?code data = makeclosure(42)?><?render data.inner()?>");
 
 		checkOutput("42", tMain, V("makeclosure", tClosure));
 	}
@@ -5188,20 +5287,20 @@ public class UL4Test
 	@Test
 	public void stripWhitespace()
 	{
-		InterpretedTemplate t1 = T("<?if True?> foo<?end if?>", InterpretedTemplate.Whitespace.strip);
+		Template t1 = T("<?if True?> foo<?end if?>", Template.Whitespace.strip);
 		assertEquals(t1.renders(), " foo");
 
-		InterpretedTemplate t2 = T("<?if True?> foo\n bar<?end if?>", InterpretedTemplate.Whitespace.strip);
+		Template t2 = T("<?if True?> foo\n bar<?end if?>", Template.Whitespace.strip);
 		assertEquals(t2.renders(), " foobar");
 
-		InterpretedTemplate t3 = T("<?if True?>\n foo\n bar<?end if?>", InterpretedTemplate.Whitespace.strip);
+		Template t3 = T("<?if True?>\n foo\n bar<?end if?>", Template.Whitespace.strip);
 		assertEquals(t3.renders(), "foobar");
 	}
 
 	@Test
 	public void render_reindents() throws Exception
 	{
-		InterpretedTemplate t = T("<?print 42?>\n<?print 43?>", "t", InterpretedTemplate.Whitespace.keep);
+		Template t = T("<?print 42?>\n<?print 43?>", "t", Template.Whitespace.keep);
 
 		checkOutput("\t42\n\t43", T("\t<?render t()?>"), V("t", t));
 	}
@@ -5210,49 +5309,49 @@ public class UL4Test
 	public void smart_whitespace() throws Exception
 	{
 		// Without linefeeds the text will be output as-is.
-		checkOutput("\tTrue", T("<?if True?>\tTrue<?end if?>", InterpretedTemplate.Whitespace.smart));
+		checkOutput("\tTrue", T("<?if True?>\tTrue<?end if?>", Template.Whitespace.smart));
 
 		// Line feeds will be removed from lines containing only a "control flow" tag.
-		checkOutput("True\n", T("<?if True?>\nTrue\n<?end if?>\n", InterpretedTemplate.Whitespace.smart));
+		checkOutput("True\n", T("<?if True?>\nTrue\n<?end if?>\n", Template.Whitespace.smart));
 
 		// Indentation will also be removed from those lines.
-		checkOutput("True\n", T("    <?if True?>\nTrue\n         <?end if?>\n", InterpretedTemplate.Whitespace.smart));
+		checkOutput("True\n", T("    <?if True?>\nTrue\n         <?end if?>\n", Template.Whitespace.smart));
 
 		// Additional text (before and after tag) will leave the line feeds intact.
-		checkOutput("x\nTrue\n", T("x<?if True?>\nTrue\n<?end if?>\n", InterpretedTemplate.Whitespace.smart));
-		checkOutput(" \nTrue\n", T("<?if True?> \nTrue\n<?end if?>\n", InterpretedTemplate.Whitespace.smart));
+		checkOutput("x\nTrue\n", T("x<?if True?>\nTrue\n<?end if?>\n", Template.Whitespace.smart));
+		checkOutput(" \nTrue\n", T("<?if True?> \nTrue\n<?end if?>\n", Template.Whitespace.smart));
 
 		// Multiple tags will also leave the line feeds intact.
-		checkOutput("\nTrue\n\n", T("<?if True?><?if True?>\nTrue\n<?end if?><?end if?>\n", InterpretedTemplate.Whitespace.smart));
+		checkOutput("\nTrue\n\n", T("<?if True?><?if True?>\nTrue\n<?end if?><?end if?>\n", Template.Whitespace.smart));
 
 		// For <?print?> and <?printx?> tags the indentation and line feed will not be stripped
-		checkOutput(" 42\n", T(" <?print 42?>\n", InterpretedTemplate.Whitespace.smart));
-		checkOutput(" 42\n", T(" <?printx 42?>\n", InterpretedTemplate.Whitespace.smart));
+		checkOutput(" 42\n", T(" <?print 42?>\n", Template.Whitespace.smart));
+		checkOutput(" 42\n", T(" <?printx 42?>\n", Template.Whitespace.smart));
 
 		// For <?render?> tags the line feed will be stripped, but the indentation will be reused for each line rendered by the call
-		checkOutput("   x\r\n", T("<?def x?>\nx\r\n<?end def?>\n   <?render x()?>\n", InterpretedTemplate.Whitespace.smart));
+		checkOutput("   x\r\n", T("<?def x?>\nx\r\n<?end def?>\n   <?render x()?>\n", Template.Whitespace.smart));
 
 		// But of course "common" indentation will be ignored
-		checkOutput("x\r\n", T("<?if True?>\n   <?def x?>\n   x\r\n   <?end def?>\n   <?render x()?>\n<?end if?>\n", InterpretedTemplate.Whitespace.smart));
+		checkOutput("x\r\n", T("<?if True?>\n   <?def x?>\n   x\r\n   <?end def?>\n   <?render x()?>\n<?end if?>\n", Template.Whitespace.smart));
 
 		// But not on the outermost level, which leads to an esoteric corner case:
 		// The indentation will be output twice (once by the text itself, and once by the render call).
-		checkOutput("      x\r\n", T("   <?def x?>\n   x\r\n   <?end def?>\n   <?render x()?>\n", InterpretedTemplate.Whitespace.smart));
+		checkOutput("      x\r\n", T("   <?def x?>\n   x\r\n   <?end def?>\n   <?render x()?>\n", Template.Whitespace.smart));
 
 		// Additional indentation in the block will be removed.
-		checkOutput("True\n", T("<?if True?>\n\tTrue\n<?end if?>\n", InterpretedTemplate.Whitespace.smart));
+		checkOutput("True\n", T("<?if True?>\n\tTrue\n<?end if?>\n", Template.Whitespace.smart));
 
 		// Outer indentation will be kept.
-		checkOutput(" True\n", T(" <?if True?>\n \tTrue\n <?end if?>\n", InterpretedTemplate.Whitespace.smart));
+		checkOutput(" True\n", T(" <?if True?>\n \tTrue\n <?end if?>\n", Template.Whitespace.smart));
 
 		// Mixed indentation will not be recognized as indentation.
-		checkOutput("\tTrue\n", T(" <?if True?>\n\tTrue\n <?end if?>\n", InterpretedTemplate.Whitespace.smart));
+		checkOutput("\tTrue\n", T(" <?if True?>\n\tTrue\n <?end if?>\n", Template.Whitespace.smart));
 	}
 
 	@Test
 	public void smart_whitespace_nested() throws Exception
 	{
-		InterpretedTemplate t = T("<?whitespace smart?>\n<x>\n\t<?for i in range(2)?>\n\t\t<y>\n\t\t\t<z><?printx i?></z>\n\t\t</y>\n\t<?end for?>\n</x>");
+		Template t = T("<?whitespace smart?>\n<x>\n\t<?for i in range(2)?>\n\t\t<y>\n\t\t\t<z><?printx i?></z>\n\t\t</y>\n\t<?end for?>\n</x>");
 		checkOutput("<x>\n\t<y>\n\t\t<z>0</z>\n\t</y>\n\t<y>\n\t\t<z>1</z>\n\t</y>\n</x>", t);
 	}
 
@@ -5265,18 +5364,21 @@ public class UL4Test
 			value = 0;
 		}
 
-		public String nameUL4()
+		@Override
+		public String getNameUL4()
 		{
 			return "makevar";
 		}
 
 		private static final Signature signature = new Signature("var", Signature.required);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return call((Integer)args.get(0));
@@ -5294,11 +5396,11 @@ public class UL4Test
 	public void keywordEvaluationOrder()
 	{
 		// Test that expressions for keyword arguments are evaluated in the order they are given
-		InterpretedTemplate t1 = T("<?def t?><?print x?>;<?print y?><?end def?><?render t(x=makevar(1), y=makevar(2))?>");
+		Template t1 = T("<?def t?><?print x?>;<?print y?><?end def?><?render t(x=makevar(1), y=makevar(2))?>");
 		String output1 = t1.renders(V("makevar", new MakeVar()));
 		assertEquals("1;3", output1);
 
-		InterpretedTemplate t2 = T("<?def t?><?print x?>;<?print y?><?end def?><?render t(x=makevar(2), y=makevar(1))?>");
+		Template t2 = T("<?def t?><?print x?>;<?print y?><?end def?><?render t(x=makevar(2), y=makevar(1))?>");
 		String output2 = t2.renders(V("makevar", new MakeVar()));
 		assertEquals("2;3", output2);
 	}
@@ -5310,7 +5412,7 @@ public class UL4Test
 		checkOutput("True", T("<?print not 'x' in 'gurk'?>"));
 	}
 
-	private InterpretedTemplate universaltemplate()
+	private Template universaltemplate()
 	{
 		return T(
 			"text" +
@@ -5387,7 +5489,7 @@ public class UL4Test
 	public void reader() throws IOException
 	{
 		String li = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
-		InterpretedTemplate t = T("<?for i in range(100)?>" + li + "<?end for?>", "reader");
+		Template t = T("<?for i in range(100)?>" + li + "<?end for?>", "reader");
 
 		Reader reader = t.reader(null);
 
@@ -5408,7 +5510,7 @@ public class UL4Test
 	@Test
 	public void db_query() throws Exception
 	{
-		InterpretedTemplate t = T(
+		Template t = T(
 			"<?code db.execute('create table ul4test(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" +
 			"<?code db.execute('insert into ul4test values(1, ', 'first', ', ', 10000*'first', ')')?>\n" +
 			"<?code db.execute('insert into ul4test values(2, ', 'second', ', ', 10000*'second', ')')?>\n" +
@@ -5437,7 +5539,7 @@ public class UL4Test
 	@Test
 	public void db_queryone_record() throws Exception
 	{
-		InterpretedTemplate t = T(
+		Template t = T(
 			"<?code db.execute('create table ul4test(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" +
 			"<?code db.execute('insert into ul4test values(1, ', 'first', ', ', 10000*'first', ')')?>\n" +
 			"<?code vin = db.int(2)?>\n" +
@@ -5463,7 +5565,7 @@ public class UL4Test
 	@Test
 	public void db_queryone_norecord() throws Exception
 	{
-		InterpretedTemplate t = T(
+		Template t = T(
 			"<?code db.execute('create table ul4test(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" +
 			"<?code vin = db.int(2)?>\n" +
 			"<?code row = db.queryone('select * from ul4test where ul4_int <= ', vin, ' order by ul4_int')?>\n" +
@@ -5482,14 +5584,14 @@ public class UL4Test
 	@Test
 	public void db_execute_function() throws Exception
 	{
-		InterpretedTemplate t = T(
+		Template t = T(
 			"<?code db.execute('create or replace function ul4test(p_arg integer) return integer as begin return 2*p_arg; end;')?>\n" + 
 			"<?code vin = db.int(42)?>\n" + 
 			"<?code vout = db.int()?>\n" + 
 			"<?code db.execute('begin ', vout, ' := ul4test(', vin, '); end;')?>\n" + 
 			"<?print vout.value?>" +
 			"<?code db.execute('drop function ul4test')?>\n",
-			InterpretedTemplate.Whitespace.strip
+			Template.Whitespace.strip
 		);
 
 		Connection db = getDatabaseConnection();
@@ -5501,7 +5603,7 @@ public class UL4Test
 	@Test
 	public void db_execute_procedure_out() throws Exception
 	{
-		InterpretedTemplate t = T(
+		Template t = T(
 			"<?code db.execute('''\n" +
 			" create or replace procedure ul4test(p_intarg out integer, p_numberarg out number, p_strarg out varchar2, p_clobarg out clob, p_datearg out timestamp)" +
 			" as\n" +
@@ -5535,7 +5637,7 @@ public class UL4Test
 	@Test
 	public void db_execute_procedure_inout() throws Exception
 	{
-		InterpretedTemplate t = T(
+		Template t = T(
 			"<?code db.execute('''\n" +
 			" create or replace procedure ul4test(p_intarg in out integer, p_numberarg in out number, p_strarg in out varchar2, p_clobarg in out nocopy clob, p_datearg in out timestamp)\n" +
 			" as\n" +
@@ -5569,7 +5671,7 @@ public class UL4Test
 	public void db_query_scale() throws Exception
 	{
 		// Check that numbers that are not table fields don't get truncated to integer because the database doesn't know their scale
-		InterpretedTemplate t = T("<?for row in db.query('select 0.5 as x from dual')?><?print row.x > 0?><?end for?>");
+		Template t = T("<?for row in db.query('select 0.5 as x from dual')?><?print row.x > 0?><?end for?>");
 
 		Connection db = getDatabaseConnection();
 
@@ -5586,7 +5688,7 @@ public class UL4Test
 	@Test
 	public void signature_positional_argument() throws Exception
 	{
-		InterpretedTemplate t = T("<?def border_radius(radius)?>border-radius: <?print radius?>px;<?end def?><?render border_radius(5)?>");
+		Template t = T("<?def border_radius(radius)?>border-radius: <?print radius?>px;<?end def?><?render border_radius(5)?>");
 
 		checkOutput("border-radius: 5px;", t);
 	}
@@ -5594,7 +5696,7 @@ public class UL4Test
 	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_signature_directcall() throws Exception
 	{
-		InterpretedTemplate function = T("<?return x?>", "func_with_sig", InterpretedTemplate.Whitespace.strip, new Signature("x", Signature.required));
+		Template function = T("<?return x?>", "func_with_sig", Template.Whitespace.strip, new Signature("x", Signature.required));
 
 		function.call();
 	}
@@ -5602,7 +5704,7 @@ public class UL4Test
 	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_stringsignature_directcall() throws Exception
 	{
-		InterpretedTemplate function = T("<?return x?>", "func_with_sig", InterpretedTemplate.Whitespace.strip, "x");
+		Template function = T("<?return x?>", "func_with_sig", Template.Whitespace.strip, "x");
 
 		function.call();
 	}
@@ -5610,7 +5712,7 @@ public class UL4Test
 	@Test
 	public void function_stringsignature_directcall_default() throws Exception
 	{
-		InterpretedTemplate function = T("<?return x+y?>", "func_with_sig", InterpretedTemplate.Whitespace.strip, "x=17, y=23");
+		Template function = T("<?return x+y?>", "func_with_sig", Template.Whitespace.strip, "x=17, y=23");
 
 		assertEquals(42, function.call(makeMap("y", 25)));
 	}
@@ -5618,7 +5720,7 @@ public class UL4Test
 	@Test
 	public void function_stringsignature_directcall_remainingkwargs() throws Exception
 	{
-		InterpretedTemplate function = T("<?return ', '.join(key + ': ' + str(value) for (key, value) in kwargs.items())?>", "func_with_sig", InterpretedTemplate.Whitespace.strip, "**kwargs");
+		Template function = T("<?return ', '.join(key + ': ' + str(value) for (key, value) in kwargs.items())?>", "func_with_sig", Template.Whitespace.strip, "**kwargs");
 
 		assertEquals("y: 23, x: 17", function.call(makeOrderedMap("y", 23, "x", 17)));
 	}
@@ -5626,8 +5728,8 @@ public class UL4Test
 	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_signature_templatecall() throws Exception
 	{
-		InterpretedTemplate function = T("<?return x?>", "func_with_sig", InterpretedTemplate.Whitespace.strip, new Signature("x", Signature.required));
-		InterpretedTemplate t = T("<?print func_with_sig()?>", "t", InterpretedTemplate.Whitespace.strip);
+		Template function = T("<?return x?>", "func_with_sig", Template.Whitespace.strip, new Signature("x", Signature.required));
+		Template t = T("<?print func_with_sig()?>", "t", Template.Whitespace.strip);
 
 		t.renders(V("func_with_sig", function));
 	}
@@ -5635,7 +5737,7 @@ public class UL4Test
 	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void template_signature_directcall() throws Exception
 	{
-		InterpretedTemplate t = T("<?print x?>", "t", InterpretedTemplate.Whitespace.strip, new Signature("x", Signature.required));
+		Template t = T("<?print x?>", "t", Template.Whitespace.strip, new Signature("x", Signature.required));
 
 		checkOutput("42", t);
 	}
@@ -5643,8 +5745,8 @@ public class UL4Test
 	@Test
 	public void template_signature_nestedcall_directsig()
 	{
-		InterpretedTemplate ti = T("<?return x + y?>", "inner", InterpretedTemplate.Whitespace.strip, new Signature("x", Signature.required, "y", Signature.required));
-		InterpretedTemplate to = T("<?print inner(17, 23)?>", "outer", InterpretedTemplate.Whitespace.strip);
+		Template ti = T("<?return x + y?>", "inner", Template.Whitespace.strip, new Signature("x", Signature.required, "y", Signature.required));
+		Template to = T("<?print inner(17, 23)?>", "outer", Template.Whitespace.strip);
 
 		checkOutput("40", to, V("inner", ti));
 	}
@@ -5652,8 +5754,8 @@ public class UL4Test
 	@Test
 	public void template_signature_nestedcall_stringsig()
 	{
-		InterpretedTemplate ti = T("<?return x + y?>", "inner", InterpretedTemplate.Whitespace.strip, "x, y");
-		InterpretedTemplate to = T("<?print inner(17, 23)?>", "outer", InterpretedTemplate.Whitespace.strip);
+		Template ti = T("<?return x + y?>", "inner", Template.Whitespace.strip, "x, y");
+		Template to = T("<?print inner(17, 23)?>", "outer", Template.Whitespace.strip);
 
 		checkOutput("40", to, V("inner", ti));
 	}
@@ -5661,8 +5763,8 @@ public class UL4Test
 	@Test
 	public void template_signature_nestedcall_tagsig()
 	{
-		InterpretedTemplate ti = T("<?ul4 inner(x, y)?><?return x + y?>", "inner", InterpretedTemplate.Whitespace.strip);
-		InterpretedTemplate to = T("<?print inner(17, 23)?>", "outer", InterpretedTemplate.Whitespace.strip);
+		Template ti = T("<?ul4 inner(x, y)?><?return x + y?>", "inner", Template.Whitespace.strip);
+		Template to = T("<?print inner(17, 23)?>", "outer", Template.Whitespace.strip);
 
 		checkOutput("40", to, V("inner", ti));
 	}
@@ -5670,8 +5772,8 @@ public class UL4Test
 	@Test
 	public void template_signature_nestedrender_tagsig()
 	{
-		InterpretedTemplate ti = T("<?ul4 inner(x, y)?><?print x + y?>", "inner", InterpretedTemplate.Whitespace.strip);
-		InterpretedTemplate to = T("<?render inner(17, 23)?>", "outer", InterpretedTemplate.Whitespace.strip);
+		Template ti = T("<?ul4 inner(x, y)?><?print x + y?>", "inner", Template.Whitespace.strip);
+		Template to = T("<?render inner(17, 23)?>", "outer", Template.Whitespace.strip);
 
 		checkOutput("40", to, V("inner", ti));
 	}
@@ -5679,7 +5781,7 @@ public class UL4Test
 	@Test
 	public void template_signature_directcall_default() throws Exception
 	{
-		InterpretedTemplate t = T("<?print x?>", "t", InterpretedTemplate.Whitespace.strip, new Signature("x", 42));
+		Template t = T("<?print x?>", "t", Template.Whitespace.strip, new Signature("x", 42));
 
 		checkOutput("42", t);
 	}
@@ -5705,8 +5807,8 @@ public class UL4Test
 	@Test
 	public void global_variables()
 	{
-		InterpretedTemplate templateInner = T("<?print sum?>", "inner");
-		InterpretedTemplate templateOuter = T("<?render inner()?>", "outer");
+		Template templateInner = T("<?print sum?>", "inner");
+		Template templateOuter = T("<?render inner()?>", "outer");
 
 		checkOutput("42", templateOuter, V("sum", 42), V("sum", 43, "inner", templateInner));
 	}
@@ -5714,19 +5816,19 @@ public class UL4Test
 	@Test
 	public void template_repr()
 	{
-		InterpretedTemplate t;
+		Template t;
 
-		t = T("<?print 42?>", "foo", InterpretedTemplate.Whitespace.keep);
-		assertEquals("<com.livinglogic.ul4.InterpretedTemplate name='foo'>", FunctionRepr.call(t));
+		t = T("<?print 42?>", "foo", Template.Whitespace.keep);
+		assertEquals("<com.livinglogic.ul4.Template name='foo'>", FunctionRepr.call(t));
 
-		t = T("<?print 42?>", "foo", InterpretedTemplate.Whitespace.strip);
-		assertEquals("<com.livinglogic.ul4.InterpretedTemplate name='foo' whitespace='strip'>", FunctionRepr.call(t));
+		t = T("<?print 42?>", "foo", Template.Whitespace.strip);
+		assertEquals("<com.livinglogic.ul4.Template name='foo' whitespace='strip'>", FunctionRepr.call(t));
 
-		t = T("<?print 42?>", "foo", InterpretedTemplate.Whitespace.strip, "a, b=0xff");
-		assertEquals("<com.livinglogic.ul4.InterpretedTemplate name='foo' whitespace='strip' signature=(a, b=255)>", FunctionRepr.call(t));
+		t = T("<?print 42?>", "foo", Template.Whitespace.strip, "a, b=0xff");
+		assertEquals("<com.livinglogic.ul4.Template name='foo' whitespace='strip' signature=(a, b=255)>", FunctionRepr.call(t));
 
-		t = T("<?def x(a, b=0xff)?><?end def?><?print repr(x)?>", "foo", InterpretedTemplate.Whitespace.keep);
-		checkOutput("<com.livinglogic.ul4.TemplateClosure for <com.livinglogic.ul4.InterpretedTemplate name='x' signatureAST=(a, b=0xff)>>", t);
+		t = T("<?def x(a, b=0xff)?><?end def?><?print repr(x)?>", "foo", Template.Whitespace.keep);
+		checkOutput("<com.livinglogic.ul4.TemplateClosure for <com.livinglogic.ul4.Template name='x' signatureAST=(a, b=0xff)>>", t);
 
 		checkOutput("<com.livinglogic.ul4.Signature (x=17, y=@(2000-02-29))>", T("<?def f(x=17, y=@(2000-02-29))?><?return x+y?><?end def?><?print repr(f.signature)?>"));
 		checkOutput("<com.livinglogic.ul4.Signature (bad=[...])>", T("<?code bad = []?><?code bad.append(bad)?><?def f(bad=bad)?><?end def?><?print repr(f.signature)?>"));
@@ -5815,7 +5917,7 @@ public class UL4Test
 		checkOutput("100000000000000000000000000000000000000", T("<?print int(x+1)?>"), V("x", x));
 	}
 
-	private void expect_arithmetic_exception(InterpretedTemplate t, String message, Object dividend, Object divisor)
+	private void expect_arithmetic_exception(Template t, String message, Object dividend, Object divisor)
 	{
 		try
 		{
@@ -5831,7 +5933,7 @@ public class UL4Test
 	@Test
 	public void zerodivision_truediv()
 	{
-		InterpretedTemplate t = T("<?print dividend / divisor?>");
+		Template t = T("<?print dividend / divisor?>");
 		String message = "true division {!r} / {!r} (with types {!t} and {!t}) didn't raise ArithmeticException";
 
 		List<Object> dividends = asList(true, (byte)1, (short)2, 3, 4l, 5.5f, 6.5d, new BigInteger("7"), new BigDecimal("8.5"), new TimeDelta(9));
@@ -5845,7 +5947,7 @@ public class UL4Test
 	@Test
 	public void zerodivision_floordiv()
 	{
-		InterpretedTemplate t = T("<?print dividend // divisor?>");
+		Template t = T("<?print dividend // divisor?>");
 		String message = "floor division {!r} // {!r} (with types {!t} and {!t}) didn't raise ArithmeticException";
 
 		List<Object> dividends = asList(true, (byte)1, (short)2, 3, 4l, 5.5f, 6.5d, new BigInteger("7"), new BigDecimal("8.5"));
@@ -5860,5 +5962,26 @@ public class UL4Test
 
 		for (Object divisor : divisorsTimeDelta)
 			expect_arithmetic_exception(t, message, timeDelta, divisor);
+	}
+
+	@Test
+	public void module_operator_attrgetter()
+	{
+		checkOutput("17", T("<?print operator.attrgetter('x')(p)?>"), V("p", new Point(17, 23)));
+		checkOutput("[17, 23]", T("<?print operator.attrgetter('x', 'y')(p)?>"), V("p", new Point(17, 23)));
+		Template t = T("<?print x?>");
+		checkOutput("[slice(0, 11, None), 0, 11]", T("<?print operator.attrgetter('pos', 'pos.start', 'pos.stop')(t.content[-1])?>"), V("t", t));
+	}
+
+	@Test
+	public void module_math_pi()
+	{
+		checkOutput("True", T("<?print 3.14 < math.pi and math.pi < 3.15?>"));
+	}
+
+	@Test
+	public void module_math_e()
+	{
+		checkOutput("True", T("<?print 2.71 < math.e and math.e < 2.72?>"));
 	}
 }

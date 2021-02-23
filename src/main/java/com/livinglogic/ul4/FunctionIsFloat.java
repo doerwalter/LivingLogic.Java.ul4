@@ -11,18 +11,21 @@ import java.math.BigDecimal;
 
 public class FunctionIsFloat extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "isfloat";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -30,6 +33,8 @@ public class FunctionIsFloat extends Function
 
 	public static boolean call(Object obj)
 	{
-		return (null != obj) && (obj instanceof BigDecimal || obj instanceof Float || obj instanceof Double);
+		return Float_.type.instanceCheck(obj);
 	}
+
+	public static Function function = new FunctionIsFloat();
 }

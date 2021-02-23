@@ -14,7 +14,35 @@ package com.livinglogic.ul4;
  */
 public class PrintXAST extends UnaryAST
 {
-	public PrintXAST(InterpretedTemplate template, Slice pos, CodeAST obj)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "PrintXAST", "de.livinglogic.ul4.printx", "A printx tag.");
+		}
+
+		@Override
+		public PrintXAST create(String id)
+		{
+			return new PrintXAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof PrintXAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public PrintXAST(Template template, Slice pos, CodeAST obj)
 	{
 		super(template, pos, obj);
 	}

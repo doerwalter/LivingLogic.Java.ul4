@@ -12,7 +12,35 @@ import static java.util.Arrays.asList;
 
 public class ContainsAST extends BinaryAST
 {
-	public ContainsAST(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "ContainsAST", "de.livinglogic.ul4.contains", "A \"containment\" test (x in y).");
+		}
+
+		@Override
+		public ContainsAST create(String id)
+		{
+			return new ContainsAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof ContainsAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public ContainsAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		super(template, pos, obj1, obj2);
 	}
@@ -22,7 +50,7 @@ public class ContainsAST extends BinaryAST
 		return "contains";
 	}
 
-	public static CodeAST make(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public static CodeAST make(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{

@@ -20,7 +20,7 @@ abstract class BlockAST extends CodeAST implements BlockLike
 {
 	protected List<AST> content = new LinkedList<AST>();
 
-	public BlockAST(InterpretedTemplate template, Slice startPos, Slice stopPos)
+	public BlockAST(Template template, Slice startPos, Slice stopPos)
 	{
 		super(template, startPos, stopPos);
 	}
@@ -61,7 +61,7 @@ abstract class BlockAST extends CodeAST implements BlockLike
 	 * or whether the decision should be delegated to the parent block ({@code false}).
 	 * Returns {@code true} for {@code for} and {@code while} blocks and
 	 * {@code false} for {@code if}/{@code elif}/{@code else}.
-	 * For {@code InterpretedTemplate} an exception is thrown.
+	 * For {@code Template} an exception is thrown.
 	 */
 	abstract public boolean handleLoopControl(String name);
 

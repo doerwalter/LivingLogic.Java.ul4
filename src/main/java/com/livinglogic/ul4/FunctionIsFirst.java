@@ -12,18 +12,21 @@ import java.util.Vector;
 
 public class FunctionIsFirst extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "isfirst";
 	}
 
 	private static final Signature signature = new Signature("iterable", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -64,4 +67,6 @@ public class FunctionIsFirst extends Function
 			sequenceIterator.remove();
 		}
 	}
+
+	public static Function function = new FunctionIsFirst();
 }

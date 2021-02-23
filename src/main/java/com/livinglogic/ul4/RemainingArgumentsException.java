@@ -18,11 +18,11 @@ public class RemainingArgumentsException extends ArgumentException
 
 	public RemainingArgumentsException(UL4Name object)
 	{
-		this(object.nameUL4());
+		this(object.getFullNameUL4());
 	}
 
 	public RemainingArgumentsException(Object object)
 	{
-		this(object instanceof UL4Name ? ((UL4Name)object).nameUL4() : Utils.objectType(object));
+		this(object instanceof UL4Name ? ((UL4Name)object).getFullNameUL4() : Utils.objectType(object));
 	}
 }

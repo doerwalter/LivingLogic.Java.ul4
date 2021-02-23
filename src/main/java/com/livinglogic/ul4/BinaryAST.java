@@ -35,7 +35,7 @@ abstract class BinaryAST extends CodeAST
 	 * @param obj1 The left operand
 	 * @param obj2 The right operand
 	 */
-	public BinaryAST(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public BinaryAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		super(template, pos);
 		this.obj1 = obj1;

@@ -22,7 +22,35 @@ import com.livinglogic.ul4on.Encoder;
 
 public class RenderXAST extends RenderAST
 {
-	public RenderXAST(InterpretedTemplate template, Slice pos, AST obj)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "RenderXAST", "de.livinglogic.ul4.renderx", "A renderx tag.");
+		}
+
+		@Override
+		public RenderXAST create(String id)
+		{
+			return new RenderXAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof RenderXAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public RenderXAST(Template template, Slice pos, AST obj)
 	{
 		super(template, pos, obj);
 	}

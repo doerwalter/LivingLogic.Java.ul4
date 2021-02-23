@@ -23,18 +23,21 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class FunctionAsJSON extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "asjson";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -142,9 +145,9 @@ public class FunctionAsJSON extends Function
 				.append(t.getMicroseconds())
 				.append(")");
 		}
-		else if (obj instanceof InterpretedTemplate)
+		else if (obj instanceof Template)
 		{
-			String dump = ((InterpretedTemplate)obj).dumps();
+			String dump = ((Template)obj).dumps();
 			dump = StringEscapeUtils.escapeJson(dump).replace("<", "\\u003c");
 			builder
 				.append("ul4.loads(\"")
@@ -238,4 +241,6 @@ public class FunctionAsJSON extends Function
 		call(builder, obj);
 		return builder.toString();
 	}
+
+	public static Function function = new FunctionAsJSON();
 }

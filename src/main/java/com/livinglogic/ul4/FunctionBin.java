@@ -12,18 +12,21 @@ import java.math.BigInteger;
 
 public class FunctionBin extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "bin";
 	}
 
 	private static final Signature signature = new Signature("number", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -63,4 +66,6 @@ public class FunctionBin extends Function
 		}
 		throw new ArgumentTypeMismatchException("bin({!t}) not supported", obj);
 	}
+
+	public static Function function = new FunctionBin();
 }

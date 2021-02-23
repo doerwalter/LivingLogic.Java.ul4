@@ -17,9 +17,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class DictAST extends CodeAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "DictAST", "de.livinglogic.ul4.dict", "A dictionary \"literal\"..");
+		}
+
+		@Override
+		public DictAST create(String id)
+		{
+			return new DictAST(null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof DictAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected List<DictItemASTBase> items = new LinkedList<DictItemASTBase>();
 
-	public DictAST(InterpretedTemplate template, Slice pos)
+	public DictAST(Template template, Slice pos)
 	{
 		super(template, pos);
 	}

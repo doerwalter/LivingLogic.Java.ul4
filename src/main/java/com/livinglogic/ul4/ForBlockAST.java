@@ -14,13 +14,41 @@ import com.livinglogic.ul4on.Encoder;
 
 public class ForBlockAST extends BlockAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "ForBlockAST", "de.livinglogic.ul4.forblock", "A for loop.");
+		}
+
+		@Override
+		public ForBlockAST create(String id)
+		{
+			return new ForBlockAST(null, null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof ForBlockAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	/**
 	 * This is either a string or a list of strings/lists
 	 */
 	protected Object varname;
 	protected CodeAST container;
 
-	public ForBlockAST(InterpretedTemplate template, Slice startPos, Slice stopPos, Object varname, CodeAST container)
+	public ForBlockAST(Template template, Slice startPos, Slice stopPos, Object varname, CodeAST container)
 	{
 		super(template, startPos, stopPos);
 		this.varname = varname;

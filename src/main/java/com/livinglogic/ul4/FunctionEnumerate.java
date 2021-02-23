@@ -12,18 +12,21 @@ import java.util.Vector;
 
 public class FunctionEnumerate extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "enumerate";
 	}
 
 	private static final Signature signature = new Signature("iterable", Signature.required, "start", 0);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0), args.get(1));
@@ -69,4 +72,6 @@ public class FunctionEnumerate extends Function
 			sequenceIterator.remove();
 		}
 	}
+
+	public static Function function = new FunctionEnumerate();
 }

@@ -11,18 +11,21 @@ import java.util.Iterator;
 
 public class FunctionMax extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "max";
 	}
 
 	private static final Signature signature = new Signature("args", Signature.remainingParameters);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		List<Object> argList = (List<Object>)args.get(0);
@@ -52,4 +55,6 @@ public class FunctionMax extends Function
 			throw new UnsupportedOperationException("max() arg is an empty sequence!");
 		return maxValue;
 	}
+
+	public static Function function = new FunctionMax();
 }

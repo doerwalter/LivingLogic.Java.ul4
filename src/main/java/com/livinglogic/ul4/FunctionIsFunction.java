@@ -10,18 +10,21 @@ import java.util.List;
 
 public class FunctionIsFunction extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "isfunction";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -31,4 +34,6 @@ public class FunctionIsFunction extends Function
 	{
 		return (null != obj) && ((obj instanceof UL4Call) || (obj instanceof UL4CallWithContext));
 	}
+
+	public static Function function = new FunctionIsFunction();
 }

@@ -18,7 +18,7 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 {
 	protected AST condition;
 
-	public ConditionalBlockWithCondition(InterpretedTemplate template, Slice startPos, Slice stopPos, AST condition)
+	public ConditionalBlockWithCondition(Template template, Slice startPos, Slice stopPos, AST condition)
 	{
 		super(template, startPos, stopPos);
 		this.condition = condition;

@@ -22,9 +22,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class RenderBlockAST extends RenderAST implements BlockLike
 {
-	protected InterpretedTemplate content;
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "RenderBlockAST", "de.livinglogic.ul4.renderblock", "A renderblock tag.");
+		}
 
-	public RenderBlockAST(InterpretedTemplate template, Slice pos, AST obj)
+		@Override
+		public RenderBlockAST create(String id)
+		{
+			return new RenderBlockAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof RenderBlockAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	protected Template content;
+
+	public RenderBlockAST(Template template, Slice pos, AST obj)
 	{
 		super(template, pos, obj);
 		content = null;
@@ -33,10 +61,10 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 	/**
 	 * This is used to "convert" a {@link CallAST} that comes out of the parser into a {@code RenderBlockAST}
 	 */
-	public RenderBlockAST(InterpretedTemplate template, CallAST call, InterpretedTemplate.Whitespace whitespace, String startdelim, String enddelim)
+	public RenderBlockAST(Template template, CallAST call, Template.Whitespace whitespace, String startdelim, String enddelim)
 	{
 		super(call);
-		content = new InterpretedTemplate(template, "content", whitespace, startdelim, enddelim, null);
+		content = new Template(template, "content", whitespace, startdelim, enddelim, null);
 	}
 
 	@Override
@@ -113,7 +141,7 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 	{
 		super.loadUL4ON(decoder);
 		setStopPos((Slice)decoder.load());
-		content = (InterpretedTemplate)decoder.load();
+		content = (Template)decoder.load();
 	}
 
 	protected static Set<String> attributes = makeExtendedSet(RenderAST.attributes, "stoppos", "stopline", "stopcol", "stopsource", "stopsourceprefix", "stopsourcesuffix", "content");

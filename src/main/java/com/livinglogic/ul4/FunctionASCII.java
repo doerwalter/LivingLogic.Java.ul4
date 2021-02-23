@@ -18,18 +18,21 @@ import java.util.Stack;
 
 public class FunctionASCII extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "ascii";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -39,4 +42,6 @@ public class FunctionASCII extends Function
 	{
 		return new UL4Repr.Formatter(true).visit(obj).toString();
 	}
+
+	public static Function function = new FunctionASCII();
 }

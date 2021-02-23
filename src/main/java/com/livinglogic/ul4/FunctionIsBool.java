@@ -10,7 +10,8 @@ import java.util.List;
 
 public class FunctionIsBool extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "isbool";
 	}
@@ -29,6 +30,8 @@ public class FunctionIsBool extends Function
 
 	public static boolean call(Object obj)
 	{
-		return (obj != null) && (obj instanceof Boolean);
+		return Bool.type.instanceCheck(obj);
 	}
+
+	public static Function function = new FunctionIsBool();
 }

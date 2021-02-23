@@ -11,18 +11,21 @@ import java.util.Map;
 
 public class FunctionIsDict extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "isdict";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -32,4 +35,6 @@ public class FunctionIsDict extends Function
 	{
 		return (null != obj) && (obj instanceof Map) && !FunctionIsTemplate.call(obj);
 	}
+
+	public static Function function = new FunctionIsDict();
 }

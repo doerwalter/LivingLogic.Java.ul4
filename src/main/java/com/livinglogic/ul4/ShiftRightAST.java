@@ -14,7 +14,35 @@ import java.util.Date;
 
 public class ShiftRightAST extends BinaryAST
 {
-	public ShiftRightAST(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "ShiftRightAST", "de.livinglogic.ul4.shiftright", "A bit shift right expression.");
+		}
+
+		@Override
+		public ShiftRightAST create(String id)
+		{
+			return new ShiftRightAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof ShiftRightAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public ShiftRightAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		super(template, pos, obj1, obj2);
 	}
@@ -24,7 +52,7 @@ public class ShiftRightAST extends BinaryAST
 		return "shiftright";
 	}
 
-	public static CodeAST make(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public static CodeAST make(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{

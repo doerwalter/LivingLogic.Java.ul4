@@ -20,18 +20,21 @@ import org.apache.commons.lang3.StringUtils;
 
 public class FunctionStr extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "str";
 	}
 
 	private static final Signature signature = new Signature("obj", null);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -121,4 +124,6 @@ public class FunctionStr extends Function
 		else
 			return FunctionRepr.call(obj);
 	}
+
+	public static Function function = new FunctionStr();
 }

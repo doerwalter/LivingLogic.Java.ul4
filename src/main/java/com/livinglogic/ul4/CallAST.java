@@ -21,7 +21,35 @@ import com.livinglogic.ul4on.Encoder;
 
 public class CallAST extends CallRenderAST
 {
-	public CallAST(InterpretedTemplate template, Slice pos, AST obj)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "CallAST", "de.livinglogic.ul4.call", "A function call.");
+		}
+
+		@Override
+		public CallAST create(String id)
+		{
+			return new CallAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof CallAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public CallAST(Template template, Slice pos, AST obj)
 	{
 		super(template, pos, obj);
 	}

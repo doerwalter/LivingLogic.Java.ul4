@@ -17,7 +17,7 @@ public class BoundSetMethodAdd extends BoundMethod<Set>
 	}
 
 	@Override
-	public String nameUL4()
+	public String getNameUL4()
 	{
 		return "add";
 	}

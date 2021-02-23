@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class FunctionRandRange implements UL4Call
 {
-	public String getName()
+	public String getNameUL4()
 	{
 		return "randrange";
 	}
@@ -20,7 +20,7 @@ public class FunctionRandRange implements UL4Call
 	public Object callUL4(List<Object> args, Map<String, Object> kwargs)
 	{
 		if (kwargs.size() != 0)
-			throw new KeywordArgumentsNotSupportedException(this.getName());
+			throw new KeywordArgumentsNotSupportedException(getNameUL4());
 		switch (args.size())
 		{
 			case 1:
@@ -69,4 +69,6 @@ public class FunctionRandRange implements UL4Call
 			throw new UnsupportedOperationException("step can't be 0 in randrange()");
 		return start + step*((long)(value * n));
 	}
+
+	public static UL4Call function = new FunctionRandRange();
 }

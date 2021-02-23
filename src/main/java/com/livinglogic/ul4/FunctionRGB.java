@@ -10,18 +10,21 @@ import java.util.List;
 
 public class FunctionRGB extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "rgb";
 	}
 
 	private static final Signature signature = new Signature("r", Signature.required, "g", Signature.required, "b", Signature.required, "a", 1.0);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0), args.get(1), args.get(2), args.get(3));
@@ -37,4 +40,5 @@ public class FunctionRGB extends Function
 		return Color.fromrgb(Utils.toDouble(arg1), Utils.toDouble(arg2), Utils.toDouble(arg3), Utils.toDouble(arg4));
 	}
 
+	public static Function function = new FunctionRGB();
 }

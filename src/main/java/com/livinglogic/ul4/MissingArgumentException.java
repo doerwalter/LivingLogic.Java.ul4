@@ -18,7 +18,7 @@ public class MissingArgumentException extends ArgumentException
 
 	public MissingArgumentException(UL4Name object, String parameterName, int parameterPosition)
 	{
-		this(object.nameUL4(), parameterName, parameterPosition);
+		this(object.getFullNameUL4(), parameterName, parameterPosition);
 	}
 
 	public MissingArgumentException(String name, ParameterDescription parameter)
@@ -28,6 +28,6 @@ public class MissingArgumentException extends ArgumentException
 
 	public MissingArgumentException(UL4Name name, ParameterDescription parameter)
 	{
-		this(name.nameUL4(), parameter);
+		this(name.getFullNameUL4(), parameter);
 	}
 }

@@ -12,18 +12,21 @@ import java.util.Vector;
 
 public class FunctionZip extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "zip";
 	}
 
 	private static final Signature signature = new Signature("iterables", Signature.remainingParameters);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call((List<Object>)args.get(0));
@@ -72,4 +75,6 @@ public class FunctionZip extends Function
 				iterators[i].remove();
 		}
 	}
+
+	public static Function function = new FunctionZip();
 }

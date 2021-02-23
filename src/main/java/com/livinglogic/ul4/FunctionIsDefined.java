@@ -10,18 +10,21 @@ import java.util.List;
 
 public class FunctionIsDefined extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "isdefined";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -31,4 +34,6 @@ public class FunctionIsDefined extends Function
 	{
 		return !(obj instanceof Undefined);
 	}
+
+	public static Function function = new FunctionIsDefined();
 }

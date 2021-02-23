@@ -13,18 +13,21 @@ import java.util.Iterator;
 
 public class FunctionAny extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "any";
 	}
 
 	private static final Signature signature = new Signature("iterable", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -85,4 +88,6 @@ public class FunctionAny extends Function
 			return call((Map)obj);
 		throw new ArgumentTypeMismatchException("any({!t}) not supported", obj);
 	}
+
+	public static Function function = new FunctionAny();
 }

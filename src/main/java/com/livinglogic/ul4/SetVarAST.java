@@ -16,13 +16,41 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SetVarAST extends CodeAST
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "SetVarAST", "de.livinglogic.ul4.setvar", "A variable assignment (x = y).");
+		}
+
+		@Override
+		public SetVarAST create(String id)
+		{
+			return new SetVarAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof SetVarAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	/**
 	 * This is either a string or a list of strings/lists
 	 */
 	protected Object lvalue;
 	protected AST value;
 
-	public SetVarAST(InterpretedTemplate template, Slice pos, Object lvalue, AST value)
+	public SetVarAST(Template template, Slice pos, Object lvalue, AST value)
 	{
 		super(template, pos);
 		this.lvalue = lvalue;

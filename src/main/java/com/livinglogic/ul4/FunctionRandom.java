@@ -11,11 +11,13 @@ import java.util.Random;
 
 public class FunctionRandom extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "random";
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call();
@@ -27,4 +29,6 @@ public class FunctionRandom extends Function
 	{
 		return rng.nextDouble();
 	}
+
+	public static Function function = new FunctionRandom();
 }

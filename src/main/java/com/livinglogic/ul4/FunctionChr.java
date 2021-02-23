@@ -10,18 +10,21 @@ import java.util.List;
 
 public class FunctionChr extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "chr";
 	}
 
 	private static final Signature signature = new Signature("i", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -56,4 +59,6 @@ public class FunctionChr extends Function
 		// FIXME: Add support for BigInteger
 		throw new ArgumentTypeMismatchException("chr({!t}) not supported", obj);
 	}
+
+	public static Function function = new FunctionChr();
 }

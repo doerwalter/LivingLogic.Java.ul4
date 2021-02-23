@@ -28,6 +28,8 @@ import com.livinglogic.ul4.UL4Repr;
 import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.UL4Dir;
 import com.livinglogic.ul4.UL4Type;
+import com.livinglogic.ul4.UL4Instance;
+import com.livinglogic.ul4.AbstractInstanceType;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
@@ -46,8 +48,36 @@ import static com.livinglogic.utils.SetUtils.makeSet;
  * A {@code Decoder} object wraps a {@code Reader} object and can read any object
  * in the UL4ON serialization format from this {@code Reader}.
  */
-public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, UL4Type
+public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAttr, UL4Dir
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4on", "Decoder", null, "An UL4ON decoder");
+		}
+
+		@Override
+		public Object create(BoundArguments arguments)
+		{
+			return new Decoder();
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof Decoder;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	/**
 	 * The {@code Reader} instance from where serialized objects currently will
 	 * be read.
@@ -928,7 +958,7 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "loads";
 		}
@@ -960,7 +990,7 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 		}
 
 		@Override
-		public String nameUL4()
+		public String getNameUL4()
 		{
 			return "reset";
 		}
@@ -971,11 +1001,5 @@ public class Decoder implements Iterable<Object>, UL4Repr, UL4GetAttr, UL4Dir, U
 			object.reset();
 			return null;
 		}
-	}
-
-	@Override
-	public String typeUL4()
-	{
-		return "ul4on.Decoder";
 	}
 }

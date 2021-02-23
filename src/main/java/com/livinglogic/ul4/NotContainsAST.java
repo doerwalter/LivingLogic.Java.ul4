@@ -8,7 +8,35 @@ package com.livinglogic.ul4;
 
 public class NotContainsAST extends BinaryAST
 {
-	public NotContainsAST(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "NotContainsAST", "de.livinglogic.ul4.notcontains", "An \"inverted containment\" test (x not in y).");
+		}
+
+		@Override
+		public NotContainsAST create(String id)
+		{
+			return new NotContainsAST(null, null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof NotContainsAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public NotContainsAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		super(template, pos, obj1, obj2);
 	}
@@ -18,7 +46,7 @@ public class NotContainsAST extends BinaryAST
 		return "notcontains";
 	}
 
-	public static CodeAST make(InterpretedTemplate template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public static CodeAST make(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
 		{

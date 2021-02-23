@@ -16,18 +16,21 @@ import org.apache.commons.lang3.StringUtils;
 
 public class FunctionDir extends FunctionWithContext
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "getattr";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(context, args.get(0));
@@ -42,4 +45,6 @@ public class FunctionDir extends FunctionWithContext
 	{
 		return Proto.get(obj).getAttrNames(context, obj);
 	}
+
+	public static FunctionWithContext function = new FunctionDir();
 }

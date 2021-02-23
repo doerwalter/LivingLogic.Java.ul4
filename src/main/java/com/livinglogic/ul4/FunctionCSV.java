@@ -12,18 +12,21 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class FunctionCSV extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "csv";
 	}
 
 	private static final Signature signature = new Signature("obj", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -37,4 +40,6 @@ public class FunctionCSV extends Function
 			obj = FunctionRepr.call(obj);
 		return StringEscapeUtils.escapeCsv((String)obj);
 	}
+
+	public static Function function = new FunctionCSV();
 }

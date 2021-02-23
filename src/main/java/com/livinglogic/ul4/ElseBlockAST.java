@@ -6,9 +6,37 @@
 
 package com.livinglogic.ul4;
 
-class ElseBlockAST extends ConditionalBlock
+public class ElseBlockAST extends ConditionalBlock
 {
-	public ElseBlockAST(InterpretedTemplate template, Slice startPos, Slice stopPos)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "ElseBlockAST", "de.livinglogic.ul4.elseblock", "An else block.");
+		}
+
+		@Override
+		public ElseBlockAST create(String id)
+		{
+			return new ElseBlockAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof ElseBlockAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public ElseBlockAST(Template template, Slice startPos, Slice stopPos)
 	{
 		super(template, startPos, stopPos);
 	}

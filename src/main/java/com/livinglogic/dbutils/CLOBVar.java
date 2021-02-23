@@ -69,18 +69,21 @@ public class CLOBVar extends Var
 
 	private static class FunctionCLOB extends Function
 	{
-		public String nameUL4()
+		@Override
+		public String getNameUL4()
 		{
-			return "connection.clob";
+			return "clob";
 		}
 
 		private static final Signature signature = new Signature("value", noValue);
 
+		@Override
 		public Signature getSignature()
 		{
 			return signature;
 		}
 
+		@Override
 		public Object evaluate(BoundArguments args)
 		{
 			return new CLOBVar(args.get(0));

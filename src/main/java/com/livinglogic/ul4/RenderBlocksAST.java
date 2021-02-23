@@ -22,9 +22,37 @@ import com.livinglogic.ul4on.Encoder;
 
 public class RenderBlocksAST extends RenderAST implements BlockLike
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "RenderBlocksAST", "de.livinglogic.ul4.renderblocks", "A renderblocks tag.");
+		}
+
+		@Override
+		public RenderBlocksAST create(String id)
+		{
+			return new RenderBlocksAST(null, null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof RenderBlocksAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected List<AST> content;
 
-	public RenderBlocksAST(InterpretedTemplate template, Slice pos, AST obj)
+	public RenderBlocksAST(Template template, Slice pos, AST obj)
 	{
 		super(template, pos, obj);
 		content = new LinkedList<AST>();

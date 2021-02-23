@@ -11,9 +11,37 @@ import java.io.IOException;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
-class LineEndAST extends TextAST
+public class LineEndAST extends TextAST
 {
-	public LineEndAST(InterpretedTemplate template, Slice pos)
+	protected static class Type extends AbstractInstanceType
+	{
+		public Type()
+		{
+			super("ul4", "LineEndAST", "de.livinglogic.ul4.linened", "Literal text in the template source that is an indentation at the start of a line.");
+		}
+
+		@Override
+		public LineEndAST create(String id)
+		{
+			return new LineEndAST(null, null);
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof LineEndAST;
+		}
+	}
+
+	public static UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	public LineEndAST(Template template, Slice pos)
 	{
 		super(template, pos);
 	}

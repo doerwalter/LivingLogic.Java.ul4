@@ -12,18 +12,21 @@ import java.util.Map;
 
 public class FunctionLen extends Function
 {
-	public String nameUL4()
+	@Override
+	public String getNameUL4()
 	{
 		return "len";
 	}
 
 	private static final Signature signature = new Signature("sequence", Signature.required);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(BoundArguments args)
 	{
 		return call(args.get(0));
@@ -33,4 +36,6 @@ public class FunctionLen extends Function
 	{
 		return Proto.get(obj).len(obj);
 	}
+
+	public static Function function = new FunctionLen();
 }
