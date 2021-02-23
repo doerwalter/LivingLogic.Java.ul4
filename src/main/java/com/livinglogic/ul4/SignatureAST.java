@@ -22,11 +22,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SignatureAST extends CodeAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends CodeAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "SignatureAST", "de.livinglogic.ul4.signature", "The signature of a function.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "SignatureAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.signature";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "The signature of a function.";
 		}
 
 		@Override

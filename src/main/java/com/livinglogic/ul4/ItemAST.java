@@ -13,11 +13,30 @@ import java.util.Iterator;
 
 public class ItemAST extends BinaryAST implements LValue
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "ItemAST", "de.livinglogic.ul4.item", "An item acess.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "ItemAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.item";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An item access expression (i.e. `x[y]`).";
 		}
 
 		@Override

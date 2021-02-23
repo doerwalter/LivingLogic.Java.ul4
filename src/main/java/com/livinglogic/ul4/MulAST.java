@@ -15,11 +15,30 @@ import org.apache.commons.lang3.StringUtils;
 
 public class MulAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "MulAST", "de.livinglogic.ul4.mul", "A multiplicative expression (x * y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "MulAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.mul";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A multiplicative expression (x * y).";
 		}
 
 		@Override

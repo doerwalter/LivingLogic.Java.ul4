@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class IsAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "IsAST", "de.livinglogic.ul4.is", "An \"is\" expression (x is y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "IsAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.is";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An `is` expression (`x is y`).";
 		}
 
 		@Override

@@ -18,11 +18,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class KeywordArgumentAST extends ArgumentASTBase
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends ArgumentASTBase.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "KeywordArgumentAST", "de.livinglogic.ul4.keywordarg", "A keyword argument.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "KeywordArgumentAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.keywordarg";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A keyword argument.";
 		}
 
 		@Override

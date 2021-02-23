@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class IfBlockAST extends ConditionalBlockWithCondition
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends ConditionalBlockWithCondition.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "IfBlockAST", "de.livinglogic.ul4.ifblock", "An if block.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "IfBlockAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.ifblock";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An `if` block.";
 		}
 
 		@Override

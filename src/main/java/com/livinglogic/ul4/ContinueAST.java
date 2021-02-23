@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class ContinueAST extends CodeAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends CodeAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "ContinueAST", "de.livinglogic.ul4.continue", "A continue tag.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "ContinueAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.continue";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A continue tag.";
 		}
 
 		@Override

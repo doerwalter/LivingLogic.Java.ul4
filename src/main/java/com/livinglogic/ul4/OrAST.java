@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class OrAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "OrAST", "de.livinglogic.ul4.or", "A logical \"or\" expression (x or y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "OrAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.or";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A logical \"or\" expression (i.e. `x or y`).";
 		}
 
 		@Override

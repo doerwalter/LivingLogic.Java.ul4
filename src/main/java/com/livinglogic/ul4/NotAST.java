@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class NotAST extends UnaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends UnaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "NotAST", "de.livinglogic.ul4.not", "Boolean neagtion.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "NotAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.not";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "Boolean negation (i.e `not x`).";
 		}
 
 		@Override

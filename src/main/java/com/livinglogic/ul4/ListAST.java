@@ -19,11 +19,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class ListAST extends CodeAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends CodeAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "ListAST", "de.livinglogic.ul4.list", "A list \"literal\".");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "ListAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.list";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A list \"literal\".";
 		}
 
 		@Override

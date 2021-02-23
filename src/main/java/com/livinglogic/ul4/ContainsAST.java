@@ -12,11 +12,30 @@ import static java.util.Arrays.asList;
 
 public class ContainsAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "ContainsAST", "de.livinglogic.ul4.contains", "A \"containment\" test (x in y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "ContainsAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.contains";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A \"containment\" test (x in y).";
 		}
 
 		@Override

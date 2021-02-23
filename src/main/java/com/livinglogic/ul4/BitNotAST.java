@@ -10,11 +10,30 @@ import java.math.BigInteger;
 
 public class BitNotAST extends UnaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends UnaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "BitNotAST", "de.livinglogic.ul4.bitnot", "A bit inversion.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "BitNotAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.bitnot";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A bit inversion.";
 		}
 
 		@Override

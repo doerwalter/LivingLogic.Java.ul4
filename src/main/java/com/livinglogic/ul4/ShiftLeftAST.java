@@ -14,11 +14,30 @@ import java.util.Date;
 
 public class ShiftLeftAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends ShiftLeftAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "ShiftLeftAST", "de.livinglogic.ul4.shiftleft", "A bit shift left expression.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "ShiftLeftAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.shiftleft";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A bit shift left expression (i.e. `x << y`).";
 		}
 
 		@Override

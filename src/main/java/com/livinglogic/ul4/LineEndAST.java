@@ -13,11 +13,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class LineEndAST extends TextAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends TextAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "LineEndAST", "de.livinglogic.ul4.linened", "Literal text in the template source that is an indentation at the start of a line.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "LineEndAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.linened";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "Literal text in the template source that is an indentation at the start of a line.";
 		}
 
 		@Override

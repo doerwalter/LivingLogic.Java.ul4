@@ -21,11 +21,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class CallAST extends CallRenderAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends CallRenderAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "CallAST", "de.livinglogic.ul4.call", "A function call.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "CallAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.call";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A function call.";
 		}
 
 		@Override

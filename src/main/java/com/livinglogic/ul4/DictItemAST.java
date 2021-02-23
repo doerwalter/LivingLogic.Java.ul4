@@ -17,11 +17,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class DictItemAST extends DictItemASTBase
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends DictItemASTBase.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "DictItemAST", "de.livinglogic.ul4.distitem", "A dictionary item.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "DictItemAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.dictitem";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A dictionary item.";
 		}
 
 		@Override

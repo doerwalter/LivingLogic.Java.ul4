@@ -16,11 +16,30 @@ import java.time.temporal.ChronoUnit;
 
 public class SubAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "SubAST", "de.livinglogic.ul4.sub", "A subtraction expression (x - y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "SubAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.sub";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A subtraction expression (i.e. `x - y`).";
 		}
 
 		@Override

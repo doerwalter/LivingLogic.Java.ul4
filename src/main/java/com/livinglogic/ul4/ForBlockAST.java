@@ -14,11 +14,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class ForBlockAST extends BlockAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BlockAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "ForBlockAST", "de.livinglogic.ul4.forblock", "A for loop.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "ForBlockAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.forblock";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A for loop.";
 		}
 
 		@Override

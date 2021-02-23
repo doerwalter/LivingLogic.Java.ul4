@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class ShiftRightVarAST extends ChangeVarAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends ChangeVarAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "ShiftRightVarAST", "de.livinglogic.ul4.shiftrightvar", "An augmented right shift assignment (x >>= y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "ShiftRightVarAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.shiftrightvar";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An augmented right shift assignment (i.e. `x >>= y`).";
 		}
 
 		@Override

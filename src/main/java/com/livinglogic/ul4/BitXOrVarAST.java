@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class BitXOrVarAST extends ChangeVarAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends ChangeVarAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "BitXOrVarAST", "de.livinglogic.ul4.bitxorvar", "An augmented \"binary exclusive or\" assignment (x ^= y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "BitXOrVarAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.bitxorvar";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An augmented \"binary exclusive or\" assignment (x ^= y).";
 		}
 
 		@Override

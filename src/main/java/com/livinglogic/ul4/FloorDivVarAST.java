@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class FloorDivVarAST extends ChangeVarAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends ChangeVarAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "FloorDivVarAST", "de.livinglogic.ul4.floordivvar", "An augmented floor division assignment (x //= y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "FloorDivVarAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.floordivvar";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An augmented floor division assignment (x //= y).";
 		}
 
 		@Override

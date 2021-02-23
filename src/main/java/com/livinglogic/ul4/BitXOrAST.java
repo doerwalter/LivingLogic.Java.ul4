@@ -10,11 +10,30 @@ import java.math.BigInteger;
 
 public class BitXOrAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "BitXOrAST", "de.livinglogic.ul4.bitxor", "An bit exclusive or expression.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "BitXOrAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.bitxor";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An bit exclusive or expression.";
 		}
 
 		@Override

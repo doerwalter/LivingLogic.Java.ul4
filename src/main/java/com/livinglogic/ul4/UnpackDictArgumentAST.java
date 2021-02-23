@@ -19,11 +19,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class UnpackDictArgumentAST extends ArgumentASTBase
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends ArgumentASTBase.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "UnpackDictArgumentAST", "de.livinglogic.ul4.unpackdictarg", "A keyword unpacking argument.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "UnpackDictArgumentAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.unpackdictarg";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A keyword unpacking argument.";
 		}
 
 		@Override

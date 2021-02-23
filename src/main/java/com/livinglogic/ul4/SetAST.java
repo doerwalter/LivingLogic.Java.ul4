@@ -19,11 +19,31 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SetAST extends CodeAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends CodeAST.Type
 	{
-		public Type()
+
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "SetAST", "de.livinglogic.ul4.set", "A set \"literal\".");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "SetAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.set";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A set \"literal\".";
 		}
 
 		@Override

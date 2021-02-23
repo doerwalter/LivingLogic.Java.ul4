@@ -18,11 +18,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class PositionalArgumentAST extends ArgumentASTBase
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends ArgumentASTBase.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "PositionalArgumentAST", "de.livinglogic.ul4.posarg", "A positional argument.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "PositionalArgumentAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.posarg";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A positional argument.";
 		}
 
 		@Override

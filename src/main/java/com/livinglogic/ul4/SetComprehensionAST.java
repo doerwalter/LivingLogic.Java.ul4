@@ -17,11 +17,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SetComprehensionAST extends CodeAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends CodeAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "SetComprehensionAST", "de.livinglogic.ul4.setcomp", "An set comprehension.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "SetComprehensionAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.setcomp";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An set comprehension.";
 		}
 
 		@Override

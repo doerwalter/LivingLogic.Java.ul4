@@ -21,9 +21,28 @@ public class TextAST extends AST
 {
 	protected static class Type extends AST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "TextAST", "de.livinglogic.ul4.text", "Base type of all literal text in the template source");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "TextAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.text";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "Base type of all literal text in the template source";
 		}
 
 		@Override

@@ -17,11 +17,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SeqItemAST extends SeqItemASTBase
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends SeqItemASTBase.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "SeqItemAST", "de.livinglogic.ul4.seqitem", "An item in a sequence.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "SeqItemAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.seqitem";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An item in a sequence.";
 		}
 
 		@Override

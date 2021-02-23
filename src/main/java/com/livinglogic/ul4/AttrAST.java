@@ -19,11 +19,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class AttrAST extends CodeAST implements LValue
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends CodeAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "AttrAST", "de.livinglogic.ul4.attr", "An attribute access.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "AttrAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.attr";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An attribute access.";
 		}
 
 		@Override

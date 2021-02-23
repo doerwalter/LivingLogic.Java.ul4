@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class GTAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "GTAST", "de.livinglogic.ul4.gt", "A \"greater than\" comparison (x > y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "GTAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.gt";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A \"greater than\" comparison (x > y).";
 		}
 
 		@Override

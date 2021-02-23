@@ -12,11 +12,30 @@ import java.math.MathContext;
 
 public class TrueDivAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "TrueDivAST", "de.livinglogic.ul4.truediv", "An \"true division\" expression (x / y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "TrueDivAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.truediv";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An \"true division\" expression (i.e. `x / y`).";
 		}
 
 		@Override

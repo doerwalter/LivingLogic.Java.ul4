@@ -12,11 +12,30 @@ package com.livinglogic.ul4;
  */
 public class PrintAST extends UnaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends UnaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "PrintAST", "de.livinglogic.ul4.print", "A print tag.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "PrintAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.print";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A print tag.";
 		}
 
 		@Override

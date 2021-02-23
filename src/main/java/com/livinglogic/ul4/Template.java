@@ -39,11 +39,30 @@ import com.livinglogic.ul4on.Utils;
 
 public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallWithContext, UL4RenderWithContext, UL4GetAttr, UL4Dir
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BlockAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "Template", "de.livinglogic.ul4.template", "An UL4 template.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "Template";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.template";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An UL4 template.";
 		}
 
 		@Override

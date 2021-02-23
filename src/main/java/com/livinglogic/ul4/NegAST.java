@@ -11,11 +11,30 @@ import java.math.BigInteger;
 
 public class NegAST extends UnaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends UnaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "NegAST", "de.livinglogic.ul4.neg", "Unary negation (-x).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "NegAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.neg";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "Unary negation (i.e. `-x`).";
 		}
 
 		@Override

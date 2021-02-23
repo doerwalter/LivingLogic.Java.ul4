@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class EQAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "EQAST", "de.livinglogic.ul4.eq", "An equality comparison (x == y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "EQAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.eq";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An equality comparison (x == y).";
 		}
 
 		@Override

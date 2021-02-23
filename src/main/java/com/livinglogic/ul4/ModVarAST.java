@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class ModVarAST extends ChangeVarAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends ChangeVarAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "ModVarAST", "de.livinglogic.ul4.modvar", "An augmented modulo assignment (x %= y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "ModVarAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.modvar";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An augmented modulo assignment (i.e. `x %= y`).";
 		}
 
 		@Override

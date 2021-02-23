@@ -22,11 +22,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class RenderXAST extends RenderAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends RenderAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "RenderXAST", "de.livinglogic.ul4.renderx", "A renderx tag.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "RenderXAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.renderx";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A renderx tag.";
 		}
 
 		@Override

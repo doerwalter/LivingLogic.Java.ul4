@@ -16,11 +16,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class DictComprehensionAST extends CodeAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends CodeAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "DictComprehensionAST", "de.livinglogic.ul4.dictcomp", "A dictionary comprehension.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "DictComprehensionAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.dictcomp";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A dictionary comprehension.";
 		}
 
 		@Override

@@ -18,11 +18,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class UnpackSeqItemAST extends SeqItemASTBase
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends SeqItemASTBase.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "UnpackSeqItemAST", "de.livinglogic.ul4.unpackseqitem", "An item in a sequence that unpacks another sequence.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "UnpackSeqItemAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.unpackseqitem";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An item in a sequence that unpacks another sequence.";
 		}
 
 		@Override

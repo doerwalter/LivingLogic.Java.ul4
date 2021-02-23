@@ -16,11 +16,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class VarAST extends CodeAST implements LValue
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends SeqItemASTBase.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "VarAST", "de.livinglogic.ul4.var", "A variable.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "VarAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.var";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A variable.";
 		}
 
 		@Override

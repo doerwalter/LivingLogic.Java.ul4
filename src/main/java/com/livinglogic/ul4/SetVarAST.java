@@ -16,11 +16,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SetVarAST extends CodeAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends CodeAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "SetVarAST", "de.livinglogic.ul4.setvar", "A variable assignment (x = y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "SetVarAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.setvar";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A variable assignment (i.e. `x = y`).";
 		}
 
 		@Override

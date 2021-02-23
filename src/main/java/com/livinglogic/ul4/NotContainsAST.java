@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class NotContainsAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "NotContainsAST", "de.livinglogic.ul4.notcontains", "An \"inverted containment\" test (x not in y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "NotContainsAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.notcontains";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An \"inverted containment\" test (i.e. `x not in y`).";
 		}
 
 		@Override

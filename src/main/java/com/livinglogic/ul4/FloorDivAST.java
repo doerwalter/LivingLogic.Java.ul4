@@ -11,11 +11,30 @@ import java.math.BigInteger;
 
 public class FloorDivAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "FloorDivAST", "de.livinglogic.ul4.floordiv", "A \"floor division\" expression (x // y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "FloorDivAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.floordiv";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A \"floor division\" expression (x // y).";
 		}
 
 		@Override

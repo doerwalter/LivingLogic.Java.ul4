@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class AndAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinarAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "AndAST", "de.livinglogic.ul4.and", "A logical \"and\" expression (`x and y`).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "AndAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.and";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A logical \"and\" expression (`x and y`).";
 		}
 
 		@Override

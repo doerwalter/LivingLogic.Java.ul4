@@ -8,11 +8,30 @@ package com.livinglogic.ul4;
 
 public class SubVarAST extends ChangeVarAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends ChangeVarAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "SubVarAST", "de.livinglogic.ul4.subvar", "An augmented subtraction assignment (x -= y).");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "SubVarAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.subvar";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "An augmented subtraction assignment (i.e. `x -= y`).";
 		}
 
 		@Override

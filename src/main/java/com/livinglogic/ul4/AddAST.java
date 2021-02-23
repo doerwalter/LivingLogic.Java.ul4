@@ -16,11 +16,30 @@ import java.time.LocalDateTime;
 
 public class AddAST extends BinaryAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BinaryAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "AddAST", "de.livinglogic.ul4.add", "addition operator");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "AddAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.add";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "addition operator";
 		}
 
 		@Override

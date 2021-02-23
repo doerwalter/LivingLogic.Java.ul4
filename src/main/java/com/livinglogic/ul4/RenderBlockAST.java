@@ -22,11 +22,34 @@ import com.livinglogic.ul4on.Encoder;
 
 public class RenderBlockAST extends RenderAST implements BlockLike
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends RenderAST.Type
 	{
 		public Type()
 		{
-			super("ul4", "RenderBlockAST", "de.livinglogic.ul4.renderblock", "A renderblock tag.");
+		}
+
+		@Override
+		public String getModuleName()
+		{
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "RenderBlockAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.renderblock";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A renderblock tag.";
 		}
 
 		@Override

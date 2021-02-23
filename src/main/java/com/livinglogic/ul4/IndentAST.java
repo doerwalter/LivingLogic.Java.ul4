@@ -17,11 +17,30 @@ import com.livinglogic.ul4on.Encoder;
  */
 public class IndentAST extends TextAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends TextAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "IndentAST", "de.livinglogic.ul4.indent", "Base type of all literal text in the template source");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "IndentAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.indent";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "Base type of all literal text in the template source";
 		}
 
 		@Override

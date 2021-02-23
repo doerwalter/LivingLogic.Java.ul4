@@ -20,11 +20,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class SliceAST extends CodeAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends CodeAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "SliceAST", "de.livinglogic.ul4.slice", "A slice access.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "SliceAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.slice";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A slice access (i.e. `x[y:z]`).";
 		}
 
 		@Override

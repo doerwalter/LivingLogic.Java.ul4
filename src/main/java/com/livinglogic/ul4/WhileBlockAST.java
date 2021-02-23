@@ -16,11 +16,30 @@ import com.livinglogic.ul4on.Encoder;
 
 public class WhileBlockAST extends BlockAST
 {
-	protected static class Type extends AbstractInstanceType
+	protected static class Type extends BlockAST.Type
 	{
-		public Type()
+		@Override
+		public String getModuleName()
 		{
-			super("ul4", "WhileBlockAST", "de.livinglogic.ul4.whileblock", "A while loop.");
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "WhileBlockAST";
+		}
+
+		@Override
+		public String getUL4ONName()
+		{
+			return "de.livinglogic.ul4.whileblock";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A while loop.";
 		}
 
 		@Override
