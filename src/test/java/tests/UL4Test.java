@@ -3848,8 +3848,8 @@ public class UL4Test
 	public void function_type2()
 	{
 		String source = "<?print 2*v?>";
-		Template t = T("<?code t2 = type(t)(source)?><?render t2(v=v)?>");
-		checkOutput("84", t, V("t", t, "v", 42, "source", source));
+		Template t = T("<?code t2 = ul4.Template(source)?><?render t2(v=v)?>");
+		checkOutput("84", t, V("v", 42, "source", source));
 	}
 
 	@Test
