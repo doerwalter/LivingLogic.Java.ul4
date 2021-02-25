@@ -646,17 +646,20 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 		formatter.write(getSource());
 	}
 
+	@Override
 	public String getUL4ONName()
 	{
 		return getTypeUL4().getUL4ONName();
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		encoder.dump(template);
 		encoder.dump(startPos);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		template = (Template)decoder.load();
@@ -666,11 +669,13 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 
 	protected static Set<String> attributes = makeSet("type", "template", "pos", "startpos", "startline", "startcol", "fullsource", "startsource", "source", "sourceprefix", "sourcesuffix", "startsourceprefix", "startsourcesuffix");
 
+	@Override
 	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

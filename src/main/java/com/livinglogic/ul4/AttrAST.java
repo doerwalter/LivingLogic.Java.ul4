@@ -652,6 +652,7 @@ public class AttrAST extends CodeAST implements LValue
 			throw new ArgumentTypeMismatchException("{!t}.{} |= {!t} not supported", obj, attrname, value);
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
@@ -659,6 +660,7 @@ public class AttrAST extends CodeAST implements LValue
 		encoder.dump(attrname);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
@@ -668,11 +670,13 @@ public class AttrAST extends CodeAST implements LValue
 
 	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "obj", "attrname");
 
-	public Set<String> getAttributeNamesUL4()
+	@Override
+	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)
