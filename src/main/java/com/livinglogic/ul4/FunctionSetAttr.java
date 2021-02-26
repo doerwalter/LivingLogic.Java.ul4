@@ -39,7 +39,7 @@ public class FunctionSetAttr extends FunctionWithContext
 
 	public static void call(Object obj, String attrname, Object value)
 	{
-		Proto.get(obj).setAttr(obj, attrname, value);
+		UL4Type.getType(obj).setAttr(obj, attrname, value);
 	}
 
 	public static void call(Object obj, Object attrname, Object value)
@@ -51,7 +51,7 @@ public class FunctionSetAttr extends FunctionWithContext
 
 	public static void call(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		Proto.get(obj).setAttr(context, obj, attrname, value);
+		UL4Type.getType(obj).setAttr(context, obj, attrname, value);
 	}
 
 	public static void call(EvaluationContext context, Object obj, Object attrname, Object value)

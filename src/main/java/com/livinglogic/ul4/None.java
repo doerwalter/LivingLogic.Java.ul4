@@ -34,13 +34,13 @@ public class None extends AbstractType
 	}
 
 	@Override
-	public boolean toBool(Object instance)
+	public boolean boolInstance(Object instance)
 	{
 		return false;
 	}
 
 	@Override
-	public String toStr(Object instance)
+	public String strInstance(Object instance)
 	{
 		return "";
 	}

@@ -40,7 +40,7 @@ public class Int extends AbstractType
 		if (base == null)
 		{
 			UL4Type type = UL4Type.getType(object);
-			return type.toInt(object);
+			return type.intInstance(object);
 		}
 		else if (object instanceof String && Int.type.instanceCheck(base))
 		{
@@ -57,37 +57,37 @@ public class Int extends AbstractType
 	}
 
 	@Override
-	public boolean toBool(Object object)
+	public boolean boolInstance(Object instance)
 	{
-		if (object instanceof BigInteger)
-			return !((BigInteger)object).equals(BigInteger.ZERO);
-		else if (object instanceof Long)
-			return ((Long)object).longValue() != 0;
+		if (instance instanceof BigInteger)
+			return !((BigInteger)instance).equals(BigInteger.ZERO);
+		else if (instance instanceof Long)
+			return ((Long)instance).longValue() != 0;
 		else
-			return ((Number)object).intValue() != 0;
+			return ((Number)instance).intValue() != 0;
 	}
 
 	@Override
-	public Number toInt(Object object)
+	public Number intInstance(Object instance)
 	{
-		return (Number)object;
+		return (Number)instance;
 	}
 
 	@Override
-	public Number toFloat(Object object)
+	public Number floatInstance(Object instance)
 	{
-		if (object instanceof BigInteger)
-			return new BigDecimal(((BigInteger)object).toString());
-		else if (object instanceof Long)
-			return (double)((Long)object).longValue();
+		if (instance instanceof BigInteger)
+			return new BigDecimal(((BigInteger)instance).toString());
+		else if (instance instanceof Long)
+			return (double)((Long)instance).longValue();
 		else
-			return (double)((Integer)object).intValue();
+			return (double)((Integer)instance).intValue();
 	}
 
 	@Override
-	public String toStr(Object object)
+	public String strInstance(Object instance)
 	{
-		return object.toString();
+		return instance.toString();
 	}
 
 	public static UL4Type type = new Int();

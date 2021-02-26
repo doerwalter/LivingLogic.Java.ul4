@@ -6,14 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
-
 public class FunctionDir extends FunctionWithContext
 {
 	@Override
@@ -38,12 +30,12 @@ public class FunctionDir extends FunctionWithContext
 
 	public static Object call(Object obj)
 	{
-		return Proto.get(obj).getAttrNames(obj);
+		return UL4Type.getType(obj).dirInstance(obj);
 	}
 
 	public static Object call(EvaluationContext context, Object obj)
 	{
-		return Proto.get(obj).getAttrNames(context, obj);
+		return UL4Type.getType(obj).dirInstance(context, obj);
 	}
 
 	public static FunctionWithContext function = new FunctionDir();

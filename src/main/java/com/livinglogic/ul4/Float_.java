@@ -38,7 +38,7 @@ public class Float_ extends AbstractType
 	{
 		Object object = arguments.get(0);
 		UL4Type type = UL4Type.getType(object);
-		return type.toFloat(object);
+		return type.floatInstance(object);
 	}
 
 	@Override
@@ -48,43 +48,43 @@ public class Float_ extends AbstractType
 	}
 
 	@Override
-	public boolean toBool(Object object)
+	public boolean boolInstance(Object instance)
 	{
-		if (object instanceof BigDecimal)
-			return ((BigDecimal)object).signum() != 0;
-		else if (object instanceof Double)
-			return ((Double)object).doubleValue() != 0.0;
+		if (instance instanceof BigDecimal)
+			return ((BigDecimal)instance).signum() != 0;
+		else if (instance instanceof Double)
+			return ((Double)instance).doubleValue() != 0.0;
 		else
-			return ((Float)object).floatValue() != 0.0;
+			return ((Float)instance).floatValue() != 0.0;
 	}
 
 	@Override
-	public Number toInt(Object object)
+	public Number intInstance(Object instance)
 	{
-		if (object instanceof BigDecimal)
-			return ((BigDecimal)object).toBigInteger();
+		if (instance instanceof BigDecimal)
+			return ((BigDecimal)instance).toBigInteger();
 		else
-			return ((Number)object).intValue();
+			return ((Number)instance).intValue();
 	}
 
 	@Override
-	public Number toFloat(Object object)
+	public Number floatInstance(Object instance)
 	{
-		return (Number)object;
+		return (Number)instance;
 	}
 
 	@Override
-	public String toStr(Object object)
+	public String strInstance(Object instance)
 	{
-		if (object instanceof BigDecimal)
+		if (instance instanceof BigDecimal)
 		{
-			String result = object.toString();
+			String result = instance.toString();
 			if (result.indexOf('.') < 0 && result.indexOf('E') < 0 && result.indexOf('e') < 0)
 				result += ".0";
 			return result;
 		}
 		else
-			return StringUtils.replace(object.toString(), ".0E", "E").toLowerCase();
+			return StringUtils.replace(instance.toString(), ".0E", "E").toLowerCase();
 	}
 
 	public static UL4Type type = new Float_();

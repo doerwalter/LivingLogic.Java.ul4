@@ -36,7 +36,7 @@ public class Bool extends AbstractType
 	{
 		Object object = arguments.get(0);
 		UL4Type type = UL4Type.getType(object);
-		return type.toBool(object);
+		return type.boolInstance(object);
 	}
 
 	@Override
@@ -46,27 +46,27 @@ public class Bool extends AbstractType
 	}
 
 	@Override
-	public boolean toBool(Object object)
+	public boolean boolInstance(Object instance)
 	{
-		return ((Boolean)object).booleanValue();
+		return ((Boolean)instance).booleanValue();
 	}
 
 	@Override
-	public Number toInt(Object object)
+	public Number intInstance(Object instance)
 	{
-		return ((Boolean)object).booleanValue() ? NumberUtils.INTEGER_ONE : NumberUtils.INTEGER_ZERO;
+		return ((Boolean)instance).booleanValue() ? NumberUtils.INTEGER_ONE : NumberUtils.INTEGER_ZERO;
 	}
 
 	@Override
-	public Number toFloat(Object object)
+	public Number floatInstance(Object instance)
 	{
-		return ((Boolean)object).booleanValue() ? NumberUtils.DOUBLE_ONE : NumberUtils.DOUBLE_ZERO;
+		return ((Boolean)instance).booleanValue() ? NumberUtils.DOUBLE_ONE : NumberUtils.DOUBLE_ZERO;
 	}
 
 	@Override
-	public String toStr(Object object)
+	public String strInstance(Object instance)
 	{
-		return ((Boolean)object).booleanValue() ? "True" : "False";
+		return ((Boolean)instance).booleanValue() ? "True" : "False";
 	}
 
 	public static UL4Type type = new Bool();

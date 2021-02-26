@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Collections;
 import static java.util.Arrays.asList;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
+
 
 public class Set_ extends AbstractType
 {
@@ -106,9 +108,39 @@ public class Set_ extends AbstractType
 	}
 
 	@Override
-	public boolean toBool(Object object)
+	public boolean boolInstance(Object instance)
 	{
-		return !((Set)object).isEmpty();
+		return !((Set)instance).isEmpty();
+	}
+
+	@Override
+	public int lenInstance(Object instance)
+	{
+		return ((Set)instance).size();
+	}
+
+	protected static Set<String> attributes = makeSet("add", "clear");
+
+	@Override
+	public Set<String> dirInstance(Object instance)
+	{
+		return attributes;
+	}
+
+	@Override
+	public Object getAttr(Object object, String key)
+	{
+		Set set = (Set)object;
+
+		switch (key)
+		{
+			case "add":
+				return new BoundSetMethodAdd(set);
+			case "clear":
+				return new BoundSetMethodClear(set);
+			default:
+				return super.getAttr(object, key);
+		}
 	}
 
 	public static UL4Type type = new Set_();

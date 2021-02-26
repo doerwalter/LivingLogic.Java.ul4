@@ -158,7 +158,8 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	/**
 	 * Reads a object in the UL4ON dump from the reader and return the deserialized object.
 	 * @param reader the {@code Reader} from which the UL4ON dump will be read.
-	 * @param obj the object to be dumped.
+	 * @return the object read form the dump.
+	 * @throws IOException
 	 */
 	public Object load(Reader reader) throws IOException
 	{
@@ -189,12 +190,13 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	}
 
 	/**
-	 * Reads a object in the UL4ON dump from the reader and returns it.
-	 * This is called by implementations of {@see UL4ONSerializable}, but should
-	 * not be called from outside, as {@code reader} may not be set in this case.
-	 * @return the object read from the stream
-	 * @throws IOException if reading from the stream fails
-	 */
+	Reads a object in the UL4ON dump from the reader and returns it.
+	This is called by implementations of {@link UL4ONSerializable}, but should
+	not be called from outside, as {@code reader} may not be set in this case.
+
+	@return the object read from the stream
+	@throws IOException if reading from the stream fails
+	**/
 	public Object load() throws IOException
 	{
 		char typecode = nextChar();

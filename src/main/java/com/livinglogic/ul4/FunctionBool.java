@@ -6,13 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-
 public class FunctionBool extends Function
 {
 	@Override
@@ -42,6 +35,6 @@ public class FunctionBool extends Function
 
 	public static boolean call(Object obj)
 	{
-		return Proto.get(obj).bool(obj);
+		return UL4Type.getType(obj).boolInstance(obj);
 	}
 }

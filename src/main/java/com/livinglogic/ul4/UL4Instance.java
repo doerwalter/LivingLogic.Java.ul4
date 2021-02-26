@@ -6,10 +6,11 @@
 
 package com.livinglogic.ul4;
 
-import com.livinglogic.ul4on.UL4ONSerializable;
+import java.util.Set;
+import java.util.Collections;
 
 
-public interface UL4Instance extends UL4Bool, UL4Len
+public interface UL4Instance extends UL4Bool, UL4Len, UL4Dir, UL4GetAttr, UL4SetAttr
 {
 	UL4Type getTypeUL4();
 
@@ -38,5 +39,23 @@ public interface UL4Instance extends UL4Bool, UL4Len
 	default int lenUL4()
 	{
 		throw new ArgumentTypeMismatchException("len({!t}) not supported!", this);
+	}
+
+	@Override
+	default Set<String> dirUL4()
+	{
+		return Collections.emptySet();
+	}
+
+	@Override
+	default Object getAttrUL4(String key)
+	{
+		throw new AttributeException(this, key);
+	}
+
+	@Override
+	default void setAttrUL4(String key, Object value)
+	{
+		throw new ReadonlyException(this, key);
 	}
 }

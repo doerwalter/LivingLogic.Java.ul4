@@ -42,7 +42,7 @@ public class FunctionGetAttr extends FunctionWithContext
 	{
 		try
 		{
-			return Proto.get(obj).getAttr(obj, attrname);
+			return UL4Type.getType(obj).getAttr(obj, attrname);
 		}
 		catch (AttributeException exc)
 		{
@@ -70,7 +70,7 @@ public class FunctionGetAttr extends FunctionWithContext
 	{
 		try
 		{
-			return Proto.get(obj).getAttr(context, obj, attrname);
+			return UL4Type.getType(obj).getAttr(context, obj, attrname);
 		}
 		catch (AttributeException exc)
 		{

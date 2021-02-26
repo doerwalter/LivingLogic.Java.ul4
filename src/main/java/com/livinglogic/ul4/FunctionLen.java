@@ -6,9 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-import java.util.Collection;
-import java.util.Map;
 
 public class FunctionLen extends Function
 {
@@ -34,7 +31,7 @@ public class FunctionLen extends Function
 
 	public static Object call(Object obj)
 	{
-		return Proto.get(obj).len(obj);
+		return UL4Type.getType(obj).lenInstance(obj);
 	}
 
 	public static Function function = new FunctionLen();

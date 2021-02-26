@@ -6,7 +6,10 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Set;
 import java.math.BigInteger;
+
+import static com.livinglogic.utils.SetUtils.makeSet;
 
 
 public class Str extends AbstractType
@@ -36,7 +39,7 @@ public class Str extends AbstractType
 	{
 		Object object = arguments.get(0);
 		UL4Type type = UL4Type.getType(object);
-		return type.toStr(object);
+		return type.strInstance(object);
 	}
 
 	@Override
@@ -46,41 +49,110 @@ public class Str extends AbstractType
 	}
 
 	@Override
-	public boolean toBool(Object object)
+	public boolean boolInstance(Object instance)
 	{
-		return !((String)object).isEmpty();
+		return !((String)instance).isEmpty();
 	}
 
 	@Override
-	public Number toInt(Object object)
+	public Number intInstance(Object instance)
 	{
 		try
 		{
-			return Integer.valueOf((String)object);
+			return Integer.valueOf((String)instance);
 		}
 		catch (NumberFormatException ex1)
 		{
 			try
 			{
-				return Long.valueOf((String)object);
+				return Long.valueOf((String)instance);
 			}
 			catch (NumberFormatException ex2)
 			{
-				return new BigInteger((String)object);
+				return new BigInteger((String)instance);
 			}
 		}
 	}
 
 	@Override
-	public Number toFloat(Object object)
+	public Number floatInstance(Object instance)
 	{
-		return Double.valueOf((String)object);
+		return Double.valueOf((String)instance);
 	}
 
 	@Override
-	public int len(Object object)
+	public int lenInstance(Object instance)
 	{
-		return ((String)object).length();
+		return ((String)instance).length();
+	}
+
+	protected static Set<String> attributes = makeSet(
+		"split",
+		"rsplit",
+		"splitlines",
+		"strip",
+		"lstrip",
+		"rstrip",
+		"upper",
+		"lower",
+		"capitalize",
+		"startswith",
+		"endswith",
+		"replace",
+		"count",
+		"find",
+		"rfind",
+		"join"
+	);
+
+	@Override
+	public Set<String> dirInstance(Object instance)
+	{
+		return attributes;
+	}
+
+	@Override
+	public Object getAttr(Object object, String key)
+	{
+		String string = (String)object;
+
+		switch (key)
+		{
+			case "split":
+				return new BoundStringMethodSplit(string);
+			case "rsplit":
+				return new BoundStringMethodRSplit(string);
+			case "splitlines":
+				return new BoundStringMethodSplitlines(string);
+			case "strip":
+				return new BoundStringMethodStrip(string);
+			case "lstrip":
+				return new BoundStringMethodLStrip(string);
+			case "rstrip":
+				return new BoundStringMethodRStrip(string);
+			case "upper":
+				return new BoundStringMethodUpper(string);
+			case "lower":
+				return new BoundStringMethodLower(string);
+			case "capitalize":
+				return new BoundStringMethodCapitalize(string);
+			case "startswith":
+				return new BoundStringMethodStartsWith(string);
+			case "endswith":
+				return new BoundStringMethodEndsWith(string);
+			case "replace":
+				return new BoundStringMethodReplace(string);
+			case "count":
+				return new BoundStringMethodCount(string);
+			case "find":
+				return new BoundStringMethodFind(string);
+			case "rfind":
+				return new BoundStringMethodRFind(string);
+			case "join":
+				return new BoundStringMethodJoin(string);
+			default:
+				return super.getAttr(object, key);
+		}
 	}
 
 	public static UL4Type type = new Str();

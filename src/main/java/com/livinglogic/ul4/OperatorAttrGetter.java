@@ -58,12 +58,7 @@ public class OperatorAttrGetter extends Function
 
 	private static Object call(Object obj, String attrName)
 	{
-		if (obj instanceof UL4GetAttr)
-			return ((UL4GetAttr)obj).getAttrUL4(attrName);
-		else if (obj instanceof UL4GetItem)
-			return ((UL4GetItem)obj).getItemUL4(attrName);
-		else
-			return Proto.get(obj).getAttr(obj, attrName);
+		return UL4Type.getType(obj).getAttr(obj, attrName);
 	}
 
 	private static Object call(Object obj, String[] attrNames)

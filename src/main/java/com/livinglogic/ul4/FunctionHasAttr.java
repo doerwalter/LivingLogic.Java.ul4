@@ -38,7 +38,7 @@ public class FunctionHasAttr extends FunctionWithContext
 
 	public static boolean call(Object obj, String attrname)
 	{
-		return Proto.get(obj).hasAttr(obj, attrname);
+		return UL4Type.getType(obj).hasAttr(obj, attrname);
 	}
 
 	public static Object call(Object obj, Object attrname)
@@ -50,7 +50,7 @@ public class FunctionHasAttr extends FunctionWithContext
 
 	public static Object call(EvaluationContext context, Object obj, String attrname)
 	{
-		return Proto.get(obj).hasAttr(context, obj, attrname);
+		return UL4Type.getType(obj).hasAttr(context, obj, attrname);
 	}
 
 	public static Object call(EvaluationContext context, Object obj, Object attrname)

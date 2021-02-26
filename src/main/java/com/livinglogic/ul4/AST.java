@@ -711,6 +711,12 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 		}
 	}
 
+	@Override
+	public void setAttrUL4(String key, Object value)
+	{
+		throw new ReadonlyException(this, key);
+	}
+
 	protected void reprPosLineCol(UL4Repr.Formatter formatter)
 	{
 		formatter.append(" pos=(");

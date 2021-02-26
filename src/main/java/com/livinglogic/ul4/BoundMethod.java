@@ -43,8 +43,6 @@ public abstract class BoundMethod<T> extends Function
 	{
 		formatter.append("<method ");
 		formatter.append(getFullNameUL4());
-		formatter.append(" of ");
-		formatter.append(Utils.objectType(object));
-		formatter.append(" object>");
+		formatter.append(">");
 	}
 }

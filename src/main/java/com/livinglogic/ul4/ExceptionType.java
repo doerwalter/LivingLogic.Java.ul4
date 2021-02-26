@@ -6,9 +6,9 @@
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-
 import java.util.Set;
+
+import static com.livinglogic.ul4.Utils.getInnerException;
 
 
 public class ExceptionType extends GenericType
@@ -19,9 +19,29 @@ public class ExceptionType extends GenericType
 	}
 
 	@Override
-	public String toStr(Object object)
+	public String strInstance(Object instance)
 	{
-		String message = ((Throwable)object).getLocalizedMessage();
+		String message = ((Throwable)instance).getLocalizedMessage();
 		return message != null ? message : "";
+	}
+
+	@Override
+	public Set<String> dirInstance(Object instance)
+	{
+		Set<String> result = super.dirInstance(instance);
+		result.add("context");
+		return result;
+	}
+
+	@Override
+	public Object getAttr(Object object, String key)
+	{
+		switch (key)
+		{
+			case "context":
+				return getInnerException((Throwable)object);
+			default:
+				return super.getAttr(object, key);
+		}
 	}
 }

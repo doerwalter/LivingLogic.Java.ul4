@@ -73,10 +73,10 @@ public abstract class Proto implements UL4GetAttr, UL4Dir
 		return Proto.get(object).getAttrNames(object).contains(attrname);
 	}
 
-	public static Proto get(Object object)
+	private static Proto get(Object object)
 	{
 		if (object == null)
-			return NoneProto.proto;
+			return null; // NoneProto.proto;
 		else if (object instanceof Boolean)
 			return BoolProto.proto;
 		else if (object instanceof Integer || object instanceof Long || object instanceof BigInteger)

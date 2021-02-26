@@ -82,7 +82,7 @@ public class AttrAST extends CodeAST implements LValue
 
 	public void evaluateSet(EvaluationContext context, Object value)
 	{
-		callSet(obj.decoratedEvaluate(context), attrname, value);
+		callSet(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
 	public void evaluateAdd(EvaluationContext context, Object value)
@@ -140,516 +140,127 @@ public class AttrAST extends CodeAST implements LValue
 		callBitOr(context, obj.decoratedEvaluate(context), attrname, value);
 	}
 
-	public static Object call(UL4GetAttr obj, String attrname)
-	{
-		try
-		{
-			return obj.getAttrUL4(attrname);
-		}
-		catch (AttributeException exc)
-		{
-			if (exc.getObject() == obj)
-				return new UndefinedKey(attrname);
-			else
-				// The {@code AttributeException} originated from another object
-				throw exc;
-		}
-	}
-
-	public static Object call(UL4GetItem obj, String attrname)
-	{
-		try
-		{
-			return obj.getItemUL4(attrname);
-		}
-		catch (AttributeException exc)
-		{
-			if (exc.getObject() == obj)
-				return new UndefinedKey(attrname);
-			else
-				// The {@code AttributeException} originated from another object
-				throw exc;
-		}
-	}
-
-	public static Object call(Map obj, String attrname)
-	{
-		return DictProto.getAttr(obj, attrname);
-	}
-
-	public static Object call(Set obj, String attrname)
-	{
-		return SetProto.getAttr(obj, attrname);
-	}
-
-	public static Object call(List obj, String attrname)
-	{
-		return ListProto.getAttr(obj, attrname);
-	}
-
-	public static Object call(String obj, String attrname)
-	{
-		return StrProto.getAttr(obj, attrname);
-	}
-
-	public static Object call(Date obj, String attrname)
-	{
-		return DateProto.getAttr(obj, attrname);
-	}
-
-	public static Object call(Throwable obj, String attrname)
-	{
-		return new ExceptionProto(obj.getClass()).getAttr(obj, attrname);
-	}
-
-	public static Object call(Object obj, String attrname)
-	{
-		if (obj instanceof UL4GetAttr)
-			return call((UL4GetAttr)obj, attrname);
-		else if (obj instanceof UL4GetItem)
-			return call((UL4GetItem)obj, attrname);
-		else
-		{
-			try
-			{
-				return Proto.get(obj).getAttr(obj, attrname);
-			}
-			catch (AttributeException exc)
-			{
-				if (exc.getObject() == obj)
-					return new UndefinedKey(attrname);
-				else
-					// The {@code AttributeException} originated from another object
-					throw exc;
-			}
-		}
-	}
-
-	public static Object call(EvaluationContext context, UL4GetAttrWithContext obj, String attrname)
-	{
-		return obj.getAttrWithContextUL4(context, attrname);
-	}
-
 	public static Object call(EvaluationContext context, Object obj, String attrname)
 	{
-		if (obj instanceof UL4GetAttrWithContext)
-			return call(context, (UL4GetAttrWithContext)obj, attrname);
-		else if (obj instanceof UL4GetAttr)
-			return call((UL4GetAttr)obj, attrname);
-		if (obj instanceof UL4GetItemWithContext)
-			return call(context, (UL4GetItemWithContext)obj, attrname);
-		else if (obj instanceof UL4GetItem)
-			return call((UL4GetItem)obj, attrname);
-		else
+		try
 		{
-			try
-			{
-				return Proto.get(obj).getAttr(context, obj, attrname);
-			}
-			catch (AttributeException exc)
-			{
-				if (exc.getObject() == obj)
-					return new UndefinedKey(attrname);
-				else
-					// The {@code AttributeException} originated from another object
-					throw exc;
-			}
+			return UL4Type.getType(obj).getAttr(context, obj, attrname);
+		}
+		catch (AttributeException exc)
+		{
+			if (exc.getObject() == obj)
+				return new UndefinedKey(attrname);
+			else
+				// The {@code AttributeException} originated from another object
+				throw exc;
 		}
 	}
 
-	public static void callSet(UL4SetAttr obj, String attrname, Object value)
+	public static void callSet(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		obj.setAttrUL4(attrname, value);
-	}
-
-	public static void callSet(Map obj, String attrname, Object value)
-	{
-		obj.put(attrname, value);
-	}
-
-	public static void callSet(Object obj, String attrname, Object value)
-	{
-		Proto.get(obj).setAttr(obj, attrname, value);
-	}
-
-	private static Object getValue(EvaluationContext context, Object obj, String attrname, String excmessage, Object value)
-	{
-		// We do not catch the {@code AttributeException} here, because {@code getValue} is
-		// only called for augmented assignment so eventually we will try to set the attribute,
-		// so we want to throw an {@code AttributeException} for non-existant attributes
-		// and {@code ReadonlyException} for read-only ones.
-		if (obj instanceof UL4GetAttrWithContext)
-			return ((UL4GetAttrWithContext)obj).getAttrWithContextUL4(context, attrname);
-		else if (obj instanceof UL4GetAttr)
-			return ((UL4GetAttr)obj).getAttrUL4(attrname);
-		else if (obj instanceof UL4GetItemWithContext)
-			return ((UL4GetItemWithContext)obj).getItemWithContextUL4(context, attrname);
-		else if (obj instanceof UL4GetItem)
-			return ((UL4GetItem)obj).getItemUL4(attrname);
-		throw new ArgumentTypeMismatchException(excmessage, obj, attrname, value);
-	}
-
-	public static void callAdd(Map obj, String attrname, Object value)
-	{
-		obj.put(attrname, IAdd.call(call(obj, attrname), value));
+		UL4Type.getType(obj).setAttr(context, obj, attrname, value);
 	}
 
 	public static void callAdd(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4SetAttrWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} += {!t} not supported", value);
-			((UL4SetAttrWithContext)obj).setAttrWithContextUL4(context, attrname, IAdd.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetAttr)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} += {!t} not supported", value);
-			((UL4SetAttr)obj).setAttrUL4(attrname, IAdd.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItemWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} += {!t} not supported", value);
-			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, attrname, IAdd.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItem)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} += {!t} not supported", value);
-			((UL4SetItem)obj).setItemUL4(attrname, IAdd.call(orgvalue, value));
-		}
-		else if (obj instanceof Map)
-			callAdd((Map)obj, attrname, value);
-		else
-			throw new ArgumentTypeMismatchException("{!t}.{} += {!t} not supported", obj, attrname, value);
-	}
+		UL4Type type = UL4Type.getType(obj);
 
-	public static void callSub(Map obj, String attrname, Object value)
-	{
-		obj.put(attrname, SubAST.call(call(obj, attrname), value));
+		// We do not catch the {@code AttributeException} here, because we want
+		// to throw an {@code AttributeException} for non-existant attributes
+		// and {@code ReadonlyException} for read-only ones.
+		Object oldValue = type.getAttr(context, obj, attrname);
+		Object newValue = IAdd.call(oldValue, value);
+		type.setAttr(context, obj, attrname, newValue);
 	}
 
 	public static void callSub(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4SetAttrWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} -= {!t} not supported", value);
-			((UL4SetAttrWithContext)obj).setAttrWithContextUL4(context, attrname, SubAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetAttr)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} -= {!t} not supported", value);
-			((UL4SetAttr)obj).setAttrUL4(attrname, SubAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItemWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} -= {!t} not supported", value);
-			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, attrname, SubAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItem)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} -= {!t} not supported", value);
-			((UL4SetItem)obj).setItemUL4(attrname, SubAST.call(orgvalue, value));
-		}
-		else if (obj instanceof Map)
-			callSub((Map)obj, attrname, value);
-		else
-			throw new ArgumentTypeMismatchException("{!t}.{} -= {!t} not supported", obj, attrname, value);
-	}
+		UL4Type type = UL4Type.getType(obj);
 
-	public static void callMul(Map obj, String attrname, Object value)
-	{
-		obj.put(attrname, IMul.call(call(obj, attrname), value));
+		Object oldValue = type.getAttr(context, obj, attrname);
+		Object newValue = SubAST.call(oldValue, value);
+		type.setAttr(context, obj, attrname, newValue);
 	}
 
 	public static void callMul(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4SetAttrWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} *= {!t} not supported", value);
-			((UL4SetAttrWithContext)obj).setAttrWithContextUL4(context, attrname, IMul.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetAttr)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} *= {!t} not supported", value);
-			((UL4SetAttr)obj).setAttrUL4(attrname, IMul.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItemWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} *= {!t} not supported", value);
-			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, attrname, IMul.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItem)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} *= {!t} not supported", value);
-			((UL4SetItem)obj).setItemUL4(attrname, IMul.call(orgvalue, value));
-		}
-		else if (obj instanceof Map)
-			callMul((Map)obj, attrname, value);
-		else
-			throw new ArgumentTypeMismatchException("{!t}.{} *= {!t} not supported", obj, attrname, value);
-	}
+		UL4Type type = UL4Type.getType(obj);
 
-	public static void callFloorDiv(Map obj, String attrname, Object value)
-	{
-		obj.put(attrname, FloorDivAST.call(call(obj, attrname), value));
+		Object oldValue = type.getAttr(context, obj, attrname);
+		Object newValue = IMul.call(oldValue, value);
+		type.setAttr(context, obj, attrname, newValue);
 	}
 
 	public static void callFloorDiv(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4SetAttrWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} //= {!t} not supported", value);
-			((UL4SetAttrWithContext)obj).setAttrWithContextUL4(context, attrname, FloorDivAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetAttr)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} //= {!t} not supported", value);
-			((UL4SetAttr)obj).setAttrUL4(attrname, FloorDivAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItemWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} //= {!t} not supported", value);
-			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, attrname, FloorDivAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItem)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} //= {!t} not supported", value);
-			((UL4SetItem)obj).setItemUL4(attrname, FloorDivAST.call(orgvalue, value));
-		}
-		else if (obj instanceof Map)
-			callFloorDiv((Map)obj, attrname, value);
-		else
-			throw new ArgumentTypeMismatchException("{!t}.{} //= {!t} not supported", obj, attrname, value);
-	}
+		UL4Type type = UL4Type.getType(obj);
 
-	public static void callTrueDiv(Map obj, String attrname, Object value)
-	{
-		obj.put(attrname, TrueDivAST.call(call(obj, attrname), value));
+		Object oldValue = type.getAttr(context, obj, attrname);
+		Object newValue = FloorDivAST.call(oldValue, value);
+		type.setAttr(context, obj, attrname, newValue);
 	}
 
 	public static void callTrueDiv(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4SetAttrWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} /= {!t} not supported", value);
-			((UL4SetAttrWithContext)obj).setAttrWithContextUL4(context, attrname, TrueDivAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetAttr)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} /= {!t} not supported", value);
-			((UL4SetAttr)obj).setAttrUL4(attrname, TrueDivAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItemWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} /= {!t} not supported", value);
-			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, attrname, TrueDivAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItem)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} /= {!t} not supported", value);
-			((UL4SetItem)obj).setItemUL4(attrname, TrueDivAST.call(orgvalue, value));
-		}
-		else if (obj instanceof Map)
-			callTrueDiv((Map)obj, attrname, value);
-		else
-			throw new ArgumentTypeMismatchException("{!t}.{} //= {!t} not supported", obj, attrname, value);
-	}
+		UL4Type type = UL4Type.getType(obj);
 
-	public static void callMod(Map obj, String attrname, Object value)
-	{
-		obj.put(attrname, ModAST.call(call(obj, attrname), value));
+		Object oldValue = type.getAttr(context, obj, attrname);
+		Object newValue = TrueDivAST.call(oldValue, value);
+		type.setAttr(context, obj, attrname, newValue);
 	}
 
 	public static void callMod(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4SetAttrWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} %= {!t} not supported", value);
-			((UL4SetAttrWithContext)obj).setAttrWithContextUL4(context, attrname, ModAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetAttr)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} %= {!t} not supported", value);
-			((UL4SetAttr)obj).setAttrUL4(attrname, ModAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItemWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} %= {!t} not supported", value);
-			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, attrname, ModAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItem)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} %= {!t} not supported", value);
-			((UL4SetItem)obj).setItemUL4(attrname, ModAST.call(orgvalue, value));
-		}
-		else if (obj instanceof Map)
-			callMod((Map)obj, attrname, value);
-		else
-			throw new ArgumentTypeMismatchException("{!t}.{} //= {!t} not supported", obj, attrname, value);
-	}
+		UL4Type type = UL4Type.getType(obj);
 
-	public static void callShiftLeft(Map obj, String attrname, Object value)
-	{
-		obj.put(attrname, ShiftLeftAST.call(call(obj, attrname), value));
+		Object oldValue = type.getAttr(context, obj, attrname);
+		Object newValue = ModAST.call(oldValue, value);
+		type.setAttr(context, obj, attrname, newValue);
 	}
 
 	public static void callShiftLeft(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4SetAttrWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} <<= {!t} not supported", value);
-			((UL4SetAttrWithContext)obj).setAttrWithContextUL4(context, attrname, ShiftLeftAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetAttr)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} <<= {!t} not supported", value);
-			((UL4SetAttr)obj).setAttrUL4(attrname, ShiftLeftAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItemWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} <<= {!t} not supported", value);
-			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, attrname, ShiftLeftAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItem)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} <<= {!t} not supported", value);
-			((UL4SetItem)obj).setItemUL4(attrname, ShiftLeftAST.call(orgvalue, value));
-		}
-		else if (obj instanceof Map)
-			callShiftLeft((Map)obj, attrname, value);
-		else
-			throw new ArgumentTypeMismatchException("{!t}.{} <<= {!t} not supported", obj, attrname, value);
-	}
+		UL4Type type = UL4Type.getType(obj);
 
-	public static void callShiftRight(Map obj, String attrname, Object value)
-	{
-		obj.put(attrname, ShiftRightAST.call(call(obj, attrname), value));
+		Object oldValue = type.getAttr(context, obj, attrname);
+		Object newValue = ShiftLeftAST.call(oldValue, value);
+		type.setAttr(context, obj, attrname, newValue);
 	}
 
 	public static void callShiftRight(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4SetAttrWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} >>= {!t} not supported", value);
-			((UL4SetAttrWithContext)obj).setAttrWithContextUL4(context, attrname, ShiftRightAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetAttr)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} >>= {!t} not supported", value);
-			((UL4SetAttr)obj).setAttrUL4(attrname, ShiftRightAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItemWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} >>= {!t} not supported", value);
-			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, attrname, ShiftRightAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItem)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} >>= {!t} not supported", value);
-			((UL4SetItem)obj).setItemUL4(attrname, ShiftRightAST.call(orgvalue, value));
-		}
-		else if (obj instanceof Map)
-			callShiftRight((Map)obj, attrname, value);
-		else
-			throw new ArgumentTypeMismatchException("{!t}.{} >>= {!t} not supported", obj, attrname, value);
-	}
+		UL4Type type = UL4Type.getType(obj);
 
-	public static void callBitAnd(Map obj, String attrname, Object value)
-	{
-		obj.put(attrname, BitAndAST.call(call(obj, attrname), value));
+		Object oldValue = type.getAttr(context, obj, attrname);
+		Object newValue = ShiftRightAST.call(oldValue, value);
+		type.setAttr(context, obj, attrname, newValue);
 	}
 
 	public static void callBitAnd(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4SetAttrWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} &= {!t} not supported", value);
-			((UL4SetAttrWithContext)obj).setAttrWithContextUL4(context, attrname, BitAndAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetAttr)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} &= {!t} not supported", value);
-			((UL4SetAttr)obj).setAttrUL4(attrname, BitAndAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItemWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} &= {!t} not supported", value);
-			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, attrname, BitAndAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItem)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} &= {!t} not supported", value);
-			((UL4SetItem)obj).setItemUL4(attrname, BitAndAST.call(orgvalue, value));
-		}
-		else if (obj instanceof Map)
-			callBitAnd((Map)obj, attrname, value);
-		else
-			throw new ArgumentTypeMismatchException("{!t}.{} &= {!t} not supported", obj, attrname, value);
-	}
+		UL4Type type = UL4Type.getType(obj);
 
-	public static void callBitXOr(Map obj, String attrname, Object value)
-	{
-		obj.put(attrname, BitXOrAST.call(call(obj, attrname), value));
+		Object oldValue = type.getAttr(context, obj, attrname);
+		Object newValue = BitAndAST.call(oldValue, value);
+		type.setAttr(context, obj, attrname, newValue);
 	}
 
 	public static void callBitXOr(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4SetAttrWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} ^= {!t} not supported", value);
-			((UL4SetAttrWithContext)obj).setAttrWithContextUL4(context, attrname, BitXOrAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetAttr)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} ^= {!t} not supported", value);
-			((UL4SetAttr)obj).setAttrUL4(attrname, BitXOrAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItemWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} ^= {!t} not supported", value);
-			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, attrname, BitXOrAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItem)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} ^= {!t} not supported", value);
-			((UL4SetItem)obj).setItemUL4(attrname, BitXOrAST.call(orgvalue, value));
-		}
-		else if (obj instanceof Map)
-			callBitXOr((Map)obj, attrname, value);
-		else
-			throw new ArgumentTypeMismatchException("{!t}.{} ^= {!t} not supported", obj, attrname, value);
-	}
+		UL4Type type = UL4Type.getType(obj);
 
-	public static void callBitOr(Map obj, String attrname, Object value)
-	{
-		obj.put(attrname, BitOrAST.call(call(obj, attrname), value));
+		Object oldValue = type.getAttr(context, obj, attrname);
+		Object newValue = BitXOrAST.call(oldValue, value);
+		type.setAttr(context, obj, attrname, newValue);
 	}
 
 	public static void callBitOr(EvaluationContext context, Object obj, String attrname, Object value)
 	{
-		if (obj instanceof UL4SetAttrWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} |= {!t} not supported", value);
-			((UL4SetAttrWithContext)obj).setAttrWithContextUL4(context, attrname, BitOrAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetAttr)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} |= {!t} not supported", value);
-			((UL4SetAttr)obj).setAttrUL4(attrname, BitOrAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItemWithContext)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} |= {!t} not supported", value);
-			((UL4SetItemWithContext)obj).setItemWithContextUL4(context, attrname, BitOrAST.call(orgvalue, value));
-		}
-		else if (obj instanceof UL4SetItem)
-		{
-			Object orgvalue = getValue(context, obj, attrname, "{!t}.{} |= {!t} not supported", value);
-			((UL4SetItem)obj).setItemUL4(attrname, BitOrAST.call(orgvalue, value));
-		}
-		else if (obj instanceof Map)
-			callBitOr((Map)obj, attrname, value);
-		else
-			throw new ArgumentTypeMismatchException("{!t}.{} |= {!t} not supported", obj, attrname, value);
+		UL4Type type = UL4Type.getType(obj);
+
+		Object oldValue = type.getAttr(context, obj, attrname);
+		Object newValue = BitOrAST.call(oldValue, value);
+		type.setAttr(context, obj, attrname, newValue);
 	}
 
 	@Override

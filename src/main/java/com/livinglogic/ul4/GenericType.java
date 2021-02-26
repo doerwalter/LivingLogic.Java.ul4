@@ -9,6 +9,7 @@ package com.livinglogic.ul4;
 import static com.livinglogic.utils.SetUtils.makeSet;
 
 import java.util.Set;
+import java.util.Collections;
 
 
 public class GenericType implements UL4Type
@@ -53,18 +54,72 @@ public class GenericType implements UL4Type
 	}
 
 	@Override
-	public boolean toBool(Object object)
+	public boolean boolInstance(Object instance)
 	{
-		if (object instanceof UL4Bool)
-			return ((UL4Bool)object).boolUL4();
+		if (instance instanceof UL4Bool)
+			return ((UL4Bool)instance).boolUL4();
 		return true;
 	}
 
 	@Override
-	public int len(Object object)
+	public int lenInstance(Object instance)
 	{
-		if (object instanceof UL4Len)
-			return ((UL4Len)object).lenUL4();
-		throw new ArgumentTypeMismatchException("len({!t}) not supported", object);
+		if (instance instanceof UL4Len)
+			return ((UL4Len)instance).lenUL4();
+		throw new ArgumentTypeMismatchException("len({!t}) not supported", instance);
+	}
+
+	@Override
+	public Set<String> dirInstance(EvaluationContext context, Object instance)
+	{
+		if (instance instanceof UL4Dir)
+			return ((UL4Dir)instance).dirUL4();
+		else
+			return Collections.EMPTY_SET;
+	}
+
+	@Override
+	public Set<String> dirInstance(Object instance)
+	{
+		if (instance instanceof UL4Dir)
+			return ((UL4Dir)instance).dirUL4();
+		else
+			return Collections.EMPTY_SET;
+	}
+
+	@Override
+	public Object getAttr(EvaluationContext context, Object object, String key)
+	{
+		if (object instanceof UL4GetAttrWithContext)
+			return ((UL4GetAttrWithContext)object).getAttrWithContextUL4(context, key);
+		else
+			return getAttr(object, key);
+	}
+
+	@Override
+	public Object getAttr(Object object, String key)
+	{
+		if (object instanceof UL4GetAttr)
+			return ((UL4GetAttr)object).getAttrUL4(key);
+		else
+			throw new AttributeException(object, key);
+	}
+
+	@Override
+	public void setAttr(EvaluationContext context, Object object, String key, Object value)
+	{
+		if (object instanceof UL4SetAttrWithContext)
+			((UL4SetAttrWithContext)object).setAttrWithContextUL4(context, key, value);
+		else
+			setAttr(object, key, value);
+	}
+
+	@Override
+	public void setAttr(Object object, String key, Object value)
+	{
+		if (object instanceof UL4SetAttr)
+			((UL4SetAttr)object).setAttrUL4(key, value);
+		else
+			throw new ReadonlyException(object, key);
 	}
 }

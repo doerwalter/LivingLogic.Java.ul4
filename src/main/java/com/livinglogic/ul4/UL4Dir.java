@@ -16,4 +16,15 @@ public interface UL4Dir
 	 * @return a {@link java.util.Set} of attribute names.
 	 */
 	Set<String> dirUL4();
+
+	/**
+	 * Return whether this object has an attribute named {@code attrName}.
+	 *
+	 * @param attrName the name of the attribute whose existence should be checked.
+	 * @return {@code true} if this object has the specified attribute, {@code false} otherwise.
+	 */
+	default boolean hasAttr(String attrName)
+	{
+		return dirUL4().contains(attrName);
+	}
 }

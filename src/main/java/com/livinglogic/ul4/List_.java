@@ -16,6 +16,8 @@ import java.util.Collection;
 import java.util.Collections;
 import static java.util.Arrays.asList;
 
+import static com.livinglogic.utils.SetUtils.makeSet;
+
 
 public class List_ extends AbstractType
 {
@@ -109,12 +111,80 @@ public class List_ extends AbstractType
 	}
 
 	@Override
-	public boolean toBool(Object object)
+	public boolean boolInstance(Object instance)
+	{
+		if (instance instanceof List)
+			return !((List)instance).isEmpty();
+		else
+			return ((Object[])instance).length != 0;
+	}
+
+	@Override
+	public int lenInstance(Object instance)
+	{
+		if (instance instanceof List)
+			return ((List)instance).size();
+		else
+			return ((Object[])instance).length;
+	}
+
+	protected static Set<String> attributes = makeSet("append", "insert", "pop", "count", "find", "rfind");
+
+	@Override
+	public Set<String> dirInstance(Object instance)
+	{
+		return attributes;
+	}
+
+	@Override
+	public Object getAttr(Object object, String key)
 	{
 		if (object instanceof List)
-			return !((List)object).isEmpty();
+			return getAttr((List)object, key);
 		else
-			return ((Object[])object).length != 0;
+			return getAttr((Object[])object, key);
+	}
+
+	public Object getAttr(Object[] object, String key)
+	{
+		switch (key)
+		{
+			case "append":
+				return new BoundArrayMethodAppend(object);
+			case "insert":
+				return new BoundArrayMethodInsert(object);
+			case "pop":
+				return new BoundArrayMethodPop(object);
+			case "count":
+				return new BoundArrayMethodCount(object);
+			case "find":
+				return new BoundArrayMethodFind(object);
+			case "rfind":
+				return new BoundArrayMethodRFind(object);
+			default:
+				return super.getAttr(object, key);
+		}
+	}
+
+	public Object getAttr(List object, String key)
+	{
+		switch (key)
+		{
+			case "append":
+				return new BoundListMethodAppend(object);
+			case "insert":
+				return new BoundListMethodInsert(object);
+			case "pop":
+				return new BoundListMethodPop(object);
+			case "count":
+				return new BoundListMethodCount(object);
+			case "find":
+				return new BoundListMethodFind(object);
+			case "rfind":
+				return new BoundListMethodRFind(object);
+			default:
+				return super.getAttr(object, key);
+		}
 	}
 
 	public static UL4Type type = new List_();
