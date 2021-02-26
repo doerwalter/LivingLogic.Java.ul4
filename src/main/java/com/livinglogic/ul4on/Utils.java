@@ -99,6 +99,7 @@ public class Utils
 	@param reader The Reader from which to read the object
 	@param registry custom type registry
 	@return the deserialized object
+	@throws IOException if reading from the underlying stream fails
 	**/
 	public static Object load(Reader reader, Map<String, ObjectFactory> registry) throws IOException
 	{
@@ -123,6 +124,8 @@ public class Utils
 	@param clob The CLOB that contains the object in serialized form
 	@param registry custom type registry
 	@return the deserialized object
+	@throws IOException if reading from any underlying stream fails
+	@throws SQLException if some database interaction fails
 	**/
 	public static Object loads(Clob clob, Map<String, ObjectFactory> registry) throws IOException, SQLException
 	{

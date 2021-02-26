@@ -40,13 +40,13 @@ import java.util.Set;
  * 		...
  * 	}
  *
- * 	private static Map&lt;String, ValueMaker> valueMakers = null;
+ * 	private static Map&lt;String, ValueMaker&gt; valueMakers = null;
  *
- * 	public Map&lt;String, ValueMaker> getValueMakers()
+ * 	public Map&lt;String, ValueMaker&gt; getValueMakers()
  * 	{
  * 		if (valueMakers == null)
  * 		{
- * 			HashMap&lt;String, ValueMaker> v = new HashMap&lt;String, ValueMaker>();
+ * 			HashMap&lt;String, ValueMaker&gt; v = new HashMap&lt;String, ValueMaker>();
  * 			v.put("firstname", new ValueMaker(){public Object getValue(Object object){return ((Person)object).getFirstName();}});
  * 			v.put("lastname", new ValueMaker(){public Object getValue(Object object){return ((Person)object).getLastName();}});
  * 			valueMakers = v;
@@ -69,13 +69,13 @@ import java.util.Set;
  * 		...
  * 	}
  *
- * 	private static Map&lt;String, ValueMaker> valueMakers = null;
+ * 	private static Map&lt;String, ValueMaker&gt; valueMakers = null;
  *
- * 	public Map&lt;String, ValueMaker> getValueMakers()
+ * 	public Map&lt;String, ValueMaker&gt; getValueMakers()
  * 	{
  * 		if (valueMakers == null)
  * 		{
- * 			HashMap&lt;String, ValueMaker> v = new HashMap&lt;String, ValueMaker>(super.getValueMakers());
+ * 			HashMap&lt;String, ValueMaker&gt; v = new HashMap&lt;String, ValueMaker>(super.getValueMakers());
  * 			v.put("salary", new ValueMaker(){public Object getValue(Object object){return ((Employee)object).getSalary();}});
  * 			valueMakers = v;
  * 		}
@@ -188,8 +188,8 @@ public abstract class ObjectAsMap implements Map<String, Object>
 
 	/**
 	Abstract method that returns a map that maps attribute names to
-	{@link #ValueMaker} objects. A {@link #ValueMaker} extracts an attribute
-	from an object.
+	{@link ObjectAsMap#ValueMaker} objects. A {@link ObjectAsMap#ValueMaker}
+	extracts an attribute from an object.
 
 	This method should return a singleton (as for every instance the attribute
 	names and how the attribute values are extracted from the instance are the

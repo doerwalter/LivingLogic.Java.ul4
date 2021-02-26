@@ -149,6 +149,9 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 	/**
 	Create an {@code Encoder} object for writing serialized UL4ON output
 	to the {@code Writer} {@code writer}
+
+	@param indent the string used for indenting the preetty printed output.
+	       Use {@code null} for a compact dump.
 	**/
 	public Encoder(String indent)
 	{
@@ -244,8 +247,10 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 
 	/**
 	Create an UL4ON dump of an object and write it to an output writer.
+
 	@param writer the output stream to which the dump should be written.
 	@param obj the object to be dumped.
+	@throws IOException if writing to the underlying stream fails.
 	**/
 	public void dump(Writer writer, Object obj) throws IOException
 	{
@@ -256,6 +261,7 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 
 	/**
 	Create an UL4ON dump of an object and return the dump as a string.
+
 	@param obj the object to be dumped.
 	@return the UL4ON dump of the object
 	**/
@@ -278,8 +284,9 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 
 	/**
 	Writes the object {@code obj} to the writer in the UL4ON object serialization format.
-	This is called by implementations of {@see UL4ONSerializable}, but should
+	This is called by implementations of {@link UL4ONSerializable}, but should
 	not be called from outside, as {@code writer} may not be set in this case.
+
 	@param obj the object to be dumped.
 	@throws IOException if writing to the stream fails
 	**/

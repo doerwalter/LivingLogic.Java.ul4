@@ -20,6 +20,8 @@ public class SetUtils
 {
 	/**
 	Add entries to a Set.
+
+	@param <T> The type of the set items.
 	@param set The set where entries are added.
 	@param args The objects to be put into the set.
 	**/
@@ -33,6 +35,8 @@ public class SetUtils
 
 	/**
 	Create a Set from arguments.
+
+	@param <T> The type of the set items.
 	@param args The object to be put into the set.
 	@return A Set containing the variables
 	**/
@@ -45,9 +49,11 @@ public class SetUtils
 
 	/**
 	Create a Set as a union of two sets.
+
+	@param <T> The type of the set items.
 	@param set1 The first set.
 	@param set2 The second set.
-	@return A Set all values for the first and second set.
+	@return A Set containing all values for the first and second set.
 	**/
 	public static <T> Set<T> union(Set<T> set1, Set<T> set2)
 	{
@@ -59,6 +65,8 @@ public class SetUtils
 
 	/**
 	Create a copy of a Set, add several new items and return the resulting new Set.
+
+	@param <T> The type of the set items.
 	@param set The set.
 	@param objects Items to add to the new set.
 	@return A new Set containing all items from Set and objects.

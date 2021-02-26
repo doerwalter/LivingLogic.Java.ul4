@@ -38,13 +38,13 @@ import org.apache.commons.text.StringEscapeUtils;
  *
  *    public void reprUL4(UL4Repr.Formatter formatter)
  *    {
- *       formatter.append("<");
+ *       formatter.append("&lt;");
  *       formatter.append(getClass().getName());
  *       formatter.append(" firstname=");
  *       formatter.visit(firstname);
  *       formatter.append(" lastname=");
  *       formatter.visit(lastname);
- *       formatter.append(">");
+ *       formatter.append("&gt;");
  *    }
  * }
  * </pre>
