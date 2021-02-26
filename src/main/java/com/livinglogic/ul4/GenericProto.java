@@ -75,10 +75,8 @@ public class GenericProto extends Proto
 	@Override
 	public Object getAttr(EvaluationContext context, Object object, String key)
 	{
-		if (object instanceof UL4GetAttrWithContext)
-			return getAttr(context, (UL4GetAttrWithContext)object, key);
-		else if (object instanceof UL4GetAttr)
-			return getAttr((UL4GetAttr)object, key);
+		if (object instanceof UL4GetAttr)
+			return getAttr(context, (UL4GetAttr)object, key);
 		else
 			return getAttr(object, key);
 	}
@@ -92,9 +90,9 @@ public class GenericProto extends Proto
 			throw new AttributeException(object, key);
 	}
 
-	public static Object getAttr(EvaluationContext context, UL4GetAttrWithContext object, String key)
+	public static Object getAttr(EvaluationContext context, UL4GetAttr object, String key)
 	{
-		return object.getAttrWithContextUL4(context, key);
+		return object.getAttrUL4(context, key);
 	}
 
 	public static Object getAttr(UL4GetAttr object, String key)

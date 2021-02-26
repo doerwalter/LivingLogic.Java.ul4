@@ -238,11 +238,11 @@ public class ItemAST extends BinaryAST implements LValue
 		throw new ArgumentTypeMismatchException("{!t}[{!t}] not supported", obj, index);
 	}
 
-	public static Object call(EvaluationContext context, UL4GetItemWithContext obj, Object key)
+	public static Object call(EvaluationContext context, UL4GetItem obj, Object key)
 	{
 		try
 		{
-			return obj.getItemWithContextUL4(context, key);
+			return obj.getItemUL4(context, key);
 		}
 		catch (AttributeException exc)
 		{
@@ -252,8 +252,8 @@ public class ItemAST extends BinaryAST implements LValue
 
 	public static Object call(EvaluationContext context, Object obj, Object index)
 	{
-		if (obj instanceof UL4GetItemWithContext)
-			return call(context, (UL4GetItemWithContext)obj, index);
+		if (obj instanceof UL4GetItem)
+			return call(context, (UL4GetItem)obj, index);
 		else if (obj instanceof UL4GetItem)
 			return call((UL4GetItem)obj, index);
 		else
@@ -308,8 +308,8 @@ public class ItemAST extends BinaryAST implements LValue
 
 	private static Object getValue(EvaluationContext context, Object obj, Object key, String excmessage, Object value)
 	{
-		if (obj instanceof UL4GetItemWithContext)
-			return ((UL4GetItemWithContext)obj).getItemWithContextUL4(context, key);
+		if (obj instanceof UL4GetItem)
+			return ((UL4GetItem)obj).getItemUL4(context, key);
 		else if (obj instanceof UL4GetItem)
 			return ((UL4GetItem)obj).getItemUL4(key);
 		else

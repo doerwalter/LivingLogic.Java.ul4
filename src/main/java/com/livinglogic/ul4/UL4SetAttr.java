@@ -6,7 +6,42 @@
 
 package com.livinglogic.ul4;
 
+/**
+<p>Implementing the {@code UL4SetAttr} interface allows to set the UL4
+accessible attributes of an object.</p>
+
+<p>Like all interfaces that make aspects of objects accessible to UL4 there are
+two versions of each method: One that gets passed the {@link EvaluationContext}
+and one that doesn't. Passing the {@link EvaluationContext} makes it possible
+to implement functionality that is dependent on e.g. the currently defined
+local variables etc. The default implementations of the context dependent
+method version simply forward the call to the non-context-dependent version.</p>
+**/
 public interface UL4SetAttr
 {
+	/**
+	<p>Set the attribute named {@code key} of this object to a new value via UL4.</p>
+
+	@param context The evaluation context.
+	@param key The name of the attribute.
+	@param value The new value for the attribute.
+	@throws AttributeException if the requested attribute doesn't exist.
+	@throws ReadonlyException if the requested attribute can't be changed.
+	@throws ArgumentTypeMismatchException if the type of the new value isn't supported by that attribute.
+	**/
+	default void setAttrUL4(EvaluationContext context, String key, Object value)
+	{
+		setAttrUL4(key, value);
+	}
+
+	/**
+	<p>Set the attribute named {@code key} of this object to a new value via UL4.</p>
+
+	@param key The name of the attribute.
+	@param value The new value for the attribute.
+	@throws AttributeException if the requested attribute doesn't exist.
+	@throws ReadonlyException if the requested attribute can't be changed.
+	@throws ArgumentTypeMismatchException if the type of the new value isn't supported by that attribute.
+	**/
 	void setAttrUL4(String key, Object value);
 }

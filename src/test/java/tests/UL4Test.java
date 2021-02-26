@@ -59,7 +59,6 @@ import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.UndefinedKey;
 import com.livinglogic.ul4.UL4Bool;
 import com.livinglogic.ul4.UL4GetAttr;
-import com.livinglogic.ul4.UL4GetAttrWithContext;
 import com.livinglogic.ul4.UL4SetAttr;
 import com.livinglogic.ul4.UL4Dir;
 import com.livinglogic.ul4.Signature;
@@ -152,9 +151,9 @@ public class UL4Test
 		}
 	}
 
-	private static class DoubleIt implements UL4GetAttrWithContext
+	private static class DoubleIt implements UL4GetAttr
 	{
-		public Object getAttrWithContextUL4(EvaluationContext context, String key)
+		public Object getAttrUL4(EvaluationContext context, String key)
 		{
 			Object value = context.get(key);
 			value = MulAST.call(2, value);

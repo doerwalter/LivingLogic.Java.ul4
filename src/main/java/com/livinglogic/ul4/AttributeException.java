@@ -8,10 +8,8 @@ package com.livinglogic.ul4;
 
 /**
 Thrown when an object doesn't have the requested attribute. This exception
-might be thrown by {@link UL4GetItem#getItemUL4},
-{@link UL4GetAttr#getAttrUL4},
-{@link UL4GetItemWithContext#getItemWithContextUL4} or
-{@link UL4GetAttrWithContext#getAttrWithContextUL4}.
+might be thrown by {@link UL4GetItem#getItemUL4} or
+{@link UL4GetAttr#getAttrUL4}.
 **/
 public class AttributeException extends RuntimeException
 {

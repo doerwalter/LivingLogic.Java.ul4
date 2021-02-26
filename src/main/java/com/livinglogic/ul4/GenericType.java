@@ -73,7 +73,7 @@ public class GenericType implements UL4Type
 	public Set<String> dirInstance(EvaluationContext context, Object instance)
 	{
 		if (instance instanceof UL4Dir)
-			return ((UL4Dir)instance).dirUL4();
+			return ((UL4Dir)instance).dirUL4(context);
 		else
 			return Collections.EMPTY_SET;
 	}
@@ -90,8 +90,8 @@ public class GenericType implements UL4Type
 	@Override
 	public Object getAttr(EvaluationContext context, Object object, String key)
 	{
-		if (object instanceof UL4GetAttrWithContext)
-			return ((UL4GetAttrWithContext)object).getAttrWithContextUL4(context, key);
+		if (object instanceof UL4GetAttr)
+			return ((UL4GetAttr)object).getAttrUL4(context, key);
 		else
 			return getAttr(object, key);
 	}
@@ -108,8 +108,8 @@ public class GenericType implements UL4Type
 	@Override
 	public void setAttr(EvaluationContext context, Object object, String key, Object value)
 	{
-		if (object instanceof UL4SetAttrWithContext)
-			((UL4SetAttrWithContext)object).setAttrWithContextUL4(context, key, value);
+		if (object instanceof UL4SetAttr)
+			((UL4SetAttr)object).setAttrUL4(context, key, value);
 		else
 			setAttr(object, key, value);
 	}
