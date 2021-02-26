@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Exception when an argument has been by keyword that is not supported
- */
+Exception when an argument has been by keyword that is not supported
+**/
 public class UnsupportedArgumentNameException extends ArgumentException
 {
 	public UnsupportedArgumentNameException(String name, String argumentName)

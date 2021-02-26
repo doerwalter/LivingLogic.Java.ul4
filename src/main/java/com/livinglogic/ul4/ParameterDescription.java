@@ -7,9 +7,9 @@
 package com.livinglogic.ul4;
 
 /**
- * An {@code ParameterDescription} object is used by {@link Signature} objects
- * to store information about one particular parameter.
- */
+An {@code ParameterDescription} object is used by {@link Signature} objects
+to store information about one particular parameter.
+**/
 public class ParameterDescription implements UL4Repr
 {
 	/**
@@ -23,20 +23,20 @@ public class ParameterDescription implements UL4Repr
 	public enum Type
 	{
 		/**
-		 * The parameter must have an argument in the call.
-		 */
+		The parameter must have an argument in the call.
+		**/
 		REQUIRED,
 		/**
-		 * The argument is optional. The parameter has a default value.
-		 */
+		The argument is optional. The parameter has a default value.
+		**/
 		DEFAULT,
 		/**
-		 * The parameter collects all additional positional arguments in a list.
-		 */
+		The parameter collects all additional positional arguments in a list.
+		**/
 		VAR_POSITIONAL,
 		/**
-		 * The parameter collects all additional keyword arguments in a map.
-		 */
+		The parameter collects all additional keyword arguments in a map.
+		**/
 		VAR_KEYWORD,
 	}
 	/**

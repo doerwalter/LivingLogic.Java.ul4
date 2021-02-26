@@ -9,15 +9,15 @@ package com.livinglogic.ul4;
 import java.util.Map;
 
 /**
- * <p>A {@code BoundMethod} object is a callable that can be returned from
- * {@link UL4GetAttr#getAttrUL4} or
- * {@link UL4GetAttrWithContext#getAttrWithContextUL4} to implement
- * an object method that can be called from UL4.</p>
- *
- * <p>{@code BoundMethod} is abstract. Subclasses must implemented the method
- * {@link Function#evaluate}. Also when the method requires arguments
- * {@link Function#getSignature} must be overwritten.</p>
- */
+<p>A {@code BoundMethod} object is a callable that can be returned from
+{@link UL4GetAttr#getAttrUL4} or
+{@link UL4GetAttrWithContext#getAttrWithContextUL4} to implement
+an object method that can be called from UL4.</p>
+
+<p>{@code BoundMethod} is abstract. Subclasses must implemented the method
+{@link Function#evaluate}. Also when the method requires arguments
+{@link Function#getSignature} must be overwritten.</p>
+**/
 public abstract class BoundMethod<T> extends Function
 {
 	protected T object = null;

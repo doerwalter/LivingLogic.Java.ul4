@@ -15,8 +15,8 @@ import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
 /**
- * The base class of the classes that represent literal text in the template source.
- */
+The base class of the classes that represent literal text in the template source.
+**/
 public class TextAST extends AST
 {
 	protected static class Type extends AST.Type

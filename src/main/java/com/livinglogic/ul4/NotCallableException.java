@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Thrown by {@link CallAST} if the object is not callable.
- */
+Thrown by {@link CallAST} if the object is not callable.
+**/
 public class NotCallableException extends UnsupportedOperationException
 {
 	public NotCallableException(Object obj)

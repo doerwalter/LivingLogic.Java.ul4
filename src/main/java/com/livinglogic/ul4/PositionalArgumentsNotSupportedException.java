@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Exception when a function is called with positional arguments, but the function doesn't support any
- */
+Exception when a function is called with positional arguments, but the function doesn't support any
+**/
 public class PositionalArgumentsNotSupportedException extends ArgumentException
 {
 	public PositionalArgumentsNotSupportedException(String name)

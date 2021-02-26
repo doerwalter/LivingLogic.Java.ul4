@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Exception when to many positional arguments are passed
- */
+Exception when to many positional arguments are passed
+**/
 public class TooManyArgumentsException extends ArgumentException
 {
 	public TooManyArgumentsException(String name, int expected, int given)

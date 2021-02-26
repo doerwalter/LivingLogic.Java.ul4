@@ -10,11 +10,11 @@ import java.util.Map;
 
 
 /**
- * A subclass of {@code AbstractMapChain} where the second map is passed to the
- * constructor.
- *
- * @author W. Doerwald
- */
+A subclass of {@code AbstractMapChain} where the second map is passed to the
+constructor.
+
+@author W. Doerwald
+**/
 public class MapChain<K, V> extends AbstractMapChain<K, V>
 {
 	private Map<K, V> second;

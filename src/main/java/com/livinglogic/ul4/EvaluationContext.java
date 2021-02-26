@@ -19,10 +19,10 @@ import com.livinglogic.utils.MapChain;
 import com.livinglogic.utils.MapUtils;
 
 /**
- * An {@code EvaluationContext} object is passed around calls to the node method
- * {@link AST#evaluate} and stores an output stream and a map containing the
- * currently defined variables as well as other globally available information.
- */
+An {@code EvaluationContext} object is passed around calls to the node method
+{@link AST#evaluate} and stores an output stream and a map containing the
+currently defined variables as well as other globally available information.
+**/
 public class EvaluationContext implements AutoCloseable, CloseableRegistry
 {
 	/**

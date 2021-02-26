@@ -9,17 +9,17 @@ package com.livinglogic.ul4;
 import static com.livinglogic.ul4.Utils.findInnermostException;
 
 /**
- * A {@code BlockLike} object behaves like a block,
- * i.e. like {@see BlockAST}, but we have two special cases
- * where the block itself has a nested structure:
- *
- * {@see ConditionalBlocks} itself contains the {@code if}, {@code else} and
- * {@code elif} blocks, which are themselves block. Appending to the conditional
- * block appends to the last {@code if}/{@code else}/{@code elif} block.
- *
- * {@see RenderBlockAST} itself contains the content template. Appending to the
- * {@class RenderBlockAST} object appends to the template itself.
- */
+A {@code BlockLike} object behaves like a block,
+i.e. like {@see BlockAST}, but we have two special cases
+where the block itself has a nested structure:
+
+{@see ConditionalBlocks} itself contains the {@code if}, {@code else} and
+{@code elif} blocks, which are themselves block. Appending to the conditional
+block appends to the last {@code if}/{@code else}/{@code elif} block.
+
+{@see RenderBlockAST} itself contains the content template. Appending to the
+{@class RenderBlockAST} object appends to the template itself.
+**/
 public interface BlockLike
 {
 	Template getTemplate();

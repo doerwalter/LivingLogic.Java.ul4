@@ -11,10 +11,10 @@ import java.util.Map;
 
 
 /**
- * Utility class for creating a Map object
- *
- * @author W. Dörwald, A. Gaßner
- */
+Utility class for creating a Map object
+
+@author W. Dörwald, A. Gaßner
+**/
 public class MapMaker
 {
 	private Map map = new HashMap();

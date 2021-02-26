@@ -7,9 +7,9 @@
 package com.livinglogic.ul4;
 
 /**
- * {@code ReturnAST} is an unary AST node that can only be used inside functions
- * and that returns an expression from that function.
- */
+{@code ReturnAST} is an unary AST node that can only be used inside functions
+and that returns an expression from that function.
+**/
 public class ReturnAST extends UnaryAST
 {
 	protected static class Type extends UnaryAST.Type

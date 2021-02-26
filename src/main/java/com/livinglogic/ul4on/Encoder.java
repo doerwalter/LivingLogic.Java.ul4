@@ -49,10 +49,10 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 
 
 /**
- * An {@code Encoder} object is used for writing any object to a
- * {@code Writer} object using the UL4ON serialization format (or returning
- * such an object dump as a string).
- */
+An {@code Encoder} object is used for writing any object to a
+{@code Writer} object using the UL4ON serialization format (or returning
+such an object dump as a string).
+**/
 public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 {
 	protected static class Type extends AbstractInstanceType

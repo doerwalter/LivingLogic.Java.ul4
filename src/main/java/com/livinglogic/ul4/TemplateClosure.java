@@ -16,10 +16,10 @@ import java.io.StringWriter;
 import com.livinglogic.utils.MapChain;
 
 /**
- * Template closure
- *
- * @author W. Doerwald
- */
+Template closure
+
+@author W. Doerwald
+**/
 
 public class TemplateClosure implements UL4Instance, UL4CallWithContext, UL4RenderWithContext, UL4Name, UL4GetAttr, UL4Dir, UL4Repr
 {

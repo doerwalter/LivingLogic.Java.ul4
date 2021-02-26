@@ -11,10 +11,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
- * Class that provides utilities for working with maps
- *
- * @author W. Doerwald
- */
+Class that provides utilities for working with maps
+
+@author W. Doerwald
+**/
 
 public class MapUtils
 {

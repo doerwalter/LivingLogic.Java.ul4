@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Thrown by comparisons when the types can't be compared.
- */
+Thrown by comparisons when the types can't be compared.
+**/
 public class UnorderableTypesException extends ArgumentTypeMismatchException
 {
 	public UnorderableTypesException(String operator, Object arg1, Object arg2)

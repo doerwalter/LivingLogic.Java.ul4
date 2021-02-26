@@ -19,9 +19,9 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 import static com.livinglogic.ul4.Utils.findInnermostException;
 
 /**
- * The base class of all syntax tree nodes. This can be either literal text
- * ({@link TextAST}) between the tags, or compiled tag content ({@link CodeAST}).
- */
+The base class of all syntax tree nodes. This can be either literal text
+({@link TextAST}) between the tags, or compiled tag content ({@link CodeAST}).
+**/
 public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr, UL4Dir, UL4Repr
 {
 	protected static class Type extends AbstractInstanceType

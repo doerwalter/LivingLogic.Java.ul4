@@ -8,11 +8,11 @@ package com.livinglogic.ul4on;
 
 
 /**
- * An {@code ObjectFactory} object is responsible for creating an object that
- * implements the {@link UL4ONSerializable} interface. It is used by
- * {@link Decoder} to create an object of the appropriate type when deserializing
- * objects.
- */
+An {@code ObjectFactory} object is responsible for creating an object that
+implements the {@link UL4ONSerializable} interface. It is used by
+{@link Decoder} to create an object of the appropriate type when deserializing
+objects.
+**/
 public interface ObjectFactory
 {
 	/**

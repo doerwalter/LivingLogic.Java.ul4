@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Thrown by {@link FunctionAsJSON} if the object isn't convertable to JSON.
- */
+Thrown by {@link FunctionAsJSON} if the object isn't convertable to JSON.
+**/
 public class NotJSONableException extends UnsupportedOperationException
 {
 	public NotJSONableException(Object obj)

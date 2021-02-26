@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Class that provides utilities for working with arrays.
- *
- * @author W. Doerwald
- */
+Class that provides utilities for working with arrays.
+
+@author W. Doerwald
+**/
 
 public class ArrayUtils
 {

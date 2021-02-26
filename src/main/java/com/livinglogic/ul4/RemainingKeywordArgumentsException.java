@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Exception when a ** argument isn't a dict
- */
+Exception when a ** argument isn't a dict
+**/
 public class RemainingKeywordArgumentsException extends ArgumentException
 {
 	public RemainingKeywordArgumentsException(String name)

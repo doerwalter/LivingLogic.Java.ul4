@@ -19,9 +19,9 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 
 
 /**
- * Prototype class that implements methods for a class where we can't add those
- * methods to the class itself (because it's a builtin Java class).
- */
+Prototype class that implements methods for a class where we can't add those
+methods to the class itself (because it's a builtin Java class).
+**/
 public abstract class Proto implements UL4GetAttr, UL4Dir
 {
 	public abstract String name();

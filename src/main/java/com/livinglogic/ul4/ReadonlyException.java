@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Thrown when an attribute is read only
- */
+Thrown when an attribute is read only
+**/
 public class ReadonlyException extends RuntimeException
 {
 	protected Object object;

@@ -7,12 +7,12 @@
 package com.livinglogic.ul4;
 
 /**
- * <p>An object with attributes that should be accessible to UL4.</p>
- *
- * <p>These attributes can either be normal "data attributes" or they can be
- * methods. To implement a method define a subclass of {@link BoundMethod} and
- * return an instance of it in {@link #getAttrUL4}.
- */
+<p>An object with attributes that should be accessible to UL4.</p>
+
+<p>These attributes can either be normal "data attributes" or they can be
+methods. To implement a method define a subclass of {@link BoundMethod} and
+return an instance of it in {@link #getAttrUL4}.
+**/
 public interface UL4GetAttr
 {
 	/**

@@ -10,15 +10,15 @@ import java.util.Map;
 
 
 /**
- * A subclass of {@link AbstractMapChain} where, if the key exists in both maps,
- * getting the value can be customized by implementing the abstract method
- * {@code getCombinedValue}.
- *
- * Furthermore the method {@link #containsValue} will always throw an
- * {@link UnsupportedOperationException} exception).
- *
- * @author W. Doerwald
- */
+A subclass of {@link AbstractMapChain} where, if the key exists in both maps,
+getting the value can be customized by implementing the abstract method
+{@code getCombinedValue}.
+
+Furthermore the method {@link #containsValue} will always throw an
+{@link UnsupportedOperationException} exception).
+
+@author W. Doerwald
+**/
 public abstract class AbstractCombiningMapChain<K, V> extends AbstractMapChain<K, V>
 {
 	public AbstractCombiningMapChain(Map<K, V> first)

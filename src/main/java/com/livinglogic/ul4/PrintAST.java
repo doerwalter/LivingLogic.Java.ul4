@@ -7,9 +7,9 @@
 package com.livinglogic.ul4;
 
 /**
- * {@code PrintAST} is an unary AST node that writes a string version of its
- * operand to the output stream.
- */
+{@code PrintAST} is an unary AST node that writes a string version of its
+operand to the output stream.
+**/
 public class PrintAST extends UnaryAST
 {
 	protected static class Type extends UnaryAST.Type

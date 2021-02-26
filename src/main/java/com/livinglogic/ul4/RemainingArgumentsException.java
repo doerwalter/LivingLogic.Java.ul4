@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Exception when a * argument isn't a list
- */
+Exception when a * argument isn't a list
+**/
 public class RemainingArgumentsException extends ArgumentException
 {
 	public RemainingArgumentsException(String name)

@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Exception when a function is called with keyword arguments, but the function doesn't support any
- */
+Exception when a function is called with keyword arguments, but the function doesn't support any
+**/
 public class KeywordArgumentsNotSupportedException extends ArgumentException
 {
 	public KeywordArgumentsNotSupportedException(String name)

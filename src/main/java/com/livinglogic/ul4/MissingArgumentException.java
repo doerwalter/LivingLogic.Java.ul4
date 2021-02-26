@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Exception when a required argument to a function is missing
- */
+Exception when a required argument to a function is missing
+**/
 public class MissingArgumentException extends ArgumentException
 {
 	public MissingArgumentException(String name, String parameterName, int parameterPosition)

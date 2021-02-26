@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Exception when an parameter has been specified both as a positional argument and as a keyword argument.
- */
+Exception when an parameter has been specified both as a positional argument and as a keyword argument.
+**/
 public class DuplicateArgumentException extends ArgumentException
 {
 	public DuplicateArgumentException(String name, String parameterName, int parameterPosition)

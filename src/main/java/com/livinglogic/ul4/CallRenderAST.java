@@ -21,8 +21,8 @@ import com.livinglogic.ul4on.Encoder;
 import static com.livinglogic.ul4.Utils.findInnermostException;
 
 /**
- * Common base class of {@link CallAST} and {@link RenderAST}
- */
+Common base class of {@link CallAST} and {@link RenderAST}
+**/
 public abstract class CallRenderAST extends CodeAST
 {
 	protected AST obj;

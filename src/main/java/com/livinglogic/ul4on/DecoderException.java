@@ -7,8 +7,8 @@
 package com.livinglogic.ul4on;
 
 /**
- * A {@code DecoderException} is raised when on UL4ON stream is broken.
- */
+A {@code DecoderException} is raised when on UL4ON stream is broken.
+**/
 public class DecoderException extends RuntimeException
 {
 	public DecoderException(int position, String path, String message)

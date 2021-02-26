@@ -12,18 +12,18 @@ import com.livinglogic.ul4.Utils;
 
 
 /**
- * Classes whose instances should be serializable with the UL4ON infrastructure
- * must implement this interface.
- *
- * If their {@link #getUL4ONID} implementation does return an identifier that is
- * not {@code null}, the object is considered to be "persistent".
- *
- * Persistent objects will survive multiple calls to
- * {@link Decoder#load(Reader)} or {@link Decoder#loads(String)}.
- * When such an object gets deserialized, and it already exists in the
- * {@code Decoder} object, the object will not be created again, but
- * {@link UL4ONSerializable#loadUL4ON(Decoder)} will be called for it.
- */
+Classes whose instances should be serializable with the UL4ON infrastructure
+must implement this interface.
+
+If their {@link #getUL4ONID} implementation does return an identifier that is
+not {@code null}, the object is considered to be "persistent".
+
+Persistent objects will survive multiple calls to
+{@link Decoder#load(Reader)} or {@link Decoder#loads(String)}.
+When such an object gets deserialized, and it already exists in the
+{@code Decoder} object, the object will not be created again, but
+{@link UL4ONSerializable#loadUL4ON(Decoder)} will be called for it.
+**/
 public interface UL4ONSerializable
 {
 	/**

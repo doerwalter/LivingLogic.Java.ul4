@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>A {@code Parameter} object is used by {@link SignatureAST} objects
- * to store information about one particular parameter of a local template.</p>
- *
- * <p>This is different from a {@link ParameterDescription} in a {@link Signature}
- * object as the default value in {@code Parameter} is an {@link AST}, as the
- * default value has to be evaluated when the local template gets evaluated.</p>
- */
+<p>A {@code Parameter} object is used by {@link SignatureAST} objects
+to store information about one particular parameter of a local template.</p>
+
+<p>This is different from a {@link ParameterDescription} in a {@link Signature}
+object as the default value in {@code Parameter} is an {@link AST}, as the
+default value has to be evaluated when the local template gets evaluated.</p>
+**/
 public class Parameter
 {
 	protected String name;

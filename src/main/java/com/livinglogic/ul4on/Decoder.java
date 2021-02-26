@@ -45,9 +45,9 @@ import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import static com.livinglogic.utils.SetUtils.makeSet;
 
 /**
- * A {@code Decoder} object wraps a {@code Reader} object and can read any object
- * in the UL4ON serialization format from this {@code Reader}.
- */
+A {@code Decoder} object wraps a {@code Reader} object and can read any object
+in the UL4ON serialization format from this {@code Reader}.
+**/
 public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAttr, UL4Dir
 {
 	protected static class Type extends AbstractInstanceType
@@ -876,14 +876,14 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	private class PersistentObjectIterator implements Iterator<UL4ONSerializable>
 	{
 		/**
-		 * Iterator over the outer map
-		 */
+		Iterator over the outer map
+		**/
 		private Iterator<Map<String, UL4ONSerializable>> outerIterator;
 
 		/**
-		 * Iterator over the inner map
-		 * If the {@code PersistentObjectIterator} is exhausted, this will be {@code null}.
-		 */
+		Iterator over the inner map
+		If the {@code PersistentObjectIterator} is exhausted, this will be {@code null}.
+		**/
 		private Iterator<UL4ONSerializable> innerIterator;
 
 		PersistentObjectIterator()
@@ -911,12 +911,12 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 		}
 
 		/**
-		 * If {@code this} isn't exhausted, but the {@code innerIterator} is,
-		 * move the {@code outerIterator} until its corresponding
-		 * {@code innerIterator} can give as values. If no such
-		 * {@code innerIterator} exists, the iteration is finished and we
-		 * set {@code innerIterator} to {@code null} to mark that fact.
-		 */
+		If {@code this} isn't exhausted, but the {@code innerIterator} is,
+		move the {@code outerIterator} until its corresponding
+		{@code innerIterator} can give as values. If no such
+		{@code innerIterator} exists, the iteration is finished and we
+		set {@code innerIterator} to {@code null} to mark that fact.
+		**/
 		private void skip()
 		{
 			if (innerIterator != null)

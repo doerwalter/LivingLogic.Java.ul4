@@ -18,17 +18,17 @@ import org.apache.commons.lang3.ObjectUtils;
 
 
 /**
- * A {@code Map} implemention that forwards all operations to one or two mapps.
- * When a key or entry isn't found in the first map the second ("chained")
- * {@code Map} is consulted.
- *
- * Methods of {@code AbstractMapChain} that modify the mapping only modify the first
- * {@code Map} not the second one. Modifying the {@code AbstractMapChain} via the sets
- * returned by {@code keySet()} or {@code entrySet()} is forbidden (i.e. those
- * methods throw a {@code UnsupportedOperationException} exception).
- *
- * @author W. Doerwald
- */
+A {@code Map} implemention that forwards all operations to one or two mapps.
+When a key or entry isn't found in the first map the second ("chained")
+{@code Map} is consulted.
+
+Methods of {@code AbstractMapChain} that modify the mapping only modify the first
+{@code Map} not the second one. Modifying the {@code AbstractMapChain} via the sets
+returned by {@code keySet()} or {@code entrySet()} is forbidden (i.e. those
+methods throw a {@code UnsupportedOperationException} exception).
+
+@author W. Doerwald
+**/
 public abstract class AbstractMapChain<K, V> implements Map<K, V>
 {
 	class KeySet extends AbstractSet<K>
@@ -151,15 +151,15 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 	class EntrySet extends AbstractSet<Map.Entry<K, V>>
 	{
 		/* Our entry iterator is based on our key iterator instead of
-		 * using the entry iterators of the first and second map.
-		 * 
-		 * This simplifies our implementation, as we don't need any caching logic
-		 * (like the key iterator does) and it simplifies the subclass
-		 * {@code AbstractCombiningMapChain} (as it doesn't have to implement any
-		 * entry set functionality, because our implementation falls back to
-		 * calling {@code get}, which {@code AbstractCombiningMapChain}
-		 * overwrites).
-		 */
+		using the entry iterators of the first and second map.
+		
+		This simplifies our implementation, as we don't need any caching logic
+		(like the key iterator does) and it simplifies the subclass
+		{@code AbstractCombiningMapChain} (as it doesn't have to implement any
+		entry set functionality, because our implementation falls back to
+		calling {@code get}, which {@code AbstractCombiningMapChain}
+		overwrites).
+		**/
 		class EntrySetIterator implements Iterator<Map.Entry<K, V>>
 		{
 			private Iterator<K> keyIterator;

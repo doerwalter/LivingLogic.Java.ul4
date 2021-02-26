@@ -8,8 +8,8 @@ package com.livinglogic.ul4;
 
 
 /**
- * The class that records information about a template tag in the template source.
- */
+The class that records information about a template tag in the template source.
+**/
 public class Tag extends AST
 {
 	protected static class Type extends AST.Type

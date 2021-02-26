@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Thrown by {@link Utils#iterator(Object) Utils.iterator} if an object is not iterable.
- */
+Thrown by {@link Utils#iterator(Object) Utils.iterator} if an object is not iterable.
+**/
 public class NotIterableException extends UnsupportedOperationException
 {
 	public NotIterableException(Object object)

@@ -7,9 +7,9 @@
 package com.livinglogic.ul4;
 
 /**
- * Thrown by implementions of {@link Function} or {@link BoundMethod} when the
- * function/method cannot handle the combination of argument types.
- */
+Thrown by implementions of {@link Function} or {@link BoundMethod} when the
+function/method cannot handle the combination of argument types.
+**/
 public class ArgumentTypeMismatchException extends UnsupportedOperationException
 {
 	public ArgumentTypeMismatchException(String template, Object... args)

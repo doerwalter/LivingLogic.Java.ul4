@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>A {@code FunctionWithContext} object implements a function that can be
- * called from UL4. It is similar to {@link Function} except that
- * {@link #evaluate} gets passed the context in addition to the arguments.</p>
- *
- * <p>{@code FunctionWithContext} is abstract. Subclasses must implement
- * {@link #evaluate}. Also when the function requires arguments
- * {@link #getSignature} must be overwritten.</p>
- */
+<p>A {@code FunctionWithContext} object implements a function that can be
+called from UL4. It is similar to {@link Function} except that
+{@link #evaluate} gets passed the context in addition to the arguments.</p>
+
+<p>{@code FunctionWithContext} is abstract. Subclasses must implement
+{@link #evaluate}. Also when the function requires arguments
+{@link #getSignature} must be overwritten.</p>
+**/
 public abstract class FunctionWithContext implements UL4Instance, UL4CallWithContext, UL4Name, UL4Repr
 {
 	@Override

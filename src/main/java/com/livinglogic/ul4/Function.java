@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>A {@code Function} object implements a function that can be called from
- * UL4.
- *
- * <p>{@code Function} is abstract. Subclasses must implement {@link #evaluate}.
- * Also when the function requires arguments {@link #getSignature} must be
- * overwritten.</p>
- */
+<p>A {@code Function} object implements a function that can be called from
+UL4.
+
+<p>{@code Function} is abstract. Subclasses must implement {@link #evaluate}.
+Also when the function requires arguments {@link #getSignature} must be
+overwritten.</p>
+**/
 public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 {
 	protected static class Type extends AbstractInstanceType

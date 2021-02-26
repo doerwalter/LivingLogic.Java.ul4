@@ -7,11 +7,11 @@
 package com.livinglogic.ul4;
 
 /**
- * {@code PrintXAST} is an unary AST node that writes a string version of its
- * operand to the output stream and replaces the characters {@code <}, {@code >},
- * {@code &}, {@code '} and {@code "} with the appropriate XML character
- * entities.
- */
+{@code PrintXAST} is an unary AST node that writes a string version of its
+operand to the output stream and replaces the characters {@code <}, {@code >},
+{@code &}, {@code '} and {@code "} with the appropriate XML character
+entities.
+**/
 public class PrintXAST extends UnaryAST
 {
 	protected static class Type extends UnaryAST.Type

@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * {@code LineCol} objects store a line and column number
- */
+{@code LineCol} objects store a line and column number
+**/
 public class LineCol
 {
 	private int line;

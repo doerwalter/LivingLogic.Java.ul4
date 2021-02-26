@@ -7,8 +7,8 @@
 package com.livinglogic.ul4;
 
 /**
- * Thrown by {@link RenderAST} if the object is not renderable.
- */
+Thrown by {@link RenderAST} if the object is not renderable.
+**/
 public class NotRenderableException extends UnsupportedOperationException
 {
 	public NotRenderableException(Object obj)

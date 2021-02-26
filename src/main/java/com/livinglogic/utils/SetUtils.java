@@ -11,10 +11,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Class that provides utilities for working with sets
- *
- * @author W. Doerwald
- */
+Class that provides utilities for working with sets
+
+@author W. Doerwald
+**/
 
 public class SetUtils
 {

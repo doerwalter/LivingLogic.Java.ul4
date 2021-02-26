@@ -23,34 +23,34 @@ import java.text.SimpleDateFormat;
 import org.apache.commons.text.StringEscapeUtils;
 
 /**
- * <p>Interface for implementing support for the UL4 function {@code repr}
- * in Java classes. (see {@link FunctionRepr})</p>
- *
- * <p>An implementation might look like this:</p>
- *
- * <pre>
- * import com.livinglogic.ul4.UL4Repr;
- *
- * public class Person implements UL4Repr
- * {
- *    private String firstname;
- *    private String lastname;
- *
- *    public void reprUL4(UL4Repr.Formatter formatter)
- *    {
- *       formatter.append("&lt;");
- *       formatter.append(getClass().getName());
- *       formatter.append(" firstname=");
- *       formatter.visit(firstname);
- *       formatter.append(" lastname=");
- *       formatter.visit(lastname);
- *       formatter.append("&gt;");
- *    }
- * }
- * </pre>
- *
- * @author W. Doerwald
- */
+<p>Interface for implementing support for the UL4 function {@code repr}
+in Java classes. (see {@link FunctionRepr})</p>
+
+<p>An implementation might look like this:</p>
+
+<pre>
+import com.livinglogic.ul4.UL4Repr;
+
+public class Person implements UL4Repr
+{
+   private String firstname;
+   private String lastname;
+
+   public void reprUL4(UL4Repr.Formatter formatter)
+   {
+      formatter.append("&lt;");
+      formatter.append(getClass().getName());
+      formatter.append(" firstname=");
+      formatter.visit(firstname);
+      formatter.append(" lastname=");
+      formatter.visit(lastname);
+      formatter.append("&gt;");
+   }
+}
+</pre>
+
+@author W. Doerwald
+**/
 public interface UL4Repr
 {
 	/**
@@ -101,11 +101,11 @@ public interface UL4Repr
 		private static DateTimeFormatter isoReprFormatterLocalDateTime3 = DateTimeFormatter.ofPattern("@'('yyyy-MM-dd'T'HH:mm:ss.SSSSSS')'", Locale.US);
 
 		/**
-		 * Creates a {@code Formatter} object.
-		 *
-		 * @param ascii specifies whether the repr output of strings should be
-		 *              forced to contain only ASCII characters or not.
-		 */
+		Creates a {@code Formatter} object.
+
+		@param ascii specifies whether the repr output of strings should be
+		             forced to contain only ASCII characters or not.
+		**/
 		public Formatter(boolean ascii)
 		{
 			visited = new Stack<Object>();
@@ -114,10 +114,10 @@ public interface UL4Repr
 		}
 
 		/**
-		 * Append a literal string to the output.
-		 *
-		 * @param string The string to append.
-		 */
+		Append a literal string to the output.
+
+		@param string The string to append.
+		**/
 		public Formatter append(String string)
 		{
 			buffer.append(string);
@@ -125,10 +125,10 @@ public interface UL4Repr
 		}
 
 		/**
-		 * Append a literal character to the output.
-		 *
-		 * @param c The character to append.
-		 */
+		Append a literal character to the output.
+
+		@param c The character to append.
+		**/
 		public Formatter append(char c)
 		{
 			buffer.append(c);
@@ -144,16 +144,16 @@ public interface UL4Repr
 		}
 
 		/**
-		 * <p>Append the repr output of an object to the current output.</p>
-		 *
-		 * <p>Cycles in hierarchical data structures will be detected ({@code ...}
-		 * will be output in this case).</p>
-		 * 
-		 * <p>If an exception occurs during formatting of the object {@code ???}
-		 * will be output instead.</p>
-		 *
-		 * @param object The object that should be "repr formatted".
-		 */
+		<p>Append the repr output of an object to the current output.</p>
+
+		<p>Cycles in hierarchical data structures will be detected ({@code ...}
+		will be output in this case).</p>
+		
+		<p>If an exception occurs during formatting of the object {@code ???}
+		will be output instead.</p>
+
+		@param object The object that should be "repr formatted".
+		**/
 		public Formatter visit(Object object)
 		{
 			if (object == null)
@@ -437,8 +437,8 @@ public interface UL4Repr
 		}
 
 		/**
-		 * Returns the output collected so far as a {@link java.lang.String}.
-		 */
+		Returns the output collected so far as a {@link java.lang.String}.
+		**/
 		public String toString()
 		{
 			return buffer.toString();
