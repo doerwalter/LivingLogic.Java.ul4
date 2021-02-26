@@ -598,8 +598,8 @@ public class Utils
 	}
 
 	/**
-	 * Can be used to convert an array into a real list.
-	 */
+	Can be used to convert an array into a real list.
+	**/
 	public static List array2List(Object[] array)
 	{
 		return new ArrayList(Arrays.asList(array));
@@ -636,9 +636,9 @@ public class Utils
 	}
 
 	/**
-	 * Format a message replacing placeholders of the form {}, {!r}, {!r} or
-	 * {0}, {0!r}, {0!t}.
-	 */
+	Format a message replacing placeholders of the form {}, {!r}, {!r} or
+	{0}, {0!r}, {0!t}.
+	**/
 	public static String formatMessage(String template, Object... args)
 	{
 		StringBuilder buffer = new StringBuilder();

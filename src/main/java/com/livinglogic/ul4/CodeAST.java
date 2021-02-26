@@ -62,10 +62,10 @@ public abstract class CodeAST extends AST
 	}
 
 	/**
-	 * Create a new {@code CodeAST} object.
-	 * @param template The {@code Template} object this node belongs to.
-	 * @param pos The slice in the template source, where the source for this object is located.
-	 */
+	Create a new {@code CodeAST} object.
+	@param template The {@code Template} object this node belongs to.
+	@param pos The slice in the template source, where the source for this object is located.
+	**/
 	public CodeAST(Template template, Slice startPos)
 	{
 		super(template, startPos);

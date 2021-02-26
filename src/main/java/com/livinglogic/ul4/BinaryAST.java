@@ -49,21 +49,21 @@ abstract class BinaryAST extends CodeAST
 	}
 
 	/**
-	 * The AST node for the left operand.
-	 */
+	The AST node for the left operand.
+	**/
 	protected CodeAST obj1;
 
 	/**
-	 * The AST node for the right operand.
-	 */
+	The AST node for the right operand.
+	**/
 	protected CodeAST obj2;
 
 	/**
-	 * Create a new {@code BinaryAST} object
-	 * @param template The template this node belongs to.
-	 * @param obj1 The left operand
-	 * @param obj2 The right operand
-	 */
+	Create a new {@code BinaryAST} object
+	@param template The template this node belongs to.
+	@param obj1 The left operand
+	@param obj2 The right operand
+	**/
 	public BinaryAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
 	{
 		super(template, pos);

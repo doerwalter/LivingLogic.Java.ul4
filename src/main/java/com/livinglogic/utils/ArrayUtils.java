@@ -18,12 +18,12 @@ import java.util.ArrayList;
 public class ArrayUtils
 {
 	/**
-	 * Create a copy of an string array, add several new strings and return the
-	 * resulting new array.
-	 * @param array The array.
-	 * @param strings String to add to the new array.
-	 * @return A new array containing all items from array and objects.
-	 */
+	Create a copy of an string array, add several new strings and return the
+	resulting new array.
+	@param array The array.
+	@param strings String to add to the new array.
+	@return A new array containing all items from array and objects.
+	**/
 	public static String[] makeExtendedStringArray(String[] array, String... strings)
 	{
 		String[] newArray = new String[array.length + strings.length];

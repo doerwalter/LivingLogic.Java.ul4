@@ -121,26 +121,26 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	}
 
 	/**
-	 * Return whether an instance of this type has an attribute with the specified name.
-	 *
-	 * @param context The evaluation context.
-	 * @param instance The instance that should be checked for the specified attribute.
-	 * @param key The name of the attribute to be checked.
-	 * @return Whether the instance has the specified attribute.
-	 */
+	Return whether an instance of this type has an attribute with the specified name.
+
+	@param context The evaluation context.
+	@param instance The instance that should be checked for the specified attribute.
+	@param key The name of the attribute to be checked.
+	@return Whether the instance has the specified attribute.
+	**/
 	default boolean hasAttr(EvaluationContext context, Object instance, String key)
 	{
 		return dirInstance(context, instance).contains(key);
 	}
 
 	/**
-	 * Return whether an instance of this type has an attribute with the specified name.
-	 * This is a version that doesn't required an evaluation context.
-	 *
-	 * @param instance The instance that should be checked for the specified attribute.
-	 * @param key The name of the attribute to be checked.
-	 * @return Whether the instance has the specified attribute.
-	 */
+	Return whether an instance of this type has an attribute with the specified name.
+	This is a version that doesn't required an evaluation context.
+
+	@param instance The instance that should be checked for the specified attribute.
+	@param key The name of the attribute to be checked.
+	@return Whether the instance has the specified attribute.
+	**/
 	default boolean hasAttr(Object instance, String key)
 	{
 		return dirInstance(instance).contains(key);
@@ -169,11 +169,11 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	public static Map<Class, UL4Type> genericTypes = new HashMap<Class, UL4Type>();
 
 	/**
-	 * <p>Return the type object for the passed in object.</p>
-	 *
-	 * @param object The object whose type object should be returned.
-	 * @return The type object for {@code object}.
-	 */
+	<p>Return the type object for the passed in object.</p>
+
+	@param object The object whose type object should be returned.
+	@return The type object for {@code object}.
+	**/
 	public static UL4Type getType(Object object)
 	{
 		if (object == null)

@@ -30,10 +30,10 @@ public abstract class BoundMethod<T> extends Function
 	}
 
 	/**
-	 * Return a new {@code BoundMethod} object bound to {@code object}.
-	 *
-	 * @param object The object this new {@code BoundMethod} is bound to.
-	 */
+	Return a new {@code BoundMethod} object bound to {@code object}.
+
+	@param object The object this new {@code BoundMethod} is bound to.
+	**/
 	public BoundMethod(T object)
 	{
 		this.object = object;

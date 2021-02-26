@@ -48,43 +48,43 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 
 
 	/**
-	 * All parameters in the order they were specified in the constructor.
-	 */
+	All parameters in the order they were specified in the constructor.
+	**/
 	protected LinkedHashMap<String, ParameterDescription> parameters;
 
 	/**
-	 * The number of parameters (excluding the {@code *} and {@code **} parameters).
-	 */
+	The number of parameters (excluding the {@code *} and {@code **} parameters).
+	**/
 	protected int size;
 
 	/**
-	 * Does the signature have a {@code *} parameter (which collections any
-	 * additional positional argument)?
-	 */
+	Does the signature have a {@code *} parameter (which collections any
+	additional positional argument)?
+	**/
 	protected boolean hasRemainingParameters;
 
 	/**
-	 * Does the signature have a {@code **} parameter (which collections any
-	 * additional keyword argument)?
-	 */
+	Does the signature have a {@code **} parameter (which collections any
+	additional keyword argument)?
+	**/
 	protected boolean hasRemainingKeywordParameters;
 	protected List<String> parameterNames;
 
 	/**
-	 * Marker object that specifies that this parameter is required.
-	 */
+	Marker object that specifies that this parameter is required.
+	**/
 	public static Object required = new Object();
 
 	/**
-	 * Marker object that specifies that this parameter collects any additional
-	 * positional argument.
-	 */
+	Marker object that specifies that this parameter collects any additional
+	positional argument.
+	**/
 	public static Object remainingParameters = new Object();
 
 	/**
-	 * Marker object that specifies that this parameter collects any additional
-	 * keyword argument.
-	 */
+	Marker object that specifies that this parameter collects any additional
+	keyword argument.
+	**/
 	public static Object remainingKeywordParameters = new Object();
 
 	public Signature(Object... args)

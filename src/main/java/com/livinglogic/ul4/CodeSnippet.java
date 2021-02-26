@@ -16,33 +16,33 @@ import org.apache.commons.lang3.StringUtils;
 public class CodeSnippet
 {
 	/**
-	 * The complete source code
-	 */
+	The complete source code
+	**/
 	protected String source;
 
 	/**
-	 * The start position of the tag
-	 */
+	The start position of the tag
+	**/
 	protected int startPos;
 
 	/**
-	 * The end position of the tag
-	 */
+	The end position of the tag
+	**/
 	protected int endPos;
 
 	/**
-	 * The start position of the code inside the tag
-	 */
+	The start position of the code inside the tag
+	**/
 	protected int startPosCode;
 
 	/**
-	 * The end position of the code inside the tag
-	 */
+	The end position of the code inside the tag
+	**/
 	protected int endPosCode;
 
 	/**
-	 * Create a new {@code CodeSnippet} object.
-	 */
+	Create a new {@code CodeSnippet} object.
+	**/
 	public CodeSnippet(String source, int startPos, int endPos)
 	{
 		this.source = source;
@@ -53,8 +53,8 @@ public class CodeSnippet
 	}
 
 	/**
-	 * Create a new {@code CodeSnippet} object.
-	 */
+	Create a new {@code CodeSnippet} object.
+	**/
 	public CodeSnippet(String source, int startPos, int endPos, int startPosCode, int endPosCode)
 	{
 		this.source = source;

@@ -56,8 +56,8 @@ public class ForBlockAST extends BlockAST
 	}
 
 	/**
-	 * This is either a string or a list of strings/lists
-	 */
+	This is either a string or a list of strings/lists
+	**/
 	protected Object varname;
 	protected CodeAST container;
 

@@ -49,16 +49,16 @@ public abstract class UnaryAST extends CodeAST
 	}
 
 	/**
-	 * The operand of the unary operation
-	 */
+	The operand of the unary operation
+	**/
 	protected CodeAST obj;
 
 	/**
-	 * Create a new {@code UnaryAST} object
-	 * @param template The template where this node appears in.
-	 * @param slice The position of this node in the sourcecode of the template
-	 * @param obj The operand
-	 */
+	Create a new {@code UnaryAST} object
+	@param template The template where this node appears in.
+	@param slice The position of this node in the sourcecode of the template
+	@param obj The operand
+	**/
 	public UnaryAST(Template template, Slice pos, CodeAST obj)
 	{
 		super(template, pos);

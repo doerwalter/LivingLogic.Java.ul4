@@ -13,12 +13,12 @@ package com.livinglogic.ul4;
 public class ParameterDescription implements UL4Repr
 {
 	/**
-	 * The name of the parameter.
-	 */
+	The name of the parameter.
+	**/
 	protected String name;
 	/**
-	 * The position of the parameter in the signature.
-	 */
+	The position of the parameter in the signature.
+	**/
 	protected int position;
 	public enum Type
 	{
@@ -40,12 +40,12 @@ public class ParameterDescription implements UL4Repr
 		VAR_KEYWORD,
 	}
 	/**
-	 * The type of the parameter
-	 */
+	The type of the parameter
+	**/
 	protected Type type;
 	/**
-	 * The default value of the parameter (if it is of type {@code DEFAULT})
-	 */
+	The default value of the parameter (if it is of type {@code DEFAULT})
+	**/
 	protected Object defaultValue;
 
 	public ParameterDescription(String name, int position, Type type, Object defaultValue)

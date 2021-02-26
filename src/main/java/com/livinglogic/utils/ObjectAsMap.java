@@ -95,8 +95,8 @@ import java.util.Set;
 public abstract class ObjectAsMap implements Map<String, Object>
 {
 	/**
-	 * Interface for extracting the value of a certain attribute from an object
-	 */
+	Interface for extracting the value of a certain attribute from an object
+	**/
 	public interface ValueMaker
 	{
 		/**
@@ -124,9 +124,9 @@ public abstract class ObjectAsMap implements Map<String, Object>
 	}
 
 	/**
-	 * This remains unimplemented, as it's unused by UL4 templates.
-	 * @throws UnsupportedOperationException since it is unimplemented.
-	 */
+	This remains unimplemented, as it's unused by UL4 templates.
+	@throws UnsupportedOperationException since it is unimplemented.
+	**/
 	@Override
 	public boolean containsValue(Object value)
 	{
@@ -141,9 +141,9 @@ public abstract class ObjectAsMap implements Map<String, Object>
 	}
 
 	/**
-	 * This is unimplemented, as ObjectAsMap object are immutable (at least via the map interface).
-	 * @throws UnsupportedOperationException since it is unimplemented.
-	 */
+	This is unimplemented, as ObjectAsMap object are immutable (at least via the map interface).
+	@throws UnsupportedOperationException since it is unimplemented.
+	**/
 	@Override
 	public Object put(String key, Object value)
 	{
@@ -151,9 +151,9 @@ public abstract class ObjectAsMap implements Map<String, Object>
 	}
 
 	/**
-	 * This is unimplemented, as ObjectAsMap object are immutable (at least via the map interface).
-	 * @throws UnsupportedOperationException since it is unimplemented.
-	 */
+	This is unimplemented, as ObjectAsMap object are immutable (at least via the map interface).
+	@throws UnsupportedOperationException since it is unimplemented.
+	**/
 	@Override
 	public Object remove(Object key)
 	{
@@ -161,9 +161,9 @@ public abstract class ObjectAsMap implements Map<String, Object>
 	}
 
 	/**
-	 * This is unimplemented, as ObjectAsMap object are immutable (at least via the map interface).
-	 * @throws UnsupportedOperationException since it is unimplemented.
-	 */
+	This is unimplemented, as ObjectAsMap object are immutable (at least via the map interface).
+	@throws UnsupportedOperationException since it is unimplemented.
+	**/
 	@Override
 	public void putAll(Map<? extends String,? extends Object> t)
 	{
@@ -171,9 +171,9 @@ public abstract class ObjectAsMap implements Map<String, Object>
 	}
 
 	/**
-	 * This is unimplemented, as ObjectAsMap object are immutable (at least via the map interface).
-	 * @throws UnsupportedOperationException since it is unimplemented.
-	 */
+	This is unimplemented, as ObjectAsMap object are immutable (at least via the map interface).
+	@throws UnsupportedOperationException since it is unimplemented.
+	**/
 	@Override
 	public void clear()
 	{
@@ -187,14 +187,14 @@ public abstract class ObjectAsMap implements Map<String, Object>
 	}
 
 	/**
-	 * Abstract method that returns a map that maps attribute names to
-	 * {@link #ValueMaker} objects. A {@link #ValueMaker} extracts an attribute
-	 * from an object.
-	 *
-	 * This method should return a singleton (as for every instance the attribute
-	 * names and how the attribute values are extracted from the instance are the
-	 * same).
-	 */
+	Abstract method that returns a map that maps attribute names to
+	{@link #ValueMaker} objects. A {@link #ValueMaker} extracts an attribute
+	from an object.
+
+	This method should return a singleton (as for every instance the attribute
+	names and how the attribute values are extracted from the instance are the
+	same).
+	**/
 	public abstract Map<String, ValueMaker> getValueMakers();
 
 	@Override

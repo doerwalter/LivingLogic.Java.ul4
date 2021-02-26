@@ -26,136 +26,136 @@ import com.livinglogic.utils.MapUtils;
 public class EvaluationContext implements AutoCloseable, CloseableRegistry
 {
 	/**
-	 * The {@code Writer} object where output can be written via {@link #write}.
-	 * May by {@code null}, in which case output will be ignored.
-	 */
+	The {@code Writer} object where output can be written via {@link #write}.
+	May by {@code null}, in which case output will be ignored.
+	**/
 	protected Writer writer;
 
 	/**
-	 * The list of currently active indentation strings
-	 */
+	The list of currently active indentation strings
+	**/
 	protected List<String> indents;
 
 	/**
-	 * A map containing the global variables
-	 */
+	A map containing the global variables
+	**/
 	protected Map<String, Object> globalVariables;
 
 	/**
-	 * A map containing the currently defined variables
-	 */
+	A map containing the currently defined variables
+	**/
 	protected Map<String, Object> variables;
 
 	/**
-	 * The currently executing template object
-	 */
+	The currently executing template object
+	**/
 	Template template;
 
 	/**
-	 * A {@link com.livinglogic.utils.MapChain} object chaining all variables:
-	 * The user defined ones from {@link #variables}, the global ones from
-	 * {@link #globalVariables} and the map containing the global functions.
-	 */
+	A {@link com.livinglogic.utils.MapChain} object chaining all variables:
+	The user defined ones from {@link #variables}, the global ones from
+	{@link #globalVariables} and the map containing the global functions.
+	**/
 	protected MapChain<String, Object> allVariables;
 
 	/**
-	 * A list of cleanup tasks that have to be done, when the
-	 * {@code EvaluationContext} is no longer used
-	 */
+	A list of cleanup tasks that have to be done, when the
+	{@code EvaluationContext} is no longer used
+	**/
 	private LinkedList<AutoCloseable> closeables;
 
 	/*
-	 * A stack of currently active escaping functions
-	 */
+	A stack of currently active escaping functions
+	**/
 	protected List<StringEscape> escapes;
 
 	/**
-	 * The maximum number of milliseconds of runtime that are allowed
-	 * using this {@code EvaluationContext} object. This can be used to limit
-	 * the runtime of a template. If negative the runtime is unlimited.
-	 */
+	The maximum number of milliseconds of runtime that are allowed
+	using this {@code EvaluationContext} object. This can be used to limit
+	the runtime of a template. If negative the runtime is unlimited.
+	**/
 	private long milliseconds = -1;
 	private long startMilliseconds;
 
 	/**
-	 * Create a new {@code EvaluationContext} object.
-	 */
+	Create a new {@code EvaluationContext} object.
+	**/
 	public EvaluationContext()
 	{
 		this(null, -1, null);
 	}
 
 	/**
-	 * Create a new {@code EvaluationContext} object.
-	 * @param writer The output stream where the template output will be written
-	 */
+	Create a new {@code EvaluationContext} object.
+	@param writer The output stream where the template output will be written
+	**/
 	public EvaluationContext(Writer writer)
 	{
 		this(writer, -1, null);
 	}
 
 	/**
-	 * Create a new {@code EvaluationContext} object.
-	 * @param milliseconds The maximum number of milliseconds allowed for
-	 *              templates using this {@code EvaluationContext}.
-	 */
+	Create a new {@code EvaluationContext} object.
+	@param milliseconds The maximum number of milliseconds allowed for
+	             templates using this {@code EvaluationContext}.
+	**/
 	public EvaluationContext(long milliseconds)
 	{
 		this(null, milliseconds, null);
 	}
 
 	/**
-	 * Create a new {@code EvaluationContext} object.
-	 * @param writer The output stream where the template output will be written
-	 * @param milliseconds The maximum number of milliseconds allowed for
-	 *              templates using this {@code EvaluationContext}.
-	 */
+	Create a new {@code EvaluationContext} object.
+	@param writer The output stream where the template output will be written
+	@param milliseconds The maximum number of milliseconds allowed for
+	             templates using this {@code EvaluationContext}.
+	**/
 	public EvaluationContext(Writer writer, long milliseconds)
 	{
 		this(writer, milliseconds, null);
 	}
 
 	/**
-	 * Create a new {@code EvaluationContext} object.
-	 * @param globalVariables The global variables that should be available in
-	 *                        the template and any called recursively.
-	 */
+	Create a new {@code EvaluationContext} object.
+	@param globalVariables The global variables that should be available in
+	                       the template and any called recursively.
+	**/
 	public EvaluationContext(Map<String, Object> globalVariables)
 	{
 		this(null, -1, globalVariables);
 	}
 
 	/**
-	 * Create a new {@code EvaluationContext} object.
-	 * @param writer The output stream where the template output will be written
-	 * @param globalVariables The global variables that should be available in
-	 *                        the template and any called recursively.
-	 */
+	Create a new {@code EvaluationContext} object.
+	@param writer The output stream where the template output will be written
+	@param globalVariables The global variables that should be available in
+	                       the template and any called recursively.
+	**/
 	public EvaluationContext(Writer writer, Map<String, Object> globalVariables)
 	{
 		this(writer, -1, globalVariables);
 	}
 
 	/**
-	 * Create a new {@code EvaluationContext} object.
-	 * @param milliseconds The maximum number of milliseconds allowed for
-	 *                     templates using this {@code EvaluationContext}.
-	 * @param globalVariables The global variables that should be available in
-	 *                        the template and any called recursively.
-	 */
+	Create a new {@code EvaluationContext} object.
+	@param milliseconds The maximum number of milliseconds allowed for
+	                    templates using this {@code EvaluationContext}.
+	@param globalVariables The global variables that should be available in
+	                       the template and any called recursively.
+	**/
 	public EvaluationContext(long milliseconds, Map<String, Object> globalVariables)
 	{
 		this(null, milliseconds, globalVariables);
 	}
 
 	/**
-	 * Create a new {@code EvaluationContext} object.
-	 * @param writer The output stream where the template output will be written
-	 * @param milliseconds The maximum number of milliseconds allowed for
-	 *                     templates using this {@code EvaluationContext}.
-	 * @param globalVariables The global variables that should be available in
-	 *                        the template and any called recursively.
-	 */
+	Create a new {@code EvaluationContext} object.
+	@param writer The output stream where the template output will be written
+	@param milliseconds The maximum number of milliseconds allowed for
+	                    templates using this {@code EvaluationContext}.
+	@param globalVariables The global variables that should be available in
+	                       the template and any called recursively.
+	**/
 	public EvaluationContext(Writer writer, long milliseconds, Map<String, Object> globalVariables)
 	{
 		this.writer = writer;
@@ -194,8 +194,8 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
-	 * Call this when the {@code EvaluationContext} is no longer required.
-	 */
+	Call this when the {@code EvaluationContext} is no longer required.
+	**/
 	public void close()
 	{
 		for (AutoCloseable closeable : closeables)
@@ -212,32 +212,32 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
-	 * Call this to register a new cleanup hook.
-	 */
+	Call this to register a new cleanup hook.
+	**/
 	public void registerCloseable(AutoCloseable closeable)
 	{
 		closeables.add(closeable);
 	}
 
 	/**
-	 * Push a new escaping method onto the stack.
-	 */
+	Push a new escaping method onto the stack.
+	**/
 	public void pushEscape(StringEscape escape)
 	{
 		escapes.add(escape);
 	}
 
 	/**
-	 * Pop the innermost escaping method from the stack.
-	 */
+	Pop the innermost escaping method from the stack.
+	**/
 	public void popEscape()
 	{
 		escapes.remove(escapes.size()-1);
 	}
 
 	/**
-	 * Set the writer in {@link #writer} and return the previously defined one.
-	 */
+	Set the writer in {@link #writer} and return the previously defined one.
+	**/
 	public Writer setWriter(Writer writer)
 	{
 		Writer oldWriter = this.writer;
@@ -246,8 +246,8 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
-	 * Set the active template object and return the previously active one.
-	 */
+	Set the active template object and return the previously active one.
+	**/
 	public Template setTemplate(Template template)
 	{
 		Template result = this.template;
@@ -256,24 +256,24 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
-	 * Return the currently active template object.
-	 */
+	Return the currently active template object.
+	**/
 	public Template getTemplate()
 	{
 		return template;
 	}
 
 	/**
-	 * Return the map containing the variables local to the template/function.
-	 */
+	Return the map containing the variables local to the template/function.
+	**/
 	public Map<String, Object> getVariables()
 	{
 		return variables;
 	}
 
 	/**
-	 * Set a new map containing the template variables and return the previous one.
-	 */
+	Set a new map containing the template variables and return the previous one.
+	**/
 	public Map<String, Object> setVariables(Map<String, Object> variables)
 	{
 		if (variables == null)
@@ -285,16 +285,16 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
-	 * Return the map containing the global variables.
-	 */
+	Return the map containing the global variables.
+	**/
 	public Map<String, Object> getGlobalVariables()
 	{
 		return globalVariables;
 	}
 
 	/**
-	 * Set a new map containing the global variables and return the previous one.
-	 */
+	Set a new map containing the global variables and return the previous one.
+	**/
 	public Map<String, Object> setGlobalVariables(Map<String, Object> globalVariables)
 	{
 		if (globalVariables == null)
@@ -306,9 +306,9 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
-	 * Replace the map containing the template variables with a new map that
-	 * defers non-existant keys to the previous one and return the previous one.
-	 */
+	Replace the map containing the template variables with a new map that
+	defers non-existant keys to the previous one and return the previous one.
+	**/
 	public Map<String, Object> pushVariables(Map<String, Object> variables)
 	{
 		if (variables == null)
@@ -317,16 +317,16 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
-	 * Return the {@code Writer} object where template output is written to.
-	 */
+	Return the {@code Writer} object where template output is written to.
+	**/
 	public Writer getWriter()
 	{
 		return writer;
 	}
 
 	/**
-	 * Write output
-	 */
+	Write output
+	**/
 	public void write(String string)
 	{
 		if (writer != null)
@@ -345,19 +345,19 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
-	 * Store a template variable in the variable map
-	 * @param key The name of the variable
-	 * @param value The value of the variable
-	 */
+	Store a template variable in the variable map
+	@param key The name of the variable
+	@param value The value of the variable
+	**/
 	public void set(String key, Object value)
 	{
 		variables.put(key, value);
 	}
 
 	/**
-	 * Return a template variable
-	 * @param key The name of the variable
-	 */
+	Return a template variable
+	@param key The name of the variable
+	**/
 	public Object get(String key)
 	{
 		Object result = allVariables.get(key);
@@ -368,110 +368,110 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	}
 
 	/**
-	 * Delete a variable
-	 * @param key The name of the variable
-	 */
+	Delete a variable
+	@param key The name of the variable
+	**/
 	public void remove(String key)
 	{
 		variables.remove(key);
 	}
 
 	/**
-	 * Log a message on level <code>debug</code>
-	 * Can be overwritten in subclasses. The default does nothing.
-	 *
-	 * @param mesage The log message.
-	 */
+	Log a message on level <code>debug</code>
+	Can be overwritten in subclasses. The default does nothing.
+
+	@param mesage The log message.
+	**/
 	public void logDebug(String message)
 	{
 	}
 
 	/**
-	 * Log an exception on level <code>debug</code>
-	 * Can be overwritten in subclasses. The default does nothing.
-	 *
-	 * @param exception The exception to log.
-	 */
+	Log an exception on level <code>debug</code>
+	Can be overwritten in subclasses. The default does nothing.
+
+	@param exception The exception to log.
+	**/
 	public void logDebug(Throwable exception)
 	{
 	}
 
 	/**
-	 * Log a message on level <code>info</code>
-	 * Can be overwritten in subclasses. The default does nothing.
-	 *
-	 * @param mesage The log message.
-	 */
+	Log a message on level <code>info</code>
+	Can be overwritten in subclasses. The default does nothing.
+
+	@param mesage The log message.
+	**/
 	public void logInfo(String message)
 	{
 	}
 
 	/**
-	 * Log an exception on level <code>info</code>
-	 * Can be overwritten in subclasses. The default does nothing.
-	 *
-	 * @param exception The exception to log.
-	 */
+	Log an exception on level <code>info</code>
+	Can be overwritten in subclasses. The default does nothing.
+
+	@param exception The exception to log.
+	**/
 	public void logInfo(Throwable exception)
 	{
 	}
 
 	/**
-	 * Log a message on level <code>notice</code>
-	 * Can be overwritten in subclasses. The default does nothing.
-	 *
-	 * @param mesage The log message.
-	 */
+	Log a message on level <code>notice</code>
+	Can be overwritten in subclasses. The default does nothing.
+
+	@param mesage The log message.
+	**/
 	public void logNotice(String message)
 	{
 	}
 
 	/**
-	 * Log an exception on level <code>notice</code>
-	 * Can be overwritten in subclasses. The default does nothing.
-	 *
-	 * @param exception The exception to log.
-	 */
+	Log an exception on level <code>notice</code>
+	Can be overwritten in subclasses. The default does nothing.
+
+	@param exception The exception to log.
+	**/
 	public void logNotice(Throwable exception)
 	{
 	}
 
 	/**
-	 * Log a message on level <code>warning</code>
-	 * Can be overwritten in subclasses. The default does nothing.
-	 *
-	 * @param mesage The log message.
-	 */
+	Log a message on level <code>warning</code>
+	Can be overwritten in subclasses. The default does nothing.
+
+	@param mesage The log message.
+	**/
 	public void logWarning(String message)
 	{
 	}
 
 	/**
-	 * Log an exception on level <code>warning</code>
-	 * Can be overwritten in subclasses. The default does nothing.
-	 *
-	 * @param exception The exception to log.
-	 */
+	Log an exception on level <code>warning</code>
+	Can be overwritten in subclasses. The default does nothing.
+
+	@param exception The exception to log.
+	**/
 	public void logWarning(Throwable exception)
 	{
 	}
 
 	/**
-	 * Log a message on level <code>error</code>
-	 * Can be overwritten in subclasses. The default does nothing.
-	 *
-	 * @param mesage The log message.
-	 */
+	Log a message on level <code>error</code>
+	Can be overwritten in subclasses. The default does nothing.
+
+	@param mesage The log message.
+	**/
 	public void logError(String message)
 	{
 	}
 
 	/**
-	 * Log an exception on level <code>error</code>
-	 * Can be overwritten in subclasses. The default does nothing.
-	 *
-	 * @param exception The exception to log.
-	 */
+	Log an exception on level <code>error</code>
+	Can be overwritten in subclasses. The default does nothing.
+
+	@param exception The exception to log.
+	**/
 	public void logError(Throwable exception)
 	{
 	}

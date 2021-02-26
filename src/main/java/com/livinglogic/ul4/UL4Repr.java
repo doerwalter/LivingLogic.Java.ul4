@@ -54,34 +54,34 @@ import org.apache.commons.text.StringEscapeUtils;
 public interface UL4Repr
 {
 	/**
-	 * <p>Output this object in "repr" format.</p>
-	 *
-	 * <p>To do this, methods on the {@code Formatter} object should be called,
-	 * i.e. {@link Formatter#append} to output literal text and
-	 * {@link Formatter#visit} to output the "repr" version of another object.</p>
-	 *
-	 *
-	 * @param formatter The {@code Formatter} object that handles output.
-	 */
+	<p>Output this object in "repr" format.</p>
+
+	<p>To do this, methods on the {@code Formatter} object should be called,
+	i.e. {@link Formatter#append} to output literal text and
+	{@link Formatter#visit} to output the "repr" version of another object.</p>
+
+
+	@param formatter The {@code Formatter} object that handles output.
+	**/
 	void reprUL4(Formatter formatter);
 
 	/**
-	 * <p>Output this object in "repr" format.</p>
-	 *
-	 * <p>This is a convenience method that implicitely creates a
-	 * {@code Formatter}.</p>
-	 *
-	 * @return The "repr" representation of this object.
-	 */
+	<p>Output this object in "repr" format.</p>
+
+	<p>This is a convenience method that implicitely creates a
+	{@code Formatter}.</p>
+
+	@return The "repr" representation of this object.
+	**/
 	default String repr()
 	{
 		return FunctionRepr.call(this);
 	}
 
 	/**
-	 * The {@code Formatter} class provides helper methods that classes can
-	 * use when implementing the {@link UL4Repr} interface;
-	 */
+	The {@code Formatter} class provides helper methods that classes can
+	use when implementing the {@link UL4Repr} interface;
+	**/
 	public static class Formatter
 	{
 		private Stack<Object> visited;

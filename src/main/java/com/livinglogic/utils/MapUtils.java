@@ -19,11 +19,11 @@ import java.util.LinkedHashMap;
 public class MapUtils
 {
 	/**
-	 * Add entries to a Map.
-	 * @param map The map where entries are added.
-	 * @param args An even number of objects. The objects at index 0, 2, 4, ...
-	 *             are the keys, the objects at index 1, 3, 5 are the values.
-	 */
+	Add entries to a Map.
+	@param map The map where entries are added.
+	@param args An even number of objects. The objects at index 0, 2, 4, ...
+	            are the keys, the objects at index 1, 3, 5 are the values.
+	**/
 	public static void putMap(Map map, Object... args)
 	{
 		int pos = 0;
@@ -39,11 +39,11 @@ public class MapUtils
 	}
 
 	/**
-	 * Create a Map from key, value arguments.
-	 * @param args An even number of objects. The objects at index 0, 2, 4, ...
-	 *             are the keys, the objects at index 1, 3, 5 are the values.
-	 * @return A Map containing the variables
-	 */
+	Create a Map from key, value arguments.
+	@param args An even number of objects. The objects at index 0, 2, 4, ...
+	            are the keys, the objects at index 1, 3, 5 are the values.
+	@return A Map containing the variables
+	**/
 	public static Map makeMap(Object... args)
 	{
 		Map map = new HashMap();
@@ -52,13 +52,13 @@ public class MapUtils
 	}
 
 	/**
-	 * Create an ordered Map (i.e. a {@code LinkedHashMap}
-	 * from key, value arguments.
-	 *
-	 * @param args An even number of objects. The objects at index 0, 2, 4, ...
-	 *             are the keys, the objects at index 1, 3, 5 are the values.
-	 * @return A Map containing the variables
-	 */
+	Create an ordered Map (i.e. a {@code LinkedHashMap}
+	from key, value arguments.
+
+	@param args An even number of objects. The objects at index 0, 2, 4, ...
+	            are the keys, the objects at index 1, 3, 5 are the values.
+	@return A Map containing the variables
+	**/
 	public static Map makeOrderedMap(Object... args)
 	{
 		Map map = new LinkedHashMap();
@@ -67,11 +67,11 @@ public class MapUtils
 	}
 
 	/**
-	 * Create a Map from (string) key, value arguments.
-	 * @param args An even number of objects. The objects at index 0, 2, 4, ...
-	 *             are the string keys, the objects at index 1, 3, 5 are the values.
-	 * @return A Map containing the variables
-	 */
+	Create a Map from (string) key, value arguments.
+	@param args An even number of objects. The objects at index 0, 2, 4, ...
+	            are the string keys, the objects at index 1, 3, 5 are the values.
+	@return A Map containing the variables
+	**/
 	public static Map<String, Object> makeStringMap(Object... args)
 	{
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -80,13 +80,13 @@ public class MapUtils
 	}
 
 	/**
-	 * Create an ordered Map (i.e. a {@code LinkedHashMap}
-	 * from (string) key, value arguments.
-	 *
-	 * @param args An even number of objects. The objects at index 0, 2, 4, ...
-	 *             are the string keys, the objects at index 1, 3, 5 are the values.
-	 * @return A Map containing the variables
-	 */
+	Create an ordered Map (i.e. a {@code LinkedHashMap}
+	from (string) key, value arguments.
+
+	@param args An even number of objects. The objects at index 0, 2, 4, ...
+	            are the string keys, the objects at index 1, 3, 5 are the values.
+	@return A Map containing the variables
+	**/
 	public static Map<String, Object> makeOrderedStringMap(Object... args)
 	{
 		HashMap<String, Object> map = new LinkedHashMap<String, Object>();

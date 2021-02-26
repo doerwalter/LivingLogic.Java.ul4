@@ -37,57 +37,57 @@ import com.livinglogic.ul4.UL4Type;
 public class Utils
 {
 	/**
-	 * Date format for serializing/deserializing {@code Date} objects.
-	 */
+	Date format for serializing/deserializing {@code Date} objects.
+	**/
 	public final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
 	/**
-	 * Registry where all {@link ObjectFactory} objects registered via
-	 * {@link #register} are stored.
-	 */
+	Registry where all {@link ObjectFactory} objects registered via
+	{@link #register} are stored.
+	**/
 	public static Map<String, ObjectFactory> registry = new HashMap<String, ObjectFactory>();
 
 	/**
-	 * Register a class for the UL4ON serialization machinery.
-	 *
-	 * @param name the name of the class as returned by its
-	 *             {@link UL4ONSerializable#getUL4ONName}.
-	 * @param factory An {@link ObjectFactory} object that will be used to create
-	 *                an "empty" instance of the class.
-	 */
+	Register a class for the UL4ON serialization machinery.
+
+	@param name the name of the class as returned by its
+	            {@link UL4ONSerializable#getUL4ONName}.
+	@param factory An {@link ObjectFactory} object that will be used to create
+	               an "empty" instance of the class.
+	**/
 	public static void register(String name, ObjectFactory factory)
 	{
 		registry.put(name, factory);
 	}
 
 	/**
-	 * Register a class for the UL4ON serialization machinery via an
-	 * {@link UL4Type} object. The UL4ON type name will be the name of the type
-	 * object, and the type object itself will be the object factory.
-	 *
-	 * @param type a {@link UL4Type} for the target class.
-	 */
+	Register a class for the UL4ON serialization machinery via an
+	{@link UL4Type} object. The UL4ON type name will be the name of the type
+	object, and the type object itself will be the object factory.
+
+	@param type a {@link UL4Type} for the target class.
+	**/
 	public static void register(UL4Type type)
 	{
 		registry.put(type.getUL4ONName(), type);
 	}
 
 	/**
-	 * Return the serialized UL4ON output of the object {@code data}.
-	 * @param data the object to be dumped.
-	 * @return the serialized object
-	 */
+	Return the serialized UL4ON output of the object {@code data}.
+	@param data the object to be dumped.
+	@return the serialized object
+	**/
 	public static String dumps(Object data)
 	{
 		return dumps(data, null);
 	}
 
 	/**
-	 * Return the serialized UL4ON output of the object {@code data}.
-	 * @param data the object to be dumped.
-	 * @param indent how to indent the output for pretty printing ({@code null} disables pretty printing).
-	 * @return the serialized object
-	 */
+	Return the serialized UL4ON output of the object {@code data}.
+	@param data the object to be dumped.
+	@param indent how to indent the output for pretty printing ({@code null} disables pretty printing).
+	@return the serialized object
+	**/
 	public static String dumps(Object data, String indent)
 	{
 		Encoder encoder = new Encoder(indent);
@@ -95,11 +95,11 @@ public class Utils
 	}
 
 	/**
-	 * Load an object by reading in the UL4ON object serialization format from {@code reader}.
-	 * @param reader The Reader from which to read the object
-	 * @param registry custom type registry
-	 * @return the deserialized object
-	 */
+	Load an object by reading in the UL4ON object serialization format from {@code reader}.
+	@param reader The Reader from which to read the object
+	@param registry custom type registry
+	@return the deserialized object
+	**/
 	public static Object load(Reader reader, Map<String, ObjectFactory> registry) throws IOException
 	{
 		Decoder decoder = new Decoder(registry);
@@ -107,11 +107,11 @@ public class Utils
 	}
 
 	/**
-	 * Load an object by reading in the UL4ON object serialization format from the string {@code s}.
-	 * @param s The object in serialized form
-	 * @param registry custom type registry
-	 * @return the deserialized object
-	 */
+	Load an object by reading in the UL4ON object serialization format from the string {@code s}.
+	@param s The object in serialized form
+	@param registry custom type registry
+	@return the deserialized object
+	**/
 	public static Object loads(String s, Map<String, ObjectFactory> registry)
 	{
 		Decoder decoder = new Decoder(registry);
@@ -119,11 +119,11 @@ public class Utils
 	}
 
 	/**
-	 * Load an object by reading in the UL4ON object serialization format from the CLOB {@code clob}.
-	 * @param clob The CLOB that contains the object in serialized form
-	 * @param registry custom type registry
-	 * @return the deserialized object
-	 */
+	Load an object by reading in the UL4ON object serialization format from the CLOB {@code clob}.
+	@param clob The CLOB that contains the object in serialized form
+	@param registry custom type registry
+	@return the deserialized object
+	**/
 	public static Object loads(Clob clob, Map<String, ObjectFactory> registry) throws IOException, SQLException
 	{
 		return load(clob.getCharacterStream(), registry);

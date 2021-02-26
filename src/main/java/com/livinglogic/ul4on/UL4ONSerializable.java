@@ -27,38 +27,38 @@ import com.livinglogic.ul4.Utils;
 public interface UL4ONSerializable
 {
 	/**
-	 * Return a unique name for the implementing class. This string should follow
-	 * Java's class naming conventions (i.e. inverted DNS), but doesn't have to
-	 * be the exact class name (as this might expose the internal layout of the
-	 * classes which might change over time).
-	 */
+	Return a unique name for the implementing class. This string should follow
+	Java's class naming conventions (i.e. inverted DNS), but doesn't have to
+	be the exact class name (as this might expose the internal layout of the
+	classes which might change over time).
+	**/
 	public String getUL4ONName();
 
 	/**
-	 * Return a unique identifier for the calling instance. If this string
-	 * is not {@code null} it must be unique among all objects of the same type.
-	 */
+	Return a unique identifier for the calling instance. If this string
+	is not {@code null} it must be unique among all objects of the same type.
+	**/
 	default public String getUL4ONID()
 	{
 		return null;
 	}
 
 	/**
-	 * Serialize the calling instance by writing instance data to the
-	 * {@link Encoder} object. The method must use {@link Encoder#dump} to
-	 * write all data to the {@link Encoder} that is required to recreate the
-	 * object.
-	 */
+	Serialize the calling instance by writing instance data to the
+	{@link Encoder} object. The method must use {@link Encoder#dump} to
+	write all data to the {@link Encoder} that is required to recreate the
+	object.
+	**/
 	default public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		throw new UnsupportedOperationException(Utils.formatMessage("Can't create UL4ON dumps for {!t} instances", this));
 	}
 
 	/**
-	 * Initialize the calling instance by deserializing instance data from the
-	 * {@link Decoder} object. This method usually uses {@link Decoder#load} to
-	 * read the data that has been written by {@link #dumpUL4ON}.
-	 */
+	Initialize the calling instance by deserializing instance data from the
+	{@link Decoder} object. This method usually uses {@link Decoder#load} to
+	read the data that has been written by {@link #dumpUL4ON}.
+	**/
 	default public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		throw new UnsupportedOperationException(Utils.formatMessage("Can't load {!t} instances from UL4ON dumps", this));

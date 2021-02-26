@@ -66,44 +66,44 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	}
 
 	/**
-	 * The template to which this node belongs
-	 */
+	The template to which this node belongs
+	**/
 	protected Template template;
 
 	/**
-	 * The start/end index of this node in the source (or of the start tag of a block)
-	 */
+	The start/end index of this node in the source (or of the start tag of a block)
+	**/
 	protected Slice startPos;
 
 	/**
-	 * Source position as a line number/column number pair.
-	 * Will be {@code null}, but will be calculated on the first
-	 * call to {@see getStartLine} or {@see getStartCol}.
-	 */
+	Source position as a line number/column number pair.
+	Will be {@code null}, but will be calculated on the first
+	call to {@see getStartLine} or {@see getStartCol}.
+	**/
 	protected LineCol startLineCol;
 
 	/**
-	 * The start/end index of this end tag for this node in the source (or
-	 * ``null`` if this is not a block).
-	 */
+	The start/end index of this end tag for this node in the source (or
+	``null`` if this is not a block).
+	**/
 	protected Slice stopPos;
 
 	/**
-	 * Source position of the end tag (if this is a blog) as a line
-	 * number/column number pair.
-	 * Will be {@code null}, but will be calculated on the first
-	 * call to {@see getStopLine} or {@see getStopCol}.
-	 */
+	Source position of the end tag (if this is a blog) as a line
+	number/column number pair.
+	Will be {@code null}, but will be calculated on the first
+	call to {@see getStopLine} or {@see getStopCol}.
+	**/
 	protected LineCol stopLineCol;
 
 	/**
-	 * Create a new {@code AST} object for a block (i.e. something with
-	 * a start and end tag).
-	 * @param startPos The slice in the template source, where the source for
-	 *                 this object (or its start tag) is located.
-	 * @param stopPos The slice in the template source, where the end tag is
-	 *                located (or ``null`` if this is not a block).
-	 */
+	Create a new {@code AST} object for a block (i.e. something with
+	a start and end tag).
+	@param startPos The slice in the template source, where the source for
+	                this object (or its start tag) is located.
+	@param stopPos The slice in the template source, where the end tag is
+	               located (or ``null`` if this is not a block).
+	**/
 	protected AST(Template template, Slice startPos, Slice stopPos)
 	{
 		this.template = template;
@@ -114,18 +114,18 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	}
 
 	/**
-	 * Create a new {@code AST} object for a non-block.
-	 * @param startPos The slice in the template source, where the source for
-	 *                 this object (or its start tag) is located.
-	 */
+	Create a new {@code AST} object for a non-block.
+	@param startPos The slice in the template source, where the source for
+	                this object (or its start tag) is located.
+	**/
 	public AST(Template template, Slice startPos)
 	{
 		this(template, startPos, null);
 	}
 
 	/**
-	 * Return the template to which this node belongs.
-	 */
+	Return the template to which this node belongs.
+	**/
 	public Template getTemplate()
 	{
 		return template;
@@ -303,12 +303,12 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	}
 
 	/**
-	 * Return a description of the template that this AST node is part of
-	 * in text form.
-	 *
-	 * The return value looks something like this:
-	 * <code>in local template 'foo' in 'bar'</code>.
-	 */
+	Return a description of the template that this AST node is part of
+	in text form.
+
+	The return value looks something like this:
+	<code>in local template 'foo' in 'bar'</code>.
+	**/
 	public String getTemplateDescriptionText()
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -330,12 +330,12 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	}
 
 	/**
-	 * Return a description of the template that this AST node is part of
-	 * in Markdown form.
-	 *
-	 * The return value looks something like this:
-	 * <code>in local template `foo` in `bar`</code>.
-	 */
+	Return a description of the template that this AST node is part of
+	in Markdown form.
+
+	The return value looks something like this:
+	<code>in local template `foo` in `bar`</code>.
+	**/
 	public String getTemplateDescriptionMarkdown()
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -364,12 +364,12 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	}
 
 	/**
-	 * Return a description of the template that this AST node is part of
-	 * in HTML form.
-	 *
-	 * The return value looks something like this:
-	 * <code>in local template &lt;b&gt;foo&lt;/b&gt; in &lt;b&gt;bar&lt;/b&gt;</code>.
-	 */
+	Return a description of the template that this AST node is part of
+	in HTML form.
+
+	The return value looks something like this:
+	<code>in local template &lt;b&gt;foo&lt;/b&gt; in &lt;b&gt;bar&lt;/b&gt;</code>.
+	**/
 	public String getTemplateDescriptionHTML()
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -396,11 +396,11 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	}
 
 	/**
-	 * Return a description of the location of this AST node in text form.
-	 *
-	 * The return value looks something like this:
-	 * <code>offset 75:88; line 5, column 10</code>.
-	 */
+	Return a description of the location of this AST node in text form.
+
+	The return value looks something like this:
+	<code>offset 75:88; line 5, column 10</code>.
+	**/
 	public String getLocationDescriptionText()
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -417,11 +417,11 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	}
 
 	/**
-	 * Return a description of the location of this AST node in Markdown form.
-	 *
-	 * The return value looks something like this:
-	 * <code>offset **75:88**; line **5**, column **10**</code>.
-	 */
+	Return a description of the location of this AST node in Markdown form.
+
+	The return value looks something like this:
+	<code>offset **75:88**; line **5**, column **10**</code>.
+	**/
 	public String getLocationDescriptionMarkdown()
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -444,11 +444,11 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	}
 
 	/**
-	 * Return a description of the location of this AST node in HTML form.
-	 *
-	 * The return value looks something like this:
-	 * <code>offset &lt;b&gt;75:88&lt;/b&gt;; line &lt;b&gt;5&lt;/b&gt;, column &lt;b&gt;10&lt;/b&gt;</code>.
-	 */
+	Return a description of the location of this AST node in HTML form.
+
+	The return value looks something like this:
+	<code>offset &lt;b&gt;75:88&lt;/b&gt;; line &lt;b&gt;5&lt;/b&gt;, column &lt;b&gt;10&lt;/b&gt;</code>.
+	**/
 	public String getLocationDescriptionHTML()
 	{
 		StringBuilder buffer = new StringBuilder();
@@ -531,26 +531,26 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	}
 
 	/**
-	 * <p>Evaluate this node and return the resulting object.</p>
-	 *
-	 * <p>Evaluating the node might also have several side effects besides the
-	 * method return value: It might write to the output stream that is stored
-	 * in the {@code context} object (as the {@link PrintAST} and
-	 * {@link PrintXAST} nodes do) and it might modify the variables map stored
-	 * in the context (like {@link VarAST} does).</p>
-	 * 
-	 * @param context The context object in which this node has to be evaluated.
-	 * @return The result of evaluating the node.
-	 */
+	<p>Evaluate this node and return the resulting object.</p>
+
+	<p>Evaluating the node might also have several side effects besides the
+	method return value: It might write to the output stream that is stored
+	in the {@code context} object (as the {@link PrintAST} and
+	{@link PrintXAST} nodes do) and it might modify the variables map stored
+	in the context (like {@link VarAST} does).</p>
+	
+	@param context The context object in which this node has to be evaluated.
+	@return The result of evaluating the node.
+	**/
 	abstract public Object evaluate(EvaluationContext context);
 
 	/**
-	 * {@code decoratedEvaluate} wraps a call to {@link #evaluate} with exception
-	 * handling. {@link #evaluate} should not be called directly. Instead
-	 * {@code decoratedEvaluate} should be used. When an exception bubbles up
-	 * the call stack, {@code decoratedEvaluate} creates a exception chain
-	 * containing information about the location of the exception.
-	 */
+	{@code decoratedEvaluate} wraps a call to {@link #evaluate} with exception
+	handling. {@link #evaluate} should not be called directly. Instead
+	{@code decoratedEvaluate} should be used. When an exception bubbles up
+	the call stack, {@code decoratedEvaluate} creates a exception chain
+	containing information about the location of the exception.
+	**/
 	public Object decoratedEvaluate(EvaluationContext context)
 	{
 		try
@@ -572,8 +572,8 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	}
 
 	/**
-	 * Return a unique name for this type of AST node.
-	 */
+	Return a unique name for this type of AST node.
+	**/
 	abstract public String getType();
 
 	public String toString()
@@ -633,9 +633,9 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	}
 
 	/**
-	 * Format this object using a Formatter object.
-	 * @param formatter the Formatter object
-	 */
+	Format this object using a Formatter object.
+	@param formatter the Formatter object
+	**/
 	public void toString(Formatter formatter)
 	{
 		toStringFromSource(formatter);

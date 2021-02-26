@@ -16,9 +16,9 @@ package com.livinglogic.ul4on;
 public interface ObjectFactory
 {
 	/**
-	 * Create an object of the appropriate type with the passed in UL4ON ID.
-	 * The content of the object will be recreated after this call by
-	 * {@link UL4ONSerializable#loadUL4ON}.
-	 */
+	Create an object of the appropriate type with the passed in UL4ON ID.
+	The content of the object will be recreated after this call by
+	{@link UL4ONSerializable#loadUL4ON}.
+	**/
 	public UL4ONSerializable create(String id);
 }

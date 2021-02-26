@@ -71,10 +71,10 @@ public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 	private static final Signature signature = new Signature(); // default signature: no arguments
 
 	/**
-	 * <p>Return a signature for this function.</p>
-	 *
-	 * <p>The default returns a signature without any arguments.</p>
-	 */
+	<p>Return a signature for this function.</p>
+
+	<p>The default returns a signature without any arguments.</p>
+	**/
 	protected Signature getSignature()
 	{
 		return signature;
@@ -91,11 +91,11 @@ public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 	}
 
 	/**
-	 * Evaluate this function and return the result.
-	 *
-	 * @param args The arguments for the call.
-	 * @return The result of the function call.
-	 */
+	Evaluate this function and return the result.
+
+	@param args The arguments for the call.
+	@return The result of the function call.
+	**/
 	public abstract Object evaluate(BoundArguments args);
 
 	public void reprUL4(UL4Repr.Formatter formatter)

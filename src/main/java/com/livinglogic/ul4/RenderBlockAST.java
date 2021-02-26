@@ -72,8 +72,8 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 	}
 
 	/**
-	 * This is used to "convert" a {@link CallAST} that comes out of the parser into a {@code RenderBlockAST}
-	 */
+	This is used to "convert" a {@link CallAST} that comes out of the parser into a {@code RenderBlockAST}
+	**/
 	public RenderBlockAST(Template template, CallAST call, Template.Whitespace whitespace, String startdelim, String enddelim)
 	{
 		super(call);

@@ -48,22 +48,22 @@ public class Tag extends AST
 	}
 
 	/**
-	 * The tag type ("print", "printx", "for", "if", "end", etc.)
-	 */
+	The tag type ("print", "printx", "for", "if", "end", etc.)
+	**/
 	protected String tag;
 
 	/**
-	 * The start/end index in {@code source} where the code inside the tag starts.
-	 */
+	The start/end index in {@code source} where the code inside the tag starts.
+	**/
 	protected Slice codePos;
 
 	/**
-	 * Create a new {@code Tag} object.
-	 * @param template The template
-	 * @param tag The tag type ("print", "printx", "for", "if", "end", etc.)
-	 * @param tagPos The slice in the template source, where the source for this tag is located.
-	 * @param codePos The slice in the template source where the code inside the tag starts.
-	 */
+	Create a new {@code Tag} object.
+	@param template The template
+	@param tag The tag type ("print", "printx", "for", "if", "end", etc.)
+	@param tagPos The slice in the template source, where the source for this tag is located.
+	@param codePos The slice in the template source where the code inside the tag starts.
+	**/
 	public Tag(Template template, String tag, Slice tagPos, Slice codePos)
 	{
 		super(template, tagPos);

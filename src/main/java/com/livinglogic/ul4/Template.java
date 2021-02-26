@@ -119,13 +119,13 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * The version number used in the UL4ON dump of the template.
-	 */
+	The version number used in the UL4ON dump of the template.
+	**/
 	public static final String VERSION = "50";
 
 	/**
-	 * The name of the template/function (defaults to {@code null})
-	 */
+	The name of the template/function (defaults to {@code null})
+	**/
 	public String name = null;
 
 	public enum Whitespace
@@ -146,49 +146,49 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	};
 
 	/**
-	 * Should whitespace be skipped when outputting text nodes?
-	 * (i.e. linefeed and the whitespace after the linefeed will be skipped. Other spaces/tabs etc. will not be skipped)
-	 */
+	Should whitespace be skipped when outputting text nodes?
+	(i.e. linefeed and the whitespace after the linefeed will be skipped. Other spaces/tabs etc. will not be skipped)
+	**/
 	public Whitespace whitespace = Whitespace.keep;
 
 	/**
-	 * The start delimiter for tags (defaults to {@code "<?"})
-	 */
+	The start delimiter for tags (defaults to {@code "<?"})
+	**/
 	public String startdelim = "<?";
 
 	/**
-	 * The end delimiter for tags (defaults to {@code "?>"})
-	 */
+	The end delimiter for tags (defaults to {@code "?>"})
+	**/
 	public String enddelim = "?>";
 
 	/**
-	 * The signature of the template if it is a top level template  ({@code null} mean that all variables are allowed)
-	 */
+	The signature of the template if it is a top level template  ({@code null} mean that all variables are allowed)
+	**/
 	public Signature signature = null;
 
 	/**
-	 * The signature of the template if it is a subtemplate ({@code null} mean that all variables are allowed)
-	 */
+	The signature of the template if it is a subtemplate ({@code null} mean that all variables are allowed)
+	**/
 	public SignatureAST signatureAST = null;
 
 	/**
-	 * The slice for the docstring (from a {@code <?doc?>} tag).
-	 */
+	The slice for the docstring (from a {@code <?doc?>} tag).
+	**/
 	public Slice docPos = null;
 
 	/**
-	 * The template/function source (of the top-level template, i.e. subtemplates always get the full source).
-	 */
+	The template/function source (of the top-level template, i.e. subtemplates always get the full source).
+	**/
 	public String source = null;
 
 	/**
-	 * If this is a nested template, {@code parentTemplate} references the outer template
-	 */
+	If this is a nested template, {@code parentTemplate} references the outer template
+	**/
 	public Template parentTemplate = null;
 
 	/**
-	 * Used for deserializing an UL4ON dump (of top level and sub templates). Doesn't compile any source
-	 */
+	Used for deserializing an UL4ON dump (of top level and sub templates). Doesn't compile any source
+	**/
 	private Template()
 	{
 		super(null, new Slice(0, 0), null);
@@ -204,8 +204,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Create of toplevel template without a signature
-	 */
+	Create of toplevel template without a signature
+	**/
 	public Template(String source, String name, Whitespace whitespace, String startdelim, String enddelim)
 	{
 		super(null, new Slice(0, 0), null);
@@ -245,8 +245,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Create of toplevel template with a specified signature
-	 */
+	Create of toplevel template with a specified signature
+	**/
 	public Template(String source, String name, Whitespace whitespace, String startdelim, String enddelim, Signature signature)
 	{
 		this(source, name, whitespace, startdelim, enddelim);
@@ -255,16 +255,16 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Create of toplevel template with a signature compiled from a string
-	 */
+	Create of toplevel template with a signature compiled from a string
+	**/
 	public Template(String source, String name, Whitespace whitespace, String startdelim, String enddelim, String signature)
 	{
 		this(makeSource(source, name, startdelim, enddelim, signature), name, whitespace, startdelim, enddelim);
 	}
 
 	/**
-	 * Creates an {@code Template} object. Used for subtemplates.
-	 */
+	Creates an {@code Template} object. Used for subtemplates.
+	**/
 	Template(Template template, String name, Whitespace whitespace, String startdelim, String enddelim, SignatureAST signature)
 	{
 		super(template, new Slice(0, 0), null);
@@ -830,53 +830,53 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * loads a template from a string in the UL4ON serialization format.
-	 * @param data The template in serialized form.
-	 * @return The template object.
-	 */
+	loads a template from a string in the UL4ON serialization format.
+	@param data The template in serialized form.
+	@return The template object.
+	**/
 	public static Template loads(String data)
 	{
 		return (Template)Utils.loads(data, null);
 	}
 
 	/**
-	 * loads a template from a reader in the UL4ON serialization format.
-	 * @param reader The Reader object from which to read the template.
-	 * @return The template object.
-	 * @throws IOException if reading from the stream fails
-	 */
+	loads a template from a reader in the UL4ON serialization format.
+	@param reader The Reader object from which to read the template.
+	@return The template object.
+	@throws IOException if reading from the stream fails
+	**/
 	public static Template load(Reader reader) throws IOException
 	{
 		return (Template)Utils.load(reader, null);
 	}
 
 	/**
-	 * writes the {@code Template} object to a string in the UL4ON serialization format.
-	 * @return The string containing the template/function in serialized form.
-	 */
+	writes the {@code Template} object to a string in the UL4ON serialization format.
+	@return The string containing the template/function in serialized form.
+	**/
 	public String dumps()
 	{
 		return Utils.dumps(this);
 	}
 
 	/**
-	 * Renders the template to a java.io.Writer object.
-	 * @param writer    the java.io.Writer object to which the output is written.
-	 */
+	Renders the template to a java.io.Writer object.
+	@param writer    the java.io.Writer object to which the output is written.
+	**/
 	public void render(java.io.Writer writer)
 	{
 		render(writer, -1, null, null);
 	}
 
 	/**
-	 * Renders the template to a java.io.Writer object.
-	 * @param writer    the java.io.Writer object to which the output is written.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 */
+	Renders the template to a java.io.Writer object.
+	@param writer    the java.io.Writer object to which the output is written.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	                 These variables will be checked against the signature
+	                 of the template (if a signature is defined, otherwise
+	                 all variables will be accepted)
+	**/
 	public void render(java.io.Writer writer, Map<String, Object> variables)
 	{
 		render(writer, -1, null, variables);
@@ -902,73 +902,73 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Renders the template and returns the resulting string.
-	 * @return The rendered output as a string.
-	 */
+	Renders the template and returns the resulting string.
+	@return The rendered output as a string.
+	**/
 	public String renders()
 	{
 		return renders(-1, null, null);
 	}
 
 	/**
-	 * Renders the template and returns the resulting string.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 * @return The rendered output as a string.
-	 */
+	Renders the template and returns the resulting string.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	                 These variables will be checked against the signature
+	                 of the template (if a signature is defined, otherwise
+	                 all variables will be accepted)
+	@return The rendered output as a string.
+	**/
 	public String renders(Map<String, Object> variables)
 	{
 		return renders(-1, null, variables);
 	}
 
 	/**
-	 * Renders the template and returns the resulting string.
-	 * @param milliseconds The maximum number of milliseconds this template
-	 *                     may run.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 * @return The rendered output as a string.
-	 */
+	Renders the template and returns the resulting string.
+	@param milliseconds The maximum number of milliseconds this template
+	                    may run.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	                 These variables will be checked against the signature
+	                 of the template (if a signature is defined, otherwise
+	                 all variables will be accepted)
+	@return The rendered output as a string.
+	**/
 	public String renders(long milliseconds, Map<String, Object> variables)
 	{
 		return renders(milliseconds, null, variables);
 	}
 
 	/**
-	 * Renders the template and returns the resulting string.
-	 * @param globalVariables The global variables that should be available in
-	 *                        the template and any called recursively.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 * @return The rendered output as a string.
-	 */
+	Renders the template and returns the resulting string.
+	@param globalVariables The global variables that should be available in
+	                       the template and any called recursively.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	                 These variables will be checked against the signature
+	                 of the template (if a signature is defined, otherwise
+	                 all variables will be accepted)
+	@return The rendered output as a string.
+	**/
 	public String renders(Map<String, Object> globalVariables, Map<String, Object> variables)
 	{
 		return renders(-1, globalVariables, variables);
 	}
 
 	/**
-	 * Renders the template and returns the resulting string.
-	 * @param milliseconds The maximum number of milliseconds this template
-	 *                     may run.
-	 * @param globalVariables The global variables that should be available in
-	 *                        the template and any called recursively.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 * @return The rendered output as a string.
-	 */
+	Renders the template and returns the resulting string.
+	@param milliseconds The maximum number of milliseconds this template
+	                    may run.
+	@param globalVariables The global variables that should be available in
+	                       the template and any called recursively.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	                 These variables will be checked against the signature
+	                 of the template (if a signature is defined, otherwise
+	                 all variables will be accepted)
+	@return The rendered output as a string.
+	**/
 	public String renders(long milliseconds, Map<String, Object> globalVariables, Map<String, Object> variables)
 	{
 		try (EvaluationContext context = new EvaluationContext(milliseconds, globalVariables))
@@ -978,15 +978,15 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Renders the template using the passed in variables and returns the resulting string.
-	 * @param context   the EvaluationContext. May be null.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 * @return The rendered output as a string.
-	 */
+	Renders the template using the passed in variables and returns the resulting string.
+	@param context   the EvaluationContext. May be null.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	                 These variables will be checked against the signature
+	                 of the template (if a signature is defined, otherwise
+	                 all variables will be accepted)
+	@return The rendered output as a string.
+	**/
 	public String renders(EvaluationContext context, Map<String, Object> variables)
 	{
 		try (
@@ -1014,14 +1014,14 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Internal method that renders the template when all variables are already
-	 * bound.
-	 * @param context   the EvaluationContext. May not be null.
-	 * @param writer    the java.io.Writer object to which the output is written.
-	 *                  Maybe null, then the context's writer will be used.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 */
+	Internal method that renders the template when all variables are already
+	bound.
+	@param context   the EvaluationContext. May not be null.
+	@param writer    the java.io.Writer object to which the output is written.
+	                 Maybe null, then the context's writer will be used.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	**/
 	public void renderBound(EvaluationContext context, Map<String, Object> variables)
 	{
 		Map<String, Object> oldVariables = context.setVariables(variables);
@@ -1043,14 +1043,14 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Internal method that renders the template when all variables are already
-	 * bound.
-	 * @param context   the EvaluationContext. May not be null.
-	 * @param writer    the java.io.Writer object to which the output is written.
-	 *                  Maybe null, then the context's writer will be used.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 */
+	Internal method that renders the template when all variables are already
+	bound.
+	@param context   the EvaluationContext. May not be null.
+	@param writer    the java.io.Writer object to which the output is written.
+	                 Maybe null, then the context's writer will be used.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	**/
 	public void renderBound(EvaluationContext context, java.io.Writer writer, Map<String, Object> variables)
 	{
 		Writer oldWriter = null;
@@ -1100,13 +1100,13 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Renders the template and returns a Reader object from which the template
-	 * output can be read.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the template code. May be null
-	 * @return The reader from which the template output can be read.
-	 * @throws IOException
-	 */
+	Renders the template and returns a Reader object from which the template
+	output can be read.
+	@param variables a map containing the top level variables that should be
+	                 available to the template code. May be null
+	@return The reader from which the template output can be read.
+	@throws IOException
+	**/
 	public Reader reader(Map<String, Object> variables) throws IOException
 	{
 		PipedReader reader = new PipedReader(10);
@@ -1116,15 +1116,15 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Renders the template and returns a Reader object from which the template
-	 * output can be read.
-	 * @param globalVariables The global variables that should be available in
-	 *                        the template and any called recursively.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the template code. May be null
-	 * @return The reader from which the template output can be read.
-	 * @throws IOException
-	 */
+	Renders the template and returns a Reader object from which the template
+	output can be read.
+	@param globalVariables The global variables that should be available in
+	                       the template and any called recursively.
+	@param variables a map containing the top level variables that should be
+	                 available to the template code. May be null
+	@return The reader from which the template output can be read.
+	@throws IOException
+	**/
 	public Reader reader(Map<String, Object> globalVariables, Map<String, Object> variables) throws IOException
 	{
 		PipedReader reader = new PipedReader(10);
@@ -1134,73 +1134,73 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Executes the function and returns the return value.
-	 * @return the return value of the function
-	 */
+	Executes the function and returns the return value.
+	@return the return value of the function
+	**/
 	public Object call()
 	{
 		return call(-1, null, null);
 	}
 
 	/**
-	 * Executes the function and returns the return value.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 * @return the return value of the function
-	 */
+	Executes the function and returns the return value.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	                 These variables will be checked against the signature
+	                 of the template (if a signature is defined, otherwise
+	                 all variables will be accepted)
+	@return the return value of the function
+	**/
 	public Object call(Map<String, Object> variables)
 	{
 		return call(-1, null, variables);
 	}
 
 	/**
-	 * Executes the function and returns the return value.
-	 * @param milliseconds The maximum number of milliseconds this template
-	 *                     may run.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 * @return the return value of the function
-	 */
+	Executes the function and returns the return value.
+	@param milliseconds The maximum number of milliseconds this template
+	                    may run.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	                 These variables will be checked against the signature
+	                 of the template (if a signature is defined, otherwise
+	                 all variables will be accepted)
+	@return the return value of the function
+	**/
 	public Object call(long milliseconds, Map<String, Object> variables)
 	{
 		return call(milliseconds, null, variables);
 	}
 
 	/**
-	 * Executes the function and returns the return value.
-	 * @param globalVariables The global variables that should be available in
-	 *                        the template and any called recursively.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 * @return the return value of the function
-	 */
+	Executes the function and returns the return value.
+	@param globalVariables The global variables that should be available in
+	                       the template and any called recursively.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	                 These variables will be checked against the signature
+	                 of the template (if a signature is defined, otherwise
+	                 all variables will be accepted)
+	@return the return value of the function
+	**/
 	public Object call(Map<String, Object> globalVariables, Map<String, Object> variables)
 	{
 		return call(-1, globalVariables, variables);
 	}
 
 	/**
-	 * Executes the function and returns the return value.
-	 * @param milliseconds The maximum number of milliseconds this template
-	 *                     may run.
-	 * @param globalVariables The global variables that should be available in
-	 *                        the template and any called recursively.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 * @return the return value of the function
-	 */
+	Executes the function and returns the return value.
+	@param milliseconds The maximum number of milliseconds this template
+	                    may run.
+	@param globalVariables The global variables that should be available in
+	                       the template and any called recursively.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	                 These variables will be checked against the signature
+	                 of the template (if a signature is defined, otherwise
+	                 all variables will be accepted)
+	@return the return value of the function
+	**/
 	public Object call(long milliseconds, Map<String, Object> globalVariables, Map<String, Object> variables)
 	{
 		try (EvaluationContext context = new EvaluationContext(milliseconds, globalVariables))
@@ -1210,15 +1210,15 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Executes the function and returns the return value.
-	 * @param context   the EvaluationContext.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 *                  These variables will be checked against the signature
-	 *                  of the template (if a signature is defined, otherwise
-	 *                  all variables will be accepted)
-	 * @return the return value of the function
-	 */
+	Executes the function and returns the return value.
+	@param context   the EvaluationContext.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	                 These variables will be checked against the signature
+	                 of the template (if a signature is defined, otherwise
+	                 all variables will be accepted)
+	@return the return value of the function
+	**/
 	public Object call(EvaluationContext context, Map<String, Object> variables)
 	{
 		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
@@ -1236,13 +1236,13 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Internal method that executes the function when all variables are already
-	 * bound.
-	 * @param context   the EvaluationContext. May be null.
-	 * @param variables a map containing the top level variables that should be
-	 *                  available to the function code. May be null.
-	 * @return the return value of the function
-	 */
+	Internal method that executes the function when all variables are already
+	bound.
+	@param context   the EvaluationContext. May be null.
+	@param variables a map containing the top level variables that should be
+	                 available to the function code. May be null.
+	@return the return value of the function
+	**/
 	public Object callBound(EvaluationContext context, Map<String, Object> variables)
 	{
 		Map<String, Object> oldVariables = context.setVariables(variables);
@@ -1321,11 +1321,11 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Internal method that returns wether a character is a line ending character
-	 * or not.
-	 * @param c   The character to test
-	 * @return {@code true} if {@code c} is a line ending character, else {@code false}
-	 */
+	Internal method that returns wether a character is a line ending character
+	or not.
+	@param c   The character to test
+	@return {@code true} if {@code c} is a line ending character, else {@code false}
+	**/
 	private static boolean isLineEnd(char c)
 	{
 		return c == '\u2007' || c == '\u202F' || c == '\f' || c == '\r' || c == '\n';
@@ -1431,9 +1431,9 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	}
 
 	/**
-	 * Split the template source into tags and literal text.
-	 * @return A list of lines containing {@link Tag} or {@link TextAST} objects
-	 */
+	Split the template source into tags and literal text.
+	@return A list of lines containing {@link Tag} or {@link TextAST} objects
+	**/
 	public List<Line> tokenizeTags()
 	{
 		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblocks|renderblock|renderx|render)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);

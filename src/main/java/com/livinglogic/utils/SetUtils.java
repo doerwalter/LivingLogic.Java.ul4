@@ -19,10 +19,10 @@ import java.util.Set;
 public class SetUtils
 {
 	/**
-	 * Add entries to a Set.
-	 * @param set The set where entries are added.
-	 * @param args The objects to be put into the set.
-	 */
+	Add entries to a Set.
+	@param set The set where entries are added.
+	@param args The objects to be put into the set.
+	**/
 	public static <T> void putSet(Set<T> set, T... args)
 	{
 		for (T arg : args)
@@ -32,10 +32,10 @@ public class SetUtils
 	}
 
 	/**
-	 * Create a Set from arguments.
-	 * @param args The object to be put into the set.
-	 * @return A Set containing the variables
-	 */
+	Create a Set from arguments.
+	@param args The object to be put into the set.
+	@return A Set containing the variables
+	**/
 	public static <T> Set<T> makeSet(T... args)
 	{
 		LinkedHashSet<T> set = new LinkedHashSet<T>();
@@ -44,11 +44,11 @@ public class SetUtils
 	}
 
 	/**
-	 * Create a Set as a union of two sets.
-	 * @param set1 The first set.
-	 * @param set2 The second set.
-	 * @return A Set all values for the first and second set.
-	 */
+	Create a Set as a union of two sets.
+	@param set1 The first set.
+	@param set2 The second set.
+	@return A Set all values for the first and second set.
+	**/
 	public static <T> Set<T> union(Set<T> set1, Set<T> set2)
 	{
 		LinkedHashSet<T> set = new LinkedHashSet<T>();
@@ -58,11 +58,11 @@ public class SetUtils
 	}
 
 	/**
-	 * Create a copy of a Set, add several new items and return the resulting new Set.
-	 * @param set The set.
-	 * @param objects Items to add to the new set.
-	 * @return A new Set containing all items from Set and objects.
-	 */
+	Create a copy of a Set, add several new items and return the resulting new Set.
+	@param set The set.
+	@param objects Items to add to the new set.
+	@return A new Set containing all items from Set and objects.
+	**/
 	public static <T> Set<T> makeExtendedSet(Set<T> set, T... objects)
 	{
 		Set<T> newSet = new HashSet<T>(set);

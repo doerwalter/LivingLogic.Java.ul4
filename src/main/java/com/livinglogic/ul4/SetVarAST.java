@@ -58,8 +58,8 @@ public class SetVarAST extends CodeAST
 	}
 
 	/**
-	 * This is either a string or a list of strings/lists
-	 */
+	This is either a string or a list of strings/lists
+	**/
 	protected Object lvalue;
 	protected AST value;
 

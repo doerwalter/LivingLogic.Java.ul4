@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
 public @interface CauseTest
 {
 	/**
-	 * Default empty exception
-	 */
+	Default empty exception
+	**/
 	static class None extends Throwable
 	{
 		private static final long serialVersionUID = 1L;

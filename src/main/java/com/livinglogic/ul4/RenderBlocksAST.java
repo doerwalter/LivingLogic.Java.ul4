@@ -72,8 +72,8 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 	}
 
 	/**
-	 * This is used to "convert" a {@link CallAST} that comes out of the parser into a {@code RenderBlockAST}
-	 */
+	This is used to "convert" a {@link CallAST} that comes out of the parser into a {@code RenderBlockAST}
+	**/
 	public RenderBlocksAST(CallAST call)
 	{
 		super(call);

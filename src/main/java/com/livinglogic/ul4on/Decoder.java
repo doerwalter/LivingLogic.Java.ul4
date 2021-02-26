@@ -92,75 +92,75 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	}
 
 	/**
-	 * The {@code Reader} instance from where serialized objects currently will
-	 * be read.
-	 * Set temporarily during calls to {@code load}, so that the argument doesn't
-	 * have to be passed around.
-	 */
+	The {@code Reader} instance from where serialized objects currently will
+	be read.
+	Set temporarily during calls to {@code load}, so that the argument doesn't
+	have to be passed around.
+	**/
 	private Reader reader = null;
 
 	/**
-	 * The current position in the UL4ON stream
-	 */
+	The current position in the UL4ON stream
+	**/
 	private int position = 0;
 
 	/**
-	 * The next character to be read by {@code nextChar}
-	 */
+	The next character to be read by {@code nextChar}
+	**/
 	private int bufferedChar = -1;
 
 	/**
-	 * The list of objects that have been read so far from {@code reader} and
-	 * that must be available for backreferences.
-	 */
+	The list of objects that have been read so far from {@code reader} and
+	that must be available for backreferences.
+	**/
 	private List<Object> objects = new ArrayList<Object>();
 
 	/**
-	 * Stores persistent objects (i.e. those whose
-	 * {@link UL4ONSerializable#getUL$ONID} returns a non-{@code null} string).
-	 */
+	Stores persistent objects (i.e. those whose
+	{@link UL4ONSerializable#getUL$ONID} returns a non-{@code null} string).
+	**/
 	private Map<String, Map<String, UL4ONSerializable>> persistentObjects = new HashMap<String, Map<String, UL4ONSerializable>>();
 
 	/**
-	 * A {@code Map} that maps string to strings of the same value. This is used
-	 * to make sure that string keys in a map always use the same string objects,
-	 * i.e. we're doing our own string deduplication here.
-	 */
+	A {@code Map} that maps string to strings of the same value. This is used
+	to make sure that string keys in a map always use the same string objects,
+	i.e. we're doing our own string deduplication here.
+	**/
 	private Map<Object, Object> keys = new HashMap<Object, Object>();
 
 	/**
-	 * Custom type registry. Any type name not found in this registry will be
-	 * looked up in the globals registry {@link Utils#registry}
-	 */
+	Custom type registry. Any type name not found in this registry will be
+	looked up in the globals registry {@link Utils#registry}
+	**/
 	private Map<String, ObjectFactory> registry = null;
 
 	/**
-	 * Stack of types (used for error reporting).
-	 */
+	Stack of types (used for error reporting).
+	**/
 	private Stack<String> stack = new Stack<String>();
 
 	/**
-	 * Create an {@code Decoder} object for reading serialized UL4ON dumps.
-	 */
+	Create an {@code Decoder} object for reading serialized UL4ON dumps.
+	**/
 	public Decoder()
 	{
 	}
 
 	/**
-	 * Create an {@code Decoder} object for reading serialized UL4ON dumps.
-	 * @param registry custom type registry.
-	 */
+	Create an {@code Decoder} object for reading serialized UL4ON dumps.
+	@param registry custom type registry.
+	**/
 	public Decoder(Map<String, ObjectFactory> registry)
 	{
 		this.registry = registry;
 	}
 
 	/**
-	 * Reads a object in the UL4ON dump from the reader and return the deserialized object.
-	 * @param reader the {@code Reader} from which the UL4ON dump will be read.
-	 * @return the object read form the dump.
-	 * @throws IOException
-	 */
+	Reads a object in the UL4ON dump from the reader and return the deserialized object.
+	@param reader the {@code Reader} from which the UL4ON dump will be read.
+	@return the object read form the dump.
+	@throws IOException
+	**/
 	public Object load(Reader reader) throws IOException
 	{
 		this.reader = reader;
@@ -172,10 +172,10 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	}
 
 	/**
-	 * Reads a object in the UL4ON dump from a string and return the deserialized object.
-	 * @param dump the UL4ON dump.
-	 * @return the object read from the dump
-	 */
+	Reads a object in the UL4ON dump from a string and return the deserialized object.
+	@param dump the UL4ON dump.
+	@return the object read from the dump
+	**/
 	public Object loads(String dump)
 	{
 		try (StringReader reader = new StringReader(dump))
@@ -588,9 +588,9 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	}
 
 	/**
-	 * Clear the internal cache for backreferences.
-	 * However the cache for persistent objects will not be cleared.
-	 */
+	Clear the internal cache for backreferences.
+	However the cache for persistent objects will not be cleared.
+	**/
 	public void reset()
 	{
 		reader = null;
@@ -602,23 +602,23 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	}
 
 	/**
-	 * Return an iterator that reads the content of an object until the "object terminator" {@code )} is hit.
-	 * This object terminator will not be read from the input stream.
-	 * Also note, that the iterator should always be exhausted when it is read, otherwise the stream will be
-	 * in an undefined state.
-	 */
+	Return an iterator that reads the content of an object until the "object terminator" {@code )} is hit.
+	This object terminator will not be read from the input stream.
+	Also note, that the iterator should always be exhausted when it is read, otherwise the stream will be
+	in an undefined state.
+	**/
 	public Iterator<Object> iterator()
 	{
 		return new ObjectContentIterator();
 	}
 
 	/**
-	 * Return the persistent object with the type {@code type} and the id {@code id},
-	 * or {@code null}, when the decoder hasn't encountered that object yet.
-	 * @param type the UL4ON type name of the object to look up.
-	 * @param id the UL4ON id of the object to look up.
-	 * @return the object with the passed in type and id (or {@code null}).
-	 */
+	Return the persistent object with the type {@code type} and the id {@code id},
+	or {@code null}, when the decoder hasn't encountered that object yet.
+	@param type the UL4ON type name of the object to look up.
+	@param id the UL4ON id of the object to look up.
+	@return the object with the passed in type and id (or {@code null}).
+	**/
 	public UL4ONSerializable getPersistentObject(String type, String id)
 	{
 		Map<String, UL4ONSerializable> objects = persistentObjects.get(type);
@@ -628,13 +628,13 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	}
 
 	/**
-	 * Store the persistent object {@code object} in the persistent object
-	 * cache. This way, when a persistent object with the same type and id as
-	 * {@code object} is encountered again while deserializing an UL4ON stream,
-	 * {@code object} will be reused and updated, instead of creating a new
-	 * object with this type and id.
-	 * @param object the object to be stored in the persistent object cache.
-	 */
+	Store the persistent object {@code object} in the persistent object
+	cache. This way, when a persistent object with the same type and id as
+	{@code object} is encountered again while deserializing an UL4ON stream,
+	{@code object} will be reused and updated, instead of creating a new
+	object with this type and id.
+	@param object the object to be stored in the persistent object cache.
+	**/
 	public void storePersistentObject(UL4ONSerializable object)
 	{
 		String type = object.getUL4ONName();
@@ -648,32 +648,32 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	}
 
 	/**
-	 * Return an iterator over all objects in the persistent object cache.
-	 * @return the iterator
-	 */
+	Return an iterator over all objects in the persistent object cache.
+	@return the iterator
+	**/
 	public Iterator<UL4ONSerializable> allPersistentObjects()
 	{
 		return new PersistentObjectIterator();
 	}
 
 	/**
-	 * Record {@code obj} in the list of backreferences.
-	 */
+	Record {@code obj} in the list of backreferences.
+	**/
 	private void loading(Object obj)
 	{
 		objects.add(obj);
 	}
 
 	/**
-	 * For loading custom object or immutable objects that have attributes we have a problem:
-	 * We have to record the object we're loading *now*, so that it is available for backreferences.
-	 * However until we've read the UL4ON name of the class (for custom object) or the attributes
-	 * of the object (for immutable objects with attributes), we can't create the object.
-	 * So we push {@code null} to the backreference list for now and put the right object in this spot,
-	 * once we've created it (via {@code endFakeLoading}). This shouldn't lead to problems,
-	 * because during the time the backreference is wrong, only the class name is read,
-	 * so our object won't be referenced. For immutable objects the attributes normally
-	 * don't reference the object itself.
+	For loading custom object or immutable objects that have attributes we have a problem:
+	We have to record the object we're loading *now*, so that it is available for backreferences.
+	However until we've read the UL4ON name of the class (for custom object) or the attributes
+	of the object (for immutable objects with attributes), we can't create the object.
+	So we push {@code null} to the backreference list for now and put the right object in this spot,
+	once we've created it (via {@code endFakeLoading}). This shouldn't lead to problems,
+	because during the time the backreference is wrong, only the class name is read,
+	so our object won't be referenced. For immutable objects the attributes normally
+	don't reference the object itself.
 	*/
 	private int beginFakeLoading()
 	{
@@ -683,8 +683,8 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	}
 
 	/**
-	 * Fixes backreferences in object list
-	 */
+	Fixes backreferences in object list
+	**/
 	private void endFakeLoading(int oldpos, Object value)
 	{
 		objects.set(oldpos, value);
@@ -698,8 +698,8 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	}
 
 	/**
-	 * Read the next not-whitespace character
-	 */
+	Read the next not-whitespace character
+	**/
 	private char nextChar() throws IOException
 	{
 		if (bufferedChar >= 0)

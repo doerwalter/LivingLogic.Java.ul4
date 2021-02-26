@@ -27,8 +27,8 @@ public abstract class AbstractCombiningMapChain<K, V> extends AbstractMapChain<K
 	}
 
 	/**
-	 * @throws UnsupportedOperationException when called.
-	 */
+	@throws UnsupportedOperationException when called.
+	**/
 	@Override
 	public boolean containsValue(Object value)
 	{

@@ -18,11 +18,11 @@ import java.util.ArrayList;
 public class ListUtils
 {
 	/**
-	 * Create a copy of a List, add several new items and return the resulting new List.
-	 * @param set The list.
-	 * @param objects Items to add to the new list.
-	 * @return A new List containing all items from List and objects.
-	 */
+	Create a copy of a List, add several new items and return the resulting new List.
+	@param set The list.
+	@param objects Items to add to the new list.
+	@return A new List containing all items from List and objects.
+	**/
 	public static <T> List<T> makeExtendedList(List<T> list, T... objects)
 	{
 		List<T> newList = new ArrayList<T>(list);
