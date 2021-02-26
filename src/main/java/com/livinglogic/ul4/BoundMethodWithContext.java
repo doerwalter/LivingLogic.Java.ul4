@@ -10,13 +10,13 @@ import java.util.Map;
 
 /**
 <p>A {@code BoundMethodWithContext} object is a callable that can be returned
-from {@link UL4GetItemStringWithContext#getItemStringWithContextUL4} to
+from {@link UL4GetAttrWithContext#getAttrWithContextUL4} to
 implement an object method that can be called from UL4. It is similar to
 {@link BoundMethod} except that {@link #evaluate} gets passed the context in
 addition to the arguments.</p>
 
-<p>{@code BoundMethod} is abstract. Subclasses must implemented the method
-{@link Function#evaluate}. Also when the method requires arguments
+<p>{@code BoundMethodWithContext} is abstract. Subclasses must implemented the
+method {@link Function#evaluate}. Also when the method requires arguments
 {@link Function#getSignature} must be overwritten.</p>
 **/
 

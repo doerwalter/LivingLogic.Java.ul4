@@ -117,6 +117,7 @@ public interface UL4Repr
 		Append a literal string to the output.
 
 		@param string The string to append.
+		@return The formatter itself for chaining method calls.
 		**/
 		public Formatter append(String string)
 		{
@@ -128,6 +129,7 @@ public interface UL4Repr
 		Append a literal character to the output.
 
 		@param c The character to append.
+		@return The formatter itself for chaining method calls.
 		**/
 		public Formatter append(char c)
 		{

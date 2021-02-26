@@ -380,7 +380,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	Log a message on level <code>debug</code>
 	Can be overwritten in subclasses. The default does nothing.
 
-	@param mesage The log message.
+	@param message The log message.
 	**/
 	public void logDebug(String message)
 	{
@@ -400,7 +400,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	Log a message on level <code>info</code>
 	Can be overwritten in subclasses. The default does nothing.
 
-	@param mesage The log message.
+	@param message The log message.
 	**/
 	public void logInfo(String message)
 	{
@@ -420,7 +420,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	Log a message on level <code>notice</code>
 	Can be overwritten in subclasses. The default does nothing.
 
-	@param mesage The log message.
+	@param message The log message.
 	**/
 	public void logNotice(String message)
 	{
@@ -440,7 +440,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	Log a message on level <code>warning</code>
 	Can be overwritten in subclasses. The default does nothing.
 
-	@param mesage The log message.
+	@param message The log message.
 	**/
 	public void logWarning(String message)
 	{
@@ -460,7 +460,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	Log a message on level <code>error</code>
 	Can be overwritten in subclasses. The default does nothing.
 
-	@param mesage The log message.
+	@param message The log message.
 	**/
 	public void logError(String message)
 	{

@@ -16,14 +16,15 @@ import java.util.Set;
 /**
 The purpose of this class it to provide a base class for classes that want to
 expose their attributes via a Map interface. For this the subclass must
-implement the abstract method {@link #getValueMakers}.
+implement the abstract method {@link #getValueMakers()}.
 
-For each {@code ObjectAsMap} subclass {@link #getValueMakers} is supposed to
+For each {@code ObjectAsMap} subclass {@link #getValueMakers()} is supposed to
 return a singleton map object (which means that each instance of this subclass
 will have the same keys in their map view). The value stored for a certain key
 of the instance is produced by the value in the map returned by
-{@link #getValueMakers}. This value is a {@link #ValueMaker} instance that
-will be used to extract the appropriate member/value for the instance.
+{@link #getValueMakers()}. This value is a {@link ObjectAsMap.ValueMaker}
+instance that will be used to extract the appropriate member/value for the
+instance.
 
 An example subclass of {@code ObjectAsMap} might look like this:
 
@@ -46,7 +47,7 @@ public class Person extends ObjectAsMap
 	{
 		if (valueMakers == null)
 		{
-			HashMap&lt;String, ValueMaker&gt; v = new HashMap&lt;String, ValueMaker>();
+			HashMap&lt;String, ValueMaker&gt; v = new HashMap&lt;String, ValueMaker&gt;();
 			v.put("firstname", new ValueMaker(){public Object getValue(Object object){return ((Person)object).getFirstName();}});
 			v.put("lastname", new ValueMaker(){public Object getValue(Object object){return ((Person)object).getLastName();}});
 			valueMakers = v;
@@ -75,7 +76,7 @@ public class Employee extends Person
 	{
 		if (valueMakers == null)
 		{
-			HashMap&lt;String, ValueMaker&gt; v = new HashMap&lt;String, ValueMaker>(super.getValueMakers());
+			HashMap&lt;String, ValueMaker&gt; v = new HashMap&lt;String, ValueMaker&gt;(super.getValueMakers());
 			v.put("salary", new ValueMaker(){public Object getValue(Object object){return ((Employee)object).getSalary();}});
 			valueMakers = v;
 		}
@@ -188,7 +189,7 @@ public abstract class ObjectAsMap implements Map<String, Object>
 
 	/**
 	Abstract method that returns a map that maps attribute names to
-	{@link ObjectAsMap#ValueMaker} objects. A {@link ObjectAsMap#ValueMaker}
+	{@link ObjectAsMap.ValueMaker} objects. A {@link ObjectAsMap.ValueMaker}
 	extracts an attribute from an object.
 
 	This method should return a singleton (as for every instance the attribute

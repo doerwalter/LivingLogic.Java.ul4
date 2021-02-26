@@ -1016,9 +1016,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	/**
 	Internal method that renders the template when all variables are already
 	bound.
+
 	@param context   the EvaluationContext. May not be null.
-	@param writer    the java.io.Writer object to which the output is written.
-	                 Maybe null, then the context's writer will be used.
 	@param variables a map containing the top level variables that should be
 	                 available to the function code. May be null.
 	**/

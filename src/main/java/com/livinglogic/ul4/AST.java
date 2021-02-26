@@ -78,7 +78,7 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	/**
 	Source position as a line number/column number pair.
 	Will be {@code null}, but will be calculated on the first
-	call to {@see getStartLine} or {@see getStartCol}.
+	call to {@link #getStartLine} or {@link #getStartCol}.
 	**/
 	protected LineCol startLineCol;
 
@@ -92,7 +92,7 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	Source position of the end tag (if this is a blog) as a line
 	number/column number pair.
 	Will be {@code null}, but will be calculated on the first
-	call to {@see getStopLine} or {@see getStopCol}.
+	call to {@link #getStopLine} or {@link #getStopCol}.
 	**/
 	protected LineCol stopLineCol;
 
@@ -125,6 +125,8 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 
 	/**
 	Return the template to which this node belongs.
+
+	@return The owning template.
 	**/
 	public Template getTemplate()
 	{
@@ -307,7 +309,7 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	in text form.
 
 	The return value looks something like this:
-	<code>in local template 'foo' in 'bar'</code>.
+	{@code in local template 'foo' in 'bar'}.
 	**/
 	public String getTemplateDescriptionText()
 	{

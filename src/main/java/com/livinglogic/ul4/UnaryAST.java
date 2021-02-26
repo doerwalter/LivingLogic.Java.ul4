@@ -56,7 +56,7 @@ public abstract class UnaryAST extends CodeAST
 	/**
 	Create a new {@code UnaryAST} object
 	@param template The template where this node appears in.
-	@param slice The position of this node in the sourcecode of the template
+	@param pos The position of this node in the sourcecode of the template
 	@param obj The operand
 	**/
 	public UnaryAST(Template template, Slice pos, CodeAST obj)

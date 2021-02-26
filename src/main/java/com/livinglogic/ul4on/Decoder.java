@@ -159,7 +159,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	Reads a object in the UL4ON dump from the reader and return the deserialized object.
 	@param reader the {@code Reader} from which the UL4ON dump will be read.
 	@return the object read form the dump.
-	@throws IOException
+	@throws IOException if reading from the any underying {@link java.io.Reader} fails
 	**/
 	public Object load(Reader reader) throws IOException
 	{
@@ -195,7 +195,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	not be called from outside, as {@code reader} may not be set in this case.
 
 	@return the object read from the stream
-	@throws IOException if reading from the stream fails
+	@throws IOException if reading from the any underying {@link java.io.Reader} fails
 	**/
 	public Object load() throws IOException
 	{
@@ -603,7 +603,9 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 
 	/**
 	Return an iterator that reads the content of an object until the "object terminator" {@code )} is hit.
+
 	This object terminator will not be read from the input stream.
+
 	Also note, that the iterator should always be exhausted when it is read, otherwise the stream will be
 	in an undefined state.
 	**/
@@ -615,6 +617,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	/**
 	Return the persistent object with the type {@code type} and the id {@code id},
 	or {@code null}, when the decoder hasn't encountered that object yet.
+
 	@param type the UL4ON type name of the object to look up.
 	@param id the UL4ON id of the object to look up.
 	@return the object with the passed in type and id (or {@code null}).
@@ -633,6 +636,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	{@code object} is encountered again while deserializing an UL4ON stream,
 	{@code object} will be reused and updated, instead of creating a new
 	object with this type and id.
+
 	@param object the object to be stored in the persistent object cache.
 	**/
 	public void storePersistentObject(UL4ONSerializable object)
@@ -649,6 +653,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 
 	/**
 	Return an iterator over all objects in the persistent object cache.
+
 	@return the iterator
 	**/
 	public Iterator<UL4ONSerializable> allPersistentObjects()
