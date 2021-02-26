@@ -24,7 +24,7 @@ public class LineEndAST extends TextAST
 		@Override
 		public String getUL4ONName()
 		{
-			return "de.livinglogic.ul4.linened";
+			return "de.livinglogic.ul4.lineend";
 		}
 
 		@Override
