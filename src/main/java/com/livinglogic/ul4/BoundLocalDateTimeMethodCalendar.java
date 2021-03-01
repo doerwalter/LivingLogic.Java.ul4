@@ -30,7 +30,7 @@ public class BoundLocalDateTimeMethodCalendar extends BoundMethod<LocalDateTime>
 		return signature;
 	}
 
-	public static DateProto.Calendar call(LocalDateTime object, int firstWeekday, int minDaysInFirstWeek)
+	public static Date_.Calendar call(LocalDateTime object, int firstWeekday, int minDaysInFirstWeek)
 	{
 		return BoundLocalDateMethodCalendar.call(object.toLocalDate(), firstWeekday, minDaysInFirstWeek);
 	}

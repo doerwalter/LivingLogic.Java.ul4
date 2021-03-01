@@ -43,7 +43,7 @@ public class BoundDateMethodWeek extends BoundMethod<Date>
 
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(object);
-		calendar.setFirstDayOfWeek(DateProto.ul4Weekday2JavaWeekday(firstWeekday));
+		calendar.setFirstDayOfWeek(Date_.ul4Weekday2JavaWeekday(firstWeekday));
 		calendar.setMinimalDaysInFirstWeek(minDaysInFirstWeek);
 
 		int week = calendar.get(Calendar.WEEK_OF_YEAR);

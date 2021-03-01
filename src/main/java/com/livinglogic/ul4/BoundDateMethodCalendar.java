@@ -35,7 +35,7 @@ public class BoundDateMethodCalendar extends BoundMethod<Date>
 		return signature;
 	}
 
-	public static DateProto.Calendar call(Date object, int firstWeekday, int minDaysInFirstWeek)
+	public static Date_.Calendar call(Date object, int firstWeekday, int minDaysInFirstWeek)
 	{
 		// Normalize parameters
 		firstWeekday %= 7;
@@ -46,14 +46,14 @@ public class BoundDateMethodCalendar extends BoundMethod<Date>
 
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(object);
-		calendar.setFirstDayOfWeek(DateProto.ul4Weekday2JavaWeekday(firstWeekday));
+		calendar.setFirstDayOfWeek(Date_.ul4Weekday2JavaWeekday(firstWeekday));
 		calendar.setMinimalDaysInFirstWeek(minDaysInFirstWeek);
 
 		int year = calendar.getWeekYear();
 		int week = calendar.get(Calendar.WEEK_OF_YEAR);
 		int weekday = calendar.get(Calendar.DAY_OF_WEEK);
 
-		return new DateProto.Calendar(year, week, DateProto.javaWeekday2UL4Weekday(weekday));
+		return new Date_.Calendar(year, week, Date_.javaWeekday2UL4Weekday(weekday));
 	}
 
 	@Override

@@ -7,7 +7,9 @@
 package com.livinglogic.ul4;
 
 import java.util.Set;
+import java.util.HashMap;
 import java.util.Date;
+import java.util.Calendar;
 import java.time.LocalDateTime;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -196,6 +198,45 @@ public class DateTime extends AbstractType
 			default:
 				return super.getAttr(object, key);
 		}
+	}
+
+
+	static int javaWeekday2UL4Weekday(int javaWeekday)
+	{
+		return javaWeekdays2UL4Weekdays.get(javaWeekday);
+	}
+
+	static int ul4Weekday2JavaWeekday(int ul4Weekday)
+	{
+		return ul4Weekdays2JavaWeekdays.get(ul4Weekday);
+	}
+
+	private static HashMap<Integer, Integer> javaWeekdays2UL4Weekdays;
+
+	static
+	{
+		javaWeekdays2UL4Weekdays = new HashMap<Integer, Integer>();
+		javaWeekdays2UL4Weekdays.put(Calendar.MONDAY, 0);
+		javaWeekdays2UL4Weekdays.put(Calendar.TUESDAY, 1);
+		javaWeekdays2UL4Weekdays.put(Calendar.WEDNESDAY, 2);
+		javaWeekdays2UL4Weekdays.put(Calendar.THURSDAY, 3);
+		javaWeekdays2UL4Weekdays.put(Calendar.FRIDAY, 4);
+		javaWeekdays2UL4Weekdays.put(Calendar.SATURDAY, 5);
+		javaWeekdays2UL4Weekdays.put(Calendar.SUNDAY, 6);
+	}
+
+	private static HashMap<Integer, Integer> ul4Weekdays2JavaWeekdays;
+
+	static
+	{
+		ul4Weekdays2JavaWeekdays = new HashMap<Integer, Integer>();
+		ul4Weekdays2JavaWeekdays.put(0, Calendar.MONDAY);
+		ul4Weekdays2JavaWeekdays.put(1, Calendar.TUESDAY);
+		ul4Weekdays2JavaWeekdays.put(2, Calendar.WEDNESDAY);
+		ul4Weekdays2JavaWeekdays.put(3, Calendar.THURSDAY);
+		ul4Weekdays2JavaWeekdays.put(4, Calendar.FRIDAY);
+		ul4Weekdays2JavaWeekdays.put(5, Calendar.SATURDAY);
+		ul4Weekdays2JavaWeekdays.put(6, Calendar.SUNDAY);
 	}
 
 	public static UL4Type type = new DateTime();

@@ -30,7 +30,7 @@ public class BoundLocalDateMethodCalendar extends BoundMethod<LocalDate>
 		return signature;
 	}
 
-	public static DateProto.Calendar call(LocalDate object, int firstWeekday, int minDaysInFirstWeek)
+	public static Date_.Calendar call(LocalDate object, int firstWeekday, int minDaysInFirstWeek)
 	{
 		// Normalize parameters
 		firstWeekday %= 7;
@@ -54,7 +54,7 @@ public class BoundLocalDateMethodCalendar extends BoundMethod<LocalDate>
 			{
 				long refDays = ChronoUnit.DAYS.between(weekStartDate, object);
 				int refWeekDay = BoundLocalDateMethodWeekday.call(object);
-				return new DateProto.Calendar(refYear, (int)(refDays/7+1), refWeekDay);
+				return new Date_.Calendar(refYear, (int)(refDays/7+1), refWeekDay);
 			}
 		}
 		// Can't happen
