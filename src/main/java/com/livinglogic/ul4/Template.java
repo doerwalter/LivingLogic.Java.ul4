@@ -65,7 +65,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 			return new Template();
 		}
 
-		private static Signature signature = new Signature("source", Signature.required, "name", null, "whitespace", "keep", "startdelim", "<?", "enddelim", "?>", "signature", null);
+		private static final Signature signature = new Signature("source", Signature.required, "name", null, "whitespace", "keep", "startdelim", "<?", "enddelim", "?>", "signature", null);
 
 		@Override
 		public Signature getSignature()

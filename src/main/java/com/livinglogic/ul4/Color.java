@@ -43,7 +43,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 			return object instanceof Color;
 		}
 
-		private static Signature signature = new Signature("r", Signature.required, "g", Signature.required, "b", Signature.required, "a", 255);
+		private static final Signature signature = new Signature("r", Signature.required, "g", Signature.required, "b", Signature.required, "a", 255);
 
 		@Override
 		public Signature getSignature()
