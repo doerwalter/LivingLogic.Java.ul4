@@ -27,7 +27,7 @@ public class Module implements UL4Instance, UL4Repr, UL4GetAttr, UL4Dir, UL4Name
 		@Override
 		public String getDoc()
 		{
-			return "An object containing other objects (functions, types, etc.)";
+			return "An object containing other objects (functions, types, constants, etc.)";
 		}
 
 		@Override

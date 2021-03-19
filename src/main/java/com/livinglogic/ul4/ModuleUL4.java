@@ -98,8 +98,8 @@ public class ModuleUL4 extends Module
 		addObject(RenderXAST.type);
 		addObject(RenderBlockAST.type);
 		addObject(RenderBlocksAST.type);
-		addObject(Template.type);
 		addObject(SignatureAST.type);
+		addObject(Template.type);
 	}
 
 	public static Module module = new ModuleUL4();
