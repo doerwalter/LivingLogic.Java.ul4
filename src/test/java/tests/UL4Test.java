@@ -5996,4 +5996,10 @@ public class UL4Test
 	{
 		checkOutput("True", T("<?print math.isclose(math.pi, 3.14, abs_tol=0.1)?>"));
 	}
+
+	@Test
+	public void template_ul4_template()
+	{
+		checkOutput("gurk", T("<?code t = ul4.Template('<?print x?' + '>', 'gurk')?><?print t.name?>"));
+	}
 }
