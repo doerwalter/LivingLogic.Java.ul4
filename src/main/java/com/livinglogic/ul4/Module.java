@@ -80,8 +80,8 @@ public class Module implements UL4Instance, UL4Repr, UL4GetAttr, UL4Dir, UL4Name
 	public Set<String> dirUL4()
 	{
 		Set<String> attributes = new LinkedHashSet<String>();
-		attributes.add("name");
-		attributes.add("doc");
+		attributes.add("__name__");
+		attributes.add("__doc__");
 		attributes.addAll(content.keySet());
 
 		return attributes;
@@ -92,9 +92,9 @@ public class Module implements UL4Instance, UL4Repr, UL4GetAttr, UL4Dir, UL4Name
 	{
 		switch (key)
 		{
-			case "name":
+			case "__name__":
 				return name;
-			case "doc":
+			case "__doc__":
 				return doc;
 			default:
 			{
