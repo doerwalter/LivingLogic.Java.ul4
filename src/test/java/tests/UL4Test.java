@@ -6000,6 +6000,6 @@ public class UL4Test
 	@Test
 	public void template_ul4_template()
 	{
-		checkOutput("gurk", T("<?code t = ul4.Template('<?print x?' + '>', 'gurk')?><?print t.name?>"));
+		checkOutput("gurk;hurz", T("<?code t = ul4.Template('<?print x?' + '>', name='gurk', signature='x')?><?print t.name?>;<?render t('hurz')?>"));
 	}
 }
