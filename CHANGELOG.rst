@@ -20,6 +20,13 @@ order.
 
 Updated Apache Commons Lang to 3.11 and use Apache Commons Text 1.9.
 
+Added type objects. ``type(obj)`` now returns a type object instead of a string.
+Such a type object can be called to create an instance.
+
+Add function ``isinstance()`` for instance checking.
+
+Add support for UL4 modules. Add the modules ``ul4``, ``math`` and ``operator``.
+
 
 exp-154 (2020-04-29)
 --------------------
