@@ -91,7 +91,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 				(enddelim != null && !(enddelim instanceof String)) ||
 				(signature != null && !(signature instanceof String))
 			)
-				throw new ArgumentTypeMismatchException("{}({!t}, {!t}, {!t}, {!t}, {!t}, {!t}) not supported", source, name, whitespace, startdelim, enddelim, signature);
+				throw new ArgumentTypeMismatchException("ul4.Template({!t}, {!t}, {!t}, {!t}, {!t}, {!t}) not supported", source, name, whitespace, startdelim, enddelim, signature);
 
 			return new Template(
 				(String)source,
