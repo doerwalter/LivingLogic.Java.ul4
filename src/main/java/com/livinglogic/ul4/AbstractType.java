@@ -36,7 +36,7 @@ public abstract class AbstractType implements UL4Type, UL4GetAttr, UL4Dir
  	private static final Signature signature = new Signature(); // default signature: no arguments
 
 	/**
-	<p>Return a signature for this function.</p>
+	<p>Return a signature for this type for creating instances.</p>
 
 	<p>The default returns a signature without any arguments.</p>
 	**/
