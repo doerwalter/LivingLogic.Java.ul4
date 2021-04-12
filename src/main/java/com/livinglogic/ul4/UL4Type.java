@@ -146,26 +146,68 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 		return dirInstance(instance).contains(key);
 	}
 
+	/**
+	Return an attribute of an instance of this type with the specified name.
+
+	@param context The evaluation context.
+	@param instance The instance whose attribute should be be returned.
+	@param key The name of the attribute to be returned.
+	@return The specified attribute.
+	**/
 	default Object getAttr(EvaluationContext context, Object object, String key)
 	{
 		return getAttr(object, key);
 	}
 
+	/**
+	Return an attribute of an instance of this type with the specified name.
+	This is a version that doesn't require an evaluation context.
+
+	@param instance The instance whose attribute should be be returned.
+	@param key The name of the attribute to be returned.
+	@return The specified attribute.
+	**/
 	default Object getAttr(Object object, String key)
 	{
 		throw new AttributeException(object, key);
 	}
 
+	/**
+	Set an attribute of an instance of this type with the specified name to a new value.
+
+	@param context The evaluation context.
+	@param instance The instance whose attribute should be be set.
+	@param key The name of the attribute to be set.
+	@param value The new value for the attribute.
+	**/
 	default void setAttr(EvaluationContext context, Object object, String key, Object value)
 	{
 		setAttr(object, key, value);
 	}
 
+	/**
+	Set an attribute of an instance of this type with the specified name to a new value.
+	This is a version that doesn't require an evaluation context.
+
+	@param instance The instance whose attribute should be be set.
+	@param key The name of the attribute to be set.
+	@param value The new value for the attribute.
+	**/
 	default void setAttr(Object object, String key, Object value)
 	{
 		throw new ReadonlyException(object, key);
 	}
 
+	/**
+	For types where we don't have a special type object (i.e. those that
+	are neither subclasses of {@link UL4Instance} nor any of a number of basic
+	types (like {@code boolean}, {@code int}, {@code str} etc.)), we create an
+	UL4 type object that wraps the Java class object.
+
+	We want those type objects to be unique, so once we've created a type object
+	for a certain type, we store it in {@code genericTypes}, so that we can reuse
+	when it's requested again.
+	**/
 	public static Map<Class, UL4Type> genericTypes = new HashMap<Class, UL4Type>();
 
 	/**
@@ -228,9 +270,15 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 
 	@return The signature
 	**/
-	
 	Signature getSignature();
 
+	/**
+	<p>Return a new instance of this type</p>
+
+	<p>The default implementation throws an {@link UnsupportedOperationException}.</p>
+
+	@return The newly created instance
+	**/
 	default Object create(BoundArguments arguments)
 	{
 		throw new UnsupportedOperationException(Utils.formatMessage("Can't create {!r} instances", this));
@@ -241,7 +289,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 
 	@param object the object to be checked
 
-	@return {@code true} if {@code object} is an instance of this type, {@code false otherwise}
+	@return {@code true} if {@code object} is an instance of this type, {@code false} otherwise
 	**/
 	boolean instanceCheck(Object object);
 
