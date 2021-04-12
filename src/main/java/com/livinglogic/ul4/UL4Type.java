@@ -110,7 +110,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 
 	/**
 	Return the set of attribute names of an instance of this type.
-	This is a version that doesn't required an evaluation context.
+	This is a version that doesn't require an evaluation context.
 
 	@param instance The instance whose attribute names should be returned.
 	@return The set of attribute names.
@@ -135,7 +135,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 
 	/**
 	Return whether an instance of this type has an attribute with the specified name.
-	This is a version that doesn't required an evaluation context.
+	This is a version that doesn't require an evaluation context.
 
 	@param instance The instance that should be checked for the specified attribute.
 	@param key The name of the attribute to be checked.
