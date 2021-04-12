@@ -5990,4 +5990,10 @@ public class UL4Test
 	{
 		checkOutput("True", T("<?print 2.71 < math.e and math.e < 2.72?>"));
 	}
+
+	@Test
+	public void module_math_isclose()
+	{
+		checkOutput("True", T("<?print math.isclose(math.pi, 3.14, abs_tol=0.1)?>"));
+	}
 }

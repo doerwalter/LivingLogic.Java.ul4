@@ -19,6 +19,7 @@ public class ModuleMath extends Module
 		addObject(FunctionSin.function);
 		addObject(FunctionTan.function);
 		addObject(FunctionSqRt.function);
+		addObject(FunctionIsClose.function);
 	}
 
 	public static Module module = new ModuleMath();
