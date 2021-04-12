@@ -24,9 +24,10 @@ import com.livinglogic.ul4on.UL4ONSerializable;
 /**
 <p>An instance of {@code UL4Type} is returned when an object is asked for
 its type via {@link UL4Type#getType(Object)}.</p>
- <p>There are several implementations of {@code UL4Type}:</p>
 
- <ol>
+<p>There are several implementations of {@code UL4Type}:</p>
+
+<ol>
 <li>{@link AbstractInstanceType} this is used for our own classes that
 should be exposed to UL4. In this case the {@link AbstractInstanceType}
 type object can forward most operations to the instance itself (which should
@@ -34,7 +35,6 @@ be a subclass of {@link UL4Instance}).</li>
 
 <li>{@link AbstractType} this is used for all builtin and third party classes
 because we can't</li>
-
 </ol>
 **/
 public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
