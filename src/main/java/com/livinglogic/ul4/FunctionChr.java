@@ -60,5 +60,5 @@ public class FunctionChr extends Function
 		throw new ArgumentTypeMismatchException("chr({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionChr();
+	public static final Function function = new FunctionChr();
 }

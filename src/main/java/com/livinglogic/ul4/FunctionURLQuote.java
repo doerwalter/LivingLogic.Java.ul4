@@ -52,5 +52,5 @@ public class FunctionURLQuote extends Function
 		throw new ArgumentTypeMismatchException("urlquote({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionURLQuote();
+	public static final Function function = new FunctionURLQuote();
 }

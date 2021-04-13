@@ -36,5 +36,5 @@ public class FunctionIsInt extends Function
 		return Int.type.instanceCheck(obj);
 	}
 
-	public static Function function = new FunctionIsInt();
+	public static final Function function = new FunctionIsInt();
 }

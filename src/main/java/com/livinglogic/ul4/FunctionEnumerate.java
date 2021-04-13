@@ -73,5 +73,5 @@ public class FunctionEnumerate extends Function
 		}
 	}
 
-	public static Function function = new FunctionEnumerate();
+	public static final Function function = new FunctionEnumerate();
 }

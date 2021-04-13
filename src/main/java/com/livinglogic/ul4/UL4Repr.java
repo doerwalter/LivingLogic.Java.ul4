@@ -457,5 +457,5 @@ public interface UL4Repr
 		}
 	}
 
-	public static Function function = new FunctionRepr();
+	public static final Function function = new FunctionRepr();
 }

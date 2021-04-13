@@ -67,5 +67,5 @@ public class FunctionBin extends Function
 		throw new ArgumentTypeMismatchException("bin({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionBin();
+	public static final Function function = new FunctionBin();
 }

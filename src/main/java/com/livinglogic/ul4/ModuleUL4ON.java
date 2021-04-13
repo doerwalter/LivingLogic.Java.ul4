@@ -92,5 +92,5 @@ public class ModuleUL4ON extends Module
 		}
 	}
 
-	public static Module module = new ModuleUL4ON();
+	public static final Module module = new ModuleUL4ON();
 }

@@ -95,5 +95,5 @@ public class FunctionSet extends Function
 		throw new ArgumentTypeMismatchException("set({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionSet();
+	public static final Function function = new FunctionSet();
 }

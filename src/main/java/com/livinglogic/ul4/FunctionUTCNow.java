@@ -28,5 +28,5 @@ public class FunctionUTCNow extends Function
 		return LocalDateTime.now(Clock.systemUTC());
 	}
 
-	public static Function function = new FunctionUTCNow();
+	public static final Function function = new FunctionUTCNow();
 }

@@ -35,5 +35,5 @@ public class FunctionIsColor extends Function
 		return (null != obj) && (obj instanceof Color);
 	}
 
-	public static Function function = new FunctionIsColor();
+	public static final Function function = new FunctionIsColor();
 }

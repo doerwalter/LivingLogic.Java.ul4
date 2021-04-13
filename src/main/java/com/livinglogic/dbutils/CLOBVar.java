@@ -90,5 +90,5 @@ public class CLOBVar extends Var
 		}
 	}
 
-	public static Function function = new FunctionCLOB();
+	public static final Function function = new FunctionCLOB();
 }

@@ -41,5 +41,5 @@ public class FunctionTan extends Function
 		throw new ArgumentTypeMismatchException("tan({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionTan();
+	public static final Function function = new FunctionTan();
 }

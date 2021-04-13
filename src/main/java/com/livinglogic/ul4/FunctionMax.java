@@ -56,5 +56,5 @@ public class FunctionMax extends Function
 		return maxValue;
 	}
 
-	public static Function function = new FunctionMax();
+	public static final Function function = new FunctionMax();
 }

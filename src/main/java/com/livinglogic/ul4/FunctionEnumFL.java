@@ -75,5 +75,5 @@ public class FunctionEnumFL extends Function
 		}
 	}
 
-	public static Function function = new FunctionEnumFL();
+	public static final Function function = new FunctionEnumFL();
 }

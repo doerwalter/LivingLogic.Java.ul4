@@ -768,5 +768,5 @@ public class FunctionFormat extends Function
 		return call(obj, formatString, null);
 	}
 
-	public static Function function = new FunctionFormat();
+	public static final Function function = new FunctionFormat();
 }

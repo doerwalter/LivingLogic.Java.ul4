@@ -71,5 +71,5 @@ public class FunctionIsClose extends Function
 		return call(dbl_a, dbl_b, dbl_rel_tol, dbl_abs_tol);
 	}
 
-	public static Function function = new FunctionIsClose();
+	public static final Function function = new FunctionIsClose();
 }

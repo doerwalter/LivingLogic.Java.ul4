@@ -78,5 +78,5 @@ public class IntVar extends Var
 		}
 	}
 
-	public static Function function = new FunctionInt();
+	public static final Function function = new FunctionInt();
 }

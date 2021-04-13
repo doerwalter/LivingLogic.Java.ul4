@@ -36,5 +36,5 @@ public class FunctionIsSet extends Function
 		return (null != obj) && (obj instanceof Set);
 	}
 
-	public static Function function = new FunctionIsSet();
+	public static final Function function = new FunctionIsSet();
 }

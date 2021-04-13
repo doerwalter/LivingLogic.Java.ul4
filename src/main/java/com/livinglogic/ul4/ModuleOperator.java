@@ -66,5 +66,5 @@ public class ModuleOperator extends Module
 
 	private static FunctionAttrGetter attrGetter = new FunctionAttrGetter();
 
-	public static Module module = new ModuleOperator();
+	public static final Module module = new ModuleOperator();
 }

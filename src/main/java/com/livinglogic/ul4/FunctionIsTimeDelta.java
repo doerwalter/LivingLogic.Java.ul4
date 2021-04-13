@@ -35,5 +35,5 @@ public class FunctionIsTimeDelta extends Function
 		return TimeDelta.type.instanceCheck(obj);
 	}
 
-	public static Function function = new FunctionIsTimeDelta();
+	public static final Function function = new FunctionIsTimeDelta();
 }

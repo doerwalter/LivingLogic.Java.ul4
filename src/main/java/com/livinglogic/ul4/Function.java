@@ -40,7 +40,7 @@ public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 		}
 	}
 
-	public static UL4Type type = new Type();
+	public static final UL4Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()

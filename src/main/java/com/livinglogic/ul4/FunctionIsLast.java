@@ -66,5 +66,5 @@ public class FunctionIsLast extends Function
 		}
 	}
 
-	public static Function function = new FunctionIsLast();
+	public static final Function function = new FunctionIsLast();
 }

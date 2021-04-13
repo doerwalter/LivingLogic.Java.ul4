@@ -89,5 +89,5 @@ public class FunctionAll extends Function
 		throw new ArgumentTypeMismatchException("all({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionAll();
+	public static final Function function = new FunctionAll();
 }

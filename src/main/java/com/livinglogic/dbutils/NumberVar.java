@@ -76,5 +76,5 @@ public class NumberVar extends Var
 		}
 	}
 
-	public static Function function = new FunctionNumber();
+	public static final Function function = new FunctionNumber();
 }

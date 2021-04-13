@@ -41,5 +41,5 @@ public class FunctionSqRt extends Function
 		throw new ArgumentTypeMismatchException("sqrt({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionSqRt();
+	public static final Function function = new FunctionSqRt();
 }

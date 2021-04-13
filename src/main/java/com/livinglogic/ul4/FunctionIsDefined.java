@@ -35,5 +35,5 @@ public class FunctionIsDefined extends Function
 		return !(obj instanceof Undefined);
 	}
 
-	public static Function function = new FunctionIsDefined();
+	public static final Function function = new FunctionIsDefined();
 }

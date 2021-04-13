@@ -76,5 +76,5 @@ public class StrVar extends Var
 		}
 	}
 
-	public static Function function = new FunctionStr();
+	public static final Function function = new FunctionStr();
 }

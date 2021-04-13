@@ -36,5 +36,5 @@ public class FunctionIsFloat extends Function
 		return Float_.type.instanceCheck(obj);
 	}
 
-	public static Function function = new FunctionIsFloat();
+	public static final Function function = new FunctionIsFloat();
 }

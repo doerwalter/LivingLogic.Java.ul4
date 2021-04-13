@@ -102,5 +102,5 @@ public class ModuleUL4 extends Module
 		addObject(Template.type);
 	}
 
-	public static Module module = new ModuleUL4();
+	public static final Module module = new ModuleUL4();
 }

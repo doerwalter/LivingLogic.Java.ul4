@@ -35,5 +35,5 @@ public class FunctionIsList extends Function
 		return (null != obj) && (obj instanceof List || obj instanceof Object[]) && !(obj instanceof Color);
 	}
 
-	public static Function function = new FunctionIsList();
+	public static final Function function = new FunctionIsList();
 }

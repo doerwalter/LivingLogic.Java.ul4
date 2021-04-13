@@ -33,7 +33,7 @@ public class Slice implements UL4Instance, UL4GetAttr, UL4Dir, UL4Repr, Comparab
 		}
 	}
 
-	public static UL4Type type = new Type();
+	public static final UL4Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()

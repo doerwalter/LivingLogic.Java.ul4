@@ -30,5 +30,5 @@ public class FunctionRandom extends Function
 		return rng.nextDouble();
 	}
 
-	public static Function function = new FunctionRandom();
+	public static final Function function = new FunctionRandom();
 }

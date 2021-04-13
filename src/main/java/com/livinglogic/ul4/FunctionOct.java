@@ -66,5 +66,5 @@ public class FunctionOct extends Function
 		throw new ArgumentTypeMismatchException("oct({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionOct();
+	public static final Function function = new FunctionOct();
 }

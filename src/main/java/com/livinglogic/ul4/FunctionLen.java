@@ -34,5 +34,5 @@ public class FunctionLen extends Function
 		return UL4Type.getType(obj).lenInstance(obj);
 	}
 
-	public static Function function = new FunctionLen();
+	public static final Function function = new FunctionLen();
 }

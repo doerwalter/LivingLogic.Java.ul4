@@ -40,5 +40,5 @@ public class FunctionRGB extends Function
 		return Color.fromrgb(Utils.toDouble(arg1), Utils.toDouble(arg2), Utils.toDouble(arg3), Utils.toDouble(arg4));
 	}
 
-	public static Function function = new FunctionRGB();
+	public static final Function function = new FunctionRGB();
 }

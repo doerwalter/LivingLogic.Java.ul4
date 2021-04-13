@@ -34,5 +34,5 @@ public class FunctionAsUL4ON extends Function
 		return com.livinglogic.ul4on.Utils.dumps(obj);
 	}
 
-	public static Function function = new FunctionAsUL4ON();
+	public static final Function function = new FunctionAsUL4ON();
 }

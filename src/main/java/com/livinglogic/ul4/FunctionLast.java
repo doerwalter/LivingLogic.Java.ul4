@@ -41,5 +41,5 @@ public class FunctionLast extends Function
 		return result;
 	}
 
-	public static Function function = new FunctionLast();
+	public static final Function function = new FunctionLast();
 }

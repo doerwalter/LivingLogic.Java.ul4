@@ -35,5 +35,5 @@ public class FunctionIsDate extends Function
 		return Date_.type.instanceCheck(obj);
 	}
 
-	public static Function function = new FunctionIsDate();
+	public static final Function function = new FunctionIsDate();
 }

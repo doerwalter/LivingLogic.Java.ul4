@@ -48,5 +48,5 @@ public class FunctionOrd extends Function
 		throw new ArgumentTypeMismatchException("ord({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionOrd();
+	public static final Function function = new FunctionOrd();
 }

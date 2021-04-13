@@ -64,7 +64,7 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 		}
 	}
 
-	public static UL4Type type = new Type();
+	public static final UL4Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()

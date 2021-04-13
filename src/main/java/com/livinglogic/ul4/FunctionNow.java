@@ -27,5 +27,5 @@ public class FunctionNow extends Function
 		return LocalDateTime.now();
 	}
 
-	public static Function function = new FunctionNow();
+	public static final Function function = new FunctionNow();
 }

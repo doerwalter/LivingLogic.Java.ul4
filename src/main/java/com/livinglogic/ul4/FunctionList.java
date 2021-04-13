@@ -94,5 +94,5 @@ public class FunctionList extends Function
 		throw new ArgumentTypeMismatchException("list({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionList();
+	public static final Function function = new FunctionList();
 }

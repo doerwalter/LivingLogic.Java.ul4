@@ -63,5 +63,5 @@ public class FunctionMD5 extends Function
 		return buffer.toString();
 	}
 
-	public static Function function = new FunctionMD5();
+	public static final Function function = new FunctionMD5();
 }

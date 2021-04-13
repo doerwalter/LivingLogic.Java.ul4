@@ -90,5 +90,5 @@ public class Int extends AbstractType
 		return instance.toString();
 	}
 
-	public static UL4Type type = new Int();
+	public static final UL4Type type = new Int();
 }

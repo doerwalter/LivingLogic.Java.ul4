@@ -110,7 +110,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 		}
 	}
 
-	public static UL4Type type = new Type();
+	public static final UL4Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()

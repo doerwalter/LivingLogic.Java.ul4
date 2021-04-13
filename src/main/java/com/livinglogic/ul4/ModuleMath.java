@@ -22,5 +22,5 @@ public class ModuleMath extends Module
 		addObject(FunctionIsClose.function);
 	}
 
-	public static Module module = new ModuleMath();
+	public static final Module module = new ModuleMath();
 }

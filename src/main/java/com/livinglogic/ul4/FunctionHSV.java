@@ -40,5 +40,5 @@ public class FunctionHSV extends Function
 		return Color.fromhsv(Utils.toDouble(arg1), Utils.toDouble(arg2), Utils.toDouble(arg3), Utils.toDouble(arg4));
 	}
 
-	public static Function function = new FunctionHSV();
+	public static final Function function = new FunctionHSV();
 }

@@ -155,5 +155,5 @@ public class Str extends AbstractType
 		}
 	}
 
-	public static UL4Type type = new Str();
+	public static final UL4Type type = new Str();
 }

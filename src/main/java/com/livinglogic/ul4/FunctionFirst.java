@@ -40,5 +40,5 @@ public class FunctionFirst extends Function
 		return defaultValue;
 	}
 
-	public static Function function = new FunctionFirst();
+	public static final Function function = new FunctionFirst();
 }

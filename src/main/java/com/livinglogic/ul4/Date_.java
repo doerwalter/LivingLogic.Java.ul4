@@ -174,5 +174,5 @@ public class Date_ extends AbstractType
 		}
 	}
 
-	public static UL4Type type = new Date_();
+	public static final UL4Type type = new Date_();
 }

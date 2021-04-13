@@ -187,5 +187,5 @@ public class List_ extends AbstractType
 		}
 	}
 
-	public static UL4Type type = new List_();
+	public static final UL4Type type = new List_();
 }

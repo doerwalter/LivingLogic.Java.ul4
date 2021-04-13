@@ -89,5 +89,5 @@ public class FunctionAny extends Function
 		throw new ArgumentTypeMismatchException("any({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionAny();
+	public static final Function function = new FunctionAny();
 }

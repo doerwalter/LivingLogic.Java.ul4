@@ -44,5 +44,5 @@ public class FunctionIsInstance extends Function
 		return type.instanceCheck(obj);
 	}
 
-	public static Function function = new FunctionIsInstance();
+	public static final Function function = new FunctionIsInstance();
 }

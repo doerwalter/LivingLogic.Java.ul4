@@ -91,5 +91,5 @@ public class DateVar extends Var
 		}
 	}
 
-	public static Function function = new FunctionDate();
+	public static final Function function = new FunctionDate();
 }

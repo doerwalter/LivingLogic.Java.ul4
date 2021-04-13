@@ -40,5 +40,5 @@ public class FunctionType extends Function
 		return UL4Type.getType(obj);
 	}
 
-	public static Function function = new FunctionType();
+	public static final Function function = new FunctionType();
 }

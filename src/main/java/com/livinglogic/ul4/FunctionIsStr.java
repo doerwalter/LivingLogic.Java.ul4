@@ -35,5 +35,5 @@ public class FunctionIsStr extends Function
 		return (null != obj) && (obj instanceof String);
 	}
 
-	public static Function function = new FunctionIsStr();
+	public static final Function function = new FunctionIsStr();
 }

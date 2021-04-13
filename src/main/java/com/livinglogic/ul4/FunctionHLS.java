@@ -40,5 +40,5 @@ public class FunctionHLS extends Function
 		return Color.fromhls(Utils.toDouble(arg1), Utils.toDouble(arg2), Utils.toDouble(arg3), Utils.toDouble(arg4));
 	}
 
-	public static Function function = new FunctionHLS();
+	public static final Function function = new FunctionHLS();
 }

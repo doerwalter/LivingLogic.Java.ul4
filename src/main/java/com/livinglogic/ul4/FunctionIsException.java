@@ -36,5 +36,5 @@ public class FunctionIsException extends Function
 		return (null != obj) && (obj instanceof Throwable);
 	}
 
-	public static Function function = new FunctionIsException();
+	public static final Function function = new FunctionIsException();
 }

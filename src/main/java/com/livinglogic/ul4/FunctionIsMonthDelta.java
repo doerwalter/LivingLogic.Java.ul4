@@ -35,6 +35,6 @@ public class FunctionIsMonthDelta extends Function
 		return MonthDelta.type.instanceCheck(obj);
 	}
 
-	public static Function function = new FunctionIsMonthDelta();
+	public static final Function function = new FunctionIsMonthDelta();
 }
 

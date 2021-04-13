@@ -67,5 +67,5 @@ public class FunctionHex extends Function
 		throw new ArgumentTypeMismatchException("hex({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionHex();
+	public static final Function function = new FunctionHex();
 }

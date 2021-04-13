@@ -86,5 +86,5 @@ public class Dict extends AbstractType
 		((Map)object).put(key, value);
 	}
 
-	public static UL4Type type = new Dict();
+	public static final UL4Type type = new Dict();
 }

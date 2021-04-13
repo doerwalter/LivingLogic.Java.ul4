@@ -45,5 +45,5 @@ public class None extends AbstractType
 		return "";
 	}
 
-	public static UL4Type type = new None();
+	public static final UL4Type type = new None();
 }

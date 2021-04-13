@@ -35,5 +35,5 @@ public class FunctionIsNone extends Function
 		return obj == null;
 	}
 
-	public static Function function = new FunctionIsNone();
+	public static final Function function = new FunctionIsNone();
 }

@@ -56,5 +56,5 @@ public class FunctionMin extends Function
 		return minValue;
 	}
 
-	public static Function function = new FunctionMin();
+	public static final Function function = new FunctionMin();
 }

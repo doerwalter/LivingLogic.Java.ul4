@@ -45,5 +45,5 @@ public class FunctionFromJSON extends Function
 		throw new ArgumentTypeMismatchException("fromjson({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionFromJSON();
+	public static final Function function = new FunctionFromJSON();
 }

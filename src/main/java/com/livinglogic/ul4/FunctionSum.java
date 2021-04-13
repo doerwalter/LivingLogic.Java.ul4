@@ -44,5 +44,5 @@ public class FunctionSum extends Function
 		return sum;
 	}
 
-	public static Function function = new FunctionSum();
+	public static final Function function = new FunctionSum();
 }

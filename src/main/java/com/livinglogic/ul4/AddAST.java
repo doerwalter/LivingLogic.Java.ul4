@@ -49,7 +49,7 @@ public class AddAST extends BinaryAST
 		}
 	}
 
-	public static UL4Type type = new Type();
+	public static final UL4Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()

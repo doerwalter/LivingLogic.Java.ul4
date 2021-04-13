@@ -66,5 +66,5 @@ public class FunctionScrypt extends Function
 		return buffer.toString();
 	}
 
-	public static Function function = new FunctionScrypt();
+	public static final Function function = new FunctionScrypt();
 }

@@ -89,5 +89,5 @@ public class FunctionAbs extends Function
 		throw new ArgumentTypeMismatchException("abs({!t}) not supported", arg);
 	}
 
-	public static Function function = new FunctionAbs();
+	public static final Function function = new FunctionAbs();
 }

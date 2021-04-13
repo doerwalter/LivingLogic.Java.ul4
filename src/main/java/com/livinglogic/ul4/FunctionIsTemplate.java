@@ -35,5 +35,5 @@ public class FunctionIsTemplate extends Function
 		return (obj instanceof UL4CallWithContext && obj instanceof UL4RenderWithContext);
 	}
 
-	public static Function function = new FunctionIsTemplate();
+	public static final Function function = new FunctionIsTemplate();
 }

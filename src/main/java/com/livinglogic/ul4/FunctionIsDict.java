@@ -36,5 +36,5 @@ public class FunctionIsDict extends Function
 		return (null != obj) && (obj instanceof Map) && !FunctionIsTemplate.call(obj);
 	}
 
-	public static Function function = new FunctionIsDict();
+	public static final Function function = new FunctionIsDict();
 }

@@ -36,5 +36,5 @@ public class FunctionIsDateTime extends Function
 		return DateTime.type.instanceCheck(obj);
 	}
 
-	public static Function function = new FunctionIsDateTime();
+	public static final Function function = new FunctionIsDateTime();
 }

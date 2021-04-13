@@ -69,5 +69,5 @@ public class Bool extends AbstractType
 		return ((Boolean)instance).booleanValue() ? "True" : "False";
 	}
 
-	public static UL4Type type = new Bool();
+	public static final UL4Type type = new Bool();
 }

@@ -35,5 +35,5 @@ public class FunctionIsFunction extends Function
 		return (null != obj) && ((obj instanceof UL4Call) || (obj instanceof UL4CallWithContext));
 	}
 
-	public static Function function = new FunctionIsFunction();
+	public static final Function function = new FunctionIsFunction();
 }

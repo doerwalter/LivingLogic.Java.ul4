@@ -82,5 +82,5 @@ public class FunctionXMLEscape extends Function
 		return call(FunctionStr.call(obj));
 	}
 
-	public static Function function = new FunctionXMLEscape();
+	public static final Function function = new FunctionXMLEscape();
 }

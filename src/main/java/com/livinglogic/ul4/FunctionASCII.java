@@ -43,5 +43,5 @@ public class FunctionASCII extends Function
 		return new UL4Repr.Formatter(true).visit(obj).toString();
 	}
 
-	public static Function function = new FunctionASCII();
+	public static final Function function = new FunctionASCII();
 }

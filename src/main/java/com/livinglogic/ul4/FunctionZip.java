@@ -76,5 +76,5 @@ public class FunctionZip extends Function
 		}
 	}
 
-	public static Function function = new FunctionZip();
+	public static final Function function = new FunctionZip();
 }

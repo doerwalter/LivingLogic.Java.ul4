@@ -33,5 +33,5 @@ public class FunctionIsBool extends Function
 		return Bool.type.instanceCheck(obj);
 	}
 
-	public static Function function = new FunctionIsBool();
+	public static final Function function = new FunctionIsBool();
 }

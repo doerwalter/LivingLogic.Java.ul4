@@ -242,5 +242,5 @@ public class FunctionAsJSON extends Function
 		return builder.toString();
 	}
 
-	public static Function function = new FunctionAsJSON();
+	public static final Function function = new FunctionAsJSON();
 }

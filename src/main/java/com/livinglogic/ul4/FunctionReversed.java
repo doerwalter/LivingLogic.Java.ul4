@@ -111,5 +111,5 @@ public class FunctionReversed extends Function
 		}
 	}
 
-	public static Function function = new FunctionReversed();
+	public static final Function function = new FunctionReversed();
 }

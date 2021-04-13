@@ -41,5 +41,5 @@ public class FunctionCSV extends Function
 		return StringEscapeUtils.escapeCsv((String)obj);
 	}
 
-	public static Function function = new FunctionCSV();
+	public static final Function function = new FunctionCSV();
 }

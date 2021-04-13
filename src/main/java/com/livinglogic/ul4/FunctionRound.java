@@ -175,5 +175,5 @@ public class FunctionRound extends Function
 		throw new ArgumentTypeMismatchException("round({!t}, {!t}) not supported", x, digits);
 	}
 
-	public static Function function = new FunctionRound();
+	public static final Function function = new FunctionRound();
 }

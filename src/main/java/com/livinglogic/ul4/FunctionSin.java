@@ -41,5 +41,5 @@ public class FunctionSin extends Function
 		throw new ArgumentTypeMismatchException("sin({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionSin();
+	public static final Function function = new FunctionSin();
 }

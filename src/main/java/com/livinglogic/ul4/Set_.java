@@ -143,5 +143,5 @@ public class Set_ extends AbstractType
 		}
 	}
 
-	public static UL4Type type = new Set_();
+	public static final UL4Type type = new Set_();
 }

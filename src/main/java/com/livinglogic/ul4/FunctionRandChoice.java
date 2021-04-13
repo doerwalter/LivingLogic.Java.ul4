@@ -74,5 +74,5 @@ public class FunctionRandChoice extends Function
 		throw new ArgumentTypeMismatchException("randchoice({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionRandChoice();
+	public static final Function function = new FunctionRandChoice();
 }

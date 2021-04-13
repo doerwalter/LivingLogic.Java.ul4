@@ -239,5 +239,5 @@ public class DateTime extends AbstractType
 		ul4Weekdays2JavaWeekdays.put(6, Calendar.SUNDAY);
 	}
 
-	public static UL4Type type = new DateTime();
+	public static final UL4Type type = new DateTime();
 }

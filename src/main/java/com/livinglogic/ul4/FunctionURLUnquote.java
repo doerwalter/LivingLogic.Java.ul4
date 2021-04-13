@@ -52,5 +52,5 @@ public class FunctionURLUnquote extends Function
 		throw new ArgumentTypeMismatchException("urlunquote({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionURLUnquote();
+	public static final Function function = new FunctionURLUnquote();
 }

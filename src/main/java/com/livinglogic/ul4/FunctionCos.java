@@ -41,5 +41,5 @@ public class FunctionCos extends Function
 		throw new ArgumentTypeMismatchException("cos({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionCos();
+	public static final Function function = new FunctionCos();
 }

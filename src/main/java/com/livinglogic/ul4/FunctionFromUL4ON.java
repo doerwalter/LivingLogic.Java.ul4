@@ -42,5 +42,5 @@ public class FunctionFromUL4ON extends Function
 		throw new ArgumentTypeMismatchException("fromul4on({!t}) not supported", obj);
 	}
 
-	public static Function function = new FunctionFromUL4ON();
+	public static final Function function = new FunctionFromUL4ON();
 }

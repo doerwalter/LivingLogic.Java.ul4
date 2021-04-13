@@ -87,5 +87,5 @@ public class Float_ extends AbstractType
 			return StringUtils.replace(instance.toString(), ".0E", "E").toLowerCase();
 	}
 
-	public static UL4Type type = new Float_();
+	public static final UL4Type type = new Float_();
 }
