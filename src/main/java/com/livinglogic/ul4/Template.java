@@ -1956,7 +1956,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 			case "enddelim":
 				return enddelim;
 			case "signature":
-				return signature;
+				return signatureAST != null ? signatureAST : signature;
 			case "doc":
 				return getDoc();
 			case "parenttemplate":
