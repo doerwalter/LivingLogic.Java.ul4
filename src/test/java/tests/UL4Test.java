@@ -5134,7 +5134,7 @@ public class UL4Test
 		}
 		catch (Exception exc)
 		{
-			checkOutput("<com.livinglogic.ul4.ConditionalBlocks pos=(1:9) line=1 column=2>", T("<?print repr(exc.context.location)?>"), V("exc", exc));
+			checkOutput("<com.livinglogic.ul4.ConditionalBlocksAST pos=(1:9) line=1 column=2>", T("<?print repr(exc.context.location)?>"), V("exc", exc));
 		}
 	}
 

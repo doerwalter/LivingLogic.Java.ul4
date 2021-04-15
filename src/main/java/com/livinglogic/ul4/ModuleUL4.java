@@ -36,7 +36,7 @@ public class ModuleUL4 extends Module
 		addObject(DictComprehensionAST.type);
 		addObject(GeneratorExpressionAST.type);
 		addObject(VarAST.type);
-		addObject(ConditionalBlocks.type);
+		addObject(ConditionalBlocksAST.type);
 		addObject(IfBlockAST.type);
 		addObject(ElIfBlockAST.type);
 		addObject(ElseBlockAST.type);

@@ -13,7 +13,7 @@ A {@code BlockLike} object behaves like a block,
 i.e. like {@link BlockAST}, but we have two special cases
 where the block itself has a nested structure:
 
-{@link ConditionalBlocks} itself contains the {@code if}, {@code else} and
+{@link ConditionalBlocksAST} itself contains the {@code if}, {@code else} and
 {@code elif} blocks, which are themselves block. Appending to the conditional
 block appends to the last {@code if}/{@code else}/{@code elif} block.
 

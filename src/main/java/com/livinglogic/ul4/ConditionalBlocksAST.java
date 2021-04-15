@@ -6,14 +6,14 @@
 
 package com.livinglogic.ul4;
 
-public class ConditionalBlocks extends BlockAST
+public class ConditionalBlocksAST extends BlockAST
 {
 	protected static class Type extends BlockAST.Type
 	{
 		@Override
 		public String getNameUL4()
 		{
-			return "BlockAST";
+			return "ConditionalBlocksAST";
 		}
 
 		@Override
@@ -29,15 +29,15 @@ public class ConditionalBlocks extends BlockAST
 		}
 
 		@Override
-		public ConditionalBlocks create(String id)
+		public ConditionalBlocksAST create(String id)
 		{
-			return new ConditionalBlocks(null, null, null);
+			return new ConditionalBlocksAST(null, null, null);
 		}
 
 		@Override
 		public boolean instanceCheck(Object object)
 		{
-			return object instanceof ConditionalBlocks;
+			return object instanceof ConditionalBlocksAST;
 		}
 	}
 
@@ -49,12 +49,12 @@ public class ConditionalBlocks extends BlockAST
 		return type;
 	}
 
-	public ConditionalBlocks(Template template, Slice startPos, Slice stopPos)
+	public ConditionalBlocksAST(Template template, Slice startPos, Slice stopPos)
 	{
 		super(template, startPos, stopPos);
 	}
 
-	public ConditionalBlocks(Template template, Slice startPos, Slice stopPos, IfBlockAST block)
+	public ConditionalBlocksAST(Template template, Slice startPos, Slice stopPos, IfBlockAST block)
 	{
 		super(template, startPos, stopPos);
 		startNewBlock(block);
