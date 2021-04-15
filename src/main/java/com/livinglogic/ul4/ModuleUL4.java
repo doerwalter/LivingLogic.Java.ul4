@@ -19,7 +19,7 @@ public class ModuleUL4 extends Module
 {
 	public ModuleUL4()
 	{
-		super("ul4", "UL4 - a templating language");
+		super("ul4", "UL4 - A templating language");
 		addObject(TextAST.type);
 		addObject(IndentAST.type);
 		addObject(LineEndAST.type);

@@ -584,17 +584,17 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 						case "if":
 						{
 							UL4Parser parser = getParser(tag);
-							ConditionalBlocks node = new ConditionalBlocks(tag.getTemplate(), tag.getStartPos(), null, new IfBlockAST(tag.getTemplate(), tag.getStartPos(), null, parser.expression()));
+							ConditionalBlocksAST node = new ConditionalBlocksAST(tag.getTemplate(), tag.getStartPos(), null, new IfBlockAST(tag.getTemplate(), tag.getStartPos(), null, parser.expression()));
 							innerBlock.append(node);
 							blockStack.push(node);
 							break;
 						}
 						case "elif":
 						{
-							if (innerBlock instanceof ConditionalBlocks)
+							if (innerBlock instanceof ConditionalBlocksAST)
 							{
 								UL4Parser parser = getParser(tag);
-								((ConditionalBlocks)innerBlock).startNewBlock(new ElIfBlockAST(tag.getTemplate(), tag.getStartPos(), null, parser.expression()));
+								((ConditionalBlocksAST)innerBlock).startNewBlock(new ElIfBlockAST(tag.getTemplate(), tag.getStartPos(), null, parser.expression()));
 							}
 							else
 								throw new BlockException("elif doesn't match any if");
@@ -602,9 +602,9 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 						}
 						case "else":
 						{
-							if (innerBlock instanceof ConditionalBlocks)
+							if (innerBlock instanceof ConditionalBlocksAST)
 							{
-								((ConditionalBlocks)innerBlock).startNewBlock(new ElseBlockAST(tag.getTemplate(), tag.getStartPos(), null));
+								((ConditionalBlocksAST)innerBlock).startNewBlock(new ElseBlockAST(tag.getTemplate(), tag.getStartPos(), null));
 							}
 							else
 								throw new BlockException("else doesn't match any if");
@@ -1658,7 +1658,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 		Utils.register(DictComprehensionAST.type);
 		Utils.register(GeneratorExpressionAST.type);
 		Utils.register(VarAST.type);
-		Utils.register(ConditionalBlocks.type);
+		Utils.register(ConditionalBlocksAST.type);
 		Utils.register(IfBlockAST.type);
 		Utils.register(ElIfBlockAST.type);
 		Utils.register(ElseBlockAST.type);
