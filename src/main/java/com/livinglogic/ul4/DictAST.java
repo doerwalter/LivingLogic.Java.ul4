@@ -11,9 +11,13 @@ import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
+
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
+
 
 public class DictAST extends CodeAST
 {
@@ -97,5 +101,24 @@ public class DictAST extends CodeAST
 	{
 		super.loadUL4ON(decoder);
 		items = (List<DictItemASTBase>)decoder.load();
+	}
+
+	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "items");
+
+	public Set<String> getAttributeNamesUL4()
+	{
+		return attributes;
+	}
+
+	@Override
+	public Object getAttrUL4(String key)
+	{
+		switch (key)
+		{
+			case "items":
+				return items;
+			default:
+				return super.getAttrUL4(key);
+		}
 	}
 }
