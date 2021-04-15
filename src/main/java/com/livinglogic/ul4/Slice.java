@@ -146,11 +146,13 @@ public class Slice implements UL4Instance, UL4GetAttr, UL4Dir, UL4Repr, Comparab
 
 	protected static Set<String> attributes = makeSet("start", "stop");
 
+	@Override
 	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

@@ -1730,6 +1730,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 		register4UL4ON();
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		encoder.dump(VERSION);
@@ -1777,6 +1778,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 			encoder.dump(signatureAST);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		String version = (String)decoder.load();
@@ -1934,11 +1936,13 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 
 	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "startdelim", "enddelim", "signature", "doc", "source", "parenttemplate", "renders", "render");
 
+	@Override
 	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

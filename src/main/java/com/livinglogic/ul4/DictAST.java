@@ -75,6 +75,7 @@ public class DictAST extends CodeAST
 		return "dict";
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		Map result = new LinkedHashMap();
@@ -84,12 +85,14 @@ public class DictAST extends CodeAST
 		return result;
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
 		encoder.dump(items);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);

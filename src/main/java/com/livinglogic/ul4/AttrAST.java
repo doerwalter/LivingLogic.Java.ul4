@@ -75,6 +75,7 @@ public class AttrAST extends CodeAST implements LValue
 		return "attr";
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		return call(context, obj.decoratedEvaluate(context), attrname);

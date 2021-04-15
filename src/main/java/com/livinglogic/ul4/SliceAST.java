@@ -119,6 +119,7 @@ public class SliceAST extends CodeAST
 		return call(index1 != null ? index1.decoratedEvaluate(context) : null, index2 != null ? index2.decoratedEvaluate(context) : null);
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
@@ -126,6 +127,7 @@ public class SliceAST extends CodeAST
 		encoder.dump(index2);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
@@ -158,6 +160,7 @@ public class SliceAST extends CodeAST
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

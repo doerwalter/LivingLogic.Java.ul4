@@ -77,6 +77,7 @@ public class AndAST extends BinaryAST
 		return new AndAST(template, pos, obj1, obj2);
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		Object obj1ev = obj1.decoratedEvaluate(context);

@@ -59,6 +59,7 @@ public class BitAndVarAST extends ChangeVarAST
 		return "bitandvar";
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		lvalue.evaluateBitAnd(context, value.decoratedEvaluate(context));

@@ -78,6 +78,7 @@ public class DictComprehensionAST extends CodeAST
 		return "dictcomp";
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		Map result = new LinkedHashMap();
@@ -111,6 +112,7 @@ public class DictComprehensionAST extends CodeAST
 		return result;
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
@@ -121,6 +123,7 @@ public class DictComprehensionAST extends CodeAST
 		encoder.dump(condition);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);

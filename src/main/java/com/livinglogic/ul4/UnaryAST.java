@@ -65,12 +65,14 @@ public abstract class UnaryAST extends CodeAST
 		this.obj = obj;
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
 		encoder.dump(obj);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
@@ -84,6 +86,7 @@ public abstract class UnaryAST extends CodeAST
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

@@ -94,6 +94,7 @@ public class TextAST extends AST
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

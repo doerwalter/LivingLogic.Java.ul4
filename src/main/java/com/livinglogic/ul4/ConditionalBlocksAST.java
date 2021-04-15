@@ -142,6 +142,7 @@ public class ConditionalBlocksAST extends BlockAST
 		content.add(item);
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		for (AST item : content)

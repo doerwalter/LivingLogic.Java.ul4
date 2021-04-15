@@ -65,6 +65,7 @@ abstract class BlockAST extends CodeAST implements BlockLike
 	**/
 	abstract public boolean handleLoopControl(String name);
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		for (AST item : content)
@@ -94,6 +95,7 @@ abstract class BlockAST extends CodeAST implements BlockLike
 		blockToString(formatter, content);
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
@@ -101,6 +103,7 @@ abstract class BlockAST extends CodeAST implements BlockLike
 		encoder.dump(content);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
@@ -115,6 +118,7 @@ abstract class BlockAST extends CodeAST implements BlockLike
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

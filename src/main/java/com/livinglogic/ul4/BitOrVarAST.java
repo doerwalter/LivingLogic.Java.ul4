@@ -59,6 +59,7 @@ public class BitOrVarAST extends ChangeVarAST
 		return "bitorvar";
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		lvalue.evaluateBitOr(context, value.decoratedEvaluate(context));

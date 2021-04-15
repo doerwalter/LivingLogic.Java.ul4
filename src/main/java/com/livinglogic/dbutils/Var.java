@@ -31,11 +31,13 @@ public abstract class Var implements UL4GetAttr, UL4SetAttr, UL4Dir
 
 	protected static Set<String> attributes = makeSet("value");
 
+	@Override
 	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

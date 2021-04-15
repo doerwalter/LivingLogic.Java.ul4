@@ -44,11 +44,13 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		"location"
 	);
 
+	@Override
 	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

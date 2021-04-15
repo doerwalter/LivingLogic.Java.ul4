@@ -167,12 +167,14 @@ public class RenderAST extends CallRenderAST
 			throw new NotRenderableException(obj);
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
 		encoder.dump(indent);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
@@ -186,6 +188,7 @@ public class RenderAST extends CallRenderAST
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

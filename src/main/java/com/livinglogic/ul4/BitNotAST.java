@@ -79,6 +79,7 @@ public class BitNotAST extends UnaryAST
 		return new BitNotAST(template, pos, obj);
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		return call(obj.decoratedEvaluate(context));

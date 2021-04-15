@@ -238,11 +238,13 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 
 	protected static Set<String> attributes = makeSet("months");
 
+	@Override
 	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

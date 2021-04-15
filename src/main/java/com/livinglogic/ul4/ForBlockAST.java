@@ -99,6 +99,7 @@ public class ForBlockAST extends BlockAST
 		return true;
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		Object container = this.container.decoratedEvaluate(context);
@@ -127,6 +128,7 @@ public class ForBlockAST extends BlockAST
 		return null;
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
@@ -134,6 +136,7 @@ public class ForBlockAST extends BlockAST
 		encoder.dump(container);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);

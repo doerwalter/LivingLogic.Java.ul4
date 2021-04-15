@@ -71,6 +71,7 @@ abstract class BinaryAST extends CodeAST
 		this.obj2 = obj2;
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
@@ -78,6 +79,7 @@ abstract class BinaryAST extends CodeAST
 		encoder.dump(obj2);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
@@ -92,6 +94,7 @@ abstract class BinaryAST extends CodeAST
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

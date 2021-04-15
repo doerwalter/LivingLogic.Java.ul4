@@ -162,6 +162,7 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 		super.call(context, obj, args, kwargs);
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
@@ -169,6 +170,7 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 		encoder.dump(content);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
@@ -183,6 +185,7 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

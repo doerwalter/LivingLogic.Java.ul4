@@ -109,6 +109,7 @@ public class SetComprehensionAST extends CodeAST
 		return result;
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
@@ -118,6 +119,7 @@ public class SetComprehensionAST extends CodeAST
 		encoder.dump(condition);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);

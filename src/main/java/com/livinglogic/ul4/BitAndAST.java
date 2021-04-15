@@ -79,6 +79,7 @@ public class BitAndAST extends BinaryAST
 		return new BitAndAST(template, pos, obj1, obj2);
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));

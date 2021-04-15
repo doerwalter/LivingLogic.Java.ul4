@@ -96,6 +96,7 @@ public class IfAST extends CodeAST
 		return new IfAST(template, pos, objIf, objCond, objElse);
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		Object objCondEv = objCond.decoratedEvaluate(context);
@@ -111,6 +112,7 @@ public class IfAST extends CodeAST
 		return FunctionBool.call(argCond) ? argIf : argElse;
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
@@ -119,6 +121,7 @@ public class IfAST extends CodeAST
 		encoder.dump(objElse);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
@@ -134,6 +137,7 @@ public class IfAST extends CodeAST
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

@@ -88,6 +88,7 @@ public class KeywordArgumentAST extends ArgumentASTBase
 		keywordArguments.put(name, value.decoratedEvaluate(context));
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
@@ -95,6 +96,7 @@ public class KeywordArgumentAST extends ArgumentASTBase
 		encoder.dump(value);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
@@ -109,6 +111,7 @@ public class KeywordArgumentAST extends ArgumentASTBase
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

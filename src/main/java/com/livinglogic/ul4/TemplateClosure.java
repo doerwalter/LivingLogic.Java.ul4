@@ -180,11 +180,13 @@ public class TemplateClosure implements UL4Instance, UL4CallWithContext, UL4Rend
 
 	protected static Set<String> attributes = Template.attributes;
 
+	@Override
 	public Set<String> dirUL4()
 	{
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)

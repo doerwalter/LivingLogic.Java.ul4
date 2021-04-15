@@ -16,6 +16,7 @@ public abstract class DictItemASTBase extends CodeAST
 		super(template, pos);
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		// this will never be called

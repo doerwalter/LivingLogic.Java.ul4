@@ -44,12 +44,14 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 		formatter.dedent();
 	}
 
+	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
 		encoder.dump(condition);
 	}
 
+	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
@@ -63,6 +65,7 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 		return attributes;
 	}
 
+	@Override
 	public Object getAttrUL4(String key)
 	{
 		switch (key)
