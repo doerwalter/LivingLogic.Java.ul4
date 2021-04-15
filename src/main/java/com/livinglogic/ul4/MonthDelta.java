@@ -24,7 +24,7 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 		@Override
 		public String getNameUL4()
 		{
-			return "MonthDelta";
+			return "monthdelta";
 		}
 
 		@Override

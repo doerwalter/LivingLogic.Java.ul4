@@ -27,7 +27,7 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 		@Override
 		public String getNameUL4()
 		{
-			return "TimeDelta";
+			return "timedelta";
 		}
 
 		@Override
