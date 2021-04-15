@@ -23,10 +23,39 @@ Template closure
 
 public class TemplateClosure implements UL4Instance, UL4CallWithContext, UL4RenderWithContext, UL4Name, UL4GetAttr, UL4Dir, UL4Repr
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		@Override
+		public String getModuleName()
+		{
+			return "ul4";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "TemplateClosure";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A locally defined UL4 template.";
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof TemplateClosure;
+		}
+	}
+
+	public static final UL4Type type = new Type();
+
 	@Override
 	public UL4Type getTypeUL4()
 	{
-		return Template.type;
+		return type;
 	}
 
 	private Template template;

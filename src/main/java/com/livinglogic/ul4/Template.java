@@ -106,7 +106,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 		@Override
 		public boolean instanceCheck(Object object)
 		{
-			return object instanceof Template || object instanceof TemplateClosure;
+			return object instanceof Template;
 		}
 	}
 
@@ -1721,6 +1721,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 		Utils.register(RenderBlockAST.type);
 		Utils.register(RenderBlocksAST.type);
 		Utils.register(Template.type);
+		Utils.register(TemplateClosure.type);
 		Utils.register(SignatureAST.type);
 	}
 

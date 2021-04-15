@@ -100,6 +100,7 @@ public class ModuleUL4 extends Module
 		addObject(RenderBlocksAST.type);
 		addObject(SignatureAST.type);
 		addObject(Template.type);
+		addObject(TemplateClosure.type);
 	}
 
 	public static final Module module = new ModuleUL4();
