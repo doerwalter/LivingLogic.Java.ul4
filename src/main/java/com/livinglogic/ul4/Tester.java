@@ -42,13 +42,8 @@ public class Tester
 		return new Template(source, name, whitespace, null, null, signature);
 	}
 
-	@SuppressWarnings("unchecked")
-	public static void main(String[] args) throws IOException, UnsupportedEncodingException
+	public static String executeCommand(Map<String, Object> data)
 	{
-		Template.register4UL4ON();
-
-		Map<String, Object> data = (Map<String, Object>)loads(readStdIn(), null);
-
 		String command = (String)data.get("command");
 		Object templateString = data.get("template");
 		Template template = null;
@@ -82,6 +77,17 @@ public class Tester
 		}
 		else
 			throw new RuntimeException("unknown command " + FunctionRepr.call(command));
+		return output;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) throws IOException, UnsupportedEncodingException
+	{
+		Template.register4UL4ON();
+
+		Map<String, Object> data = (Map<String, Object>)loads(readStdIn(), null);
+
+		String output = executeCommand(data);
 
 		// We can't use {@code System.out.print} here, because this gives us no control over the encoding
 		// Use {@code System.out.write} to make sure the output is in UTF-8
