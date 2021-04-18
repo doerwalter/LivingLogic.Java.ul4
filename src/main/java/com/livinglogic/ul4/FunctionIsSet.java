@@ -17,7 +17,7 @@ public class FunctionIsSet extends Function
 		return "isset";
 	}
 
-	private static final Signature signature = new Signature("obj", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("obj");
 
 	@Override
 	public Signature getSignature()

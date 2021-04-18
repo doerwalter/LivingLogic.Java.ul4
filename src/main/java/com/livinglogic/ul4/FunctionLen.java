@@ -15,7 +15,7 @@ public class FunctionLen extends Function
 		return "len";
 	}
 
-	private static final Signature signature = new Signature("sequence", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("sequence");
 
 	@Override
 	public Signature getSignature()

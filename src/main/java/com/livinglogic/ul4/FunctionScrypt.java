@@ -19,7 +19,7 @@ public class FunctionScrypt extends Function
 		return "scrypt";
 	}
 
-	private static final Signature signature = new Signature("string", Signature.required, "salt", Signature.required);
+	private static final Signature signature = new Signature().addBoth("string").addBoth("salt");
 
 	@Override
 	public Signature getSignature()

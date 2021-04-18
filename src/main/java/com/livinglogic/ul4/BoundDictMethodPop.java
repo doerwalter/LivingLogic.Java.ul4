@@ -26,7 +26,7 @@ public class BoundDictMethodPop extends BoundMethod<Map>
 		return "pop";
 	}
 
-	private static final Signature signature = new Signature("key", Signature.required, "default", noValue);
+	private static final Signature signature = new Signature().addPositionalOnly("key").addPositionalOnly("default", noValue);
 
 	@Override
 	public Signature getSignature()

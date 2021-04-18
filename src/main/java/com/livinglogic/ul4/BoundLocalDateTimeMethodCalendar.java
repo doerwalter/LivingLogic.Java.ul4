@@ -7,7 +7,6 @@
 package com.livinglogic.ul4;
 
 import java.time.LocalDateTime;
-import static java.util.Arrays.asList;
 
 public class BoundLocalDateTimeMethodCalendar extends BoundMethod<LocalDateTime>
 {
@@ -22,7 +21,7 @@ public class BoundLocalDateTimeMethodCalendar extends BoundMethod<LocalDateTime>
 		return "calendar";
 	}
 
-	private static final Signature signature = new Signature("firstweekday", 0, "mindaysinfirstweek", 4);
+	private static final Signature signature = new Signature().addBoth("firstweekday", 0).addBoth("mindaysinfirstweek", 4);
 
 	@Override
 	public Signature getSignature()

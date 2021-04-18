@@ -23,7 +23,7 @@ public class FunctionList extends Function
 		return "list";
 	}
 
-	private static final Signature signature = new Signature("iterable", Collections.EMPTY_LIST);
+	private static final Signature signature = new Signature().addPositionalOnly("iterable", Collections.EMPTY_LIST);
 
 	@Override
 	public Signature getSignature()

@@ -22,7 +22,7 @@ public class FunctionSetAttr extends FunctionWithContext
 		return "setattr";
 	}
 
-	private static final Signature signature = new Signature("obj", Signature.required, "attrname", Signature.required, "value", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("obj").addPositionalOnly("attrname").addPositionalOnly("value");
 
 	@Override
 	public Signature getSignature()

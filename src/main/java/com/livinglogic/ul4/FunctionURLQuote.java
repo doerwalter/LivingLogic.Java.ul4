@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -18,7 +17,7 @@ public class FunctionURLQuote extends Function
 		return "urlquote";
 	}
 
-	private static final Signature signature = new Signature("string", Signature.required);
+	private static final Signature signature = new Signature().addBoth("string");
 
 	@Override
 	public Signature getSignature()

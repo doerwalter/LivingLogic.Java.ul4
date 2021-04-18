@@ -17,7 +17,7 @@ public class FunctionIsException extends Function
 		return "isexception";
 	}
 
-	private static final Signature signature = new Signature("obj", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("obj");
 
 	@Override
 	public Signature getSignature()

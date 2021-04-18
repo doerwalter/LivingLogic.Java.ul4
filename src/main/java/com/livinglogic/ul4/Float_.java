@@ -25,7 +25,7 @@ public class Float_ extends AbstractType
 		return "An floating point number";
 	}
 
-	private static final Signature signature = new Signature("obj", 0.0);
+	private static final Signature signature = new Signature().addPositionalOnly("obj", 0.0);
 
 	@Override
 	public Signature getSignature()

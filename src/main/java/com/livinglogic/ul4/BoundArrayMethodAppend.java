@@ -22,7 +22,7 @@ public class BoundArrayMethodAppend extends BoundMethod<Object[]>
 		return "append";
 	}
 
-	private static final Signature signature = new Signature("items", Signature.remainingParameters);
+	private static final Signature signature = new Signature().addVarPositional("items");
 
 	@Override
 	public Signature getSignature()

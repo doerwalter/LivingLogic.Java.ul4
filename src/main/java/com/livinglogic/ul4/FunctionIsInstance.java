@@ -21,7 +21,7 @@ public class FunctionIsInstance extends Function
 		return "isinstance";
 	}
 
-	private static final Signature signature = new Signature("obj", Signature.required, "type", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("obj").addPositionalOnly("type");
 
 	@Override
 	public Signature getSignature()

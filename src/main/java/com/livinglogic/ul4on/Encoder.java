@@ -75,7 +75,7 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 			return "An UL4ON encoder";
 		}
 
-		private static final Signature signature = new Signature("indent", null);
+		private static final Signature signature = new Signature().addBoth("indent", null);
 
 		@Override
 		public Signature getSignature()
@@ -470,7 +470,7 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 			return "dumps";
 		}
 
-		private static final Signature signature = new Signature("obj", Signature.required);
+		private static final Signature signature = new Signature().addBoth("obj");
 
 		@Override
 		public Signature getSignature()

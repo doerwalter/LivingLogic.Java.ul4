@@ -44,7 +44,7 @@ public class ModuleUL4ON extends Module
 			return "loads";
 		}
 
-		private static final Signature signature = new Signature("dump", Signature.required);
+		private static final Signature signature = new Signature().addPositionalOnly("dump");
 
 		@Override
 		public Signature getSignature()
@@ -71,7 +71,7 @@ public class ModuleUL4ON extends Module
 			return "dumps";
 		}
 
-		private static final Signature signature = new Signature("obj", Signature.required, "indent", null);
+		private static final Signature signature = new Signature().addPositionalOnly("obj").addKeywordOnly("indent", null);
 
 		@Override
 		public Signature getSignature()

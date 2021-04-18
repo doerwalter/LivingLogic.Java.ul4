@@ -26,7 +26,7 @@ public class FunctionStr extends Function
 		return "str";
 	}
 
-	private static final Signature signature = new Signature("obj", null);
+	private static final Signature signature = new Signature().addPositionalOnly("obj", null);
 
 	@Override
 	public Signature getSignature()

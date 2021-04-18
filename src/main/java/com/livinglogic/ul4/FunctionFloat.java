@@ -18,7 +18,7 @@ public class FunctionFloat extends Function
 		return "float";
 	}
 
-	private static final Signature signature = new Signature("obj", 0.0);
+	private static final Signature signature = new Signature().addPositionalOnly("obj", 0.0);
 
 	@Override
 	public Signature getSignature()

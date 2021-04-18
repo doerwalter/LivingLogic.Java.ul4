@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.util.Iterator;
 
 public class FunctionSum extends Function
@@ -17,7 +16,7 @@ public class FunctionSum extends Function
 		return "sum";
 	}
 
-	private static final Signature signature = new Signature("iterable", Signature.required, "start", 0);
+	private static final Signature signature = new Signature().addPositionalOnly("iterable").addBoth("start", 0);
 
 	@Override
 	public Signature getSignature()

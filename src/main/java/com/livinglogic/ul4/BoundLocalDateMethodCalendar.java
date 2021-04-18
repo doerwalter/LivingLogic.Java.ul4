@@ -22,7 +22,7 @@ public class BoundLocalDateMethodCalendar extends BoundMethod<LocalDate>
 		return "calendar";
 	}
 
-	private static final Signature signature = new Signature("firstweekday", 0, "mindaysinfirstweek", 4);
+	private static final Signature signature = new Signature().addBoth("firstweekday", 0).addBoth("mindaysinfirstweek", 4);
 
 	@Override
 	public Signature getSignature()

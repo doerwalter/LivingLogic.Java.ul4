@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -29,7 +28,7 @@ public class FunctionAsJSON extends Function
 		return "asjson";
 	}
 
-	private static final Signature signature = new Signature("obj", Signature.required);
+	private static final Signature signature = new Signature().addBoth("obj");
 
 	@Override
 	public Signature getSignature()

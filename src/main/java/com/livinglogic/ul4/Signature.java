@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Collection;
 
+
 public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescription>
 {
 	protected static class Type extends AbstractInstanceType
@@ -46,28 +47,43 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 		return type;
 	}
 
-
 	/**
 	All parameters in the order they were specified in the constructor.
 	**/
 	protected LinkedHashMap<String, ParameterDescription> parameters;
 
 	/**
-	The number of parameters (excluding the {@code *} and {@code **} parameters).
+	The number of parameters that can ony be passed by position.
 	**/
-	protected int size;
+	protected int countPositionalOnly;
+
+	/**
+	The number of parameters can be passed both positionally and via keyword.
+	**/
+	protected int countBoth;
+
+	/**
+	The number of parameters can be only be passed via keyword.
+	**/
+	protected int countKeywordOnly;
+
+	/**
+	The number of parameters that have defaults.
+	**/
+	protected int countDefaults;
 
 	/**
 	Does the signature have a {@code *} parameter (which collections any
 	additional positional argument)?
 	**/
-	protected boolean hasRemainingParameters;
+	protected boolean hasVarPositional;
 
 	/**
 	Does the signature have a {@code **} parameter (which collections any
 	additional keyword argument)?
 	**/
-	protected boolean hasRemainingKeywordParameters;
+	protected boolean hasVarKeyword;
+
 	protected List<String> parameterNames;
 
 	/**
@@ -87,14 +103,19 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 	**/
 	public static Object remainingKeywordParameters = new Object();
 
-	public Signature(Object... args)
+	public Signature()
 	{
 		parameters = new LinkedHashMap<String, ParameterDescription>();
-		size = 0;
-		hasRemainingParameters = false;
-		hasRemainingKeywordParameters = false;
+		countPositionalOnly = 0;
+		countBoth = 0;
+		countKeywordOnly = 0;
+		countDefaults = 0;
+		hasVarPositional = false;
+		hasVarKeyword = false;
 		parameterNames = null;
+	}
 
+	/*
 		String parameterName = null;
 		for (int i = 0; i < args.length; ++i)
 		{
@@ -112,34 +133,172 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 					add(parameterName, ParameterDescription.Type.DEFAULT, args[i]);
 			}
 		}
-	}
+	*/
 
-	public void add(String name, ParameterDescription.Type type, Object defaultValue)
+	void add(String name, ParameterDescription.Type type, Object defaultValue)
 	{
-		parameters.put(name, new ParameterDescription(name, parameters.size(), type, defaultValue));
-		switch (type)
+		ParameterDescription param = new ParameterDescription(name, size(), type, defaultValue);
+		parameters.put(name, param);
+		switch (param.getType())
 		{
-			case REQUIRED:
-			case DEFAULT:
-				++size;
+			case POSITIONAL_OR_KEYWORD_REQUIRED:
+				++countPositionalOnly;
+				break;
+			case POSITIONAL_OR_KEYWORD_DEFAULT:
+				++countBoth;
+				++countDefaults;
+				break;
+			case POSITIONAL_ONLY_REQUIRED:
+				++countBoth;
+				break;
+			case POSITIONAL_ONLY_DEFAULT:
+				++countBoth;
+				++countDefaults;
+				break;
+			case KEYWORD_ONLY_REQUIRED:
+				++countKeywordOnly;
+				break;
+			case KEYWORD_ONLY_DEFAULT:
+				++countKeywordOnly;
+				++countDefaults;
 				break;
 			case VAR_POSITIONAL:
-				hasRemainingParameters = true;
+				hasVarPositional = true;
 				break;
 			case VAR_KEYWORD:
-				hasRemainingKeywordParameters = true;
+				hasVarKeyword = true;
 				break;
 		}
 	}
 
-	public boolean hasRemainingParameters()
+	private void checkPositionalOnly(String name)
 	{
-		return hasRemainingParameters;
+		if (countBoth > 0)
+			throw new SignatureException(Utils.formatMessage("positional only parameter {!r} must be before positional/keyword parameters", name));
+		if (countKeywordOnly > 0)
+			throw new SignatureException(Utils.formatMessage("positional only parameter {!r} must be before keyword only parameters", name));
+		if (hasVarPositional)
+			throw new SignatureException(Utils.formatMessage("positional only parameter {!r} must be before * parameter", name));
+		if (hasVarKeyword)
+			throw new SignatureException(Utils.formatMessage("positional only parameter {!r} must be before ** parameter", name));
 	}
 
-	public boolean hasRemainingKeywordParameters()
+	private void checkBoth(String name)
 	{
-		return hasRemainingKeywordParameters;
+		if (countKeywordOnly > 0)
+			throw new SignatureException(Utils.formatMessage("positional/keyword parameter {!r} must be before keyword only parameters", name));
+		if (hasVarPositional)
+			throw new SignatureException(Utils.formatMessage("positional/keyword parameter {!r} must be before * parameter", name));
+		if (hasVarKeyword)
+			throw new SignatureException(Utils.formatMessage("positional/keyword parameter {!r} must be before ** parameter", name));
+	}
+
+	private void checkKeywordOnly(String name)
+	{
+		if (hasVarPositional)
+			throw new SignatureException(Utils.formatMessage("keyword only parameter {!r} must be before * parameter", name));
+		if (hasVarKeyword)
+			throw new SignatureException(Utils.formatMessage("keyword only parameter {!r} must be before ** parameter", name));
+	}
+
+	private void checkVarPositional(String name)
+	{
+		if (hasVarPositional)
+			throw new SignatureException(Utils.formatMessage("* parameter {!r} can only be specified once", name));
+		if (hasVarKeyword)
+			throw new SignatureException(Utils.formatMessage("* parameter {!r} must be before ** parameter", name));
+	}
+
+	private void checkVarKeyword(String name)
+	{
+		if (hasVarKeyword)
+			throw new SignatureException(Utils.formatMessage("** parameter {!r} can only be specified once", name));
+	}
+
+	private void checkDefaults(String name)
+	{
+		if (countDefaults > 0)
+			throw new SignatureException(Utils.formatMessage("parameter {!r} without default can't be after paramters with defaults", name));
+	}
+
+	public Signature addPositionalOnly(String name)
+	{
+		checkPositionalOnly(name);
+		checkDefaults(name);
+		parameters.put(name, new ParameterDescription(name, size(), ParameterDescription.Type.POSITIONAL_ONLY_REQUIRED, null));
+		++countPositionalOnly;
+		return this;
+	}
+
+	public Signature addPositionalOnly(String name, Object defaultValue)
+	{
+		checkPositionalOnly(name);
+		parameters.put(name, new ParameterDescription(name, size(), ParameterDescription.Type.POSITIONAL_ONLY_DEFAULT, defaultValue));
+		++countPositionalOnly;
+		++countDefaults;
+		return this;
+	}
+
+	public Signature addBoth(String name)
+	{
+		checkBoth(name);
+		checkDefaults(name);
+		parameters.put(name, new ParameterDescription(name, size(), ParameterDescription.Type.POSITIONAL_OR_KEYWORD_REQUIRED, null));
+		++countBoth;
+		return this;
+	}
+
+	public Signature addBoth(String name, Object defaultValue)
+	{
+		checkBoth(name);
+		parameters.put(name, new ParameterDescription(name, size(), ParameterDescription.Type.POSITIONAL_OR_KEYWORD_DEFAULT, defaultValue));
+		++countBoth;
+		++countDefaults;
+		return this;
+	}
+
+	public Signature addKeywordOnly(String name)
+	{
+		checkKeywordOnly(name);
+		checkDefaults(name);
+		parameters.put(name, new ParameterDescription(name, size(), ParameterDescription.Type.KEYWORD_ONLY_REQUIRED, null));
+		++countKeywordOnly;
+		return this;
+	}
+
+	public Signature addKeywordOnly(String name, Object defaultValue)
+	{
+		checkKeywordOnly(name);
+		parameters.put(name, new ParameterDescription(name, size(), ParameterDescription.Type.KEYWORD_ONLY_DEFAULT, defaultValue));
+		++countKeywordOnly;
+		++countDefaults;
+		return this;
+	}
+
+	public Signature addVarPositional(String name)
+	{
+		checkVarPositional(name);
+		parameters.put(name, new ParameterDescription(name, size(), ParameterDescription.Type.VAR_POSITIONAL, null));
+		hasVarPositional = true;
+		return this;
+	}
+
+	public Signature addVarKeyword(String name)
+	{
+		checkVarKeyword(name);
+		parameters.put(name, new ParameterDescription(name, size(), ParameterDescription.Type.VAR_KEYWORD, null));
+		hasVarKeyword = true;
+		return this;
+	}
+
+	public boolean hasVarPositional()
+	{
+		return hasVarPositional;
+	}
+
+	public boolean hasVarKeyword()
+	{
+		return hasVarKeyword;
 	}
 
 	public Collection<ParameterDescription> getParameters()
@@ -154,7 +313,7 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 
 	public int size()
 	{
-		return size;
+		return parameters.size();
 	}
 
 	public boolean containsParameterNamed(String argName)
@@ -162,8 +321,52 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 		ParameterDescription description = parameters.get(argName);
 		if (description == null)
 			return false;
-		ParameterDescription.Type type = description.getType();
-		return type == ParameterDescription.Type.REQUIRED || type == ParameterDescription.Type.DEFAULT;
+		return !description.getType().isVar();
+	}
+
+	public List<Object> asUL4ONDump()
+	{
+		List<Object> dump = new ArrayList<Object>();
+		for (ParameterDescription param : parameters.values())
+		{
+			dump.add(param.getName());
+			ParameterDescription.Type type = param.getType();
+			dump.add(type.getUL4ONString());
+			if (type.hasDefault())
+				dump.add(param.getDefaultValue());
+		}
+		return dump;
+	}
+
+	public static Signature fromUL4ONDump(List<Object> dump)
+	{
+		Signature result = new Signature();
+
+		int state = 0;
+		String name = null;
+		ParameterDescription.Type type = null;
+		for (Object item : dump)
+		{
+			if (state == 0)
+				name = (String)item;
+			else if (state == 1)
+			{
+				type = ParameterDescription.Type.fromUL4ONString((String)item);
+				if (type.hasDefault())
+					state = 2;
+				else
+				{
+					result.add(name, type, null);
+					state = 0;
+				}
+			}
+			else
+			{
+				result.add(name, type, item);
+				state = 0;
+			}
+		}
+		return result;
 	}
 
 	public void reprUL4(UL4Repr.Formatter formatter)
@@ -178,17 +381,19 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 	public String toString()
 	{
 		StringBuilder buffer = new StringBuilder();
-		boolean first = true;
+		ParameterDescription.Type lastType = null;
+		ParameterDescription.Type type = null;
 
 		buffer.append("(");
 
 		for (ParameterDescription paramDesc : parameters.values())
 		{
-			if (first)
-				first = false;
-			else
-				buffer.append(", ");
+			type = paramDesc.getType();
+			String sep = ParameterDescription.Type.separator(lastType, type);
+			if (sep != null)
+				buffer.append(sep);
 			buffer.append(paramDesc);
+			lastType = type;
 		}
 		buffer.append(")");
 

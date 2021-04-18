@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -20,7 +19,7 @@ public class FunctionInt extends Function
 		return "int";
 	}
 
-	private static final Signature signature = new Signature("obj", 0, "base", null);
+	private static final Signature signature = new Signature().addPositionalOnly("obj", 0).addBoth("base", null);
 
 	@Override
 	public Signature getSignature()

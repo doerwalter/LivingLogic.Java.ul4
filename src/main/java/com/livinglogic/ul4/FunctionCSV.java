@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-
 import org.apache.commons.text.StringEscapeUtils;
 
 public class FunctionCSV extends Function
@@ -18,7 +16,7 @@ public class FunctionCSV extends Function
 		return "csv";
 	}
 
-	private static final Signature signature = new Signature("obj", Signature.required);
+	private static final Signature signature = new Signature().addBoth("obj");
 
 	@Override
 	public Signature getSignature()

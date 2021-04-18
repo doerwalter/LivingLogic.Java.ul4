@@ -24,7 +24,7 @@ public class FunctionGetAttr extends FunctionWithContext
 
 	private static Object noDefaultValue = new Object();
 
-	private static final Signature signature = new Signature("obj", Signature.required, "attrname", Signature.required, "default", noDefaultValue);
+	private static final Signature signature = new Signature().addPositionalOnly("obj").addPositionalOnly("attrname").addPositionalOnly("default", noDefaultValue);
 
 	@Override
 	public Signature getSignature()

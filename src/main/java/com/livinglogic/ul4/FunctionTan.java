@@ -15,7 +15,7 @@ public class FunctionTan extends Function
 		return "tan";
 	}
 
-	private static final Signature signature = new Signature("x", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("x");
 
 	@Override
 	public Signature getSignature()

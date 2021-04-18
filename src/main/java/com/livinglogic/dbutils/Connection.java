@@ -34,7 +34,6 @@ import com.livinglogic.ul4.BoundMethodWithContext;
 import com.livinglogic.ul4.BoundMethod;
 import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.utils.CloseableRegistry;
-import com.livinglogic.dbutils.IntVar;
 import com.livinglogic.ul4.BoundArguments;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
@@ -302,7 +301,7 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 			return "queryargs";
 		}
 
-		private static final Signature signature = new Signature("query", Signature.required, "args", Signature.remainingParameters);
+		private static final Signature signature = new Signature().addBoth("query").addVarPositional("args");
 
 		@Override
 		public Signature getSignature()
@@ -332,7 +331,7 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 			return "query";
 		}
 
-		private static final Signature signature = new Signature("args", Signature.remainingParameters);
+		private static final Signature signature = new Signature().addVarPositional("args");
 
 		@Override
 		public Signature getSignature()
@@ -360,7 +359,7 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 			return "queryone";
 		}
 
-		private static final Signature signature = new Signature("args", Signature.remainingParameters);
+		private static final Signature signature = new Signature().addVarPositional("args");
 
 		@Override
 		public Signature getSignature()
@@ -388,7 +387,7 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 			return "execute";
 		}
 
-		private static final Signature signature = new Signature("args", Signature.remainingParameters);
+		private static final Signature signature = new Signature().addVarPositional("args");
 
 		@Override
 		public Signature getSignature()

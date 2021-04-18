@@ -14,7 +14,7 @@ public class FunctionDir extends FunctionWithContext
 		return "getattr";
 	}
 
-	private static final Signature signature = new Signature("obj", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("obj");
 
 	@Override
 	public Signature getSignature()

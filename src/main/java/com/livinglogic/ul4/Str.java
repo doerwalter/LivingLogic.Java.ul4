@@ -26,7 +26,7 @@ public class Str extends AbstractType
 		return "A string";
 	}
 
-	private static final Signature signature = new Signature("obj", "");
+	private static final Signature signature = new Signature().addPositionalOnly("obj", "");
 
 	@Override
 	public Signature getSignature()

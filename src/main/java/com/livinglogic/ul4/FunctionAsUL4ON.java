@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-
 public class FunctionAsUL4ON extends Function
 {
 	public String getNameUL4()
@@ -15,7 +13,7 @@ public class FunctionAsUL4ON extends Function
 		return "asul4on";
 	}
 
-	private static final Signature signature = new Signature("obj", Signature.required);
+	private static final Signature signature = new Signature().addBoth("obj");
 
 	@Override
 	public Signature getSignature()

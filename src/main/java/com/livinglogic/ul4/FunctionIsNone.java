@@ -16,7 +16,7 @@ public class FunctionIsNone extends Function
 		return "isnone";
 	}
 
-	private static final Signature signature = new Signature("obj", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("obj");
 
 	@Override
 	public Signature getSignature()

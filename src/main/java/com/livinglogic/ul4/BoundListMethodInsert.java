@@ -22,7 +22,7 @@ public class BoundListMethodInsert extends BoundMethod<List>
 		return "insert";
 	}
 
-	private static final Signature signature = new Signature("pos", Signature.required, "items", Signature.remainingParameters);
+	private static final Signature signature = new Signature().addPositionalOnly("pos").addVarPositional("items");
 
 	@Override
 	public Signature getSignature()

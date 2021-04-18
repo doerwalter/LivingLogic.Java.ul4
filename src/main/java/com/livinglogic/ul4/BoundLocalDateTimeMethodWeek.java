@@ -21,7 +21,7 @@ public class BoundLocalDateTimeMethodWeek extends BoundMethod<LocalDateTime>
 		return "week";
 	}
 
-	private static final Signature signature = new Signature("firstweekday", 0, "mindaysinfirstweek", 4);
+	private static final Signature signature = new Signature().addBoth("firstweekday", 0).addBoth("mindaysinfirstweek", 4);
 
 	@Override
 	public Signature getSignature()

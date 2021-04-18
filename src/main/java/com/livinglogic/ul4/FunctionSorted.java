@@ -7,11 +7,9 @@
 package com.livinglogic.ul4;
 
 import java.util.List;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
@@ -24,7 +22,8 @@ public class FunctionSorted extends FunctionWithContext
 		return "sorted";
 	}
 
-	private static final Signature signature = new Signature("iterable", Signature.required, "key", null, "reverse", false);
+	// FIXME: Make key and reverse keyword only
+	private static final Signature signature = new Signature().addPositionalOnly("iterable").addBoth("key", null).addBoth("reverse", false);
 
 	@Override
 	public Signature getSignature()

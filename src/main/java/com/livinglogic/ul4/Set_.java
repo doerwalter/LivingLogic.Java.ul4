@@ -37,7 +37,7 @@ public class Set_ extends AbstractType
 		return object instanceof Set;
 	}
 
-	private static final Signature signature = new Signature("iterable", Collections.EMPTY_LIST);
+	private static final Signature signature = new Signature().addPositionalOnly("iterable", Collections.EMPTY_LIST);
 
 	@Override
 	public Signature getSignature()

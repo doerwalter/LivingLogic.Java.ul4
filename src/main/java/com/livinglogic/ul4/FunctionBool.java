@@ -14,7 +14,7 @@ public class FunctionBool extends Function
 		return "bool";
 	}
 
-	private static final Signature signature = new Signature("obj", false);
+	private static final Signature signature = new Signature().addPositionalOnly("obj", false);
 
 	@Override
 	public Signature getSignature()

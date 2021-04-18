@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-
 public class FunctionHLS extends Function
 {
 	@Override
@@ -16,7 +14,7 @@ public class FunctionHLS extends Function
 		return "hls";
 	}
 
-	private static final Signature signature = new Signature("h", Signature.required, "l", Signature.required, "s", Signature.required, "a", 1.0);
+	private static final Signature signature = new Signature().addBoth("h").addBoth("l").addBoth("s").addBoth("a", 1.0);
 
 	@Override
 	public Signature getSignature()

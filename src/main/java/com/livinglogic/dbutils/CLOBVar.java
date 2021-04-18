@@ -6,8 +6,6 @@
 
 package com.livinglogic.dbutils;
 
-import java.util.List;
-
 import java.sql.CallableStatement;
 import java.sql.Types;
 import java.sql.Clob;
@@ -16,7 +14,6 @@ import java.sql.SQLException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.Function;
-import com.livinglogic.ul4.Utils;
 import com.livinglogic.ul4.BoundArguments;
 
 public class CLOBVar extends Var
@@ -75,7 +72,7 @@ public class CLOBVar extends Var
 			return "clob";
 		}
 
-		private static final Signature signature = new Signature("value", noValue);
+		private static final Signature signature = new Signature().addBoth("value", noValue);
 
 		@Override
 		public Signature getSignature()

@@ -6,10 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
 
 public class FunctionRound extends Function
 {
@@ -19,7 +17,7 @@ public class FunctionRound extends Function
 		return "round";
 	}
 
-	private static final Signature signature = new Signature("x", Signature.required, "digits", 0);
+	private static final Signature signature = new Signature().addBoth("x").addBoth("digits", 0);
 
 	@Override
 	public Signature getSignature()

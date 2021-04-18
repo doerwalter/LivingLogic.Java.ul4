@@ -6,7 +6,6 @@
 
 package com.livinglogic.dbutils;
 
-import java.util.List;
 import java.math.BigInteger;
 
 import java.sql.CallableStatement;
@@ -63,7 +62,7 @@ public class IntVar extends Var
 			return "int";
 		}
 
-		private static final Signature signature = new Signature("value", noValue);
+		private static final Signature signature = new Signature().addBoth("value", noValue);
 
 		@Override
 		public Signature getSignature()

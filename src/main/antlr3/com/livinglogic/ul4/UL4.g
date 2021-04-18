@@ -802,12 +802,12 @@ signature returns [SignatureAST node]
 		/* All parameters have a default */
 		aname1=name
 		'='
-		adefault1=exprarg { $node.add($aname1.text, ParameterDescription.Type.DEFAULT, $adefault1.node); }
+		adefault1=exprarg { $node.add($aname1.text, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_DEFAULT, $adefault1.node); }
 		(
 			','
 			aname2=name
 			'='
-			adefault2=exprarg { $node.add($aname2.text, ParameterDescription.Type.DEFAULT, $adefault2.node); }
+			adefault2=exprarg { $node.add($aname2.text, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_DEFAULT, $adefault2.node); }
 		)*
 		(
 			','
@@ -820,16 +820,16 @@ signature returns [SignatureAST node]
 		','?
 	|
 		/* At least one parameter without a default */
-		aname1=name { $node.add($aname1.text, ParameterDescription.Type.REQUIRED, null); }
+		aname1=name { $node.add($aname1.text, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_REQUIRED, null); }
 		(
 			','
-			aname2=name { $node.add($aname2.text, ParameterDescription.Type.REQUIRED, null); }
+			aname2=name { $node.add($aname2.text, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_REQUIRED, null); }
 		)*
 		(
 			','
 			aname3=name
 			'='
-			adefault3=exprarg { $node.add($aname3.text, ParameterDescription.Type.DEFAULT, $adefault3.node); }
+			adefault3=exprarg { $node.add($aname3.text, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_DEFAULT, $adefault3.node); }
 		)*
 		(
 			','

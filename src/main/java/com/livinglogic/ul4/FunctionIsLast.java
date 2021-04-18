@@ -18,7 +18,7 @@ public class FunctionIsLast extends Function
 		return "islast";
 	}
 
-	private static final Signature signature = new Signature("iterable", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("iterable");
 
 	@Override
 	public Signature getSignature()

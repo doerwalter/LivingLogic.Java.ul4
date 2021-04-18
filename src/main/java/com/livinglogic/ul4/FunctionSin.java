@@ -15,7 +15,7 @@ public class FunctionSin extends Function
 		return "sin";
 	}
 
-	private static final Signature signature = new Signature("x", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("x");
 
 	@Override
 	public Signature getSignature()

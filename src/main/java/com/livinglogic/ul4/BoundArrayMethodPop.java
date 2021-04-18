@@ -22,7 +22,7 @@ public class BoundArrayMethodPop extends BoundMethod<Object[]>
 		return "pop";
 	}
 
-	private static final Signature signature = new Signature("pos", -1);
+	private static final Signature signature = new Signature().addPositionalOnly("pos", -1);
 
 	@Override
 	public Signature getSignature()

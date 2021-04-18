@@ -6,13 +6,9 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.util.Date;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import static java.util.Arrays.asList;
 
 public class BoundDateMethodCalendar extends BoundMethod<Date>
 {
@@ -27,7 +23,7 @@ public class BoundDateMethodCalendar extends BoundMethod<Date>
 		return "calendar";
 	}
 
-	private static final Signature signature = new Signature("firstweekday", 0, "mindaysinfirstweek", 4);
+	private static final Signature signature = new Signature().addBoth("firstweekday", 0).addBoth("mindaysinfirstweek", 4);
 
 	@Override
 	public Signature getSignature()

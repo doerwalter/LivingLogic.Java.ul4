@@ -24,7 +24,7 @@ public class Int extends AbstractType
 		return "An integer value";
 	}
 
-	private static final Signature signature = new Signature("obj", 0, "base", null);
+	private static final Signature signature = new Signature().addPositionalOnly("obj", 0).addKeywordOnly("base", null);
 
 	@Override
 	public Signature getSignature()

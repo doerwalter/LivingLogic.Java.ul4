@@ -983,7 +983,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 			return "loads";
 		}
 
-		private static final Signature signature = new Signature("dump", Signature.required);
+		private static final Signature signature = new Signature().addPositionalOnly("dump");
 
 		@Override
 		public Signature getSignature()

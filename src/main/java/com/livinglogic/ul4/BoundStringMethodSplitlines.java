@@ -7,10 +7,7 @@
 package com.livinglogic.ul4;
 
 import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class BoundStringMethodSplitlines extends BoundMethod<String>
 {
@@ -25,7 +22,7 @@ public class BoundStringMethodSplitlines extends BoundMethod<String>
 		return "splitlines";
 	}
 
-	private static final Signature signature = new Signature("keepends", false);
+	private static final Signature signature = new Signature().addBoth("keepends", false);
 
 	@Override
 	public Signature getSignature()

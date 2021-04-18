@@ -37,7 +37,7 @@ public class ModuleOperator extends Module
 			return "attrgetter";
 		}
 
-		private static final Signature signature = new Signature("attr", Signature.remainingParameters);
+		private static final Signature signature = new Signature().addVarPositional("attr");
 
 		@Override
 		public Signature getSignature()

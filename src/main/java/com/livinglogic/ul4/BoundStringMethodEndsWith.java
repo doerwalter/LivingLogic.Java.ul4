@@ -23,7 +23,7 @@ public class BoundStringMethodEndsWith extends BoundMethod<String>
 		return "endswith";
 	}
 
-	private static final Signature signature = new Signature("suffix", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("suffix");
 
 	@Override
 	public Signature getSignature()

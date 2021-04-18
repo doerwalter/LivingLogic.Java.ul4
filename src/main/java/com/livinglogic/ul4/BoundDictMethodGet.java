@@ -22,7 +22,7 @@ public class BoundDictMethodGet extends BoundMethod<Map>
 		return "get";
 	}
 
-	private static final Signature signature = new Signature("key", Signature.required, "default", null);
+	private static final Signature signature = new Signature().addPositionalOnly("key").addPositionalOnly("default", null);
 
 	@Override
 	public Signature getSignature()

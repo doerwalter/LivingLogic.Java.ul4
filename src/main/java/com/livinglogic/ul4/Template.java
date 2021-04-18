@@ -24,16 +24,11 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.Arrays.asList;
-
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
-import com.livinglogic.ul4on.ObjectFactory;
-import com.livinglogic.ul4on.UL4ONSerializable;
 import com.livinglogic.ul4on.Utils;
 
 
@@ -65,7 +60,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 			return new Template();
 		}
 
-		private static final Signature signature = new Signature("source", Signature.required, "name", null, "whitespace", "keep", "startdelim", "<?", "enddelim", "?>", "signature", null);
+		private static final Signature signature = new Signature().addBoth("source").addBoth("name", null).addKeywordOnly("whitespace", "keep").addKeywordOnly("startdelim", "<?").addKeywordOnly("enddelim", "?>").addKeywordOnly("signature", null);
 
 		@Override
 		public Signature getSignature()
@@ -141,7 +136,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 			else if ("smart".equals(value))
 				return smart;
 			else
-				throw new WhitespaceException(value);
+				throw new EnumValueException("com.livinglogic.ul4.Template.Whitespace", value);
 		}
 	};
 
@@ -1750,30 +1745,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	private void dumpSignatureUL4ON(Encoder encoder) throws IOException
 	{
 		if (signature != null)
-		{
-			List paramsDump = null;
-			paramsDump = new LinkedList();
-			for (ParameterDescription paramdesc : signature)
-			{
-				switch (paramdesc.getType())
-				{
-					case REQUIRED:
-						paramsDump.add(paramdesc.getName());
-						break;
-					case DEFAULT:
-						paramsDump.add(paramdesc.getName() + "=");
-						paramsDump.add(paramdesc.getDefaultValue());
-						break;
-					case VAR_POSITIONAL:
-						paramsDump.add("*" + paramdesc.getName());
-						break;
-					case VAR_KEYWORD:
-						paramsDump.add("**" + paramdesc.getName());
-						break;
-				}
-			}
-			encoder.dump(paramsDump);
-		}
+			encoder.dump(signature.asUL4ONDump());
 		else
 			encoder.dump(signatureAST);
 	}
@@ -1848,33 +1820,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 		}
 		else
 		{
-			signature = new Signature();
-			boolean nextDefault = false;
-			String paramName = null;
-			for (Object param : (List)paramsDump)
-			{
-				if (nextDefault)
-				{
-					signature.add(paramName, ParameterDescription.Type.DEFAULT, param);
-					nextDefault = false;
-				}
-				else
-				{
-					paramName = (String)param;
-					if (paramName.endsWith("="))
-					{
-						paramName = paramName.substring(0, paramName.length()-1);
-						nextDefault = true;
-					}
-					else if (paramName.startsWith("**"))
-						signature.add(paramName.substring(2), ParameterDescription.Type.VAR_KEYWORD, null);
-					else if (paramName.startsWith("*"))
-						signature.add(paramName.substring(1), ParameterDescription.Type.VAR_POSITIONAL, null);
-					else
-						signature.add(paramName, ParameterDescription.Type.REQUIRED, null);
-				}
-			}
-			this.signature = signature;
+			this.signature = Signature.fromUL4ONDump((List)paramsDump);
 			this.signatureAST = null;
 		}
 	}

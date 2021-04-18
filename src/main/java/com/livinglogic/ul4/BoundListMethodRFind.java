@@ -22,7 +22,7 @@ public class BoundListMethodRFind extends BoundMethod<List>
 		return "rfind";
 	}
 
-	private static final Signature signature = new Signature("sub", Signature.required, "start", null, "end", null);
+	private static final Signature signature = new Signature().addPositionalOnly("sub").addPositionalOnly("start", null).addPositionalOnly("end", null);
 
 	@Override
 	public Signature getSignature()

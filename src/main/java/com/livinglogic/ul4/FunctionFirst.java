@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.util.Iterator;
 
 public class FunctionFirst extends Function
@@ -17,7 +16,7 @@ public class FunctionFirst extends Function
 		return "first";
 	}
 
-	private static final Signature signature = new Signature("iterable", Signature.required, "default", null);
+	private static final Signature signature = new Signature().addBoth("iterable").addBoth("default", null);
 
 	@Override
 	public Signature getSignature()

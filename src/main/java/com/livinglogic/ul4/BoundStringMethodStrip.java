@@ -24,7 +24,7 @@ public class BoundStringMethodStrip extends BoundMethod<String>
 		return "strip";
 	}
 
-	private static final Signature signature = new Signature("chars", null);
+	private static final Signature signature = new Signature().addPositionalOnly("chars", null);
 
 	@Override
 	public Signature getSignature()

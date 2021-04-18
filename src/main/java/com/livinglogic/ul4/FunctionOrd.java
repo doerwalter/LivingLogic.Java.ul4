@@ -16,7 +16,7 @@ public class FunctionOrd extends Function
 		return "ord";
 	}
 
-	private static final Signature signature = new Signature("c", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("c");
 
 	@Override
 	public Signature getSignature()

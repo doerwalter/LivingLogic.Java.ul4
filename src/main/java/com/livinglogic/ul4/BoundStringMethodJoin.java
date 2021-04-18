@@ -23,7 +23,7 @@ public class BoundStringMethodJoin extends BoundMethod<String>
 		return "join";
 	}
 
-	private static final Signature signature = new Signature("iterable", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("iterable");
 
 	@Override
 	public Signature getSignature()

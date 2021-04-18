@@ -16,7 +16,7 @@ public class FunctionDateTime extends Function
 		return "datetime";
 	}
 
-	private static final Signature signature = new Signature("year", Signature.required, "month", Signature.required, "day", Signature.required, "hour", 0, "minute", 0, "second", 0, "microsecond", 0);
+	private static final Signature signature = new Signature().addBoth("year").addBoth("month").addBoth("day").addBoth("hour", 0).addBoth("minute", 0).addBoth("second", 0).addBoth("microsecond", 0);
 
 	@Override
 	public Signature getSignature()

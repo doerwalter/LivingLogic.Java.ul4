@@ -15,7 +15,7 @@ public class FunctionCos extends Function
 		return "cos";
 	}
 
-	private static final Signature signature = new Signature("x", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("x");
 
 	@Override
 	public Signature getSignature()

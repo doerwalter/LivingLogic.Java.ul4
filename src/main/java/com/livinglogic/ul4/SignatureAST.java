@@ -83,35 +83,29 @@ public class SignatureAST extends CodeAST
 
 	public void toString(Formatter formatter)
 	{
-		boolean first = true;
+		ParameterDescription.Type lastType = null;
+		ParameterDescription.Type type = null;
 		formatter.write("(");
 		for (Parameter param : parameters)
 		{
-			if (first)
-				first = false;
-			else
-				formatter.write(", ");
+			type = param.getType();
+			String sep = ParameterDescription.Type.separator(lastType, type);
+
+			if (sep != null)
+				formatter.write(sep);
 
 			String name = param.getName();
-			switch (param.getType())
+			if (type == ParameterDescription.Type.VAR_POSITIONAL)
+				formatter.write("*");
+			else if (type == ParameterDescription.Type.VAR_KEYWORD)
+				formatter.write("**");
+			formatter.write(name);
+			if (type.hasDefault())
 			{
-				case REQUIRED:
-					formatter.write(name);
-					break;
-				case DEFAULT:
-					formatter.write(name);
-					formatter.write("=");
-					param.getDefaultValue().toString(formatter);
-					break;
-				case VAR_POSITIONAL:
-					formatter.write("*");
-					formatter.write(name);
-					break;
-				case VAR_KEYWORD:
-					formatter.write("**");
-					formatter.write(name);
-					break;
+				formatter.write("=");
+				param.getDefaultValue().toString(formatter);
 			}
+			lastType = type;
 		}
 		formatter.write(")");
 	}
@@ -133,52 +127,46 @@ public class SignatureAST extends CodeAST
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		List paramsDump = new LinkedList();
+		List dump = new LinkedList();
 		for (Parameter param : parameters)
 		{
-			String name = param.getName();
-			switch (param.getType())
-			{
-				case REQUIRED:
-					paramsDump.add(name);
-					break;
-				case DEFAULT:
-					paramsDump.add(asList(name, param.getDefaultValue()));
-					break;
-				case VAR_POSITIONAL:
-					paramsDump.add("*" + name);
-					break;
-				case VAR_KEYWORD:
-					paramsDump.add("**" + name);
-					break;
-			}
+			dump.add(param.getName());
+			ParameterDescription.Type type = param.getType();
+			dump.add(type.getUL4ONString());
+			if (type.hasDefault())
+				dump.add(param.getDefaultValue());
 		}
-		encoder.dump(paramsDump);
+		encoder.dump(dump);
 	}
 
 	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		List paramsDump = (List)decoder.load();
-		for (Object paramDump : paramsDump)
-		{
-			if (paramDump instanceof String)
-			{
-				String paramString = (String)paramDump;
+		List dump = (List)decoder.load();
 
-				if (paramString.startsWith("**"))
-					add(paramString.substring(2), ParameterDescription.Type.VAR_KEYWORD, null);
-				else if (paramString.startsWith("*"))
-					add(paramString.substring(1), ParameterDescription.Type.VAR_POSITIONAL, null);
+		int state = 0;
+		String name = null;
+		ParameterDescription.Type type = null;
+		for (Object item : dump)
+		{
+			if (state == 0)
+				name = (String)item;
+			else if (state == 1)
+			{
+				type = ParameterDescription.Type.fromUL4ONString((String)item);
+				if (type.hasDefault())
+					state = 2;
 				else
-					add(paramString, ParameterDescription.Type.REQUIRED, null);
+				{
+					add(name, type, null);
+					state = 0;
+				}
 			}
 			else
 			{
-				String name = (String)((List)paramDump).get(0);
-				AST defaultValue = (AST)((List)paramDump).get(1);
-				add(name, ParameterDescription.Type.DEFAULT, defaultValue);
+				add(name, type, (AST)item);
+				state = 0;
 			}
 		}
 	}

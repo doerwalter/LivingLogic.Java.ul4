@@ -6,9 +6,7 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.util.Set;
-import java.util.Map;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,7 +40,7 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 			return object instanceof TimeDelta;
 		}
 
-		private static final Signature signature = new Signature("days", 0, "seconds", 0, "microseconds", 0);
+		private static final Signature signature = new Signature().addBoth("days", 0).addBoth("seconds", 0).addBoth("microseconds", 0);
 
 		@Override
 		public Signature getSignature()

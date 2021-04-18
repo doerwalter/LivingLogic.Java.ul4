@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-
 public class FunctionFromUL4ON extends Function
 {
 	@Override
@@ -16,7 +14,7 @@ public class FunctionFromUL4ON extends Function
 		return "fromul4on";
 	}
 
-	private static final Signature signature = new Signature("dump", Signature.required);
+	private static final Signature signature = new Signature().addBoth("dump");
 
 	@Override
 	public Signature getSignature()

@@ -23,7 +23,7 @@ public class Bool extends AbstractType
 		return "A boolean value (`True` or `False`)";
 	}
 
-	private static final Signature signature = new Signature("obj", false);
+	private static final Signature signature = new Signature().addPositionalOnly("obj", false);
 
 	@Override
 	public Signature getSignature()

@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -18,7 +17,7 @@ public class FunctionEnumFL extends Function
 		return "enumfl";
 	}
 
-	private static final Signature signature = new Signature("iterable", Signature.required, "start", 0);
+	private static final Signature signature = new Signature().addBoth("iterable").addBoth("start", 0);
 
 	public Signature getSignature()
 	{

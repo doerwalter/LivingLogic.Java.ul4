@@ -24,7 +24,7 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 		return "replace";
 	}
 
-	private static final Signature signature = new Signature("old", Signature.required, "new", Signature.required, "count", null);
+	private static final Signature signature = new Signature().addPositionalOnly("old").addPositionalOnly("new").addPositionalOnly("count", null);
 
 	@Override
 	public Signature getSignature()

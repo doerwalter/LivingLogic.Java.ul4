@@ -25,7 +25,7 @@ public class FunctionSet extends Function
 		return "set";
 	}
 
-	private static final Signature signature = new Signature("iterable", Collections.EMPTY_LIST);
+	private static final Signature signature = new Signature().addPositionalOnly("iterable", Collections.EMPTY_LIST);
 
 	@Override
 	public Signature getSignature()

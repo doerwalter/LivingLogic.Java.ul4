@@ -32,14 +32,14 @@ public class BoundArguments implements AutoCloseable
 		}
 		else
 		{
-			int size = signature.size() + (signature.hasRemainingParameters() ? 1 : 0) + (signature.hasRemainingKeywordParameters() ? 1 : 0);
+			int size = signature.size();
 			argumentsByPosition = new ArrayList<Object>(size);
 			argumentsByName = null; // will be created on demand
 
 			int argsize = args != null ? args.size() : 0;
 
-			String remainingArgumentsName = null;
-			String remainingKeywordArgumentsName = null;
+			String varPositionalName = null;
+			String varKeywordName = null;
 
 			int i = 0;
 			for (ParameterDescription paramDesc : signature)
@@ -47,9 +47,9 @@ public class BoundArguments implements AutoCloseable
 				String argName = paramDesc.getName();
 				ParameterDescription.Type type = paramDesc.getType();
 				if (type == ParameterDescription.Type.VAR_POSITIONAL)
-					remainingArgumentsName = argName;
+					varPositionalName = argName;
 				else if (type == ParameterDescription.Type.VAR_KEYWORD)
-					remainingKeywordArgumentsName = argName;
+					varKeywordName = argName;
 				else
 				{
 					Object argValue = kwargs != null ? kwargs.get(argName) : null;
@@ -57,12 +57,17 @@ public class BoundArguments implements AutoCloseable
 					if (argValue != null || (kwargs != null && kwargs.containsKey(argName)))
 					{
 						if (i < argsize)
-							// parameter has been specified as a positional argument too
+							// parameter has been specified as a positional argument too, so complain
 							throw new DuplicateArgumentException(object, paramDesc);
 						add(argValue);
 					}
+					// parameter has been specified via position
 					else
 					{
+						// Parameter must be specified via keyword, so complain
+						if (!paramDesc.isKeyword())
+							throw ArgumentMustBeKeywordException(object, argName);
+
 						if (i < argsize)
 							// parameter has been specified as a positional argument
 							add(args.get(i));
@@ -76,27 +81,27 @@ public class BoundArguments implements AutoCloseable
 				++i;
 			}
 
-			// Handle additional positional arguments
+			// Handle additional positional arguments:
 			// if there are any, and we support a "*" parameter, put the remaining arguments into this argument as a list, else complain
 			int expectedArgCount = signature.size();
 			if (argsize > expectedArgCount)
 			{
-				if (remainingArgumentsName != null)
+				if (varPositionalName != null)
 					add(args.subList(expectedArgCount, argsize));
 				else
 					throw new TooManyArgumentsException(object, signature, argsize);
 			}
 			else
 			{
-				if (remainingArgumentsName != null)
+				if (varPositionalName != null)
 					add(new ArrayList<Object>());
 			}
 
-			// Handle additional keyword arguments
+			// Handle additional keyword arguments:
 			// if there are any, and we support a "**" parameter, put the remaining keyword arguments into this argument as a map, else complain
 			if (kwargs != null)
 			{
-				if (remainingKeywordArgumentsName != null)
+				if (varKeywordName != null)
 				{
 					LinkedHashMap<String, Object> realRemainingKeywordArguments = new LinkedHashMap<String, Object>();
 					for (String kwargname : kwargs.keySet())

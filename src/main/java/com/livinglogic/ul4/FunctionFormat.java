@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -32,7 +31,7 @@ public class FunctionFormat extends Function
 		return "format";
 	}
 
-	private static final Signature signature = new Signature("obj", Signature.required, "fmt", Signature.required, "lang", null);
+	private static final Signature signature = new Signature().addBoth("obj").addBoth("fmt").addBoth("lang", null);
 
 	@Override
 	public Signature getSignature()

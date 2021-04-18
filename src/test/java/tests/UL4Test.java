@@ -10,7 +10,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -23,11 +22,9 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,7 +44,6 @@ import com.livinglogic.ul4.RuntimeExceededException;
 import com.livinglogic.ul4.NotIterableException;
 import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.SyntaxException;
-import com.livinglogic.ul4.LocationException;
 import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.Template;
 import com.livinglogic.ul4.Color;
@@ -5376,7 +5372,7 @@ public class UL4Test
 			return "makevar";
 		}
 
-		private static final Signature signature = new Signature("var", Signature.required);
+		private static final Signature signature = new Signature().addPositionalOnly("var");
 
 		@Override
 		public Signature getSignature()
@@ -5702,7 +5698,7 @@ public class UL4Test
 	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_signature_directcall() throws Exception
 	{
-		Template function = T("<?return x?>", "func_with_sig", Template.Whitespace.strip, new Signature("x", Signature.required));
+		Template function = T("<?return x?>", "func_with_sig", Template.Whitespace.strip, new Signature().addBoth("x"));
 
 		function.call();
 	}
@@ -5734,7 +5730,7 @@ public class UL4Test
 	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_signature_templatecall() throws Exception
 	{
-		Template function = T("<?return x?>", "func_with_sig", Template.Whitespace.strip, new Signature("x", Signature.required));
+		Template function = T("<?return x?>", "func_with_sig", Template.Whitespace.strip, new Signature().addBoth("x"));
 		Template t = T("<?print func_with_sig()?>", "t", Template.Whitespace.strip);
 
 		t.renders(V("func_with_sig", function));
@@ -5743,7 +5739,7 @@ public class UL4Test
 	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void template_signature_directcall() throws Exception
 	{
-		Template t = T("<?print x?>", "t", Template.Whitespace.strip, new Signature("x", Signature.required));
+		Template t = T("<?print x?>", "t", Template.Whitespace.strip, new Signature().addBoth("x"));
 
 		checkOutput("42", t);
 	}
@@ -5751,7 +5747,7 @@ public class UL4Test
 	@Test
 	public void template_signature_nestedcall_directsig()
 	{
-		Template ti = T("<?return x + y?>", "inner", Template.Whitespace.strip, new Signature("x", Signature.required, "y", Signature.required));
+		Template ti = T("<?return x + y?>", "inner", Template.Whitespace.strip, new Signature().addBoth("x").addBoth("y"));
 		Template to = T("<?print inner(17, 23)?>", "outer", Template.Whitespace.strip);
 
 		checkOutput("40", to, V("inner", ti));
@@ -5787,7 +5783,7 @@ public class UL4Test
 	@Test
 	public void template_signature_directcall_default() throws Exception
 	{
-		Template t = T("<?print x?>", "t", Template.Whitespace.strip, new Signature("x", 42));
+		Template t = T("<?print x?>", "t", Template.Whitespace.strip, new Signature().addBoth("x", 42));
 
 		checkOutput("42", t);
 	}

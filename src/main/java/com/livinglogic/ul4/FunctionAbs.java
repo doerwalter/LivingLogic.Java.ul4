@@ -18,7 +18,7 @@ public class FunctionAbs extends Function
 		return "abs";
 	}
 
-	private static final Signature signature = new Signature("number", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("number");
 
 	@Override
 	public Signature getSignature()

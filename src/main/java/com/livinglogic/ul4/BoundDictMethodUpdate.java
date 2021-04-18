@@ -22,7 +22,7 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 		return "update";
 	}
 
-	private static final Signature signature = new Signature("others", Signature.remainingParameters, "kwargs", Signature.remainingKeywordParameters);
+	private static final Signature signature = new Signature().addVarPositional("others").addVarKeyword("kwargs");
 
 	@Override
 	public Signature getSignature()

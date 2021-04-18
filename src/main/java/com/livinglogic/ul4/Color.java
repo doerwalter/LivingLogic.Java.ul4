@@ -6,10 +6,8 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -43,7 +41,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 			return object instanceof Color;
 		}
 
-		private static final Signature signature = new Signature("r", Signature.required, "g", Signature.required, "b", Signature.required, "a", 255);
+		private static final Signature signature = new Signature().addBoth("r").addBoth("g").addBoth("b").addBoth("a", 255);
 
 		@Override
 		public Signature getSignature()
@@ -995,7 +993,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 			return "witha";
 		}
 
-		private static final Signature signature = new Signature("a", Signature.required);
+		private static final Signature signature = new Signature().addBoth("a");
 
 		@Override
 		public Signature getSignature()
@@ -1023,7 +1021,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 			return "withlum";
 		}
 
-		private static final Signature signature = new Signature("lum", Signature.required);
+		private static final Signature signature = new Signature().addBoth("lum");
 
 		@Override
 		public Signature getSignature()
@@ -1051,7 +1049,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 			return "abslum";
 		}
 
-		private static final Signature signature = new Signature("f", Signature.required);
+		private static final Signature signature = new Signature().addBoth("f");
 
 		@Override
 		public Signature getSignature()
@@ -1079,7 +1077,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 			return "rellum";
 		}
 
-		private static final Signature signature = new Signature("f", Signature.required);
+		private static final Signature signature = new Signature().addBoth("f");
 
 		@Override
 		public Signature getSignature()

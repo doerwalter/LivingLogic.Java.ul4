@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-
 public class FunctionRGB extends Function
 {
 	@Override
@@ -16,7 +14,7 @@ public class FunctionRGB extends Function
 		return "rgb";
 	}
 
-	private static final Signature signature = new Signature("r", Signature.required, "g", Signature.required, "b", Signature.required, "a", 1.0);
+	private static final Signature signature = new Signature().addBoth("r").addBoth("g").addBoth("b").addBoth("a", 1.0);
 
 	@Override
 	public Signature getSignature()

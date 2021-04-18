@@ -25,7 +25,7 @@ public class BoundStringMethodLStrip extends BoundMethod<String>
 		return "lstrip";
 	}
 
-	private static final Signature signature = new Signature("chars", null);
+	private static final Signature signature = new Signature().addPositionalOnly("chars", null);
 
 	@Override
 	public Signature getSignature()

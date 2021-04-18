@@ -39,7 +39,7 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 			return object instanceof MonthDelta;
 		}
 
-		private static final Signature signature = new Signature("months", 0);
+		private static final Signature signature = new Signature().addPositionalOnly("months", 0);
 
 		@Override
 		public Signature getSignature()

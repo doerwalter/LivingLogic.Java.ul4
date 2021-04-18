@@ -22,7 +22,7 @@ public class BoundStringMethodCount extends BoundMethod<String>
 		return "count";
 	}
 
-	private static final Signature signature = new Signature("sub", Signature.required, "start", null, "end", null);
+	private static final Signature signature = new Signature().addPositionalOnly("sub").addPositionalOnly("start", null).addPositionalOnly("end", null);
 
 	@Override
 	public Signature getSignature()

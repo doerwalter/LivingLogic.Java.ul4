@@ -22,7 +22,7 @@ public class BoundSetMethodAdd extends BoundMethod<Set>
 		return "add";
 	}
 
-	private static final Signature signature = new Signature("object", Signature.remainingParameters);
+	private static final Signature signature = new Signature().addVarPositional("object");
 
 	@Override
 	public Signature getSignature()

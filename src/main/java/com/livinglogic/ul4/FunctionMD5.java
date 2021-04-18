@@ -18,7 +18,7 @@ public class FunctionMD5 extends Function
 		return "md5";
 	}
 
-	private static final Signature signature = new Signature("string", Signature.required);
+	private static final Signature signature = new Signature().addBoth("string");
 
 	@Override
 	public Signature getSignature()

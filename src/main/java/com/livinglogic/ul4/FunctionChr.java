@@ -16,7 +16,7 @@ public class FunctionChr extends Function
 		return "chr";
 	}
 
-	private static final Signature signature = new Signature("i", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("i");
 
 	@Override
 	public Signature getSignature()

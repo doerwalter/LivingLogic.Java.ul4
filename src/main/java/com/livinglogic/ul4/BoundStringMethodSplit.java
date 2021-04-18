@@ -7,7 +7,6 @@
 package com.livinglogic.ul4;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,7 +23,7 @@ public class BoundStringMethodSplit extends BoundMethod<String>
 		return "split";
 	}
 
-	private static final Signature signature = new Signature("sep", null, "count", null);
+	private static final Signature signature = new Signature().addBoth("sep", null).addBoth("count", null);
 
 	@Override
 	public Signature getSignature()

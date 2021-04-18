@@ -8,8 +8,6 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,7 +24,7 @@ public class BoundStringMethodRSplit extends BoundMethod<String>
 		return "rsplit";
 	}
 
-	private static final Signature signature = new Signature("sep", null, "count", null);
+	private static final Signature signature = new Signature().addBoth("sep", null).addBoth("count", null);
 
 	@Override
 	public Signature getSignature()

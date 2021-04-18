@@ -6,9 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-import java.io.IOException;
-
 import org.json.simple.JSONValue;
 
 public class FunctionFromJSON extends Function
@@ -19,7 +16,7 @@ public class FunctionFromJSON extends Function
 		return "fromjson";
 	}
 
-	private static final Signature signature = new Signature("string", Signature.required);
+	private static final Signature signature = new Signature().addBoth("string");
 
 	@Override
 	public Signature getSignature()
