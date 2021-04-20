@@ -10,43 +10,69 @@ import java.util.List;
 import java.util.AbstractList;
 import java.util.Map;
 
-public class FunctionRange implements UL4Call
+public class FunctionRange extends Function
 {
-	public String getName()
+	private static Object noValue = new Object();
+
+	@Override
+	public String getNameUL4()
 	{
 		return "range";
 	}
 
-	public Object callUL4(List<Object> args, Map<String, Object> kwargs)
+	private static final Signature signature = new Signature().addPositionalOnly("start").addPositionalOnly("stop", noValue).addPositionalOnly("step", noValue);
+
+	@Override
+	public Signature getSignature()
 	{
-		if (kwargs.size() != 0)
-			throw new KeywordArgumentsNotSupportedException(this.getName());
-		switch (args.size())
+		return signature;
+	}
+
+	@Override
+	public Object evaluate(BoundArguments args)
+	{
+		Object start = args.get(0);
+		Object stop = args.get(1);
+		Object step = args.get(2);
+		if (step == noValue)
 		{
-			case 1:
-				return call(args.get(0));
-			case 2:
-				return call(args.get(0), args.get(1));
-			case 3:
-				return call(args.get(0), args.get(1), args.get(2));
-			default:
-				throw new ArgumentCountMismatchException("function", "range", args.size(), 1, 3);
+			if (stop == noValue)
+				return call(start);
+			else
+				return call(start, stop);
 		}
+		else
+			return call(start, stop, step);
 	}
 
-	public static Object call(Object obj)
+	public static Object call(int stop)
 	{
-		return new Range(0, Utils.toInt(obj), 1);
+		return new Range(0, stop, 1);
 	}
 
-	public static Object call(Object obj1, Object obj2)
+	public static Object call(int start, int stop)
 	{
-		return new Range(Utils.toInt(obj1), Utils.toInt(obj2), 1);
+		return new Range(start, stop, 1);
 	}
 
-	public static Object call(Object obj1, Object obj2, Object obj3)
+	public static Object call(int start, int stop, int step)
 	{
-		return new Range(Utils.toInt(obj1), Utils.toInt(obj2), Utils.toInt(obj3));
+		return new Range(start, stop, step);
+	}
+
+	public static Object call(Object stop)
+	{
+		return call(Utils.toInt(stop));
+	}
+
+	public static Object call(Object start, Object stop)
+	{
+		return call(Utils.toInt(start), Utils.toInt(stop));
+	}
+
+	public static Object call(Object start, Object stop, Object step)
+	{
+		return call(Utils.toInt(start), Utils.toInt(stop), Utils.toInt(step));
 	}
 
 	private static class Range extends AbstractList
