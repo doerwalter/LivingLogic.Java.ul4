@@ -38,6 +38,7 @@ import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.MissingArgumentException;
 import com.livinglogic.ul4.TooManyArgumentsException;
+import com.livinglogic.ul4.UnsupportedArgumentNameException;
 import com.livinglogic.ul4.ReadonlyException;
 import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.ul4.RuntimeExceededException;
@@ -1873,7 +1874,12 @@ public class UL4Test
 		checkOutput("1 month", T("<?print monthdelta(1)?>"));
 		checkOutput("2 months", T("<?print monthdelta(2)?>"));
 		checkOutput("-1 month", T("<?print monthdelta(-1)?>"));
-		checkOutput("1 month", T("<?print monthdelta(months=1)?>"));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_monthdelta_bad_kwarg()
+	{
+		T("<?print monthdelta(months=1)?>").renders();
 	}
 
 	@Test
@@ -1937,7 +1943,12 @@ public class UL4Test
 	public void function_xmlescape()
 	{
 		checkOutput("&lt;&lt;&gt;&gt;&amp;&#39;&quot;gurk", T("<?print xmlescape(data)?>"), V("data", "<<>>&'\"gurk"));
-		checkOutput("42", T("<?print xmlescape(obj=data)?>"), V("data", 42));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_xmlescape_bad_kwarg()
+	{
+		T("<?print xmlescape(obj=data)?>").renders(V("data", 42));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2121,7 +2132,12 @@ public class UL4Test
 		checkOutput("2011-02-09 12:34", t, V("data", FunctionDateTime.call(2011, 2, 9, 12, 34)));
 		checkOutput("2011-02-09 12:34:56", t, V("data", FunctionDateTime.call(2011, 2, 9, 12, 34, 56)));
 		checkOutput("2011-02-09 12:34:56.987654", t, V("data", FunctionDateTime.call(2011, 2, 9, 12, 34, 56, 987654)));
-		checkOutput("foo", T("<?print str(obj=data)?>"), V("data", "foo"));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_str_bad_kwarg()
+	{
+		T("<?print str(obj=data)?>").renders(V("data", "foo"));
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
@@ -2163,7 +2179,12 @@ public class UL4Test
 		checkOutput("False", t, V("data", new Point(0, 0)));
 		checkOutput("True", t, V("data", new Point(17, 23)));
 		checkOutput("True", t, V("data", new Object()));
-		checkOutput("True", T("<?print bool(obj=data)?>"), V("data", true));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_bool_bad_kwarg()
+	{
+		T("<?print bool(obj=data)?>").renders(V("data", true));
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
@@ -2182,18 +2203,33 @@ public class UL4Test
 		checkOutput("42", T("<?print int(data)?>"), V("data", 42));
 		checkOutput("4", T("<?print int(data)?>"), V("data", 4.2));
 		checkOutput("42", T("<?print int(data)?>"), V("data", "42"));
-		checkOutput("66", T("<?print int(data, 16)?>"), V("data", "42"));
-		checkOutput("42", T("<?print int(obj=data, base=None)?>"), V("data", "42"));
-		checkOutput("66", T("<?print int(obj=data, base=16)?>"), V("data", "42"));
 		checkOutput("9999999999", T("<?print int(data)?>"), V("data", "9999999999"));
 		checkOutput("999999999999999999999999", T("<?print int(data)?>"), V("data", "999999999999999999999999"));
 		checkOutput("999999999999999999999999", T("<?print int(data)?>"), V("data", new BigInteger("999999999999999999999999")));
 	}
 
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	public void function_int_bad_kwarg_1()
+	{
+		T("<?print int(data, 16)?>").renders(V("data", "42"));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_int_bad_kwarg_2()
+	{
+		T("<?print int(obj=data, base=None)?>").renders(V("data", "42"));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_int_bad_kwarg_3()
+	{
+		T("<?print int(obj=data, base=16)?>").renders(V("data", "42"));
+	}
+
 	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_int_null()
 	{
-		checkOutput("", T("<?print int(data)?>"), V("data", null));
+		T("<?print int(data)?>").renders(V("data", null));
 	}
 
 	@CauseTest(expectedCause=NumberFormatException.class)
@@ -2219,7 +2255,12 @@ public class UL4Test
 		checkOutput("0.0", t, V("data", false));
 		checkOutput("42.0", t, V("data", 42));
 		checkOutput("42.0", t, V("data", "42"));
-		checkOutput("1.0", T("<?print float(obj=data)?>"), V("data", true));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_float_bad_kwarg()
+	{
+		T("<?print float(x=data)?>").renders(V("data", true));
 	}
 
 	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
@@ -2251,8 +2292,13 @@ public class UL4Test
 		checkOutput("[['foo', 42]]", T("<?print repr(list(data.items()))?>"), V("data", V("foo", 42)));
 		checkOutput("[0, 1, 2]", T("<?print repr(list(range(3)))?>"));
 		checkOutput("[1, 2, 3]", t, V("data", new Integer[]{1, 2, 3}));
-		checkOutput("['g', 'u', 'r', 'k']", T("<?print list(iterable=data)?>"), V("data", "gurk"));
 		checkOutput("[1, 2, 3]", T("<?print list(data)?>"), V("data", new Iterate()));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_list_bad_kwarg()
+	{
+		T("<?print list(iterable=data)?>").renders(V("data", "gurk"));
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
@@ -2270,7 +2316,12 @@ public class UL4Test
 		checkOutput("3", t, V("data", asList(1, 2, 3)));
 		checkOutput("3", t, V("data", new Integer[]{1, 2, 3}));
 		checkOutput("3", t, V("data", V("a", 1, "b", 2, "c", 3)));
-		checkOutput("3", T("<?print len(sequence=data)?>"), V("data", "foo"));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_len_bad_kwarg()
+	{
+		T("<?print len(sequence=data)?>").renders(V("data", "foo"));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2328,7 +2379,12 @@ public class UL4Test
 		checkOutput("True", T("<?print any('foo')?>"));
 		checkOutput("True", T("<?print any(i > 7 for i in range(10))?>"));
 		checkOutput("False", T("<?print any(i > 17 for i in range(10))?>"));
-		checkOutput("True", T("<?print any(iterable='foo')?>"));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_any_bad_kwarg()
+	{
+		T("<?print any(iterable='foo')?>").renders();
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2356,7 +2412,12 @@ public class UL4Test
 		checkOutput("True", T("<?print all('foo')?>"));
 		checkOutput("False", T("<?print all(i < 7 for i in range(10))?>"));
 		checkOutput("True", T("<?print all(i < 17 for i in range(10))?>"));
-		checkOutput("True", T("<?print all(iterable='foo')?>"));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_all_bad_kwarg()
+	{
+		T("<?print all(iterable='foo')?>").renders();
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2503,7 +2564,11 @@ public class UL4Test
 		checkOutput("[(f)(o)(o)]", t, V("data", "foo"));
 		checkOutput("[(foo)(bar)]", t, V("data", asList("foo", "bar")));
 		checkOutput("[(foo)]", t, V("data", V("foo", true)));
+	}
 
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isfirstlast_bad_kwarg()
+	{
 		Template templatekw = T("<?for (f, l, value) in isfirstlast(iterable=data)?><?if f?>[<?end if?>(<?print value?>)<?if l?>]<?end if?><?end for?>");
 		checkOutput("[(f)(o)(o)]", templatekw, V("data", "foo"));
 	}
@@ -2560,7 +2625,11 @@ public class UL4Test
 		checkOutput("[(f)(o)(o)", t, V("data", "foo"));
 		checkOutput("[(foo)(bar)", t, V("data", asList("foo", "bar")));
 		checkOutput("[(foo)", t, V("data", V("foo", true)));
+	}
 
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isfirst_bad_kwarg()
+	{
 		Template templatekw = T("<?for (f, value) in isfirst(iterable=data)?><?if f?>[<?end if?>(<?print value?>)<?end for?>");
 		checkOutput("[(f)(o)(o)", templatekw, V("data", "foo"));
 	}
@@ -2617,6 +2686,11 @@ public class UL4Test
 		checkOutput("(f)(o)(o)]", t, V("data", "foo"));
 		checkOutput("(foo)(bar)]", t, V("data", asList("foo", "bar")));
 		checkOutput("(foo)]", t, V("data", V("foo", true)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_islast_bad_kwarg()
+	{
 
 		Template templatekw = T("<?for (l, value) in islast(iterable=data)?>(<?print value?>)<?if l?>]<?end if?><?end for?>");
 		checkOutput("(f)(o)(o)]", templatekw, V("data", "foo"));
@@ -2686,7 +2760,12 @@ public class UL4Test
 		checkOutput("False", t, V("data", V()));
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print isundefined(repr)?>"));
-		checkOutput("False", T("<?print isundefined(obj=data)?>"), V("data", null));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isundefined_bad_kwarg()
+	{
+		T("<?print isundefined(obj=data)?>").renders(V("data", null));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2724,7 +2803,12 @@ public class UL4Test
 		checkOutput("True", t, V("data", T("")));
 		checkOutput("True", T("<?print isdefined(repr)?>"));
 		checkOutput("True", t, V("data", new Color(0, 0, 0)));
-		checkOutput("True", T("<?print isdefined(obj=data)?>"), V("data", null));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isdefined_bad_kwarg()
+	{
+		T("<?print isdefined(obj=data)?>").renders(V("data", null));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2762,6 +2846,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print isnone(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isnone_bad_kwarg()
+	{
 		checkOutput("True", T("<?print isnone(obj=data)?>"), V("data", null));
 	}
 
@@ -2800,6 +2889,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print isbool(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+		}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isbool_bad_kwarg()
+	{
 		checkOutput("False", T("<?print isbool(obj=data)?>"), V("data", null));
 	}
 
@@ -2838,6 +2932,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print isint(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isint_bad_kwarg()
+	{
 		checkOutput("False", T("<?print isint(obj=data)?>"), V("data", null));
 	}
 
@@ -2876,6 +2975,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print isfloat(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isfloat_bad_kwarg()
+	{
 		checkOutput("False", T("<?print isfloat(obj=data)?>"), V("data", null));
 	}
 
@@ -2914,6 +3018,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print isstr(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isstr_bad_kwarg()
+	{
 		checkOutput("False", T("<?print isstr(obj=data)?>"), V("data", null));
 	}
 
@@ -2952,6 +3061,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print isdate(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isdate_bad_kwarg()
+	{
 		checkOutput("False", T("<?print isdate(obj=data)?>"), V("data", null));
 	}
 
@@ -2978,6 +3092,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print isdate(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isdatetime_bad_kwarg()
+	{
 		checkOutput("False", T("<?print isdate(obj=data)?>"), V("data", null));
 	}
 
@@ -3017,6 +3136,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print isexception(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isexception_bad_kwarg()
+	{
 		checkOutput("False", T("<?print isexception(obj=data)?>"), V("data", null));
 	}
 
@@ -3056,6 +3180,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print islist(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_islist_bad_kwarg()
+	{
 		checkOutput("False", T("<?print islist(obj=data)?>"), V("data", null));
 	}
 
@@ -3095,6 +3224,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print isset(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isset_bad_kwarg()
+	{
 		checkOutput("False", T("<?print isset(obj=data)?>"), V("data", null));
 	}
 
@@ -3133,6 +3267,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print isdict(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isdict_bad_kwarg()
+	{
 		checkOutput("False", T("<?print isdict(obj=data)?>"), V("data", null));
 	}
 
@@ -3171,6 +3310,11 @@ public class UL4Test
 		checkOutput("True", t, V("data", T("")));
 		checkOutput("False", T("<?print istemplate(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_istemplate_bad_kwarg()
+	{
 		checkOutput("False", T("<?print istemplate(obj=data)?>"), V("data", null));
 	}
 
@@ -3209,6 +3353,11 @@ public class UL4Test
 		checkOutput("True", t, V("data", T("")));
 		checkOutput("True", T("<?print isfunction(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isfunction_bad_kwarg()
+	{
 		checkOutput("False", T("<?print isfunction(obj=data)?>"), V("data", null));
 	}
 
@@ -3247,6 +3396,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print iscolor(repr)?>"));
 		checkOutput("True", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_iscolor_bad_kwarg()
+	{
 		checkOutput("False", T("<?print iscolor(obj=data)?>"), V("data", null));
 	}
 
@@ -3285,6 +3439,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print istimedelta(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_istimedelta_bad_kwarg()
+	{
 		checkOutput("False", T("<?print istimedelta(obj=data)?>"), V("data", null));
 	}
 
@@ -3323,6 +3482,11 @@ public class UL4Test
 		checkOutput("False", t, V("data", T("")));
 		checkOutput("False", T("<?print ismonthdelta(repr)?>"));
 		checkOutput("False", t, V("data", new Color(0, 0, 0)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_ismonthdelta_bad_kwarg()
+	{
 		checkOutput("False", T("<?print ismonthdelta(obj=data)?>"), V("data", null));
 	}
 
@@ -3374,6 +3538,12 @@ public class UL4Test
 				}
 			}
 		}
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_isinstance_bad_kwarg()
+	{
+		checkOutput("", T("<?print isinstance(obj=None, type=bool)?>"));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -3457,7 +3627,12 @@ public class UL4Test
 		checkOutput("@(2000-02-29T12:34:56)", t, V("data", LocalDateTime.of(2000, 2, 29, 12, 34, 56)));
 		checkOutput("@(2000-02-29T12:34:56.123456)", t, V("data", LocalDateTime.of(2000, 2, 29, 12, 34, 56, 123456789)));
 		checkOutput("timedelta(days=1, seconds=2, microseconds=3)", t, V("data", new TimeDelta(1, 2, 3)));
-		checkOutput("None", T("<?print repr(obj=data)?>"), V("data", null));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_repr_bad_kwarg()
+	{
+		T("<?print repr(obj=data)?>").renders(V("data", null));
 	}
 
 
@@ -3518,7 +3693,12 @@ public class UL4Test
 		checkOutput("@(2000-02-29T12:34)", t, V("data", LocalDateTime.of(2000, 2, 29, 12, 34)));
 		checkOutput("@(2000-02-29T12:34:56)", t, V("data", LocalDateTime.of(2000, 2, 29, 12, 34, 56)));
 		checkOutput("@(2000-02-29T12:34:56.123456)", t, V("data", LocalDateTime.of(2000, 2, 29, 12, 34, 56, 123456789)));
-		checkOutput("None", T("<?print repr(obj=data)?>"), V("data", null));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_ascii_bad_kwarg()
+	{
+		T("<?print repr(obj=data)?>").renders(V("data", null));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -3632,9 +3812,12 @@ public class UL4Test
 		checkOutput("\u0000", t, V("data", 0));
 		checkOutput("a", t, V("data", (int)'a'));
 		checkOutput("\u20ac", t, V("data", 0x20ac));
+	}
 
-		Template templatekw = T("<?print chr(i=data)?>");
-		checkOutput("\u0000", templatekw, V("data", 0));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_chr_bad_kwarg()
+	{
+		T("<?print chr(i=data)?>").renders(V("data", 0));
 	}
 
 	@Test
@@ -3644,9 +3827,12 @@ public class UL4Test
 		checkOutput("0", t, V("data", "\u0000"));
 		checkOutput("97", t, V("data", "a"));
 		checkOutput("8364", t, V("data", "\u20ac"));
+	}
 
-		Template templatekw = T("<?print ord(c=data)?>");
-		checkOutput("0", templatekw, V("data", "\u0000"));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_ord_bad_kwarg()
+	{
+		T("<?print ord(c=data)?>").renders(V("data", "\u0000"));
 	}
 
 	@Test
@@ -3657,9 +3843,12 @@ public class UL4Test
 		checkOutput("0xff", t, V("data", 0xff));
 		checkOutput("0xffff", t, V("data", 0xffff));
 		checkOutput("-0xffff", t, V("data", -0xffff));
+	}
 
-		Template templatekw = T("<?print hex(number=data)?>");
-		checkOutput("0x0", templatekw, V("data", 0));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_hex_bad_kwarg()
+	{
+		T("<?print hex(number=data)?>").renders(V("data", 0));
 	}
 
 	@Test
@@ -3670,10 +3859,12 @@ public class UL4Test
 		checkOutput("0o77", t, V("data", 077));
 		checkOutput("0o7777", t, V("data", 07777));
 		checkOutput("-0o7777", t, V("data", -07777));
+	}
 
-
-		Template templatekw = T("<?print oct(number=data)?>");
-		checkOutput("0o0", templatekw, V("data", 0));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_oct_bad_kwarg()
+	{
+		T("<?print oct(number=data)?>").renders(V("data", 0));
 	}
 
 	@Test
@@ -3684,10 +3875,12 @@ public class UL4Test
 		checkOutput("0b0", t, V("data", 0));
 		checkOutput("0b11", t, V("data", 3));
 		checkOutput("-0b1111", t, V("data", -15));
+	}
 
-
-		Template templatekw = T("<?print bin(number=data)?>");
-		checkOutput("0b0", templatekw, V("data", 0));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_bin_bad_kwarg()
+	{
+		T("<?print bin(number=data)?>").renders(V("data", 0));
 	}
 
 	@Test
@@ -3699,9 +3892,12 @@ public class UL4Test
 		checkOutput("42", t, V("data", -42));
 		checkOutput("1 month", t, V("data", new MonthDelta(-1)));
 		checkOutput("1 day, 0:00:01.000001", t, V("data", new TimeDelta(-1, -1, -1)));
+	}
 
-		Template templatekw = T("<?print abs(number=data)?>");
-		checkOutput("0", templatekw, V("data", 0));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_abs_bad_kwarg()
+	{
+		T("<?print abs(number=data)?>").renders(V("data", 0));
 	}
 
 	@Test
@@ -3743,8 +3939,12 @@ public class UL4Test
 		checkOutput("6", T("<?print sum([1, 2, 3])?>"));
 		checkOutput("12", T("<?print sum([1, 2, 3], 6)?>"));
 		checkOutput("5050", T("<?print sum(range(101))?>"));
+	}
 
-		checkOutput("12", T("<?print sum(iterable=[1, 2, 3], start=6)?>"));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_sum_bad_kwarg()
+	{
+		T("<?print sum(iterable=[1, 2, 3], start=6)?>").renders();
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -3759,8 +3959,12 @@ public class UL4Test
 		checkOutput("g", T("<?print first('gurk')?>"));
 		checkOutput("None", T("<?print repr(first(''))?>"));
 		checkOutput("x", T("<?print first('', 'x')?>"));
+	}
 
-		checkOutput("x", T("<?print first(iterable='', default='x')?>"));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_first_bad_kwarg()
+	{
+		T("<?print first(iterable='', default='x')?>").renders();
 	}
 
 	@Test
@@ -3769,8 +3973,12 @@ public class UL4Test
 		checkOutput("k", T("<?print last('gurk')?>"));
 		checkOutput("None", T("<?print repr(last(''))?>"));
 		checkOutput("x", T("<?print last('', 'x')?>"));
+	}
 
-		checkOutput("x", T("<?print last(iterable='', default='x')?>"));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_last_bad_kwarg()
+	{
+		T("<?print last(iterable='', default='x')?>").renders();
 	}
 
 	@Test
@@ -3781,10 +3989,15 @@ public class UL4Test
 		checkOutput("24679", t, V("data", "92746"));
 		checkOutput("172342", t, V("data", asList(42, 17, 23)));
 		checkOutput("012", t, V("data", V(0, "zero", 1, "one", 2, "two")));
+	}
 
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_sorted_bad_kwarg()
+	{
 		Template templatekw = T("<?for i in sorted(iterable=data)?><?print i?><?end for?>");
 		checkOutput("gkru", templatekw, V("data", "gurk"));
 	}
+
 
 	@Test
 	public void function_range()
@@ -3868,6 +4081,11 @@ public class UL4Test
 		checkOutput("<type ul4.Template>", t, V("data", T("")));
 		checkOutput("<type color>", t, V("data", new Color(0, 0, 0)));
 		checkOutput("<type java.lang.RuntimeException>", t, V("data", new RuntimeException("broken")));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_type_bad_kwarg()
+	{
 
 		Template tkw = T("<?print type(obj=data)?>");
 		checkOutput("<type None>", tkw, V("data", null));
@@ -3879,9 +4097,12 @@ public class UL4Test
 		Template t = T("<?for i in reversed(x)?>(<?print i?>)<?end for?>");
 		checkOutput("(3)(2)(1)", t, V("x", "123"));
 		checkOutput("(3)(2)(1)", t, V("x", asList(1, 2, 3)));
+	}
 
-		Template tkw = T("<?for i in reversed(sequence=x)?>(<?print i?>)<?end for?>");
-		checkOutput("(3)(2)(1)", tkw, V("x", "123"));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_reversed_bad_kwarg()
+	{
+		T("<?for i in reversed(sequence=x)?>(<?print i?>)<?end for?>").renders(V("x", "123"));
 	}
 
 	@Test
@@ -3998,7 +4219,12 @@ public class UL4Test
 	{
 		String result = "acbd18db4cc2f85cedef654fccc4a4d8";
 		checkOutput(result, T("<?print md5('foo')?>"));
-		checkOutput(result, T("<?print md5(string='foo')?>"));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_md5_bad_kwarg()
+	{
+		T("<?print md5(string='foo')?>").renders();
 	}
 
 	@Test
@@ -4006,7 +4232,12 @@ public class UL4Test
 	{
 		String result = "468b5b132508a02f1868576247763abed96ac41db9287d21c8b5379ad71fbe2a2bf77fd3a738dda0572e0761938149f5b91b58d2ff87b9482680540606a710943d2a69f66fe89e2693361300c914b42c24abb29a80ef8840b6a0b67c96e5960292cc38cd959017931fe28e2a921107ade2f845e09a7590e9bf6755bd04ec51af";
 		checkOutput(result, T("<?print scrypt('foo', 'bar')?>"));
-		checkOutput(result, T("<?print scrypt(string='foo', salt='bar')?>"));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_scrypt_bad_kwarg()
+	{
+		T("<?print scrypt(string='foo', salt='bar')?>").renders();
 	}
 
 	@Test
@@ -4115,7 +4346,11 @@ public class UL4Test
 		checkOutput("False", T("<?code m = 'gurkhurz'.startswith?><?print m('hurz')?>"));
 		checkOutput("True", T("<?print 'gurkhurz'.startswith(['hu', 'gu'])?>"));
 		checkOutput("False", T("<?print 'gurkhurz'.startswith(['rk', 'rz'])?>"));
+	}
 
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_startswith_bad_kwarg()
+	{
 		checkOutput("False", T("<?print 'gurkhurz'.startswith(prefix='hurz')?>"));
 	}
 
@@ -4127,7 +4362,11 @@ public class UL4Test
 		checkOutput("False", T("<?code m = 'gurkhurz'.endswith?><?print m('gurk')?>"));
 		checkOutput("False", T("<?print 'gurkhurz'.endswith(['hu', 'gu'])?>"));
 		checkOutput("True", T("<?print 'gurkhurz'.endswith(['rk', 'rz'])?>"));
+	}
 
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_endswith_bad_kwarg()
+	{
 		checkOutput("False", T("<?print 'gurkhurz'.endswith(suffix='gurk')?>"));
 	}
 
@@ -4137,7 +4376,11 @@ public class UL4Test
 		checkOutput("gurk", T("<?print obj.strip()?>"), V("obj", " \t\r\ngurk \t\r\n"));
 		checkOutput("gurk", T("<?print obj.strip('xyz')?>"), V("obj", "xyzzygurkxyzzy"));
 		checkOutput("gurk", T("<?code m = obj.strip?><?print m('xyz')?>"), V("obj", "xyzzygurkxyzzy"));
+	}
 
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_strip_bad_kwarg()
+	{
 		checkOutput("gurk", T("<?print obj.strip(chars='xyz')?>"), V("obj", "xyzzygurkxyzzy"));
 	}
 
@@ -4147,7 +4390,11 @@ public class UL4Test
 		checkOutput("gurk \t\r\n", T("<?print obj.lstrip()?>"), V("obj", " \t\r\ngurk \t\r\n"));
 		checkOutput("gurkxyzzy", T("<?print obj.lstrip(arg)?>"), V("obj", "xyzzygurkxyzzy", "arg", "xyz"));
 		checkOutput("gurkxyzzy", T("<?code m = obj.lstrip?><?print m(arg)?>"), V("obj", "xyzzygurkxyzzy", "arg", "xyz"));
+	}
 
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_lstrip_bad_kwarg()
+	{
 		checkOutput("gurkxyzzy", T("<?print obj.lstrip(chars=arg)?>"), V("obj", "xyzzygurkxyzzy", "arg", "xyz"));
 	}
 
@@ -4157,7 +4404,11 @@ public class UL4Test
 		checkOutput(" \t\r\ngurk", T("<?print obj.rstrip()?>"), V("obj", " \t\r\ngurk \t\r\n"));
 		checkOutput("xyzzygurk", T("<?print obj.rstrip(arg)?>"), V("obj", "xyzzygurkxyzzy", "arg", "xyz"));
 		checkOutput("xyzzygurk", T("<?code m = obj.rstrip?><?print m(arg)?>"), V("obj", "xyzzygurkxyzzy", "arg", "xyz"));
+	}
 
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_rstrip_bad_kwarg()
+	{
 		checkOutput("xyzzygurk", T("<?print obj.rstrip(chars=arg)?>"), V("obj", "xyzzygurkxyzzy", "arg", "xyz"));
 	}
 
@@ -4170,7 +4421,6 @@ public class UL4Test
 		checkOutput("()(f)(o)(o)()", T("<?for item in obj.split(arg, None)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
 		checkOutput("()(f)(oxxoxx)", T("<?for item in obj.split(arg, 2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
 		checkOutput("()(f)(oxxoxx)", T("<?code m = obj.split?><?for item in m(arg, 2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
-
 		checkOutput("()(f)(oxxoxx)", T("<?for item in obj.split(sep=arg, count=2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
 	}
 
@@ -4183,7 +4433,6 @@ public class UL4Test
 		checkOutput("()(f)(o)(o)()", T("<?for item in obj.rsplit(arg, None)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
 		checkOutput("(xxfxxo)(o)()", T("<?for item in obj.rsplit(arg, 2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
 		checkOutput("(xxfxxo)(o)()", T("<?code m = obj.rsplit?><?for item in m(arg, 2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
-
 		checkOutput("(xxfxxo)(o)()", T("<?for item in obj.rsplit(sep=arg, count=2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
 	}
 
@@ -4218,7 +4467,12 @@ public class UL4Test
 		checkOutput("fuuuu", T("<?print 'foo'.replace('o', 'uu', None)?>"));
 		checkOutput("fuuo", T("<?print 'foo'.replace('o', 'uu', 1)?>"));
 		checkOutput("fuuo", T("<?code m = 'foo'.replace?><?print m('o', 'uu', 1)?>"));
-		checkOutput("fuuo", T("<?print 'foo'.replace(old='o', new='uu', count=1)?>"));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void method_replace_bad_kwarg()
+	{
+		T("<?print 'foo'.replace(old='o', new='uu', count=1)?>").renders();
 	}
 
 	@Test
@@ -4363,8 +4617,12 @@ public class UL4Test
 		checkOutput("", T("<?print {}.get('foo')?>"));
 		checkOutput("17", T("<?print {'foo': 17}.get('foo')?>"));
 		checkOutput("17", T("<?code m = {'foo': 17}.get?><?print m('foo')?>"));
+	}
 
-		checkOutput("17", T("<?print {'foo': 17}.get(key='foo', default=42)?>"));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void method_get_bad_kwarg()
+	{
+		T("<?print {'foo': 17}.get(key='foo', default=42)?>").renders();
 	}
 
 	@Test
@@ -4479,8 +4737,12 @@ public class UL4Test
 		checkOutput("1,2,3,4", T("<?print ','.join('1234')?>"));
 		checkOutput("1,2,3,4", T("<?print ','.join(['1', '2', '3', '4'])?>"));
 		checkOutput("1,2,3,4", T("<?code m = ','.join?><?print m('1234')?>"));
+	}
 
-		checkOutput("1,2,3,4", T("<?print ','.join(iterable='1234')?>"));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void method_join_bad_kwarg()
+	{
+		T("<?print ','.join(iterable='1234')?>").renders();
 	}
 
 	@Test
@@ -4553,8 +4815,12 @@ public class UL4Test
 		checkOutput("-1", T("<?print l.find('r', 2, 2)?>"), V("l", asList("g", "u", "r", "k", "g", "u", "r", "k")));
 		checkOutput("-1", T("<?print l.find('r', 7)?>"), V("l", asList("g", "u", "r", "k", "g", "u", "r", "k")));
 		checkOutput("2", T("<?print l.find(None)?>"), V("l", asList("g", "u", null, "k", "g", "u", "r", "k")));
+	}
 
-		checkOutput("2", T("<?print s.find(sub='rk', start=2, end=4)?>"), V("s", "gurkgurk"));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void method_find_int_bad_kwarg()
+	{
+		T("<?print s.find(sub='rk', start=2, end=4)?>").renders(V("s", "gurkgurk"));
 	}
 
 	@Test
@@ -4579,8 +4845,12 @@ public class UL4Test
 		checkOutput("-1", T("<?print l.rfind('r', 2, 2)?>"), V("l", asList("g", "u", "r", "k", "g", "u", "r", "k")));
 		checkOutput("-1", T("<?print l.rfind('r', 7)?>"), V("l", asList("g", "u", "r", "k", "g", "u", "r", "k")));
 		checkOutput("2", T("<?print l.rfind(None)?>"), V("l", asList("g", "u", null, "k", "g", "u", "r", "k")));
+	}
 
-		checkOutput("2", T("<?print s.rfind(sub='rk', start=2, end=4)?>"), V("s", "gurkgurk"));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void method_rfind_bad_kwarg()
+	{
+		T("<?print s.rfind(sub='rk', start=2, end=4)?>").renders(V("s", "gurkgurk"));
 	}
 
 	@Test
@@ -5847,7 +6117,12 @@ public class UL4Test
 		checkOutput(dumps("abc"), T("<?print ul4on.dumps(data)?>"), V("data", "abc"));
 		checkOutput(dumps(asList(1, 2, 3)), T("<?print ul4on.dumps(data)?>"), V("data", asList(1, 2, 3)));
 		checkOutput(dumps(makeMap("one", 1)), T("<?print ul4on.dumps(data)?>"), V("data", V("one", 1)));
-		checkOutput(dumps(null), T("<?print ul4on.dumps(obj=data)?>"), V("data", null));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void module_ul4on_dumps_bad_kwarg()
+	{
+		T("<?print ul4on.dumps(obj=data)?>").renders(V("data", null));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -5857,10 +6132,11 @@ public class UL4Test
 		checkOutput("", T("<?print ul4on.dumps()?>"));
 	}
 
-	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	@Test
 	public void module_ul4on_dumps_2_bad_args()
 	{
+		// The second parameter ({@code indent}) must be passed as a keyword
 		checkOutput("", T("<?print ul4on.dumps(1, 2)?>"));
 	}
 
@@ -5882,7 +6158,12 @@ public class UL4Test
 		checkOutput("'abc'", T("<?print repr(ul4on.loads(dump))?>"), V("dump", dumps("abc")));
 		checkOutput("[1, 2, 3]", T("<?print repr(ul4on.loads(dump))?>"), V("dump", dumps(asList(1, 2, 3))));
 		checkOutput("{'one': 1}", T("<?print repr(ul4on.loads(dump))?>"), V("dump", dumps(V("one", 1))));
-		checkOutput("None", T("<?print repr(ul4on.loads(dump=data))?>"), V("data", dumps(null)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void module_ul4on_loads_bad_kwarg()
+	{
+		T("<?print repr(ul4on.loads(dump=data))?>").renders(V("data", dumps(null)));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)

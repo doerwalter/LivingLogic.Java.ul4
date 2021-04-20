@@ -16,7 +16,7 @@ public class FunctionFirst extends Function
 		return "first";
 	}
 
-	private static final Signature signature = new Signature().addBoth("iterable").addBoth("default", null);
+	private static final Signature signature = new Signature().addPositionalOnly("iterable").addBoth("default", null);
 
 	@Override
 	public Signature getSignature()
