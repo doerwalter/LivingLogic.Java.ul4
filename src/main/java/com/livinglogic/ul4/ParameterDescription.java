@@ -51,7 +51,7 @@ public class ParameterDescription implements UL4Repr
 			@Override
 			public String getUL4ONString()
 			{
-				return "pk=";
+				return "p=";
 			}
 
 			@Override
@@ -251,45 +251,52 @@ public class ParameterDescription implements UL4Repr
 
 		public static String separator(Type oldType, Type newType)
 		{
-			switch (oldType)
+			if (oldType == null)
 			{
-				case POSITIONAL_OR_KEYWORD_REQUIRED:
-				case POSITIONAL_OR_KEYWORD_DEFAULT:
-					switch (newType)
-					{
-						case KEYWORD_ONLY_REQUIRED:
-						case KEYWORD_ONLY_DEFAULT:
-							return ", *, ";
-						default:
-							return ", ";
-					}
-				case POSITIONAL_ONLY_REQUIRED:
-				case POSITIONAL_ONLY_DEFAULT:
-					switch (newType)
-					{
-						case POSITIONAL_OR_KEYWORD_REQUIRED:
-						case POSITIONAL_OR_KEYWORD_DEFAULT:
-							return ", /, ";
-						case KEYWORD_ONLY_REQUIRED:
-						case KEYWORD_ONLY_DEFAULT:
-							return ", /, *, ";
-						default:
-							return ", ";
-					}
-				case KEYWORD_ONLY_REQUIRED:
-				case KEYWORD_ONLY_DEFAULT:
-				case VAR_POSITIONAL:
-				case VAR_KEYWORD:
-					return ", ";
-				default: // This is {@code case null}
-					switch (newType)
-					{
-						case KEYWORD_ONLY_REQUIRED:
-						case KEYWORD_ONLY_DEFAULT:
-							return "*, ";
-						default:
-							return null;
-					}
+				switch (newType)
+				{
+					case KEYWORD_ONLY_REQUIRED:
+					case KEYWORD_ONLY_DEFAULT:
+						return "*, ";
+					default:
+						return null;
+				}
+			}
+			else
+			{
+				switch (oldType)
+				{
+					case POSITIONAL_OR_KEYWORD_REQUIRED:
+					case POSITIONAL_OR_KEYWORD_DEFAULT:
+						switch (newType)
+						{
+							case KEYWORD_ONLY_REQUIRED:
+							case KEYWORD_ONLY_DEFAULT:
+								return ", *, ";
+							default:
+								return ", ";
+						}
+					case POSITIONAL_ONLY_REQUIRED:
+					case POSITIONAL_ONLY_DEFAULT:
+						switch (newType)
+						{
+							case POSITIONAL_OR_KEYWORD_REQUIRED:
+							case POSITIONAL_OR_KEYWORD_DEFAULT:
+								return ", /, ";
+							case KEYWORD_ONLY_REQUIRED:
+							case KEYWORD_ONLY_DEFAULT:
+								return ", /, *, ";
+							default:
+								return ", ";
+						}
+					case KEYWORD_ONLY_REQUIRED:
+					case KEYWORD_ONLY_DEFAULT:
+					case VAR_POSITIONAL:
+					case VAR_KEYWORD:
+						return ", ";
+					default:
+						return null; // Can't happen
+				}
 			}
 		}
 	}
@@ -332,6 +339,21 @@ public class ParameterDescription implements UL4Repr
 		return type;
 	}
 
+	public boolean isPositional()
+	{
+		return type.isPositional();
+	}
+
+	public boolean isKeyword()
+	{
+		return type.isKeyword();
+	}
+
+	public boolean hasDefault()
+	{
+		return type.hasDefault();
+	}
+
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
 		formatter.append("<");
@@ -346,15 +368,11 @@ public class ParameterDescription implements UL4Repr
 		switch (type)
 		{
 			case POSITIONAL_OR_KEYWORD_REQUIRED:
-				return name;
-			case POSITIONAL_OR_KEYWORD_DEFAULT:
-				return name + "=" + FunctionRepr.call(defaultValue);
 			case POSITIONAL_ONLY_REQUIRED:
-				return name;
-			case POSITIONAL_ONLY_DEFAULT:
-				return name + "=" + FunctionRepr.call(defaultValue);
 			case KEYWORD_ONLY_REQUIRED:
 				return name;
+			case POSITIONAL_OR_KEYWORD_DEFAULT:
+			case POSITIONAL_ONLY_DEFAULT:
 			case KEYWORD_ONLY_DEFAULT:
 				return name + "=" + FunctionRepr.call(defaultValue);
 			case VAR_POSITIONAL:

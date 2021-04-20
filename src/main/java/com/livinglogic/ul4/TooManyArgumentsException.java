@@ -18,6 +18,6 @@ public class TooManyArgumentsException extends ArgumentException
 
 	public TooManyArgumentsException(UL4Name object, Signature signature, int given)
 	{
-		this(object.getFullNameUL4(), signature.size(), given);
+		this(object.getFullNameUL4(), signature.countPositionalOnly() + signature.countPositionalOrKeyword(), given);
 	}
 }

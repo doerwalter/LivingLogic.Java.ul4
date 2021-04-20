@@ -23,7 +23,7 @@ public class BoundStringMethodStartsWith extends BoundMethod<String>
 		return "startswith";
 	}
 
-	private static final Signature signature = new Signature().addPositionalOnly("prefix", Signature.required);
+	private static final Signature signature = new Signature().addPositionalOnly("prefix");
 
 	@Override
 	public Signature getSignature()

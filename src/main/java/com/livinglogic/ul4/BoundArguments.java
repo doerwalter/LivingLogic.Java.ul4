@@ -8,8 +8,6 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -24,6 +22,7 @@ public class BoundArguments implements AutoCloseable
 		this.signature = signature;
 		if (signature == null)
 		{
+			// If we don't have a signature we only support keyword arguments
 			if (args != null && args.size() > 0)
 				throw new PositionalArgumentsNotSupportedException(object);
 
@@ -32,96 +31,104 @@ public class BoundArguments implements AutoCloseable
 		}
 		else
 		{
-			int size = signature.size();
-			argumentsByPosition = new ArrayList<Object>(size);
+			int i;
+			int count = signature.count();
+
+			ParameterDescription varPositionalParameter = signature.getVarPositional();
+			ParameterDescription varKeywordParameter = signature.getVarKeyword();
+
+			List<Object> varPositionalArguments = varPositionalParameter != null ? new ArrayList<Object>() : null;
+			LinkedHashMap<String, Object> varKeywordArguments = varKeywordParameter != null ? new LinkedHashMap<String, Object>() : null;
+
+			argumentsByPosition = new ArrayList<Object>(count + (varPositionalParameter != null ? 1 : 0) + (varKeywordParameter != null ? 1 : 0));
+			for (i = 0; i < count; ++i)
+				argumentsByPosition.add(null);
 			argumentsByName = null; // will be created on demand
+			boolean[] haveValue = new boolean[count];
 
-			int argsize = args != null ? args.size() : 0;
-
-			String varPositionalName = null;
-			String varKeywordName = null;
-
-			int i = 0;
-			for (ParameterDescription paramDesc : signature)
+			// Handle positional arguments
+			if (args != null)
 			{
-				String argName = paramDesc.getName();
-				ParameterDescription.Type type = paramDesc.getType();
-				if (type == ParameterDescription.Type.VAR_POSITIONAL)
-					varPositionalName = argName;
-				else if (type == ParameterDescription.Type.VAR_KEYWORD)
-					varKeywordName = argName;
-				else
+				i = 0;
+				for (Object argValue : args)
 				{
-					Object argValue = kwargs != null ? kwargs.get(argName) : null;
-					// parameter has been specified via keyword
-					if (argValue != null || (kwargs != null && kwargs.containsKey(argName)))
+					ParameterDescription param = signature.getParameterByPosition(i);
+					if (param != null && param.isPositional())
 					{
-						if (i < argsize)
-							// parameter has been specified as a positional argument too, so complain
-							throw new DuplicateArgumentException(object, paramDesc);
-						add(argValue);
+						// A parameter exists in this position and it can be specified positionally
+						argumentsByPosition.set(i, argValue);
+						haveValue[i] = true;
 					}
-					// parameter has been specified via position
 					else
 					{
-						// Parameter must be specified via keyword, so complain
-						if (!paramDesc.isKeyword())
-							throw ArgumentMustBeKeywordException(object, argName);
-
-						if (i < argsize)
-							// parameter has been specified as a positional argument
-							add(args.get(i));
-						else if (type == ParameterDescription.Type.DEFAULT)
-							// we have a default value for this parameter
-							add(paramDesc.getDefaultValue());
+						// No positional parameter supported in this position, see if we have var positionals (i.e. an {@code *args} parameter)
+						if (varPositionalArguments != null)
+							varPositionalArguments.add(argValue);
 						else
-							throw new MissingArgumentException(object, paramDesc);
+							throw new TooManyArgumentsException(object, signature, args.size());
 					}
+					++i;
+				}
+			}
+
+			// Handle keyword arguments
+			if (kwargs != null)
+			{
+				for (Map.Entry<String, Object> kwarg : kwargs.entrySet())
+				{
+					String argName = kwarg.getKey();
+					Object argValue = kwarg.getValue();
+
+					ParameterDescription param = signature.getParameterByName(argName);
+					if (param != null && param.isKeyword())
+					{
+						// A parameter exists with this name and it can be specified via keyword
+						int position = param.getPosition();
+						if (haveValue[position])
+							throw new DuplicateArgumentException(object, param);
+						else
+						{
+							argumentsByPosition.set(position, argValue);
+							haveValue[position] = true;
+						}
+					}
+					else
+					{
+						// No keyword parameter supported with this name, see if we have var keywords (i.e. an {@code *kwargs} parameter)
+						if (varKeywordArguments != null)
+						{
+							if (varKeywordArguments.containsKey(argName))
+								throw new DuplicateArgumentException(object, argName);
+							varKeywordArguments.put(argName, argValue);
+						}
+						else
+							throw new UnsupportedArgumentNameException(object, argName);
+					}
+				}
+			}
+
+			// Fill in default values and check that every parameter has a value
+			i = 0;
+			for (ParameterDescription param : signature.getParametersByPosition())
+			{
+				if (!haveValue[i])
+				{
+					if (param.hasDefault())
+					{
+						argumentsByPosition.set(i, param.getDefaultValue());
+						haveValue[i] = true;
+					}
+					else
+						throw new MissingArgumentException(object, param);
 				}
 				++i;
 			}
 
-			// Handle additional positional arguments:
-			// if there are any, and we support a "*" parameter, put the remaining arguments into this argument as a list, else complain
-			int expectedArgCount = signature.size();
-			if (argsize > expectedArgCount)
-			{
-				if (varPositionalName != null)
-					add(args.subList(expectedArgCount, argsize));
-				else
-					throw new TooManyArgumentsException(object, signature, argsize);
-			}
-			else
-			{
-				if (varPositionalName != null)
-					add(new ArrayList<Object>());
-			}
-
-			// Handle additional keyword arguments:
-			// if there are any, and we support a "**" parameter, put the remaining keyword arguments into this argument as a map, else complain
-			if (kwargs != null)
-			{
-				if (varKeywordName != null)
-				{
-					LinkedHashMap<String, Object> realRemainingKeywordArguments = new LinkedHashMap<String, Object>();
-					for (String kwargname : kwargs.keySet())
-					{
-						if (!signature.containsParameterNamed(kwargname))
-						{
-							realRemainingKeywordArguments.put(kwargname, kwargs.get(kwargname));
-						}
-					}
-					add(realRemainingKeywordArguments);
-				}
-				else
-				{
-					for (String kwargname : kwargs.keySet())
-					{
-						if (!signature.containsParameterNamed(kwargname))
-							throw new UnsupportedArgumentNameException(object, kwargname);
-					}
-				}
-			}
+			// Set variable parameters
+			if (varPositionalArguments != null)
+				argumentsByPosition.add(varPositionalArguments);
+			if (varKeywordArguments != null)
+				argumentsByPosition.add(varKeywordArguments);
 		}
 	}
 
@@ -137,8 +144,16 @@ public class BoundArguments implements AutoCloseable
 			argumentsByName = new LinkedHashMap<String, Object>(argumentsByPosition.size());
 
 			int i = 0;
-			for (ParameterDescription paramDesc : signature.getParameters())
-				argumentsByName.put(paramDesc.getName(), argumentsByPosition.get(i++));
+			for (ParameterDescription param : signature.getParametersByPosition())
+				argumentsByName.put(param.getName(), argumentsByPosition.get(i++));
+
+			ParameterDescription varPositional = signature.getVarPositional();
+			if (varPositional != null)
+				argumentsByName.put(varPositional.getName(), argumentsByPosition.get(i++));
+
+			ParameterDescription varKeyword = signature.getVarKeyword();
+			if (varKeyword != null)
+				argumentsByName.put(varKeyword.getName(), argumentsByPosition.get(i++));
 		}
 	}
 
@@ -159,11 +174,6 @@ public class BoundArguments implements AutoCloseable
 		return argumentsByName.get(name);
 	}
 
-	private void add(Object value)
-	{
-		argumentsByPosition.add(value);
-	}
-
 	/**
 	"Destroys" a {@code BoundArguments} object to simplify the work the Java GC has to do
 	After the call the object is no longer usable.
@@ -176,14 +186,14 @@ public class BoundArguments implements AutoCloseable
 	{
 		if (signature != null)
 		{
-			if (signature.hasRemainingKeywordParameters())
+			if (signature.hasVarKeyword())
 			{
 				Map<String, Object> kwargs = (Map<String, Object>)get(argumentsByPosition.size() - 1);
 				kwargs.clear();
 			}
-			if (signature.hasRemainingParameters())
+			if (signature.hasVarPositional())
 			{
-				List<Object> args = (List<Object>)get(argumentsByPosition.size() - (signature.hasRemainingKeywordParameters() ? 2 : 1));
+				List<Object> args = (List<Object>)get(argumentsByPosition.size() - (signature.hasVarKeyword() ? 2 : 1));
 				args.clear();
 			}
 			argumentsByPosition.clear();
