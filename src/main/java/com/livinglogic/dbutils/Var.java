@@ -21,7 +21,8 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 
 public abstract class Var implements UL4GetAttr, UL4SetAttr, UL4Dir
 {
-	public static Object noValue = new Object();
+	public static final Object noValue = new Object();
+
 	protected Object value;
 
 	public Var()
