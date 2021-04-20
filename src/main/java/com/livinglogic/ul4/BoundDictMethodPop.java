@@ -11,10 +11,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+
 public class BoundDictMethodPop extends BoundMethod<Map>
 {
-	private static Object noValue = new Object();
-
 	public BoundDictMethodPop(Map object)
 	{
 		super(object);
@@ -26,7 +25,7 @@ public class BoundDictMethodPop extends BoundMethod<Map>
 		return "pop";
 	}
 
-	private static final Signature signature = new Signature().addPositionalOnly("key").addPositionalOnly("default", noValue);
+	private static final Signature signature = new Signature().addPositionalOnly("key").addPositionalOnly("default", Signature.noValue);
 
 	@Override
 	public Signature getSignature()
@@ -55,7 +54,7 @@ public class BoundDictMethodPop extends BoundMethod<Map>
 	@Override
 	public Object evaluate(BoundArguments args)
 	{
-		if (args.get(1) == noValue)
+		if (args.get(1) == Signature.noValue)
 			return call(object, args.get(0));
 		else
 			return call(object, args.get(0), args.get(1));

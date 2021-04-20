@@ -89,6 +89,14 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 	**/
 	protected int countDefaults;
 
+	/**
+	Can be used as the default value for a parameter where the code must be able
+	to determine whether a value has been specified or not.
+	(Which only works from UL4, in Java you <b>can</b> of course pass
+	{@code noValue}) explicitely).
+	**/
+	public static final Object noValue = new Object();
+
 	public Signature()
 	{
 		parametersByName = new LinkedHashMap<String, ParameterDescription>();

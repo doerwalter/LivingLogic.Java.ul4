@@ -12,15 +12,13 @@ import java.util.Map;
 
 public class FunctionRange extends Function
 {
-	private static Object noValue = new Object();
-
 	@Override
 	public String getNameUL4()
 	{
 		return "range";
 	}
 
-	private static final Signature signature = new Signature().addPositionalOnly("start").addPositionalOnly("stop", noValue).addPositionalOnly("step", noValue);
+	private static final Signature signature = new Signature().addPositionalOnly("start").addPositionalOnly("stop", Signature.noValue).addPositionalOnly("step", Signature.noValue);
 
 	@Override
 	public Signature getSignature()
@@ -34,9 +32,9 @@ public class FunctionRange extends Function
 		Object start = args.get(0);
 		Object stop = args.get(1);
 		Object step = args.get(2);
-		if (step == noValue)
+		if (step == Signature.noValue)
 		{
-			if (stop == noValue)
+			if (stop == Signature.noValue)
 				return call(start);
 			else
 				return call(start, stop);
