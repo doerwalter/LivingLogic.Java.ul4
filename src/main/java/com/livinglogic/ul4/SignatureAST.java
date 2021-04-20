@@ -94,12 +94,11 @@ public class SignatureAST extends CodeAST
 			if (sep != null)
 				formatter.write(sep);
 
-			String name = param.getName();
 			if (type == ParameterDescription.Type.VAR_POSITIONAL)
 				formatter.write("*");
 			else if (type == ParameterDescription.Type.VAR_KEYWORD)
 				formatter.write("**");
-			formatter.write(name);
+			formatter.write(param.getName());
 			if (type.hasDefault())
 			{
 				formatter.write("=");
@@ -151,7 +150,10 @@ public class SignatureAST extends CodeAST
 		for (Object item : dump)
 		{
 			if (state == 0)
+			{
 				name = (String)item;
+				state = 1;
+			}
 			else if (state == 1)
 			{
 				type = ParameterDescription.Type.fromUL4ONString((String)item);
