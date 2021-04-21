@@ -214,8 +214,6 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 	{
 		checkPositionalOnly(name);
 		add(name, ParameterDescription.Type.POSITIONAL_ONLY_DEFAULT, defaultValue);
-		++countPositionalOnly;
-		++countDefaults;
 		return this;
 	}
 
@@ -224,7 +222,6 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 		checkBoth(name);
 		checkDefaults(name);
 		add(name, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_REQUIRED, null);
-		++countBoth;
 		return this;
 	}
 
@@ -232,8 +229,6 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 	{
 		checkBoth(name);
 		add(name, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_DEFAULT, defaultValue);
-		++countBoth;
-		++countDefaults;
 		return this;
 	}
 
@@ -242,7 +237,6 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 		checkKeywordOnly(name);
 		checkDefaults(name);
 		add(name, ParameterDescription.Type.KEYWORD_ONLY_REQUIRED, null);
-		++countKeywordOnly;
 		return this;
 	}
 
@@ -250,8 +244,6 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 	{
 		checkKeywordOnly(name);
 		add(name, ParameterDescription.Type.KEYWORD_ONLY_DEFAULT, defaultValue);
-		++countKeywordOnly;
-		++countDefaults;
 		return this;
 	}
 
