@@ -360,6 +360,21 @@ public class ParameterDescription implements UL4Repr
 		formatter.append(getClass().getName());
 		formatter.append(" ");
 		formatter.append(toString());
+		formatter.append(" ");
+		if (isPositional())
+		{
+			if (isKeyword())
+				formatter.append("positional/keyword");
+			else
+				formatter.append("positional-only");
+		}
+		else
+		{
+			if (isKeyword())
+				formatter.append("keyword-only");
+			else
+				formatter.append("?");
+		}
 		formatter.append(">");
 	}
 
