@@ -63,8 +63,10 @@ public class BoundArguments implements AutoCloseable
 					{
 						// No positional parameter supported in this position, see if we have var positionals (i.e. an {@code *args} parameter)
 						if (varPositionalArguments != null)
+							// If we do, add it to the {@code *} parameter
 							varPositionalArguments.add(argValue);
 						else
+							// else complain
 							throw new TooManyArgumentsException(object, signature, args.size());
 					}
 					++i;
@@ -97,11 +99,13 @@ public class BoundArguments implements AutoCloseable
 						// No keyword parameter supported with this name, see if we have var keywords (i.e. an {@code *kwargs} parameter)
 						if (varKeywordArguments != null)
 						{
+							// If we do, add it to the {@code **} parameter (but only once)
 							if (varKeywordArguments.containsKey(argName))
 								throw new DuplicateArgumentException(object, argName);
 							varKeywordArguments.put(argName, argValue);
 						}
 						else
+							// else complain
 							throw new UnsupportedArgumentNameException(object, argName);
 					}
 				}
