@@ -23,7 +23,7 @@ public class BoundStringMethodSplit extends BoundMethod<String>
 		return "split";
 	}
 
-	private static final Signature signature = new Signature().addBoth("sep", null).addBoth("count", null);
+	private static final Signature signature = new Signature().addBoth("sep", null).addBoth("maxsplit", null);
 
 	@Override
 	public Signature getSignature()

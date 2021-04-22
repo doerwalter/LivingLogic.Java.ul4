@@ -16,7 +16,7 @@ public class FunctionCSV extends Function
 		return "csv";
 	}
 
-	private static final Signature signature = new Signature().addBoth("obj");
+	private static final Signature signature = new Signature().addPositionalOnly("obj");
 
 	@Override
 	public Signature getSignature()

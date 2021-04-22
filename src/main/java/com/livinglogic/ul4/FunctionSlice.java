@@ -10,79 +10,73 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
 
-public class FunctionSlice implements UL4Call
+public class FunctionSlice extends Function
 {
-	public String getName()
+	@Override
+	public String getNameUL4()
 	{
 		return "slice";
 	}
 
-	public Object callUL4(List<Object> args, Map<String, Object> kwargs)
+	private static final Signature signature = new Signature().addPositionalOnly("iterable").addPositionalOnly("start").addPositionalOnly("stop", Signature.noValue).addPositionalOnly("step", Signature.noValue);
+
+	@Override
+	public Signature getSignature()
 	{
-		if (kwargs.size() != 0)
-			throw new KeywordArgumentsNotSupportedException(this.getName());
-		switch (args.size())
+		return signature;
+	}
+
+	@Override
+	public Object evaluate(BoundArguments args)
+	{
+		Object iterable = args.get(0);
+		Object start = args.get(1);
+		Object stop = args.get(2);
+		Object step = args.get(3);
+		if (step == Signature.noValue)
 		{
-			case 2:
-				return call(args.get(0), args.get(1));
-			case 3:
-				return call(args.get(0), args.get(1), args.get(2));
-			case 4:
-				return call(args.get(0), args.get(1), args.get(2), args.get(3));
-			default:
-				throw new ArgumentCountMismatchException("function", "slice", args.size(), 2, 4);
+			if (stop == Signature.noValue)
+				return call(iterable, start);
+			else
+				return call(iterable, start, stop);
 		}
+		else
+			return call(iterable, start, stop, step);
 	}
 
-	private static int _start(Object obj)
+	private static int convert(Object obj, int defaultValue)
 	{
-		int start = 0;
-		if (obj != null)
-		{
-			start = Utils.toInt(obj);
-			if (start < 0)
-				throw new IllegalArgumentException("Start argument must >= 0!");
-		}
-		return start;
+		return (obj != null) ? Utils.toInt(obj) : defaultValue;
 	}
 
-	private static int _stop(Object obj)
+	public static Object call(Object iterable, int stop)
 	{
-		int stop = -1;
-		if (obj != null)
-		{
-			stop = Utils.toInt(obj);
-			if (stop < 0)
-				throw new IllegalArgumentException("Stop argument must >= 0!");
-		}
-		return stop;
+		return new Slice(iterable, 0, stop, 1);
 	}
 
-	private static int _step(Object obj)
+	public static Object call(Object iterable, int start, int stop)
 	{
-		int step = 1;
-		if (obj != null)
-		{
-			step = Utils.toInt(obj);
-			if (step <= 0)
-				throw new IllegalArgumentException("Step argument must > 0!");
-		}
-		return step;
+		return new Slice(iterable, start, stop, 1);
 	}
 
-	public static Object call(Object obj1, Object obj2)
+	public static Object call(Object iterable, int start, int stop, int step)
 	{
-		return new Slice(obj1, 0, _start(obj2), 1);
+		return new Slice(iterable, start, stop, step);
 	}
 
-	public static Object call(Object obj1, Object obj2, Object obj3)
+	public static Object call(Object iterable, Object stop)
 	{
-		return new Slice(obj1, _start(obj2), _stop(obj3), 1);
+		return call(iterable, convert(stop, -1));
 	}
 
-	public static Object call(Object obj1, Object obj2, Object obj3, Object obj4)
+	public static Object call(Object iterable, Object start, Object stop)
 	{
-		return new Slice(obj1, _start(obj2), _stop(obj3), _step(obj4));
+		return call(iterable, convert(start, 0), convert(stop, -1));
+	}
+
+	public static Object call(Object iterable, Object start, Object stop, Object step)
+	{
+		return call(iterable, convert(start, 0), convert(stop, -1), convert(step, 1));
 	}
 
 	private static class Slice extends FilteredIterator
@@ -96,6 +90,13 @@ public class FunctionSlice implements UL4Call
 
 		public Slice(Object iterable, int start, int stop, int step)
 		{
+			if (start < 0)
+				throw new IllegalArgumentException("Start argument must >= 0!");
+			if (stop < -1)
+				throw new IllegalArgumentException("Stop argument must >= 0!");
+			if (step <= 0)
+				throw new IllegalArgumentException("Step argument must > 0!");
+
 			iterator = Utils.iterator(iterable);
 			this.next = start;
 			this.start = start;

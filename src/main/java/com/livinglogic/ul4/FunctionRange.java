@@ -128,5 +128,5 @@ public class FunctionRange extends Function
 		}
 	}
 
-	public static UL4Call function = new FunctionRange();
+	public static Function function = new FunctionRange();
 }

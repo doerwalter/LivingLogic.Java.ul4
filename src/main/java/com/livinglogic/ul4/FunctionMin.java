@@ -9,7 +9,10 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.util.Iterator;
 
-public class FunctionMin extends Function
+import static java.util.Arrays.asList;
+
+
+public class FunctionMin extends FunctionWithContext
 {
 	@Override
 	public String getNameUL4()
@@ -17,7 +20,11 @@ public class FunctionMin extends Function
 		return "min";
 	}
 
-	private static final Signature signature = new Signature().addVarPositional("args");
+	private static final Signature signature = new Signature()
+		.addKeywordOnly("default", Signature.noValue)
+		.addKeywordOnly("key", null)
+		.addVarPositional("args")
+	;
 
 	@Override
 	public Signature getSignature()
@@ -26,35 +33,44 @@ public class FunctionMin extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		List<Object> argList = (List<Object>)args.get(0);
-		return (argList.size() == 0) ? call() : call(argList);
+		Object defaultValue = args.get(0);
+		Object key = args.get(1);
+		List<Object> argList = (List<Object>)args.get(2);
+		if (argList.size() == 0)
+			throw new MissingArgumentException("min", "args", 0);
+		return call(context, argList, defaultValue, key);
 	}
 
-	public static Object call()
-	{
-		throw new MissingArgumentException("min", "args", 0);
-	}
-
-	public static Object call(List<Object> objs)
+	public static Object call(EvaluationContext context, List<Object> objs, Object defaultValue, Object key)
 	{
 		Iterator iter = Utils.iterator(objs.size() == 1 ? objs.get(0) : objs);
 
 		Object minValue = null;
+		Object minKey = null;
 		boolean first = true;
 
 		for (;iter.hasNext();)
 		{
 			Object testValue = iter.next();
-			if (first || LTAST.call(testValue, minValue))
+			Object testKey = key != null ? CallAST.call(context, key, asList(testValue), null) : testValue;
+			if (first || LTAST.call(testKey, minKey))
+			{
 				minValue = testValue;
+				minKey = testKey;
+			}
 			first = false;
 		}
 		if (first)
-			throw new UnsupportedOperationException("min() arg is an empty sequence!");
+		{
+			if (defaultValue == Signature.noValue)
+				throw new UnsupportedOperationException("min() arg is an empty sequence!");
+			else
+				minValue = defaultValue;
+		}
 		return minValue;
 	}
 
-	public static final Function function = new FunctionMin();
+	public static final FunctionWithContext function = new FunctionMin();
 }

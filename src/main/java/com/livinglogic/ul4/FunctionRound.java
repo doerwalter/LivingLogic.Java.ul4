@@ -18,7 +18,7 @@ public class FunctionRound extends Function
 		return "round";
 	}
 
-	private static final Signature signature = new Signature().addBoth("x").addBoth("digits", 0);
+	private static final Signature signature = new Signature().addPositionalOnly("number").addBoth("digits", 0);
 
 	@Override
 	public Signature getSignature()

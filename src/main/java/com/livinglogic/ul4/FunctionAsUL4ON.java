@@ -13,7 +13,7 @@ public class FunctionAsUL4ON extends Function
 		return "asul4on";
 	}
 
-	private static final Signature signature = new Signature().addBoth("obj");
+	private static final Signature signature = new Signature().addPositionalOnly("obj");
 
 	@Override
 	public Signature getSignature()

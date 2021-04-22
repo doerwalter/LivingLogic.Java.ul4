@@ -10,53 +10,56 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class FunctionRandRange implements UL4Call
+public class FunctionRandRange extends Function
 {
+	@Override
 	public String getNameUL4()
 	{
 		return "randrange";
 	}
 
-	public Object callUL4(List<Object> args, Map<String, Object> kwargs)
+	private static final Signature signature = new Signature().addPositionalOnly("start").addPositionalOnly("stop", Signature.noValue).addPositionalOnly("step", Signature.noValue);
+
+	@Override
+	public Signature getSignature()
 	{
-		if (kwargs.size() != 0)
-			throw new KeywordArgumentsNotSupportedException(getNameUL4());
-		switch (args.size())
+		return signature;
+	}
+
+	@Override
+	public Object evaluate(BoundArguments args)
+	{
+		Object start = args.get(0);
+		Object stop = args.get(1);
+		Object step = args.get(2);
+		if (step == Signature.noValue)
 		{
-			case 1:
-				return call(args.get(0));
-			case 2:
-				return call(args.get(0), args.get(1));
-			case 3:
-				return call(args.get(0), args.get(1), args.get(2));
-			default:
-				throw new ArgumentCountMismatchException("function", "randrange", args.size(), 1, 3);
+			if (stop == Signature.noValue)
+				return call(start);
+			else
+				return call(start, stop);
 		}
+		else
+			return call(start, stop, step);
 	}
 
 	private static Random rng = new Random();
 
-	public static long call(Object stopObj)
+	public static long call(long stop)
 	{
-		long stop = Utils.toLong(stopObj);
 		double value = rng.nextDouble();
 		return (long)(value*stop);
 	}
 
-	public static long call(Object startObj, Object stopObj)
+	public static long call(long start, long stop)
 	{
-		long start = Utils.toLong(startObj);
-		long stop = Utils.toLong(stopObj);
 		long width = stop-start;
 		double value = rng.nextDouble();
 		return start + ((long)(value*width));
 	}
 
-	public static long call(Object startObj, Object stopObj, Object stepObj)
+	public static long call(long start, long stop, long step)
 	{
-		long start = Utils.toLong(startObj);
-		long stop = Utils.toLong(stopObj);
-		long step = Utils.toLong(stepObj);
 		long width = stop-start;
 		double value = rng.nextDouble();
 
@@ -70,5 +73,20 @@ public class FunctionRandRange implements UL4Call
 		return start + step*((long)(value * n));
 	}
 
-	public static UL4Call function = new FunctionRandRange();
+	public static long call(Object stop)
+	{
+		return call(Utils.toLong(stop));
+	}
+
+	public static long call(Object start, Object stop)
+	{
+		return call(Utils.toLong(start), Utils.toLong(stop));
+	}
+
+	public static long call(Object start, Object stop, Object step)
+	{
+		return call(Utils.toLong(start), Utils.toLong(stop), Utils.toLong(step));
+	}
+
+	public static Function function = new FunctionRandRange();
 }

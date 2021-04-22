@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
+
 public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL4Abs, UL4GetAttr, UL4Dir
 {
 	protected static class Type extends AbstractInstanceType

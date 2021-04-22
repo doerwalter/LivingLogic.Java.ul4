@@ -1904,13 +1904,13 @@ public class UL4Test
 		checkOutput("ok", T("<?code r = randrange(17, 23, 2)?><?if r>=17 and r<23 and r%2?>ok<?else?>fail<?end if?>"));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=MissingArgumentException.class)
 	public void function_randrange_0_args()
 	{
 		checkOutput("", T("<?print randrange()?>"));
 	}
 
-	@CauseTest(expectedCause=ArgumentCountMismatchException.class)
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_randrange_4_args()
 	{
 		checkOutput("", T("<?print randrange(1, 2, 3, 4)?>"));
@@ -1922,7 +1922,7 @@ public class UL4Test
 		checkOutput("ok", T("<?code r = randchoice('abc')?><?if r in 'abc'?>ok<?else?>fail<?end if?>"));
 		checkOutput("ok", T("<?code s = [17, 23, 42]?><?code r = randchoice(s)?><?if r in s?>ok<?else?>fail<?end if?>"));
 		checkOutput("ok", T("<?code s = #12345678?><?code sl = [0x12, 0x34, 0x56, 0x78]?><?code r = randchoice(s)?><?if r in sl?>ok<?else?>fail<?end if?>"));
-		checkOutput("ok", T("<?code r = randchoice(sequence='abc')?><?if r in 'abc'?>ok<?else?>fail<?end if?>"));
+		checkOutput("ok", T("<?code r = randchoice(seq='abc')?><?if r in 'abc'?>ok<?else?>fail<?end if?>"));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -1977,7 +1977,12 @@ public class UL4Test
 		checkOutput("\"a,b,c\"", T("<?print csv(data)?>"), V("data", "a,b,c"));
 		checkOutput("\"a\"\"b\"\"c\"", T("<?print csv(data)?>"), V("data", "a\"b\"c"));
 		checkOutput("\"a\nb\nc\"", T("<?print csv(data)?>"), V("data", "a\nb\nc"));
-		checkOutput("42", T("<?print csv(obj=data)?>"), V("data", 42));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_csv_bad_kwarg()
+	{
+		T("<?print csv(obj=data)?>").renders(V("data", 42));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2014,7 +2019,12 @@ public class UL4Test
 		checkOutput("new ul4.MonthDelta(1)", T("<?print asjson(data)?>"), V("data", new MonthDelta(1)));
 		checkOutput("new ul4.Date_(2000, 2, 29)", T("<?print asjson(data)?>"), V("data", LocalDate.of(2000, 2, 29)));
 		checkOutput("new Date(2000, 1, 29, 12, 34, 56, 987)", T("<?print asjson(data)?>"), V("data", LocalDateTime.of(2000, 2, 29, 12, 34, 56, 987654321)));
-		checkOutput("null", T("<?print asjson(obj=data)?>"), V("data", null));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_asjson_bad_kwarg()
+	{
+		T("<?print asjson(obj=data)?>").renders(V("data", null));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2041,7 +2051,12 @@ public class UL4Test
 		checkOutput("'abc'", T("<?print repr(fromjson(data))?>"), V("data", "\"abc\""));
 		checkOutput("[1, 2, 3]", T("<?print repr(fromjson(data))?>"), V("data", "[1,2,3]"));
 		checkOutput("{'eins': 42}", T("<?print repr(fromjson(data))?>"), V("data", "{\"eins\": 42}"));
-		checkOutput("None", T("<?print repr(fromjson(string=data))?>"), V("data", "null"));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_fromjson_bad_kwarg()
+	{
+		T("<?print repr(fromjson(string=data))?>").renders(V("data", "null"));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2069,7 +2084,13 @@ public class UL4Test
 		checkOutput(dumps("abc"), T("<?print asul4on(data)?>"), V("data", "abc"));
 		checkOutput(dumps(asList(1, 2, 3)), T("<?print asul4on(data)?>"), V("data", asList(1, 2, 3)));
 		checkOutput(dumps(makeMap("one", 1)), T("<?print asul4on(data)?>"), V("data", V("one", 1)));
-		checkOutput(dumps(null), T("<?print asul4on(obj=data)?>"), V("data", null));
+	}
+
+	@CauseTest(expectedCause=UnsupportedOperationException.class)
+	@Test
+	public void function_asul4on_bad_kwarg()
+	{
+		T("<?print asul4on(obj=42)?>").renders();
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2097,7 +2118,12 @@ public class UL4Test
 		checkOutput("'abc'", T("<?print repr(fromul4on(dump))?>"), V("dump", dumps("abc")));
 		checkOutput("[1, 2, 3]", T("<?print repr(fromul4on(dump))?>"), V("dump", dumps(asList(1, 2, 3))));
 		checkOutput("{'one': 1}", T("<?print repr(fromul4on(dump))?>"), V("dump", dumps(V("one", 1))));
-		checkOutput("None", T("<?print repr(fromul4on(dump=data))?>"), V("data", dumps(null)));
+	}
+
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_fromul4on_bad_kwarg()
+	{
+		T("<?print fromul4on(dump='i42')?>").renders();
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -2206,24 +2232,14 @@ public class UL4Test
 		checkOutput("9999999999", T("<?print int(data)?>"), V("data", "9999999999"));
 		checkOutput("999999999999999999999999", T("<?print int(data)?>"), V("data", "999999999999999999999999"));
 		checkOutput("999999999999999999999999", T("<?print int(data)?>"), V("data", new BigInteger("999999999999999999999999")));
-	}
-
-	@CauseTest(expectedCause=TooManyArgumentsException.class)
-	public void function_int_bad_kwarg_1()
-	{
-		T("<?print int(data, 16)?>").renders(V("data", "42"));
+		checkOutput("66", T("<?print int(data, 16)?>"), V("data", "42"));
+		checkOutput("66", T("<?print int(data, base=16)?>"), V("data", "42"));
 	}
 
 	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
-	public void function_int_bad_kwarg_2()
+	public void function_int_bad_kwarg()
 	{
 		T("<?print int(obj=data, base=None)?>").renders(V("data", "42"));
-	}
-
-	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
-	public void function_int_bad_kwarg_3()
-	{
-		T("<?print int(obj=data, base=16)?>").renders(V("data", "42"));
 	}
 
 	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
@@ -2507,9 +2523,12 @@ public class UL4Test
 
 		Template template2 = T("<?for (i, f, l, value) in enumfl(data, 42)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>");
 		checkOutput("[(f=42)(o=43)(o=44)]", template2, V("data", "foo"));
+	}
 
-		Template template2kw = T("<?for (i, f, l, value) in enumfl(iterable=data, start=42)?><?if f?>[<?end if?>(<?print value?>=<?print i?>)<?if l?>]<?end if?><?end for?>");
-		checkOutput("[(f=42)(o=43)(o=44)]", template2kw, V("data", "foo"));
+	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
+	public void function_enumfl_bad_kwarg()
+	{
+		T("<?print enumfl(iterable=data, start=42)?>").renders(V("data", "foo"));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -3908,6 +3927,8 @@ public class UL4Test
 		checkOutput("0", T("<?print min(0, False, 1, True)?>"));
 		checkOutput("False", T("<?print min(False, 0, True, 1)?>"));
 		checkOutput("False", T("<?print min([False, 0, True, 1])?>"));
+		checkOutput("42", T("<?print min([], default=42)?>"));
+		checkOutput("hinz", T("<?def key(s)?><?return s[1]?><?end def?><?print min(['gurk', 'hurz', 'hinz', 'kunz'], key=key)?>"));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -3924,6 +3945,8 @@ public class UL4Test
 		checkOutput("1", T("<?print max(0, False, 1, True)?>"));
 		checkOutput("True", T("<?print max(False, 0, True, 1)?>"));
 		checkOutput("True", T("<?print max([False, 0, True, 1])?>"));
+		checkOutput("42", T("<?print max([], default=42)?>"));
+		checkOutput("hurz", T("<?def key(s)?><?return s[2:]?><?end def?><?print max(['gurk', 'hurz', 'hinz', 'kunz'], key=key)?>"));
 	}
 
 	@CauseTest(expectedCause=MissingArgumentException.class)
@@ -4589,7 +4612,7 @@ public class UL4Test
 		checkOutput("()(f)(o)(o)()", T("<?for item in obj.split(arg, None)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
 		checkOutput("()(f)(oxxoxx)", T("<?for item in obj.split(arg, 2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
 		checkOutput("()(f)(oxxoxx)", T("<?code m = obj.split?><?for item in m(arg, 2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
-		checkOutput("()(f)(oxxoxx)", T("<?for item in obj.split(sep=arg, count=2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
+		checkOutput("()(f)(oxxoxx)", T("<?for item in obj.split(sep=arg, maxsplit=2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
 	}
 
 	@Test
@@ -4601,7 +4624,7 @@ public class UL4Test
 		checkOutput("()(f)(o)(o)()", T("<?for item in obj.rsplit(arg, None)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
 		checkOutput("(xxfxxo)(o)()", T("<?for item in obj.rsplit(arg, 2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
 		checkOutput("(xxfxxo)(o)()", T("<?code m = obj.rsplit?><?for item in m(arg, 2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
-		checkOutput("(xxfxxo)(o)()", T("<?for item in obj.rsplit(sep=arg, count=2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
+		checkOutput("(xxfxxo)(o)()", T("<?for item in obj.rsplit(sep=arg, maxsplit=2)?>(<?print item?>)<?end for?>"), V("obj", "xxfxxoxxoxx", "arg", "xx"));
 	}
 
 	@Test
@@ -6440,6 +6463,7 @@ public class UL4Test
 	public void module_math_isclose()
 	{
 		checkOutput("True", T("<?print math.isclose(math.pi, 3.14, abs_tol=0.1)?>"));
+		checkOutput("False", T("<?print math.isclose(math.pi, 3.03, abs_tol=0.1)?>"));
 	}
 
 	@Test
