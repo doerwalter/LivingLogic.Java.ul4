@@ -11,7 +11,7 @@ public class FunctionDir extends FunctionWithContext
 	@Override
 	public String getNameUL4()
 	{
-		return "getattr";
+		return "dir";
 	}
 
 	private static final Signature signature = new Signature().addPositionalOnly("obj");
