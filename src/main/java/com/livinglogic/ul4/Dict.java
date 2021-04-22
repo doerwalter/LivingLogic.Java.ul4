@@ -6,8 +6,10 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Set;
 import java.util.Map;
+import java.util.LinkedHashMap;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
@@ -24,6 +26,26 @@ public class Dict extends AbstractType
 	public String getDoc()
 	{
 		return "An object that maps keys to values.";
+	}
+
+	private static final Signature signature = new Signature().addVarPositional("args").addVarKeyword("kwargs");
+
+	@Override
+	public Signature getSignature()
+	{
+		return signature;
+	}
+
+	@Override
+	public Object create(BoundArguments arguments)
+	{
+		List<Object> args = (List<Object>)arguments.get(0);
+		Map<String, Object> kwargs = (Map<String, Object>)arguments.get(1);
+		
+		Map<String, Object> result = new LinkedHashMap<String, Object>();
+
+		BoundDictMethodUpdate.call(result, args, kwargs);
+		return result;
 	}
 
 	@Override

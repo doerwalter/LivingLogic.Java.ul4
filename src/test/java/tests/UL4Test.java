@@ -2324,6 +2324,14 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_dict()
+	{
+		checkOutput("{}", T("<?print dict()?>"));
+		checkOutput("{17: 23, 42: 73}", T("<?print dict(data)?>"), V("data", asList(asList(17, 23), asList(42, 73))));
+		checkOutput("{'foo': 23, 'bar': 42}", T("<?print dict({'foo': 17}, foo=23, bar=42)?>"));
+	}
+
+	@Test
 	public void function_len()
 	{
 		Template t = T("<?print len(data)?>");
