@@ -25,6 +25,10 @@ Some type objects can be called to create an instance.
 
 Add function ``isinstance()`` for instance checking against type objects.
 
+The following builtins are type objects now: ``bool``, ``int``, ``float``,
+``str``, ``date``, ``datetime``, ``timedelta``, ``monthdelta``, ``list``,
+``set``, ``dict`` and ``color`` (new).
+
 Add support for UL4 modules. Add the modules ``ul4``, ``math`` and ``operator``
 (and ``ul4on``, which existed before). A module has attributes ``__name__`` and
 ``__doc__``as well as additional attributes.
