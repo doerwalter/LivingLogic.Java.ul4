@@ -15,7 +15,7 @@ public class FunctionIsClose extends Function
 		return "isclose";
 	}
 
-	private static final Signature signature = new Signature().addBoth("a").addBoth("b").addKeywordOnly("rel_to", 1e-9).addKeywordOnly("abs_tol", 0.0);
+	private static final Signature signature = new Signature().addBoth("a").addBoth("b").addKeywordOnly("rel_tol", 1e-9).addKeywordOnly("abs_tol", 0.0);
 
 	@Override
 	public Signature getSignature()
