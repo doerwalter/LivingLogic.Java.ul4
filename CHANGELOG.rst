@@ -5,7 +5,7 @@ Added a ``date`` method to ``date`` and ``datetime`` objects.
 
 Added ``Utils.toBigDecimal(int)`` and ``Utils.toBigDecimal(long)``.
 
-Always raise an ArithmeticException when dividing by zero.
+Always raise an ``ArithmeticException`` when dividing by zero.
 
 Implemented support for ``timedelta // timedelta``.
 
@@ -21,11 +21,30 @@ order.
 Updated Apache Commons Lang to 3.11 and use Apache Commons Text 1.9.
 
 Added type objects. ``type(obj)`` now returns a type object instead of a string.
-Such a type object can be called to create an instance.
+Some type objects can be called to create an instance.
 
-Add function ``isinstance()`` for instance checking.
+Add function ``isinstance()`` for instance checking against type objects.
 
-Add support for UL4 modules. Add the modules ``ul4``, ``math`` and ``operator``.
+Add support for UL4 modules. Add the modules ``ul4``, ``math`` and ``operator``
+(and ``ul4on``, which existed before). A module has attributes ``__name__`` and
+``__doc__``as well as additional attributes.
+
+The module ``ul4`` contains all the types required for UL4 syntax trees. The
+type ``ul4.Template`` is callable to create a new UL4 template from source.
+
+The module ``ul4on`` contains the functions ``loads()`` and ``dumps()`` and
+the types ``Encoder`` and ``Decoder``.
+
+The module ``operator`` contains one type: ``attrgetter``.
+
+``math`` contains the constants ``e``, ``pi`` and ``tau`` as well as the
+functions ``cos()``, ``sin()``, ``tan()``, ``sqrt()`` and ``isclose()``.
+
+Add support for positional-only and keyword-only arguments in the ``Signature``
+API (but not in UL4 itself, i.e. currently it's not possible to define local
+templates with positional-only or keyword-only arguments).
+
+Add functions ``floor()`` and ``ceil()``.
 
 
 exp-154 (2020-04-29)
