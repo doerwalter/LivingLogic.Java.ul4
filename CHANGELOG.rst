@@ -31,8 +31,9 @@ Add support for UL4 modules. Add the modules ``ul4``, ``math`` and ``operator``.
 exp-154 (2020-04-29)
 --------------------
 
-Exceptions can now be logged for all logging levels in ``EvaluationContext``.
-Logging exceptions per se is gone now.
+Exceptions can now be logged for all logging levels in ``EvaluationContext``
+(i.e. an exception can be logged as a wrning). Logging exceptions per se is
+gone now.
 
 
 exp-153-1 (2020-04-20)
