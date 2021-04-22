@@ -4215,6 +4215,174 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_floor()
+	{
+		checkOutput("42", T("<?print floor(x)?>"), V("x", 42));
+		checkOutput("42", T("<?print floor(x, 1)?>"), V("x", 42));
+		checkOutput("40", T("<?print floor(x, -1)?>"), V("x", 40));
+		checkOutput("40", T("<?print floor(x, -1)?>"), V("x", 49));
+		checkOutput("-50", T("<?print floor(x, -1)?>"), V("x", -41));
+		checkOutput("-50", T("<?print floor(x, -1)?>"), V("x", -50));
+		checkOutput("400", T("<?print floor(x, -2)?>"), V("x", 400));
+		checkOutput("400", T("<?print floor(x, -2)?>"), V("x", 499));
+		checkOutput("-500", T("<?print floor(x, -2)?>"), V("x", -401));
+		checkOutput("-500", T("<?print floor(x, -2)?>"), V("x", -500));
+		// Check int overflow
+		checkOutput("-10000000000", T("<?print floor(x, -10)?>"), V("x", -2147483647));
+		// Check long overflow
+		checkOutput("-10000000000000000000", T("<?print floor(x, -19)?>"), V("x", -9223372036854775807L));
+
+		checkOutput("<type int>", T("<?print type(floor(x))?>"), V("x", 42));
+		checkOutput("<type int>", T("<?print type(floor(x, 1))?>"), V("x", 42));
+		checkOutput("<type int>", T("<?print type(floor(x, -1))?>"), V("x", 49));
+
+		checkOutput("True", T("<?print floor(x) == 42?>"), V("x", new Long(42)));
+		checkOutput("True", T("<?print floor(x, 1) == 42?>"), V("x", new Long(42)));
+		checkOutput("True", T("<?print floor(x, -1) == 40?>"), V("x", new Long(40)));
+		checkOutput("True", T("<?print floor(x, -1) == 40?>"), V("x", new Long(49)));
+
+		checkOutput("True", T("<?print floor(x) == 42?>"), V("x", new BigInteger("42")));
+		checkOutput("True", T("<?print floor(x, 1) == 42?>"), V("x", new BigInteger("42")));
+		checkOutput("True", T("<?print floor(x, -1) == 40?>"), V("x", new BigInteger("40")));
+		checkOutput("True", T("<?print floor(x, -1) == 40?>"), V("x", new BigInteger("49")));
+		checkOutput("True", T("<?print floor(x, -1) == -50?>"), V("x", new BigInteger("-41")));
+		checkOutput("True", T("<?print floor(x, -1) == -50?>"), V("x", new BigInteger("-50")));
+		checkOutput("True", T("<?print floor(x, -2) == 400?>"), V("x", new BigInteger("400")));
+		checkOutput("True", T("<?print floor(x, -2) == 400?>"), V("x", new BigInteger("499")));
+		checkOutput("True", T("<?print floor(x, -2) == -500?>"), V("x", new BigInteger("-401")));
+		checkOutput("True", T("<?print floor(x, -2) == -500?>"), V("x", new BigInteger("-500")));
+		checkOutput("1000000000000000000000000000000", T("<?print floor(x, -30)?>"), V("x", new BigInteger("1000000000000000000000000000000")));
+		checkOutput("1000000000000000000000000000000", T("<?print floor(2*x-1, -30)?>"), V("x", new BigInteger("1000000000000000000000000000000")));
+		checkOutput("-1000000000000000000000000000000", T("<?print floor(-x, -30)?>"), V("x", new BigInteger("1000000000000000000000000000000")));
+		checkOutput("-2000000000000000000000000000000", T("<?print floor(-x-1, -30)?>"), V("x", new BigInteger("1000000000000000000000000000000")));
+		checkOutput("-2000000000000000000000000000000", T("<?print floor(-2*x+1, -30)?>"), V("x", new BigInteger("1000000000000000000000000000000")));
+
+		checkOutput("True", T("<?print floor(x) == 42?>"), V("x", 42.4));
+		checkOutput("True", T("<?print floor(x) == 42?>"), V("x", 42.6));
+		checkOutput("True", T("<?print floor(x) == -43?>"), V("x", -42.4));
+		checkOutput("True", T("<?print floor(x) == -43?>"), V("x", -42.6));
+		checkOutput("<type int>", T("<?print type(floor(x))?>"), V("x", 42.5));
+
+		checkOutput("True", T("<?print floor(x, -1) == 40?>"), V("x", 42.4));
+		checkOutput("True", T("<?print floor(x, -1) == 40?>"), V("x", 46.2));
+		checkOutput("True", T("<?print floor(x, -1) == -50?>"), V("x", -42.4));
+		checkOutput("True", T("<?print floor(x, -1) == -50?>"), V("x", -46.2));
+		checkOutput("<type int>", T("<?print type(floor(x, -1))?>"), V("x", 42.5));
+
+		checkOutput("True", T("<?print floor(x, 1) == 42.9?>"), V("x", 42.987));
+		checkOutput("True", T("<?print floor(x, 1) == 42.1?>"), V("x", 42.123));
+		checkOutput("True", T("<?print floor(x, 1) == -43.0?>"), V("x", -42.987));
+		checkOutput("True", T("<?print floor(x, 1) == -42.2?>"), V("x", -42.123));
+		// checkOutput("True", T("<?print floor(x, 2) == 42.58?>"), V("x", 42.589));
+		checkOutput("True", T("<?print floor(x, 2) == 42.12?>"), V("x", 42.123));
+		// checkOutput("True", T("<?print floor(x, 2) == -42.59?>"), V("x", -42.589));
+		checkOutput("True", T("<?print floor(x, 2) == -42.13?>"), V("x", -42.123));
+		checkOutput("<type float>", T("<?print type(floor(x, 1))?>"), V("x", 42.5));
+
+		checkOutput("True", T("<?print floor(x) == 42?>"), V("x", new BigDecimal("42")));
+		checkOutput("True", T("<?print floor(x, 1) == 42?>"), V("x", new BigDecimal("42")));
+		checkOutput("True", T("<?print floor(x, -1) == 40?>"), V("x", new BigDecimal("40")));
+		checkOutput("True", T("<?print floor(x, -1) == 40?>"), V("x", new BigDecimal("49")));
+		checkOutput("True", T("<?print floor(x, -1) == -50?>"), V("x", new BigDecimal("-41")));
+		checkOutput("True", T("<?print floor(x, -1) == -50?>"), V("x", new BigDecimal("-50")));
+		checkOutput("True", T("<?print floor(x, -2) == 400?>"), V("x", new BigDecimal("400")));
+		checkOutput("True", T("<?print floor(x, -2) == 400?>"), V("x", new BigDecimal("499")));
+		checkOutput("True", T("<?print floor(x, -2) == -500?>"), V("x", new BigDecimal("-401")));
+		checkOutput("True", T("<?print floor(x, -2) == -500?>"), V("x", new BigDecimal("-500")));
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	public void function_floor_0_args()
+	{
+		checkOutput("", T("<?print floor()?>"));
+	}
+
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	public void function_floor_3_args()
+	{
+		checkOutput("", T("<?print floor(1, 2, 3)?>"));
+	}
+
+	@Test
+	public void function_ceil()
+	{
+		checkOutput("True", T("<?print ceil(x) == 42?>"), V("x", 42));
+		checkOutput("True", T("<?print ceil(x, 1) == 42?>"), V("x", 42));
+		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", 41));
+		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", 50));
+		checkOutput("True", T("<?print ceil(x, -1) == -50?>"), V("x", -50));
+		checkOutput("True", T("<?print ceil(x, -1) == -40?>"), V("x", -41));
+		checkOutput("True", T("<?print ceil(x, -2) == 500?>"), V("x", 401));
+		checkOutput("True", T("<?print ceil(x, -2) == 500?>"), V("x", 500));
+		checkOutput("True", T("<?print ceil(x, -1) == -500?>"), V("x", -500));
+		checkOutput("True", T("<?print ceil(x, -1) == -400?>"), V("x", -401));
+		checkOutput("<type int>", T("<?print type(ceil(x))?>"), V("x", 42));
+		checkOutput("<type int>", T("<?print type(ceil(x, 1))?>"), V("x", 42));
+		checkOutput("<type int>", T("<?print type(ceil(x, -1))?>"), V("x", 42));
+
+		checkOutput("True", T("<?print ceil(x) == 42?>"), V("x", new Long(42)));
+		checkOutput("True", T("<?print ceil(x, 1) == 42?>"), V("x", new Long(42)));
+		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", new Long(41)));
+		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", new Long(50)));
+
+		checkOutput("True", T("<?print ceil(x) == 42?>"), V("x", new BigInteger("42")));
+		checkOutput("True", T("<?print ceil(x, 1) == 42?>"), V("x", new BigInteger("42")));
+		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", new BigInteger("41")));
+		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", new BigInteger("50")));
+		checkOutput("True", T("<?print ceil(x, -1) == -40?>"), V("x", new BigInteger("-41")));
+		checkOutput("True", T("<?print ceil(x, -1) == -50?>"), V("x", new BigInteger("-50")));
+		checkOutput("True", T("<?print ceil(x, -2) == 500?>"), V("x", new BigInteger("401")));
+		checkOutput("True", T("<?print ceil(x, -2) == 500?>"), V("x", new BigInteger("500")));
+		checkOutput("True", T("<?print ceil(x, -2) == -400?>"), V("x", new BigInteger("-401")));
+		checkOutput("True", T("<?print ceil(x, -2) == -500?>"), V("x", new BigInteger("-500")));
+
+		checkOutput("True", T("<?print ceil(x) == 43?>"), V("x", 42.4));
+		checkOutput("True", T("<?print ceil(x) == 43?>"), V("x", 42.6));
+		checkOutput("True", T("<?print ceil(x) == -42?>"), V("x", -42.4));
+		checkOutput("True", T("<?print ceil(x) == -42?>"), V("x", -42.6));
+		checkOutput("<type int>", T("<?print type(ceil(x))?>"), V("x", 42.5));
+
+		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", 42.4));
+		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", 46.2));
+		checkOutput("True", T("<?print ceil(x, -1) == -40?>"), V("x", -42.4));
+		checkOutput("True", T("<?print ceil(x, -1) == -40?>"), V("x", -46.2));
+		checkOutput("<type int>", T("<?print type(ceil(x, -1))?>"), V("x", 42.5));
+
+		checkOutput("True", T("<?print ceil(x, 1) == 43.0?>"), V("x", 42.987));
+		checkOutput("True", T("<?print ceil(x, 1) == 42.2?>"), V("x", 42.123));
+		checkOutput("True", T("<?print ceil(x, 1) == -42.9?>"), V("x", -42.987));
+		checkOutput("True", T("<?print ceil(x, 1) == -42.1?>"), V("x", -42.123));
+		// checkOutput("True", T("<?print ceil(x, 2) == 42.59?>"), V("x", 42.589));
+		checkOutput("True", T("<?print ceil(x, 2) == 42.13?>"), V("x", 42.123));
+		// checkOutput("True", T("<?print ceil(x, 2) == -42.58?>"), V("x", -42.589));
+		checkOutput("True", T("<?print ceil(x, 2) == -42.12?>"), V("x", -42.123));
+		checkOutput("<type float>", T("<?print type(ceil(x, 1))?>"), V("x", 42.5));
+
+		checkOutput("True", T("<?print ceil(x) == 42?>"), V("x", new BigDecimal("42")));
+		checkOutput("True", T("<?print ceil(x, 1) == 42?>"), V("x", new BigDecimal("42")));
+		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", new BigDecimal("41")));
+		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", new BigDecimal("50")));
+		checkOutput("True", T("<?print ceil(x, -1) == -40?>"), V("x", new BigDecimal("-41")));
+		checkOutput("True", T("<?print ceil(x, -1) == -50?>"), V("x", new BigDecimal("-50")));
+		checkOutput("True", T("<?print ceil(x, -2) == 500?>"), V("x", new BigDecimal("401")));
+		checkOutput("True", T("<?print ceil(x, -2) == 500?>"), V("x", new BigDecimal("500")));
+		checkOutput("True", T("<?print ceil(x, -2) == -400?>"), V("x", new BigDecimal("-401")));
+		checkOutput("True", T("<?print ceil(x, -2) == -500?>"), V("x", new BigDecimal("-500")));
+	}
+
+	@CauseTest(expectedCause=MissingArgumentException.class)
+	public void function_ceil_0_args()
+	{
+		checkOutput("", T("<?print ceil()?>"));
+	}
+
+	@CauseTest(expectedCause=TooManyArgumentsException.class)
+	public void function_ceil_3_args()
+	{
+		checkOutput("", T("<?print ceil(1, 2, 3)?>"));
+	}
+
+	@Test
 	public void function_md5()
 	{
 		String result = "acbd18db4cc2f85cedef654fccc4a4d8";
