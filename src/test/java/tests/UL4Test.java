@@ -2084,6 +2084,8 @@ public class UL4Test
 		checkOutput(dumps("abc"), T("<?print asul4on(data)?>"), V("data", "abc"));
 		checkOutput(dumps(asList(1, 2, 3)), T("<?print asul4on(data)?>"), V("data", asList(1, 2, 3)));
 		checkOutput(dumps(makeMap("one", 1)), T("<?print asul4on(data)?>"), V("data", V("one", 1)));
+		// Trst pretty printing
+		checkOutput("L\n\ti1\n\ti2\n\ti3\n]\n", T("<?print asul4on([1, 2, 3], '\\t')?>"));
 	}
 
 	@CauseTest(expectedCause=UnsupportedOperationException.class)
@@ -2102,9 +2104,9 @@ public class UL4Test
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	@Test
-	public void function_asul4on_2_args()
+	public void function_asul4on_3_args()
 	{
-		checkOutput("", T("<?print asul4on(1, 2)?>"));
+		checkOutput("", T("<?print asul4on(1, 2, 3)?>"));
 	}
 
 	@Test
@@ -6316,6 +6318,8 @@ public class UL4Test
 		checkOutput(dumps("abc"), T("<?print ul4on.dumps(data)?>"), V("data", "abc"));
 		checkOutput(dumps(asList(1, 2, 3)), T("<?print ul4on.dumps(data)?>"), V("data", asList(1, 2, 3)));
 		checkOutput(dumps(makeMap("one", 1)), T("<?print ul4on.dumps(data)?>"), V("data", V("one", 1)));
+		// Check pretty printing
+		checkOutput("L\n\ti1\n\ti2\n\ti3\n]\n", T("<?print ul4on.dumps([1, 2, 3], '\\t')?>"));
 	}
 
 	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)
@@ -6329,14 +6333,6 @@ public class UL4Test
 	public void module_ul4on_dumps_0_args()
 	{
 		checkOutput("", T("<?print ul4on.dumps()?>"));
-	}
-
-	@CauseTest(expectedCause=TooManyArgumentsException.class)
-	@Test
-	public void module_ul4on_dumps_2_bad_args()
-	{
-		// The second parameter ({@code indent}) must be passed as a keyword
-		checkOutput("", T("<?print ul4on.dumps(1, 2)?>"));
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
