@@ -206,7 +206,6 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 		checkPositionalOnly(name);
 		checkDefaults(name);
 		add(name, ParameterDescription.Type.POSITIONAL_ONLY_REQUIRED, null);
-		++countPositionalOnly;
 		return this;
 	}
 
