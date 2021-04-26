@@ -67,8 +67,6 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 	**/
 	protected ParameterDescription varKeyword;
 
-	protected List<String> parameterNames;
-
 	/**
 	The number of parameters that can ony be passed by position.
 	**/
@@ -103,7 +101,6 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 		parametersByPosition = new ArrayList<ParameterDescription>();
 		varPositional = null;
 		varKeyword = null;
-		parameterNames = null;
 		countPositionalOnly = 0;
 		countBoth = 0;
 		countKeywordOnly = 0;
