@@ -43,7 +43,7 @@ public abstract class Undefined implements UL4Instance, UL4Bool, UL4Repr
 	}
 
 	@Override
-	public String strInstance(Object instance)
+	public String strUL4()
 	{
 		return "";
 	}
