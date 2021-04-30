@@ -81,7 +81,7 @@ public class AndAST extends BinaryAST
 	public Object evaluate(EvaluationContext context)
 	{
 		Object obj1ev = obj1.decoratedEvaluate(context);
-		if (!FunctionBool.call(obj1ev))
+		if (!Bool.call(obj1ev))
 			return obj1ev;
 		else
 			return obj2.decoratedEvaluate(context);
@@ -90,6 +90,6 @@ public class AndAST extends BinaryAST
 	// this static version is only used for constant folding, not in evaluate(), because that would require that we evaluate both sides
 	public static Object call(Object arg1, Object arg2)
 	{
-		return !FunctionBool.call(arg1) ? arg1 : arg2;
+		return !Bool.call(arg1) ? arg1 : arg2;
 	}
 }

@@ -54,6 +54,26 @@ public class DateTime extends AbstractType
 		return LocalDateTime.of(year, month, day, hour, minute, second, microsecond*1000);
 	}
 
+	public static LocalDateTime call(int year, int month, int day)
+	{
+		return LocalDateTime.of(year, month, day, 0, 0);
+	}
+
+	public static LocalDateTime call(int year, int month, int day, int hour, int minute)
+	{
+		return LocalDateTime.of(year, month, day, hour, minute);
+	}
+
+	public static LocalDateTime call(int year, int month, int day, int hour, int minute, int second)
+	{
+		return LocalDateTime.of(year, month, day, hour, minute, second);
+	}
+
+	public static LocalDateTime call(int year, int month, int day, int hour, int minute, int second, int microsecond)
+	{
+		return LocalDateTime.of(year, month, day, hour, minute, second, microsecond*1000);
+	}
+
 	@Override
 	public boolean instanceCheck(Object object)
 	{

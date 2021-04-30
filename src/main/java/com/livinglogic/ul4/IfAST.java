@@ -85,7 +85,7 @@ public class IfAST extends CodeAST
 			{
 				try
 				{
-					return FunctionBool.call(cond) ? objIf : objElse;
+					return Bool.call(cond) ? objIf : objElse;
 				}
 				catch (Exception ex)
 				{
@@ -100,7 +100,7 @@ public class IfAST extends CodeAST
 	public Object evaluate(EvaluationContext context)
 	{
 		Object objCondEv = objCond.decoratedEvaluate(context);
-		if (FunctionBool.call(objCondEv))
+		if (Bool.call(objCondEv))
 			return objIf.decoratedEvaluate(context);
 		else
 			return objElse.decoratedEvaluate(context);
@@ -109,7 +109,7 @@ public class IfAST extends CodeAST
 	// this static version is only used for constant folding, not in evaluate(), because that would require that we evaluate both branches
 	public static Object call(Object argIf, Object argCond, Object argElse)
 	{
-		return FunctionBool.call(argCond) ? argIf : argElse;
+		return Bool.call(argCond) ? argIf : argElse;
 	}
 
 	@Override

@@ -95,7 +95,7 @@ public class ListComprehensionAST extends CodeAST
 				for (Utils.LValueValue lvv : Utils.unpackVariable(varname, iter.next()))
 					lvv.getLValue().evaluateSet(context, lvv.getValue());
 
-				if (condition == null || FunctionBool.call(condition.decoratedEvaluate(context)))
+				if (condition == null || Bool.call(condition.decoratedEvaluate(context)))
 				{
 					Object item = this.item.decoratedEvaluate(context);
 					result.add(item);

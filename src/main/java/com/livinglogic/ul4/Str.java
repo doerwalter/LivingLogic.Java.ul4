@@ -37,7 +37,11 @@ public class Str extends AbstractType
 	@Override
 	public Object create(BoundArguments arguments)
 	{
-		Object object = arguments.get(0);
+		return call(arguments.get(0));
+	}
+
+	public static String call(Object object)
+	{
 		UL4Type type = UL4Type.getType(object);
 		return type.strInstance(object);
 	}
@@ -84,6 +88,12 @@ public class Str extends AbstractType
 	public int lenInstance(Object instance)
 	{
 		return ((String)instance).length();
+	}
+
+	@Override
+	public String strInstance(Object instance)
+	{
+		return (String)instance;
 	}
 
 	protected static Set<String> attributes = makeSet(
@@ -155,5 +165,5 @@ public class Str extends AbstractType
 		}
 	}
 
-	public static final UL4Type type = new Str();
+	public static final Str type = new Str();
 }

@@ -47,7 +47,7 @@ public class FunctionAny extends Function
 	{
 		for (int i = 0; i < obj.size(); ++i)
 		{
-			if (FunctionBool.call(obj.get(i)))
+			if (Bool.call(obj.get(i)))
 				return true;
 		}
 		return false;
@@ -62,7 +62,7 @@ public class FunctionAny extends Function
 	{
 		while (obj.hasNext())
 		{
-			if (FunctionBool.call(obj.next()))
+			if (Bool.call(obj.next()))
 				return true;
 		}
 		return false;

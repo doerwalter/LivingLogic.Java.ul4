@@ -53,7 +53,7 @@ public class List_ extends AbstractType
 		return call(args.get(0));
 	}
 
-	public static List call(String obj)
+	public static ArrayList call(String obj)
 	{
 		ArrayList result;
 		int length = obj.length();
@@ -65,27 +65,27 @@ public class List_ extends AbstractType
 		return result;
 	}
 
-	public static List call(Collection obj)
+	public static ArrayList call(Collection obj)
 	{
 		return new ArrayList(obj);
 	}
 
-	public static List call(Object[] obj)
+	public static ArrayList call(Object[] obj)
 	{
 		return new ArrayList(asList(obj));
 	}
 
-	public static List call(Map obj)
+	public static ArrayList call(Map obj)
 	{
 		return new ArrayList(obj.keySet());
 	}
 
-	public static List call(Iterable obj)
+	public static ArrayList call(Iterable obj)
 	{
 		return call(obj.iterator());
 	}
 
-	public static List call(Iterator obj)
+	public static ArrayList call(Iterator obj)
 	{
 		ArrayList retVal = new ArrayList();
 		while (obj.hasNext())
@@ -93,7 +93,7 @@ public class List_ extends AbstractType
 		return retVal;
 	}
 
-	public static List call(Object obj)
+	public static ArrayList call(Object obj)
 	{
 		if (obj instanceof String)
 			return call((String)obj);

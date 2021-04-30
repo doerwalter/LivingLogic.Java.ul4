@@ -82,7 +82,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	**/
 	default String strInstance(Object instance)
 	{
-		return instance.toString();
+		return FunctionRepr.call(instance);
 	}
 
 	/**

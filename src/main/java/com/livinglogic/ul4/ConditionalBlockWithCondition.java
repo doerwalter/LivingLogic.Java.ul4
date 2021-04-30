@@ -26,7 +26,7 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 
 	public boolean hasToBeExecuted(EvaluationContext context)
 	{
-		return FunctionBool.call(condition.decoratedEvaluate(context));
+		return Bool.call(condition.decoratedEvaluate(context));
 	}
 
 	public void toString(Formatter formatter)

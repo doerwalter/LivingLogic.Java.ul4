@@ -139,7 +139,7 @@ public class FunctionFormat extends Function
 	private static int week(Date object, int firstWeekday)
 	{
 		int yearday = BoundDateMethodYearday.call(object)+6;
-		int jan1Weekday = BoundLocalDateMethodWeekday.call(FunctionDate.call(BoundDateMethodYear.call(object), 1, 1));
+		int jan1Weekday = BoundLocalDateMethodWeekday.call(Date_.call(BoundDateMethodYear.call(object), 1, 1));
 		while (jan1Weekday != firstWeekday)
 		{
 			--yearday;

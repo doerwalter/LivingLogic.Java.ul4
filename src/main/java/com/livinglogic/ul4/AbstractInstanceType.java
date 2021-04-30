@@ -29,7 +29,7 @@ public abstract class AbstractInstanceType extends AbstractType
 		return ((UL4Instance)instance).floatUL4();
 	}
 
-	public String toString(Object object)
+	public String strInstance(Object object)
 	{
 		return ((UL4Instance)object).strUL4();
 	}

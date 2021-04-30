@@ -109,7 +109,7 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 
 	ParameterDescription add(String name, ParameterDescription.Type type, Object defaultValue)
 	{
-		ParameterDescription param = new ParameterDescription(name, parametersByPosition.size(), type, defaultValue);
+		ParameterDescription param = new ParameterDescription(name, parametersByPosition.size() + (varPositional != null ? 1 : 0) + (varKeyword != null ? 1 : 0), type, defaultValue);
 		if (!type.isVar())
 		{
 			parametersByName.put(name, param);
@@ -118,30 +118,41 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 		switch (type)
 		{
 			case POSITIONAL_OR_KEYWORD_REQUIRED:
+				checkBoth(name);
+				checkDefaults(name);
 				++countBoth;
 				break;
 			case POSITIONAL_OR_KEYWORD_DEFAULT:
+				checkBoth(name);
 				++countBoth;
 				++countDefaults;
 				break;
 			case POSITIONAL_ONLY_REQUIRED:
+				checkPositionalOnly(name);
+				checkDefaults(name);
 				++countPositionalOnly;
 				break;
 			case POSITIONAL_ONLY_DEFAULT:
+				checkPositionalOnly(name);
 				++countPositionalOnly;
 				++countDefaults;
 				break;
 			case KEYWORD_ONLY_REQUIRED:
+				checkKeywordOnly(name);
+				checkDefaults(name);
 				++countKeywordOnly;
 				break;
 			case KEYWORD_ONLY_DEFAULT:
+				checkKeywordOnly(name);
 				++countKeywordOnly;
 				++countDefaults;
 				break;
 			case VAR_POSITIONAL:
+				checkVarPositional(name);
 				varPositional = param;
 				break;
 			case VAR_KEYWORD:
+				checkVarKeyword(name);
 				varKeyword = param;
 				break;
 		}
@@ -200,59 +211,48 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 
 	public Signature addPositionalOnly(String name)
 	{
-		checkPositionalOnly(name);
-		checkDefaults(name);
 		add(name, ParameterDescription.Type.POSITIONAL_ONLY_REQUIRED, null);
 		return this;
 	}
 
 	public Signature addPositionalOnly(String name, Object defaultValue)
 	{
-		checkPositionalOnly(name);
 		add(name, ParameterDescription.Type.POSITIONAL_ONLY_DEFAULT, defaultValue);
 		return this;
 	}
 
 	public Signature addBoth(String name)
 	{
-		checkBoth(name);
-		checkDefaults(name);
 		add(name, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_REQUIRED, null);
 		return this;
 	}
 
 	public Signature addBoth(String name, Object defaultValue)
 	{
-		checkBoth(name);
 		add(name, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_DEFAULT, defaultValue);
 		return this;
 	}
 
 	public Signature addKeywordOnly(String name)
 	{
-		checkKeywordOnly(name);
-		checkDefaults(name);
 		add(name, ParameterDescription.Type.KEYWORD_ONLY_REQUIRED, null);
 		return this;
 	}
 
 	public Signature addKeywordOnly(String name, Object defaultValue)
 	{
-		checkKeywordOnly(name);
 		add(name, ParameterDescription.Type.KEYWORD_ONLY_DEFAULT, defaultValue);
 		return this;
 	}
 
 	public Signature addVarPositional(String name)
 	{
-		checkVarPositional(name);
 		add(name, ParameterDescription.Type.VAR_POSITIONAL, null);
 		return this;
 	}
 
 	public Signature addVarKeyword(String name)
 	{
-		checkVarKeyword(name);
 		add(name, ParameterDescription.Type.VAR_KEYWORD, null);
 		return this;
 	}

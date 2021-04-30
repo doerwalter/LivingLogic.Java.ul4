@@ -96,11 +96,11 @@ public class FunctionSorted extends FunctionWithContext
 
 	public static ArrayList call(EvaluationContext context, Object obj, Object key, Object reverse)
 	{
-		boolean reverseBool = FunctionBool.call(reverse);
+		boolean reverseBool = Bool.call(reverse);
 
 		if (key == null)
 		{
-			ArrayList result = FunctionList.call(obj);
+			ArrayList result = List_.call(obj);
 			Collections.sort(result, new SortedComparator(reverseBool));
 			return result;
 		}

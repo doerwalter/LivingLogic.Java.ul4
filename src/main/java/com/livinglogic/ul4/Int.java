@@ -38,16 +38,27 @@ public class Int extends AbstractType
 		Object object = arguments.get(0);
 		Object base = arguments.get(1);
 		if (base == null)
-		{
-			UL4Type type = UL4Type.getType(object);
-			return type.intInstance(object);
-		}
+			return call(object);
 		else if (object instanceof String && Int.type.instanceCheck(base))
-		{
-			return Integer.valueOf((String)object, ((Number)base).intValue());
-		}
+			return call((String)object, (Number)base);
 		else
 			throw new ArgumentTypeMismatchException("int({!t}, {!t}) not supported", object, base);
+	}
+
+	public static Number call(Object object)
+	{
+		UL4Type type = UL4Type.getType(object);
+		return type.intInstance(object);
+	}
+
+	public static Number call(String object, int base)
+	{
+		return Integer.valueOf((String)object, base);
+	}
+
+	public static Number call(String object, Number base)
+	{
+		return call(object, base.intValue());
 	}
 
 	@Override
@@ -90,5 +101,5 @@ public class Int extends AbstractType
 		return instance.toString();
 	}
 
-	public static final UL4Type type = new Int();
+	public static final Int type = new Int();
 }

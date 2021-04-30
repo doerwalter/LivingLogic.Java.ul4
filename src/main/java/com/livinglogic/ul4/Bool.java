@@ -39,6 +39,16 @@ public class Bool extends AbstractType
 		return type.boolInstance(object);
 	}
 
+	public static boolean call()
+	{
+		return false;
+	}
+
+	public static boolean call(Object obj)
+	{
+		return UL4Type.getType(obj).boolInstance(obj);
+	}
+
 	@Override
 	public boolean instanceCheck(Object object)
 	{

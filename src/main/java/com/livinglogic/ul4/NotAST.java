@@ -84,6 +84,6 @@ public class NotAST extends UnaryAST
 
 	public static boolean call(Object obj)
 	{
-		return !FunctionBool.call(obj);
+		return !Bool.call(obj);
 	}
 }

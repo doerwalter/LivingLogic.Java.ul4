@@ -82,6 +82,6 @@ public class BoundStringMethodSplitlines extends BoundMethod<String>
 	public Object evaluate(BoundArguments args)
 	{
 		Object keepEnds = args.get(0);
-		return call(object, FunctionBool.call(keepEnds));
+		return call(object, Bool.call(keepEnds));
 	}
 }

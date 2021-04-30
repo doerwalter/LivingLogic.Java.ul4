@@ -135,7 +135,7 @@ public class WhileBlockAST extends BlockAST
 		for (;;)
 		{
 			Object condition = this.condition.decoratedEvaluate(context);
-			if (!FunctionBool.call(condition))
+			if (!Bool.call(condition))
 				break;
 
 			try

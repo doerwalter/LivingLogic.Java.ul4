@@ -34,7 +34,6 @@ import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.Slice;
-import com.livinglogic.ul4.FunctionDate;
 import com.livinglogic.ul4.FunctionRepr;
 import com.livinglogic.ul4.BoundMethod;
 import com.livinglogic.ul4.Signature;

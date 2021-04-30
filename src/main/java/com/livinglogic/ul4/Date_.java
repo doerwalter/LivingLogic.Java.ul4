@@ -57,6 +57,11 @@ public class Date_ extends AbstractType
 			return LocalDateTime.of(year, month, day, hour, minute, second, microsecond*1000);
 	}
 
+	public static LocalDate call(int year, int month, int day)
+	{
+		return LocalDate.of(year, month, day);
+	}
+
 	@Override
 	public boolean instanceCheck(Object object)
 	{
@@ -174,5 +179,5 @@ public class Date_ extends AbstractType
 		}
 	}
 
-	public static final UL4Type type = new Date_();
+	public static final Date_ type = new Date_();
 }

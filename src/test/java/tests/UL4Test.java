@@ -48,8 +48,8 @@ import com.livinglogic.ul4.SyntaxException;
 import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.Template;
 import com.livinglogic.ul4.Color;
-import com.livinglogic.ul4.FunctionDate;
-import com.livinglogic.ul4.FunctionDateTime;
+import com.livinglogic.ul4.Date_;
+import com.livinglogic.ul4.DateTime;
 import com.livinglogic.ul4.FunctionRepr;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
@@ -1311,8 +1311,8 @@ public class UL4Test
 		checkOutput("False", t, V("x", new TimeDelta(0), "y", new TimeDelta(0, 0, 1)));
 		checkOutput("True", t, V("x", new MonthDelta(0), "y", new MonthDelta(0)));
 		checkOutput("False", t, V("x", new MonthDelta(0), "y", new MonthDelta(1)));
-		checkOutput("True", t, V("x", FunctionDate.call(2015, 11, 12), "y", FunctionDate.call(2015, 11, 12)));
-		checkOutput("False", t, V("x", FunctionDate.call(2015, 11, 12), "y", FunctionDate.call(2015, 11, 13)));
+		checkOutput("True", t, V("x", Date_.call(2015, 11, 12), "y", Date_.call(2015, 11, 12)));
+		checkOutput("False", t, V("x", Date_.call(2015, 11, 12), "y", Date_.call(2015, 11, 13)));
 		checkOutput("True", t, V("x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x12, 0x34, 0x56, 0x78)));
 		checkOutput("False", t, V("x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x11, 0x34, 0x56, 0x78)));
 		checkOutput("False", t, V("x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x12, 0x33, 0x56, 0x78)));
@@ -1377,8 +1377,8 @@ public class UL4Test
 		checkOutput("True", t, V("x", new TimeDelta(0), "y", new TimeDelta(0, 0, 1)));
 		checkOutput("False", t, V("x", new MonthDelta(0), "y", new MonthDelta(0)));
 		checkOutput("True", t, V("x", new MonthDelta(0), "y", new MonthDelta(1)));
-		checkOutput("False", t, V("x", FunctionDate.call(2015, 11, 12), "y", FunctionDate.call(2015, 11, 12)));
-		checkOutput("True", t, V("x", FunctionDate.call(2015, 11, 12), "y", FunctionDate.call(2015, 11, 13)));
+		checkOutput("False", t, V("x", Date_.call(2015, 11, 12), "y", Date_.call(2015, 11, 12)));
+		checkOutput("True", t, V("x", Date_.call(2015, 11, 12), "y", Date_.call(2015, 11, 13)));
 		checkOutput("False", t, V("x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x12, 0x34, 0x56, 0x78)));
 		checkOutput("True", t, V("x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x11, 0x34, 0x56, 0x78)));
 		checkOutput("True", t, V("x", new Color(0x12, 0x34, 0x56, 0x78), "y", new Color(0x12, 0x33, 0x56, 0x78)));
@@ -2155,11 +2155,11 @@ public class UL4Test
 		checkOutput("4.2", t, V("data", 4.2));
 		checkOutput("foo", t, V("data", "foo"));
 		checkOutput("broken", t, V("data", new RuntimeException("broken")));
-		checkOutput("2011-02-09", t, V("data", FunctionDate.call(2011, 2, 9)));
-		checkOutput("2011-02-09 00:00", t, V("data", FunctionDateTime.call(2011, 2, 9)));
-		checkOutput("2011-02-09 12:34", t, V("data", FunctionDateTime.call(2011, 2, 9, 12, 34)));
-		checkOutput("2011-02-09 12:34:56", t, V("data", FunctionDateTime.call(2011, 2, 9, 12, 34, 56)));
-		checkOutput("2011-02-09 12:34:56.987654", t, V("data", FunctionDateTime.call(2011, 2, 9, 12, 34, 56, 987654)));
+		checkOutput("2011-02-09", t, V("data", Date_.call(2011, 2, 9)));
+		checkOutput("2011-02-09 00:00", t, V("data", DateTime.call(2011, 2, 9)));
+		checkOutput("2011-02-09 12:34", t, V("data", DateTime.call(2011, 2, 9, 12, 34)));
+		checkOutput("2011-02-09 12:34:56", t, V("data", DateTime.call(2011, 2, 9, 12, 34, 56)));
+		checkOutput("2011-02-09 12:34:56.987654", t, V("data", DateTime.call(2011, 2, 9, 12, 34, 56, 987654)));
 	}
 
 	@CauseTest(expectedCause=UnsupportedArgumentNameException.class)

@@ -47,7 +47,7 @@ public class FunctionAll extends Function
 	{
 		for (int i = 0; i < obj.size(); ++i)
 		{
-			if (!FunctionBool.call(obj.get(i)))
+			if (!Bool.call(obj.get(i)))
 				return false;
 		}
 		return true;
@@ -62,7 +62,7 @@ public class FunctionAll extends Function
 	{
 		while (obj.hasNext())
 		{
-			if (!FunctionBool.call(obj.next()))
+			if (!Bool.call(obj.next()))
 				return false;
 		}
 		return true;

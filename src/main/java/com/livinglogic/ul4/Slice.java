@@ -144,6 +144,18 @@ public class Slice implements UL4Instance, UL4GetAttr, UL4Dir, UL4Repr, Comparab
 		formatter.append(", None)");
 	}
 
+	public String toString()
+	{
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("slice(");
+		buffer.append(getStart());
+		buffer.append(", ");
+		buffer.append(getStop());
+		// We have no step attribute yet.
+		buffer.append(", None)");
+		return buffer.toString();
+	}
+
 	protected static Set<String> attributes = makeSet("start", "stop");
 
 	@Override

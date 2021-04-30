@@ -79,7 +79,7 @@ public class FunctionXMLEscape extends Function
 
 	public static String call(Object obj)
 	{
-		return call(FunctionStr.call(obj));
+		return call(Str.call(obj));
 	}
 
 	public static final Function function = new FunctionXMLEscape();
