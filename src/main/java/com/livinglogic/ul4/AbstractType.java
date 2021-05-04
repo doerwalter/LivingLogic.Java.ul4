@@ -46,7 +46,7 @@ public abstract class AbstractType implements UL4Type, UL4GetAttr, UL4Dir
 		return signature;
 	}
 
-	protected static Set<String> attributes = makeSet("module", "name", "doc");
+	protected static Set<String> attributes = makeSet("__module__", "__name__", "__doc__");
 
 	@Override
 	public Set<String> dirUL4()
@@ -59,11 +59,11 @@ public abstract class AbstractType implements UL4Type, UL4GetAttr, UL4Dir
 	{
 		switch (key)
 		{
-			case "module":
+			case "__module__":
 				return getModuleName();
-			case "name":
+			case "__name__":
 				return getNameUL4();
-			case "doc":
+			case "__doc__":
 				return getDoc();
 			default:
 				throw new AttributeException(this, key);
