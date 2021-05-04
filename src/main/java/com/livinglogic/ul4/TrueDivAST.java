@@ -29,7 +29,7 @@ public class TrueDivAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "An \"true division\" expression (i.e. `x / y`).";
+			return "AST node for a binary true division expression (e.g. ``x / y``).";
 		}
 
 		@Override

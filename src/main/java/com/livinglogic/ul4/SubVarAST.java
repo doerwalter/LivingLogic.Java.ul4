@@ -25,7 +25,7 @@ public class SubVarAST extends ChangeVarAST
 		@Override
 		public String getDoc()
 		{
-			return "An augmented subtraction assignment (i.e. `x -= y`).";
+			return "AST node for an augmented assignment expression that subtracts a value from\na variable/attribute/item. (e.g. ``x -= y``).";
 		}
 
 		@Override

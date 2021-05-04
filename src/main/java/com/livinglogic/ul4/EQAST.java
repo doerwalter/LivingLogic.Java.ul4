@@ -25,7 +25,7 @@ public class EQAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "An equality comparison (x == y).";
+			return "AST node for the binary equality comparison (e.g. ``x == y``.";
 		}
 
 		@Override

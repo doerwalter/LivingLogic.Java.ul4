@@ -34,7 +34,7 @@ public class IndentAST extends TextAST
 		@Override
 		public String getDoc()
 		{
-			return "Base type of all literal text in the template source";
+			return "AST node for literal text that is an indentation at the start of the line.";
 		}
 
 		@Override

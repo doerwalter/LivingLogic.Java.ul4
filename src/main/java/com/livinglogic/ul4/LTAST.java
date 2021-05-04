@@ -25,7 +25,7 @@ public class LTAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "A \"less than\" comparison (i.e. `x < y`).";
+			return "AST node for the binary \"less than\" comparison (e.g. ``x < y``).";
 		}
 
 		@Override

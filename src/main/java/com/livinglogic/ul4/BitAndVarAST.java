@@ -25,7 +25,7 @@ public class BitAndVarAST extends ChangeVarAST
 		@Override
 		public String getDoc()
 		{
-			return "An augmented \"binary and\" assignment (x &= y).";
+			return "AST node for an augmented assignment expression that assigns the result\nof a binary bitwise \"and\" expression to its left operand.\n(e.g. ``x &= y``).";
 		}
 
 		@Override

@@ -36,7 +36,7 @@ public class UnpackListArgumentAST extends ArgumentASTBase
 		@Override
 		public String getDoc()
 		{
-			return "A list unpacking argument.";
+			return "AST node for an ``*`` unpacking expressions in a :class:`CallAST`\n(e.g. the ``*x`` in ``f(*x)``).";
 		}
 
 		@Override

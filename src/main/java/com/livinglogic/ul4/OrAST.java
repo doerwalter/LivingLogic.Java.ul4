@@ -25,7 +25,7 @@ public class OrAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "A logical \"or\" expression (i.e. `x or y`).";
+			return "AST node for a binary \"or\" expression (e.g. ``x or y``).";
 		}
 
 		@Override

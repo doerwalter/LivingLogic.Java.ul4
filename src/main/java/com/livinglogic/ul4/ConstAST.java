@@ -33,7 +33,7 @@ public class ConstAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "A constant.";
+			return "AST node for load a constant value.";
 		}
 
 		@Override

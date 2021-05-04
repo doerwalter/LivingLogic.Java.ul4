@@ -25,7 +25,7 @@ public class AndAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "A logical \"and\" expression (`x and y`).";
+			return "AST node for the binary \"and\" expression (i.e. ``x and y``).";
 		}
 
 		@Override

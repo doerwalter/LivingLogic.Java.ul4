@@ -34,7 +34,7 @@ public class IfAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "An if/else expression.";
+			return "AST node for the ternary inline ``if/else`` operator (e.g. ``x if y else z``).";
 		}
 
 		@Override

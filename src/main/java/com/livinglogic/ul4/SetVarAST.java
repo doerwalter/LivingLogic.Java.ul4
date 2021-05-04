@@ -33,7 +33,7 @@ public class SetVarAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "A variable assignment (i.e. `x = y`).";
+			return "AST node for setting a variable, attribute or item to a value (e.g.\n``x = y``).";
 		}
 
 		@Override

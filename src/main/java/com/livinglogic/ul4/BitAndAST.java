@@ -27,7 +27,7 @@ public class BitAndAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "A bit and expression.";
+			return "AST node for a binary bitwise \"and\" expression (e.g ``x & y``).";
 		}
 
 		@Override

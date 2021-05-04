@@ -33,7 +33,7 @@ public class VarAST extends CodeAST implements LValue
 		@Override
 		public String getDoc()
 		{
-			return "A variable.";
+			return "AST node for getting a variable.";
 		}
 
 		@Override

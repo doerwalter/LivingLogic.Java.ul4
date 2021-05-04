@@ -39,7 +39,7 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 		@Override
 		public String getDoc()
 		{
-			return "A renderblocks tag.";
+			return "AST node for rendering a template and passing additional arguments via\nnested variable definitions, e.g.::";
 		}
 
 		@Override

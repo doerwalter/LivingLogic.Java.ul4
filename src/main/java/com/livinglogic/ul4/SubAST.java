@@ -33,7 +33,7 @@ public class SubAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "A subtraction expression (i.e. `x - y`).";
+			return "AST node for the binary subtraction operator.";
 		}
 
 		@Override

@@ -31,7 +31,7 @@ public class ShiftRightAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "A bit shift right expression (i.e. `x >> y`).";
+			return "AST node for a bitwise right shift expression (e.g. ``x >> y``).";
 		}
 
 		@Override

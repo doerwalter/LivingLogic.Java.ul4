@@ -38,7 +38,7 @@ public class DictAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "A dictionary \"literal\".";
+			return "AST node for creating a dict object (e.g. `{k: v, **u}`.";
 		}
 
 		@Override

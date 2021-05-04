@@ -34,7 +34,7 @@ public class SeqItemAST extends SeqItemASTBase
 		@Override
 		public String getDoc()
 		{
-			return "An item in a sequence.";
+			return "AST node for an item in a list/set \"literal\" (e.g. ``{x, y}`` or ``[x, y]``)";
 		}
 
 		@Override

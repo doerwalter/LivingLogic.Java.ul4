@@ -36,7 +36,7 @@ public class UnpackDictItemAST extends DictItemASTBase
 		@Override
 		public String getDoc()
 		{
-			return "An item in a dictionary unpacking another dictionary.";
+			return "AST node for ``**`` unpacking expressions in dict \"literal\"\n(e.g. the ``**u`` in ``{k: v, **u}``).";
 		}
 
 		@Override

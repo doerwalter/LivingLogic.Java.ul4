@@ -39,7 +39,7 @@ public class SignatureAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "The signature of a function.";
+			return "AST node for the signature of a locally defined subtemplate.";
 		}
 
 		@Override

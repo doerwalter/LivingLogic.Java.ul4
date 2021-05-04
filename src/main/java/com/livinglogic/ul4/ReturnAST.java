@@ -29,7 +29,7 @@ public class ReturnAST extends UnaryAST
 		@Override
 		public String getDoc()
 		{
-			return "A return tag.";
+			return "AST node for a ``<?return?>`` tag (e.g. ``<?return x?>``).";
 		}
 
 		@Override

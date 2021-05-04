@@ -40,7 +40,7 @@ public class TemplateClosure implements UL4Instance, UL4CallWithContext, UL4Rend
 		@Override
 		public String getDoc()
 		{
-			return "A locally defined UL4 template.";
+			return "A locally defined UL4 template";
 		}
 
 		@Override

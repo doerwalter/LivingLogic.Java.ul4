@@ -25,7 +25,7 @@ public class TrueDivVarAST extends ChangeVarAST
 		@Override
 		public String getDoc()
 		{
-			return "An augmented true division assignment (i.e. `x /= y`).";
+			return "AST node for an augmented assignment expression that assigns the result\nof a truncation division to its left operand. (e.g. ``x //= y``).";
 		}
 
 		@Override

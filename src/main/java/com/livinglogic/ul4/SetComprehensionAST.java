@@ -34,7 +34,7 @@ public class SetComprehensionAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "An set comprehension.";
+			return "AST node for a set comprehension (e.g. ``{v for (a, b) in w if c}``.";
 		}
 
 		@Override

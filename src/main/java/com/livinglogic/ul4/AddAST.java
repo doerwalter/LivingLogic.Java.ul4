@@ -33,7 +33,7 @@ public class AddAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "addition operator";
+			return "AST node for a binary addition expression that adds its two operands and\nreturns the result  (e.g. ``x + y``).";
 		}
 
 		@Override

@@ -27,7 +27,7 @@ public class BitNotAST extends UnaryAST
 		@Override
 		public String getDoc()
 		{
-			return "A bit inversion.";
+			return "AST node for a bitwise unary \"not\" expression that returns its operand\nwith its bits inverted (e.g. ``~x``).";
 		}
 
 		@Override

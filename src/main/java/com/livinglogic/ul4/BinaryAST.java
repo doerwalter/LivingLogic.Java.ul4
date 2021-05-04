@@ -30,7 +30,7 @@ abstract class BinaryAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "A binary expression (i.e. an expression with two operands).";
+			return "Base class for all UL4 AST nodes implementing binary expressions\n(i.e. operators with two operands).";
 		}
 
 		@Override

@@ -39,7 +39,7 @@ public class RenderXAST extends RenderAST
 		@Override
 		public String getDoc()
 		{
-			return "A renderx tag.";
+			return "AST node for rendering a template and XML-escaping the output\n(e.g. ``<?renderx t(x)?>``.";
 		}
 
 		@Override

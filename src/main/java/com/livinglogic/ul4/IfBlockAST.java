@@ -25,7 +25,7 @@ public class IfBlockAST extends ConditionalBlockWithCondition
 		@Override
 		public String getDoc()
 		{
-			return "An `if` block.";
+			return "AST node for an ``<?if?>`` block in an ``<?if?>/<?elif?>/<?else?>`` block.";
 		}
 
 		@Override

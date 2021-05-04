@@ -27,7 +27,7 @@ public class BitXOrAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "An bit exclusive or expression.";
+			return "AST node for the binary bitwise \"exclusive or\" expression (e.g. ``x ^ y``).";
 		}
 
 		@Override

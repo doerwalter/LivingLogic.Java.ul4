@@ -34,7 +34,7 @@ public class DictItemAST extends DictItemASTBase
 		@Override
 		public String getDoc()
 		{
-			return "A dictionary item.";
+			return "AST node for a dictionary entry in a dict expression (:class:`DictAST`).";
 		}
 
 		@Override

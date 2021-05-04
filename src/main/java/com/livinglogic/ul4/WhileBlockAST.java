@@ -33,7 +33,7 @@ public class WhileBlockAST extends BlockAST
 		@Override
 		public String getDoc()
 		{
-			return "A while loop.";
+			return "AST node for a ``<?while?>`` loop.";
 		}
 
 		@Override

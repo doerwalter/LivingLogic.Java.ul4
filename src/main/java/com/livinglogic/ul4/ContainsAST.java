@@ -29,7 +29,7 @@ public class ContainsAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "A \"containment\" test (x in y).";
+			return "AST node for the binary containment testing operator (e.g. ``x in y``).";
 		}
 
 		@Override

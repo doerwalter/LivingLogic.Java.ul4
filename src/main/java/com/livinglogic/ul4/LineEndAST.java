@@ -30,7 +30,7 @@ public class LineEndAST extends TextAST
 		@Override
 		public String getDoc()
 		{
-			return "Literal text in the template source that is an indentation at the start of a line.";
+			return "AST node for literal text that is the end of a line.";
 		}
 
 		@Override

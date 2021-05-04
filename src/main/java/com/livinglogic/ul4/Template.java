@@ -51,7 +51,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 		@Override
 		public String getDoc()
 		{
-			return "An UL4 template.";
+			return "An UL4 template";
 		}
 
 		@Override

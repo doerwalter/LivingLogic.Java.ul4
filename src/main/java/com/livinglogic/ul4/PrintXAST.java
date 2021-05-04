@@ -31,7 +31,7 @@ public class PrintXAST extends UnaryAST
 		@Override
 		public String getDoc()
 		{
-			return "A printx tag.";
+			return "AST node for a ``<?printx?>`` tag (e.g. ``<?printx x?>``.";
 		}
 
 		@Override

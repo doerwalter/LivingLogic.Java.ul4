@@ -34,7 +34,7 @@ public class GeneratorExpressionAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "A generator expression.";
+			return "AST node for a generator expression (e.g. ``(x for (a, b) in w if c)``).";
 		}
 
 		@Override

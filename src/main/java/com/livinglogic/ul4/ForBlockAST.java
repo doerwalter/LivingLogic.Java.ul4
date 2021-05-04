@@ -31,7 +31,7 @@ public class ForBlockAST extends BlockAST
 		@Override
 		public String getDoc()
 		{
-			return "A for loop.";
+			return "AST node for a ``<?for?>`` loop.";
 		}
 
 		@Override

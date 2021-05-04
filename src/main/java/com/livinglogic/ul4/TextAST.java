@@ -36,7 +36,7 @@ public class TextAST extends AST
 		@Override
 		public String getDoc()
 		{
-			return "Base type of all literal text in the template source";
+			return "AST node for literal text (i.e. the stuff between tags).";
 		}
 
 		@Override

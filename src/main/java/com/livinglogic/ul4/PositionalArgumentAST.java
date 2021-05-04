@@ -35,7 +35,7 @@ public class PositionalArgumentAST extends ArgumentASTBase
 		@Override
 		public String getDoc()
 		{
-			return "A positional argument.";
+			return "AST node for a positional argument. (e.g. the ``x`` in ``f(x)``).";
 		}
 
 		@Override

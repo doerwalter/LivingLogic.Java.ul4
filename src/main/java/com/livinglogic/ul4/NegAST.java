@@ -28,7 +28,7 @@ public class NegAST extends UnaryAST
 		@Override
 		public String getDoc()
 		{
-			return "Unary negation (i.e. `-x`).";
+			return "AST node for a unary negation expression (e.g. ``-x``).";
 		}
 
 		@Override

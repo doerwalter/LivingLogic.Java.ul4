@@ -27,7 +27,7 @@ public class BitOrAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "A bit or expression.";
+			return "AST node for a binary bitwise \"or\" expression (e.g. ``x | y``).";
 		}
 
 		@Override

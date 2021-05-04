@@ -25,7 +25,7 @@ public class ElIfBlockAST extends ConditionalBlockWithCondition
 		@Override
 		public String getDoc()
 		{
-			return "An elif block.";
+			return "AST node for an ``<?elif?>`` block.";
 		}
 
 		@Override

@@ -38,7 +38,7 @@ public class CallAST extends CallRenderAST
 		@Override
 		public String getDoc()
 		{
-			return "A function call.";
+			return "AST node for calling an object (e.g. ``f(x, y)``).";
 		}
 
 		@Override

@@ -28,7 +28,7 @@ public class FloorDivAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "A \"floor division\" expression (x // y).";
+			return "AST node for a binary truncating division expression (e.g. ``x // y``).";
 		}
 
 		@Override

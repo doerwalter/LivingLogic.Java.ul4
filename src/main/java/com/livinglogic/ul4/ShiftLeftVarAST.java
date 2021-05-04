@@ -25,7 +25,7 @@ public class ShiftLeftVarAST extends ChangeVarAST
 		@Override
 		public String getDoc()
 		{
-			return "An augmented left shift assignment (i.e. `x <<= y`).";
+			return "AST node for an augmented assignment expression that assigns the result\nof a \"shift left\" expression to its left operand. (e.g. ``x <<= y``).";
 		}
 
 		@Override

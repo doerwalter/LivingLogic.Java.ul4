@@ -35,7 +35,7 @@ public class KeywordArgumentAST extends ArgumentASTBase
 		@Override
 		public String getDoc()
 		{
-			return "A keyword argument.";
+			return "AST node for a keyword argument in a :class:`CallAST` (e.g. the ``x=y``\nin the function call``f(x=y)``).";
 		}
 
 		@Override

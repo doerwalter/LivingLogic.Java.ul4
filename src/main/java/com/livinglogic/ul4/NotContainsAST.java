@@ -25,7 +25,7 @@ public class NotContainsAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "An \"inverted containment\" test (i.e. `x not in y`).";
+			return "AST node for an inverted containment testing expression (e.g. ``x not in y``).";
 		}
 
 		@Override

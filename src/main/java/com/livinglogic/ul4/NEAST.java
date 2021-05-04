@@ -25,7 +25,7 @@ public class NEAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "An inequality comparison (i.e. `x != y`).";
+			return "AST node for a binary inequalitiy comparison (e.g. ``x != y``).";
 		}
 
 		@Override
