@@ -34,7 +34,7 @@ type object can forward most operations to the instance itself (which should
 be a subclass of {@link UL4Instance}).</li>
 
 <li>{@link AbstractType} this is used for all builtin and third party classes
-because we can't</li>
+because we can't implement the required interfaces in those classes.</li>
 </ol>
 **/
 public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
