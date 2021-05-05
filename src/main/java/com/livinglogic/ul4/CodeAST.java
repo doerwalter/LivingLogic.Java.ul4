@@ -38,7 +38,7 @@ public abstract class CodeAST extends AST
 		@Override
 		public String getDoc()
 		{
-			return "Base type of all UL4 syntax tree nodes that may appear in a template tag";
+			return "The base class of all AST nodes that are not literal text.";
 		}
 
 		@Override

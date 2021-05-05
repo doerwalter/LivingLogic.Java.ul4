@@ -30,7 +30,7 @@ public abstract class UnaryAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "An unary expression (i.e. an expression with one operand).";
+			return "Base class for all AST nodes implementing unary expressions\n(i.e. operators with one operand).";
 		}
 
 		@Override

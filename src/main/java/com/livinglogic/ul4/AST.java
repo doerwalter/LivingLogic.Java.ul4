@@ -47,7 +47,7 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 		@Override
 		public String getDoc()
 		{
-			return "Base type of all UL4 syntax tree nodes";
+			return "Base class for all UL4 syntax tree nodes.";
 		}
 
 		@Override
