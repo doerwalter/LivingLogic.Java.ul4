@@ -30,8 +30,8 @@ its type via {@link UL4Type#getType(Object)}.</p>
 <ol>
 <li>{@link AbstractInstanceType} this is used for our own classes that
 should be exposed to UL4. In this case the {@link AbstractInstanceType}
-type object can forward most operations to the instance itself (which should
-be a subclass of {@link UL4Instance}).</li>
+type object can forward most operations to the instance itself (which must
+be a instance of {@link UL4Instance}).</li>
 
 <li>{@link AbstractType} this is used for all builtin and third party classes
 because we can't implement the required interfaces in those classes.</li>
