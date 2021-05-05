@@ -16,6 +16,35 @@ import com.livinglogic.ul4on.Encoder;
 
 public abstract class ChangeVarAST extends CodeAST
 {
+	protected static class Type extends CodeAST.Type
+	{
+		@Override
+		public String getNameUL4()
+		{
+			return "ChangeVarAST";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "Base class for all AST nodes that are assignment operators, i.e. that\nset or modify a variable/attribute or item.";
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof ChangeVarAST;
+		}
+	}
+
+	public static final UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected LValue lvalue;
 	protected AST value;
 
