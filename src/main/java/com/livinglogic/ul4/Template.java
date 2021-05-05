@@ -60,7 +60,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 			return new Template();
 		}
 
-		private static final Signature signature = new Signature().addBoth("source").addBoth("name", null).addKeywordOnly("whitespace", "keep").addKeywordOnly("startdelim", "<?").addKeywordOnly("enddelim", "?>").addKeywordOnly("signature", null);
+		private static final Signature signature = new Signature().addBoth("source").addBoth("name", null).addKeywordOnly("whitespace", "keep").addKeywordOnly("signature", null);
 
 		@Override
 		public Signature getSignature()
@@ -74,26 +74,20 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 			Object source = args.get(0);
 			Object name = args.get(1);
 			Object whitespace = args.get(2);
-			Object startdelim = args.get(3);
-			Object enddelim = args.get(4);
-			Object signature = args.get(5);
+			Object signature = args.get(3);
 
 			if (
 				(!(source instanceof String)) ||
 				(name != null && !(name instanceof String)) ||
 				(whitespace != null && !(whitespace instanceof String)) ||
-				(startdelim != null && !(startdelim instanceof String)) ||
-				(enddelim != null && !(enddelim instanceof String)) ||
 				(signature != null && !(signature instanceof String))
 			)
-				throw new ArgumentTypeMismatchException("ul4.Template({!t}, {!t}, {!t}, {!t}, {!t}, {!t}) not supported", source, name, whitespace, startdelim, enddelim, signature);
+				throw new ArgumentTypeMismatchException("ul4.Template({!t}, {!t}, {!t}, {!t}) not supported", source, name, whitespace, signature);
 
 			return new Template(
 				(String)source,
 				(String)name,
 				whitespace != null ? Whitespace.fromString((String)whitespace) : Whitespace.keep,
-				startdelim != null ? (String)startdelim : "<?",
-				enddelim != null ? (String)enddelim : "<?",
 				(String)signature
 			);
 		}
@@ -116,7 +110,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	/**
 	The version number used in the UL4ON dump of the template.
 	**/
-	public static final String VERSION = "50";
+	public static final String VERSION = "51";
 
 	/**
 	The name of the template/function (defaults to {@code null})
@@ -145,16 +139,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	(i.e. linefeed and the whitespace after the linefeed will be skipped. Other spaces/tabs etc. will not be skipped)
 	**/
 	public Whitespace whitespace = Whitespace.keep;
-
-	/**
-	The start delimiter for tags (defaults to {@code "<?"})
-	**/
-	public String startdelim = "<?";
-
-	/**
-	The end delimiter for tags (defaults to {@code "?>"})
-	**/
-	public String enddelim = "?>";
 
 	/**
 	The signature of the template if it is a top level template  ({@code null} mean that all variables are allowed)
@@ -190,8 +174,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 		this.source = null;
 		this.name = null;
 		this.whitespace = Whitespace.keep;
-		this.startdelim = startdelim != null ? startdelim : "<?";
-		this.enddelim = enddelim != null ? enddelim : "?>";
 		this.signature = null;
 		this.signatureAST = null;
 		this.docPos = null;
@@ -201,7 +183,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	/**
 	Create of toplevel template without a signature
 	**/
-	public Template(String source, String name, Whitespace whitespace, String startdelim, String enddelim)
+	public Template(String source, String name, Whitespace whitespace)
 	{
 		super(null, new Slice(0, 0), null);
 		int stop = source != null ? source.length() : 0; 
@@ -211,27 +193,23 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 		this.source = source != null ? source : "";
 		this.name = name;
 		this.whitespace = whitespace;
-		this.startdelim = startdelim != null ? startdelim : "<?";
-		this.enddelim = enddelim != null ? enddelim : "?>";
 		this.signature = null;
 		this.signatureAST = null;
 		this.docPos = null;
 		compile();
 	}
 
-	private static String makeSource(String source, String name, String startdelim, String enddelim, String signature)
+	private static String makeSource(String source, String name, String signature)
 	{
 		if (signature != null)
 		{
 			StringBuilder buffer = new StringBuilder();
-			buffer.append(startdelim != null ? startdelim : "<?");
-			buffer.append("ul4 ");
+			buffer.append("<?ul4 ");
 			if (name != null)
 				buffer.append(name);
 			buffer.append("(");
 			buffer.append(signature);
-			buffer.append(")");
-			buffer.append(enddelim != null ? enddelim : "?>");
+			buffer.append(")?>");
 			buffer.append(source);
 			return buffer.toString();
 		}
@@ -242,9 +220,9 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	/**
 	Create of toplevel template with a specified signature
 	**/
-	public Template(String source, String name, Whitespace whitespace, String startdelim, String enddelim, Signature signature)
+	public Template(String source, String name, Whitespace whitespace, Signature signature)
 	{
-		this(source, name, whitespace, startdelim, enddelim);
+		this(source, name, whitespace);
 		if (this.signature == null) // signature from <?ul4?> tag wins
 			this.signature = signature;
 	}
@@ -252,15 +230,15 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	/**
 	Create of toplevel template with a signature compiled from a string
 	**/
-	public Template(String source, String name, Whitespace whitespace, String startdelim, String enddelim, String signature)
+	public Template(String source, String name, Whitespace whitespace, String signature)
 	{
-		this(makeSource(source, name, startdelim, enddelim, signature), name, whitespace, startdelim, enddelim);
+		this(makeSource(source, name, signature), name, whitespace);
 	}
 
 	/**
 	Creates an {@code Template} object. Used for subtemplates.
 	**/
-	Template(Template template, String name, Whitespace whitespace, String startdelim, String enddelim, SignatureAST signature)
+	Template(Template template, String name, Whitespace whitespace, SignatureAST signature)
 	{
 		super(template, new Slice(0, 0), null);
 		// Copy the full source instead of calling {@link getSource} (the full source is the source of the outermost template)
@@ -269,8 +247,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 		setStopPos(stop, stop);
 		this.name = name;
 		this.whitespace = whitespace;
-		this.startdelim = startdelim != null ? startdelim : "<?";
-		this.enddelim = enddelim != null ? enddelim : "?>";
 		this.signature = null;
 		this.signatureAST = signature;
 		this.docPos = null;
@@ -665,7 +641,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 							UL4Parser parser = getParser(tag);
 							Definition definition = parser.definition();
 							// Copy over all the attributes, however passing an {@link Template} will prevent compilation
-							Template subtemplate = new Template(tag.getTemplate(), definition.getName(), whitespace, startdelim, enddelim, definition.getSignature());
+							Template subtemplate = new Template(tag.getTemplate(), definition.getName(), whitespace, definition.getSignature());
 							innerBlock.append(subtemplate);
 							blockStack.push(subtemplate);
 							subtemplate.parentTemplate = tag.getTemplate();
@@ -706,7 +682,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 							CodeAST code = parser.expression();
 							if (!(code instanceof CallAST))
 								throw new RuntimeException("render call required");
-							RenderBlockAST render = new RenderBlockAST(templateStack.peek(), (CallAST)code, whitespace, startdelim, enddelim);
+							RenderBlockAST render = new RenderBlockAST(templateStack.peek(), (CallAST)code, whitespace);
 							render.setStartPos(tag.getStartPos());
 							render.stealIndent(innerBlock);
 							innerBlock.append(render);
@@ -792,16 +768,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	public String getDoc()
 	{
 		return docPos != null ? docPos.getFrom(source) : null;
-	}
-
-	public String getStartDelim()
-	{
-		return startdelim;
-	}
-
-	public String getEndDelim()
-	{
-		return enddelim;
 	}
 
 	public Signature getSignature()
@@ -1291,16 +1257,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 			formatter.append(" whitespace=");
 			formatter.visit(whitespace.toString());
 		}
-		if (!"<?".equals(startdelim))
-		{
-			formatter.append(" startdelim=");
-			formatter.visit(startdelim);
-		}
-		if (!"?>".equals(enddelim))
-		{
-			formatter.append(" enddelim=");
-			formatter.visit(enddelim);
-		}
 		if (signature != null)
 		{
 			formatter.append(" signature=");
@@ -1430,7 +1386,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 	**/
 	public List<Line> tokenizeTags()
 	{
-		Pattern tagPattern = Pattern.compile(escapeREchars(startdelim) + "\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblocks|renderblock|renderx|render)(\\s*(.*?)\\s*)?" + escapeREchars(enddelim), Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile("<\\?\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblocks|renderblock|renderx|render)(\\s*(.*?)\\s*)?\\?>", Pattern.DOTALL);
 		LinkedList<Line> lines = new LinkedList<Line>();
 		boolean wasTag = false;
 		if (source != null)
@@ -1465,22 +1421,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 			}
 		}
 		return lines;
-	}
-
-	private static String escapeREchars(String input)
-	{
-		int len = input.length();
-
-		StringBuilder buffer = new StringBuilder(len);
-
-		for (int i = 0; i < len; ++i)
-		{
-			char c = input.charAt(i);
-			if (!(('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || ('0' <= c && c <= '9')))
-				buffer.append('\\');
-			buffer.append(c);
-		}
-		return buffer.toString();
 	}
 
 	@Override
@@ -1732,8 +1672,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 		encoder.dump(name);
 		encoder.dump(source);
 		encoder.dump(whitespace.toString());
-		encoder.dump(startdelim);
-		encoder.dump(enddelim);
 		encoder.dump(docPos);
 		encoder.dump(parentTemplate);
 
@@ -1760,12 +1698,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 			String source = (String)decoder.load();
 			String signature = (String)decoder.load();
 			String whitespace = (String)decoder.load();
-			String startdelim = (String)decoder.load();
-			String enddelim = (String)decoder.load();
-			if (startdelim == null)
-				startdelim = "<?";
-			if (enddelim == null)
-				enddelim = "?>";
 
 			// remove old attributes, set new ones, and recompile the template
 			setStartPos(0, 0);
@@ -1775,12 +1707,10 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 			this.content.clear();
 			this.name = name;
 			this.whitespace = Whitespace.fromString(whitespace);
-			this.startdelim = startdelim;
-			this.enddelim = enddelim;
 			this.signature = null;
 			this.signatureAST = null;
 			this.docPos = null;
-			this.source = makeSource(source, name, startdelim, enddelim, signature);
+			this.source = makeSource(source, name, signature);
 			compile();
 		}
 		else // this is a "compiled" version of the UL4ON dump
@@ -1792,8 +1722,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 			name = (String)decoder.load();
 			source = (String)decoder.load();
 			whitespace = Whitespace.fromString((String)decoder.load());
-			startdelim = (String)decoder.load();
-			enddelim = (String)decoder.load();
 			docPos = (Slice)decoder.load();
 			parentTemplate = (Template)decoder.load();
 
@@ -1880,7 +1808,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 		}
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "startdelim", "enddelim", "signature", "doc", "source", "parenttemplate", "renders", "render");
+	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "signature", "doc", "source", "parenttemplate", "renders", "render");
 
 	@Override
 	public Set<String> dirUL4()
@@ -1897,10 +1825,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallW
 				return name;
 			case "whitespace":
 				return whitespace.toString();
-			case "startdelim":
-				return startdelim;
-			case "enddelim":
-				return enddelim;
 			case "signature":
 				return signatureAST != null ? signatureAST : signature;
 			case "doc":

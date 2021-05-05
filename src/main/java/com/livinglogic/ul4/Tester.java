@@ -39,7 +39,7 @@ public class Tester
 
 	public static Template compileTemplate(String source, String name, Template.Whitespace whitespace, String signature)
 	{
-		return new Template(source, name, whitespace, null, null, signature);
+		return new Template(source, name, whitespace, signature);
 	}
 
 	public static String executeCommand(Map<String, Object> data)

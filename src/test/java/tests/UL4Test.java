@@ -218,14 +218,14 @@ public class UL4Test
 
 	private static Template T(String source, String name, Template.Whitespace whitespace, String signature)
 	{
-		Template template = new Template(source, name, whitespace, null, null, signature);
+		Template template = new Template(source, name, whitespace, signature);
 		// System.out.println(template);
 		return template;
 	}
 
 	private static Template T(String source, String name, Template.Whitespace whitespace, Signature signature)
 	{
-		Template template = new Template(source, name, whitespace, null, null, signature);
+		Template template = new Template(source, name, whitespace, signature);
 		// System.out.println(template);
 		return template;
 	}
@@ -5612,8 +5612,6 @@ public class UL4Test
 		Template t = T(source, "t");
 
 		checkOutput("<com.livinglogic.ul4.UndefinedKey 'foo'>", T("<?print repr(template.foo)?>"), V("template", t));
-		checkOutput("<?", T("<?print template.startdelim?>"), V("template", t));
-		checkOutput("?>", T("<?print template.enddelim?>"), V("template", t));
 		checkOutput(source, T("<?print template.source?>"), V("template", t));
 		checkOutput("2", T("<?print len(template.content)?>"), V("template", t));
 		checkOutput("t", T("<?print template.content[0].template.name?>"), V("template", t));

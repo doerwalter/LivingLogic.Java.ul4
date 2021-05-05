@@ -45,7 +45,7 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 		@Override
 		public RenderBlockAST create(String id)
 		{
-			return new RenderBlockAST(null, null, null);
+			return new RenderBlockAST(null, (Slice)null, (AST)null);
 		}
 
 		@Override
@@ -74,10 +74,10 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 	/**
 	This is used to "convert" a {@link CallAST} that comes out of the parser into a {@code RenderBlockAST}
 	**/
-	public RenderBlockAST(Template template, CallAST call, Template.Whitespace whitespace, String startdelim, String enddelim)
+	public RenderBlockAST(Template template, CallAST call, Template.Whitespace whitespace)
 	{
 		super(call);
-		content = new Template(template, "content", whitespace, startdelim, enddelim, null);
+		content = new Template(template, "content", whitespace, null);
 	}
 
 	@Override

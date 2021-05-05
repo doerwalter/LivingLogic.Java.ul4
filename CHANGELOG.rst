@@ -50,6 +50,9 @@ templates with positional-only or keyword-only arguments).
 
 Add functions ``floor()`` and ``ceil()``.
 
+``Template`` objects no longer have ``startdelim`` and ``enddelim`` attributes.
+The tag delimiters are now always ``<?`` and ``?>``.
+
 
 exp-154 (2020-04-29)
 --------------------
