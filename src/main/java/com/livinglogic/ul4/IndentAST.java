@@ -13,7 +13,7 @@ import com.livinglogic.ul4on.Encoder;
 
 /**
 An IndentAST is a literal text in the template source that represents the
-indentation at the beginning of a line. For "smart" whitespace mode
+indentation at the beginning of a line.
 **/
 public class IndentAST extends TextAST
 {
