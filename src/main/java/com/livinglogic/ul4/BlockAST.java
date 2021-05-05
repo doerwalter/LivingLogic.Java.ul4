@@ -18,6 +18,35 @@ import com.livinglogic.ul4on.Encoder;
 
 abstract class BlockAST extends CodeAST implements BlockLike
 {
+	protected static class Type extends CodeAST.Type
+	{
+		@Override
+		public String getNameUL4()
+		{
+			return "BlockAST";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "Base class for all AST nodes that are blocks.";
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof BlockAST;
+		}
+	}
+
+	public static final UL4Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	protected List<AST> content = new LinkedList<AST>();
 
 	public BlockAST(Template template, Slice startPos, Slice stopPos)
