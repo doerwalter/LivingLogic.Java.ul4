@@ -20,9 +20,11 @@ public class ModuleUL4 extends Module
 	public ModuleUL4()
 	{
 		super("ul4", "UL4 - A templating language");
+		addObject(AST.type);
 		addObject(TextAST.type);
 		addObject(IndentAST.type);
 		addObject(LineEndAST.type);
+		addObject(CodeAST.type);
 		addObject(ConstAST.type);
 		addObject(SeqItemAST.type);
 		addObject(UnpackSeqItemAST.type);
@@ -36,6 +38,7 @@ public class ModuleUL4 extends Module
 		addObject(DictComprehensionAST.type);
 		addObject(GeneratorExpressionAST.type);
 		addObject(VarAST.type);
+		addObject(BlockAST.type);
 		addObject(ConditionalBlocksAST.type);
 		addObject(IfBlockAST.type);
 		addObject(ElIfBlockAST.type);
@@ -46,6 +49,7 @@ public class ModuleUL4 extends Module
 		addObject(ContinueAST.type);
 		addObject(AttrAST.type);
 		addObject(SliceAST.type);
+		addObject(UnaryAST.type);
 		addObject(NotAST.type);
 		addObject(IfAST.type);
 		addObject(NegAST.type);
@@ -53,6 +57,7 @@ public class ModuleUL4 extends Module
 		addObject(PrintAST.type);
 		addObject(PrintXAST.type);
 		addObject(ReturnAST.type);
+		addObject(BinaryAST.type);
 		addObject(ItemAST.type);
 		addObject(ShiftLeftAST.type);
 		addObject(ShiftRightAST.type);
@@ -77,6 +82,7 @@ public class ModuleUL4 extends Module
 		addObject(OrAST.type);
 		addObject(AndAST.type);
 		addObject(ModAST.type);
+		addObject(ChangeVarAST.type);
 		addObject(SetVarAST.type);
 		addObject(AddVarAST.type);
 		addObject(SubVarAST.type);
