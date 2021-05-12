@@ -651,6 +651,21 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	}
 
 	/**
+	Remove the persistent object {@code object} from the persistent object
+	cache. This might be useful if an object gets created in a database
+	transaction that gets rolled back later.
+
+	@param object the object to be removed from the persistent object cache.
+	**/
+	public void forgetPersistentObject(UL4ONSerializable object)
+	{
+		String type = object.getUL4ONName();
+		Map<String, UL4ONSerializable> objects = persistentObjects.get(type);
+		if (objects != null)
+			objects.remove(object.getUL4ONID());
+	}
+
+	/**
 	Return an iterator over all objects in the persistent object cache.
 
 	@return the iterator
