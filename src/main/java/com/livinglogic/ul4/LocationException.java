@@ -37,6 +37,11 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		return buffer.toString();
 	}
 
+	public String getDescription()
+	{
+		return location.getTemplateDescriptionText() + "; " + location.getLocationDescriptionText();
+	}
+
 	protected static Set<String> attributes = makeSet(
 		"context",
 		"location"

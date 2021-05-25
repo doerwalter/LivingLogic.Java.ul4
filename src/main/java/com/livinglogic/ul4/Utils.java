@@ -951,6 +951,39 @@ public class Utils
 		}
 	}
 
+	/**
+	Return a string that can be used for fingerprinting the exception location
+	in Sentry.
+
+	If the exception was caused by an UL4 template, use the location of the
+	innermost exception as the fingerprint. Else use the stack trace itself.
+
+	@param ex The exception for which we need a fingerprint.
+	@return A string that identifies the location of the exception.
+	**/
+	public static String getLocationFingerprint(Throwable ex)
+	{
+		Throwable innerEx = getInnerException(ex);
+		if (innerEx instanceof LocationException)
+			return ((LocationException)innerEx).getDescription();
+		else
+			return getStacktraceAsText(ex, 300, "more stack frames");
+	}
+
+	public static String getLocationDescriptionAsText(Throwable ex)
+	{
+		Throwable innerEx = getInnerException(ex);
+		if (innerEx instanceof LocationException)
+			return ((LocationException)innerEx).getDescription();
+		else
+		{
+			StackTraceElement[] frames = ex.getStackTrace();
+			if (frames.length == 0)
+				return ex.toString();
+			return frames[0].toString();
+		}
+	}
+
 	public static String getSourcePrefix(String source, int pos)
 	{
 		int outerStartPos = pos;
