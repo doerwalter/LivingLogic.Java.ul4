@@ -14,8 +14,6 @@ import static com.livinglogic.ul4.Utils.getInnerException;
 public class LocationException extends RuntimeException implements UL4Dir, UL4GetAttr
 {
 	protected AST location;
-	int line;
-	int col;
 
 	public LocationException(AST location)
 	{
