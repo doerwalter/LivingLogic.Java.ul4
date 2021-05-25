@@ -967,7 +967,7 @@ public class Utils
 		if (innerEx instanceof LocationException)
 			return ((LocationException)innerEx).getDescription();
 		else
-			return getStacktraceAsText(ex, 300, "more stack frames");
+			return getStacktraceAsText(ex, 100, "more stack frames");
 	}
 
 	public static String getLocationDescriptionAsText(Throwable ex)
