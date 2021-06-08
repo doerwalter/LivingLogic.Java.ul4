@@ -533,9 +533,15 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 
 	public ArrayList<Double> hsva()
 	{
-		ArrayList retVal = hsv();
+		ArrayList<Double> retVal = hsv();
 		retVal.add(new Double(a/255.));
 		return retVal;
+	}
+
+	public double hue()
+	{
+		ArrayList<Double> hls = hls();
+		return hls.get(0);
 	}
 
 	public double lum()
@@ -547,6 +553,17 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		double dminc = minc/255.;
 
 		return (dminc+dmaxc)/2.0;
+	}
+
+	public double sat()
+	{
+		ArrayList<Double> hls = hls();
+		return hls.get(2);
+	}
+
+	public double luma()
+	{
+		return (0.2126 * ((int)r) + 0.7152 * ((int)g) + 0.0722 * ((int)b))/255.;
 	}
 
 	public Color withlum(double lum)
@@ -600,6 +617,69 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		else if (f < 0)
 			newlum += newlum*f;
 		return fromhls(v.get(0), newlum, v.get(2), v.get(3));
+	}
+
+	private double interpolate(double lower, double upper, double factor)
+	{
+		return factor*upper + (1.0-factor) * lower;
+	}
+
+	public Color withluma(double luma)
+	{
+		double luma_old = luma();
+		if (luma_old == 0.0 || luma_old == 1.0)
+		{
+			int v = (int)(luma*255.);
+			return new Color(v, v, v, a);
+		}
+		else if (luma > luma_old)
+		{
+			double f = (luma-luma_old)/(1.0-luma_old);
+			return new Color(
+				(int)interpolate(r, 255., f),
+				(int)interpolate(g, 255., f),
+				(int)interpolate(b, 255., f),
+				a
+			);
+		}
+		else if (luma < luma_old)
+		{
+			double f = luma/luma_old;
+			return new Color(
+				(int)interpolate(0., r, f),
+				(int)interpolate(0., g, f),
+				(int)interpolate(0., b, f),
+				a
+			);
+		}
+		else
+			return this;
+	}
+
+	public Color absluma(double f)
+	{
+		return withluma(luma() + f);
+	}
+
+	public Color relluma(double f)
+	{
+		double luma = luma();
+		if (f > 0)
+			luma += (1.0-luma)*f;
+		else if (f < 0)
+			luma += luma*f;
+		return withluma(luma);
+	}
+
+	public Color invert(double f)
+	{
+		double invf = 1.0 - f;
+		return new Color(
+			(int)(invf * ((int)r) + f * (255-((int)r))),
+			(int)(invf * ((int)g) + f * (255-((int)g))),
+			(int)(invf * ((int)b) + f * (255-((int)b))),
+			a
+		);
 	}
 
 	// Collection interface
@@ -880,6 +960,26 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 	}
 
+	private static class BoundMethodHue extends BoundMethod<Color>
+	{
+		public BoundMethodHue(Color object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "lum";
+		}
+
+		@Override
+		public Object evaluate(BoundArguments args)
+		{
+			return object.hue();
+		}
+	}
+
 	private static class BoundMethodLum extends BoundMethod<Color>
 	{
 		public BoundMethodLum(Color object)
@@ -897,6 +997,46 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		public Object evaluate(BoundArguments args)
 		{
 			return object.lum();
+		}
+	}
+
+	private static class BoundMethodSat extends BoundMethod<Color>
+	{
+		public BoundMethodSat(Color object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "sat";
+		}
+
+		@Override
+		public Object evaluate(BoundArguments args)
+		{
+			return object.sat();
+		}
+	}
+
+	private static class BoundMethodLuma extends BoundMethod<Color>
+	{
+		public BoundMethodLuma(Color object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "luma";
+		}
+
+		@Override
+		public Object evaluate(BoundArguments args)
+		{
+			return object.luma();
 		}
 	}
 
@@ -1092,7 +1232,119 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 	}
 
-	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "lum", "hls", "hlsa", "hsv", "hsva", "witha", "withlum", "abslum", "rellum");
+	private static class BoundMethodWithLuma extends BoundMethod<Color>
+	{
+		public BoundMethodWithLuma(Color object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "withluma";
+		}
+
+		private static final Signature signature = new Signature().addBoth("luma");
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object evaluate(BoundArguments args)
+		{
+			return object.withluma(Utils.toDouble(args.get(0)));
+		}
+	}
+
+	private static class BoundMethodAbsLuma extends BoundMethod<Color>
+	{
+		public BoundMethodAbsLuma(Color object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "absluma";
+		}
+
+		private static final Signature signature = new Signature().addBoth("f");
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object evaluate(BoundArguments args)
+		{
+			return object.absluma(Utils.toDouble(args.get(0)));
+		}
+	}
+
+	private static class BoundMethodRelLuma extends BoundMethod<Color>
+	{
+		public BoundMethodRelLuma(Color object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "relluma";
+		}
+
+		private static final Signature signature = new Signature().addBoth("f");
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object evaluate(BoundArguments args)
+		{
+			return object.relluma(Utils.toDouble(args.get(0)));
+		}
+	}
+
+	private static class BoundMethodInvert extends BoundMethod<Color>
+	{
+		public BoundMethodInvert(Color object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "invert";
+		}
+
+		private static final Signature signature = new Signature().addBoth("f", 1.0);
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object evaluate(BoundArguments args)
+		{
+			return object.invert(Utils.toDouble(args.get(0)));
+		}
+	}
+
+	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "hue", "lum", "sat", "luma", "hls", "hlsa", "hsv", "hsva", "invert", "witha", "withlum", "abslum", "rellum", "withluma", "absluma", "relluma");
 
 	@Override
 	public Set<String> dirUL4()
@@ -1113,8 +1365,14 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 				return new BoundMethodB(this);
 			case "a":
 				return new BoundMethodA(this);
+			case "hue":
+				return new BoundMethodHue(this);
 			case "lum":
 				return new BoundMethodLum(this);
+			case "sat":
+				return new BoundMethodSat(this);
+			case "luma":
+				return new BoundMethodLuma(this);
 			case "hls":
 				return new BoundMethodHLS(this);
 			case "hlsa":
@@ -1131,6 +1389,14 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 				return new BoundMethodAbsLum(this);
 			case "rellum":
 				return new BoundMethodRelLum(this);
+			case "withluma":
+				return new BoundMethodWithLuma(this);
+			case "absluma":
+				return new BoundMethodAbsLuma(this);
+			case "relluma":
+				return new BoundMethodRelLuma(this);
+			case "invert":
+				return new BoundMethodInvert(this);
 			default:
 				throw new AttributeException(this, key);
 		}
