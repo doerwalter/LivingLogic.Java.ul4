@@ -20,6 +20,8 @@ order.
 
 Updated Apache Commons Lang to 3.11 and use Apache Commons Text 1.9.
 
+Added methods ``Color.fromCSS(String)`` and ``Color.fromCSS(String, Color)``.
+
 Added type objects. ``type(obj)`` now returns a type object instead of a string.
 Some type objects can be called to create an instance.
 
@@ -40,6 +42,8 @@ The module ``ul4on`` contains the functions ``loads()`` and ``dumps()`` and
 the types ``Encoder`` and ``Decoder``.
 
 The module ``operator`` contains one type: ``attrgetter``.
+
+The module ``color`` contains the type ``Color`` and the function ``css``.
 
 ``math`` contains the constants ``e``, ``pi`` and ``tau`` as well as the
 functions ``cos()``, ``sin()``, ``tan()``, ``sqrt()`` and ``isclose()``.

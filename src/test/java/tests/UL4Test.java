@@ -1883,11 +1883,26 @@ public class UL4Test
 	}
 
 	@Test
-	public void function_color()
+	public void module_color_function_Color()
 	{
-		checkOutput("#000", T("<?print repr(color(0, 0, 0))?>"));
-		checkOutput("#0000", T("<?print repr(color(0, 0, 0, 0))?>"));
-		checkOutput("#369c", T("<?print repr(color(51, 102, 153, 204))?>"));
+		checkOutput("#000", T("<?print repr(color.Color(0, 0, 0))?>"));
+		checkOutput("#0000", T("<?print repr(color.Color(0, 0, 0, 0))?>"));
+		checkOutput("#369c", T("<?print repr(color.Color(51, 102, 153, 204))?>"));
+	}
+
+	@Test
+	public void module_color_function_css()
+	{
+		checkOutput("#000", T("<?print repr(color.css('black'))?>"));
+		checkOutput("#fff", T("<?print repr(color.css('white'))?>"));
+		checkOutput("#123", T("<?print repr(color.css('#123'))?>"));
+		checkOutput("#1234", T("<?print repr(color.css('#1234'))?>"));
+		checkOutput("#123456", T("<?print repr(color.css('#123456'))?>"));
+		checkOutput("#12345678", T("<?print repr(color.css('#12345678'))?>"));
+		checkOutput("#136", T("<?print repr(color.css('rgb(17, 20%, 40%)'))?>"));
+		checkOutput("#1369", T("<?print repr(color.css('rgba(17, 20%, 40%, 0.6)'))?>"));
+		checkOutput("#1369", T("<?print repr(color.css('rgba(17, 20%, 40%, 60%)'))?>"));
+		checkOutput("#123", T("<?print repr(color.css('bad', #123))?>"));
 	}
 
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
@@ -3550,7 +3565,7 @@ public class UL4Test
 			"dict", asList(V()),
 			"ul4.Template", asList(T("")),
 			"function", asList(FunctionRepr.function),
-			"color", asList(new Color(0, 0, 0))
+			"color.Color", asList(new Color(0, 0, 0))
 		);
 
 		for (String type : info.keySet())
@@ -4112,7 +4127,7 @@ public class UL4Test
 		checkOutput("<type dict>", t, V("data", V(1, 2)));
 		checkOutput("<type set>", t, V("data", makeSet(1, 2)));
 		checkOutput("<type ul4.Template>", t, V("data", T("")));
-		checkOutput("<type color>", t, V("data", new Color(0, 0, 0)));
+		checkOutput("<type color.Color>", t, V("data", new Color(0, 0, 0)));
 		checkOutput("<type java.lang.RuntimeException>", t, V("data", new RuntimeException("broken")));
 	}
 

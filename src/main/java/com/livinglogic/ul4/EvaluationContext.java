@@ -501,7 +501,6 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 			"list", List_.type,
 			"set", Set_.type,
 			"dict", Dict.type,
-			"color", Color.type,
 			"function", Function.type,
 			"len", FunctionLen.function,
 			"any", FunctionAny.function,
@@ -571,7 +570,8 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 			"ul4", ModuleUL4.module,
 			"ul4on", ModuleUL4ON.module,
 			"math", ModuleMath.module,
-			"operator", ModuleOperator.module
+			"operator", ModuleOperator.module,
+			"color", ModuleColor.module
 		);
 	}
 }

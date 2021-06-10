@@ -9,6 +9,7 @@ package com.livinglogic.ul4;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.text.DecimalFormat;
@@ -16,7 +17,9 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import static com.livinglogic.utils.MapUtils.makeMap;
 import static com.livinglogic.utils.SetUtils.makeSet;
 
 public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4GetItem, UL4Dir, UL4Len
@@ -24,9 +27,15 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 	protected static class Type extends AbstractInstanceType
 	{
 		@Override
-		public String getNameUL4()
+		public String getModuleName()
 		{
 			return "color";
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "Color";
 		}
 
 		@Override
@@ -369,7 +378,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		return new Color(r, g, b, a);
 	}
 
-	public static Color fromrepr(String value)
+	public static Color _fromrepr(String value)
 	{
 		if (value == null)
 			return null;
@@ -393,8 +402,133 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 			a = (len == 7) ? 0xff : Integer.valueOf(value.substring(7, 9), 16);
 		}
 		else
-			throw new RuntimeException("Invalid color repr '" + value + "'");
+			return null;
 		return new Color(r, g, b, a);
+	}
+
+	public static Color fromrepr(String value)
+	{
+		Color color = _fromrepr(value);
+		if (color == null)
+			throw new ColorFormatException(Utils.formatMessage("Invalid color repr {!r}", value));
+		return color;
+	}
+
+	public static final Color maroon = new Color(0x80, 0x00, 0x00);
+	public static final Color red = new Color(0xff, 0x00, 0x00);
+	public static final Color orange = new Color(0xff, 0xa5, 0x00);
+	public static final Color yellow = new Color(0xff, 0xff, 0x00);
+	public static final Color olive = new Color(0x80, 0x80, 0x00);
+	public static final Color purple = new Color(0x80, 0x00, 0x80);
+	public static final Color fuchsia = new Color(0xff, 0x00, 0xff);
+	public static final Color white = new Color(0xff, 0xff, 0xff);
+	public static final Color lime = new Color(0x00, 0xff, 0x00);
+	public static final Color green = new Color(0x00, 0x80, 0x00);
+	public static final Color navy = new Color(0x00, 0x00, 0x80);
+	public static final Color blue = new Color(0x00, 0x00, 0xff);
+	public static final Color aqua = new Color(0x00, 0xff, 0xff);
+	public static final Color teal = new Color(0x00, 0x80, 0x80);
+	public static final Color black = new Color(0x00, 0x00, 0x00);
+	public static final Color silver = new Color(0xc0, 0xc0, 0xc0);
+	public static final Color gray = new Color(0x80, 0x80, 0x80);
+	// Aliases
+	public static final Color magenta = purple;
+	public static final Color cyan = aqua;
+
+	private static final Map<String, Color> cssColors = makeMap(
+		"maroon", maroon,
+		"red", red,
+		"orange", orange,
+		"yellow", yellow,
+		"olive", olive,
+		"purple", purple,
+		"fuchsia", fuchsia,
+		"white", white,
+		"lime", lime,
+		"green", green,
+		"navy", navy,
+		"blue", blue,
+		"aqua", aqua,
+		"teal", teal,
+		"black", black,
+		"silver", silver,
+		"gray", gray,
+		"magenta", magenta,
+		"cyan", cyan,
+		// Aliases
+		"magenta", magenta,
+		"cyan", cyan
+	);
+
+	private static int parseRGB(String c)
+	{
+		if (c.endsWith("%"))
+			return (int)(Double.valueOf(c.substring(0, c.length()-1))/100*255);
+		else
+			return Integer.valueOf(c);
+	}
+
+	private static int parseA(String c)
+	{
+		if (c.endsWith("%"))
+			return (int)(Double.valueOf(c.substring(0, c.length()-1))/100*255);
+		else
+			return (int)(Double.valueOf(c)*255);
+	}
+
+	private static Color _fromCSS(String value)
+	{
+		if (value == null)
+			return null;
+
+		if (value.startsWith("#"))
+			return _fromrepr(value);
+		else if (value.startsWith("rgb(") && value.endsWith(")"))
+		{
+			String[] components = StringUtils.splitByWholeSeparatorPreserveAllTokens(value.substring(4, value.length()-1), ",");
+			if (components.length != 3)
+				return null;
+			return new Color(
+				parseRGB(components[0]),
+				parseRGB(components[1]),
+				parseRGB(components[2]),
+				255
+			);
+		}
+		else if (value.startsWith("rgba(") && value.endsWith(")"))
+		{
+			String[] components = StringUtils.splitByWholeSeparatorPreserveAllTokens(value.substring(5, value.length()-1), ",");
+			if (components.length != 4)
+				return null;
+			return new Color(
+				parseRGB(components[0]),
+				parseRGB(components[1]),
+				parseRGB(components[2]),
+				parseA(components[3])
+			);
+		}
+		else
+		{
+			// This might return {@code null}, which means error
+			return cssColors.get(value);
+		}
+
+	}
+
+	public static Color fromCSS(String value)
+	{
+		Color color = _fromCSS(value);
+		if (color == null)
+			throw new ColorFormatException(Utils.formatMessage("Can't interpret {!r} as css value", value));
+		return color;
+	}
+
+	public static Color fromCSS(String value, Color defaultValue)
+	{
+		Color color = _fromCSS(value);
+		if (color == null)
+			return defaultValue;
+		return color;
 	}
 
 	public Color blend(Color color)
