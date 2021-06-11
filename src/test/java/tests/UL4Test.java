@@ -4525,7 +4525,7 @@ public class UL4Test
 		checkOutput(dateTimeAttrs, T("<?print sorted(dir(data))?>"), V("data", dataDate));
 		checkOutput(dateTimeAttrs, T("<?print sorted(dir(data))?>"), V("data", dataLocalDateTime));
 		checkOutput("['calendar', 'date', 'day', 'isoformat', 'mimeformat', 'month', 'week', 'weekday', 'year', 'yearday']", T("<?print sorted(dir(data))?>"), V("data", dataLocalDate));
-		checkOutput("['a', 'abslum', 'absluma', 'b', 'g', 'hls', 'hlsa', 'hsv', 'hsva', 'hue', 'invert', 'lum', 'luma', 'r', 'rellum', 'relluma', 'sat', 'witha', 'withlum', 'withluma']", T("<?print sorted(dir(data))?>"), V("data", dataColor));
+		checkOutput("['a', 'abslum', 'absluma', 'b', 'combine', 'g', 'hls', 'hlsa', 'hsv', 'hsva', 'hue', 'invert', 'lum', 'luma', 'r', 'rellum', 'relluma', 'sat', 'witha', 'withlum', 'withluma']", T("<?print sorted(dir(data))?>"), V("data", dataColor));
 		checkOutput("['append', 'count', 'find', 'insert', 'pop', 'rfind']", T("<?print sorted(dir(data))?>"), V("data", dataList));
 		checkOutput("['add', 'clear']", T("<?print sorted(dir(data))?>"), V("data", dataSet));
 		checkOutput("['clear', 'get', 'items', 'update', 'values']", T("<?print sorted(dir(data))?>"), V("data", dataMap));
@@ -5040,6 +5040,15 @@ public class UL4Test
 
 		// Make sure that the parameters have the same name in all implementations
 		checkOutput("#fff", T("<?print #000.invert(f=1)?>"));
+	}
+
+	@Test
+	public void method_combine()
+	{
+		checkOutput("#783456", T("<?print repr(color.Color(0x12, 0x34, 0x56).combine(r=0x78))?>"));
+		checkOutput("#127856", T("<?print repr(color.Color(0x12, 0x34, 0x56).combine(g=0x78))?>"));
+		checkOutput("#123478", T("<?print repr(color.Color(0x12, 0x34, 0x56).combine(b=0x78))?>"));
+		checkOutput("#12345678", T("<?print repr(color.Color(0x12, 0x34, 0x56).combine(a=0x78))?>"));
 	}
 
 	@Test

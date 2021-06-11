@@ -1478,7 +1478,40 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 	}
 
-	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "hue", "lum", "sat", "luma", "hls", "hlsa", "hsv", "hsva", "invert", "witha", "withlum", "abslum", "rellum", "withluma", "absluma", "relluma");
+	private static class BoundMethodCombine extends BoundMethod<Color>
+	{
+		public BoundMethodCombine(Color object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "combine";
+		}
+
+		private static final Signature signature = new Signature().addBoth("r", null).addBoth("g", null).addBoth("b", null).addBoth("a", null);
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object evaluate(BoundArguments args)
+		{
+			int r = args.get(0) != null ? Utils.toInt(args.get(0)) : object.r;
+			int g = args.get(1) != null ? Utils.toInt(args.get(1)) : object.g;
+			int b = args.get(2) != null ? Utils.toInt(args.get(2)) : object.b;
+			int a = args.get(3) != null ? Utils.toInt(args.get(3)) : object.a;
+
+			return new Color(r, g, b, a);
+		}
+	}
+
+	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "hue", "lum", "sat", "luma", "hls", "hlsa", "hsv", "hsva", "invert", "combine", "witha", "withlum", "abslum", "rellum", "withluma", "absluma", "relluma");
 
 	@Override
 	public Set<String> dirUL4()
@@ -1531,6 +1564,8 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 				return new BoundMethodRelLuma(this);
 			case "invert":
 				return new BoundMethodInvert(this);
+			case "combine":
+				return new BoundMethodCombine(this);
 			default:
 				throw new AttributeException(this, key);
 		}
