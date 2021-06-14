@@ -1909,7 +1909,6 @@ public class UL4Test
 	public void module_color_function_mix()
 	{
 		checkOutput("#aaa", T("<?print repr(color.mix(#000, #fff, #fff))?>"));
-		checkOutput("#aaa", T("<?print repr(color.mix(#000, #fff, #fff))?>"));
 		checkOutput("#555", T("<?print repr(color.mix(#000, #000, #fff))?>"));
 		checkOutput("#aaaa", T("<?print repr(color.mix(#0000, #ffff, #ffff))?>"));
 		checkOutput("#aaa", T("<?print repr(color.mix(#000, 2, #fff))?>"));
@@ -4536,7 +4535,7 @@ public class UL4Test
 		checkOutput(dateTimeAttrs, T("<?print sorted(dir(data))?>"), V("data", dataDate));
 		checkOutput(dateTimeAttrs, T("<?print sorted(dir(data))?>"), V("data", dataLocalDateTime));
 		checkOutput("['calendar', 'date', 'day', 'isoformat', 'mimeformat', 'month', 'week', 'weekday', 'year', 'yearday']", T("<?print sorted(dir(data))?>"), V("data", dataLocalDate));
-		checkOutput("['a', 'abslum', 'absluma', 'b', 'combine', 'g', 'hls', 'hlsa', 'hsv', 'hsva', 'hue', 'invert', 'lum', 'luma', 'r', 'rellum', 'relluma', 'sat', 'witha', 'withlum', 'withluma']", T("<?print sorted(dir(data))?>"), V("data", dataColor));
+		checkOutput("['a', 'abslight', 'abslum', 'b', 'combine', 'g', 'hls', 'hlsa', 'hsv', 'hsva', 'hue', 'invert', 'light', 'lum', 'r', 'rellight', 'rellum', 'sat', 'witha', 'withlight', 'withlum']", T("<?print sorted(dir(data))?>"), V("data", dataColor));
 		checkOutput("['append', 'count', 'find', 'insert', 'pop', 'rfind']", T("<?print sorted(dir(data))?>"), V("data", dataList));
 		checkOutput("['add', 'clear']", T("<?print sorted(dir(data))?>"), V("data", dataSet));
 		checkOutput("['clear', 'get', 'items', 'update', 'values']", T("<?print sorted(dir(data))?>"), V("data", dataMap));
@@ -4935,29 +4934,29 @@ public class UL4Test
 	}
 
 	@Test
+	public void method_light()
+	{
+		checkOutput("True", T("<?print #fff.light() == 1?>"));
+		checkOutput("True", T("<?code m = #fff.light?><?print m() == 1?>"));
+	}
+
+	@Test
 	public void method_lum()
 	{
-		checkOutput("True", T("<?print #fff.lum() == 1?>"));
-		checkOutput("True", T("<?code m = #fff.lum?><?print m() == 1?>"));
+		checkOutput("True", T("<?print math.isclose(1.0   , #fff.lum())?>"));
+		checkOutput("True", T("<?print math.isclose(0.0   , #000.lum())?>"));
+		checkOutput("True", T("<?print math.isclose(0.2126, #f00.lum())?>"));
+		checkOutput("True", T("<?print math.isclose(0.7152, #0f0.lum())?>"));
+		checkOutput("True", T("<?print math.isclose(0.0722, #00f.lum())?>"));
 	}
 
 	@Test
-	public void method_luma()
+	public void method_withlight()
 	{
-		checkOutput("True", T("<?print math.isclose(1.0   , #fff.luma())?>"));
-		checkOutput("True", T("<?print math.isclose(0.0   , #000.luma())?>"));
-		checkOutput("True", T("<?print math.isclose(0.2126, #f00.luma())?>"));
-		checkOutput("True", T("<?print math.isclose(0.7152, #0f0.luma())?>"));
-		checkOutput("True", T("<?print math.isclose(0.0722, #00f.luma())?>"));
-	}
+		checkOutput("#fff", T("<?print #000.withlight(1)?>"));
+		checkOutput("#fff", T("<?code m = #000.withlight?><?print m(1)?>"));
 
-	@Test
-	public void method_withlum()
-	{
-		checkOutput("#fff", T("<?print #000.withlum(1)?>"));
-		checkOutput("#fff", T("<?code m = #000.withlum?><?print m(1)?>"));
-
-		checkOutput("#fff", T("<?print #000.withlum(lum=1)?>"));
+		checkOutput("#fff", T("<?print #000.withlight(light=1)?>"));
 	}
 
 	@Test
@@ -4970,66 +4969,66 @@ public class UL4Test
 	}
 
 	@Test
+	public void method_abslight()
+	{
+		checkOutput("#fff", T("<?print #000.abslight(1)?>"));
+		checkOutput("#fff", T("<?code m = #000.abslight?><?print m(1)?>"));
+		checkOutput("#000", T("<?print #fff.abslight(-1)?>"));
+	}
+
+	@Test
+	public void method_rellight()
+	{
+		checkOutput("#000", T("<?print #888.rellight(-1)?>"));
+		checkOutput("#888", T("<?print #888.rellight(0)?>"));
+		checkOutput("#fff", T("<?print #888.rellight(1)?>"));
+		checkOutput("#000", T("<?code m = #888.rellight?><?print m(-1)?>"));
+	}
+
+	@Test
+	public void method_withlum()
+	{
+		checkOutput("#fff", T("<?print #000.withlum(1)?>"));
+		checkOutput("#fff", T("<?code m = #000.withlum?><?print m(1)?>"));
+
+		checkOutput("#000", T("<?print #fff.withlum(0)?>"));
+		checkOutput("#333", T("<?print #fff.withlum(0.2)?>"));
+		checkOutput("#f00", T("<?print #f00.withlum(0.2126)?>"));
+		checkOutput("#0f0", T("<?print #0f0.withlum(0.7152)?>"));
+		checkOutput("#00f", T("<?print #00f.withlum(0.0722)?>"));
+
+		// Make sure that the parameters have the same name in all implementations
+		checkOutput("#fff", T("<?print #000.withlum(lum=1)?>"));
+	}
+
+	@Test
 	public void method_abslum()
 	{
 		checkOutput("#fff", T("<?print #000.abslum(1)?>"));
 		checkOutput("#fff", T("<?code m = #000.abslum?><?print m(1)?>"));
+
+		checkOutput("#fff", T("<?print #fff.abslum(0)?>"));
 		checkOutput("#000", T("<?print #fff.abslum(-1)?>"));
+
+		// Make sure that the parameters have the same name in all implementations
+		checkOutput("#fff", T("<?print #000.abslum(f=1)?>"));
 	}
 
 	@Test
 	public void method_rellum()
 	{
-		checkOutput("#000", T("<?print #888.rellum(-1)?>"));
+		checkOutput("#fff", T("<?print #000.rellum(1)?>"));
+		checkOutput("#fff", T("<?code m = #000.rellum?><?print m(1)?>"));
+
+		checkOutput("#fff", T("<?print #fff.rellum(0)?>"));
+		checkOutput("#000", T("<?print #fff.rellum(-1)?>"));
 		checkOutput("#888", T("<?print #888.rellum(0)?>"));
-		checkOutput("#fff", T("<?print #888.rellum(1)?>"));
-		checkOutput("#000", T("<?code m = #888.rellum?><?print m(-1)?>"));
-	}
-
-	@Test
-	public void method_withluma()
-	{
-		checkOutput("#fff", T("<?print #000.withluma(1)?>"));
-		checkOutput("#fff", T("<?code m = #000.withluma?><?print m(1)?>"));
-
-		checkOutput("#000", T("<?print #fff.withluma(0)?>"));
-		checkOutput("#333", T("<?print #fff.withluma(0.2)?>"));
-		checkOutput("#f00", T("<?print #f00.withluma(0.2126)?>"));
-		checkOutput("#0f0", T("<?print #0f0.withluma(0.7152)?>"));
-		checkOutput("#00f", T("<?print #00f.withluma(0.0722)?>"));
+		checkOutput("#f33", T("<?print #f00.rellum(0.2)?>"));
+		checkOutput("#3f3", T("<?print #0f0.rellum(0.2)?>"));
+		checkOutput("#33f", T("<?print #00f.rellum(0.2)?>"));
 
 		// Make sure that the parameters have the same name in all implementations
-		checkOutput("#fff", T("<?print #000.withluma(luma=1)?>"));
-	}
-
-	@Test
-	public void method_absluma()
-	{
-		checkOutput("#fff", T("<?print #000.absluma(1)?>"));
-		checkOutput("#fff", T("<?code m = #000.absluma?><?print m(1)?>"));
-
-		checkOutput("#fff", T("<?print #fff.absluma(0)?>"));
-		checkOutput("#000", T("<?print #fff.absluma(-1)?>"));
-
-		// Make sure that the parameters have the same name in all implementations
-		checkOutput("#fff", T("<?print #000.absluma(f=1)?>"));
-	}
-
-	@Test
-	public void method_relluma()
-	{
-		checkOutput("#fff", T("<?print #000.relluma(1)?>"));
-		checkOutput("#fff", T("<?code m = #000.relluma?><?print m(1)?>"));
-
-		checkOutput("#fff", T("<?print #fff.relluma(0)?>"));
-		checkOutput("#000", T("<?print #fff.relluma(-1)?>"));
-		checkOutput("#888", T("<?print #888.relluma(0)?>"));
-		checkOutput("#f33", T("<?print #f00.relluma(0.2)?>"));
-		checkOutput("#3f3", T("<?print #0f0.relluma(0.2)?>"));
-		checkOutput("#33f", T("<?print #00f.relluma(0.2)?>"));
-
-		// Make sure that the parameters have the same name in all implementations
-		checkOutput("#fff", T("<?print #000.relluma(f=1)?>"));
+		checkOutput("#fff", T("<?print #000.rellum(f=1)?>"));
 	}
 
 	@Test

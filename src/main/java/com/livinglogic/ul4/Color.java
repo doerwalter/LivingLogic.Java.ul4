@@ -678,7 +678,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		return hls.get(0);
 	}
 
-	public double lum()
+	public double light()
 	{
 		int maxc = NumberUtils.max((int)r, (int)g, (int)b);
 		int minc = NumberUtils.min((int)r, (int)g, (int)b);
@@ -695,12 +695,12 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		return hls.get(2);
 	}
 
-	public double luma()
+	public double lum()
 	{
 		return (0.2126 * ((int)r) + 0.7152 * ((int)g) + 0.0722 * ((int)b))/255.;
 	}
 
-	public Color withlum(double lum)
+	public Color withlight(double light)
 	{
 		int maxc = NumberUtils.max((int)r, (int)g, (int)b);
 		int minc = NumberUtils.min((int)r, (int)g, (int)b);
@@ -711,7 +711,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		double l = (dminc+dmaxc)/2.0;
 
 		if (minc == maxc)
-			return fromhls(0., lum, 0., a/255.);
+			return fromhls(0., light, 0., a/255.);
 
 		double s = l <= 0.5 ? (dmaxc-dminc) / (dmaxc+dminc) : (dmaxc-dminc) / (2.0-dmaxc-dminc);
 
@@ -728,7 +728,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 			h = 4.0+gc-rc;
 		h = (h/6.0) % 1.0;
 
-		return fromhls(h, lum, s, a/255.);
+		return fromhls(h, light, s, a/255.);
 	}
 
 	public Color witha(int a)
@@ -736,13 +736,13 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		return new Color(r, g, b, a);
 	}
 
-	public Color abslum(double f)
+	public Color abslight(double f)
 	{
 		ArrayList<Double> v = hlsa();
 		return fromhls(v.get(0), v.get(1)+f, v.get(2), v.get(3));
 	}
 
-	public Color rellum(double f)
+	public Color rellight(double f)
 	{
 		ArrayList<Double> v = hlsa();
 		double newlum = v.get(1);
@@ -758,17 +758,17 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		return factor*upper + (1.0-factor) * lower;
 	}
 
-	public Color withluma(double luma)
+	public Color withlum(double lum)
 	{
-		double luma_old = luma();
-		if (luma_old == 0.0 || luma_old == 1.0)
+		double lum_old = lum();
+		if (lum_old == 0.0 || lum_old == 1.0)
 		{
-			int v = (int)(luma*255.);
+			int v = (int)(lum*255.);
 			return new Color(v, v, v, a);
 		}
-		else if (luma > luma_old)
+		else if (lum > lum_old)
 		{
-			double f = (luma-luma_old)/(1.0-luma_old);
+			double f = (lum-lum_old)/(1.0-lum_old);
 			return new Color(
 				(int)interpolate(r, 255., f),
 				(int)interpolate(g, 255., f),
@@ -776,9 +776,9 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 				a
 			);
 		}
-		else if (luma < luma_old)
+		else if (lum < lum_old)
 		{
-			double f = luma/luma_old;
+			double f = lum/lum_old;
 			return new Color(
 				(int)interpolate(0., r, f),
 				(int)interpolate(0., g, f),
@@ -790,19 +790,19 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 			return this;
 	}
 
-	public Color absluma(double f)
+	public Color abslum(double f)
 	{
-		return withluma(luma() + f);
+		return withlum(lum() + f);
 	}
 
-	public Color relluma(double f)
+	public Color rellum(double f)
 	{
-		double luma = luma();
+		double lum = lum();
 		if (f > 0)
-			luma += (1.0-luma)*f;
+			lum += (1.0-lum)*f;
 		else if (f < 0)
-			luma += luma*f;
-		return withluma(luma);
+			lum += lum*f;
+		return withlum(lum);
 	}
 
 	public Color invert(double f)
@@ -1114,9 +1114,9 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 	}
 
-	private static class BoundMethodLum extends BoundMethod<Color>
+	private static class BoundMethodLight extends BoundMethod<Color>
 	{
-		public BoundMethodLum(Color object)
+		public BoundMethodLight(Color object)
 		{
 			super(object);
 		}
@@ -1124,13 +1124,13 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		@Override
 		public String getNameUL4()
 		{
-			return "lum";
+			return "light";
 		}
 
 		@Override
 		public Object evaluate(BoundArguments args)
 		{
-			return object.lum();
+			return object.light();
 		}
 	}
 
@@ -1154,9 +1154,9 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 	}
 
-	private static class BoundMethodLuma extends BoundMethod<Color>
+	private static class BoundMethodLum extends BoundMethod<Color>
 	{
-		public BoundMethodLuma(Color object)
+		public BoundMethodLum(Color object)
 		{
 			super(object);
 		}
@@ -1164,13 +1164,13 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		@Override
 		public String getNameUL4()
 		{
-			return "luma";
+			return "lum";
 		}
 
 		@Override
 		public Object evaluate(BoundArguments args)
 		{
-			return object.luma();
+			return object.lum();
 		}
 	}
 
@@ -1282,6 +1282,90 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 	}
 
+	private static class BoundMethodWithLight extends BoundMethod<Color>
+	{
+		public BoundMethodWithLight(Color object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "withlight";
+		}
+
+		private static final Signature signature = new Signature().addBoth("light");
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object evaluate(BoundArguments args)
+		{
+			return object.withlight(Utils.toDouble(args.get(0)));
+		}
+	}
+
+	private static class BoundMethodAbsLight extends BoundMethod<Color>
+	{
+		public BoundMethodAbsLight(Color object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "abslight";
+		}
+
+		private static final Signature signature = new Signature().addBoth("f");
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object evaluate(BoundArguments args)
+		{
+			return object.abslight(Utils.toDouble(args.get(0)));
+		}
+	}
+
+	private static class BoundMethodRelLight extends BoundMethod<Color>
+	{
+		public BoundMethodRelLight(Color object)
+		{
+			super(object);
+		}
+
+		@Override
+		public String getNameUL4()
+		{
+			return "rellight";
+		}
+
+		private static final Signature signature = new Signature().addBoth("f");
+
+		@Override
+		public Signature getSignature()
+		{
+			return signature;
+		}
+
+		@Override
+		public Object evaluate(BoundArguments args)
+		{
+			return object.rellight(Utils.toDouble(args.get(0)));
+		}
+	}
+
 	private static class BoundMethodWithLum extends BoundMethod<Color>
 	{
 		public BoundMethodWithLum(Color object)
@@ -1366,90 +1450,6 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 	}
 
-	private static class BoundMethodWithLuma extends BoundMethod<Color>
-	{
-		public BoundMethodWithLuma(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "withluma";
-		}
-
-		private static final Signature signature = new Signature().addBoth("luma");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(BoundArguments args)
-		{
-			return object.withluma(Utils.toDouble(args.get(0)));
-		}
-	}
-
-	private static class BoundMethodAbsLuma extends BoundMethod<Color>
-	{
-		public BoundMethodAbsLuma(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "absluma";
-		}
-
-		private static final Signature signature = new Signature().addBoth("f");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(BoundArguments args)
-		{
-			return object.absluma(Utils.toDouble(args.get(0)));
-		}
-	}
-
-	private static class BoundMethodRelLuma extends BoundMethod<Color>
-	{
-		public BoundMethodRelLuma(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "relluma";
-		}
-
-		private static final Signature signature = new Signature().addBoth("f");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(BoundArguments args)
-		{
-			return object.relluma(Utils.toDouble(args.get(0)));
-		}
-	}
-
 	private static class BoundMethodInvert extends BoundMethod<Color>
 	{
 		public BoundMethodInvert(Color object)
@@ -1511,7 +1511,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 	}
 
-	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "hue", "lum", "sat", "luma", "hls", "hlsa", "hsv", "hsva", "invert", "combine", "witha", "withlum", "abslum", "rellum", "withluma", "absluma", "relluma");
+	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "hue", "light", "sat", "lum", "hls", "hlsa", "hsv", "hsva", "invert", "combine", "witha", "withlight", "abslight", "rellight", "withlum", "abslum", "rellum");
 
 	@Override
 	public Set<String> dirUL4()
@@ -1534,12 +1534,12 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 				return new BoundMethodA(this);
 			case "hue":
 				return new BoundMethodHue(this);
-			case "lum":
-				return new BoundMethodLum(this);
+			case "light":
+				return new BoundMethodLight(this);
 			case "sat":
 				return new BoundMethodSat(this);
-			case "luma":
-				return new BoundMethodLuma(this);
+			case "lum":
+				return new BoundMethodLum(this);
 			case "hls":
 				return new BoundMethodHLS(this);
 			case "hlsa":
@@ -1550,18 +1550,18 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 				return new BoundMethodHSVA(this);
 			case "witha":
 				return new BoundMethodWithA(this);
+			case "withlight":
+				return new BoundMethodWithLight(this);
+			case "abslight":
+				return new BoundMethodAbsLight(this);
+			case "rellight":
+				return new BoundMethodRelLight(this);
 			case "withlum":
 				return new BoundMethodWithLum(this);
 			case "abslum":
 				return new BoundMethodAbsLum(this);
 			case "rellum":
 				return new BoundMethodRelLum(this);
-			case "withluma":
-				return new BoundMethodWithLuma(this);
-			case "absluma":
-				return new BoundMethodAbsLuma(this);
-			case "relluma":
-				return new BoundMethodRelLuma(this);
 			case "invert":
 				return new BoundMethodInvert(this);
 			case "combine":
