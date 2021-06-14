@@ -1905,6 +1905,17 @@ public class UL4Test
 		checkOutput("#123", T("<?print repr(color.css('bad', #123))?>"));
 	}
 
+	@Test
+	public void module_color_function_mix()
+	{
+		checkOutput("#aaa", T("<?print repr(color.mix(#000, #fff, #fff))?>"));
+		checkOutput("#aaa", T("<?print repr(color.mix(#000, #fff, #fff))?>"));
+		checkOutput("#555", T("<?print repr(color.mix(#000, #000, #fff))?>"));
+		checkOutput("#aaaa", T("<?print repr(color.mix(#0000, #ffff, #ffff))?>"));
+		checkOutput("#aaa", T("<?print repr(color.mix(#000, 2, #fff))?>"));
+		checkOutput("#12c", T("<?print repr(color.mix(#f00, 2, #0f0, 12, #00f))?>"));
+	}
+
 	@CauseTest(expectedCause=TooManyArgumentsException.class)
 	public void function_random_1_args()
 	{

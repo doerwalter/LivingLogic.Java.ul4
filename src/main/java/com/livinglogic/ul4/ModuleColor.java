@@ -19,6 +19,7 @@ public class ModuleColor extends Module
 		super("color", "Types and functions for handling RGBA colors");
 		addObject(Color.type);
 		addObject(FunctionCSS.function);
+		addObject(FunctionMix.function);
 	}
 
 	public static final Module module = new ModuleColor();

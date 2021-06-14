@@ -11,6 +11,12 @@ import java.util.List;
 public class FunctionCSS extends Function
 {
 	@Override
+	public String getModuleName()
+	{
+		return "color";
+	}
+
+	@Override
 	public String getNameUL4()
 	{
 		return "css";
