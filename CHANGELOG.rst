@@ -29,11 +29,11 @@ Add function ``isinstance()`` for instance checking against type objects.
 
 The following builtins are type objects now: ``bool``, ``int``, ``float``,
 ``str``, ``date``, ``datetime``, ``timedelta``, ``monthdelta``, ``list``,
-``set``, ``dict`` and ``color`` (new).
+``set``, ``dict`` and ``color.Color`` (new).
 
-Add support for UL4 modules. Add the modules ``ul4``, ``math`` and ``operator``
-(and ``ul4on``, which existed before). A module has attributes ``__name__`` and
-``__doc__``as well as additional attributes.
+Add support for UL4 modules. Add the modules ``ul4``, ``math``, ``operator``
+and ``color`` (and ``ul4on``, which existed before). A module has attributes
+``__name__`` and ``__doc__``as well as additional attributes.
 
 The module ``ul4`` contains all the types required for UL4 syntax trees. The
 type ``ul4.Template`` is callable to create a new UL4 template from source.
@@ -43,7 +43,8 @@ the types ``Encoder`` and ``Decoder``.
 
 The module ``operator`` contains one type: ``attrgetter``.
 
-The module ``color`` contains the type ``Color`` and the function ``css``.
+The module ``color`` contains the type ``Color`` and the functions ``css()``
+and ``mix()``.
 
 ``math`` contains the constants ``e``, ``pi`` and ``tau`` as well as the
 functions ``cos()``, ``sin()``, ``tan()``, ``sqrt()`` and ``isclose()``.
@@ -56,6 +57,13 @@ Add functions ``floor()`` and ``ceil()``.
 
 ``Template`` objects no longer have ``startdelim`` and ``enddelim`` attributes.
 The tag delimiters are now always ``<?`` and ``?>``.
+
+The color method ``abslum()`` has been renamed to ``abslight()`` and
+``rellum()`` has been renamed to ``rellight()``.
+
+The following methods have been added to ``color.Color``: ``hue()``,
+``light()``, ``sat()``, ``withhue()``, ``withsat()``, ``withlum()``,
+``ablum()``, ``rellum()``, ``invert()`` and ``combine()``.
 
 
 exp-154 (2020-04-29)
