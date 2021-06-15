@@ -1,5 +1,5 @@
-HEAD (2021-01-??)
------------------
+exp-156 (2021-06-15)
+--------------------
 
 Added a ``date`` method to ``date`` and ``datetime`` objects.
 
@@ -64,6 +64,12 @@ The color method ``abslum()`` has been renamed to ``abslight()`` and
 The following methods have been added to ``color.Color``: ``hue()``,
 ``light()``, ``sat()``, ``withhue()``, ``withsat()``, ``withlum()``,
 ``ablum()``, ``rellum()``, ``invert()`` and ``combine()``.
+
+
+exp-155 (?)
+-----------
+
+Internal unpublished version.
 
 
 exp-154 (2020-04-29)
