@@ -1,3 +1,9 @@
+HEAD (2021-??-??)
+-----------------
+
+The interface ``UL4CallWithContext`` has been merged into ``UL4Call``.
+
+
 exp-156 (2021-06-15)
 --------------------
 
