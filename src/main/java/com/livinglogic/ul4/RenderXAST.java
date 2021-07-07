@@ -78,7 +78,7 @@ public class RenderXAST extends RenderAST
 		return "renderx";
 	}
 
-	public void call(EvaluationContext context, UL4RenderWithContext obj, List<Object> args, Map<String, Object> kwargs)
+	public void call(EvaluationContext context, UL4Render obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		context.pushEscape(XMLStringEscape.function);
 		try

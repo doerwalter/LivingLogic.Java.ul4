@@ -138,7 +138,7 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 	}
 
 	@Override
-	public void call(EvaluationContext context, UL4RenderWithContext obj, List<Object> args, Map<String, Object> kwargs)
+	public void call(EvaluationContext context, UL4Render obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		Map<String, Object> variables = new LinkedHashMap<String, Object>();
 		Map<String, Object> oldVariables = context.pushVariables(variables);

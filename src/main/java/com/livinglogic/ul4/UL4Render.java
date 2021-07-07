@@ -17,7 +17,7 @@ from UL4 (i.e. it can be used in the {@code render}, {@code renderx},
 <p>Since rendering always outputs the the {@link EvaluationContext} there is
 no method with one.</p>
 **/
-public interface UL4RenderWithContext
+public interface UL4Render
 {
 	/**
 	<p>Render this object.</p>

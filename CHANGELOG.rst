@@ -3,6 +3,8 @@ HEAD (2021-??-??)
 
 The interface ``UL4CallWithContext`` has been merged into ``UL4Call``.
 
+Renamed interface ``UL4RenderWithContext`` to ``UL4Render``.
+
 
 exp-156 (2021-06-15)
 --------------------

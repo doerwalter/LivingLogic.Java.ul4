@@ -148,7 +148,7 @@ public class RenderAST extends CallRenderAST
 		return null;
 	}
 
-	public void call(EvaluationContext context, UL4RenderWithContext obj, List<Object> args, Map<String, Object> kwargs)
+	public void call(EvaluationContext context, UL4Render obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		if (obj == null)
 			throw new NotRenderableException(obj);
@@ -161,8 +161,8 @@ public class RenderAST extends CallRenderAST
 
 	public void call(EvaluationContext context, Object obj, List<Object> args, Map<String, Object> kwargs)
 	{
-		if (obj instanceof UL4RenderWithContext)
-			call(context, (UL4RenderWithContext)obj, args, kwargs);
+		if (obj instanceof UL4Render)
+			call(context, (UL4Render)obj, args, kwargs);
 		else
 			throw new NotRenderableException(obj);
 	}
