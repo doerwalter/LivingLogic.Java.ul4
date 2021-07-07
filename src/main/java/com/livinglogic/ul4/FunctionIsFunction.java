@@ -32,7 +32,7 @@ public class FunctionIsFunction extends Function
 
 	public static boolean call(Object obj)
 	{
-		return (null != obj) && ((obj instanceof UL4Call) || (obj instanceof UL4CallWithContext));
+		return (obj instanceof UL4Call);
 	}
 
 	public static final Function function = new FunctionIsFunction();

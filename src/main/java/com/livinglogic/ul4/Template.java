@@ -32,7 +32,7 @@ import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Utils;
 
 
-public class Template extends BlockAST implements UL4Instance, UL4Name, UL4CallWithContext, UL4RenderWithContext, UL4GetAttr, UL4Dir
+public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call, UL4RenderWithContext, UL4GetAttr, UL4Dir
 {
 	protected static class Type extends BlockAST.Type
 	{

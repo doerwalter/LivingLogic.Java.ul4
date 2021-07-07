@@ -21,7 +21,7 @@ Template closure
 @author W. Doerwald
 **/
 
-public class TemplateClosure implements UL4Instance, UL4CallWithContext, UL4RenderWithContext, UL4Name, UL4GetAttr, UL4Dir, UL4Repr
+public class TemplateClosure implements UL4Instance, UL4Call, UL4RenderWithContext, UL4Name, UL4GetAttr, UL4Dir, UL4Repr
 {
 	protected static class Type extends AbstractInstanceType
 	{

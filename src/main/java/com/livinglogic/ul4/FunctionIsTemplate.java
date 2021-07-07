@@ -32,7 +32,7 @@ public class FunctionIsTemplate extends Function
 
 	public static boolean call(Object obj)
 	{
-		return (obj instanceof UL4CallWithContext && obj instanceof UL4RenderWithContext);
+		return (obj instanceof UL4Call && obj instanceof UL4RenderWithContext);
 	}
 
 	public static final Function function = new FunctionIsTemplate();

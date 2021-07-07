@@ -72,6 +72,12 @@ public class CallAST extends CallRenderAST
 		return "call";
 	}
 
+	public static CallAST make(Template template, Slice pos, AST obj)
+	{
+		// This might be used to optimize calling methods
+		return new CallAST(template, pos, obj);
+	}
+
 	@Override
 	public Object decoratedEvaluate(EvaluationContext context)
 	{
@@ -109,14 +115,7 @@ public class CallAST extends CallRenderAST
 		return null;
 	}
 
-	public static Object call(UL4Call obj, List<Object> args, Map<String, Object> kwargs)
-	{
-		if (obj == null)
-			throw new NotCallableException(obj);
-		return obj.callUL4(args, kwargs);
-	}
-
-	public static Object call(EvaluationContext context, UL4CallWithContext obj, List<Object> args, Map<String, Object> kwargs)
+	public static Object call(EvaluationContext context, UL4Call obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		if (obj == null)
 			throw new NotCallableException(obj);
@@ -126,9 +125,7 @@ public class CallAST extends CallRenderAST
 	public static Object call(EvaluationContext context, Object obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		if (obj instanceof UL4Call)
-			return call((UL4Call)obj, args, kwargs);
-		else if (obj instanceof UL4CallWithContext)
-			return call(context, (UL4CallWithContext)obj, args, kwargs);
+			return call(context, (UL4Call)obj, args, kwargs);
 		throw new NotCallableException(obj);
 	}
 }

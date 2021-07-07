@@ -18,7 +18,7 @@ called from UL4. It is similar to {@link Function} except that
 {@link #evaluate}. Also when the function requires arguments
 {@link #getSignature} must be overwritten.</p>
 **/
-public abstract class FunctionWithContext implements UL4Instance, UL4CallWithContext, UL4Name, UL4Repr
+public abstract class FunctionWithContext implements UL4Instance, UL4Call, UL4Name, UL4Repr
 {
 	@Override
 	public UL4Type getTypeUL4()

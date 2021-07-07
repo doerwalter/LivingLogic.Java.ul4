@@ -483,7 +483,7 @@ expr_subscript returns [CodeAST node]
 			n=name { $node = new AttrAST(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), $n.node.getStartPos().getStop()), $node, $n.text); }
 		|
 			/* Function/method call */
-			'(' { $node = new CallAST(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart()), $node); }
+			'(' { $node = CallAST.make(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart()), $node); }
 			(
 				a1=argument { $a1.node.addToCall((CallAST)$node); }
 				(
