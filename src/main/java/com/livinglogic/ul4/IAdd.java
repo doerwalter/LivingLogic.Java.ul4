@@ -10,17 +10,17 @@ import java.util.List;
 
 public class IAdd
 {
-	public static List call(List arg1, List arg2)
+	public static List call(EvaluationContext context, List arg1, List arg2)
 	{
 		arg1.addAll(arg2);
 
 		return arg1;
 	}
 
-	public static Object call(Object arg1, Object arg2)
+	public static Object call(EvaluationContext context, Object arg1, Object arg2)
 	{
 		if (arg1 instanceof List && arg2 instanceof List)
-			return call((List)arg1, (List)arg2);
-		return AddAST.call(arg1, arg2);
+			return call(context, (List)arg1, (List)arg2);
+		return AddAST.call(context, arg1, arg2);
 	}
 }

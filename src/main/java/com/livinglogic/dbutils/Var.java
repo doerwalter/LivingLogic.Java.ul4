@@ -11,6 +11,7 @@ import java.util.Set;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 
+import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.UL4SetAttr;
 import com.livinglogic.ul4.UL4Dir;
@@ -33,13 +34,13 @@ public abstract class Var implements UL4GetAttr, UL4SetAttr, UL4Dir
 	protected static Set<String> attributes = makeSet("value");
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
@@ -50,7 +51,7 @@ public abstract class Var implements UL4GetAttr, UL4SetAttr, UL4Dir
 		}
 	}
 
-	public void setAttrUL4(String key, Object value)
+	public void setAttrUL4(EvaluationContext context, String key, Object value)
 	{
 		switch (key)
 		{

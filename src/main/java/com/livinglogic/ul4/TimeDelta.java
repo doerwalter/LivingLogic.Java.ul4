@@ -49,7 +49,7 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 		}
 
 		@Override
-		public Object create(BoundArguments args)
+		public Object create(EvaluationContext context, BoundArguments args)
 		{
 			Object days = args.get(0);
 			Object seconds = args.get(1);
@@ -298,7 +298,7 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 
 	public double truediv(TimeDelta divisor)
 	{
-		if (!divisor.boolUL4())
+		if (divisor.isZero())
 			throw new ArithmeticException("division by zero");
 		double myValue = days;
 		double divisorValue = divisor.getDays();
@@ -381,11 +381,18 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 		return totalMicroseconds()/divisor.totalMicroseconds();
 	}
 
-	public boolean boolUL4()
+	public boolean isZero()
 	{
-		return days != 0 || seconds != 0 || microseconds != 0;
+		return days == 0 && seconds == 0 && microseconds == 0;
 	}
 
+	@Override
+	public boolean boolUL4(EvaluationContext context)
+	{
+	return !isZero();
+	}
+
+	@Override
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
 		formatter.append("timedelta(");
@@ -453,7 +460,8 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 		return "timedelta";
 	}
 
-	public TimeDelta absUL4()
+	@Override
+	public TimeDelta absUL4(EvaluationContext context)
 	{
 		return days < 0 ? new TimeDelta(-days, -seconds, -microseconds) : this;
 	}
@@ -482,7 +490,7 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.days;
 		}
@@ -502,7 +510,7 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.seconds;
 		}
@@ -522,7 +530,7 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.microseconds;
 		}
@@ -531,13 +539,13 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 	protected static Set<String> attributes = makeSet("days", "seconds", "microseonds");
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{

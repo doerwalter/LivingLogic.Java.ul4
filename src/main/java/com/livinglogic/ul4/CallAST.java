@@ -72,12 +72,6 @@ public class CallAST extends CallRenderAST
 		return "call";
 	}
 
-	public static CallAST make(Template template, Slice pos, AST obj)
-	{
-		// This might be used to optimize calling methods
-		return new CallAST(template, pos, obj);
-	}
-
 	@Override
 	public Object decoratedEvaluate(EvaluationContext context)
 	{

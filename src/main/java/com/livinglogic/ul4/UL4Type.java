@@ -50,7 +50,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	@param instance The instance to be converted.
 	@return the result of the conversion
 	**/
-	boolean boolInstance(Object instance);
+	boolean boolInstance(EvaluationContext context, Object instance);
 
 	/**
 	Convert an instance of this type to the UL4 type {@code int}.
@@ -58,7 +58,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	@param instance The instance to be converted.
 	@return the result of the conversion
 	**/
-	default Number intInstance(Object instance)
+	default Number intInstance(EvaluationContext context, Object instance)
 	{
 		throw new ArgumentTypeMismatchException("Can't convert {!t} to int!", instance);
 	}
@@ -69,7 +69,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	@param instance The instance to be converted.
 	@return the result of the conversion
 	**/
-	default Number floatInstance(Object instance)
+	default Number floatInstance(EvaluationContext context, Object instance)
 	{
 		throw new ArgumentTypeMismatchException("Can't convert {!t} to float!", instance);
 	}
@@ -80,7 +80,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	@param instance The instance to be converted.
 	@return the result of the conversion
 	**/
-	default String strInstance(Object instance)
+	default String strInstance(EvaluationContext context, Object instance)
 	{
 		return FunctionRepr.call(instance);
 	}
@@ -91,8 +91,10 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	@param instance The instance whose length should be returned.
 	@return the length of the instance.
 	**/
-	default int lenInstance(Object instance)
+	default int lenInstance(EvaluationContext context, Object instance)
 	{
+		if (instance instanceof UL4Len)
+			return ((UL4Len)instance).lenUL4(context);
 		throw new ArgumentTypeMismatchException("len({!t}) not supported!", instance);
 	}
 
@@ -105,19 +107,9 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	**/
 	default Set<String> dirInstance(EvaluationContext context, Object instance)
 	{
-		return dirInstance(instance);
-	}
-
-	/**
-	Return the set of attribute names of an instance of this type.
-	This is a version that doesn't require an evaluation context.
-
-	@param instance The instance whose attribute names should be returned.
-	@return The set of attribute names.
-	**/
-	default Set<String> dirInstance(Object instance)
-	{
-		return Collections.emptySet();
+		if (instance instanceof UL4Dir)
+			return ((UL4Dir)instance).dirUL4(context);
+		return Collections.EMPTY_SET;
 	}
 
 	/**
@@ -134,19 +126,6 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	}
 
 	/**
-	Return whether an instance of this type has an attribute with the specified name.
-	This is a version that doesn't require an evaluation context.
-
-	@param instance The instance that should be checked for the specified attribute.
-	@param key The name of the attribute to be checked.
-	@return Whether the instance has the specified attribute.
-	**/
-	default boolean hasAttr(Object instance, String key)
-	{
-		return dirInstance(instance).contains(key);
-	}
-
-	/**
 	Return an attribute of an instance of this type with the specified name.
 
 	@param context The evaluation context.
@@ -154,22 +133,11 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	@param key The name of the attribute to be returned.
 	@return The specified attribute.
 	**/
-	default Object getAttr(EvaluationContext context, Object object, String key)
+	default Object getAttr(EvaluationContext context, Object instance, String key)
 	{
-		return getAttr(object, key);
-	}
-
-	/**
-	Return an attribute of an instance of this type with the specified name.
-	This is a version that doesn't require an evaluation context.
-
-	@param instance The instance whose attribute should be be returned.
-	@param key The name of the attribute to be returned.
-	@return The specified attribute.
-	**/
-	default Object getAttr(Object object, String key)
-	{
-		throw new AttributeException(object, key);
+		if (instance instanceof UL4GetAttr)
+			return ((UL4GetAttr)instance).getAttrUL4(context, key);
+		throw new AttributeException(instance, key);
 	}
 
 	/**
@@ -180,22 +148,12 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	@param key The name of the attribute to be set.
 	@param value The new value for the attribute.
 	**/
-	default void setAttr(EvaluationContext context, Object object, String key, Object value)
+	default void setAttr(EvaluationContext context, Object instance, String key, Object value)
 	{
-		setAttr(object, key, value);
-	}
-
-	/**
-	Set an attribute of an instance of this type with the specified name to a new value.
-	This is a version that doesn't require an evaluation context.
-
-	@param instance The instance whose attribute should be be set.
-	@param key The name of the attribute to be set.
-	@param value The new value for the attribute.
-	**/
-	default void setAttr(Object object, String key, Object value)
-	{
-		throw new ReadonlyException(object, key);
+		if (instance instanceof UL4SetAttr)
+			((UL4SetAttr)instance).setAttrUL4(context, key, value);
+		else
+			throw new AttributeException(instance, key);
 	}
 
 	/**
@@ -277,9 +235,11 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 
 	<p>The default implementation throws an {@link UnsupportedOperationException}.</p>
 
+	@param context The evaluation context.
+	@param arguments The arguments to the call.
 	@return The newly created instance
 	**/
-	default Object create(BoundArguments arguments)
+	default Object create(EvaluationContext context, BoundArguments arguments)
 	{
 		throw new UnsupportedOperationException(Utils.formatMessage("Can't create {!r} instances", this));
 	}
@@ -294,9 +254,9 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	boolean instanceCheck(Object object);
 
 	@Override
-	default Object callUL4(List<Object> args, Map<String, Object> kwargs)
+	default Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		return create(new BoundArguments(getSignature(), this, args, kwargs));
+		return create(context, new BoundArguments(getSignature(), this, args, kwargs));
 	}
 
 	@Override

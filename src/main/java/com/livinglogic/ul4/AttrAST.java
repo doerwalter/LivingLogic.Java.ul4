@@ -170,7 +170,7 @@ public class AttrAST extends CodeAST implements LValue
 		// to throw an {@code AttributeException} for non-existant attributes
 		// and {@code ReadonlyException} for read-only ones.
 		Object oldValue = type.getAttr(context, obj, attrname);
-		Object newValue = IAdd.call(oldValue, value);
+		Object newValue = IAdd.call(context, oldValue, value);
 		type.setAttr(context, obj, attrname, newValue);
 	}
 
@@ -179,7 +179,7 @@ public class AttrAST extends CodeAST implements LValue
 		UL4Type type = UL4Type.getType(obj);
 
 		Object oldValue = type.getAttr(context, obj, attrname);
-		Object newValue = SubAST.call(oldValue, value);
+		Object newValue = SubAST.call(context, oldValue, value);
 		type.setAttr(context, obj, attrname, newValue);
 	}
 
@@ -188,7 +188,7 @@ public class AttrAST extends CodeAST implements LValue
 		UL4Type type = UL4Type.getType(obj);
 
 		Object oldValue = type.getAttr(context, obj, attrname);
-		Object newValue = IMul.call(oldValue, value);
+		Object newValue = IMul.call(context, oldValue, value);
 		type.setAttr(context, obj, attrname, newValue);
 	}
 
@@ -197,7 +197,7 @@ public class AttrAST extends CodeAST implements LValue
 		UL4Type type = UL4Type.getType(obj);
 
 		Object oldValue = type.getAttr(context, obj, attrname);
-		Object newValue = FloorDivAST.call(oldValue, value);
+		Object newValue = FloorDivAST.call(context, oldValue, value);
 		type.setAttr(context, obj, attrname, newValue);
 	}
 
@@ -206,7 +206,7 @@ public class AttrAST extends CodeAST implements LValue
 		UL4Type type = UL4Type.getType(obj);
 
 		Object oldValue = type.getAttr(context, obj, attrname);
-		Object newValue = TrueDivAST.call(oldValue, value);
+		Object newValue = TrueDivAST.call(context, oldValue, value);
 		type.setAttr(context, obj, attrname, newValue);
 	}
 
@@ -215,7 +215,7 @@ public class AttrAST extends CodeAST implements LValue
 		UL4Type type = UL4Type.getType(obj);
 
 		Object oldValue = type.getAttr(context, obj, attrname);
-		Object newValue = ModAST.call(oldValue, value);
+		Object newValue = ModAST.call(context, oldValue, value);
 		type.setAttr(context, obj, attrname, newValue);
 	}
 
@@ -224,7 +224,7 @@ public class AttrAST extends CodeAST implements LValue
 		UL4Type type = UL4Type.getType(obj);
 
 		Object oldValue = type.getAttr(context, obj, attrname);
-		Object newValue = ShiftLeftAST.call(oldValue, value);
+		Object newValue = ShiftLeftAST.call(context, oldValue, value);
 		type.setAttr(context, obj, attrname, newValue);
 	}
 
@@ -233,7 +233,7 @@ public class AttrAST extends CodeAST implements LValue
 		UL4Type type = UL4Type.getType(obj);
 
 		Object oldValue = type.getAttr(context, obj, attrname);
-		Object newValue = ShiftRightAST.call(oldValue, value);
+		Object newValue = ShiftRightAST.call(context, oldValue, value);
 		type.setAttr(context, obj, attrname, newValue);
 	}
 
@@ -242,7 +242,7 @@ public class AttrAST extends CodeAST implements LValue
 		UL4Type type = UL4Type.getType(obj);
 
 		Object oldValue = type.getAttr(context, obj, attrname);
-		Object newValue = BitAndAST.call(oldValue, value);
+		Object newValue = BitAndAST.call(context, oldValue, value);
 		type.setAttr(context, obj, attrname, newValue);
 	}
 
@@ -251,7 +251,7 @@ public class AttrAST extends CodeAST implements LValue
 		UL4Type type = UL4Type.getType(obj);
 
 		Object oldValue = type.getAttr(context, obj, attrname);
-		Object newValue = BitXOrAST.call(oldValue, value);
+		Object newValue = BitXOrAST.call(context, oldValue, value);
 		type.setAttr(context, obj, attrname, newValue);
 	}
 
@@ -260,7 +260,7 @@ public class AttrAST extends CodeAST implements LValue
 		UL4Type type = UL4Type.getType(obj);
 
 		Object oldValue = type.getAttr(context, obj, attrname);
-		Object newValue = BitOrAST.call(oldValue, value);
+		Object newValue = BitOrAST.call(context, oldValue, value);
 		type.setAttr(context, obj, attrname, newValue);
 	}
 
@@ -283,13 +283,13 @@ public class AttrAST extends CodeAST implements LValue
 	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "obj", "attrname");
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
@@ -298,7 +298,7 @@ public class AttrAST extends CodeAST implements LValue
 			case "attrname":
 				return attrname;
 			default:
-				return super.getAttrUL4(key);
+				return super.getAttrUL4(context, key);
 		}
 	}
 }

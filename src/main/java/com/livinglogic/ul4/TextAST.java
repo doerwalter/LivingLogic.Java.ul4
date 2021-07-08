@@ -89,20 +89,21 @@ public class TextAST extends AST
 
 	protected static Set<String> attributes = makeExtendedSet(AST.attributes, "text");
 
-	public Set<String> getAttributeNamesUL4()
+	@Override
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
 			case "text":
 				return getText();
 			default:
-				return super.getAttrUL4(key);
+				return super.getAttrUL4(context, key);
 		}
 	}
 

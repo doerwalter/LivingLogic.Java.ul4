@@ -49,7 +49,7 @@ public class OperatorAttrGetter extends Function implements UL4Instance, UL4Repr
 		}
 
 		@Override
-		public Object create(BoundArguments args)
+		public Object create(EvaluationContext context, BoundArguments args)
 		{
 			List arg = (List)args.get(0);
 
@@ -118,33 +118,33 @@ public class OperatorAttrGetter extends Function implements UL4Instance, UL4Repr
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0), allAttrNames);
+		return call(context, args.get(0), allAttrNames);
 	}
 
-	private static Object call(Object obj, List<String[]> allAttrNames)
+	private static Object call(EvaluationContext context, Object obj, List<String[]> allAttrNames)
 	{
 		if (allAttrNames.size() == 1)
-			return call(obj, allAttrNames.get(0));
+			return call(context, obj, allAttrNames.get(0));
 		else
 		{
 			List<Object> result = new ArrayList<Object>(allAttrNames.size());
 			for (String[] attrNames : allAttrNames)
-				result.add(call(obj, attrNames));
+				result.add(call(context, obj, attrNames));
 			return result;
 		}
 	}
 
-	private static Object call(Object obj, String attrName)
+	private static Object call(EvaluationContext context, Object obj, String attrName)
 	{
-		return UL4Type.getType(obj).getAttr(obj, attrName);
+		return UL4Type.getType(obj).getAttr(context, obj, attrName);
 	}
 
-	private static Object call(Object obj, String[] attrNames)
+	private static Object call(EvaluationContext context, Object obj, String[] attrNames)
 	{
 		for (String attrName : attrNames)
-			obj = call(obj, attrName);
+			obj = call(context, obj, attrName);
 		return obj;
 	}
 }

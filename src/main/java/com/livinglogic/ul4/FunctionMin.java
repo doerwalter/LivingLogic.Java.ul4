@@ -12,7 +12,7 @@ import java.util.Iterator;
 import static java.util.Arrays.asList;
 
 
-public class FunctionMin extends FunctionWithContext
+public class FunctionMin extends Function
 {
 	@Override
 	public String getNameUL4()
@@ -55,7 +55,7 @@ public class FunctionMin extends FunctionWithContext
 		{
 			Object testValue = iter.next();
 			Object testKey = key != null ? CallAST.call(context, key, asList(testValue), null) : testValue;
-			if (first || LTAST.call(testKey, minKey))
+			if (first || LTAST.call(context, testKey, minKey))
 			{
 				minValue = testValue;
 				minKey = testKey;
@@ -72,5 +72,5 @@ public class FunctionMin extends FunctionWithContext
 		return minValue;
 	}
 
-	public static final FunctionWithContext function = new FunctionMin();
+	public static final Function function = new FunctionMin();
 }

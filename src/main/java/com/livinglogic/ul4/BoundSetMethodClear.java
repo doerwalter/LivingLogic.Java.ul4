@@ -22,15 +22,15 @@ public class BoundSetMethodClear extends BoundMethod<Set>
 		return "clear";
 	}
 
-	public static void call(Set object)
+	public static void call(EvaluationContext context, Set object)
 	{
 		object.clear();
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		call(object);
+		call(context, object);
 		return null;
 	}
 }

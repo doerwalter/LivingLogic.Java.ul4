@@ -27,7 +27,7 @@ public class BoundLocalDateTimeMethodYearday extends BoundMethod<LocalDateTime>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(object);
 	}

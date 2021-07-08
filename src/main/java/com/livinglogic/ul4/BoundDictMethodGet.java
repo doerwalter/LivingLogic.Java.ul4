@@ -30,17 +30,17 @@ public class BoundDictMethodGet extends BoundMethod<Map>
 		return signature;
 	}
 
-	public static Object call(Map object, Object key, Object defaultValue)
+	public static Object call(EvaluationContext context, Map object, Object key, Object defaultValue)
 	{
 		Object result = object.get(key);
 		if (result == null && !object.containsKey(key))
-			result = defaultValue;
+			return defaultValue;
 		return result;
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object, args.get(0), args.get(1));
+		return call(context, object, args.get(0), args.get(1));
 	}
 }

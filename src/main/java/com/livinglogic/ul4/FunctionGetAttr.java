@@ -14,7 +14,7 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class FunctionGetAttr extends FunctionWithContext
+public class FunctionGetAttr extends Function
 {
 	@Override
 	public String getNameUL4()
@@ -36,34 +36,6 @@ public class FunctionGetAttr extends FunctionWithContext
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(context, args.get(0), args.get(1), args.get(2));
-	}
-
-	public static Object call(Object obj, String attrname, Object defaultValue)
-	{
-		try
-		{
-			return UL4Type.getType(obj).getAttr(obj, attrname);
-		}
-		catch (AttributeException exc)
-		{
-			if (exc.getObject() == obj)
-			{
-				if (defaultValue == noDefaultValue)
-					throw exc;
-				else
-					return defaultValue;
-			}
-			else
-				// The {@code AttributeException} originated from another object
-				throw exc;
-		}
-	}
-
-	public static Object call(Object obj, Object attrname, Object defaultValue)
-	{
-		if (!(attrname instanceof String))
-			throw new ArgumentTypeMismatchException("getattr({!t}, {!t}, {!t}) not supported", obj, attrname, defaultValue);
-		return call(obj, (String)attrname, defaultValue);
 	}
 
 	public static Object call(EvaluationContext context, Object obj, String attrname, Object defaultValue)
@@ -94,5 +66,15 @@ public class FunctionGetAttr extends FunctionWithContext
 		return call(context, obj, (String)attrname, defaultValue);
 	}
 
-	public static FunctionWithContext function = new FunctionGetAttr();
+	public static Object call(Object obj, Object attrname, Object defaultValue)
+	{
+		return call(null, obj, attrname, defaultValue);
+	}
+
+	public static Object call(Object obj, String attrname, Object defaultValue)
+	{
+		return call(null, obj, attrname, defaultValue);
+	}
+
+	public static FunctionGetAttr function = new FunctionGetAttr();
 }

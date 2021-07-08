@@ -30,12 +30,12 @@ public class BoundStringMethodRFind extends BoundMethod<String>
 		return signature;
 	}
 
-	public static int call(String object, String sub)
+	public static int call(EvaluationContext context, String object, String sub)
 	{
 		return object.lastIndexOf(sub);
 	}
 
-	public static int call(String object, String sub, int start)
+	public static int call(EvaluationContext context, String object, String sub, int start)
 	{
 		start = Utils.getSliceStartPos(object.length(), start);
 		int result = object.lastIndexOf(sub);
@@ -44,7 +44,7 @@ public class BoundStringMethodRFind extends BoundMethod<String>
 		return result;
 	}
 
-	public static int call(String object, String sub, int start, int end)
+	public static int call(EvaluationContext context, String object, String sub, int start, int end)
 	{
 		start = Utils.getSliceStartPos(object.length(), start);
 		end = Utils.getSliceStartPos(object.length(), end);
@@ -58,13 +58,13 @@ public class BoundStringMethodRFind extends BoundMethod<String>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		if (args.get(0) instanceof String)
 		{
 			int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
 			int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : object.length();
-			return call(object, (String)args.get(0), startIndex, endIndex);
+			return call(context, object, (String)args.get(0), startIndex, endIndex);
 		}
 		throw new ArgumentTypeMismatchException("{!t}.rfind({!t}, {!t}, {!t}) not supported", object, args.get(0), args.get(1), args.get(2));
 	}

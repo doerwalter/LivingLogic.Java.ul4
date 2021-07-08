@@ -30,7 +30,7 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 		return signature;
 	}
 
-	public static void call(Map object, List<Object> others, Map<String, Object> kwargs)
+	public static void call(EvaluationContext context, Map object, List<Object> others, Map<String, Object> kwargs)
 	{
 		String exceptionMessage = "positional arguments for update() method must be dicts or lists of (key, value) pairs";
 		for (Object other : others)
@@ -54,9 +54,9 @@ public class BoundDictMethodUpdate extends BoundMethod<Map>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		call(object, (List<Object>)args.get(0), (Map<String, Object>)args.get(1));
+		call(context, object, (List<Object>)args.get(0), (Map<String, Object>)args.get(1));
 		return null;
 	}
 }

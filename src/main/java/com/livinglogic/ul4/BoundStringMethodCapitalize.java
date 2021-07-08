@@ -22,14 +22,14 @@ public class BoundStringMethodCapitalize extends BoundMethod<String>
 		return "capitalize";
 	}
 
-	public static String call(String object)
+	public static String call(EvaluationContext context, String object)
 	{
 		return String.valueOf(Character.toTitleCase(object.charAt(0))) + object.substring(1).toLowerCase();
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object);
+		return call(context, object);
 	}
 }

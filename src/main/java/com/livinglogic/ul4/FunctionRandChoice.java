@@ -26,7 +26,7 @@ public class FunctionRandChoice extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(args.get(0));
 	}

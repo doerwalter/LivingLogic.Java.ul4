@@ -125,7 +125,7 @@ public class TemplateClosure implements UL4Instance, UL4Call, UL4Render, UL4Name
 		return writer.toString();
 	}
 
-	private static class BoundMethodRenderS extends BoundMethodWithContext<TemplateClosure>
+	private static class BoundMethodRenderS extends BoundMethod<TemplateClosure>
 	{
 		public BoundMethodRenderS(TemplateClosure object)
 		{
@@ -151,7 +151,7 @@ public class TemplateClosure implements UL4Instance, UL4Call, UL4Render, UL4Name
 		}
 	}
 
-	private static class BoundMethodRender extends BoundMethodWithContext<TemplateClosure>
+	private static class BoundMethodRender extends BoundMethod<TemplateClosure>
 	{
 		public BoundMethodRender(TemplateClosure object)
 		{
@@ -181,13 +181,13 @@ public class TemplateClosure implements UL4Instance, UL4Call, UL4Render, UL4Name
 	protected static Set<String> attributes = Template.attributes;
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
@@ -198,7 +198,7 @@ public class TemplateClosure implements UL4Instance, UL4Call, UL4Render, UL4Name
 			case "signature":
 				return signature;
 			default:
-				return template.getAttrUL4(key);
+				return template.getAttrUL4(context, key);
 		}
 	}
 

@@ -53,7 +53,7 @@ public class ModuleUL4ON extends Module
 		}
 
 		@Override
-		public Object evaluate(BoundArguments arguments)
+		public Object evaluate(EvaluationContext context, BoundArguments arguments)
 		{
 			Object arg = arguments.get(0);
 
@@ -80,7 +80,7 @@ public class ModuleUL4ON extends Module
 		}
 
 		@Override
-		public Object evaluate(BoundArguments arguments)
+		public Object evaluate(EvaluationContext context, BoundArguments arguments)
 		{
 			Object obj = arguments.get(0);
 			Object indent = arguments.get(1);

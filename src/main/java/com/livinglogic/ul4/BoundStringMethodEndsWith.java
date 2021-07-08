@@ -31,12 +31,12 @@ public class BoundStringMethodEndsWith extends BoundMethod<String>
 		return signature;
 	}
 
-	public static boolean call(String object, String suffix)
+	public static boolean call(EvaluationContext context, String object, String suffix)
 	{
 		return object.endsWith(suffix);
 	}
 
-	public static boolean call(String object, Collection<String> suffixes)
+	public static boolean call(EvaluationContext context, String object, Collection<String> suffixes)
 	{
 		for (String suffix : suffixes)
 		{
@@ -46,7 +46,7 @@ public class BoundStringMethodEndsWith extends BoundMethod<String>
 		return false;
 	}
 
-	public static boolean call(String object, String[] suffixes)
+	public static boolean call(EvaluationContext context, String object, String[] suffixes)
 	{
 		for (String suffix : suffixes)
 		{
@@ -56,7 +56,7 @@ public class BoundStringMethodEndsWith extends BoundMethod<String>
 		return false;
 	}
 
-	public static boolean call(String object, Map<String, ?> suffixes)
+	public static boolean call(EvaluationContext context, String object, Map<String, ?> suffixes)
 	{
 		for (String suffix : suffixes.keySet())
 		{
@@ -67,18 +67,18 @@ public class BoundStringMethodEndsWith extends BoundMethod<String>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		Object arg = args.get(0);
 
 		if (arg instanceof String)
-			return call(object, (String)arg);
+			return call(context, object, (String)arg);
 		else if (arg instanceof Collection)
-			return call(object, (Collection<String>)arg);
+			return call(context, object, (Collection<String>)arg);
 		else if (arg instanceof String[])
-			return call(object, (String[])arg);
+			return call(context, object, (String[])arg);
 		else if (arg instanceof Map)
-			return call(object, (Map<String, ?>)arg);
+			return call(context, object, (Map<String, ?>)arg);
 		throw new ArgumentTypeMismatchException("{!t}.endswith({!t}) not supported", object, args.get(0));
 	}
 }

@@ -25,14 +25,14 @@ public class BoundLocalDateMethodMIMEFormat extends BoundMethod<LocalDate>
 
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy", Locale.US);
 
-	public static String call(LocalDate obj)
+	public static String call(EvaluationContext context, LocalDate obj)
 	{
 		return obj.format(formatter);
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object);
+		return call(context, object);
 	}
 }

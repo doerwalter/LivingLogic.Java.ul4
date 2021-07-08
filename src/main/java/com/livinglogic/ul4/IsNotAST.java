@@ -59,17 +59,6 @@ public class IsNotAST extends BinaryAST
 		return "isnot";
 	}
 
-	public static CodeAST make(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
-	{
-		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
-		{
-			// No need to catch any exception here or check for {@code Undefined}, the "is not" oparator can't fail
-			boolean result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
-			return new ConstAST(template, pos, result);
-		}
-		return new IsNotAST(template, pos, obj1, obj2);
-	}
-
 	public Object evaluate(EvaluationContext context)
 	{
 		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));

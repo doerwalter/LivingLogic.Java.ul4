@@ -23,14 +23,14 @@ public class BoundDictMethodValues extends BoundMethod<Map>
 		return "values";
 	}
 
-	public static Object call(Map object)
+	public static Object call(EvaluationContext context, Map object)
 	{
 		return object.values();
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call((Map)object);
+		return call(context, (Map)object);
 	}
 }

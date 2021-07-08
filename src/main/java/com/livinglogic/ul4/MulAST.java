@@ -67,42 +67,24 @@ public class MulAST extends BinaryAST
 		return "mul";
 	}
 
-	public static CodeAST make(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
-	{
-		if (obj1 instanceof ConstAST && obj2 instanceof ConstAST)
-		{
-			try
-			{
-				Object result = call(((ConstAST)obj1).value, ((ConstAST)obj2).value);
-				if (!(result instanceof Undefined))
-					return new ConstAST(template, pos, result);
-			}
-			catch (Exception ex)
-			{
-				// fall through to create a real {@code MulAST} object
-			}
-		}
-		return new MulAST(template, pos, obj1, obj2);
-	}
-
 	public Object evaluate(EvaluationContext context)
 	{
-		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
+		return call(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
 	}
 
-	public static String call(int arg1, String arg2)
+	public static String call(EvaluationContext context, int arg1, String arg2)
 	{
 		return StringUtils.repeat(arg2, arg1);
 	}
 
-	public static String call(long arg1, String arg2)
+	public static String call(EvaluationContext context, long arg1, String arg2)
 	{
 		if (((int)arg1) != arg1)
 			throw new ArgumentTypeMismatchException("{!t} * {!t} not supported", arg1, arg2);
 		return StringUtils.repeat(arg2, (int)arg1);
 	}
 
-	public static List call(int arg1, List arg2)
+	public static List call(EvaluationContext context, int arg1, List arg2)
 	{
 		ArrayList result = new ArrayList();
 
@@ -111,7 +93,7 @@ public class MulAST extends BinaryAST
 		return result;
 	}
 
-	public static List call(long arg1, List arg2)
+	public static List call(EvaluationContext context, long arg1, List arg2)
 	{
 		ArrayList result = new ArrayList();
 
@@ -120,7 +102,7 @@ public class MulAST extends BinaryAST
 		return result;
 	}
 
-	public static Object call(int arg1, int arg2)
+	public static Object call(EvaluationContext context, int arg1, int arg2)
 	{
 		if (arg1 == 0 || arg2 == 0)
 			return 0;
@@ -131,7 +113,7 @@ public class MulAST extends BinaryAST
 			return Utils.toBigInteger(arg1).multiply(Utils.toBigInteger(arg2));
 	}
 
-	public static Object call(long arg1, long arg2)
+	public static Object call(EvaluationContext context, long arg1, long arg2)
 	{
 		if (arg1 == 0 || arg2 == 0)
 			return 0;
@@ -142,147 +124,147 @@ public class MulAST extends BinaryAST
 			return Utils.toBigInteger(arg1).multiply(Utils.toBigInteger(arg2));
 	}
 
-	public static Object call(float arg1, float arg2)
+	public static Object call(EvaluationContext context, float arg1, float arg2)
 	{
 		// FIXME: Overflow check
 		return arg1 * arg2;
 	}
 
-	public static Object call(double arg1, double arg2)
+	public static Object call(EvaluationContext context, double arg1, double arg2)
 	{
 		// FIXME: Overflow check
 		return arg1 * arg2;
 	}
 
-	public static Object call(int arg1, TimeDelta arg2)
+	public static Object call(EvaluationContext context, int arg1, TimeDelta arg2)
 	{
 		return arg2.mul(arg1);
 	}
 
-	public static Object call(long arg1, TimeDelta arg2)
+	public static Object call(EvaluationContext context, long arg1, TimeDelta arg2)
 	{
 		return arg2.mul(arg1);
 	}
 
-	public static Object call(float arg1, TimeDelta arg2)
+	public static Object call(EvaluationContext context, float arg1, TimeDelta arg2)
 	{
 		return arg2.mul(arg1);
 	}
 
-	public static Object call(double arg1, TimeDelta arg2)
+	public static Object call(EvaluationContext context, double arg1, TimeDelta arg2)
 	{
 		return arg2.mul(arg1);
 	}
 
-	public static Object call(TimeDelta arg1, int arg2)
+	public static Object call(EvaluationContext context, TimeDelta arg1, int arg2)
 	{
 		return arg1.mul(arg2);
 	}
 
-	public static Object call(TimeDelta arg1, long arg2)
+	public static Object call(EvaluationContext context, TimeDelta arg1, long arg2)
 	{
 		return arg1.mul(arg2);
 	}
 
-	public static Object call(TimeDelta arg1, float arg2)
+	public static Object call(EvaluationContext context, TimeDelta arg1, float arg2)
 	{
 		return arg1.mul(arg2);
 	}
 
-	public static Object call(TimeDelta arg1, double arg2)
+	public static Object call(EvaluationContext context, TimeDelta arg1, double arg2)
 	{
 		return arg1.mul(arg2);
 	}
 
-	public static Object call(int arg1, MonthDelta arg2)
+	public static Object call(EvaluationContext context, int arg1, MonthDelta arg2)
 	{
 		return arg2.mul(arg1);
 	}
 
-	public static Object call(long arg1, MonthDelta arg2)
+	public static Object call(EvaluationContext context, long arg1, MonthDelta arg2)
 	{
 		return arg2.mul(arg1);
 	}
 
-	public static Object call(MonthDelta arg1, int arg2)
+	public static Object call(EvaluationContext context, MonthDelta arg1, int arg2)
 	{
 		return arg1.mul(arg2);
 	}
 
-	public static Object call(MonthDelta arg1, long arg2)
+	public static Object call(EvaluationContext context, MonthDelta arg1, long arg2)
 	{
 		return arg1.mul(arg2);
 	}
 
-	public static Object call(Object arg1, Object arg2)
+	public static Object call(EvaluationContext context, Object arg1, Object arg2)
 	{
 		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return call(Utils.toInt(arg1), Utils.toInt(arg2));
+				return call(context, Utils.toInt(arg1), Utils.toInt(arg2));
 			else if (arg2 instanceof Long)
-				return call(Utils.toLong(arg1), ((Long)arg2).longValue());
+				return call(context, Utils.toLong(arg1), ((Long)arg2).longValue());
 			else if (arg2 instanceof Float)
-				return call(Utils.toFloat(arg1), ((Float)arg2).floatValue());
+				return call(context, Utils.toFloat(arg1), ((Float)arg2).floatValue());
 			else if (arg2 instanceof Double)
-				return call(Utils.toDouble(arg1), ((Double)arg2).doubleValue());
+				return call(context, Utils.toDouble(arg1), ((Double)arg2).doubleValue());
 			else if (arg2 instanceof String)
-				return call(Utils.toInt(arg1), (String)arg2);
+				return call(context, Utils.toInt(arg1), (String)arg2);
 			else if (arg2 instanceof BigInteger)
 				return ((BigInteger)arg2).multiply(Utils.toBigInteger(Utils.toInt(arg1)));
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg2).multiply(new BigDecimal(Utils.toDouble(arg1)));
 			else if (arg2 instanceof List)
-				return call(Utils.toInt(arg1), (List)arg2);
+				return call(context, Utils.toInt(arg1), (List)arg2);
 			else if (arg2 instanceof TimeDelta)
-				return call(Utils.toInt(arg1), (TimeDelta)arg2);
+				return call(context, Utils.toInt(arg1), (TimeDelta)arg2);
 			else if (arg2 instanceof MonthDelta)
-				return call(Utils.toInt(arg1), (MonthDelta)arg2);
+				return call(context, Utils.toInt(arg1), (MonthDelta)arg2);
 		}
 		else if (arg1 instanceof Long)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return call(Utils.toLong(arg1), Utils.toLong(arg2));
+				return call(context, Utils.toLong(arg1), Utils.toLong(arg2));
 			else if (arg2 instanceof Float)
-				return call(Utils.toFloat(arg1), ((Float)arg2).floatValue());
+				return call(context, Utils.toFloat(arg1), ((Float)arg2).floatValue());
 			else if (arg2 instanceof Double)
-				return call(Utils.toDouble(arg1), ((Double)arg2).doubleValue());
+				return call(context, Utils.toDouble(arg1), ((Double)arg2).doubleValue());
 			else if (arg2 instanceof String)
-				return call(Utils.toInt(arg1), (String)arg2);
+				return call(context, Utils.toInt(arg1), (String)arg2);
 			else if (arg2 instanceof BigInteger)
 				return ((BigInteger)arg2).multiply(Utils.toBigInteger(Utils.toLong(arg1)));
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg2).multiply(new BigDecimal(Utils.toDouble(arg1)));
 			else if (arg2 instanceof List)
-				return call(Utils.toLong(arg1), (List)arg2);
+				return call(context, Utils.toLong(arg1), (List)arg2);
 			else if (arg2 instanceof TimeDelta)
-				return call(Utils.toLong(arg1), (TimeDelta)arg2);
+				return call(context, Utils.toLong(arg1), (TimeDelta)arg2);
 			else if (arg2 instanceof MonthDelta)
-				return call(Utils.toLong(arg1), (MonthDelta)arg2);
+				return call(context, Utils.toLong(arg1), (MonthDelta)arg2);
 		}
 		else if (arg1 instanceof Float)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float)
-				return call(Utils.toFloat(arg1), Utils.toFloat(arg2));
+				return call(context, Utils.toFloat(arg1), Utils.toFloat(arg2));
 			else if (arg2 instanceof Double)
-				return call(Utils.toDouble(arg1), (((Double)arg2).doubleValue()));
+				return call(context, Utils.toDouble(arg1), (((Double)arg2).doubleValue()));
 			else if (arg2 instanceof BigInteger)
 				return new BigDecimal((BigInteger)arg2).multiply(new BigDecimal(Utils.toDouble(arg1)));
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg2).multiply(new BigDecimal(Utils.toDouble(arg1)));
 			else if (arg2 instanceof TimeDelta)
-				return call(Utils.toFloat(arg1), (TimeDelta)arg2);
+				return call(context, Utils.toFloat(arg1), (TimeDelta)arg2);
 		}
 		else if (arg1 instanceof Double)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
-				return call(Utils.toDouble(arg1), Utils.toDouble(arg2));
+				return call(context, Utils.toDouble(arg1), Utils.toDouble(arg2));
 			else if (arg2 instanceof BigInteger)
 				return new BigDecimal((BigInteger)arg2).multiply(new BigDecimal(Utils.toDouble(arg1)));
 			else if (arg2 instanceof BigDecimal)
 				return ((BigDecimal)arg2).multiply(new BigDecimal(Utils.toDouble(arg1)));
 			else if (arg2 instanceof TimeDelta)
-				return call(Utils.toDouble(arg1), (TimeDelta)arg2);
+				return call(context, Utils.toDouble(arg1), (TimeDelta)arg2);
 		}
 		else if (arg1 instanceof BigInteger)
 		{
@@ -311,32 +293,32 @@ public class MulAST extends BinaryAST
 		else if (arg1 instanceof String)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return call(Utils.toInt(arg2), (String)arg1);
+				return call(context, Utils.toInt(arg2), (String)arg1);
 			else if (arg2 instanceof Long)
-				return call(Utils.toLong(arg2), (String)arg1);
+				return call(context, Utils.toLong(arg2), (String)arg1);
 		}
 		else if (arg1 instanceof List)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return call(Utils.toInt(arg2), (List)arg1);
+				return call(context, Utils.toInt(arg2), (List)arg1);
 			else if (arg2 instanceof Long)
-				return call(Utils.toLong(arg2), (List)arg1);
+				return call(context, Utils.toLong(arg2), (List)arg1);
 		}
 		else if (arg1 instanceof TimeDelta)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return call((TimeDelta)arg1, Utils.toInt(arg2));
+				return call(context, (TimeDelta)arg1, Utils.toInt(arg2));
 			else if (arg2 instanceof Long)
-				return call((TimeDelta)arg1, Utils.toLong(arg2));
+				return call(context, (TimeDelta)arg1, Utils.toLong(arg2));
 			else if (arg2 instanceof Float || arg2 instanceof Double)
-				return call((TimeDelta)arg1, Utils.toDouble(arg2));
+				return call(context, (TimeDelta)arg1, Utils.toDouble(arg2));
 		}
 		else if (arg1 instanceof MonthDelta)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return call((MonthDelta)arg1, Utils.toInt(arg2));
+				return call(context, (MonthDelta)arg1, Utils.toInt(arg2));
 			else if (arg2 instanceof Long)
-				return call((MonthDelta)arg1, Utils.toLong(arg2));
+				return call(context, (MonthDelta)arg1, Utils.toLong(arg2));
 		}
 		throw new ArgumentTypeMismatchException("{!t} * {!t} not supported", arg1, arg2);
 	}

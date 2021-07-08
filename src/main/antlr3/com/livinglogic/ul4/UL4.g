@@ -483,7 +483,7 @@ expr_subscript returns [CodeAST node]
 			n=name { $node = new AttrAST(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), $n.node.getStartPos().getStop()), $node, $n.text); }
 		|
 			/* Function/method call */
-			'(' { $node = CallAST.make(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart()), $node); }
+			'(' { $node = new CallAST(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart()), $node); }
 			(
 				a1=argument { $a1.node.addToCall((CallAST)$node); }
 				(
@@ -497,12 +497,12 @@ expr_subscript returns [CodeAST node]
 			/* Item access */
 			'['
 			e2_if=expr_if
-			close=']' { $node = ItemAST.make(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), getStopPos($close)), $node, $e2_if.node); }
+			close=']' { $node = new ItemAST(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), getStopPos($close)), $node, $e2_if.node); }
 		|
 			/* Slice access */
 			'['
 			e2_slice=slice
-			close=']' { $node = ItemAST.make(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), getStopPos($close)), $node, $e2_slice.node); }
+			close=']' { $node = new ItemAST(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), getStopPos($close)), $node, $e2_slice.node); }
 		)*
 	;
 
@@ -511,9 +511,9 @@ expr_unary returns [CodeAST node]
 	:
 		e1=expr_subscript { $node = $e1.node; }
 	|
-		minus='-' e2=expr_unary { $node = NegAST.make(tag.getTemplate(), new Slice(getStartPos($minus), $e2.node.getStartPos().getStop()), $e2.node); }
+		minus='-' e2=expr_unary { $node = new NegAST(tag.getTemplate(), new Slice(getStartPos($minus), $e2.node.getStartPos().getStop()), $e2.node); }
 	|
-		bitnot='~' e2=expr_unary { $node = BitNotAST.make(tag.getTemplate(), new Slice(getStartPos($bitnot), $e2.node.getStartPos().getStop()), $e2.node); }
+		bitnot='~' e2=expr_unary { $node = new BitNotAST(tag.getTemplate(), new Slice(getStartPos($bitnot), $e2.node.getStartPos().getStop()), $e2.node); }
 	;
 
 /* Multiplication, division, modulo */
@@ -540,16 +540,16 @@ expr_mul returns [CodeAST node]
 				switch (opcode)
 				{
 					case 0:
-						$node = MulAST.make(tag.getTemplate(), pos, $node, $e2.node);
+						$node = new MulAST(tag.getTemplate(), pos, $node, $e2.node);
 						break;
 					case 1:
-						$node = TrueDivAST.make(tag.getTemplate(), pos, $node, $e2.node);
+						$node = new TrueDivAST(tag.getTemplate(), pos, $node, $e2.node);
 						break;
 					case 2:
-						$node = FloorDivAST.make(tag.getTemplate(), pos, $node, $e2.node);
+						$node = new FloorDivAST(tag.getTemplate(), pos, $node, $e2.node);
 						break;
 					case 3:
-						$node = ModAST.make(tag.getTemplate(), pos, $node, $e2.node);
+						$node = new ModAST(tag.getTemplate(), pos, $node, $e2.node);
 						break;
 				}
 			}
@@ -573,7 +573,7 @@ expr_add returns [CodeAST node]
 			)
 			e2=expr_mul {
 				pos = new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop());
-				$node = add ? AddAST.make(tag.getTemplate(), pos, $node, $e2.node) : SubAST.make(tag.getTemplate(), pos, $node, $e2.node);
+				$node = add ? new AddAST(tag.getTemplate(), pos, $node, $e2.node) : new SubAST(tag.getTemplate(), pos, $node, $e2.node);
 			}
 		)*
 	;
@@ -595,7 +595,7 @@ expr_bitshift returns [CodeAST node]
 			)
 			e2=expr_add {
 				pos = new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop());
-				$node = left ? ShiftLeftAST.make(tag.getTemplate(), pos, $node, $e2.node) : ShiftRightAST.make(tag.getTemplate(), pos, $node, $e2.node); }
+				$node = left ? new ShiftLeftAST(tag.getTemplate(), pos, $node, $e2.node) : new ShiftRightAST(tag.getTemplate(), pos, $node, $e2.node); }
 		)*
 	;
 
@@ -605,7 +605,7 @@ expr_bitand returns [CodeAST node]
 		e1=expr_bitshift { $node = $e1.node; }
 		(
 			'&'
-			e2=expr_bitshift { $node = BitAndAST.make(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
+			e2=expr_bitshift { $node = new BitAndAST(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
 		)*
 	;
 
@@ -615,7 +615,7 @@ expr_bitxor returns [CodeAST node]
 		e1=expr_bitand { $node = $e1.node; }
 		(
 			'^'
-			e2=expr_bitand { $node = BitXOrAST.make(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
+			e2=expr_bitand { $node = new BitXOrAST(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
 		)*
 	;
 
@@ -625,7 +625,7 @@ expr_bitor returns [CodeAST node]
 		e1=expr_bitxor { $node = $e1.node; }
 		(
 			'|'
-			e2=expr_bitxor { $node = BitOrAST.make(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
+			e2=expr_bitxor { $node = new BitOrAST(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
 		)*
 	;
 
@@ -665,34 +665,34 @@ expr_cmp returns [CodeAST node]
 				switch (opcode)
 					{
 						case 0:
-							$node = EQAST.make(tag.getTemplate(), pos, $node, $e2.node);
+							$node = new EQAST(tag.getTemplate(), pos, $node, $e2.node);
 							break;
 						case 1:
-							$node = NEAST.make(tag.getTemplate(), pos, $node, $e2.node);
+							$node = new NEAST(tag.getTemplate(), pos, $node, $e2.node);
 							break;
 						case 2:
-							$node = LTAST.make(tag.getTemplate(), pos, $node, $e2.node);
+							$node = new LTAST(tag.getTemplate(), pos, $node, $e2.node);
 							break;
 						case 3:
-							$node = LEAST.make(tag.getTemplate(), pos, $node, $e2.node);
+							$node = new LEAST(tag.getTemplate(), pos, $node, $e2.node);
 							break;
 						case 4:
-							$node = GTAST.make(tag.getTemplate(), pos, $node, $e2.node);
+							$node = new GTAST(tag.getTemplate(), pos, $node, $e2.node);
 							break;
 						case 5:
-							$node = GEAST.make(tag.getTemplate(), pos, $node, $e2.node);
+							$node = new GEAST(tag.getTemplate(), pos, $node, $e2.node);
 							break;
 						case 6:
-							$node = ContainsAST.make(tag.getTemplate(), pos, $node, $e2.node);
+							$node = new ContainsAST(tag.getTemplate(), pos, $node, $e2.node);
 							break;
 						case 7:
-							$node = NotContainsAST.make(tag.getTemplate(), pos, $node, $e2.node);
+							$node = new NotContainsAST(tag.getTemplate(), pos, $node, $e2.node);
 							break;
 						case 8:
-							$node = IsAST.make(tag.getTemplate(), pos, $node, $e2.node);
+							$node = new IsAST(tag.getTemplate(), pos, $node, $e2.node);
 							break;
 						case 9:
-							$node = IsNotAST.make(tag.getTemplate(), pos, $node, $e2.node);
+							$node = new IsNotAST(tag.getTemplate(), pos, $node, $e2.node);
 							break;
 					}
 			}
@@ -704,7 +704,7 @@ expr_not returns [CodeAST node]
 	:
 		e1=expr_cmp { $node = $e1.node; }
 	|
-		n='not' e2=expr_not { $node = NotAST.make(tag.getTemplate(), new Slice(getStartPos($n), $e2.node.getStartPos().getStop()), $e2.node); }
+		n='not' e2=expr_not { $node = new NotAST(tag.getTemplate(), new Slice(getStartPos($n), $e2.node.getStartPos().getStop()), $e2.node); }
 	;
 
 /* And operator */
@@ -713,7 +713,7 @@ expr_and returns [CodeAST node]
 		e1=expr_not { $node = $e1.node; }
 		(
 			'and'
-			e2=expr_not { $node = AndAST.make(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
+			e2=expr_not { $node = new AndAST(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
 		)*
 	;
 
@@ -723,7 +723,7 @@ expr_or returns [CodeAST node]
 		e1=expr_and { $node = $e1.node; }
 		(
 			'or'
-			e2=expr_and { $node = OrAST.make(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
+			e2=expr_and { $node = new OrAST(tag.getTemplate(), new Slice($node.getStartPos().getStart(), $e2.node.getStartPos().getStop()), $node, $e2.node); }
 		)*
 	;
 
@@ -735,7 +735,7 @@ expr_if returns [CodeAST node]
 			'if'
 			e2=expr_or
 			'else'
-			e3=expr_or { $node = IfAST.make(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), $e3.node.getStartPos().getStop()), $e1.node, $e2.node, $e3.node); }
+			e3=expr_or { $node = new IfAST(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), $e3.node.getStartPos().getStop()), $e1.node, $e2.node, $e3.node); }
 		)?
 	;
 

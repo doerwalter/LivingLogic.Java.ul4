@@ -21,14 +21,14 @@ public class BoundLocalDateMethodDate extends BoundMethod<LocalDate>
 		return "date";
 	}
 
-	public static LocalDate call(LocalDate obj)
+	public static LocalDate call(EvaluationContext context, LocalDate obj)
 	{
 		return obj;
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object);
+		return call(context, object);
 	}
 }

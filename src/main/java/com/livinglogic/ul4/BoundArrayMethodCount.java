@@ -30,17 +30,17 @@ public class BoundArrayMethodCount extends BoundMethod<Object[]>
 		return signature;
 	}
 
-	public static int call(Object[] object, Object sub)
+	public static int call(EvaluationContext context, Object[] object, Object sub)
 	{
-		return call(object, sub, 0, object.length);
+		return call(context, object, sub, 0, object.length);
 	}
 
-	public static int call(Object[] object, Object sub, int start)
+	public static int call(EvaluationContext context, Object[] object, Object sub, int start)
 	{
-		return call(object, sub, start, object.length);
+		return call(context, object, sub, start, object.length);
 	}
 
-	public static int call(Object[] object, Object sub, int start, int end)
+	public static int call(EvaluationContext context, Object[] object, Object sub, int start, int end)
 	{
 		start = Utils.getSliceStartPos(object.length, start);
 		end = Utils.getSliceEndPos(object.length, end);
@@ -48,18 +48,18 @@ public class BoundArrayMethodCount extends BoundMethod<Object[]>
 		int count = 0;
 		for (int i = start; i < end; ++i)
 		{
-			if (EQAST.call(object[i], sub))
+			if (EQAST.call(context, object[i], sub))
 				++count;
 		}
 		return count;
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
 		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : object.length;
 
-		return call(object, args.get(0), startIndex, endIndex);
+		return call(context, object, args.get(0), startIndex, endIndex);
 	}
 }

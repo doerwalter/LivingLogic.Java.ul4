@@ -31,7 +31,7 @@ public class BoundArrayMethodAppend extends BoundMethod<Object[]>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		throw new ArgumentTypeMismatchException("{!t}.append(...) not supported!", object);
 	}

@@ -14,48 +14,24 @@ public interface UL4Instance extends UL4Bool, UL4Len, UL4Dir, UL4GetAttr, UL4Set
 {
 	UL4Type getTypeUL4();
 
-	@Override
-	default boolean boolUL4()
-	{
-		return true;
-	}
-
-	default Number intUL4()
+	default Number intUL4(EvaluationContext context)
 	{
 		throw new UnsupportedOperationException(Utils.formatMessage("can't convert {!t} to int!", this));
 	}
 
-	default Number floatUL4()
+	default Number floatUL4(EvaluationContext context)
 	{
 		throw new UnsupportedOperationException(Utils.formatMessage("can't convert {!t} to float!", this));
 	}
 
-	default String strUL4()
+	default String strUL4(EvaluationContext context)
 	{
 		return toString();
 	}
 
 	@Override
-	default int lenUL4()
+	default int lenUL4(EvaluationContext context)
 	{
 		throw new ArgumentTypeMismatchException("len({!t}) not supported!", this);
-	}
-
-	@Override
-	default Set<String> dirUL4()
-	{
-		return Collections.emptySet();
-	}
-
-	@Override
-	default Object getAttrUL4(String key)
-	{
-		throw new AttributeException(this, key);
-	}
-
-	@Override
-	default void setAttrUL4(String key, Object value)
-	{
-		throw new ReadonlyException(this, key);
 	}
 }

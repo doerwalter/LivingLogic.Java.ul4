@@ -61,31 +61,13 @@ public class BitNotAST extends UnaryAST
 		return "bitnot";
 	}
 
-	public static CodeAST make(Template template, Slice pos, CodeAST obj)
-	{
-		if (obj instanceof ConstAST)
-		{
-			try
-			{
-				Object result = call(((ConstAST)obj).value);
-				if (!(result instanceof Undefined))
-					return new ConstAST(template, pos, result);
-			}
-			catch (Exception ex)
-			{
-				// fall through to create a real {@code BitNotAST} object
-			}
-		}
-		return new BitNotAST(template, pos, obj);
-	}
-
 	@Override
 	public Object evaluate(EvaluationContext context)
 	{
-		return call(obj.decoratedEvaluate(context));
+		return call(context, obj.decoratedEvaluate(context));
 	}
 
-	public static Object call(Object obj)
+	public static Object call(EvaluationContext context, Object obj)
 	{
 		if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short || obj instanceof Boolean)
 			return ~Utils.toInt(obj);

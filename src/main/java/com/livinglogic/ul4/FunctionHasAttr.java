@@ -14,7 +14,7 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class FunctionHasAttr extends FunctionWithContext
+public class FunctionHasAttr extends Function
 {
 	@Override
 	public String getNameUL4()
@@ -36,19 +36,7 @@ public class FunctionHasAttr extends FunctionWithContext
 		return call(context, args.get(0), args.get(1));
 	}
 
-	public static boolean call(Object obj, String attrname)
-	{
-		return UL4Type.getType(obj).hasAttr(obj, attrname);
-	}
-
-	public static Object call(Object obj, Object attrname)
-	{
-		if (!(attrname instanceof String))
-			throw new ArgumentTypeMismatchException("hasattr({!t}, {!t}) not supported", obj, attrname);
-		return call(obj, (String)attrname);
-	}
-
-	public static Object call(EvaluationContext context, Object obj, String attrname)
+	public static boolean call(EvaluationContext context, Object obj, String attrname)
 	{
 		return UL4Type.getType(obj).hasAttr(context, obj, attrname);
 	}
@@ -56,9 +44,9 @@ public class FunctionHasAttr extends FunctionWithContext
 	public static Object call(EvaluationContext context, Object obj, Object attrname)
 	{
 		if (!(attrname instanceof String))
-			throw new ArgumentTypeMismatchException("hasattr({!t}, {!t}, {!t}) not supported", obj, attrname);
+			throw new ArgumentTypeMismatchException("hasattr({!t}, {!t}) not supported", obj, attrname);
 		return call(context, obj, (String)attrname);
 	}
 
-	public static FunctionWithContext function = new FunctionHasAttr();
+	public static FunctionHasAttr function = new FunctionHasAttr();
 }

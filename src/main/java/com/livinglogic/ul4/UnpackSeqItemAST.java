@@ -100,20 +100,21 @@ public class UnpackSeqItemAST extends SeqItemASTBase
 
 	protected static Set<String> attributes = makeExtendedSet(SeqItemASTBase.attributes, "value");
 
-	public Set<String> getAttributeNamesUL4()
+	@Override
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
 			case "value":
 				return value;
 			default:
-				return super.getAttrUL4(key);
+				return super.getAttrUL4(context, key);
 		}
 	}
 }

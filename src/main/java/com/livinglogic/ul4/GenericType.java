@@ -54,18 +54,18 @@ public class GenericType implements UL4Type
 	}
 
 	@Override
-	public boolean boolInstance(Object instance)
+	public boolean boolInstance(EvaluationContext context, Object instance)
 	{
 		if (instance instanceof UL4Bool)
-			return ((UL4Bool)instance).boolUL4();
+			return ((UL4Bool)instance).boolUL4(context);
 		return true;
 	}
 
 	@Override
-	public int lenInstance(Object instance)
+	public int lenInstance(EvaluationContext context, Object instance)
 	{
 		if (instance instanceof UL4Len)
-			return ((UL4Len)instance).lenUL4();
+			return ((UL4Len)instance).lenUL4(context);
 		throw new ArgumentTypeMismatchException("len({!t}) not supported", instance);
 	}
 
@@ -79,28 +79,10 @@ public class GenericType implements UL4Type
 	}
 
 	@Override
-	public Set<String> dirInstance(Object instance)
-	{
-		if (instance instanceof UL4Dir)
-			return ((UL4Dir)instance).dirUL4();
-		else
-			return Collections.EMPTY_SET;
-	}
-
-	@Override
 	public Object getAttr(EvaluationContext context, Object object, String key)
 	{
 		if (object instanceof UL4GetAttr)
 			return ((UL4GetAttr)object).getAttrUL4(context, key);
-		else
-			return getAttr(object, key);
-	}
-
-	@Override
-	public Object getAttr(Object object, String key)
-	{
-		if (object instanceof UL4GetAttr)
-			return ((UL4GetAttr)object).getAttrUL4(key);
 		else
 			throw new AttributeException(object, key);
 	}
@@ -111,15 +93,6 @@ public class GenericType implements UL4Type
 		if (object instanceof UL4SetAttr)
 			((UL4SetAttr)object).setAttrUL4(context, key, value);
 		else
-			setAttr(object, key, value);
-	}
-
-	@Override
-	public void setAttr(Object object, String key, Object value)
-	{
-		if (object instanceof UL4SetAttr)
-			((UL4SetAttr)object).setAttrUL4(key, value);
-		else
-			throw new ReadonlyException(object, key);
+			throw new AttributeException(object, key);
 	}
 }

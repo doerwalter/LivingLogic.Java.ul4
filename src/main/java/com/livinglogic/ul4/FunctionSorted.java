@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
 
-public class FunctionSorted extends FunctionWithContext
+public class FunctionSorted extends Function
 {
 	@Override
 	public String getNameUL4()
@@ -96,11 +96,11 @@ public class FunctionSorted extends FunctionWithContext
 
 	public static ArrayList call(EvaluationContext context, Object obj, Object key, Object reverse)
 	{
-		boolean reverseBool = Bool.call(reverse);
+		boolean reverseBool = Bool.call(context, reverse);
 
 		if (key == null)
 		{
-			ArrayList result = List_.call(obj);
+			ArrayList result = List_.call(context, obj);
 			Collections.sort(result, new SortedComparator(reverseBool));
 			return result;
 		}
@@ -112,5 +112,5 @@ public class FunctionSorted extends FunctionWithContext
 		}
 	}
 
-	public static FunctionWithContext function = new FunctionSorted();
+	public static FunctionSorted function = new FunctionSorted();
 }

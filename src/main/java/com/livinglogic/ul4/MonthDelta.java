@@ -49,7 +49,7 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 		}
 
 		@Override
-		public Object create(BoundArguments args)
+		public Object create(EvaluationContext context, BoundArguments args)
 		{
 			return new MonthDelta(Utils.toInt(args.get(0)));
 		}
@@ -181,7 +181,7 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 	}
 
 	@Override
-	public boolean boolUL4()
+	public boolean boolUL4(EvaluationContext context)
 	{
 		return months != 0;
 	}
@@ -212,7 +212,8 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 		return "monthdelta";
 	}
 
-	public MonthDelta absUL4()
+	@Override
+	public MonthDelta absUL4(EvaluationContext context)
 	{
 		return months < 0 ? new MonthDelta(-months) : this;
 	}
@@ -231,7 +232,7 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.months;
 		}
@@ -240,13 +241,13 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 	protected static Set<String> attributes = makeSet("months");
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{

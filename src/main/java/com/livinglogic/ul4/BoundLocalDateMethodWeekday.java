@@ -27,7 +27,7 @@ public class BoundLocalDateMethodWeekday extends BoundMethod<LocalDate>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(object);
 	}

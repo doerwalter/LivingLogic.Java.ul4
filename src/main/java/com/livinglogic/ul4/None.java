@@ -22,7 +22,7 @@ public class None extends AbstractType
 	}
 
 	@Override
-	public Object create(BoundArguments arguments)
+	public Object create(EvaluationContext context, BoundArguments arguments)
 	{
 		return null;
 	}
@@ -34,13 +34,13 @@ public class None extends AbstractType
 	}
 
 	@Override
-	public boolean boolInstance(Object instance)
+	public boolean boolInstance(EvaluationContext context, Object instance)
 	{
 		return false;
 	}
 
 	@Override
-	public String strInstance(Object instance)
+	public String strInstance(EvaluationContext context, Object instance)
 	{
 		return "";
 	}

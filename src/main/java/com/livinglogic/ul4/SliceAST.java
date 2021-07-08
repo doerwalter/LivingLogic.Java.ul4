@@ -76,44 +76,6 @@ public class SliceAST extends CodeAST
 		return "slice";
 	}
 
-	public static AST make(Template template, Slice pos, AST obj, AST index1, AST index2)
-	{
-		if (obj instanceof ConstAST)
-		{
-			if (index1 == null)
-			{
-				if (index2 == null)
-				{
-					Object result = call(null, null);
-					if (!(result instanceof Undefined))
-						return new ConstAST(template, pos, result);
-				}
-				else if (index2 instanceof ConstAST)
-				{
-					Object result = call(null, ((ConstAST)index2).value);
-					if (!(result instanceof Undefined))
-						return new ConstAST(template, pos, result);
-				}
-			}
-			else if (index1 instanceof ConstAST)
-			{
-				if (index2 == null)
-				{
-					Object result = call(((ConstAST)index1).value, null);
-					if (!(result instanceof Undefined))
-						return new ConstAST(template, pos, result);
-				}
-				else if (index2 instanceof ConstAST)
-				{
-					Object result = call(((ConstAST)index1).value, ((ConstAST)index2).value);
-					if (!(result instanceof Undefined))
-						return new ConstAST(template, pos, result);
-				}
-			}
-		}
-		return new SliceAST(template, pos, index1, index2);
-	}
-
 	public Object evaluate(EvaluationContext context)
 	{
 		return call(index1 != null ? index1.decoratedEvaluate(context) : null, index2 != null ? index2.decoratedEvaluate(context) : null);
@@ -155,13 +117,14 @@ public class SliceAST extends CodeAST
 
 	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "start", "stop");
 
-	public Set<String> getAttributeNamesUL4()
+	@Override
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
@@ -170,7 +133,7 @@ public class SliceAST extends CodeAST
 			case "index2":
 				return index2;
 			default:
-				return super.getAttrUL4(key);
+				return super.getAttrUL4(context, key);
 		}
 	}
 }

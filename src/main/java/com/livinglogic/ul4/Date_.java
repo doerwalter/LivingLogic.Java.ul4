@@ -41,7 +41,7 @@ public class Date_ extends AbstractType
 	}
 
 	@Override
-	public Object create(BoundArguments arguments)
+	public Object create(EvaluationContext context, BoundArguments arguments)
 	{
 		int year = Utils.toInt(arguments.get(0));
 		int month = Utils.toInt(arguments.get(1));
@@ -69,7 +69,7 @@ public class Date_ extends AbstractType
 	}
 
 	@Override
-	public boolean boolInstance(Object instance)
+	public boolean boolInstance(EvaluationContext context, Object instance)
 	{
 		return true;
 	}
@@ -77,7 +77,7 @@ public class Date_ extends AbstractType
 	private static DateTimeFormatter formatterLocalDate = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US);
 
 	@Override
-	public String strInstance(Object instance)
+	public String strInstance(EvaluationContext context, Object instance)
 	{
 		return formatterLocalDate.format((LocalDate)instance);
 	}
@@ -85,13 +85,13 @@ public class Date_ extends AbstractType
 	protected static Set<String> attributes = makeSet("year", "month", "day", "date", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat");
 
 	@Override
-	public Set<String> dirInstance(Object instance)
+	public Set<String> dirInstance(EvaluationContext context, Object instance)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttr(Object object, String key)
+	public Object getAttr(EvaluationContext context, Object object, String key)
 	{
 		LocalDate date = (LocalDate)object;
 
@@ -118,7 +118,7 @@ public class Date_ extends AbstractType
 			case "mimeformat":
 				return new BoundLocalDateMethodMIMEFormat(date);
 			default:
-				return super.getAttr(object, key);
+				return super.getAttr(context, object, key);
 		}
 	}
 

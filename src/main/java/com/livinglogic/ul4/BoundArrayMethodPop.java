@@ -31,7 +31,7 @@ public class BoundArrayMethodPop extends BoundMethod<Object[]>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		throw new ArgumentTypeMismatchException("{!t}.pop(...) not supported!", object);
 	}

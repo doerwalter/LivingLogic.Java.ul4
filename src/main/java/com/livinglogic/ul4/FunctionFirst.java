@@ -25,12 +25,12 @@ public class FunctionFirst extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0), args.get(1));
+		return call(context, args.get(0), args.get(1));
 	}
 
-	public static Object call(Object iterable, Object defaultValue)
+	public static Object call(EvaluationContext context, Object iterable, Object defaultValue)
 	{
 		Iterator iter = Utils.iterator(iterable);
 

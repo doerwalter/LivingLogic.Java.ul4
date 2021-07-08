@@ -19,29 +19,29 @@ public class ExceptionType extends GenericType
 	}
 
 	@Override
-	public String strInstance(Object instance)
+	public String strInstance(EvaluationContext context, Object instance)
 	{
 		String message = ((Throwable)instance).getLocalizedMessage();
 		return message != null ? message : "";
 	}
 
 	@Override
-	public Set<String> dirInstance(Object instance)
+	public Set<String> dirInstance(EvaluationContext context, Object instance)
 	{
-		Set<String> result = super.dirInstance(instance);
+		Set<String> result = super.dirInstance(context, instance);
 		result.add("context");
 		return result;
 	}
 
 	@Override
-	public Object getAttr(Object object, String key)
+	public Object getAttr(EvaluationContext context, Object object, String key)
 	{
 		switch (key)
 		{
 			case "context":
 				return getInnerException((Throwable)object);
 			default:
-				return super.getAttr(object, key);
+				return super.getAttr(context, object, key);
 		}
 	}
 }

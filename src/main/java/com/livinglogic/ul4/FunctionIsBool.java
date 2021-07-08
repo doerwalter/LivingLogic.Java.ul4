@@ -23,7 +23,7 @@ public class FunctionIsBool extends Function
 		return signature;
 	}
 
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(args.get(0));
 	}

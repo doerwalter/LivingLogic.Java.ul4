@@ -25,12 +25,12 @@ public class FunctionSum extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0), args.get(1));
+		return call(context, args.get(0), args.get(1));
 	}
 
-	public static Object call(Object iterable, Object start)
+	public static Object call(EvaluationContext context, Object iterable, Object start)
 	{
 		Iterator iter = Utils.iterator(iterable);
 
@@ -38,7 +38,7 @@ public class FunctionSum extends Function
 
 		for (;iter.hasNext();)
 		{
-			sum = AddAST.call(sum, iter.next());
+			sum = AddAST.call(context, sum, iter.next());
 		}
 		return sum;
 	}

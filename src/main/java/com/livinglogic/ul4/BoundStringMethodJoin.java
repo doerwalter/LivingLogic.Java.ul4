@@ -52,7 +52,7 @@ public class BoundStringMethodJoin extends BoundMethod<String>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(object, args.get(0));
 	}

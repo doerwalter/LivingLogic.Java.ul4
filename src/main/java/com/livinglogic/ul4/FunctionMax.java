@@ -12,7 +12,7 @@ import java.util.Iterator;
 import static java.util.Arrays.asList;
 
 
-public class FunctionMax extends FunctionWithContext
+public class FunctionMax extends Function
 {
 	@Override
 	public String getNameUL4()
@@ -55,7 +55,7 @@ public class FunctionMax extends FunctionWithContext
 		{
 			Object testValue = iter.next();
 			Object testKey = key != null ? CallAST.call(context, key, asList(testValue), null) : testValue;
-			if (first || GTAST.call(testKey, maxKey))
+			if (first || GTAST.call(context, testKey, maxKey))
 			{
 				maxValue = testValue;
 				maxKey = testKey;
@@ -72,5 +72,5 @@ public class FunctionMax extends FunctionWithContext
 		return maxValue;
 	}
 
-	public static final FunctionWithContext function = new FunctionMax();
+	public static final Function function = new FunctionMax();
 }

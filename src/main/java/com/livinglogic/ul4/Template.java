@@ -69,7 +69,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		}
 
 		@Override
-		public Template create(BoundArguments args)
+		public Template create(EvaluationContext context, BoundArguments args)
 		{
 			Object source = args.get(0);
 			Object name = args.get(1);
@@ -1753,7 +1753,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		}
 	}
 
-	private static class BoundMethodRenderS extends BoundMethodWithContext<Template>
+	private static class BoundMethodRenderS extends BoundMethod<Template>
 	{
 		public BoundMethodRenderS(Template object)
 		{
@@ -1781,7 +1781,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		}
 	}
 
-	private static class BoundMethodRender extends BoundMethodWithContext<Template>
+	private static class BoundMethodRender extends BoundMethod<Template>
 	{
 		public BoundMethodRender(Template object)
 		{
@@ -1811,13 +1811,13 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "signature", "doc", "source", "parenttemplate", "renders", "render");
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
@@ -1836,7 +1836,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			case "render":
 				return new BoundMethodRender(this);
 			default:
-				return super.getAttrUL4(key);
+				return super.getAttrUL4(context, key);
 		}
 	}
 }

@@ -21,14 +21,14 @@ public class BoundLocalDateTimeMethodMinute extends BoundMethod<LocalDateTime>
 		return "minute";
 	}
 
-	public static int call(LocalDateTime obj)
+	public static int call(EvaluationContext context, LocalDateTime obj)
 	{
 		return obj.getMinute();
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object);
+		return call(context, object);
 	}
 }

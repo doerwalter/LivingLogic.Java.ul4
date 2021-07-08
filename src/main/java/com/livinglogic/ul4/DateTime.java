@@ -41,7 +41,7 @@ public class DateTime extends AbstractType
 	}
 
 	@Override
-	public Object create(BoundArguments arguments)
+	public Object create(EvaluationContext context, BoundArguments arguments)
 	{
 		int year = Utils.toInt(arguments.get(0));
 		int month = Utils.toInt(arguments.get(1));
@@ -81,7 +81,7 @@ public class DateTime extends AbstractType
 	}
 
 	@Override
-	public boolean boolInstance(Object instance)
+	public boolean boolInstance(EvaluationContext context, Object instance)
 	{
 		return true;
 	}
@@ -97,7 +97,7 @@ public class DateTime extends AbstractType
 	private static DateTimeFormatter formatterLocalDateTime3 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS", Locale.US);
 
 	@Override
-	public String strInstance(Object instance)
+	public String strInstance(EvaluationContext context, Object instance)
 	{
 		if (instance instanceof LocalDateTime)
 		{
@@ -132,21 +132,21 @@ public class DateTime extends AbstractType
 	protected static Set<String> attributes = makeSet("year", "month", "day", "hour", "minute", "second", "microsecond", "date", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat");
 
 	@Override
-	public Set<String> dirInstance(Object instance)
+	public Set<String> dirInstance(EvaluationContext context, Object instance)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttr(Object object, String key)
+	public Object getAttr(EvaluationContext context, Object object, String key)
 	{
 		if (object instanceof LocalDateTime)
-			return getAttr((LocalDateTime)object, key);
+			return getAttr(context, (LocalDateTime)object, key);
 		else
-			return getAttr((Date)object, key);
+			return getAttr(context, (Date)object, key);
 	}
 
-	public Object getAttr(LocalDateTime object, String key)
+	public Object getAttr(EvaluationContext context, LocalDateTime object, String key)
 	{
 		switch (key)
 		{
@@ -179,11 +179,11 @@ public class DateTime extends AbstractType
 			case "mimeformat":
 				return new BoundLocalDateTimeMethodMIMEFormat(object);
 			default:
-				return super.getAttr(object, key);
+				return super.getAttr(context, object, key);
 		}
 	}
 
-	public Object getAttr(Date object, String key)
+	public Object getAttr(EvaluationContext context, Date object, String key)
 	{
 		switch (key)
 		{
@@ -216,7 +216,7 @@ public class DateTime extends AbstractType
 			case "mimeformat":
 				return new BoundDateMethodMIMEFormat(object);
 			default:
-				return super.getAttr(object, key);
+				return super.getAttr(context, object, key);
 		}
 	}
 

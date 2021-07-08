@@ -7,28 +7,19 @@
 package com.livinglogic.ul4;
 
 /**
-Interface that can be implemented to return the length of an object.
-
-/**
 <p>Implementing the {@code UL4Len} interface allows to query an object for its
 length.</p>
 
-<p>For containers (like lists, set and maps, and even strings) this is supposed
-to the number of items in the container.</p>
-
-<p>Like all interfaces that make aspects of objects accessible to UL4 there are
-two versions of each method: One that gets passed the {@link EvaluationContext}
-and one that doesn't. Passing the {@link EvaluationContext} makes it possible
-to implement functionality that is dependent on e.g. the currently defined
-local variables etc. The default implementations of the context dependent
-method version simply forward the call to the non-context-dependent version.</p>
+<p>For containers (like lists, sets and maps, and even strings) this is supposed
+to be the number of items in the container.</p>
 **/
 public interface UL4Len
 {
-	default int lenUL4(EvaluationContext context)
-	{
-		return lenUL4();
-	}
+	/**
+	<p>Return the length of this object to UL4.</p>
 
-	int lenUL4();
+	@param context The evaluation context.
+	@return the length of this object.
+	**/
+	int lenUL4(EvaluationContext context);
 }

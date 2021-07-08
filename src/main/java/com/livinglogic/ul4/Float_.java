@@ -34,11 +34,11 @@ public class Float_ extends AbstractType
 	}
 
 	@Override
-	public Object create(BoundArguments arguments)
+	public Object create(EvaluationContext context, BoundArguments arguments)
 	{
 		Object object = arguments.get(0);
 		UL4Type type = UL4Type.getType(object);
-		return type.floatInstance(object);
+		return type.floatInstance(context, object);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class Float_ extends AbstractType
 	}
 
 	@Override
-	public boolean boolInstance(Object instance)
+	public boolean boolInstance(EvaluationContext context, Object instance)
 	{
 		if (instance instanceof BigDecimal)
 			return ((BigDecimal)instance).signum() != 0;
@@ -59,7 +59,7 @@ public class Float_ extends AbstractType
 	}
 
 	@Override
-	public Number intInstance(Object instance)
+	public Number intInstance(EvaluationContext context, Object instance)
 	{
 		if (instance instanceof BigDecimal)
 			return ((BigDecimal)instance).toBigInteger();
@@ -68,13 +68,13 @@ public class Float_ extends AbstractType
 	}
 
 	@Override
-	public Number floatInstance(Object instance)
+	public Number floatInstance(EvaluationContext context, Object instance)
 	{
 		return (Number)instance;
 	}
 
 	@Override
-	public String strInstance(Object instance)
+	public String strInstance(EvaluationContext context, Object instance)
 	{
 		if (instance instanceof BigDecimal)
 		{

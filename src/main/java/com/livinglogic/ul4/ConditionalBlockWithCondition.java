@@ -26,7 +26,7 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 
 	public boolean hasToBeExecuted(EvaluationContext context)
 	{
-		return Bool.call(condition.decoratedEvaluate(context));
+		return Bool.call(context, condition.decoratedEvaluate(context));
 	}
 
 	public void toString(Formatter formatter)
@@ -60,20 +60,21 @@ abstract class ConditionalBlockWithCondition extends ConditionalBlock
 
 	protected static Set<String> attributes = makeExtendedSet(ConditionalBlock.attributes, "condition");
 
-	public Set<String> getAttributeNamesUL4()
+	@Override
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
 			case "condition":
 				return condition;
 			default:
-				return super.getAttrUL4(key);
+				return super.getAttrUL4(context, key);
 		}
 	}
 }

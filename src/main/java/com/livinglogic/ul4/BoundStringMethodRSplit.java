@@ -32,12 +32,12 @@ public class BoundStringMethodRSplit extends BoundMethod<String>
 		return signature;
 	}
 
-	public static List<String> call(String object)
+	public static List<String> call(EvaluationContext context, String object)
 	{
 		return Utils.array2List(StringUtils.split(object));
 	}
 
-	public static List<String> call(String object, int maxsplit)
+	public static List<String> call(EvaluationContext context, String object, int maxsplit)
 	{
 		ArrayList<String> result = new ArrayList<String>();
 		int start, end;
@@ -64,16 +64,16 @@ public class BoundStringMethodRSplit extends BoundMethod<String>
 		return result;
 	}
 
-	public static List<String> call(String object, Object separator)
+	public static List<String> call(EvaluationContext context, String object, Object separator)
 	{
 		if (separator == null)
-			return call(object);
+			return call(context, object);
 		else if (separator instanceof String)
-			return call(object, (String)separator, 0x7fffffff);
+			return call(context, object, (String)separator, 0x7fffffff);
 		throw new ArgumentTypeMismatchException("{!t}.rsplit({!t}) not supported", object, separator);
 	}
 
-	public static List<String> call(String object, String separator, int maxsplit)
+	public static List<String> call(EvaluationContext context, String object, String separator, int maxsplit)
 	{
 		if (separator.length() == 0)
 			throw new UnsupportedOperationException("empty separator not supported");
@@ -93,7 +93,7 @@ public class BoundStringMethodRSplit extends BoundMethod<String>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		Object separator = args.get(0);
 		Object maxsplit = args.get(1);
@@ -101,16 +101,16 @@ public class BoundStringMethodRSplit extends BoundMethod<String>
 		if (maxsplit == null)
 		{
 			if (separator == null)
-				return call(object);
+				return call(context, object);
 			else if (separator instanceof String)
-				return call(object, (String)separator);
+				return call(context, object, (String)separator);
 		}
 		else
 		{
 			if (separator == null)
-				return call(object, Utils.toInt(maxsplit));
+				return call(context, object, Utils.toInt(maxsplit));
 			else if (separator instanceof String)
-				return call(object, (String)separator, Utils.toInt(maxsplit));
+				return call(context, object, (String)separator, Utils.toInt(maxsplit));
 		}
 		throw new ArgumentTypeMismatchException("{!t}.rsplit({!t}, {!t}) not supported", object, separator, maxsplit);
 	}

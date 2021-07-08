@@ -24,14 +24,14 @@ public class BoundLocalDateTimeMethodHour extends BoundMethod<LocalDateTime>
 		return "hour";
 	}
 
-	public static int call(LocalDateTime obj)
+	public static int call(EvaluationContext context, LocalDateTime obj)
 	{
 		return obj.getHour();
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object);
+		return call(context, object);
 	}
 }

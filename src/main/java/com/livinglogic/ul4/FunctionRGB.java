@@ -23,7 +23,7 @@ public class FunctionRGB extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(args.get(0), args.get(1), args.get(2), args.get(3));
 	}

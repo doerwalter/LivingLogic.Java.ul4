@@ -81,20 +81,21 @@ public abstract class UnaryAST extends CodeAST
 
 	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "obj");
 
-	public Set<String> getAttributeNamesUL4()
+	@Override
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
 			case "obj":
 				return obj;
 			default:
-				return super.getAttrUL4(key);
+				return super.getAttrUL4(context, key);
 		}
 	}
 }

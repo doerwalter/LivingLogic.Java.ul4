@@ -32,21 +32,21 @@ public class Bool extends AbstractType
 	}
 
 	@Override
-	public Object create(BoundArguments arguments)
+	public Object create(EvaluationContext context, BoundArguments arguments)
 	{
 		Object object = arguments.get(0);
 		UL4Type type = UL4Type.getType(object);
-		return type.boolInstance(object);
+		return type.boolInstance(context, object);
 	}
 
-	public static boolean call()
+	public static boolean call(EvaluationContext context)
 	{
 		return false;
 	}
 
-	public static boolean call(Object obj)
+	public static boolean call(EvaluationContext context, Object obj)
 	{
-		return UL4Type.getType(obj).boolInstance(obj);
+		return UL4Type.getType(obj).boolInstance(context, obj);
 	}
 
 	@Override
@@ -56,25 +56,25 @@ public class Bool extends AbstractType
 	}
 
 	@Override
-	public boolean boolInstance(Object instance)
+	public boolean boolInstance(EvaluationContext context, Object instance)
 	{
 		return ((Boolean)instance).booleanValue();
 	}
 
 	@Override
-	public Number intInstance(Object instance)
+	public Number intInstance(EvaluationContext context, Object instance)
 	{
 		return ((Boolean)instance).booleanValue() ? NumberUtils.INTEGER_ONE : NumberUtils.INTEGER_ZERO;
 	}
 
 	@Override
-	public Number floatInstance(Object instance)
+	public Number floatInstance(EvaluationContext context, Object instance)
 	{
 		return ((Boolean)instance).booleanValue() ? NumberUtils.DOUBLE_ONE : NumberUtils.DOUBLE_ZERO;
 	}
 
 	@Override
-	public String strInstance(Object instance)
+	public String strInstance(EvaluationContext context, Object instance)
 	{
 		return ((Boolean)instance).booleanValue() ? "True" : "False";
 	}

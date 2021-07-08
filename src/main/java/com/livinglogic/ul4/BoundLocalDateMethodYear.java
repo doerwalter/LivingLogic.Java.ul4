@@ -25,14 +25,14 @@ public class BoundLocalDateMethodYear extends BoundMethod<LocalDate>
 		return "year";
 	}
 
-	public static int call(LocalDate obj)
+	public static int call(EvaluationContext context, LocalDate obj)
 	{
 		return obj.getYear();
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object);
+		return call(context, object);
 	}
 }

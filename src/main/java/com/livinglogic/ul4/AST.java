@@ -672,13 +672,13 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	protected static Set<String> attributes = makeSet("type", "template", "pos", "startpos", "startline", "startcol", "fullsource", "startsource", "source", "sourceprefix", "sourcesuffix", "startsourceprefix", "startsourcesuffix");
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
@@ -714,7 +714,7 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 	}
 
 	@Override
-	public void setAttrUL4(String key, Object value)
+	public void setAttrUL4(EvaluationContext context, String key, Object value)
 	{
 		throw new ReadonlyException(this, key);
 	}

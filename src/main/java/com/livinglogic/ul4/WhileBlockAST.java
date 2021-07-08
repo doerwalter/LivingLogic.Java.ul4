@@ -113,20 +113,21 @@ public class WhileBlockAST extends BlockAST
 
 	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "condition");
 
-	public Set<String> getAttributeNamesUL4()
+	@Override
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
 			case "condition":
 				return condition;
 			default:
-				return super.getAttrUL4(key);
+				return super.getAttrUL4(context, key);
 		}
 	}
 
@@ -135,7 +136,7 @@ public class WhileBlockAST extends BlockAST
 		for (;;)
 		{
 			Object condition = this.condition.decoratedEvaluate(context);
-			if (!Bool.call(condition))
+			if (!Bool.call(context, condition))
 				break;
 
 			try

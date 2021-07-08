@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Stack;
 
+import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.UL4Repr;
 import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.UL4Dir;
@@ -70,7 +71,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 		}
 
 		@Override
-		public Object create(BoundArguments arguments)
+		public Object create(EvaluationContext context, BoundArguments arguments)
 		{
 			return new Decoder();
 		}
@@ -967,13 +968,13 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 	protected static Set<String> attributes = makeSet("loads");
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
@@ -1006,7 +1007,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 		}
 
 		@Override
-		public Object evaluate(BoundArguments arguments)
+		public Object evaluate(EvaluationContext context, BoundArguments arguments)
 		{
 			Object arg = arguments.get(0);
 
@@ -1030,7 +1031,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 		}
 
 		@Override
-		public Object evaluate(BoundArguments arguments)
+		public Object evaluate(EvaluationContext context, BoundArguments arguments)
 		{
 			object.reset();
 			return null;

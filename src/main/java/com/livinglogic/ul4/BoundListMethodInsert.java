@@ -30,7 +30,7 @@ public class BoundListMethodInsert extends BoundMethod<List>
 		return signature;
 	}
 
-	public static void call(List object, int pos, List<Object> items)
+	public static void call(EvaluationContext context, List object, int pos, List<Object> items)
 	{
 		if (pos < 0)
 			pos += object.size();
@@ -38,9 +38,9 @@ public class BoundListMethodInsert extends BoundMethod<List>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		call(object, Utils.toInt(args.get(0)), (List<Object>)args.get(1));
+		call(context, object, Utils.toInt(args.get(0)), (List<Object>)args.get(1));
 		return null;
 	}
 }

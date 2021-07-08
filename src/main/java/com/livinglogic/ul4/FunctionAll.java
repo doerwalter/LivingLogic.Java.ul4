@@ -28,12 +28,12 @@ public class FunctionAll extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0));
+		return call(context, args.get(0));
 	}
 
-	public static boolean call(String obj)
+	public static boolean call(EvaluationContext context, String obj)
 	{
 		for (int i = 0; i < obj.length(); ++i)
 		{
@@ -43,49 +43,49 @@ public class FunctionAll extends Function
 		return true;
 	}
 
-	public static boolean call(List obj)
+	public static boolean call(EvaluationContext context, List obj)
 	{
 		for (int i = 0; i < obj.size(); ++i)
 		{
-			if (!Bool.call(obj.get(i)))
+			if (!Bool.call(context, obj.get(i)))
 				return false;
 		}
 		return true;
 	}
 
-	public static boolean call(Collection obj)
+	public static boolean call(EvaluationContext context, Collection obj)
 	{
-		return call(obj.iterator());
+		return call(context, obj.iterator());
 	}
 
-	public static boolean call(Iterator obj)
+	public static boolean call(EvaluationContext context, Iterator obj)
 	{
 		while (obj.hasNext())
 		{
-			if (!Bool.call(obj.next()))
+			if (!Bool.call(context, obj.next()))
 				return false;
 		}
 		return true;
 	}
 
-	public static boolean call(Map obj)
+	public static boolean call(EvaluationContext context, Map obj)
 	{
 
-		return call(obj.keySet().iterator());
+		return call(context, obj.keySet().iterator());
 	}
 
-	public static boolean call(Object obj)
+	public static boolean call(EvaluationContext context, Object obj)
 	{
 		if (obj instanceof String)
-			return call((String)obj);
+			return call(context, (String)obj);
 		else if (obj instanceof List)
-			return call((List)obj);
+			return call(context, (List)obj);
 		else if (obj instanceof Collection)
-			return call((Collection)obj);
+			return call(context, (Collection)obj);
 		else if (obj instanceof Iterator)
-			return call((Iterator)obj);
+			return call(context, (Iterator)obj);
 		else if (obj instanceof Map)
-			return call((Map)obj);
+			return call(context, (Map)obj);
 		throw new ArgumentTypeMismatchException("all({!t}) not supported", obj);
 	}
 

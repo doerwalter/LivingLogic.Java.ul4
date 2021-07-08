@@ -33,7 +33,7 @@ public class BoundDateMethodDay extends BoundMethod<Date>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(object);
 	}

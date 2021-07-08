@@ -29,12 +29,12 @@ public class FunctionCeil extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0), args.get(1));
+		return call(context, args.get(0), args.get(1));
 	}
 
-	public static Object call(int x, int digits)
+	public static Object call(EvaluationContext context, int x, int digits)
 	{
 		if (digits >= 0)
 			return x;
@@ -53,13 +53,13 @@ public class FunctionCeil extends Function
 			}
 			catch (ArithmeticException ex)
 			{
-				return call((long)orgX, digits);
+				return call(context, (long)orgX, digits);
 			}
 			return x;
 		}
 	}
 
-	public static Object call(long x, int digits)
+	public static Object call(EvaluationContext context, long x, int digits)
 	{
 		if (digits >= 0)
 			return x;
@@ -78,13 +78,13 @@ public class FunctionCeil extends Function
 			}
 			catch (ArithmeticException ex)
 			{
-				return call(Utils.toBigInteger(orgX), digits);
+				return call(context, Utils.toBigInteger(orgX), digits);
 			}
 			return x;
 		}
 	}
 
-	public static Object call(double x, int digits)
+	public static Object call(EvaluationContext context, double x, int digits)
 	{
 		if (digits == 0)
 		{
@@ -121,7 +121,7 @@ public class FunctionCeil extends Function
 		}
 	}
 
-	public static BigInteger call(BigInteger x, int digits)
+	public static BigInteger call(EvaluationContext context, BigInteger x, int digits)
 	{
 		if (digits >= 0)
 			return x;
@@ -131,10 +131,10 @@ public class FunctionCeil extends Function
 		return x.divide(offset).multiply(offset);
 	}
 
-	public static Object call(BigDecimal x, int digits)
+	public static Object call(EvaluationContext context, BigDecimal x, int digits)
 	{
 		if (digits <= 0)
-			return call(x.toBigInteger(), digits);
+			return call(context, x.toBigInteger(), digits);
 		if (digits != 0)
 			x = x.movePointRight(digits);
 		if (x.signum() > 0)
@@ -142,24 +142,24 @@ public class FunctionCeil extends Function
 		return new BigDecimal(x.toBigInteger().toString()).movePointLeft(digits);
 	}
 
-	public static Object call(Object x, int digits)
+	public static Object call(EvaluationContext context, Object x, int digits)
 	{
 		if (x instanceof Byte || x instanceof Short || x instanceof Integer)
-			return call(((Number)x).intValue(), digits);
+			return call(context, ((Number)x).intValue(), digits);
 		else if (x instanceof Long)
-			return call(((Number)x).longValue(), digits);
+			return call(context, ((Number)x).longValue(), digits);
 		else if (x instanceof Float || x instanceof Double)
-			return call(((Number)x).doubleValue(), digits);
+			return call(context, ((Number)x).doubleValue(), digits);
 		else if (x instanceof BigInteger)
-			return call((BigInteger)x, digits);
+			return call(context, (BigInteger)x, digits);
 		else if (x instanceof BigDecimal)
-			return call((BigDecimal)x, digits);
+			return call(context, (BigDecimal)x, digits);
 		throw new ArgumentTypeMismatchException("ceil({!t}, {!t}) not supported", x, digits);
 	}
 
-	public static Object call(Object x, Object digits)
+	public static Object call(EvaluationContext context, Object x, Object digits)
 	{
-		return call(x, Utils.toInt(digits));
+		return call(context, x, Utils.toInt(digits));
 	}
 
 	public static final Function function = new FunctionCeil();

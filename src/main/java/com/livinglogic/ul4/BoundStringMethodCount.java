@@ -30,17 +30,17 @@ public class BoundStringMethodCount extends BoundMethod<String>
 		return signature;
 	}
 
-	public static int call(String object, String sub)
+	public static int call(EvaluationContext context, String object, String sub)
 	{
-		return call(object, sub, 0, object.length());
+		return call(context, object, sub, 0, object.length());
 	}
 
-	public static int call(String object, String sub, int start)
+	public static int call(EvaluationContext context, String object, String sub, int start)
 	{
-		return call(object, sub, start, object.length());
+		return call(context, object, sub, start, object.length());
 	}
 
-	public static int call(String object, String sub, int start, int end)
+	public static int call(EvaluationContext context, String object, String sub, int start, int end)
 	{
 		int length = object.length();
 		if (start < 0)
@@ -78,13 +78,13 @@ public class BoundStringMethodCount extends BoundMethod<String>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		if (args.get(0) instanceof String)
 		{
 			int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
 			int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : object.length();
-			return call(object, (String)args.get(0), startIndex, endIndex);
+			return call(context, object, (String)args.get(0), startIndex, endIndex);
 		}
 		throw new ArgumentTypeMismatchException("{!t}.count({!t}, {!t}, {!t}) not supported", object, args.get(0), args.get(1), args.get(2));
 	}

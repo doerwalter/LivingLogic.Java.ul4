@@ -27,7 +27,7 @@ public class FunctionRange extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		Object start = args.get(0);
 		Object stop = args.get(1);
@@ -128,5 +128,5 @@ public class FunctionRange extends Function
 		}
 	}
 
-	public static Function function = new FunctionRange();
+	public static FunctionRange function = new FunctionRange();
 }

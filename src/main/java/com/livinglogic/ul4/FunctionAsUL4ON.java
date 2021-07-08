@@ -22,7 +22,7 @@ public class FunctionAsUL4ON extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments arguments)
+	public Object evaluate(EvaluationContext context, BoundArguments arguments)
 	{
 		Object obj = arguments.get(0);
 		Object indent = arguments.get(1);
@@ -30,15 +30,15 @@ public class FunctionAsUL4ON extends Function
 		if (indent != null && !(indent instanceof String))
 			throw new ArgumentTypeMismatchException("dumps({!t}, {!t}) not supported", obj, indent);
 
-		return call(obj, (String)indent);
+		return call(context, obj, (String)indent);
 	}
 
-	public static String call(Object obj)
+	public static String call(EvaluationContext context, Object obj)
 	{
 		return com.livinglogic.ul4on.Utils.dumps(obj);
 	}
 
-	public static String call(Object obj, String indent)
+	public static String call(EvaluationContext context, Object obj, String indent)
 	{
 		return com.livinglogic.ul4on.Utils.dumps(obj, indent);
 	}

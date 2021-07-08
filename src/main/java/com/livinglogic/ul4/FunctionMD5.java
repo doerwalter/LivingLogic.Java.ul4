@@ -27,7 +27,7 @@ public class FunctionMD5 extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		Object arg0 = args.get(0);
 

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
+import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.UL4Repr;
 import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.UL4Dir;
@@ -84,7 +85,7 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 		}
 
 		@Override
-		public Object create(BoundArguments arguments)
+		public Object create(EvaluationContext context, BoundArguments arguments)
 		{
 			Object indent = arguments.get(0);
 
@@ -323,7 +324,16 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 			{
 				record(obj);
 				Date date = (Date)obj;
-				line("Z", BoundDateMethodYear.call(date), BoundDateMethodMonth.call(date), BoundDateMethodDay.call(date), BoundDateMethodHour.call(date), BoundDateMethodMinute.call(date), BoundDateMethodSecond.call(date), BoundDateMethodMicrosecond.call(date));
+				line(
+					"Z",
+					BoundDateMethodYear.call(date),
+					BoundDateMethodMonth.call(date),
+					BoundDateMethodDay.call(date),
+					BoundDateMethodHour.call(date),
+					BoundDateMethodMinute.call(date),
+					BoundDateMethodSecond.call(date),
+					BoundDateMethodMicrosecond.call(date)
+				);
 			}
 			else if (obj instanceof LocalDate)
 			{
@@ -440,13 +450,13 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 	protected static Set<String> attributes = makeSet("dumps");
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
@@ -479,7 +489,7 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 		}
 
 		@Override
-		public Object evaluate(BoundArguments arguments)
+		public Object evaluate(EvaluationContext context, BoundArguments arguments)
 		{
 			return object.dumps(arguments.get(0));
 		}

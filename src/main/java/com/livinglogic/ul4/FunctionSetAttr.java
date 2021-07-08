@@ -14,7 +14,7 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class FunctionSetAttr extends FunctionWithContext
+public class FunctionSetAttr extends Function
 {
 	@Override
 	public String getNameUL4()
@@ -37,18 +37,6 @@ public class FunctionSetAttr extends FunctionWithContext
 		return null;
 	}
 
-	public static void call(Object obj, String attrname, Object value)
-	{
-		UL4Type.getType(obj).setAttr(obj, attrname, value);
-	}
-
-	public static void call(Object obj, Object attrname, Object value)
-	{
-		if (!(attrname instanceof String))
-			throw new ArgumentTypeMismatchException("setattr({!t}, {!t}, {!t}) not supported", obj, attrname, value);
-		call(obj, (String)attrname, value);
-	}
-
 	public static void call(EvaluationContext context, Object obj, String attrname, Object value)
 	{
 		UL4Type.getType(obj).setAttr(context, obj, attrname, value);
@@ -61,5 +49,5 @@ public class FunctionSetAttr extends FunctionWithContext
 		call(context, obj, (String)attrname, value);
 	}
 
-	public static FunctionWithContext function = new FunctionSetAttr();
+	public static FunctionSetAttr function = new FunctionSetAttr();
 }

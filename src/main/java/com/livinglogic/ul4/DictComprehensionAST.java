@@ -97,7 +97,7 @@ public class DictComprehensionAST extends CodeAST
 				for (Utils.LValueValue lvv : Utils.unpackVariable(varname, iter.next()))
 					lvv.getLValue().evaluateSet(context, lvv.getValue());
 
-				if (condition == null || Bool.call(condition.decoratedEvaluate(context)))
+				if (condition == null || Bool.call(context, condition.decoratedEvaluate(context)))
 				{
 					Object key = this.key.decoratedEvaluate(context);
 					Object value = this.value.decoratedEvaluate(context);

@@ -25,14 +25,14 @@ public class BoundLocalDateMethodISOFormat extends BoundMethod<LocalDate>
 
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US);
 
-	public static String call(LocalDate object)
+	public static String call(EvaluationContext context, LocalDate object)
 	{
 		return object.format(formatter);
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object);
+		return call(context, object);
 	}
 }

@@ -32,12 +32,12 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 		return signature;
 	}
 
-	public static String call(String object, String search, String replace)
+	public static String call(EvaluationContext context, String object, String search, String replace)
 	{
 		return object.replace(search, replace);
 	}
 
-	public static String call(String object, String search, String replace, int count)
+	public static String call(EvaluationContext context, String object, String search, String replace, int count)
 	{
 		if (count == -1)
 			return object.replace(search, replace);
@@ -45,7 +45,7 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		Object oldObj = args.get(0);
 		Object newObj = args.get(1);
@@ -54,6 +54,6 @@ public class BoundStringMethodReplace extends BoundMethod<String>
 		if (!(oldObj instanceof String) || !(newObj instanceof String))
 			throw new ArgumentTypeMismatchException("{!t}.replace({!t}, {!t}) not supported", object, oldObj, newObj);
 
-		return call(object, (String)oldObj, (String)newObj, countObj != null ? Utils.toInt(countObj) : -1);
+		return call(context, object, (String)oldObj, (String)newObj, countObj != null ? Utils.toInt(countObj) : -1);
 	}
 }

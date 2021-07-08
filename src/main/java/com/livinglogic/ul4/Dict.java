@@ -37,14 +37,14 @@ public class Dict extends AbstractType
 	}
 
 	@Override
-	public Object create(BoundArguments arguments)
+	public Object create(EvaluationContext context, BoundArguments arguments)
 	{
 		List<Object> args = (List<Object>)arguments.get(0);
 		Map<String, Object> kwargs = (Map<String, Object>)arguments.get(1);
 		
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 
-		BoundDictMethodUpdate.call(result, args, kwargs);
+		BoundDictMethodUpdate.call(context, result, args, kwargs);
 		return result;
 	}
 
@@ -55,13 +55,13 @@ public class Dict extends AbstractType
 	}
 
 	@Override
-	public boolean boolInstance(Object instance)
+	public boolean boolInstance(EvaluationContext context, Object instance)
 	{
 		return !((Map)instance).isEmpty();
 	}
 
 	@Override
-	public int lenInstance(Object instance)
+	public int lenInstance(EvaluationContext context, Object instance)
 	{
 		return ((Map)instance).size();
 	}
@@ -69,14 +69,18 @@ public class Dict extends AbstractType
 	protected static Set<String> attributes = makeSet("items", "values", "get", "update", "clear");
 
 	@Override
-	public Set<String> dirInstance(Object instance)
+	public Set<String> dirInstance(EvaluationContext context, Object instance)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttr(Object object, String key)
+	public Object getAttr(EvaluationContext context, Object object, String key)
 	{
+		// If {@code object} implements {@link UL4GetAttr} prefer that
+		if (object instanceof UL4GetAttr)
+			return ((UL4GetAttr)object).getAttrUL4(context, key);
+
 		Map map = (Map)object;
 
 		switch (key)
@@ -97,15 +101,19 @@ public class Dict extends AbstractType
 				Object result = map.get(key);
 
 				if ((result == null) && !map.containsKey(key))
-					return super.getAttr(object, key);
+					return super.getAttr(context, map, key);
 				return result;
 		}
 	}
 
 	@Override
-	public void setAttr(Object object, String key, Object value)
+	public void setAttr(EvaluationContext context, Object object, String key, Object value)
 	{
-		((Map)object).put(key, value);
+		// If {@code object} implements {@link UL4SetAttr} prefer that
+		if (object instanceof UL4SetAttr)
+			((UL4SetAttr)object).setAttrUL4(context, key, value);
+		else
+			((Map)object).put(key, value);
 	}
 
 	public static final UL4Type type = new Dict();

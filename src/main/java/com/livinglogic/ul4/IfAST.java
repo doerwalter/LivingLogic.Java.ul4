@@ -75,41 +75,20 @@ public class IfAST extends CodeAST
 		return "if";
 	}
 
-	public static CodeAST make(Template template, Slice pos, CodeAST objIf, CodeAST objCond, CodeAST objElse)
-	{
-		if (objCond instanceof ConstAST)
-		{
-			Object cond = ((ConstAST)objCond).value;
-
-			if (!(cond instanceof Undefined))
-			{
-				try
-				{
-					return Bool.call(cond) ? objIf : objElse;
-				}
-				catch (Exception ex)
-				{
-					// fall through to create a real {@code IfAST} object
-				}
-			}
-		}
-		return new IfAST(template, pos, objIf, objCond, objElse);
-	}
-
 	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		Object objCondEv = objCond.decoratedEvaluate(context);
-		if (Bool.call(objCondEv))
+		if (Bool.call(context, objCondEv))
 			return objIf.decoratedEvaluate(context);
 		else
 			return objElse.decoratedEvaluate(context);
 	}
 
-	// this static version is only used for constant folding, not in evaluate(), because that would require that we evaluate both branches
-	public static Object call(Object argIf, Object argCond, Object argElse)
+	// this static version can not be used in evaluate(), because that would require that we evaluate both branches
+	public static Object call(EvaluationContext context, Object argIf, Object argCond, Object argElse)
 	{
-		return Bool.call(argCond) ? argIf : argElse;
+		return Bool.call(context, argCond) ? argIf : argElse;
 	}
 
 	@Override
@@ -132,13 +111,14 @@ public class IfAST extends CodeAST
 
 	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "objif", "objcond", "objelse");
 
-	public Set<String> getAttributeNamesUL4()
+	@Override
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
@@ -149,7 +129,7 @@ public class IfAST extends CodeAST
 			case "objelse":
 				return objElse;
 			default:
-				return super.getAttrUL4(key);
+				return super.getAttrUL4(context, key);
 		}
 	}
 }

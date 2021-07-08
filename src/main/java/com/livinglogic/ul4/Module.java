@@ -77,7 +77,7 @@ public class Module implements UL4Instance, UL4Repr, UL4GetAttr, UL4Dir, UL4Name
 	}
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		Set<String> attributes = new LinkedHashSet<String>();
 		attributes.add("__name__");
@@ -88,7 +88,7 @@ public class Module implements UL4Instance, UL4Repr, UL4GetAttr, UL4Dir, UL4Name
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{

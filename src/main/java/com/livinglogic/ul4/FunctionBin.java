@@ -27,12 +27,12 @@ public class FunctionBin extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0));
+		return call(context, args.get(0));
 	}
 
-	public static Object call(Object obj)
+	public static Object call(EvaluationContext context, Object obj)
 	{
 		if (obj instanceof Integer || obj instanceof Byte || obj instanceof Short)
 		{

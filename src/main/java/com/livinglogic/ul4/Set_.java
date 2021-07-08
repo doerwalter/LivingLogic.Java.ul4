@@ -46,12 +46,12 @@ public class Set_ extends AbstractType
 	}
 
 	@Override
-	public Object create(BoundArguments args)
+	public Object create(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0));
+		return call(context, args.get(0));
 	}
 
-	public static Set call(String obj)
+	public static Set call(EvaluationContext context, String obj)
 	{
 		int length = obj.length();
 		Set result = new HashSet(length);
@@ -62,27 +62,27 @@ public class Set_ extends AbstractType
 		return result;
 	}
 
-	public static Set call(Collection obj)
+	public static Set call(EvaluationContext context, Collection obj)
 	{
 		return new HashSet(obj);
 	}
 
-	public static Set call(Object[] obj)
+	public static Set call(EvaluationContext context, Object[] obj)
 	{
 		return new HashSet(asList(obj));
 	}
 
-	public static Set call(Map obj)
+	public static Set call(EvaluationContext context, Map obj)
 	{
 		return obj.keySet();
 	}
 
-	public static Set call(Iterable obj)
+	public static Set call(EvaluationContext context, Iterable obj)
 	{
-		return call(obj.iterator());
+		return call(context, obj.iterator());
 	}
 
-	public static Set call(Iterator obj)
+	public static Set call(EvaluationContext context, Iterator obj)
 	{
 		Set result = new HashSet();
 		while (obj.hasNext())
@@ -90,31 +90,31 @@ public class Set_ extends AbstractType
 		return result;
 	}
 
-	public static Set call(Object obj)
+	public static Set call(EvaluationContext context, Object obj)
 	{
 		if (obj instanceof String)
-			return call((String)obj);
+			return call(context, (String)obj);
 		else if (obj instanceof Collection)
-			return call((Collection)obj);
+			return call(context, (Collection)obj);
 		else if (obj instanceof Object[])
-			return call((Object[])obj);
+			return call(context, (Object[])obj);
 		else if (obj instanceof Map)
-			return call((Map)obj);
+			return call(context, (Map)obj);
 		else if (obj instanceof Iterable)
-			return call((Iterable)obj);
+			return call(context, (Iterable)obj);
 		else if (obj instanceof Iterator)
-			return call((Iterator)obj);
+			return call(context, (Iterator)obj);
 		throw new ArgumentTypeMismatchException("set({!t}) not supported", obj);
 	}
 
 	@Override
-	public boolean boolInstance(Object instance)
+	public boolean boolInstance(EvaluationContext context, Object instance)
 	{
 		return !((Set)instance).isEmpty();
 	}
 
 	@Override
-	public int lenInstance(Object instance)
+	public int lenInstance(EvaluationContext context, Object instance)
 	{
 		return ((Set)instance).size();
 	}
@@ -122,13 +122,13 @@ public class Set_ extends AbstractType
 	protected static Set<String> attributes = makeSet("add", "clear");
 
 	@Override
-	public Set<String> dirInstance(Object instance)
+	public Set<String> dirInstance(EvaluationContext context, Object instance)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttr(Object object, String key)
+	public Object getAttr(EvaluationContext context, Object object, String key)
 	{
 		Set set = (Set)object;
 
@@ -139,7 +139,7 @@ public class Set_ extends AbstractType
 			case "clear":
 				return new BoundSetMethodClear(set);
 			default:
-				return super.getAttr(object, key);
+				return super.getAttr(context, object, key);
 		}
 	}
 

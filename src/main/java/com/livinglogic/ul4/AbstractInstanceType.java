@@ -12,43 +12,43 @@ import java.util.Set;
 public abstract class AbstractInstanceType extends AbstractType
 {
 	@Override
-	public boolean boolInstance(Object instance)
+	public boolean boolInstance(EvaluationContext context, Object instance)
 	{
-		return ((UL4Instance)instance).boolUL4();
+		return ((UL4Instance)instance).boolUL4(context);
 	}
 
 	@Override
-	public Number intInstance(Object instance)
+	public Number intInstance(EvaluationContext context, Object instance)
 	{
-		return ((UL4Instance)instance).intUL4();
+		return ((UL4Instance)instance).intUL4(context);
 	}
 
 	@Override
-	public Number floatInstance(Object instance)
+	public Number floatInstance(EvaluationContext context, Object instance)
 	{
-		return ((UL4Instance)instance).floatUL4();
+		return ((UL4Instance)instance).floatUL4(context);
 	}
 
-	public String strInstance(Object object)
+	public String strInstance(EvaluationContext context, Object object)
 	{
-		return ((UL4Instance)object).strUL4();
-	}
-
-	@Override
-	public Set<String> dirInstance(Object instance)
-	{
-		return ((UL4Instance)instance).dirUL4();
+		return ((UL4Instance)object).strUL4(context);
 	}
 
 	@Override
-	public Object getAttr(Object object, String key)
+	public Set<String> dirInstance(EvaluationContext context, Object instance)
 	{
-		return ((UL4Instance)object).getAttrUL4(key);
+		return ((UL4Instance)instance).dirUL4(context);
 	}
 
 	@Override
-	public void setAttr(Object object, String key, Object value)
+	public Object getAttr(EvaluationContext context, Object object, String key)
 	{
-		((UL4Instance)object).setAttrUL4(key, value);
+		return ((UL4Instance)object).getAttrUL4(context, key);
+	}
+
+	@Override
+	public void setAttr(EvaluationContext context, Object object, String key, Object value)
+	{
+		((UL4Instance)object).setAttrUL4(context, key, value);
 	}
 }

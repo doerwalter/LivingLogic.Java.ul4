@@ -33,32 +33,32 @@ public class Int extends AbstractType
 	}
 
 	@Override
-	public Object create(BoundArguments arguments)
+	public Object create(EvaluationContext context, BoundArguments arguments)
 	{
 		Object object = arguments.get(0);
 		Object base = arguments.get(1);
 		if (base == null)
-			return call(object);
+			return call(context, object);
 		else if (object instanceof String && Int.type.instanceCheck(base))
-			return call((String)object, (Number)base);
+			return call(context, (String)object, (Number)base);
 		else
 			throw new ArgumentTypeMismatchException("int({!t}, {!t}) not supported", object, base);
 	}
 
-	public static Number call(Object object)
+	public static Number call(EvaluationContext context, Object object)
 	{
 		UL4Type type = UL4Type.getType(object);
-		return type.intInstance(object);
+		return type.intInstance(context, object);
 	}
 
-	public static Number call(String object, int base)
+	public static Number call(EvaluationContext context, String object, int base)
 	{
 		return Integer.valueOf((String)object, base);
 	}
 
-	public static Number call(String object, Number base)
+	public static Number call(EvaluationContext context, String object, Number base)
 	{
-		return call(object, base.intValue());
+		return call(context, object, base.intValue());
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class Int extends AbstractType
 	}
 
 	@Override
-	public boolean boolInstance(Object instance)
+	public boolean boolInstance(EvaluationContext context, Object instance)
 	{
 		if (instance instanceof BigInteger)
 			return !((BigInteger)instance).equals(BigInteger.ZERO);
@@ -79,13 +79,13 @@ public class Int extends AbstractType
 	}
 
 	@Override
-	public Number intInstance(Object instance)
+	public Number intInstance(EvaluationContext context, Object instance)
 	{
 		return (Number)instance;
 	}
 
 	@Override
-	public Number floatInstance(Object instance)
+	public Number floatInstance(EvaluationContext context, Object instance)
 	{
 		if (instance instanceof BigInteger)
 			return new BigDecimal(((BigInteger)instance).toString());
@@ -96,7 +96,7 @@ public class Int extends AbstractType
 	}
 
 	@Override
-	public String strInstance(Object instance)
+	public String strInstance(EvaluationContext context, Object instance)
 	{
 		return instance.toString();
 	}

@@ -25,9 +25,9 @@ public class FunctionXMLEscape extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0));
+		return call(context, args.get(0));
 	}
 
 	public static String call(String str)
@@ -77,9 +77,14 @@ public class FunctionXMLEscape extends Function
 		return sb.toString();
 	}
 
-	public static String call(Object obj)
+	public static String call(EvaluationContext context, String str)
 	{
-		return call(Str.call(obj));
+		return call(str);
+	}
+
+	public static String call(EvaluationContext context, Object obj)
+	{
+		return call(context, Str.call(context, obj));
 	}
 
 	public static final Function function = new FunctionXMLEscape();

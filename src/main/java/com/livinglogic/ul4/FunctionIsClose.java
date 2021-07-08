@@ -24,7 +24,7 @@ public class FunctionIsClose extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments arguments)
+	public Object evaluate(EvaluationContext context, BoundArguments arguments)
 	{
 		Object arg1 = arguments.get(0);
 		Object arg2 = arguments.get(1);

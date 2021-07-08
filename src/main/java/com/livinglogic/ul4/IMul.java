@@ -11,7 +11,7 @@ import java.math.BigInteger;
 
 public class IMul
 {
-	public static List call(List arg1, int arg2)
+	public static List call(EvaluationContext context, List arg1, int arg2)
 	{
 		int size = arg1.size();
 		int targetsize = size * arg2;
@@ -22,17 +22,17 @@ public class IMul
 		return arg1;
 	}
 
-	public static Object call(Object arg1, Object arg2)
+	public static Object call(EvaluationContext context, Object arg1, Object arg2)
 	{
 		if (arg1 instanceof List)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return call((List)arg1, Utils.toInt(arg2));
+				return call(context, (List)arg1, Utils.toInt(arg2));
 			else if (arg2 instanceof Long)
-				return call((List)arg1, Utils.narrowLongToInt(((Long)arg2).longValue()));
+				return call(context, (List)arg1, Utils.narrowLongToInt(((Long)arg2).longValue()));
 			else if (arg2 instanceof BigInteger)
-				return call((List)arg1, Utils.narrowBigIntegerToInt((BigInteger)arg2));
+				return call(context, (List)arg1, Utils.narrowBigIntegerToInt((BigInteger)arg2));
 		}
-		return MulAST.call(arg1, arg2);
+		return MulAST.call(context, arg1, arg2);
 	}
 }

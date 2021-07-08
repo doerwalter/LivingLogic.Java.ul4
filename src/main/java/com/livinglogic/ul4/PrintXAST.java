@@ -73,7 +73,7 @@ public class PrintXAST extends UnaryAST
 
 	public Object evaluate(EvaluationContext context)
 	{
-		context.write(FunctionXMLEscape.call(obj.decoratedEvaluate(context)));
+		context.write(FunctionXMLEscape.call(context, obj.decoratedEvaluate(context)));
 		return null;
 	}
 }

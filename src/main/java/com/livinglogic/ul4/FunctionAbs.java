@@ -27,12 +27,12 @@ public class FunctionAbs extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0));
+		return call(context, args.get(0));
 	}
 
-	public static Object call(Object arg)
+	public static Object call(EvaluationContext context, Object arg)
 	{
 		if (arg instanceof Integer)
 		{
@@ -85,7 +85,7 @@ public class FunctionAbs extends Function
 		else if (arg instanceof BigDecimal)
 			return ((BigDecimal)arg).abs();
 		else if (arg instanceof UL4Abs)
-			return ((UL4Abs)arg).absUL4();
+			return ((UL4Abs)arg).absUL4(context);
 		throw new ArgumentTypeMismatchException("abs({!t}) not supported", arg);
 	}
 

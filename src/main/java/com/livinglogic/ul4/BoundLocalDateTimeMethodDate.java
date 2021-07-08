@@ -22,14 +22,14 @@ public class BoundLocalDateTimeMethodDate extends BoundMethod<LocalDateTime>
 		return "date";
 	}
 
-	public static LocalDate call(LocalDateTime obj)
+	public static LocalDate call(EvaluationContext context, LocalDateTime obj)
 	{
 		return obj.toLocalDate();
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object);
+		return call(context, object);
 	}
 }

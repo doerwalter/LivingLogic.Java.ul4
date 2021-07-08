@@ -30,9 +30,9 @@ public class BoundStringMethodSplitlines extends BoundMethod<String>
 		return signature;
 	}
 
-	public static List<String> call(String object)
+	public static List<String> call(EvaluationContext context, String object)
 	{
-		return call(object, false);
+		return call(context, object, false);
 	}
 
 	private static int lookingAtLineEnd(String object, int pos)
@@ -52,7 +52,7 @@ public class BoundStringMethodSplitlines extends BoundMethod<String>
 		return 0;
 	}
 
-	public static List<String> call(String object, boolean keepEnds)
+	public static List<String> call(EvaluationContext context, String object, boolean keepEnds)
 	{
 		List<String> result = new ArrayList<String>();
 		int length = object.length();
@@ -79,9 +79,9 @@ public class BoundStringMethodSplitlines extends BoundMethod<String>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		Object keepEnds = args.get(0);
-		return call(object, Bool.call(keepEnds));
+		return call(context, object, Bool.call(context, keepEnds));
 	}
 }

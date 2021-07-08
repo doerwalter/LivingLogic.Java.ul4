@@ -33,7 +33,7 @@ public class BoundDictMethodPop extends BoundMethod<Map>
 		return signature;
 	}
 
-	public static Object call(Map object, Object key)
+	public static Object call(EvaluationContext context, Map object, Object key)
 	{
 		Object value = object.get(key);
 		if (value == null && !object.containsKey(key))
@@ -42,7 +42,7 @@ public class BoundDictMethodPop extends BoundMethod<Map>
 		return value;
 	}
 
-	public static Object call(Map object, Object key, Object defaultValue)
+	public static Object call(EvaluationContext context, Map object, Object key, Object defaultValue)
 	{
 		Object value = object.get(key);
 		if (value == null && !object.containsKey(key))
@@ -52,11 +52,11 @@ public class BoundDictMethodPop extends BoundMethod<Map>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		if (args.get(1) == Signature.noValue)
-			return call(object, args.get(0));
+			return call(context, object, args.get(0));
 		else
-			return call(object, args.get(0), args.get(1));
+			return call(context, object, args.get(0), args.get(1));
 	}
 }

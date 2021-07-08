@@ -27,7 +27,7 @@ public class FunctionZip extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call((List<Object>)args.get(0));
 	}

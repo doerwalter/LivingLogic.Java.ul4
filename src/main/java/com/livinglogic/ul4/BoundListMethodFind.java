@@ -30,12 +30,12 @@ public class BoundListMethodFind extends BoundMethod<List>
 		return signature;
 	}
 
-	public static int call(List object, Object sub)
+	public static int call(EvaluationContext context, List object, Object sub)
 	{
 		return object.indexOf(sub);
 	}
 
-	public static int call(List object, Object sub, int start)
+	public static int call(EvaluationContext context, List object, Object sub, int start)
 	{
 		start = Utils.getSliceStartPos(object.size(), start);
 		if (start != 0)
@@ -46,7 +46,7 @@ public class BoundListMethodFind extends BoundMethod<List>
 		return pos;
 	}
 
-	public static int call(List object, Object sub, int start, int end)
+	public static int call(EvaluationContext context, List object, Object sub, int start, int end)
 	{
 		start = Utils.getSliceStartPos(object.size(), start);
 		end = Utils.getSliceEndPos(object.size(), end);
@@ -59,11 +59,11 @@ public class BoundListMethodFind extends BoundMethod<List>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
 		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : object.size();
 
-		return call(object, args.get(0), startIndex, endIndex);
+		return call(context, object, args.get(0), startIndex, endIndex);
 	}
 }

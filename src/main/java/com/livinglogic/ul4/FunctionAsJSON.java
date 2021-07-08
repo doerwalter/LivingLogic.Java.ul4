@@ -37,12 +37,12 @@ public class FunctionAsJSON extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0));
+		return call(context, args.get(0));
 	}
 
-	private static void call(StringBuilder builder, Object obj)
+	private static void call(EvaluationContext context, StringBuilder builder, Object obj)
 	{
 		if (obj == null)
 			builder.append("null");
@@ -171,17 +171,17 @@ public class FunctionAsJSON extends Function
 		{
 			builder.append("{");
 			boolean first = true;
-			Set<String> attributeNames = ((UL4Dir)obj).dirUL4();
+			Set<String> attributeNames = ((UL4Dir)obj).dirUL4(context);
 			for (String attributeName : attributeNames)
 			{
 				if (first)
 					first = false;
 				else
 					builder.append(", ");
-				call(builder, attributeName);
+				call(context, builder, attributeName);
 				builder.append(": ");
-				Object value = ((UL4GetAttr)obj).getAttrUL4(attributeName);
-				call(builder, value);
+				Object value = ((UL4GetAttr)obj).getAttrUL4(context, attributeName);
+				call(context, builder, value);
 			}
 			builder.append("}");
 		}
@@ -195,7 +195,7 @@ public class FunctionAsJSON extends Function
 					first = false;
 				else
 					builder.append(", ");
-				call(builder, o);
+				call(context, builder, o);
 			}
 			builder.append("]");
 		}
@@ -209,7 +209,7 @@ public class FunctionAsJSON extends Function
 					first = false;
 				else
 					builder.append(", ");
-				call(builder, o);
+				call(context, builder, o);
 			}
 			builder.append("]");
 		}
@@ -224,9 +224,9 @@ public class FunctionAsJSON extends Function
 					first = false;
 				else
 					builder.append(", ");
-				call(builder, entry.getKey());
+				call(context, builder, entry.getKey());
 				builder.append(": ");
-				call(builder, entry.getValue());
+				call(context, builder, entry.getValue());
 			}
 			builder.append("}");
 		}
@@ -234,10 +234,10 @@ public class FunctionAsJSON extends Function
 			throw new NotJSONableException(obj);
 	}
 
-	public static String call(Object obj)
+	public static String call(EvaluationContext context, Object obj)
 	{
 		StringBuilder builder = new StringBuilder();
-		call(builder, obj);
+		call(context, builder, obj);
 		return builder.toString();
 	}
 

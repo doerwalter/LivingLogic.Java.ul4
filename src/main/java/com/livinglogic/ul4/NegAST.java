@@ -62,40 +62,12 @@ public class NegAST extends UnaryAST
 		return "neg";
 	}
 
-	public static CodeAST make(Template template, Slice pos, CodeAST obj)
-	{
-		if (obj instanceof ConstAST)
-		{
-			try
-			{
-				Object result = call(((ConstAST)obj).value);
-				if (!(result instanceof Undefined))
-					return new ConstAST(template, pos, result);
-			}
-			catch (Exception ex)
-			{
-				// fall through to create a real {@code NegAST} object
-			}
-		}
-		return new NegAST(template, pos, obj);
-	}
-
 	public Object evaluate(EvaluationContext context)
 	{
-		return call(obj.decoratedEvaluate(context));
+		return call(context, obj.decoratedEvaluate(context));
 	}
 
-	public static TimeDelta call(TimeDelta arg)
-	{
-		return arg.negate();
-	}
-
-	public static MonthDelta call(MonthDelta arg)
-	{
-		return arg.negate();
-	}
-
-	public static Object call(Object arg)
+	public static Object call(EvaluationContext context, Object arg)
 	{
 		if (arg instanceof Integer)
 		{
@@ -126,9 +98,9 @@ public class NegAST extends UnaryAST
 		else if (arg instanceof BigDecimal)
 			return ((BigDecimal)arg).negate();
 		else if (arg instanceof TimeDelta)
-			return call((TimeDelta)arg);
+			return ((TimeDelta)arg).negate();
 		else if (arg instanceof MonthDelta)
-			return call((MonthDelta)arg);
+			return ((MonthDelta)arg).negate();
 		throw new ArgumentTypeMismatchException("-{!t}", arg);
 	}
 }

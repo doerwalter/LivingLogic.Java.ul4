@@ -59,31 +59,13 @@ public class NotAST extends UnaryAST
 		return "not";
 	}
 
-	public static CodeAST make(Template template, Slice pos, CodeAST obj)
-	{
-		if (obj instanceof ConstAST)
-		{
-			try
-			{
-				Object result = call(((ConstAST)obj).value);
-				if (!(result instanceof Undefined))
-					return new ConstAST(template, pos, result);
-			}
-			catch (Exception ex)
-			{
-				// fall through to create a real {@code NotAST} object
-			}
-		}
-		return new NotAST(template, pos, obj);
-	}
-
 	public Object evaluate(EvaluationContext context)
 	{
-		return call(obj.decoratedEvaluate(context));
+		return call(context, obj.decoratedEvaluate(context));
 	}
 
-	public static boolean call(Object obj)
+	public static boolean call(EvaluationContext context, Object obj)
 	{
-		return !Bool.call(obj);
+		return !Bool.call(context, obj);
 	}
 }

@@ -8,5 +8,5 @@ package com.livinglogic.ul4;
 
 public interface UL4SetItem
 {
-	void setItemUL4(Object key, Object value);
+	void setItemUL4(EvaluationContext context, Object key, Object value);
 }

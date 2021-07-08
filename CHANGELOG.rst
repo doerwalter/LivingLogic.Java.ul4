@@ -1,9 +1,17 @@
 HEAD (2021-??-??)
 -----------------
 
-The interface ``UL4CallWithContext`` has been merged into ``UL4Call``.
+For all interfaces and abstract classes where there's a version with and one
+without support for passing an ``EvaluationContext``, there is only one version
+now, and this version does support passing an ``EvaluationContext``. (So the
+implementation is the one from ``UL4FooWithContext``, but the name is ``UL4Foo``).
 
-Renamed interface ``UL4RenderWithContext`` to ``UL4Render``.
+This affects the following interfaces: ``UL4RenderWithContext``, ``UL4SetItem``,
+``UL4GetItem``, ``UL4Len``, ``UL4SetAttr``, ``UL4Bool``, ``UL4Dir``,
+``UL4GetAttr``, ``UL4Call``, ``UL4Abs``, ``Function``, ``FunctionWithContext``,
+``BoundMethod``, ``BoundMethodWithContext`` and ``UL4SetItemWithContext``.
+
+Support for constant folding has been dropped.
 
 
 exp-156 (2021-06-15)

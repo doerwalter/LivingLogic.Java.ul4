@@ -40,9 +40,9 @@ public class FunctionFormat extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0), args.get(1), args.get(2));
+		return call(context, args.get(0), args.get(1), args.get(2));
 	}
 
 	private static HashMap<Integer, String> weekdayFormats;
@@ -136,7 +136,7 @@ public class FunctionFormat extends Function
 		"ja", "%H\u6642%M\u5206%S\u79d2"
 	);
 
-	private static int week(Date object, int firstWeekday)
+	private static int week(EvaluationContext context, Date object, int firstWeekday)
 	{
 		int yearday = BoundDateMethodYearday.call(object)+6;
 		int jan1Weekday = BoundLocalDateMethodWeekday.call(Date_.call(BoundDateMethodYear.call(object), 1, 1));
@@ -148,7 +148,7 @@ public class FunctionFormat extends Function
 		return yearday/7;
 	}
 
-	private static int week(LocalDate object, int firstWeekday)
+	private static int week(EvaluationContext context, LocalDate object, int firstWeekday)
 	{
 		int yearday = object.getDayOfYear()+6;
 		int jan1Weekday = BoundLocalDateMethodWeekday.call(LocalDate.of(object.getYear(), 1, 1));
@@ -160,7 +160,7 @@ public class FunctionFormat extends Function
 		return yearday/7;
 	}
 
-	public static String call(Date obj, String formatString, Locale locale)
+	public static String call(EvaluationContext context, Date obj, String formatString, Locale locale)
 	{
 		if (locale == null)
 			locale = Locale.US;
@@ -193,7 +193,7 @@ public class FunctionFormat extends Function
 						String format = cFormats.get(locale.getLanguage());
 						if (format == null)
 							format = cFormats.get("en");
-						buffer.append(call(obj, format, locale));
+						buffer.append(call(context, obj, format, locale));
 						break;
 					}
 					case 'd':
@@ -224,20 +224,20 @@ public class FunctionFormat extends Function
 						buffer.append(twodigits.format(calendar.get(Calendar.SECOND)));
 						break;
 					case 'U':
-						buffer.append(twodigits.format(week(obj, 6)));
+						buffer.append(twodigits.format(week(context, obj, 6)));
 						break;
 					case 'w':
 						buffer.append(weekdayFormats.get(calendar.get(Calendar.DAY_OF_WEEK)));
 						break;
 					case 'W':
-						buffer.append(twodigits.format(week(obj, 0)));
+						buffer.append(twodigits.format(week(context, obj, 0)));
 						break;
 					case 'x':
 					{
 						String format = xFormats.get(locale.getLanguage());
 						if (format == null)
 							format = xFormats.get("en");
-						buffer.append(call(obj, format, locale));
+						buffer.append(call(context, obj, format, locale));
 						break;
 					}
 					case 'X':
@@ -245,7 +245,7 @@ public class FunctionFormat extends Function
 						String format = XFormats.get(locale.getLanguage());
 						if (format == null)
 							format = XFormats.get("en");
-						buffer.append(call(obj, format, locale));
+						buffer.append(call(context, obj, format, locale));
 						break;
 					}
 					case 'y':
@@ -274,7 +274,7 @@ public class FunctionFormat extends Function
 		return buffer.toString();
 	}
 
-	public static String call(LocalDate obj, String formatString, Locale locale)
+	public static String call(EvaluationContext context, LocalDate obj, String formatString, Locale locale)
 	{
 		if (locale == null)
 			locale = Locale.US;
@@ -305,7 +305,7 @@ public class FunctionFormat extends Function
 						String format = cFormats.get(locale.getLanguage());
 						if (format == null)
 							format = cFormats.get("en");
-						buffer.append(call(obj, format, locale));
+						buffer.append(call(context, obj, format, locale));
 						break;
 					}
 					case 'd':
@@ -336,20 +336,20 @@ public class FunctionFormat extends Function
 						buffer.append("00");
 						break;
 					case 'U':
-						buffer.append(twodigits.format(week(obj, 6)));
+						buffer.append(twodigits.format(week(context, obj, 6)));
 						break;
 					case 'w':
 						buffer.append(obj.getDayOfWeek().getValue() % 7);
 						break;
 					case 'W':
-						buffer.append(twodigits.format(week(obj, 0)));
+						buffer.append(twodigits.format(week(context, obj, 0)));
 						break;
 					case 'x':
 					{
 						String format = xFormats.get(locale.getLanguage());
 						if (format == null)
 							format = xFormats.get("en");
-						buffer.append(call(obj, format, locale));
+						buffer.append(call(context, obj, format, locale));
 						break;
 					}
 					case 'X':
@@ -357,7 +357,7 @@ public class FunctionFormat extends Function
 						String format = XFormats.get(locale.getLanguage());
 						if (format == null)
 							format = XFormats.get("en");
-						buffer.append(call(obj, format, locale));
+						buffer.append(call(context, obj, format, locale));
 						break;
 					}
 					case 'y':
@@ -386,7 +386,7 @@ public class FunctionFormat extends Function
 		return buffer.toString();
 	}
 
-	public static String call(LocalDateTime obj, String formatString, Locale locale)
+	public static String call(EvaluationContext context, LocalDateTime obj, String formatString, Locale locale)
 	{
 		if (locale == null)
 			locale = Locale.US;
@@ -417,7 +417,7 @@ public class FunctionFormat extends Function
 						String format = cFormats.get(locale.getLanguage());
 						if (format == null)
 							format = cFormats.get("en");
-						buffer.append(call(obj, format, locale));
+						buffer.append(call(context, obj, format, locale));
 						break;
 					}
 					case 'd':
@@ -448,20 +448,20 @@ public class FunctionFormat extends Function
 						buffer.append(twodigits.format(obj.getSecond()));
 						break;
 					case 'U':
-						buffer.append(twodigits.format(week(obj.toLocalDate(), 6)));
+						buffer.append(twodigits.format(week(context, obj.toLocalDate(), 6)));
 						break;
 					case 'w':
 						buffer.append(obj.getDayOfWeek().getValue() % 7);
 						break;
 					case 'W':
-						buffer.append(twodigits.format(week(obj.toLocalDate(), 0)));
+						buffer.append(twodigits.format(week(context, obj.toLocalDate(), 0)));
 						break;
 					case 'x':
 					{
 						String format = xFormats.get(locale.getLanguage());
 						if (format == null)
 							format = xFormats.get("en");
-						buffer.append(call(obj, format, locale));
+						buffer.append(call(context, obj, format, locale));
 						break;
 					}
 					case 'X':
@@ -469,7 +469,7 @@ public class FunctionFormat extends Function
 						String format = XFormats.get(locale.getLanguage());
 						if (format == null)
 							format = XFormats.get("en");
-						buffer.append(call(obj, format, locale));
+						buffer.append(call(context, obj, format, locale));
 						break;
 					}
 					case 'y':
@@ -636,7 +636,7 @@ public class FunctionFormat extends Function
 		}
 	}
 
-	public static String call(BigInteger obj, String formatString, Locale locale)
+	public static String call(EvaluationContext context, BigInteger obj, String formatString, Locale locale)
 	{
 		IntegerFormat format = new IntegerFormat(formatString);
 
@@ -679,7 +679,7 @@ public class FunctionFormat extends Function
 		return formatIntegerString(output, neg, format);
 	}
 
-	public static String call(long obj, String formatString, Locale locale)
+	public static String call(EvaluationContext context, long obj, String formatString, Locale locale)
 	{
 		IntegerFormat format = new IntegerFormat(formatString);
 
@@ -722,27 +722,27 @@ public class FunctionFormat extends Function
 		return formatIntegerString(output, neg, format);
 	}
 
-	public static String call(Object obj, String formatString, Locale locale)
+	public static String call(EvaluationContext context, Object obj, String formatString, Locale locale)
 	{
 		if (obj instanceof Date)
-			return call((Date)obj, formatString, locale);
+			return call(context, (Date)obj, formatString, locale);
 		else if (obj instanceof LocalDate)
-			return call((LocalDate)obj, formatString, locale);
+			return call(context, (LocalDate)obj, formatString, locale);
 		else if (obj instanceof LocalDateTime)
-			return call((LocalDateTime)obj, formatString, locale);
+			return call(context, (LocalDateTime)obj, formatString, locale);
 		else if (obj instanceof Integer || obj instanceof Long || obj instanceof Byte || obj instanceof Short || obj instanceof Boolean)
-			return call(Utils.toLong(obj), formatString, locale);
+			return call(context, Utils.toLong(obj), formatString, locale);
 		else if (obj instanceof BigInteger)
-			return call((BigInteger)obj, formatString, locale);
+			return call(context, (BigInteger)obj, formatString, locale);
 		throw new ArgumentTypeMismatchException("format({!t}, {!t}, {!t}) not supported", obj, formatString, locale);
 	}
 
-	public static String call(Object obj, Object formatString, Object lang)
+	public static String call(EvaluationContext context, Object obj, Object formatString, Object lang)
 	{
 		if (formatString instanceof String)
 		{
 			if (lang == null)
-				return call(obj, (String)formatString, null);
+				return call(context, obj, (String)formatString, null);
 			else if (lang instanceof String)
 			{
 				Locale locale;
@@ -751,20 +751,20 @@ public class FunctionFormat extends Function
 					locale = new Locale(((String)lang).substring(0, seppos), ((String)lang).substring(seppos+1));
 				else
 					locale = new Locale((String)lang);
-				return call(obj, (String)formatString, locale);
+				return call(context, obj, (String)formatString, locale);
 			}
 		}
 		throw new ArgumentTypeMismatchException("format({!t}, {!t}, {!t}) not supported", obj, formatString, lang);
 	}
 
-	public static String call(Object obj, String formatString)
+	public static String call(EvaluationContext context, Object obj, String formatString)
 	{
-		return call(obj, formatString, null);
+		return call(context, obj, formatString, null);
 	}
 
-	public static String call(Object obj, Object formatString)
+	public static String call(EvaluationContext context, Object obj, Object formatString)
 	{
-		return call(obj, formatString, null);
+		return call(context, obj, formatString, null);
 	}
 
 	public static final Function function = new FunctionFormat();

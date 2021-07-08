@@ -28,7 +28,7 @@ public class BoundDictMethodClear extends BoundMethod<Map>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		call(object);
 		return null;

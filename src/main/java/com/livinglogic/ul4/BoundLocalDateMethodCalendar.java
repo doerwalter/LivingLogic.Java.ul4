@@ -30,7 +30,7 @@ public class BoundLocalDateMethodCalendar extends BoundMethod<LocalDate>
 		return signature;
 	}
 
-	public static Date_.Calendar call(LocalDate object, int firstWeekday, int minDaysInFirstWeek)
+	public static Date_.Calendar call(EvaluationContext context, LocalDate object, int firstWeekday, int minDaysInFirstWeek)
 	{
 		// Normalize parameters
 		firstWeekday %= 7;
@@ -47,7 +47,7 @@ public class BoundLocalDateMethodCalendar extends BoundMethod<LocalDate>
 			// {@code refDate} will always be in week 1
 			LocalDate refDate = LocalDate.of(refYear, 1, minDaysInFirstWeek);
 			// Go back to the start of {@code refDate}s week (i.e. day 1 of week 1)
-			LocalDate weekStartDate = refDate.minusDays(ModAST.call(refDate.getDayOfWeek().getValue() - 1 - firstWeekday, 7));
+			LocalDate weekStartDate = refDate.minusDays(ModAST.call(context, refDate.getDayOfWeek().getValue() - 1 - firstWeekday, 7));
 			// Is our date {@code object} at or after day 1 of week 1?
 			// (if not we have to calculate its week number based on the year before)
 			if (!object.isBefore(weekStartDate))
@@ -62,10 +62,10 @@ public class BoundLocalDateMethodCalendar extends BoundMethod<LocalDate>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		int firstWeekday = Utils.toInt(args.get(0));
 		int minDaysInFirstWeek = Utils.toInt(args.get(1));
-		return call(object, firstWeekday, minDaysInFirstWeek).asList();
+		return call(context, object, firstWeekday, minDaysInFirstWeek).asList();
 	}
 }

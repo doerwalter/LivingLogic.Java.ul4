@@ -11,6 +11,7 @@ import java.sql.Types;
 import java.sql.Clob;
 import java.sql.SQLException;
 
+import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.Function;
@@ -81,7 +82,7 @@ public class CLOBVar extends Var
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return new CLOBVar(args.get(0));
 		}

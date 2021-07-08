@@ -71,7 +71,7 @@ public class PrintAST extends UnaryAST
 
 	public Object evaluate(EvaluationContext context)
 	{
-		context.write(Str.call(obj.decoratedEvaluate(context)));
+		context.write(Str.call(context, obj.decoratedEvaluate(context)));
 		return null;
 	}
 }

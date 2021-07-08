@@ -49,13 +49,13 @@ public abstract class AbstractType implements UL4Type, UL4GetAttr, UL4Dir
 	protected static Set<String> attributes = makeSet("__module__", "__name__", "__doc__");
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{

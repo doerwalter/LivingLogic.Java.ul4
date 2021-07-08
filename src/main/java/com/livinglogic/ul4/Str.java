@@ -35,15 +35,15 @@ public class Str extends AbstractType
 	}
 
 	@Override
-	public Object create(BoundArguments arguments)
+	public Object create(EvaluationContext context, BoundArguments arguments)
 	{
-		return call(arguments.get(0));
+		return call(context, arguments.get(0));
 	}
 
-	public static String call(Object object)
+	public static String call(EvaluationContext context, Object object)
 	{
 		UL4Type type = UL4Type.getType(object);
-		return type.strInstance(object);
+		return type.strInstance(context, object);
 	}
 
 	@Override
@@ -53,13 +53,13 @@ public class Str extends AbstractType
 	}
 
 	@Override
-	public boolean boolInstance(Object instance)
+	public boolean boolInstance(EvaluationContext context, Object instance)
 	{
 		return !((String)instance).isEmpty();
 	}
 
 	@Override
-	public Number intInstance(Object instance)
+	public Number intInstance(EvaluationContext context, Object instance)
 	{
 		try
 		{
@@ -79,19 +79,19 @@ public class Str extends AbstractType
 	}
 
 	@Override
-	public Number floatInstance(Object instance)
+	public Number floatInstance(EvaluationContext context, Object instance)
 	{
 		return Double.valueOf((String)instance);
 	}
 
 	@Override
-	public int lenInstance(Object instance)
+	public int lenInstance(EvaluationContext context, Object instance)
 	{
 		return ((String)instance).length();
 	}
 
 	@Override
-	public String strInstance(Object instance)
+	public String strInstance(EvaluationContext context, Object instance)
 	{
 		return (String)instance;
 	}
@@ -116,13 +116,13 @@ public class Str extends AbstractType
 	);
 
 	@Override
-	public Set<String> dirInstance(Object instance)
+	public Set<String> dirInstance(EvaluationContext context, Object instance)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttr(Object object, String key)
+	public Object getAttr(EvaluationContext context, Object object, String key)
 	{
 		String string = (String)object;
 
@@ -161,7 +161,7 @@ public class Str extends AbstractType
 			case "join":
 				return new BoundStringMethodJoin(string);
 			default:
-				return super.getAttr(object, key);
+				return super.getAttr(context, object, key);
 		}
 	}
 

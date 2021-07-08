@@ -12,6 +12,7 @@ import java.sql.CallableStatement;
 import java.sql.Types;
 import java.sql.SQLException;
 
+import com.livinglogic.ul4.EvaluationContext;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.Function;
@@ -71,7 +72,7 @@ public class IntVar extends Var
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return new IntVar(args.get(0));
 		}

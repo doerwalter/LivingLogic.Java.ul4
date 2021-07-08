@@ -36,7 +36,7 @@ public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 		@Override
 		public boolean instanceCheck(Object object)
 		{
-			return object instanceof Function || object instanceof FunctionWithContext;
+			return object instanceof Function;
 		}
 	}
 
@@ -80,13 +80,14 @@ public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 		return signature;
 	}
 
-	public Object callUL4(List<Object> args, Map<String, Object> kwargs)
+	@Override
+	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
 		// We can clean up here, as the function implementation shouldn't be a "closure",
 		// i.e. it should not return the variables map or anything that needs the map
 		try (BoundArguments arguments = new BoundArguments(getSignature(), this, args, kwargs))
 		{
-			return evaluate(arguments);
+			return evaluate(context, arguments);
 		}
 	}
 
@@ -96,7 +97,7 @@ public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 	@param args The arguments for the call.
 	@return The result of the function call.
 	**/
-	public abstract Object evaluate(BoundArguments args);
+	public abstract Object evaluate(EvaluationContext context, BoundArguments args);
 
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{

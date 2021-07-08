@@ -30,17 +30,17 @@ public class BoundListMethodCount extends BoundMethod<List>
 		return signature;
 	}
 
-	public static int call(List object, Object sub)
+	public static int call(EvaluationContext context, List object, Object sub)
 	{
-		return call(object, sub, 0, object.size());
+		return call(context, object, sub, 0, object.size());
 	}
 
-	public static int call(List object, Object sub, int start)
+	public static int call(EvaluationContext context, List object, Object sub, int start)
 	{
-		return call(object, sub, start, object.size());
+		return call(context, object, sub, start, object.size());
 	}
 
-	public static int call(List object, Object sub, int start, int end)
+	public static int call(EvaluationContext context, List object, Object sub, int start, int end)
 	{
 		start = Utils.getSliceStartPos(object.size(), start);
 		end = Utils.getSliceEndPos(object.size(), end);
@@ -48,18 +48,18 @@ public class BoundListMethodCount extends BoundMethod<List>
 		int count = 0;
 		for (int i = start; i < end; ++i)
 		{
-			if (EQAST.call(object.get(i), sub))
+			if (EQAST.call(context, object.get(i), sub))
 				++count;
 		}
 		return count;
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
 		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : object.size();
 
-		return call(object, args.get(0), startIndex, endIndex);
+		return call(context, object, args.get(0), startIndex, endIndex);
 	}
 }

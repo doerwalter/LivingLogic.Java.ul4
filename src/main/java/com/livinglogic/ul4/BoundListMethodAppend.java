@@ -30,15 +30,15 @@ public class BoundListMethodAppend extends BoundMethod<List>
 		return signature;
 	}
 
-	public static void call(List object, List<Object> items)
+	public static void call(EvaluationContext context, List object, List<Object> items)
 	{
 		object.addAll(items);
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		call(object, (List<Object>)args.get(0));
+		call(context, object, (List<Object>)args.get(0));
 		return null;
 	}
 }

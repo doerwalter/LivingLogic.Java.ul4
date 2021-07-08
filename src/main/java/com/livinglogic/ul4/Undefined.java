@@ -37,13 +37,13 @@ public abstract class Undefined implements UL4Instance, UL4Bool, UL4Repr
 		return type;
 	}
 
-	public boolean boolUL4()
+	public boolean boolUL4(EvaluationContext context)
 	{
 		return false;
 	}
 
 	@Override
-	public String strUL4()
+	public String strUL4(EvaluationContext context)
 	{
 		return "";
 	}

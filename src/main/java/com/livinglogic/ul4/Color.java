@@ -59,7 +59,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Color create(BoundArguments args)
+		public Color create(EvaluationContext context, BoundArguments args)
 		{
 			int r = Utils.toInt(args.get(0));
 			int g = Utils.toInt(args.get(1));
@@ -965,13 +965,13 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 	}
 
 	@Override
-	public int lenUL4()
+	public int lenUL4(EvaluationContext context)
 	{
 		return 4;
 	}
 
 	@Override
-	public Object getItemUL4(Object key)
+	public Object getItemUL4(EvaluationContext context, Object key)
 	{
 		if (key instanceof Boolean)
 			return (int)(((Boolean)key).booleanValue() ? g : r);
@@ -1028,7 +1028,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return (int)object.r;
 		}
@@ -1048,7 +1048,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return (int)object.g;
 		}
@@ -1068,7 +1068,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return (int)object.b;
 		}
@@ -1088,7 +1088,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return (int)object.a;
 		}
@@ -1108,7 +1108,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.hue();
 		}
@@ -1128,7 +1128,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.light();
 		}
@@ -1148,7 +1148,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.sat();
 		}
@@ -1168,7 +1168,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.lum();
 		}
@@ -1188,7 +1188,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.hls();
 		}
@@ -1208,7 +1208,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.hlsa();
 		}
@@ -1228,7 +1228,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.hsv();
 		}
@@ -1248,7 +1248,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.hsva();
 		}
@@ -1276,7 +1276,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.witha(Utils.toInt(args.get(0)));
 		}
@@ -1304,7 +1304,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.withlight(Utils.toDouble(args.get(0)));
 		}
@@ -1332,7 +1332,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.abslight(Utils.toDouble(args.get(0)));
 		}
@@ -1360,7 +1360,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.rellight(Utils.toDouble(args.get(0)));
 		}
@@ -1388,7 +1388,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.withlum(Utils.toDouble(args.get(0)));
 		}
@@ -1416,7 +1416,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.abslum(Utils.toDouble(args.get(0)));
 		}
@@ -1444,7 +1444,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.rellum(Utils.toDouble(args.get(0)));
 		}
@@ -1472,7 +1472,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.invert(Utils.toDouble(args.get(0)));
 		}
@@ -1500,7 +1500,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			int r = args.get(0) != null ? Utils.toInt(args.get(0)) : object.r;
 			int g = args.get(1) != null ? Utils.toInt(args.get(1)) : object.g;
@@ -1514,13 +1514,13 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "hue", "light", "sat", "lum", "hls", "hlsa", "hsv", "hsva", "invert", "combine", "witha", "withlight", "abslight", "rellight", "withlum", "abslum", "rellum");
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{

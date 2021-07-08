@@ -30,7 +30,6 @@ import com.livinglogic.ul4.ArgumentException;
 import com.livinglogic.ul4.Utils;
 import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.UL4Dir;
-import com.livinglogic.ul4.BoundMethodWithContext;
 import com.livinglogic.ul4.BoundMethod;
 import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.utils.CloseableRegistry;
@@ -288,7 +287,7 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		return record;
 	}
 
-	private static class BoundMethodQueryArgs extends BoundMethodWithContext<Connection>
+	private static class BoundMethodQueryArgs extends BoundMethod<Connection>
 	{
 		public BoundMethodQueryArgs(Connection object)
 		{
@@ -318,7 +317,7 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		}
 	}
 
-	private static class BoundMethodQuery extends BoundMethodWithContext<Connection>
+	private static class BoundMethodQuery extends BoundMethod<Connection>
 	{
 		public BoundMethodQuery(Connection object)
 		{
@@ -368,13 +367,13 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return object.queryone((List)args.get(0));
 		}
 	}
 
-	private static class BoundMethodExecute extends BoundMethodWithContext<Connection>
+	private static class BoundMethodExecute extends BoundMethod<Connection>
 	{
 		public BoundMethodExecute(Connection object)
 		{
@@ -406,13 +405,13 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 	protected static Set<String> attributes = makeSet("queryargs", "query", "queryone", "execute", "int", "number", "str", "clob", "date");
 
 	@Override
-	public Set<String> dirUL4()
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{

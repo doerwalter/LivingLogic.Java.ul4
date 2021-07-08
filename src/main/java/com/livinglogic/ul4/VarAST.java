@@ -82,57 +82,57 @@ public class VarAST extends CodeAST implements LValue
 
 	public void evaluateAdd(EvaluationContext context, Object value)
 	{
-		context.set(name, AddAST.call(context.get(name), value));
+		context.set(name, AddAST.call(context, context.get(name), value));
 	}
 
 	public void evaluateSub(EvaluationContext context, Object value)
 	{
-		context.set(name, SubAST.call(context.get(name), value));
+		context.set(name, SubAST.call(context, context.get(name), value));
 	}
 
 	public void evaluateMul(EvaluationContext context, Object value)
 	{
-		context.set(name, MulAST.call(context.get(name), value));
+		context.set(name, MulAST.call(context, context.get(name), value));
 	}
 
 	public void evaluateFloorDiv(EvaluationContext context, Object value)
 	{
-		context.set(name, FloorDivAST.call(context.get(name), value));
+		context.set(name, FloorDivAST.call(context, context.get(name), value));
 	}
 
 	public void evaluateTrueDiv(EvaluationContext context, Object value)
 	{
-		context.set(name, TrueDivAST.call(context.get(name), value));
+		context.set(name, TrueDivAST.call(context, context.get(name), value));
 	}
 
 	public void evaluateMod(EvaluationContext context, Object value)
 	{
-		context.set(name, ModAST.call(context.get(name), value));
+		context.set(name, ModAST.call(context, context.get(name), value));
 	}
 
 	public void evaluateShiftLeft(EvaluationContext context, Object value)
 	{
-		context.set(name, ShiftLeftAST.call(context.get(name), value));
+		context.set(name, ShiftLeftAST.call(context, context.get(name), value));
 	}
 
 	public void evaluateShiftRight(EvaluationContext context, Object value)
 	{
-		context.set(name, ShiftRightAST.call(context.get(name), value));
+		context.set(name, ShiftRightAST.call(context, context.get(name), value));
 	}
 
 	public void evaluateBitAnd(EvaluationContext context, Object value)
 	{
-		context.set(name, BitAndAST.call(context.get(name), value));
+		context.set(name, BitAndAST.call(context, context.get(name), value));
 	}
 
 	public void evaluateBitXOr(EvaluationContext context, Object value)
 	{
-		context.set(name, BitXOrAST.call(context.get(name), value));
+		context.set(name, BitXOrAST.call(context, context.get(name), value));
 	}
 
 	public void evaluateBitOr(EvaluationContext context, Object value)
 	{
-		context.set(name, BitOrAST.call(context.get(name), value));
+		context.set(name, BitOrAST.call(context, context.get(name), value));
 	}
 
 	@Override
@@ -151,20 +151,21 @@ public class VarAST extends CodeAST implements LValue
 
 	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "name");
 
-	public Set<String> getAttributeNamesUL4()
+	@Override
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
 			case "name":
 				return name;
 			default:
-				return super.getAttrUL4(key);
+				return super.getAttrUL4(context, key);
 		}
 	}
 }

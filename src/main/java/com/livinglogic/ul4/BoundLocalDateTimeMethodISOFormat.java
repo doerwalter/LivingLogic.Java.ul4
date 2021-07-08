@@ -26,7 +26,7 @@ public class BoundLocalDateTimeMethodISOFormat extends BoundMethod<LocalDateTime
 	private static DateTimeFormatter formatter0 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
 	private static DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.US);
 
-	public static String call(LocalDateTime object)
+	public static String call(EvaluationContext context, LocalDateTime object)
 	{
 		DateTimeFormatter formatter;
 		if (object.getNano() != 0)
@@ -37,8 +37,8 @@ public class BoundLocalDateTimeMethodISOFormat extends BoundMethod<LocalDateTime
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object);
+		return call(context, object);
 	}
 }

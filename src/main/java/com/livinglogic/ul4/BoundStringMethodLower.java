@@ -22,14 +22,14 @@ public class BoundStringMethodLower extends BoundMethod<String>
 		return "lower";
 	}
 
-	public static String call(String object)
+	public static String call(EvaluationContext context, String object)
 	{
 		return object.toLowerCase();
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object);
+		return call(context, object);
 	}
 }

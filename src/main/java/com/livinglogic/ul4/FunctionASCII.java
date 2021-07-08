@@ -33,12 +33,12 @@ public class FunctionASCII extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0));
+		return call(context, args.get(0));
 	}
 
-	public static String call(Object obj)
+	public static String call(EvaluationContext context, Object obj)
 	{
 		return new UL4Repr.Formatter(true).visit(obj).toString();
 	}

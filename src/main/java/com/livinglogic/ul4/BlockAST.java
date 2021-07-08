@@ -142,13 +142,14 @@ abstract class BlockAST extends CodeAST implements BlockLike
 
 	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "stoppos", "stopline", "stopcol", "stopsource", "stopsourceprefix", "stopsourcesuffix", "content");
 
-	public Set<String> getAttributeNamesUL4()
+	@Override
+	public Set<String> dirUL4(EvaluationContext context)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttrUL4(String key)
+	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
@@ -167,7 +168,7 @@ abstract class BlockAST extends CodeAST implements BlockLike
 			case "content":
 				return content;
 			default:
-				return super.getAttrUL4(key);
+				return super.getAttrUL4(context, key);
 		}
 	}
 }

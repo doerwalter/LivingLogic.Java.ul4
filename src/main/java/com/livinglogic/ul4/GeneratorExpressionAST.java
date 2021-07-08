@@ -128,7 +128,7 @@ public class GeneratorExpressionAST extends CodeAST
 					for (Utils.LValueValue lvv : Utils.unpackVariable(varname, iterator.next()))
 						lvv.getLValue().evaluateSet(context, lvv.getValue());
 
-					if (condition == null || Bool.call(condition.decoratedEvaluate(context)))
+					if (condition == null || Bool.call(context, condition.decoratedEvaluate(context)))
 					{
 						hasNextItem = true;
 						return;

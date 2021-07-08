@@ -24,15 +24,15 @@ public class BoundDictMethodItems extends BoundMethod<Map>
 		return "items";
 	}
 
-	public static Object call(Map object)
+	public static Object call(EvaluationContext context, Map object)
 	{
 		return new MapItemIterator(object);
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object);
+		return call(context, object);
 	}
 
 	private static class MapItemIterator implements Iterator<Vector>

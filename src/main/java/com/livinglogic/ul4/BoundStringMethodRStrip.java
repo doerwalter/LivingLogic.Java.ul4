@@ -32,25 +32,25 @@ public class BoundStringMethodRStrip extends BoundMethod<String>
 		return signature;
 	}
 
-	public static String call(String object)
+	public static String call(EvaluationContext context, String object)
 	{
 		return StringUtils.stripEnd(object, null);
 	}
 
-	public static String call(String object, String chars)
+	public static String call(EvaluationContext context, String object, String chars)
 	{
 		return StringUtils.stripEnd(object, chars);
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		Object arg = args.get(0);
 
 		if (arg == null)
-			return call(object);
+			return call(context, object);
 		else if (arg instanceof String)
-			return call(object, (String)arg);
+			return call(context, object, (String)arg);
 		throw new ArgumentTypeMismatchException("{!t}.rstrip({!t}) not supported", object, arg);
 	}
 }

@@ -30,7 +30,7 @@ public class BoundListMethodPop extends BoundMethod<List>
 		return signature;
 	}
 
-	public static Object call(List obj, int pos)
+	public static Object call(EvaluationContext context, List obj, int pos)
 	{
 		if (pos < 0)
 			pos += obj.size();
@@ -38,8 +38,8 @@ public class BoundListMethodPop extends BoundMethod<List>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(object, Utils.toInt(args.get(0)));
+		return call(context, object, Utils.toInt(args.get(0)));
 	}
 }

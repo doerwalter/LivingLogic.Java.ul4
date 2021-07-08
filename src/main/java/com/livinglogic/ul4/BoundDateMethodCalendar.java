@@ -53,7 +53,7 @@ public class BoundDateMethodCalendar extends BoundMethod<Date>
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		int firstWeekday = Utils.toInt(args.get(0));
 		int minDaysInFirstWeek = Utils.toInt(args.get(1));

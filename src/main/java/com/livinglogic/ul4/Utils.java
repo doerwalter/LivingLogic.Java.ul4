@@ -1087,7 +1087,10 @@ public class Utils
 	public static String getExceptionChainAsJSON(Throwable t)
 	{
 		List<Map<String, Object>> chain = getExceptionChainAsList(t);
-		return FunctionAsJSON.call(chain);
+		try (EvaluationContext context = new EvaluationContext())
+		{
+			return FunctionAsJSON.call(context, chain);
+		}
 	}
 
 	private static void addExceptionText2Buffer(StringBuilder buffer, Throwable t)

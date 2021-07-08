@@ -48,12 +48,12 @@ public class List_ extends AbstractType
 	}
 
 	@Override
-	public Object create(BoundArguments args)
+	public Object create(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0));
+		return call(context, args.get(0));
 	}
 
-	public static ArrayList call(String obj)
+	public static ArrayList call(EvaluationContext context, String obj)
 	{
 		ArrayList result;
 		int length = obj.length();
@@ -65,27 +65,27 @@ public class List_ extends AbstractType
 		return result;
 	}
 
-	public static ArrayList call(Collection obj)
+	public static ArrayList call(EvaluationContext context, Collection obj)
 	{
 		return new ArrayList(obj);
 	}
 
-	public static ArrayList call(Object[] obj)
+	public static ArrayList call(EvaluationContext context, Object[] obj)
 	{
 		return new ArrayList(asList(obj));
 	}
 
-	public static ArrayList call(Map obj)
+	public static ArrayList call(EvaluationContext context, Map obj)
 	{
 		return new ArrayList(obj.keySet());
 	}
 
-	public static ArrayList call(Iterable obj)
+	public static ArrayList call(EvaluationContext context, Iterable obj)
 	{
-		return call(obj.iterator());
+		return call(context, obj.iterator());
 	}
 
-	public static ArrayList call(Iterator obj)
+	public static ArrayList call(EvaluationContext context, Iterator obj)
 	{
 		ArrayList retVal = new ArrayList();
 		while (obj.hasNext())
@@ -93,25 +93,25 @@ public class List_ extends AbstractType
 		return retVal;
 	}
 
-	public static ArrayList call(Object obj)
+	public static ArrayList call(EvaluationContext context, Object obj)
 	{
 		if (obj instanceof String)
-			return call((String)obj);
+			return call(context, (String)obj);
 		else if (obj instanceof Collection)
-			return call((Collection)obj);
+			return call(context, (Collection)obj);
 		else if (obj instanceof Object[])
-			return call((Object[])obj);
+			return call(context, (Object[])obj);
 		else if (obj instanceof Map)
-			return call((Map)obj);
+			return call(context, (Map)obj);
 		else if (obj instanceof Iterable)
-			return call((Iterable)obj);
+			return call(context, (Iterable)obj);
 		else if (obj instanceof Iterator)
-			return call((Iterator)obj);
+			return call(context, (Iterator)obj);
 		throw new ArgumentTypeMismatchException("list({!t}) not supported", obj);
 	}
 
 	@Override
-	public boolean boolInstance(Object instance)
+	public boolean boolInstance(EvaluationContext context, Object instance)
 	{
 		if (instance instanceof List)
 			return !((List)instance).isEmpty();
@@ -120,7 +120,7 @@ public class List_ extends AbstractType
 	}
 
 	@Override
-	public int lenInstance(Object instance)
+	public int lenInstance(EvaluationContext context, Object instance)
 	{
 		if (instance instanceof List)
 			return ((List)instance).size();
@@ -131,42 +131,21 @@ public class List_ extends AbstractType
 	protected static Set<String> attributes = makeSet("append", "insert", "pop", "count", "find", "rfind");
 
 	@Override
-	public Set<String> dirInstance(Object instance)
+	public Set<String> dirInstance(EvaluationContext context, Object instance)
 	{
 		return attributes;
 	}
 
 	@Override
-	public Object getAttr(Object object, String key)
+	public Object getAttr(EvaluationContext context, Object object, String key)
 	{
 		if (object instanceof List)
-			return getAttr((List)object, key);
+			return getAttr(context, (List)object, key);
 		else
-			return getAttr((Object[])object, key);
+			return getAttr(context, (Object[])object, key);
 	}
 
-	public Object getAttr(Object[] object, String key)
-	{
-		switch (key)
-		{
-			case "append":
-				return new BoundArrayMethodAppend(object);
-			case "insert":
-				return new BoundArrayMethodInsert(object);
-			case "pop":
-				return new BoundArrayMethodPop(object);
-			case "count":
-				return new BoundArrayMethodCount(object);
-			case "find":
-				return new BoundArrayMethodFind(object);
-			case "rfind":
-				return new BoundArrayMethodRFind(object);
-			default:
-				return super.getAttr(object, key);
-		}
-	}
-
-	public Object getAttr(List object, String key)
+	public Object getAttr(EvaluationContext context, List object, String key)
 	{
 		switch (key)
 		{
@@ -183,7 +162,28 @@ public class List_ extends AbstractType
 			case "rfind":
 				return new BoundListMethodRFind(object);
 			default:
-				return super.getAttr(object, key);
+				return super.getAttr(context, object, key);
+		}
+	}
+
+	public Object getAttr(EvaluationContext context, Object[] object, String key)
+	{
+		switch (key)
+		{
+			case "append":
+				return new BoundArrayMethodAppend(object);
+			case "insert":
+				return new BoundArrayMethodInsert(object);
+			case "pop":
+				return new BoundArrayMethodPop(object);
+			case "count":
+				return new BoundArrayMethodCount(object);
+			case "find":
+				return new BoundArrayMethodFind(object);
+			case "rfind":
+				return new BoundArrayMethodRFind(object);
+			default:
+				return super.getAttr(context, object, key);
 		}
 	}
 

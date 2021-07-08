@@ -30,15 +30,15 @@ public class BoundSetMethodAdd extends BoundMethod<Set>
 		return signature;
 	}
 
-	public static void call(Set set, List<Object> objects)
+	public static void call(EvaluationContext context, Set set, List<Object> objects)
 	{
 		set.addAll(objects);
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		call(object, (List<Object>)args.get(0));
+		call(context, object, (List<Object>)args.get(0));
 		return null;
 	}
 }

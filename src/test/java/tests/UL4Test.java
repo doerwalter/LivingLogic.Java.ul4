@@ -107,17 +107,20 @@ public class UL4Test
 			this.y = y;
 		}
 
-		public boolean boolUL4()
+		@Override
+		public boolean boolUL4(EvaluationContext context)
 		{
 			return x != 0 || x != 0;
 		}
 
-		public Set<String> dirUL4()
+		@Override
+		public Set<String> dirUL4(EvaluationContext context)
 		{
 			return makeSet("x", "y");
 		}
 
-		public Object getAttrUL4(String key)
+		@Override
+		public Object getAttrUL4(EvaluationContext context, String key)
 		{
 			switch (key)
 			{
@@ -130,7 +133,8 @@ public class UL4Test
 			}
 		}
 
-		public void setAttrUL4(String key, Object value)
+		@Override
+		public void setAttrUL4(EvaluationContext context, String key, Object value)
 		{
 			switch (key)
 			{
@@ -150,10 +154,11 @@ public class UL4Test
 
 	private static class DoubleIt implements UL4GetAttr
 	{
+		@Override
 		public Object getAttrUL4(EvaluationContext context, String key)
 		{
 			Object value = context.get(key);
-			value = MulAST.call(2, value);
+			value = MulAST.call(context, 2, value);
 			return value;
 		}
 	}
@@ -5979,7 +5984,7 @@ public class UL4Test
 		}
 
 		@Override
-		public Object evaluate(BoundArguments args)
+		public Object evaluate(EvaluationContext context, BoundArguments args)
 		{
 			return call((Integer)args.get(0));
 		}

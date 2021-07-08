@@ -31,7 +31,7 @@ public class FunctionCSS extends Function
 	}
 
 	@Override
-	public Object evaluate(BoundArguments args)
+	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(args.get(0), args.get(1));
 	}
