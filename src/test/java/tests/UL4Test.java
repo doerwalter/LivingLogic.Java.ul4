@@ -54,6 +54,7 @@ import com.livinglogic.ul4.FunctionRepr;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.UndefinedKey;
+import com.livinglogic.ul4.UndefinedAttribute;
 import com.livinglogic.ul4.UL4Bool;
 import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.UL4SetAttr;
@@ -2802,7 +2803,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isundefined(data)?>");
 
-		checkOutput("True", t, V("data", new UndefinedKey("foo")));
+		checkOutput("True", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("True", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -2844,7 +2846,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isdefined(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("True", t, V("data", null));
 		checkOutput("True", t, V("data", true));
 		checkOutput("True", t, V("data", false));
@@ -2887,7 +2890,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isnone(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("True", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -2930,7 +2934,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isbool(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("True", t, V("data", true));
 		checkOutput("True", t, V("data", false));
@@ -2973,7 +2978,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isint(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3016,7 +3022,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isfloat(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3059,7 +3066,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isstr(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3102,7 +3110,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isdate(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3133,7 +3142,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isdatetime(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3176,7 +3186,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isexception(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3220,7 +3231,8 @@ public class UL4Test
 	{
 		Template t = T("<?print islist(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3264,7 +3276,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isset(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3308,7 +3321,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isdict(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3351,7 +3365,8 @@ public class UL4Test
 	{
 		Template t = T("<?print istemplate(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3394,7 +3409,8 @@ public class UL4Test
 	{
 		Template t = T("<?print isfunction(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3437,7 +3453,8 @@ public class UL4Test
 	{
 		Template t = T("<?print iscolor(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3480,7 +3497,8 @@ public class UL4Test
 	{
 		Template t = T("<?print istimedelta(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -3523,7 +3541,8 @@ public class UL4Test
 	{
 		Template t = T("<?print ismonthdelta(data)?>");
 
-		checkOutput("False", t, V("data", new UndefinedKey("foo")));
+		checkOutput("False", t, V("data", new UndefinedKey(null, "foo")));
+		checkOutput("False", t, V("data", new UndefinedAttribute(null, "foo")));
 		checkOutput("False", t, V("data", null));
 		checkOutput("False", t, V("data", true));
 		checkOutput("False", t, V("data", false));
@@ -5745,7 +5764,7 @@ public class UL4Test
 		String source = "<?print x?>";
 		Template t = T(source, "t");
 
-		checkOutput("<com.livinglogic.ul4.UndefinedKey 'foo'>", T("<?print repr(template.foo)?>"), V("template", t));
+		checkOutput("<com.livinglogic.ul4.UndefinedAttribute attrname='foo' object=<com.livinglogic.ul4.Template name='t' whitespace='strip'>>", T("<?print repr(template.foo)?>"), V("template", t));
 		checkOutput(source, T("<?print template.source?>"), V("template", t));
 		checkOutput("2", T("<?print len(template.content)?>"), V("template", t));
 		checkOutput("t", T("<?print template.content[0].template.name?>"), V("template", t));

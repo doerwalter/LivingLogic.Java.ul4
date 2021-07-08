@@ -6,26 +6,26 @@
 
 package com.livinglogic.ul4;
 
-public class UndefinedKey extends Undefined
+public class UndefinedAttribute extends Undefined
 {
 	protected static class Type extends Undefined.Type
 	{
 		@Override
 		public String getNameUL4()
 		{
-			return "undefinedkey";
+			return "undefinedattribute";
 		}
 
 		@Override
 		public String getDoc()
 		{
-			return "The result of accessing an dictionary key or list index.";
+			return "The result of accessing an undefined attribute";
 		}
 
 		@Override
 		public boolean instanceCheck(Object object)
 		{
-			return object instanceof UndefinedKey;
+			return object instanceof UndefinedAttribute;
 		}
 	}
 
@@ -38,20 +38,20 @@ public class UndefinedKey extends Undefined
 	}
 
 	private Object object;
-	private Object key;
+	private Object attrName;
 
-	public UndefinedKey(Object object, Object key)
+	public UndefinedAttribute(Object object, String attrName)
 	{
 		this.object = object;
-		this.key = key;
+		this.attrName = attrName;
 	}
 
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
 		formatter.append("<");
 		formatter.append(getClass().getName());
-		formatter.append(" key=");
-		formatter.visit(key);
+		formatter.append(" attrname=");
+		formatter.visit(attrName);
 		formatter.append(" object=");
 		formatter.visit(object);
 		formatter.append(">");
@@ -63,6 +63,6 @@ public class UndefinedKey extends Undefined
 
 		if (objectRepr.length() > 200)
 			objectRepr = Utils.formatMessage("{!t} instance", object);
-		return Utils.formatMessage("undefined key {!r} of {}", key, objectRepr);
+		return Utils.formatMessage("undefined attribute {!r} of {}", attrName, objectRepr);
 	}
 }

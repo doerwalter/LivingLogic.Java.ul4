@@ -150,7 +150,7 @@ public class AttrAST extends CodeAST implements LValue
 		catch (AttributeException exc)
 		{
 			if (exc.getObject() == obj)
-				return new UndefinedKey(attrname);
+				return new UndefinedAttribute(obj, attrname);
 			else
 				// The {@code AttributeException} originated from another object
 				throw exc;

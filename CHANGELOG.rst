@@ -13,6 +13,10 @@ This affects the following interfaces: ``UL4RenderWithContext``, ``UL4SetItem``,
 
 Support for constant folding has been dropped.
 
+``UndefinedKey`` object now remember with object created them and they will
+only be used for item access. Attribute access uses the new
+``UndefinedAttribute`` class.
+
 
 exp-156 (2021-06-15)
 --------------------

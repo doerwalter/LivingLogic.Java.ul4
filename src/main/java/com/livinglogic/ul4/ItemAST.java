@@ -172,7 +172,7 @@ public class ItemAST extends BinaryAST implements LValue
 		catch (AttributeException exc)
 		{
 			if (exc.getObject() == obj)
-				return new UndefinedKey(key);
+				return new UndefinedKey(obj, key);
 			else
 				// The {@code AttributeException} originated from another object
 				throw exc;
@@ -184,7 +184,7 @@ public class ItemAST extends BinaryAST implements LValue
 		Object result = obj.get(index);
 
 		if ((result == null) && !obj.containsKey(index))
-			return new UndefinedKey(index);
+			return new UndefinedKey(obj, index);
 		return result;
 	}
 
