@@ -66,7 +66,7 @@ public abstract class AbstractType implements UL4Type, UL4GetAttr, UL4Dir
 			case "__doc__":
 				return getDoc();
 			default:
-				throw new AttributeException(this, key);
+				return UL4GetAttr.super.getAttrUL4(context, key);
 		}
 	}
 }

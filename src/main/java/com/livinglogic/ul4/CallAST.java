@@ -54,7 +54,7 @@ public class CallAST extends CallRenderAST
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -72,6 +72,12 @@ public class CallAST extends CallRenderAST
 		return "call";
 	}
 
+	private void makeArguments(EvaluationContext context, List<Object> realArguments, Map<String, Object> realKeywordArguments)
+	{
+			for (ArgumentASTBase argument : arguments)
+				argument.decoratedEvaluateCall(context, realArguments, realKeywordArguments);
+	}
+
 	@Override
 	public Object decoratedEvaluate(EvaluationContext context)
 	{
@@ -80,14 +86,37 @@ public class CallAST extends CallRenderAST
 		try
 		{
 			context.tick();
-			realObject = obj.decoratedEvaluate(context);
 
 			List<Object> realArguments = new ArrayList<Object>();
-
 			Map<String, Object> realKeywordArguments = new LinkedHashMap<String, Object>();
 
-			for (ArgumentASTBase argument : arguments)
-				argument.decoratedEvaluateCall(context, realArguments, realKeywordArguments);
+			// If {@code obj} is an attribute access, this means that this
+			// looks like a method call, so if the resulting object for which the
+			// method  must be called suuports {@link UL4GetAttr} and overwrites
+			// {@code callAttrUL4} we can basically skip generating
+			// a bound method object.
+			if (obj instanceof AttrAST)
+			{
+				AST attrObject = ((AttrAST)obj).getObj();
+				String attrName = ((AttrAST)obj).getAttrName();
+				realObject = attrObject.decoratedEvaluate(context);
+				if (realObject instanceof UL4GetAttr)
+				{
+					makeArguments(context, realArguments, realKeywordArguments);
+					return ((UL4GetAttr)realObject).callAttrUL4(context, attrName, realArguments, realKeywordArguments);
+				}
+				else
+				{
+					// This is an attribute access, but the resulting object doesn't
+					// implement {@link UL4GetAttr}, so we have to get the attribute
+					// via {@link AttrAST}.
+					realObject = AttrAST.call(context, realObject, attrName);
+				}
+			}
+			else
+				realObject = obj.decoratedEvaluate(context);
+
+			makeArguments(context, realArguments, realKeywordArguments);
 
 			return call(context, realObject, realArguments, realKeywordArguments);
 		}

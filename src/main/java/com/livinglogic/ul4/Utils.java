@@ -668,9 +668,19 @@ public class Utils
 						buffer.append(arg != null ? arg.toString() : "null");
 						break;
 					case 1:
-						buffer.append(FunctionRepr.call(arg));
+						String repr = FunctionRepr.call(arg);
+						if (repr.length() <= 300)
+							buffer.append(repr);
+						else
+						{
+							buffer.append(objectType(arg));
+							buffer.append(" instance");
+						}
 						break;
 					case 2:
+						buffer.append(FunctionRepr.call(arg));
+						break;
+					case 3:
 						buffer.append(objectType(arg));
 						break;
 				}
@@ -685,9 +695,14 @@ public class Utils
 					form = 1;
 					position = token.substring(0, token.length() - 2);
 				}
-				else if (token.endsWith("!t"))
+				else if (token.endsWith("!R"))
 				{
 					form = 2;
+					position = token.substring(0, token.length() - 2);
+				}
+				else if (token.endsWith("!t"))
+				{
+					form = 3;
 					position = token.substring(0, token.length() - 2);
 				}
 				else

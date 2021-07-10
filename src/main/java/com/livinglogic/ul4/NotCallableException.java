@@ -13,6 +13,6 @@ public class NotCallableException extends UnsupportedOperationException
 {
 	public NotCallableException(Object obj)
 	{
-		super(Utils.objectType(obj) + " is not callable!");
+		super(Utils.formatMessage("{!R} is not callable!", obj));
 	}
 }

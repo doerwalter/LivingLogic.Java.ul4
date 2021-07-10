@@ -32,7 +32,7 @@ import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Utils;
 
 
-public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call, UL4Render, UL4GetAttr, UL4Dir
+public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call, UL4Render, UL4Dir
 {
 	protected static class Type extends BlockAST.Type
 	{
@@ -99,7 +99,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -1753,61 +1753,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		}
 	}
 
-	private static class BoundMethodRenderS extends BoundMethod<Template>
-	{
-		public BoundMethodRenderS(Template object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "renders";
-		}
-
-		@Override
-		public Signature getSignature()
-		{
-			return object.signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments arguments)
-		{
-			Writer writer = new StringWriter();
-			object.renderBound(context, writer, arguments.byName());
-			return writer.toString();
-		}
-	}
-
-	private static class BoundMethodRender extends BoundMethod<Template>
-	{
-		public BoundMethodRender(Template object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "render";
-		}
-
-		@Override
-		public Signature getSignature()
-		{
-			return object.signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments arguments)
-		{
-			object.renderBound(context, null, arguments.byName());
-			return null;
-		}
-	}
-
 	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "signature", "doc", "source", "parenttemplate", "renders", "render");
 
 	@Override
@@ -1832,11 +1777,34 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			case "parenttemplate":
 				return parentTemplate;
 			case "renders":
-				return new BoundMethodRenderS(this);
+				return new GenericBoundMethod<Template>(this, "renders");
 			case "render":
-				return new BoundMethodRender(this);
+				return new GenericBoundMethod<Template>(this, "render");
 			default:
 				return super.getAttrUL4(context, key);
+		}
+	}
+
+	@Override
+	public Object callAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
+	{
+		switch (key)
+		{
+			case "renders":
+				try (BoundArguments boundArgs = new BoundArguments(signature, this, args, kwargs))
+				{
+					Writer writer = new StringWriter();
+					renderBound(context, writer, boundArgs.byName());
+					return writer.toString();
+				}
+			case "render":
+				try (BoundArguments boundArgs = new BoundArguments(signature, this, args, kwargs))
+				{
+					renderBound(context, null, boundArgs.byName());
+					return null;
+				}
+			default:
+				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}
 	}
 }

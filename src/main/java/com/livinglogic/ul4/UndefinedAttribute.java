@@ -29,7 +29,7 @@ public class UndefinedAttribute extends Undefined
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -50,19 +50,15 @@ public class UndefinedAttribute extends Undefined
 	{
 		formatter.append("<");
 		formatter.append(getClass().getName());
-		formatter.append(" attrname=");
+		formatter.append(" ");
 		formatter.visit(attrName);
-		formatter.append(" object=");
+		formatter.append(" of ");
 		formatter.visit(object);
 		formatter.append(">");
 	}
 
 	public String toString()
 	{
-		String objectRepr = FunctionRepr.call(object);
-
-		if (objectRepr.length() > 200)
-			objectRepr = Utils.formatMessage("{!t} instance", object);
-		return Utils.formatMessage("undefined attribute {!r} of {}", attrName, objectRepr);
+		return Utils.formatMessage("undefined attribute {!r} of {!R}", attrName, object);
 	}
 }

@@ -29,7 +29,7 @@ public abstract class Undefined implements UL4Instance, UL4Bool, UL4Repr
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()

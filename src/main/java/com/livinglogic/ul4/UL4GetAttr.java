@@ -6,6 +6,10 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
+import java.util.Map;
+
+
 /**
 <p>Implementing the {@code UL4GetAttr} interface allows to fetch the UL4
 accessible attributes of an object.</p>
@@ -31,5 +35,48 @@ public interface UL4GetAttr
 	default Object getAttrUL4(EvaluationContext context, String key)
 	{
 		throw new AttributeException(this, key);
+	}
+
+	/**
+	<p>Call the attribute (i.e. method) named {@code key} of this object with
+	the positional arguments {@code args} and the keyword arguments
+	{@code kwargs} and return the result to UL4.</p>
+
+	<p>This default implementation simply defers to
+	{@link #getAttrUL4(EvaluationContext, String)} to get the object (which will
+	probable return a {@link BoundMethod} or {@link GenericBoundMethod} object)
+	and then call this bound method object.</p>
+
+	<p>However this default implementation can be overwritten to implement the
+	functionality of the method directly which skips creating a bound method
+	object.</p>
+
+	<p>However note that {@link #getAttrUL4(EvaluationContext, String)} must
+	still return a bound method object for the method name for the case where
+	the bound method isn't called directly.</p>
+
+	@param context The evaluation context.
+	@param key The name of the method to call.
+	@param args Position arguments for the method call.
+	@param kwargs Keyword arguments for the method call.
+	@return the result of the method call.
+	**/
+	default Object callAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
+	{
+		Object attribute;
+
+		try
+		{
+			attribute = getAttrUL4(context, key);
+		}
+		catch (AttributeException exc)
+		{
+			if (exc.getObject() == this)
+				attribute = new UndefinedAttribute(this, key);
+			else
+				// The {@code AttributeException} originated from another object
+				throw exc;
+		}
+		return CallAST.call(context, attribute, args, kwargs);
 	}
 }

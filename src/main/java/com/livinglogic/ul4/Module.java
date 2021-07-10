@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import static com.livinglogic.utils.SetUtils.makeSet;
 
 
-public class Module implements UL4Instance, UL4Repr, UL4GetAttr, UL4Dir, UL4Name
+public class Module implements UL4Instance, UL4Repr, UL4Dir, UL4Name
 {
 	protected static class Type extends AbstractInstanceType
 	{
@@ -37,7 +37,7 @@ public class Module implements UL4Instance, UL4Repr, UL4GetAttr, UL4Dir, UL4Name
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -100,7 +100,7 @@ public class Module implements UL4Instance, UL4Repr, UL4GetAttr, UL4Dir, UL4Name
 			{
 				Object object = content.get(key);
 				if (key == null && !content.containsKey(key))
-					throw new AttributeException(this, key);
+					return UL4Instance.super.getAttrUL4(context, key);
 				return object;
 			}
 		}

@@ -6,6 +6,8 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.text.DecimalFormat;
 import java.util.Calendar;
@@ -18,7 +20,7 @@ import java.math.BigInteger;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4Abs, UL4GetAttr, UL4Dir
+public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4Abs, UL4Dir
 {
 	protected static class Type extends AbstractInstanceType
 	{
@@ -62,7 +64,7 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -476,65 +478,9 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 		return totalSeconds() * 1000000 + microseconds;
 	}
 
-	private static class BoundMethodDays extends BoundMethod<TimeDelta>
-	{
-		public BoundMethodDays(TimeDelta object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "days";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.days;
-		}
-	}
-
-	private static class BoundMethodSeconds extends BoundMethod<TimeDelta>
-	{
-		public BoundMethodSeconds(TimeDelta object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "seconds";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.seconds;
-		}
-	}
-
-	private static class BoundMethodMicroseconds extends BoundMethod<TimeDelta>
-	{
-		public BoundMethodMicroseconds(TimeDelta object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "microseconds";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.microseconds;
-		}
-	}
+	private static final MethodDescriptor<TimeDelta> methodDays = new MethodDescriptor<TimeDelta>(type, "days", Signature.noParameters);
+	private static final MethodDescriptor<TimeDelta> methodSeconds = new MethodDescriptor<TimeDelta>(type, "seconds", Signature.noParameters);
+	private static final MethodDescriptor<TimeDelta> methodMicroseconds = new MethodDescriptor<TimeDelta>(type, "microseconds", Signature.noParameters);
 
 	protected static Set<String> attributes = makeSet("days", "seconds", "microseonds");
 
@@ -550,13 +496,38 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 		switch (key)
 		{
 			case "days":
-				return new BoundMethodDays(this);
+				return methodDays.bindMethod(this);
 			case "seconds":
-				return new BoundMethodSeconds(this);
+				return methodSeconds.bindMethod(this);
 			case "microseconds":
-				return new BoundMethodMicroseconds(this);
+				return methodMicroseconds.bindMethod(this);
 			default:
-				throw new AttributeException(this, key);
+				return UL4Instance.super.getAttrUL4(context, key);
+		}
+	}
+
+	@Override
+	public Object callAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
+	{
+		switch (key)
+		{
+			case "days":
+				try (BoundArguments boundArgs = methodDays.bindArguments(args, kwargs))
+				{
+					return days;
+				}
+			case "seconds":
+				try (BoundArguments boundArgs = methodSeconds.bindArguments(args, kwargs))
+				{
+					return seconds;
+				}
+			case "microseconds":
+				try (BoundArguments boundArgs = methodMicroseconds.bindArguments(args, kwargs))
+				{
+					return microseconds;
+				}
+			default:
+				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}
 	}
 }

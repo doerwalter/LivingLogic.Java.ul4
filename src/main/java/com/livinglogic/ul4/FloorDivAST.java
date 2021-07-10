@@ -44,7 +44,7 @@ public class FloorDivAST extends BinaryAST
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()

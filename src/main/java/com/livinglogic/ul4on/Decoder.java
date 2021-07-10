@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Stack;
 
 import com.livinglogic.ul4.EvaluationContext;
+import com.livinglogic.ul4.MethodDescriptor;
 import com.livinglogic.ul4.UL4Repr;
 import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.UL4Dir;
@@ -48,7 +49,7 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 A {@code Decoder} object wraps a {@code Reader} object and can read any object
 in the UL4ON serialization format from this {@code Reader}.
 **/
-public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAttr, UL4Dir
+public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 {
 	protected static class Type extends AbstractInstanceType
 	{
@@ -83,7 +84,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -965,6 +966,10 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 		;
 	}
 
+	private static final Signature signatureLoadS = new Signature().addPositionalOnly("dump");
+	private static final MethodDescriptor<Decoder> methodLoadS = new MethodDescriptor<Decoder>(type, "loads", signatureLoadS);
+	private static final MethodDescriptor<Decoder> methodReset = new MethodDescriptor<Decoder>(type, "reset", Signature.noParameters);
+
 	protected static Set<String> attributes = makeSet("loads");
 
 	@Override
@@ -979,62 +984,34 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4GetAt
 		switch (key)
 		{
 			case "loads":
-				return new BoundMethodLoadS(this);
+				return methodLoadS.bindMethod(this);
 			default:
-				throw new AttributeException(this, key);
+				return UL4Instance.super.getAttrUL4(context, key);
 		}
 	}
 
-	private static class BoundMethodLoadS extends BoundMethod<Decoder>
+	@Override
+	public Object callAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
 	{
-		public BoundMethodLoadS(Decoder object)
+		switch (key)
 		{
-			super(object);
-		}
+			case "loads":
+				try (BoundArguments boundArgs = methodLoadS.bindArguments(args, kwargs))
+				{
+					Object arg = boundArgs.get(0);
 
-		@Override
-		public String getNameUL4()
-		{
-			return "loads";
-		}
-
-		private static final Signature signature = new Signature().addPositionalOnly("dump");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments arguments)
-		{
-			Object arg = arguments.get(0);
-
-			if (!(arg instanceof String))
-				throw new ArgumentTypeMismatchException("loads({!t}) not supported", arg);
-			return object.loads((String)arg);
-		}
-	}
-
-	private static class BoundMethodReset extends BoundMethod<Decoder>
-	{
-		public BoundMethodReset(Decoder object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "reset";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments arguments)
-		{
-			object.reset();
-			return null;
+					if (!(arg instanceof String))
+						throw new ArgumentTypeMismatchException("loads({!t}) not supported", arg);
+					return loads((String)arg);
+				}
+			case "reset":
+				try (BoundArguments boundArgs = methodReset.bindArguments(args, kwargs))
+				{
+					reset();
+					return null;
+				}
+			default:
+				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}
 	}
 }

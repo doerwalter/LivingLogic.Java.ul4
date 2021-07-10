@@ -22,7 +22,7 @@ import static com.livinglogic.ul4.Utils.findInnermostException;
 The base class of all syntax tree nodes. This can be either literal text
 ({@link TextAST}) between the tags, or compiled tag content ({@link CodeAST}).
 **/
-public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr, UL4Dir, UL4Repr
+public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4Repr
 {
 	protected static class Type extends AbstractInstanceType
 	{
@@ -57,7 +57,7 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -709,7 +709,7 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4GetAttr,
 			case "startsourcesuffix":
 				return getStartSourceSuffix();
 			default:
-				throw new AttributeException(this, key);
+				return UL4Instance.super.getAttrUL4(context, key);
 		}
 	}
 

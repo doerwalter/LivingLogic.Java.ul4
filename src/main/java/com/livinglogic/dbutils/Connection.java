@@ -24,7 +24,11 @@ import static java.sql.Types.TIMESTAMP;
 
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 
+import com.livinglogic.ul4.UL4Instance;
+import com.livinglogic.ul4.AbstractInstanceType;
+import com.livinglogic.ul4.UL4Type;
 import com.livinglogic.ul4.EvaluationContext;
+import com.livinglogic.ul4.MethodDescriptor;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.ArgumentException;
 import com.livinglogic.ul4.Utils;
@@ -37,8 +41,37 @@ import com.livinglogic.ul4.BoundArguments;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
+public class Connection implements UL4Instance, AutoCloseable, UL4GetAttr, UL4Dir
 {
+	protected static class Type extends AbstractInstanceType
+	{
+		@Override
+		public String getNameUL4()
+		{
+			return "Connection";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A database connection";
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof Connection;
+		}
+	}
+
+	public static final Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
 	private java.sql.Connection connection;
 
 	public Connection(java.sql.Connection connection)
@@ -287,120 +320,13 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		return record;
 	}
 
-	private static class BoundMethodQueryArgs extends BoundMethod<Connection>
-	{
-		public BoundMethodQueryArgs(Connection object)
-		{
-			super(object);
-		}
+	private static final Signature signatureQueryArgs = new Signature().addBoth("query").addVarPositional("args");
+	private static final Signature signatureArgs = new Signature().addVarPositional("args");
 
-		@Override
-		public String getNameUL4()
-		{
-			return "queryargs";
-		}
-
-		private static final Signature signature = new Signature().addBoth("query").addVarPositional("args");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			if (!(args.get(0) instanceof String))
-				throw new UnsupportedOperationException("query must be string, not " + Utils.objectType(args.get(0)) + "!");
-			return object.queryargs(context, (String)args.get(0), (List)args.get(1));
-		}
-	}
-
-	private static class BoundMethodQuery extends BoundMethod<Connection>
-	{
-		public BoundMethodQuery(Connection object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "query";
-		}
-
-		private static final Signature signature = new Signature().addVarPositional("args");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.query(context, (List)args.get(0));
-		}
-	}
-
-	private static class BoundMethodQueryOne extends BoundMethod<Connection>
-	{
-		public BoundMethodQueryOne(Connection object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "queryone";
-		}
-
-		private static final Signature signature = new Signature().addVarPositional("args");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.queryone((List)args.get(0));
-		}
-	}
-
-	private static class BoundMethodExecute extends BoundMethod<Connection>
-	{
-		public BoundMethodExecute(Connection object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "execute";
-		}
-
-		private static final Signature signature = new Signature().addVarPositional("args");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			object.execute(context, (List)args.get(0));
-			return null;
-		}
-	}
+	private static final MethodDescriptor<Connection> methodQueryArgs = new MethodDescriptor<Connection>(type, "queryargs", signatureQueryArgs);
+	private static final MethodDescriptor<Connection> methodQuery = new MethodDescriptor<Connection>(type, "query", signatureArgs);
+	private static final MethodDescriptor<Connection> methodQueryOne = new MethodDescriptor<Connection>(type, "queryone", signatureArgs);
+	private static final MethodDescriptor<Connection> methodExecute = new MethodDescriptor<Connection>(type, "execute", signatureArgs);
 
 	protected static Set<String> attributes = makeSet("queryargs", "query", "queryone", "execute", "int", "number", "str", "clob", "date");
 
@@ -416,13 +342,13 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 		switch (key)
 		{
 			case "queryargs":
-				return new BoundMethodQueryArgs(this);
+				return methodQueryArgs.bindMethod(this);
 			case "query":
-				return new BoundMethodQuery(this);
+				return methodQuery.bindMethod(this);
 			case "queryone":
-				return new BoundMethodQueryOne(this);
+				return methodQueryOne.bindMethod(this);
 			case "execute":
-				return new BoundMethodExecute(this);
+				return methodExecute.bindMethod(this);
 			case "int":
 				return IntVar.function;
 			case "number":
@@ -434,7 +360,40 @@ public class Connection implements AutoCloseable, UL4GetAttr, UL4Dir
 			case "date":
 				return DateVar.function;
 			default:
-				throw new AttributeException(this, key);
+				return UL4Instance.super.getAttrUL4(context, key);
+		}
+	}
+
+	@Override
+	public Object callAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
+	{
+		switch (key)
+		{
+			case "queryargs":
+				try (BoundArguments boundArgs = methodQueryArgs.bindArguments(args, kwargs))
+				{
+					if (!(boundArgs.get(0) instanceof String))
+						throw new UnsupportedOperationException(Utils.formatMessage("query must be string, not {!t}!", boundArgs.get(0)));
+					return queryargs(context, (String)boundArgs.get(0), (List)boundArgs.get(1));
+				}
+			case "query":
+				try (BoundArguments boundArgs = methodQuery.bindArguments(args, kwargs))
+				{
+					return query(context, (List)boundArgs.get(0));
+				}
+			case "queryone":
+				try (BoundArguments boundArgs = methodQueryOne.bindArguments(args, kwargs))
+				{
+					return queryone((List)boundArgs.get(0));
+				}
+			case "execute":
+				try (BoundArguments boundArgs = methodExecute.bindArguments(args, kwargs))
+				{
+					execute(context, (List)boundArgs.get(0));
+					return null;
+				}
+			default:
+				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}
 	}
 }

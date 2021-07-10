@@ -47,7 +47,7 @@ public abstract class Var implements UL4GetAttr, UL4SetAttr, UL4Dir
 			case "value":
 				return value == noValue ? null : value;
 			default:
-				throw new AttributeException(this, key);
+				return UL4GetAttr.super.getAttrUL4(context, key);
 		}
 	}
 

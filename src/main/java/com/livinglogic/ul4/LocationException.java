@@ -63,7 +63,7 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 			case "location":
 				return location;
 			default:
-				throw new AttributeException(this, key);
+				return UL4GetAttr.super.getAttrUL4(context, key);
 		}
 	}
 }

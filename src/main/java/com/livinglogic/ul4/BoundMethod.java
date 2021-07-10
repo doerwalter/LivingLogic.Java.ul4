@@ -19,7 +19,36 @@ from UL4.</p>
 **/
 public abstract class BoundMethod<T> extends Function
 {
-	protected T object = null;
+	protected static class Type extends Function.Type
+	{
+		@Override
+		public String getNameUL4()
+		{
+			return "bound method";
+		}
+
+		@Override
+		public String getDoc()
+		{
+			return "A bound method. Calling it calls the original method on the bound object.";
+		}
+
+		@Override
+		public boolean instanceCheck(Object object)
+		{
+			return object instanceof BoundMethod;
+		}
+	}
+
+	public static final Type type = new Type();
+
+	@Override
+	public UL4Type getTypeUL4()
+	{
+		return type;
+	}
+
+	protected T object;
 
 	@Override
 	public String getFullNameUL4()
@@ -40,7 +69,7 @@ public abstract class BoundMethod<T> extends Function
 
 	public void reprUL4(UL4Repr.Formatter formatter)
 	{
-		formatter.append("<method ");
+		formatter.append("<bound method ");
 		formatter.append(getFullNameUL4());
 		formatter.append(">");
 	}

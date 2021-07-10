@@ -21,7 +21,7 @@ Template closure
 @author W. Doerwald
 **/
 
-public class TemplateClosure implements UL4Instance, UL4Call, UL4Render, UL4Name, UL4GetAttr, UL4Dir, UL4Repr
+public class TemplateClosure implements UL4Instance, UL4Call, UL4Render, UL4Name, UL4Dir, UL4Repr
 {
 	protected static class Type extends AbstractInstanceType
 	{
@@ -50,7 +50,7 @@ public class TemplateClosure implements UL4Instance, UL4Call, UL4Render, UL4Name
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -125,59 +125,6 @@ public class TemplateClosure implements UL4Instance, UL4Call, UL4Render, UL4Name
 		return writer.toString();
 	}
 
-	private static class BoundMethodRenderS extends BoundMethod<TemplateClosure>
-	{
-		public BoundMethodRenderS(TemplateClosure object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "renders";
-		}
-
-		@Override
-		public Signature getSignature()
-		{
-			return object.signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments arguments)
-		{
-			return object.renders(context, arguments.byName());
-		}
-	}
-
-	private static class BoundMethodRender extends BoundMethod<TemplateClosure>
-	{
-		public BoundMethodRender(TemplateClosure object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "render";
-		}
-
-		@Override
-		public Signature getSignature()
-		{
-			return object.signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments arguments)
-		{
-			object.render(context, arguments.byName());
-			return null;
-		}
-	}
-
 	protected static Set<String> attributes = Template.attributes;
 
 	@Override
@@ -192,13 +139,34 @@ public class TemplateClosure implements UL4Instance, UL4Call, UL4Render, UL4Name
 		switch (key)
 		{
 			case "renders":
-				return new BoundMethodRenderS(this);
+				return new GenericBoundMethod<TemplateClosure>(this, "renders");
 			case "render":
-				return new BoundMethodRender(this);
+				return new GenericBoundMethod<TemplateClosure>(this, "render");
 			case "signature":
 				return signature;
 			default:
 				return template.getAttrUL4(context, key);
+		}
+	}
+
+	@Override
+	public Object callAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
+	{
+		switch (key)
+		{
+			case "renders":
+				try (BoundArguments boundArgs = new BoundArguments(signature, this, args, kwargs))
+				{
+					return renders(context, boundArgs.byName());
+				}
+			case "render":
+				try (BoundArguments boundArgs = new BoundArguments(signature, this, args, kwargs))
+				{
+					render(context, boundArgs.byName());
+					return null;
+				}
+			default:
+				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}
 	}
 

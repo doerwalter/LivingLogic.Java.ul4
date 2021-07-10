@@ -17,7 +17,7 @@ public class AttributeException extends RuntimeException
 
 	public AttributeException(Object object, Object key)
 	{
-		super(Utils.formatMessage("{!r} instance has no attribute {!r}!", object, key));
+		super(Utils.formatMessage("{!r} has no attribute {!r}!", object, key));
 		this.object = object;
 		this.key = key;
 	}

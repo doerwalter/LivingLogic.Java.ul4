@@ -18,7 +18,7 @@ import java.util.Map;
 import static com.livinglogic.utils.SetUtils.makeSet;
 
 
-public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL4Abs, UL4GetAttr, UL4Dir
+public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL4Abs, UL4Dir
 {
 	protected static class Type extends AbstractInstanceType
 	{
@@ -55,7 +55,7 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -218,25 +218,7 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 		return months < 0 ? new MonthDelta(-months) : this;
 	}
 
-	private static class BoundMethodMonths extends BoundMethod<MonthDelta>
-	{
-		public BoundMethodMonths(MonthDelta object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "months";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.months;
-		}
-	}
+	private static final MethodDescriptor<MonthDelta> methodMonths = new MethodDescriptor<MonthDelta>(type, "months", Signature.noParameters);
 
 	protected static Set<String> attributes = makeSet("months");
 
@@ -252,9 +234,24 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 		switch (key)
 		{
 			case "months":
-				return new BoundMethodMonths(this);
+				return methodMonths.bindMethod(this);
 			default:
-				throw new AttributeException(this, key);
+				return UL4Instance.super.getAttrUL4(context, key);
+		}
+	}
+
+	@Override
+	public Object callAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
+	{
+		switch (key)
+		{
+			case "months":
+				try (BoundArguments boundArgs = methodMonths.bindArguments(args, kwargs))
+				{
+					return months;
+				}
+			default:
+				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}
 	}
 }

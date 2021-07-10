@@ -19,12 +19,17 @@ public class BoundArguments implements AutoCloseable
 
 	public BoundArguments(Signature signature, UL4Name object, List<Object> args, Map<String, Object> kwargs)
 	{
+		this(signature, object.getFullNameUL4(), args, kwargs);
+	}
+
+	public BoundArguments(Signature signature, String name, List<Object> args, Map<String, Object> kwargs)
+	{
 		this.signature = signature;
 		if (signature == null)
 		{
 			// If we don't have a signature we only support keyword arguments
 			if (args != null && args.size() > 0)
-				throw new PositionalArgumentsNotSupportedException(object);
+				throw new PositionalArgumentsNotSupportedException(name);
 
 			argumentsByPosition = null;
 			argumentsByName = kwargs != null ? new LinkedHashMap<String, Object>(kwargs) : new LinkedHashMap<String, Object>();
@@ -67,7 +72,7 @@ public class BoundArguments implements AutoCloseable
 							varPositionalArguments.add(argValue);
 						else
 							// else complain
-							throw new TooManyArgumentsException(object, signature, args.size());
+							throw new TooManyArgumentsException(name, signature, args.size());
 					}
 					++i;
 				}
@@ -87,7 +92,7 @@ public class BoundArguments implements AutoCloseable
 						// A parameter exists with this name and it can be specified via keyword
 						int position = param.getPosition();
 						if (haveValue[position])
-							throw new DuplicateArgumentException(object, param);
+							throw new DuplicateArgumentException(name, param);
 						else
 						{
 							argumentsByPosition.set(position, argValue);
@@ -101,12 +106,12 @@ public class BoundArguments implements AutoCloseable
 						{
 							// If we do, add it to the {@code **} parameter (but only once)
 							if (varKeywordArguments.containsKey(argName))
-								throw new DuplicateArgumentException(object, argName);
+								throw new DuplicateArgumentException(name, argName);
 							varKeywordArguments.put(argName, argValue);
 						}
 						else
 							// else complain
-							throw new UnsupportedArgumentNameException(object, argName);
+							throw new UnsupportedArgumentNameException(name, argName);
 					}
 				}
 			}
@@ -123,7 +128,7 @@ public class BoundArguments implements AutoCloseable
 						haveValue[i] = true;
 					}
 					else
-						throw new MissingArgumentException(object, param);
+						throw new MissingArgumentException(name, param);
 				}
 				++i;
 			}

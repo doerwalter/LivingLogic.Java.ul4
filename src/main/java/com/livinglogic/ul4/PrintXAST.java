@@ -31,7 +31,7 @@ public class PrintXAST extends UnaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a ``<?printx?>`` tag (e.g. ``<?printx x?>``.";
+			return "AST node for a ``<?printx?>`` tag (e.g. ``<?printx x?>``).";
 		}
 
 		@Override
@@ -47,7 +47,7 @@ public class PrintXAST extends UnaryAST
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()

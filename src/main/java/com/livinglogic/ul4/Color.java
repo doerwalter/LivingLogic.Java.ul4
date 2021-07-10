@@ -9,6 +9,7 @@ package com.livinglogic.ul4;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -22,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import static com.livinglogic.utils.MapUtils.makeMap;
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4GetItem, UL4Dir, UL4Len
+public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4Dir, UL4Len
 {
 	protected static class Type extends AbstractInstanceType
 	{
@@ -70,7 +71,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -1014,503 +1015,6 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		}
 	}
 
-	private static class BoundMethodR extends BoundMethod<Color>
-	{
-		public BoundMethodR(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "r";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return (int)object.r;
-		}
-	}
-
-	private static class BoundMethodG extends BoundMethod<Color>
-	{
-		public BoundMethodG(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "g";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return (int)object.g;
-		}
-	}
-
-	private static class BoundMethodB extends BoundMethod<Color>
-	{
-		public BoundMethodB(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "b";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return (int)object.b;
-		}
-	}
-
-	private static class BoundMethodA extends BoundMethod<Color>
-	{
-		public BoundMethodA(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "a";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return (int)object.a;
-		}
-	}
-
-	private static class BoundMethodHue extends BoundMethod<Color>
-	{
-		public BoundMethodHue(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "lum";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.hue();
-		}
-	}
-
-	private static class BoundMethodLight extends BoundMethod<Color>
-	{
-		public BoundMethodLight(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "light";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.light();
-		}
-	}
-
-	private static class BoundMethodSat extends BoundMethod<Color>
-	{
-		public BoundMethodSat(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "sat";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.sat();
-		}
-	}
-
-	private static class BoundMethodLum extends BoundMethod<Color>
-	{
-		public BoundMethodLum(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "lum";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.lum();
-		}
-	}
-
-	private static class BoundMethodHLS extends BoundMethod<Color>
-	{
-		public BoundMethodHLS(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "hls";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.hls();
-		}
-	}
-
-	private static class BoundMethodHLSA extends BoundMethod<Color>
-	{
-		public BoundMethodHLSA(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "hlsa";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.hlsa();
-		}
-	}
-
-	private static class BoundMethodHSV extends BoundMethod<Color>
-	{
-		public BoundMethodHSV(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "hsv";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.hsv();
-		}
-	}
-
-	private static class BoundMethodHSVA extends BoundMethod<Color>
-	{
-		public BoundMethodHSVA(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "hsva";
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.hsva();
-		}
-	}
-
-	private static class BoundMethodWithA extends BoundMethod<Color>
-	{
-		public BoundMethodWithA(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "witha";
-		}
-
-		private static final Signature signature = new Signature().addBoth("a");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.witha(Utils.toInt(args.get(0)));
-		}
-	}
-
-	private static class BoundMethodWithLight extends BoundMethod<Color>
-	{
-		public BoundMethodWithLight(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "withlight";
-		}
-
-		private static final Signature signature = new Signature().addBoth("light");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.withlight(Utils.toDouble(args.get(0)));
-		}
-	}
-
-	private static class BoundMethodAbsLight extends BoundMethod<Color>
-	{
-		public BoundMethodAbsLight(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "abslight";
-		}
-
-		private static final Signature signature = new Signature().addBoth("f");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.abslight(Utils.toDouble(args.get(0)));
-		}
-	}
-
-	private static class BoundMethodRelLight extends BoundMethod<Color>
-	{
-		public BoundMethodRelLight(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "rellight";
-		}
-
-		private static final Signature signature = new Signature().addBoth("f");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.rellight(Utils.toDouble(args.get(0)));
-		}
-	}
-
-	private static class BoundMethodWithLum extends BoundMethod<Color>
-	{
-		public BoundMethodWithLum(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "withlum";
-		}
-
-		private static final Signature signature = new Signature().addBoth("lum");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.withlum(Utils.toDouble(args.get(0)));
-		}
-	}
-
-	private static class BoundMethodAbsLum extends BoundMethod<Color>
-	{
-		public BoundMethodAbsLum(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "abslum";
-		}
-
-		private static final Signature signature = new Signature().addBoth("f");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.abslum(Utils.toDouble(args.get(0)));
-		}
-	}
-
-	private static class BoundMethodRelLum extends BoundMethod<Color>
-	{
-		public BoundMethodRelLum(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "rellum";
-		}
-
-		private static final Signature signature = new Signature().addBoth("f");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.rellum(Utils.toDouble(args.get(0)));
-		}
-	}
-
-	private static class BoundMethodInvert extends BoundMethod<Color>
-	{
-		public BoundMethodInvert(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "invert";
-		}
-
-		private static final Signature signature = new Signature().addBoth("f", 1.0);
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			return object.invert(Utils.toDouble(args.get(0)));
-		}
-	}
-
-	private static class BoundMethodCombine extends BoundMethod<Color>
-	{
-		public BoundMethodCombine(Color object)
-		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "combine";
-		}
-
-		private static final Signature signature = new Signature().addBoth("r", null).addBoth("g", null).addBoth("b", null).addBoth("a", null);
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments args)
-		{
-			int r = args.get(0) != null ? Utils.toInt(args.get(0)) : object.r;
-			int g = args.get(1) != null ? Utils.toInt(args.get(1)) : object.g;
-			int b = args.get(2) != null ? Utils.toInt(args.get(2)) : object.b;
-			int a = args.get(3) != null ? Utils.toInt(args.get(3)) : object.a;
-
-			return new Color(r, g, b, a);
-		}
-	}
-
 	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "hue", "light", "sat", "lum", "hls", "hlsa", "hsv", "hsva", "invert", "combine", "witha", "withlight", "abslight", "rellight", "withlum", "abslum", "rellum");
 
 	@Override
@@ -1519,55 +1023,209 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetAttr, UL4G
 		return attributes;
 	}
 
+	private static final Signature signatureWithA = new Signature().addBoth("a");
+	private static final Signature signatureWithLight = new Signature().addBoth("light");
+	private static final Signature signatureWithF = new Signature().addBoth("f");
+	private static final Signature signatureWithLum = new Signature().addBoth("lum");
+	private static final Signature signatureInvert = new Signature().addBoth("f", 1.0);
+	private static final Signature signatureCombine = new Signature().addBoth("r", null).addBoth("g", null).addBoth("b", null).addBoth("a", null);
+
+	private static final MethodDescriptor<Color> methodR = new MethodDescriptor<Color>(type, "r", Signature.noParameters);
+	private static final MethodDescriptor<Color> methodG = new MethodDescriptor<Color>(type, "g", Signature.noParameters);
+	private static final MethodDescriptor<Color> methodB = new MethodDescriptor<Color>(type, "b", Signature.noParameters);
+	private static final MethodDescriptor<Color> methodA = new MethodDescriptor<Color>(type, "a", Signature.noParameters);
+	private static final MethodDescriptor<Color> methodHue = new MethodDescriptor<Color>(type, "hue", Signature.noParameters);
+	private static final MethodDescriptor<Color> methodLight = new MethodDescriptor<Color>(type, "light", Signature.noParameters);
+	private static final MethodDescriptor<Color> methodSat = new MethodDescriptor<Color>(type, "sat", Signature.noParameters);
+	private static final MethodDescriptor<Color> methodLum = new MethodDescriptor<Color>(type, "lum", Signature.noParameters);
+	private static final MethodDescriptor<Color> methodHLS = new MethodDescriptor<Color>(type, "hls", Signature.noParameters);
+	private static final MethodDescriptor<Color> methodHLSA = new MethodDescriptor<Color>(type, "hlsa", Signature.noParameters);
+	private static final MethodDescriptor<Color> methodHSV = new MethodDescriptor<Color>(type, "hsv", Signature.noParameters);
+	private static final MethodDescriptor<Color> methodHSVA = new MethodDescriptor<Color>(type, "hsva", Signature.noParameters);
+	private static final MethodDescriptor<Color> methodWithA = new MethodDescriptor<Color>(type, "witha", signatureWithA);
+	private static final MethodDescriptor<Color> methodWithLight = new MethodDescriptor<Color>(type, "withlight", signatureWithLight);
+	private static final MethodDescriptor<Color> methodAbsLight = new MethodDescriptor<Color>(type, "abslight", signatureWithF);
+	private static final MethodDescriptor<Color> methodRelLight = new MethodDescriptor<Color>(type, "rellight", signatureWithF);
+	private static final MethodDescriptor<Color> methodWithLum = new MethodDescriptor<Color>(type, "withlum", signatureWithLum);
+	private static final MethodDescriptor<Color> methodAbsLum = new MethodDescriptor<Color>(type, "abslum", signatureWithF);
+	private static final MethodDescriptor<Color> methodRelLum = new MethodDescriptor<Color>(type, "rellum", signatureWithF);
+	private static final MethodDescriptor<Color> methodInvert = new MethodDescriptor<Color>(type, "invert", signatureInvert);
+	private static final MethodDescriptor<Color> methodCombine = new MethodDescriptor<Color>(type, "combine", signatureCombine);
+
+	@Override
+	public Object callAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
+	{
+		switch (key)
+		{
+			case "r":
+				try (BoundArguments boundArgs = methodR.bindArguments(args, kwargs))
+				{
+					return (int)r;
+				}
+			case "g":
+				try (BoundArguments boundArgs = methodG.bindArguments(args, kwargs))
+				{
+					return (int)g;
+				}
+			case "b":
+				try (BoundArguments boundArgs = methodB.bindArguments(args, kwargs))
+				{
+					return (int)b;
+				}
+			case "a":
+				try (BoundArguments boundArgs = methodA.bindArguments(args, kwargs))
+				{
+					return (int)a;
+				}
+			case "hue":
+				try (BoundArguments boundArgs = methodHue.bindArguments(args, kwargs))
+				{
+					return hue();
+				}
+			case "light":
+				try (BoundArguments boundArgs = methodLight.bindArguments(args, kwargs))
+				{
+					return light();
+				}
+			case "sat":
+				try (BoundArguments boundArgs = methodSat.bindArguments(args, kwargs))
+				{
+					return sat();
+				}
+			case "lum":
+				try (BoundArguments boundArgs = methodLum.bindArguments(args, kwargs))
+				{
+					return lum();
+				}
+			case "hls":
+				try (BoundArguments boundArgs = methodHLS.bindArguments(args, kwargs))
+				{
+					return hls();
+				}
+			case "hlsa":
+				try (BoundArguments boundArgs = methodHLSA.bindArguments(args, kwargs))
+				{
+					return hlsa();
+				}
+			case "hsv":
+				try (BoundArguments boundArgs = methodHSV.bindArguments(args, kwargs))
+				{
+					return hsv();
+				}
+			case "hsva":
+				try (BoundArguments boundArgs = methodHSVA.bindArguments(args, kwargs))
+				{
+					return hsva();
+				}
+			case "witha":
+				try (BoundArguments boundArgs = methodWithA.bindArguments(args, kwargs))
+				{
+					return witha(Utils.toInt(boundArgs.get(0)));
+				}
+			case "withlight":
+				try (BoundArguments boundArgs = methodWithLight.bindArguments(args, kwargs))
+				{
+					return withlight(Utils.toDouble(boundArgs.get(0)));
+				}
+			case "abslight":
+				try (BoundArguments boundArgs = methodAbsLight.bindArguments(args, kwargs))
+				{
+					return abslight(Utils.toDouble(boundArgs.get(0)));
+				}
+			case "rellight":
+				try (BoundArguments boundArgs = methodRelLight.bindArguments(args, kwargs))
+				{
+					return rellight(Utils.toDouble(boundArgs.get(0)));
+				}
+			case "withlum":
+				try (BoundArguments boundArgs = methodWithLum.bindArguments(args, kwargs))
+				{
+					return withlum(Utils.toDouble(boundArgs.get(0)));
+				}
+			case "abslum":
+				try (BoundArguments boundArgs = methodAbsLum.bindArguments(args, kwargs))
+				{
+					return abslum(Utils.toDouble(boundArgs.get(0)));
+				}
+			case "rellum":
+				try (BoundArguments boundArgs = methodRelLum.bindArguments(args, kwargs))
+				{
+					return rellum(Utils.toDouble(boundArgs.get(0)));
+				}
+			case "invert":
+				try (BoundArguments boundArgs = methodInvert.bindArguments(args, kwargs))
+				{
+					return invert(Utils.toDouble(boundArgs.get(0)));
+				}
+			case "combine":
+				try (BoundArguments boundArgs = methodCombine.bindArguments(args, kwargs))
+				{
+					Object newR = boundArgs.get(0);
+					Object newG = boundArgs.get(1);
+					Object newB = boundArgs.get(2);
+					Object newA = boundArgs.get(3);
+
+					int intNewR = newR != null ? Utils.toInt(newR) : r;
+					int intNewG = newG != null ? Utils.toInt(newG) : g;
+					int intNewB = newB != null ? Utils.toInt(newB) : b;
+					int intNewA = newA != null ? Utils.toInt(newA) : a;
+
+					return new Color(intNewR, intNewG, intNewB, intNewA);
+				}
+			default:
+				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
+		}
+	}
+
 	@Override
 	public Object getAttrUL4(EvaluationContext context, String key)
 	{
 		switch (key)
 		{
 			case "r":
-				return new BoundMethodR(this);
+				return methodR.bindMethod(this);
 			case "g":
-				return new BoundMethodG(this);
+				return methodG.bindMethod(this);
 			case "b":
-				return new BoundMethodB(this);
+				return methodB.bindMethod(this);
 			case "a":
-				return new BoundMethodA(this);
+				return methodA.bindMethod(this);
 			case "hue":
-				return new BoundMethodHue(this);
+				return methodHue.bindMethod(this);
 			case "light":
-				return new BoundMethodLight(this);
+				return methodLight.bindMethod(this);
 			case "sat":
-				return new BoundMethodSat(this);
+				return methodSat.bindMethod(this);
 			case "lum":
-				return new BoundMethodLum(this);
+				return methodLum.bindMethod(this);
 			case "hls":
-				return new BoundMethodHLS(this);
+				return methodHLS.bindMethod(this);
 			case "hlsa":
-				return new BoundMethodHLSA(this);
+				return methodHLSA.bindMethod(this);
 			case "hsv":
-				return new BoundMethodHSV(this);
+				return methodHSV.bindMethod(this);
 			case "hsva":
-				return new BoundMethodHSVA(this);
+				return methodHSVA.bindMethod(this);
 			case "witha":
-				return new BoundMethodWithA(this);
+				return methodWithA.bindMethod(this);
 			case "withlight":
-				return new BoundMethodWithLight(this);
+				return methodWithLight.bindMethod(this);
 			case "abslight":
-				return new BoundMethodAbsLight(this);
+				return methodAbsLight.bindMethod(this);
 			case "rellight":
-				return new BoundMethodRelLight(this);
+				return methodRelLight.bindMethod(this);
 			case "withlum":
-				return new BoundMethodWithLum(this);
+				return methodWithLum.bindMethod(this);
 			case "abslum":
-				return new BoundMethodAbsLum(this);
+				return methodAbsLum.bindMethod(this);
 			case "rellum":
-				return new BoundMethodRelLum(this);
+				return methodRelLum.bindMethod(this);
 			case "invert":
-				return new BoundMethodInvert(this);
+				return methodInvert.bindMethod(this);
 			case "combine":
-				return new BoundMethodCombine(this);
+				return methodCombine.bindMethod(this);
 			default:
-				throw new AttributeException(this, key);
+				return UL4Instance.super.getAttrUL4(context, key);
 		}
 	}
 }

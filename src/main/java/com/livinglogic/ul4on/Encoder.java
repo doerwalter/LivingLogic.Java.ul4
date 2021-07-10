@@ -16,6 +16,7 @@ import java.util.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -28,6 +29,7 @@ import com.livinglogic.ul4.UL4Dir;
 import com.livinglogic.ul4.UL4Type;
 import com.livinglogic.ul4.UL4Instance;
 import com.livinglogic.ul4.AbstractInstanceType;
+import com.livinglogic.ul4.MethodDescriptor;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
@@ -102,7 +104,7 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -447,6 +449,9 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 		;
 	}
 
+	private static final Signature signatureDumpS = new Signature().addBoth("obj");
+	private static final MethodDescriptor<Encoder> methodDumps = new MethodDescriptor<Encoder>(type, "dumps", signatureDumpS);
+
 	protected static Set<String> attributes = makeSet("dumps");
 
 	@Override
@@ -461,37 +466,24 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 		switch (key)
 		{
 			case "dumps":
-				return new BoundMethodDumpS(this);
+				return methodDumps.bindMethod(this);
 			default:
-				throw new AttributeException(this, key);
+				return UL4Instance.super.getAttrUL4(context, key);
 		}
 	}
 
-	private static class BoundMethodDumpS extends BoundMethod<Encoder>
+	@Override
+	public Object callAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
 	{
-		public BoundMethodDumpS(Encoder object)
+		switch (key)
 		{
-			super(object);
-		}
-
-		@Override
-		public String getNameUL4()
-		{
-			return "dumps";
-		}
-
-		private static final Signature signature = new Signature().addBoth("obj");
-
-		@Override
-		public Signature getSignature()
-		{
-			return signature;
-		}
-
-		@Override
-		public Object evaluate(EvaluationContext context, BoundArguments arguments)
-		{
-			return object.dumps(arguments.get(0));
+			case "dumps":
+				try (BoundArguments boundArgs = methodDumps.bindArguments(args, kwargs))
+				{
+					return dumps(boundArgs.get(0));
+				}
+			default:
+				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}
 	}
 }

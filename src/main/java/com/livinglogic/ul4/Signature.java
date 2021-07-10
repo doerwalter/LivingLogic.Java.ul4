@@ -37,7 +37,7 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -95,6 +95,12 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 	**/
 	public static final Object noValue = new Object();
 
+	/**
+	Since fully configured signatures can be treated as immutable, we only
+	need one parameter less signature, that can be shared by all users.
+	**/
+	public static final Signature noParameters = new Signature();
+
 	public Signature()
 	{
 		parametersByName = new LinkedHashMap<String, ParameterDescription>();
@@ -105,6 +111,16 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 		countBoth = 0;
 		countKeywordOnly = 0;
 		countDefaults = 0;
+	}
+
+	public BoundArguments bind(UL4Name object, List<Object> args, Map<String, Object> kwargs)
+	{
+		return new BoundArguments(this, object, args, kwargs);
+	}
+
+	public BoundArguments bind(String name, List<Object> args, Map<String, Object> kwargs)
+	{
+		return new BoundArguments(this, name, args, kwargs);
 	}
 
 	ParameterDescription add(String name, ParameterDescription.Type type, Object defaultValue)

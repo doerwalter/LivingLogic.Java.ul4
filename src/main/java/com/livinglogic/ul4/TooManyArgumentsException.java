@@ -16,8 +16,13 @@ public class TooManyArgumentsException extends ArgumentException
 		super(name + "() expects at most " + expected + " positional argument" + (expected != 1 ? "s" : "") + ", " + given + " given");
 	}
 
+	public TooManyArgumentsException(String name, Signature signature, int given)
+	{
+		this(name, signature.countPositionalOnly() + signature.countPositionalOrKeyword(), given);
+	}
+
 	public TooManyArgumentsException(UL4Name object, Signature signature, int given)
 	{
-		this(object.getFullNameUL4(), signature.countPositionalOnly() + signature.countPositionalOrKeyword(), given);
+		this(object.getFullNameUL4(), signature, given);
 	}
 }

@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
-public class Slice implements UL4Instance, UL4GetAttr, UL4Dir, UL4Repr, Comparable<Slice>
+public class Slice implements UL4Instance, UL4Dir, UL4Repr, Comparable<Slice>
 {
 	protected static class Type extends AbstractInstanceType
 	{
@@ -33,7 +33,7 @@ public class Slice implements UL4Instance, UL4GetAttr, UL4Dir, UL4Repr, Comparab
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -174,7 +174,7 @@ public class Slice implements UL4Instance, UL4GetAttr, UL4Dir, UL4Repr, Comparab
 			case "stop":
 				return getStop();
 			default:
-				throw new AttributeException(this, key);
+				return UL4Instance.super.getAttrUL4(context, key);
 		}
 	}
 }

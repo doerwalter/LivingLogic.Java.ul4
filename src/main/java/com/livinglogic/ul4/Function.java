@@ -40,7 +40,7 @@ public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()
@@ -68,8 +68,6 @@ public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 		return getNameUL4();
 	}
 
-	private static final Signature signature = new Signature(); // default signature: no arguments
-
 	/**
 	<p>Return a signature for this function.</p>
 
@@ -77,7 +75,7 @@ public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 	**/
 	protected Signature getSignature()
 	{
-		return signature;
+		return Signature.noParameters;
 	}
 
 	@Override

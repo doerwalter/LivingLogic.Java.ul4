@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 
 
-public class OperatorAttrGetter extends Function implements UL4Instance, UL4Repr, UL4GetAttr, UL4Dir
+public class OperatorAttrGetter extends Function implements UL4Instance, UL4Repr, UL4Dir
 {
 	protected static class Type extends AbstractInstanceType
 	{
@@ -67,7 +67,7 @@ public class OperatorAttrGetter extends Function implements UL4Instance, UL4Repr
 		}
 	}
 
-	public static final UL4Type type = new Type();
+	public static final Type type = new Type();
 
 	@Override
 	public UL4Type getTypeUL4()

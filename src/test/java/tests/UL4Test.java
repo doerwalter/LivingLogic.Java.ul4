@@ -68,7 +68,7 @@ import com.livinglogic.dbutils.Connection;
 @RunWith(CauseTestRunner.class)
 public class UL4Test
 {
-	private static class Point implements UL4Instance, UL4Bool, UL4GetAttr, UL4SetAttr, UL4Dir
+	private static class Point implements UL4Instance, UL4Bool, UL4SetAttr, UL4Dir
 	{
 		protected static class Type extends AbstractInstanceType
 		{
@@ -91,7 +91,7 @@ public class UL4Test
 			}
 		}
 
-		public static final UL4Type type = new Type();
+		public static final Type type = new Type();
 
 		@Override
 		public UL4Type getTypeUL4()
@@ -130,7 +130,7 @@ public class UL4Test
 				case "y":
 					return y;
 				default:
-					throw new AttributeException(this, key);
+					return UL4Instance.super.getAttrUL4(context, key);
 			}
 		}
 
@@ -148,7 +148,7 @@ public class UL4Test
 				case "y":
 					throw new ReadonlyException(this, key);
 				default:
-					throw new AttributeException(this, key);
+					UL4Instance.super.setAttrUL4(context, key, value);
 			}
 		}
 	}
@@ -5764,7 +5764,7 @@ public class UL4Test
 		String source = "<?print x?>";
 		Template t = T(source, "t");
 
-		checkOutput("<com.livinglogic.ul4.UndefinedAttribute attrname='foo' object=<com.livinglogic.ul4.Template name='t' whitespace='strip'>>", T("<?print repr(template.foo)?>"), V("template", t));
+		checkOutput("<com.livinglogic.ul4.UndefinedAttribute 'foo' of <com.livinglogic.ul4.Template name='t' whitespace='strip'>>", T("<?print repr(template.foo)?>"), V("template", t));
 		checkOutput(source, T("<?print template.source?>"), V("template", t));
 		checkOutput("2", T("<?print len(template.content)?>"), V("template", t));
 		checkOutput("t", T("<?print template.content[0].template.name?>"), V("template", t));
