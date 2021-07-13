@@ -1804,7 +1804,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 					return null;
 				}
 			default:
-				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
+				return super.callAttrUL4(context, key, args, kwargs);
 		}
 	}
 }

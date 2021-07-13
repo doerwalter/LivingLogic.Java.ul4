@@ -110,7 +110,9 @@ public class CallAST extends CallRenderAST
 					// This is an attribute access, but the resulting object doesn't
 					// implement {@link UL4GetAttr}, so we have to get the attribute
 					// via {@link AttrAST}.
-					realObject = AttrAST.call(context, realObject, attrName);
+					makeArguments(context, realArguments, realKeywordArguments);
+					UL4Type type = UL4Type.getType(realObject);
+					return type.callAttr(context, realObject, attrName, realArguments, realKeywordArguments);
 				}
 			}
 			else

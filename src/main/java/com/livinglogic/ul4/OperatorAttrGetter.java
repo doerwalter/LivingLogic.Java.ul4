@@ -94,7 +94,7 @@ public class OperatorAttrGetter extends Function implements UL4Instance, UL4Repr
 				first = false;
 			else
 				buffer.append(", ");
-			buffer.append(FunctionRepr.call(BoundStringMethodJoin.call(".", attrNames)));
+			buffer.append(FunctionRepr.call(Str.join(".", attrNames)));
 		}
 		buffer.append(")");
 		return buffer.toString();

@@ -157,6 +157,24 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	}
 
 	/**
+	Call an attribute of an instance of this type as a method.
+
+	@param context The evaluation context.
+	@param instance The instance whose method should be be called.
+	@param key The name of the method/attribute to call.
+	@param args Positional arguments.
+	@param kwargs Keyword arguments.
+	@return The result of the call.
+	**/
+	default Object callAttr(EvaluationContext context, Object instance, String key, List<Object> args, Map<String, Object> kwargs)
+	{
+		if (instance instanceof UL4GetAttr)
+			return ((UL4GetAttr)instance).callAttrUL4(context, key, args, kwargs);
+		else
+			return CallAST.call(context, AttrAST.call(context, instance, key), args, kwargs);
+	}
+
+	/**
 	For types where we don't have a special type object (i.e. those that
 	are neither subclasses of {@link UL4Instance} nor any of a number of basic
 	types (like {@code boolean}, {@code int}, {@code str} etc.)), we create an
