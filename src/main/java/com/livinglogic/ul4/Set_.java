@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,6 +20,8 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 
 public class Set_ extends AbstractType
 {
+	public static final UL4Type type = new Set_();
+
 	@Override
 	public String getNameUL4()
 	{
@@ -119,6 +122,32 @@ public class Set_ extends AbstractType
 		return ((Set)instance).size();
 	}
 
+	private static final Signature signatureAdd = new Signature().addVarPositional("object");
+	private static final BuiltinMethodDescriptor methodAdd = new BuiltinMethodDescriptor(type, "add", signatureAdd);
+	private static final BuiltinMethodDescriptor methodClear = new BuiltinMethodDescriptor(type, "clear", Signature.noParameters);
+
+	public static void clear(EvaluationContext context, Set instance)
+	{
+		instance.clear();
+	}
+
+	public static Object clear(EvaluationContext context, Set instance, BoundArguments args)
+	{
+		clear(context, instance);
+		return null;
+	}
+
+	public static void add(EvaluationContext context, Set instance, List<Object> objects)
+	{
+		instance.addAll(objects);
+	}
+
+	public static Object add(EvaluationContext context, Set instance, BoundArguments args)
+	{
+		add(context, instance, (List<Object>)args.get(0));
+		return null;
+	}
+
 	protected static Set<String> attributes = makeSet("add", "clear");
 
 	@Override
@@ -130,18 +159,30 @@ public class Set_ extends AbstractType
 	@Override
 	public Object getAttr(EvaluationContext context, Object object, String key)
 	{
-		Set set = (Set)object;
-
 		switch (key)
 		{
 			case "add":
-				return new BoundSetMethodAdd(set);
+				return methodAdd.bindMethod(object);
 			case "clear":
-				return new BoundSetMethodClear(set);
+				return methodClear.bindMethod(object);
 			default:
 				return super.getAttr(context, object, key);
 		}
 	}
 
-	public static final UL4Type type = new Set_();
+	@Override
+	public Object callAttr(EvaluationContext context, Object object, String key, List<Object> args, Map<String, Object> kwargs)
+	{
+		Set set = (Set)object;
+
+		switch (key)
+		{
+			case "add":
+				return add(context, set, methodAdd.bindArguments(args, kwargs));
+			case "clear":
+				return clear(context, set, methodClear.bindArguments(args, kwargs));
+			default:
+				return super.callAttr(context, set, key, args, kwargs);
+		}
+	}
 }
