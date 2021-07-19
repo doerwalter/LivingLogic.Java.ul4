@@ -225,7 +225,7 @@ public class AttrAST extends CodeAST implements LValue
 		UL4Type type = UL4Type.getType(obj);
 
 		Object oldValue = type.getAttr(context, obj, attrname);
-		Object newValue = ModAST.call(context, oldValue, value);
+		Object newValue = ModAST.call(oldValue, value);
 		type.setAttr(context, obj, attrname, newValue);
 	}
 

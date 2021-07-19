@@ -413,12 +413,12 @@ public class ItemAST extends BinaryAST implements LValue
 	{
 		if (0 > index)
 			index += obj.size();
-		obj.set(index, ModAST.call(context, obj.get(index), value));
+		obj.set(index, ModAST.call(obj.get(index), value));
 	}
 
 	public static void callMod(EvaluationContext context, Map obj, Object index, Object value)
 	{
-		obj.put(index, ModAST.call(context, call(context, obj, index), value));
+		obj.put(index, ModAST.call(call(context, obj, index), value));
 	}
 
 	public static void callMod(EvaluationContext context, Object obj, Object index, Object value)
@@ -426,7 +426,7 @@ public class ItemAST extends BinaryAST implements LValue
 		if (obj instanceof UL4SetItem)
 		{
 			Object orgvalue = getValue(context, obj, index, "{!t}[{!t}] %= {!t} not supported", value);
-			((UL4SetItem)obj).setItemUL4(context, index, ModAST.call(context, orgvalue, value));
+			((UL4SetItem)obj).setItemUL4(context, index, ModAST.call(orgvalue, value));
 		}
 		else if (obj instanceof Map)
 			callMod(context, (Map)obj, index, value);

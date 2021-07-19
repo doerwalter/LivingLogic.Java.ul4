@@ -64,10 +64,10 @@ public class ModAST extends BinaryAST
 
 	public Object evaluate(EvaluationContext context)
 	{
-		return call(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
+		return call(obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));
 	}
 
-	public static int call(EvaluationContext context, int arg1, int arg2)
+	public static int call(int arg1, int arg2)
 	{
 		int div = arg1 / arg2;
 		int mod = arg1 - div * arg2;
@@ -80,7 +80,7 @@ public class ModAST extends BinaryAST
 		return arg1 - div * arg2;
 	}
 
-	public static long call(EvaluationContext context, long arg1, long arg2)
+	public static long call(long arg1, long arg2)
 	{
 		long div = arg1 / arg2;
 		long mod = arg1 - div * arg2;
@@ -93,9 +93,9 @@ public class ModAST extends BinaryAST
 		return arg1 - div * arg2;
 	}
 
-	// No version public static float call(EvaluationContext context, float arg1, float arg2)
+	// No version public static float call(float arg1, float arg2)
 
-	public static double call(EvaluationContext context, double arg1, double arg2)
+	public static double call(double arg1, double arg2)
 	{
 		double div = Math.floor(arg1 / arg2);
 		double mod = arg1 - div * arg2;
@@ -108,98 +108,98 @@ public class ModAST extends BinaryAST
 		return arg1 - div * arg2;
 	}
 
-	public static BigInteger call(EvaluationContext context, BigInteger arg1, BigInteger arg2)
+	public static BigInteger call(BigInteger arg1, BigInteger arg2)
 	{
 		return arg1.mod(arg2); // FIXME: negative numbers?
 	}
 
-	public static BigDecimal call(EvaluationContext context, BigDecimal arg1, BigDecimal arg2)
+	public static BigDecimal call(BigDecimal arg1, BigDecimal arg2)
 	{
 		return arg1.remainder(arg2); // FIXME: negative numbers?
 	}
 
-	public static Object call(EvaluationContext context, Object arg1, Object arg2)
+	public static Object call(Object arg1, Object arg2)
 	{
 		if (arg1 instanceof Integer || arg1 instanceof Byte || arg1 instanceof Short || arg1 instanceof Boolean)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return call(context, Utils.toInt(arg1), Utils.toInt(arg2));
+				return call(Utils.toInt(arg1), Utils.toInt(arg2));
 			else if (arg2 instanceof Long)
-				return call(context, Utils.toLong(arg1), Utils.toLong(arg2));
+				return call(Utils.toLong(arg1), Utils.toLong(arg2));
 			else if (arg2 instanceof Float)
-				return call(context, Utils.toDouble(arg1), Utils.toDouble(arg2));
+				return call(Utils.toDouble(arg1), Utils.toDouble(arg2));
 			else if (arg2 instanceof Double)
-				return call(context, Utils.toDouble(arg1), Utils.toDouble(arg2));
+				return call(Utils.toDouble(arg1), Utils.toDouble(arg2));
 			else if (arg2 instanceof BigInteger)
-				return call(context, Utils.toBigInteger(Utils.toInt(arg1)), (BigInteger)arg2);
+				return call(Utils.toBigInteger(Utils.toInt(arg1)), (BigInteger)arg2);
 			else if (arg2 instanceof BigDecimal)
-				return call(context, new BigDecimal(Utils.toDouble(arg1)), (BigDecimal)arg2);
+				return call(new BigDecimal(Utils.toDouble(arg1)), (BigDecimal)arg2);
 		}
 		else if (arg1 instanceof Long)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return call(context, Utils.toLong(arg1), Utils.toLong(arg2));
+				return call(Utils.toLong(arg1), Utils.toLong(arg2));
 			else if (arg2 instanceof Float)
-				return call(context, Utils.toDouble(arg1), Utils.toDouble(arg2));
+				return call(Utils.toDouble(arg1), Utils.toDouble(arg2));
 			else if (arg2 instanceof Double)
-				return call(context, Utils.toDouble(arg1), Utils.toDouble(arg2));
+				return call(Utils.toDouble(arg1), Utils.toDouble(arg2));
 			else if (arg2 instanceof BigInteger)
-				return call(context, Utils.toBigInteger(Utils.toLong(arg1)), (BigInteger)arg2);
+				return call(Utils.toBigInteger(Utils.toLong(arg1)), (BigInteger)arg2);
 			else if (arg2 instanceof BigDecimal)
-				return call(context, new BigDecimal(Utils.toDouble(arg1)), (BigDecimal)arg2);
+				return call(new BigDecimal(Utils.toDouble(arg1)), (BigDecimal)arg2);
 		}
 		else if (arg1 instanceof Float)
 		{
 			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float)
-				return call(context, Utils.toDouble(arg1), Utils.toDouble(arg2));
+				return call(Utils.toDouble(arg1), Utils.toDouble(arg2));
 			else if (arg2 instanceof Double)
-				return call(context, Utils.toDouble(arg1), (((Double)arg2).doubleValue()));
+				return call(Utils.toDouble(arg1), (((Double)arg2).doubleValue()));
 			else if (arg2 instanceof BigInteger)
-				return call(context, new BigDecimal(Utils.toDouble(arg1)), new BigDecimal((BigInteger)arg2));
+				return call(new BigDecimal(Utils.toDouble(arg1)), new BigDecimal((BigInteger)arg2));
 			else if (arg2 instanceof BigDecimal)
-				return call(context, new BigDecimal(Utils.toDouble(arg1)), (BigDecimal)arg2);
+				return call(new BigDecimal(Utils.toDouble(arg1)), (BigDecimal)arg2);
 		}
 		else if (arg1 instanceof Double)
 		{
 			double value1 = (((Double)arg1).doubleValue());
 			if (arg2 instanceof Integer || arg2 instanceof Long || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean || arg2 instanceof Float || arg2 instanceof Double)
-				return call(context, value1, Utils.toDouble(arg2));
+				return call(value1, Utils.toDouble(arg2));
 			else if (arg2 instanceof BigInteger)
-				return call(context, new BigDecimal(value1), new BigDecimal((BigInteger)arg2));
+				return call(new BigDecimal(value1), new BigDecimal((BigInteger)arg2));
 			else if (arg2 instanceof BigDecimal)
-				return call(context, new BigDecimal(value1), ((BigDecimal)arg2));
+				return call(new BigDecimal(value1), ((BigDecimal)arg2));
 		}
 		else if (arg1 instanceof BigInteger)
 		{
 			BigInteger value1 = (BigInteger)arg1;
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return call(context, value1, Utils.toBigInteger(Utils.toInt(arg2)));
+				return call(value1, Utils.toBigInteger(Utils.toInt(arg2)));
 			else if (arg2 instanceof Long)
-				return call(context, value1, Utils.toBigInteger(Utils.toLong(arg2)));
+				return call(value1, Utils.toBigInteger(Utils.toLong(arg2)));
 			else if (arg2 instanceof Float)
-				return call(context, new BigDecimal(value1), new BigDecimal(((Float)arg2).doubleValue()));
+				return call(new BigDecimal(value1), new BigDecimal(((Float)arg2).doubleValue()));
 			else if (arg2 instanceof Double)
-				return call(context, new BigDecimal(value1), new BigDecimal(((Double)arg2).doubleValue()));
+				return call(new BigDecimal(value1), new BigDecimal(((Double)arg2).doubleValue()));
 			else if (arg2 instanceof BigInteger)
-				return call(context, value1, (BigInteger)arg2);
+				return call(value1, (BigInteger)arg2);
 			else if (arg2 instanceof BigDecimal)
-				return call(context, new BigDecimal(value1), (BigDecimal)arg2);
+				return call(new BigDecimal(value1), (BigDecimal)arg2);
 		}
 		else if (arg1 instanceof BigDecimal)
 		{
 			BigDecimal value1 = (BigDecimal)arg1;
 			if (arg2 instanceof Integer || arg2 instanceof Byte || arg2 instanceof Short || arg2 instanceof Boolean)
-				return call(context, value1, Utils.toBigDecimal(Utils.toInt(arg2)));
+				return call(value1, Utils.toBigDecimal(Utils.toInt(arg2)));
 			else if (arg2 instanceof Long)
-				return call(context, value1, Utils.toBigDecimal(Utils.toLong(arg2)));
+				return call(value1, Utils.toBigDecimal(Utils.toLong(arg2)));
 			else if (arg2 instanceof Float)
-				return call(context, value1, new BigDecimal(((Float)arg2).doubleValue()));
+				return call(value1, new BigDecimal(((Float)arg2).doubleValue()));
 			else if (arg2 instanceof Double)
-				return call(context, value1, new BigDecimal(((Double)arg2).doubleValue()));
+				return call(value1, new BigDecimal(((Double)arg2).doubleValue()));
 			else if (arg2 instanceof BigInteger)
-				return call(context, value1, new BigDecimal((BigInteger)arg2));
+				return call(value1, new BigDecimal((BigInteger)arg2));
 			else if (arg2 instanceof BigDecimal)
-				return call(context, value1, (BigDecimal)arg2);
+				return call(value1, (BigDecimal)arg2);
 		}
 		else if (arg1 instanceof Color && arg2 instanceof Color)
 			return ((Color)arg1).blend((Color)arg2);

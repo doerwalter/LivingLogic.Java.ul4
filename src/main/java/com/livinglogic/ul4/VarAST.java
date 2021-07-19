@@ -107,7 +107,7 @@ public class VarAST extends CodeAST implements LValue
 
 	public void evaluateMod(EvaluationContext context, Object value)
 	{
-		context.set(name, ModAST.call(context, context.get(name), value));
+		context.set(name, ModAST.call(context.get(name), value));
 	}
 
 	public void evaluateShiftLeft(EvaluationContext context, Object value)

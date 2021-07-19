@@ -29,9 +29,9 @@ public class BoundLocalDateTimeMethodWeek extends BoundMethod<LocalDateTime>
 		return signature;
 	}
 
-	public static int call(EvaluationContext context, LocalDateTime object, int firstWeekday, int minDaysInFirstWeek)
+	public static int call(LocalDateTime object, int firstWeekday, int minDaysInFirstWeek)
 	{
-		return BoundLocalDateTimeMethodCalendar.call(context, object, firstWeekday, minDaysInFirstWeek).week;
+		return BoundLocalDateTimeMethodCalendar.call(object, firstWeekday, minDaysInFirstWeek).week;
 	}
 
 	@Override
@@ -39,6 +39,6 @@ public class BoundLocalDateTimeMethodWeek extends BoundMethod<LocalDateTime>
 	{
 		int firstWeekday = Utils.toInt(args.get(0));
 		int minDaysInFirstWeek = Utils.toInt(args.get(1));
-		return call(context, object, firstWeekday, minDaysInFirstWeek);
+		return call(object, firstWeekday, minDaysInFirstWeek);
 	}
 }

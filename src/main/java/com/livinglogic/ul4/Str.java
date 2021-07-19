@@ -700,9 +700,9 @@ public class Str extends AbstractType
 	}
 
 	@Override
-	public Object getAttr(EvaluationContext context, Object object, String key)
+	public Object getAttr(EvaluationContext context, Object instance, String key)
 	{
-		String string = (String)object;
+		String string = (String)instance;
 
 		switch (key)
 		{
@@ -739,14 +739,14 @@ public class Str extends AbstractType
 			case "join":
 				return methodJoin.bindMethod(string);
 			default:
-				return super.getAttr(context, object, key);
+				return super.getAttr(context, instance, key);
 		}
 	}
 
 	@Override
-	public Object callAttr(EvaluationContext context, Object object, String key, List<Object> args, Map<String, Object> kwargs)
+	public Object callAttr(EvaluationContext context, Object instance, String key, List<Object> args, Map<String, Object> kwargs)
 	{
-		String string = (String)object;
+		String string = (String)instance;
 
 		switch (key)
 		{
@@ -783,7 +783,7 @@ public class Str extends AbstractType
 			case "join":
 				return join(string, methodJoin.bindArguments(args, kwargs));
 			default:
-				return super.callAttr(context, object, key, args, kwargs);
+				return super.callAttr(context, instance, key, args, kwargs);
 		}
 	}
 }

@@ -157,23 +157,23 @@ public class Set_ extends AbstractType
 	}
 
 	@Override
-	public Object getAttr(EvaluationContext context, Object object, String key)
+	public Object getAttr(EvaluationContext context, Object instance, String key)
 	{
 		switch (key)
 		{
 			case "add":
-				return methodAdd.bindMethod(object);
+				return methodAdd.bindMethod(instance);
 			case "clear":
-				return methodClear.bindMethod(object);
+				return methodClear.bindMethod(instance);
 			default:
-				return super.getAttr(context, object, key);
+				return super.getAttr(context, instance, key);
 		}
 	}
 
 	@Override
-	public Object callAttr(EvaluationContext context, Object object, String key, List<Object> args, Map<String, Object> kwargs)
+	public Object callAttr(EvaluationContext context, Object instance, String key, List<Object> args, Map<String, Object> kwargs)
 	{
-		Set set = (Set)object;
+		Set set = (Set)instance;
 
 		switch (key)
 		{

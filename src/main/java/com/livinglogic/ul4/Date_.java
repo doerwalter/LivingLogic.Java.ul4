@@ -9,10 +9,12 @@ package com.livinglogic.ul4;
 import java.util.Locale;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.Arrays;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
@@ -20,6 +22,8 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 
 public class Date_ extends AbstractType
 {
+	public static final Date_ type = new Date_();
+
 	@Override
 	public String getNameUL4()
 	{
@@ -82,6 +86,153 @@ public class Date_ extends AbstractType
 		return formatterLocalDate.format((LocalDate)instance);
 	}
 
+	private static final Signature signatureWeekCalendar = new Signature().addBoth("firstweekday", 0).addBoth("mindaysinfirstweek", 4);
+	private static final BuiltinMethodDescriptor methodYear = new BuiltinMethodDescriptor(type, "year", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodMonth = new BuiltinMethodDescriptor(type, "month", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodDay = new BuiltinMethodDescriptor(type, "day", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodDate = new BuiltinMethodDescriptor(type, "date", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodWeekday = new BuiltinMethodDescriptor(type, "weekday", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodYearday = new BuiltinMethodDescriptor(type, "yearday", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodWeek = new BuiltinMethodDescriptor(type, "week", signatureWeekCalendar);
+	private static final BuiltinMethodDescriptor methodCalendar = new BuiltinMethodDescriptor(type, "calendar", signatureWeekCalendar);
+	private static final BuiltinMethodDescriptor methodISOFormat = new BuiltinMethodDescriptor(type, "isoformat", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodMIMEFormat = new BuiltinMethodDescriptor(type, "mimeformat", Signature.noParameters);
+
+	public static int year(LocalDate instance)
+	{
+		return instance.getYear();
+	}
+
+	public static int year(LocalDate instance, BoundArguments args)
+	{
+		return year(instance);
+	}
+
+	public static int month(LocalDate instance)
+	{
+		return instance.getMonthValue();
+	}
+
+	public static int month(LocalDate instance, BoundArguments args)
+	{
+		return month(instance);
+	}
+
+	public static int day(LocalDate instance)
+	{
+		return instance.getDayOfMonth();
+	}
+
+	public static int day(LocalDate instance, BoundArguments args)
+	{
+		return day(instance);
+	}
+
+	public static LocalDate date(LocalDate instance)
+	{
+		return instance;
+	}
+
+	public static LocalDate date(LocalDate instance, BoundArguments args)
+	{
+		return date(instance);
+	}
+
+	public static int weekday(LocalDate instance)
+	{
+		return instance.getDayOfWeek().getValue()-1;
+	}
+
+	public static int weekday(LocalDate instance, BoundArguments args)
+	{
+		return weekday(instance);
+	}
+
+	public static int yearday(LocalDate instance)
+	{
+		return instance.getDayOfYear();
+	}
+
+	public static int yearday(LocalDate instance, BoundArguments args)
+	{
+		return yearday(instance);
+	}
+
+	public static int week(LocalDate instance, int firstWeekday, int minDaysInFirstWeek)
+	{
+		return calendar(instance, firstWeekday, minDaysInFirstWeek).week;
+	}
+
+	public static int week(LocalDate instance, BoundArguments args)
+	{
+		int firstWeekday = Utils.toInt(args.get(0));
+		int minDaysInFirstWeek = Utils.toInt(args.get(1));
+		return week(instance, firstWeekday, minDaysInFirstWeek);
+	}
+
+	public static Calendar calendar(LocalDate instance, int firstWeekday, int minDaysInFirstWeek)
+	{
+		// Normalize parameters
+		firstWeekday %= 7;
+		if (minDaysInFirstWeek < 1)
+			minDaysInFirstWeek = 1;
+		else if (minDaysInFirstWeek > 7)
+			minDaysInFirstWeek = 7;
+
+		// {@code instance} might be in the first week of the next year, or last week of
+		// the previous year, so we might have to try those too.
+		int year = instance.getYear();
+		for (int refYear = year+1; refYear >= year-1; --refYear)
+		{
+			// {@code refDate} will always be in week 1
+			LocalDate refDate = LocalDate.of(refYear, 1, minDaysInFirstWeek);
+			// Go back to the start of {@code refDate}s week (i.e. day 1 of week 1)
+			LocalDate weekStartDate = refDate.minusDays(ModAST.call(refDate.getDayOfWeek().getValue() - 1 - firstWeekday, 7));
+			// Is our date {@code instance} at or after day 1 of week 1?
+			// (if not we have to calculate its week number based on the year before)
+			if (!instance.isBefore(weekStartDate))
+			{
+				long refDays = ChronoUnit.DAYS.between(weekStartDate, instance);
+				int refWeekDay = weekday(instance);
+				return new Calendar(refYear, (int)(refDays/7+1), refWeekDay);
+			}
+		}
+
+		// Can't happen
+		return null;
+	}
+
+	public List<Integer> calendar(LocalDate instance, BoundArguments args)
+	{
+		int firstWeekday = Utils.toInt(args.get(0));
+		int minDaysInFirstWeek = Utils.toInt(args.get(1));
+		return calendar(instance, firstWeekday, minDaysInFirstWeek).asList();
+	}
+
+	private static DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US);
+
+	public static String isoformat(LocalDate instance)
+	{
+		return instance.format(isoFormatter);
+	}
+
+	public static String isoformat(LocalDate instance, BoundArguments args)
+	{
+		return isoformat(instance);
+	}
+
+	private static DateTimeFormatter mimeFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy", Locale.US);
+
+	public static String mimeformat(LocalDate instance)
+	{
+		return instance.format(mimeFormatter);
+	}
+
+	public static String mimeformat(LocalDate instance, BoundArguments args)
+	{
+		return mimeformat(instance);
+	}
+
 	protected static Set<String> attributes = makeSet("year", "month", "day", "date", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat");
 
 	@Override
@@ -91,34 +242,66 @@ public class Date_ extends AbstractType
 	}
 
 	@Override
-	public Object getAttr(EvaluationContext context, Object object, String key)
+	public Object getAttr(EvaluationContext context, Object instance, String key)
 	{
-		LocalDate date = (LocalDate)object;
+		LocalDate date = (LocalDate)instance;
 
 		switch (key)
 		{
 			case "year":
-				return new BoundLocalDateMethodYear(date);
+				return methodYear.bindMethod(date);
 			case "month":
-				return new BoundLocalDateMethodMonth(date);
+				return methodMonth.bindMethod(date);
 			case "day":
-				return new BoundLocalDateMethodDay(date);
+				return methodDay.bindMethod(date);
 			case "date":
-				return new BoundLocalDateMethodDate(date);
+				return methodDate.bindMethod(date);
 			case "weekday":
-				return new BoundLocalDateMethodWeekday(date);
+				return methodWeekday.bindMethod(date);
 			case "yearday":
-				return new BoundLocalDateMethodYearday(date);
+				return methodYearday.bindMethod(date);
 			case "week":
-				return new BoundLocalDateMethodWeek(date);
+				return methodWeek.bindMethod(date);
 			case "calendar":
-				return new BoundLocalDateMethodCalendar(date);
+				return methodCalendar.bindMethod(date);
 			case "isoformat":
-				return new BoundLocalDateMethodISOFormat(date);
+				return methodISOFormat.bindMethod(date);
 			case "mimeformat":
-				return new BoundLocalDateMethodMIMEFormat(date);
+				return methodMIMEFormat.bindMethod(date);
 			default:
-				return super.getAttr(context, object, key);
+				return super.getAttr(context, instance, key);
+		}
+	}
+
+	@Override
+	public Object callAttr(EvaluationContext context, Object instance, String key, List<Object> args, Map<String, Object> kwargs)
+	{
+		LocalDate date = (LocalDate)instance;
+
+		switch (key)
+		{
+			case "year":
+				return year(date, methodYear.bindArguments(args, kwargs));
+			case "month":
+				return month(date, methodMonth.bindArguments(args, kwargs));
+			case "day":
+				return day(date, methodDay.bindArguments(args, kwargs));
+			case "date":
+				return date(date, methodDate.bindArguments(args, kwargs));
+			case "weekday":
+				return weekday(date, methodWeekday.bindArguments(args, kwargs));
+			case "yearday":
+				return yearday(date, methodYearday.bindArguments(args, kwargs));
+			case "week":
+				return week(date, methodWeek.bindArguments(args, kwargs));
+			case "calendar":
+				return calendar(date, methodCalendar.bindArguments(args, kwargs));
+			case "isoformat":
+				return isoformat(date, methodISOFormat.bindArguments(args, kwargs));
+			case "mimeformat":
+				return mimeformat(date, methodMIMEFormat.bindArguments(args, kwargs));
+			default:
+				return super.callAttr(context, date, key, args, kwargs);
 		}
 	}
 
@@ -178,6 +361,4 @@ public class Date_ extends AbstractType
 			return Arrays.asList(year, week, weekday);
 		}
 	}
-
-	public static final Date_ type = new Date_();
 }

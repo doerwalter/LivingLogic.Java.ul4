@@ -139,7 +139,7 @@ public class FunctionFormat extends Function
 	private static int week(EvaluationContext context, Date object, int firstWeekday)
 	{
 		int yearday = BoundDateMethodYearday.call(object)+6;
-		int jan1Weekday = BoundLocalDateMethodWeekday.call(Date_.call(BoundDateMethodYear.call(object), 1, 1));
+		int jan1Weekday = Date_.weekday(Date_.call(BoundDateMethodYear.call(object), 1, 1));
 		while (jan1Weekday != firstWeekday)
 		{
 			--yearday;
@@ -151,7 +151,7 @@ public class FunctionFormat extends Function
 	private static int week(EvaluationContext context, LocalDate object, int firstWeekday)
 	{
 		int yearday = object.getDayOfYear()+6;
-		int jan1Weekday = BoundLocalDateMethodWeekday.call(LocalDate.of(object.getYear(), 1, 1));
+		int jan1Weekday = Date_.weekday(LocalDate.of(object.getYear(), 1, 1));
 		while (jan1Weekday != firstWeekday)
 		{
 			--yearday;
