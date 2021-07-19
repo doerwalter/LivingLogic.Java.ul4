@@ -4562,7 +4562,7 @@ public class UL4Test
 		checkOutput("['a', 'abslight', 'abslum', 'b', 'combine', 'g', 'hls', 'hlsa', 'hsv', 'hsva', 'hue', 'invert', 'light', 'lum', 'r', 'rellight', 'rellum', 'sat', 'witha', 'withlight', 'withlum']", T("<?print sorted(dir(data))?>"), V("data", dataColor));
 		checkOutput("['append', 'count', 'find', 'insert', 'pop', 'rfind']", T("<?print sorted(dir(data))?>"), V("data", dataList));
 		checkOutput("['add', 'clear']", T("<?print sorted(dir(data))?>"), V("data", dataSet));
-		checkOutput("['clear', 'get', 'items', 'update', 'values']", T("<?print sorted(dir(data))?>"), V("data", dataMap));
+		checkOutput("['clear', 'get', 'items', 'pop', 'update', 'values']", T("<?print sorted(dir(data))?>"), V("data", dataMap));
 		checkOutput("['x', 'y']", T("<?print sorted(dir(data))?>"), V("data", dataPoint));
 		checkOutput("", T("<?for d in data?><?for an in dir(d)?><?if getattr(d, an, None) is None?><?print repr(d)?>.<?print an?>: FAIL<?end if?><?end for?><?end for?>"), V("data", dataAll));
 	}

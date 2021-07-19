@@ -21,6 +21,8 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 
 public class List_ extends AbstractType
 {
+	public static final UL4Type type = new List_();
+
 	@Override
 	public String getNameUL4()
 	{
@@ -128,6 +130,345 @@ public class List_ extends AbstractType
 			return ((Object[])instance).length;
 	}
 
+	private static final Signature signatureAppend = new Signature().addVarPositional("items");
+	private static final Signature signatureInsert = new Signature().addPositionalOnly("pos").addVarPositional("items");
+	private static final Signature signaturePop = new Signature().addPositionalOnly("pos", -1);
+	private static final Signature signatureCount = new Signature().addPositionalOnly("sub").addPositionalOnly("start", null).addPositionalOnly("end", null);
+	private static final Signature signatureFind = new Signature().addPositionalOnly("sub").addPositionalOnly("start", null).addPositionalOnly("end", null);
+	private static final BuiltinMethodDescriptor methodItems = new BuiltinMethodDescriptor(type, "items", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodAppend = new BuiltinMethodDescriptor(type, "append", signatureAppend);
+	private static final BuiltinMethodDescriptor methodInsert = new BuiltinMethodDescriptor(type, "insert", signatureInsert);
+	private static final BuiltinMethodDescriptor methodPop = new BuiltinMethodDescriptor(type, "pop", signaturePop);
+	private static final BuiltinMethodDescriptor methodCount = new BuiltinMethodDescriptor(type, "count", signatureCount);
+	private static final BuiltinMethodDescriptor methodFind = new BuiltinMethodDescriptor(type, "find", signatureFind);
+	private static final BuiltinMethodDescriptor methodRFind = new BuiltinMethodDescriptor(type, "rfind", signatureFind);
+
+	public static Object append(EvaluationContext context, Object[] instance, BoundArguments args)
+	{
+		throw new ArgumentTypeMismatchException("{!t}.append(...) not supported!", instance);
+	}
+
+	public static void append(EvaluationContext context, List instance, List<Object> items)
+	{
+		instance.addAll(items);
+	}
+
+	public static Object append(EvaluationContext context, List instance, BoundArguments args)
+	{
+		append(context, instance, (List<Object>)args.get(0));
+		return null;
+	}
+
+	public static Object append(EvaluationContext context, Object instance, BoundArguments args)
+	{
+		if (instance instanceof List)
+			return append(context, (List)instance, args);
+		else
+			return append(context, (Object[])instance, args);
+	}
+
+	public static Object insert(EvaluationContext context, Object[] instance, BoundArguments args)
+	{
+		throw new ArgumentTypeMismatchException("{!t}.insert(...) not supported!", instance);
+	}
+
+	public static void insert(EvaluationContext context, List instance, int pos, List<Object> items)
+	{
+		if (pos < 0)
+			pos += instance.size();
+		instance.addAll(pos, items);
+	}
+
+	public static Object insert(EvaluationContext context, List instance, BoundArguments args)
+	{
+		insert(context, instance, Utils.toInt(args.get(0)), (List<Object>)args.get(1));
+		return null;
+	}
+
+	public static Object insert(EvaluationContext context, Object instance, BoundArguments args)
+	{
+		if (instance instanceof List)
+			return insert(context, (List)instance, args);
+		else
+			return insert(context, (Object[])instance, args);
+	}
+
+	public static Object pop(EvaluationContext context, Object[] instance, BoundArguments args)
+	{
+		throw new ArgumentTypeMismatchException("{!t}.pop(...) not supported!", instance);
+	}
+
+	public static Object pop(EvaluationContext context, List instance, int pos)
+	{
+		if (pos < 0)
+			pos += instance.size();
+		return instance.remove(pos);
+	}
+
+	public static Object pop(EvaluationContext context, List instance, BoundArguments args)
+	{
+		return pop(context, instance, Utils.toInt(args.get(0)));
+	}
+
+	public static Object pop(EvaluationContext context, Object instance, BoundArguments args)
+	{
+		if (instance instanceof List)
+			return pop(context, (List)instance, args);
+		else
+			return pop(context, (Object[])instance, args);
+	}
+
+	public static int count(EvaluationContext context, Object[] instance, Object sub)
+	{
+		return count(context, instance, sub, 0, instance.length);
+	}
+
+	public static int count(EvaluationContext context, Object[] instance, Object sub, int start)
+	{
+		return count(context, instance, sub, start, instance.length);
+	}
+
+	public static int count(EvaluationContext context, Object[] instance, Object sub, int start, int end)
+	{
+		start = Utils.getSliceStartPos(instance.length, start);
+		end = Utils.getSliceEndPos(instance.length, end);
+
+		int count = 0;
+		for (int i = start; i < end; ++i)
+		{
+			if (EQAST.call(context, instance[i], sub))
+				++count;
+		}
+		return count;
+	}
+
+	public static Object count(EvaluationContext context, Object[] instance, BoundArguments args)
+	{
+		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
+		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.length;
+
+		return count(context, instance, args.get(0), startIndex, endIndex);
+	}
+
+	public static int count(EvaluationContext context, List instance, Object sub)
+	{
+		return count(context, instance, sub, 0, instance.size());
+	}
+
+	public static int count(EvaluationContext context, List instance, Object sub, int start)
+	{
+		return count(context, instance, sub, start, instance.size());
+	}
+
+	public static int count(EvaluationContext context, List instance, Object sub, int start, int end)
+	{
+		start = Utils.getSliceStartPos(instance.size(), start);
+		end = Utils.getSliceEndPos(instance.size(), end);
+
+		int count = 0;
+		for (int i = start; i < end; ++i)
+		{
+			if (EQAST.call(context, instance.get(i), sub))
+				++count;
+		}
+		return count;
+	}
+
+	public static Object count(EvaluationContext context, List instance, BoundArguments args)
+	{
+		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
+		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.size();
+
+		return count(context, instance, args.get(0), startIndex, endIndex);
+	}
+
+	public static Object count(EvaluationContext context, Object instance, BoundArguments args)
+	{
+		if (instance instanceof List)
+			return count(context, (List)instance, args);
+		else
+			return count(context, (Object[])instance, args);
+	}
+
+	public static int find(EvaluationContext context, Object[] instance, Object sub)
+	{
+		int start = 0;
+		int end = instance.length;
+
+		for (int i = start; i < end; ++i)
+		{
+			if (EQAST.call(context, instance[i], sub))
+				return i;
+		}
+		return -1;
+	}
+
+	public static int find(EvaluationContext context, Object[] instance, Object sub, int start)
+	{
+		start = Utils.getSliceStartPos(instance.length, start);
+		int end = instance.length;
+
+		for (int i = start; i < end; ++i)
+		{
+			if (EQAST.call(context, instance[i], sub))
+				return i;
+		}
+		return -1;
+	}
+
+	public static int find(EvaluationContext context, Object[] instance, Object sub, int start, int end)
+	{
+		start = Utils.getSliceStartPos(instance.length, start);
+		end = Utils.getSliceEndPos(instance.length, end);
+
+		for (int i = start; i < end; ++i)
+		{
+			if (EQAST.call(context, instance[i], sub))
+				return i;
+		}
+		return -1;
+	}
+
+	public static Object find(EvaluationContext context, Object[] instance, BoundArguments args)
+	{
+		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
+		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.length;
+
+		return find(context, instance, args.get(0), startIndex, endIndex);
+	}
+
+	public static int find(EvaluationContext context, List instance, Object sub)
+	{
+		return instance.indexOf(sub);
+	}
+
+	public static int find(EvaluationContext context, List instance, Object sub, int start)
+	{
+		start = Utils.getSliceStartPos(instance.size(), start);
+		if (start != 0)
+			instance = instance.subList(start, instance.size());
+		int pos = instance.indexOf(sub);
+		if (pos != -1)
+			pos += start;
+		return pos;
+	}
+
+	public static int find(EvaluationContext context, List instance, Object sub, int start, int end)
+	{
+		start = Utils.getSliceStartPos(instance.size(), start);
+		end = Utils.getSliceEndPos(instance.size(), end);
+		if (start != 0 || end != instance.size())
+			instance = instance.subList(start, end);
+		int pos = instance.indexOf(sub);
+		if (pos != -1)
+			pos += start;
+		return pos;
+	}
+
+	public static Object find(EvaluationContext context, List instance, BoundArguments args)
+	{
+		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
+		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.size();
+
+		return find(context, instance, args.get(0), startIndex, endIndex);
+	}
+
+	public static Object find(EvaluationContext context, Object instance, BoundArguments args)
+	{
+		if (instance instanceof List)
+			return find(context, (List)instance, args);
+		else
+			return find(context, (Object[])instance, args);
+	}
+
+	public static int rfind(EvaluationContext context, Object[] instance, Object sub)
+	{
+		int start = 0;
+		int end = instance.length;
+
+		for (int i = end-1; i >= start; --i)
+		{
+			if (EQAST.call(context, instance[i], sub))
+				return i;
+		}
+		return -1;
+	}
+
+	public static int rfind(EvaluationContext context, Object[] instance, Object sub, int start)
+	{
+		start = Utils.getSliceStartPos(instance.length, start);
+		int end = instance.length;
+
+		for (int i = end-1; i >= start; --i)
+		{
+			if (EQAST.call(context, instance[i], sub))
+				return i;
+		}
+		return -1;
+	}
+
+	public static int rfind(EvaluationContext context, Object[] instance, Object sub, int start, int end)
+	{
+		start = Utils.getSliceStartPos(instance.length, start);
+		end = Utils.getSliceEndPos(instance.length, end);
+
+		for (int i = end-1; i >= start; --i)
+		{
+			if (EQAST.call(context, instance[i], sub))
+				return i;
+		}
+		return -1;
+	}
+
+	public static Object rfind(EvaluationContext context, Object[] instance, BoundArguments args)
+	{
+		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
+		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.length;
+
+		return rfind(context, instance, args.get(0), startIndex, endIndex);
+	}
+
+	public static int rfind(EvaluationContext context, List instance, Object sub)
+	{
+		return instance.lastIndexOf(sub);
+	}
+
+	public static int rfind(EvaluationContext context, List instance, Object sub, int start)
+	{
+		start = Utils.getSliceStartPos(instance.size(), start);
+		int result = instance.lastIndexOf(sub);
+		if (result < start)
+			return -1;
+		return result;
+	}
+
+	public static int rfind(EvaluationContext context, List instance, Object sub, int start, int end)
+	{
+		start = Utils.getSliceStartPos(instance.size(), start);
+		end = Utils.getSliceEndPos(instance.size(), end);
+		instance = instance.subList(start, end);
+		int pos = instance.lastIndexOf(sub);
+		if (pos != -1)
+			pos += start;
+		return pos;
+	}
+
+	public static Object rfind(EvaluationContext context, List instance, BoundArguments args)
+	{
+		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
+		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.size();
+
+		return rfind(context, instance, args.get(0), startIndex, endIndex);
+	}
+
+	public static Object rfind(EvaluationContext context, Object instance, BoundArguments args)
+	{
+		if (instance instanceof List)
+			return rfind(context, (List)instance, args);
+		else
+			return rfind(context, (Object[])instance, args);
+	}
+
 	protected static Set<String> attributes = makeSet("append", "insert", "pop", "count", "find", "rfind");
 
 	@Override
@@ -136,56 +477,45 @@ public class List_ extends AbstractType
 		return attributes;
 	}
 
-	@Override
-	public Object getAttr(EvaluationContext context, Object object, String key)
-	{
-		if (object instanceof List)
-			return getAttr(context, (List)object, key);
-		else
-			return getAttr(context, (Object[])object, key);
-	}
-
-	public Object getAttr(EvaluationContext context, List object, String key)
+	public Object getAttr(EvaluationContext context, Object instance, String key)
 	{
 		switch (key)
 		{
 			case "append":
-				return new BoundListMethodAppend(object);
+				return methodAppend.bindMethod(instance);
 			case "insert":
-				return new BoundListMethodInsert(object);
+				return methodInsert.bindMethod(instance);
 			case "pop":
-				return new BoundListMethodPop(object);
+				return methodPop.bindMethod(instance);
 			case "count":
-				return new BoundListMethodCount(object);
+				return methodCount.bindMethod(instance);
 			case "find":
-				return new BoundListMethodFind(object);
+				return methodFind.bindMethod(instance);
 			case "rfind":
-				return new BoundListMethodRFind(object);
+				return methodRFind.bindMethod(instance);
 			default:
-				return super.getAttr(context, object, key);
+				return super.getAttr(context, instance, key);
 		}
 	}
 
-	public Object getAttr(EvaluationContext context, Object[] object, String key)
+	public Object callAttr(EvaluationContext context, Object instance, String key, List<Object> args, Map<String, Object> kwargs)
 	{
 		switch (key)
 		{
 			case "append":
-				return new BoundArrayMethodAppend(object);
+				return append(context, instance, methodAppend.bindArguments(args, kwargs));
 			case "insert":
-				return new BoundArrayMethodInsert(object);
+				return insert(context, instance, methodInsert.bindArguments(args, kwargs));
 			case "pop":
-				return new BoundArrayMethodPop(object);
+				return pop(context, instance, methodPop.bindArguments(args, kwargs));
 			case "count":
-				return new BoundArrayMethodCount(object);
+				return count(context, instance, methodCount.bindArguments(args, kwargs));
 			case "find":
-				return new BoundArrayMethodFind(object);
+				return find(context, instance, methodFind.bindArguments(args, kwargs));
 			case "rfind":
-				return new BoundArrayMethodRFind(object);
+				return rfind(context, instance, methodRFind.bindArguments(args, kwargs));
 			default:
-				return super.getAttr(context, object, key);
+				return super.callAttr(context, instance, key, args, kwargs);
 		}
 	}
-
-	public static final UL4Type type = new List_();
 }
