@@ -35,13 +35,7 @@ import com.livinglogic.ul4.MonthDelta;
 import com.livinglogic.ul4.TimeDelta;
 import com.livinglogic.ul4.Slice;
 import com.livinglogic.ul4.FunctionRepr;
-import com.livinglogic.ul4.BoundDateMethodYear;
-import com.livinglogic.ul4.BoundDateMethodMonth;
-import com.livinglogic.ul4.BoundDateMethodDay;
-import com.livinglogic.ul4.BoundDateMethodHour;
-import com.livinglogic.ul4.BoundDateMethodMinute;
-import com.livinglogic.ul4.BoundDateMethodSecond;
-import com.livinglogic.ul4.BoundDateMethodMicrosecond;
+import com.livinglogic.ul4.DateTime;
 import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.BoundMethod;
@@ -328,13 +322,13 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 				Date date = (Date)obj;
 				line(
 					"Z",
-					BoundDateMethodYear.call(date),
-					BoundDateMethodMonth.call(date),
-					BoundDateMethodDay.call(date),
-					BoundDateMethodHour.call(date),
-					BoundDateMethodMinute.call(date),
-					BoundDateMethodSecond.call(date),
-					BoundDateMethodMicrosecond.call(date)
+					DateTime.year(date),
+					DateTime.month(date),
+					DateTime.day(date),
+					DateTime.hour(date),
+					DateTime.minute(date),
+					DateTime.second(date),
+					DateTime.microsecond(date)
 				);
 			}
 			else if (obj instanceof LocalDate)

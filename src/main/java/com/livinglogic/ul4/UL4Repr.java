@@ -360,11 +360,11 @@ public interface UL4Repr
 		private void visitDate(Date object)
 		{
 			SimpleDateFormat formatter;
-			if (BoundDateMethodMicrosecond.call(object) != 0)
+			if (DateTime.microsecond(object) != 0)
 				formatter = isoReprFormatterDate3;
-			else if (BoundDateMethodSecond.call(object) != 0)
+			else if (DateTime.second(object) != 0)
 				formatter = isoReprFormatterDate2;
-			else if (BoundDateMethodHour.call(object) != 0 || BoundDateMethodMinute.call(object) != 0)
+			else if (DateTime.hour(object) != 0 || DateTime.minute(object) != 0)
 				formatter = isoReprFormatterDate1;
 			else
 				formatter = isoReprFormatterDate0;

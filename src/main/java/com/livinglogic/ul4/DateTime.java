@@ -6,13 +6,19 @@
 
 package com.livinglogic.ul4;
 
+import java.util.List;
 import java.util.Set;
+import java.util.  Map;
 import java.util.HashMap;
 import java.util.Date;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.time.LocalDateTime;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Locale;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
@@ -20,6 +26,8 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 
 public class DateTime extends AbstractType
 {
+	public static final UL4Type type = new DateTime();
+
 	@Override
 	public String getNameUL4()
 	{
@@ -117,16 +125,498 @@ public class DateTime extends AbstractType
 		{
 			Date date = (Date)instance;
 			SimpleDateFormat formatter;
-			if (BoundDateMethodMicrosecond.call(date) != 0)
+			if (DateTime.microsecond(date) != 0)
 				formatter = formatterDate3;
-			else if (BoundDateMethodSecond.call(date) != 0)
+			else if (DateTime.second(date) != 0)
 				formatter = formatterDate2;
-			else if (BoundDateMethodMinute.call(date) != 0 || BoundDateMethodHour.call(date) != 0)
+			else if (DateTime.minute(date) != 0 || DateTime.hour(date) != 0)
 				formatter = formatterDate1;
 			else
 				formatter = formatterDate0;
 			return formatter.format(date);
 		}
+	}
+
+	private static final Signature signatureWeekCalendar = new Signature().addBoth("firstweekday", 0).addBoth("mindaysinfirstweek", 4);
+	private static final BuiltinMethodDescriptor methodYear = new BuiltinMethodDescriptor(type, "year", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodMonth = new BuiltinMethodDescriptor(type, "month", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodDay = new BuiltinMethodDescriptor(type, "day", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodHour = new BuiltinMethodDescriptor(type, "hour", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodMinute = new BuiltinMethodDescriptor(type, "minute", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodSecond = new BuiltinMethodDescriptor(type, "second", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodMicrosecond = new BuiltinMethodDescriptor(type, "microsecond", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodDate = new BuiltinMethodDescriptor(type, "date", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodWeekday = new BuiltinMethodDescriptor(type, "weekday", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodYearday = new BuiltinMethodDescriptor(type, "yearday", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodWeek = new BuiltinMethodDescriptor(type, "week", signatureWeekCalendar);
+	private static final BuiltinMethodDescriptor methodCalendar = new BuiltinMethodDescriptor(type, "calendar", signatureWeekCalendar);
+	private static final BuiltinMethodDescriptor methodISOFormat = new BuiltinMethodDescriptor(type, "isoformat", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodMIMEFormat = new BuiltinMethodDescriptor(type, "mimeformat", Signature.noParameters);
+
+	public static int year(Date instance)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(instance);
+		return calendar.get(Calendar.YEAR);
+	}
+
+	public static int year(Date instance, BoundArguments args)
+	{
+		return year(instance);
+	}
+
+	public static int year(LocalDateTime instance)
+	{
+		return instance.getYear();
+	}
+
+	public static int year(LocalDateTime instance, BoundArguments args)
+	{
+		return year(instance);
+	}
+
+	public static int year(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return year((LocalDateTime)instance, args);
+		else
+			return year((Date)instance, args);
+	}
+
+	public static int month(Date instance)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(instance);
+		return calendar.get(Calendar.MONTH)+1;
+	}
+
+	public static int month(Date instance, BoundArguments args)
+	{
+		return month(instance);
+	}
+
+	public static int month(LocalDateTime instance)
+	{
+		return instance.getMonthValue();
+	}
+
+	public static int month(LocalDateTime instance, BoundArguments args)
+	{
+		return month(instance);
+	}
+
+	public static int month(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return month((LocalDateTime)instance, args);
+		else
+			return month((Date)instance, args);
+	}
+
+	public static int day(Date instance)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(instance);
+		return calendar.get(Calendar.DAY_OF_MONTH);
+	}
+
+	public static int day(Date instance, BoundArguments args)
+	{
+		return day(instance);
+	}
+
+	public static int day(LocalDateTime instance)
+	{
+		return instance.getDayOfMonth();
+	}
+
+	public static int day(LocalDateTime instance, BoundArguments args)
+	{
+		return day(instance);
+	}
+
+	public static int day(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return day((LocalDateTime)instance, args);
+		else
+			return day((Date)instance, args);
+	}
+
+	public static int hour(Date instance)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(instance);
+		return calendar.get(Calendar.HOUR_OF_DAY);
+	}
+
+	public static int hour(Date instance, BoundArguments args)
+	{
+		return hour(instance);
+	}
+
+	public static int hour(LocalDateTime instance)
+	{
+		return instance.getHour();
+	}
+
+	public static int hour(LocalDateTime instance, BoundArguments args)
+	{
+		return hour(instance);
+	}
+
+	public static int hour(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return hour((LocalDateTime)instance, args);
+		else
+			return hour((Date)instance, args);
+	}
+
+	public static int minute(Date instance)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(instance);
+		return calendar.get(Calendar.MINUTE);
+	}
+
+	public static int minute(Date instance, BoundArguments args)
+	{
+		return minute(instance);
+	}
+
+	public static int minute(LocalDateTime instance)
+	{
+		return instance.getMinute();
+	}
+
+	public static int minute(LocalDateTime instance, BoundArguments args)
+	{
+		return minute(instance);
+	}
+
+	public static int minute(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return minute((LocalDateTime)instance, args);
+		else
+			return minute((Date)instance, args);
+	}
+
+	public static int second(Date instance)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(instance);
+		return calendar.get(Calendar.SECOND);
+	}
+
+	public static int second(Date instance, BoundArguments args)
+	{
+		return second(instance);
+	}
+
+	public static int second(LocalDateTime instance)
+	{
+		return instance.getSecond();
+	}
+
+	public static int second(LocalDateTime instance, BoundArguments args)
+	{
+		return second(instance);
+	}
+
+	public static int second(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return second((LocalDateTime)instance, args);
+		else
+			return second((Date)instance, args);
+	}
+
+	public static int microsecond(Date instance)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(instance);
+		return calendar.get(Calendar.MILLISECOND)*1000;
+	}
+
+	public static int microsecond(Date instance, BoundArguments args)
+	{
+		return microsecond(instance);
+	}
+
+	public static int microsecond(LocalDateTime instance)
+	{
+		return instance.getNano()/1000;
+	}
+
+	public static int microsecond(LocalDateTime instance, BoundArguments args)
+	{
+		return microsecond(instance);
+	}
+
+	public static int microsecond(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return microsecond((LocalDateTime)instance, args);
+		else
+			return microsecond((Date)instance, args);
+	}
+
+	public static LocalDate date(Date instance)
+	{
+		return instance.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+
+	public static LocalDate date(Date instance, BoundArguments args)
+	{
+		return date(instance);
+	}
+
+	public static LocalDate date(LocalDateTime instance)
+	{
+		return instance.toLocalDate();
+	}
+
+	public static LocalDate date(LocalDateTime instance, BoundArguments args)
+	{
+		return date(instance);
+	}
+
+	public static LocalDate date(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return date((LocalDateTime)instance, args);
+		else
+			return date((Date)instance, args);
+	}
+
+	public static int weekday(Date instance)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(instance);
+		return javaWeekdays2UL4Weekdays.get(calendar.get(Calendar.DAY_OF_WEEK));
+	}
+
+	public static int weekday(Date instance, BoundArguments args)
+	{
+		return weekday(instance);
+	}
+
+	public static int weekday(LocalDateTime instance)
+	{
+		return instance.getDayOfWeek().getValue()-1;
+	}
+
+	public static int weekday(LocalDateTime instance, BoundArguments args)
+	{
+		return weekday(instance);
+	}
+
+	public static int weekday(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return weekday((LocalDateTime)instance, args);
+		else
+			return weekday((Date)instance, args);
+	}
+
+	public static int yearday(Date instance)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(instance);
+		return calendar.get(Calendar.DAY_OF_YEAR);
+	}
+
+	public static int yearday(Date instance, BoundArguments args)
+	{
+		return yearday(instance);
+	}
+
+	public static int yearday(LocalDateTime instance)
+	{
+		return instance.getDayOfYear();
+	}
+
+	public static int yearday(LocalDateTime instance, BoundArguments args)
+	{
+		return yearday(instance);
+	}
+
+	public static int yearday(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return yearday((LocalDateTime)instance, args);
+		else
+			return yearday((Date)instance, args);
+	}
+
+	public static int week(Date instance, int firstWeekday, int minDaysInFirstWeek)
+	{
+		// Normalize parameters
+		firstWeekday %= 7;
+		if (minDaysInFirstWeek < 1)
+			minDaysInFirstWeek = 1;
+		else if (minDaysInFirstWeek > 7)
+			minDaysInFirstWeek = 7;
+
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(instance);
+		calendar.setFirstDayOfWeek(Date_.ul4Weekday2JavaWeekday(firstWeekday));
+		calendar.setMinimalDaysInFirstWeek(minDaysInFirstWeek);
+
+		int week = calendar.get(Calendar.WEEK_OF_YEAR);
+
+		return week;
+	}
+
+	public static int week(Date instance, BoundArguments args)
+	{
+		int firstWeekday = Utils.toInt(args.get(0));
+		int minDaysInFirstWeek = Utils.toInt(args.get(1));
+		return week(instance, firstWeekday, minDaysInFirstWeek);
+	}
+
+	public static int week(LocalDateTime instance, int firstWeekday, int minDaysInFirstWeek)
+	{
+		return calendar(instance, firstWeekday, minDaysInFirstWeek).week;
+	}
+
+	public static int week(LocalDateTime instance, BoundArguments args)
+	{
+		int firstWeekday = Utils.toInt(args.get(0));
+		int minDaysInFirstWeek = Utils.toInt(args.get(1));
+		return week(instance, firstWeekday, minDaysInFirstWeek);
+	}
+
+	public static int week(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return week((LocalDateTime)instance, args);
+		else
+			return week((Date)instance, args);
+	}
+
+	public static Date_.Calendar calendar(Date instance, int firstWeekday, int minDaysInFirstWeek)
+	{
+		// Normalize parameters
+		firstWeekday %= 7;
+		if (minDaysInFirstWeek < 1)
+			minDaysInFirstWeek = 1;
+		else if (minDaysInFirstWeek > 7)
+			minDaysInFirstWeek = 7;
+
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(instance);
+		calendar.setFirstDayOfWeek(Date_.ul4Weekday2JavaWeekday(firstWeekday));
+		calendar.setMinimalDaysInFirstWeek(minDaysInFirstWeek);
+
+		int year = calendar.getWeekYear();
+		int week = calendar.get(Calendar.WEEK_OF_YEAR);
+		int weekday = calendar.get(Calendar.DAY_OF_WEEK);
+
+		return new Date_.Calendar(year, week, Date_.javaWeekday2UL4Weekday(weekday));
+	}
+
+	public static List<Integer> calendar(Date instance, BoundArguments args)
+	{
+		int firstWeekday = Utils.toInt(args.get(0));
+		int minDaysInFirstWeek = Utils.toInt(args.get(1));
+		return calendar(instance, firstWeekday, minDaysInFirstWeek).asList();
+	}
+
+	public static Date_.Calendar calendar(LocalDateTime object, int firstWeekday, int minDaysInFirstWeek)
+	{
+		return Date_.calendar(object.toLocalDate(), firstWeekday, minDaysInFirstWeek);
+	}
+
+	public static List<Integer> calendar(LocalDateTime object, BoundArguments args)
+	{
+		int firstWeekday = Utils.toInt(args.get(0));
+		int minDaysInFirstWeek = Utils.toInt(args.get(1));
+		return calendar(object, firstWeekday, minDaysInFirstWeek).asList();
+	}
+
+	public static List<Integer> calendar(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return calendar((LocalDateTime)instance, args);
+		else
+			return calendar((Date)instance, args);
+	}
+
+	private static SimpleDateFormat dateISOformatter0 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	private static SimpleDateFormat dateISOformatter1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'000'");
+
+	public static String isoformat(Date instance)
+	{
+		if (microsecond(instance) != 0)
+			return dateISOformatter1.format(instance);
+		else
+			return dateISOformatter0.format(instance);
+	}
+
+	public static String evaluate(Date instance, BoundArguments args)
+	{
+		return isoformat(instance);
+	}
+
+	private static DateTimeFormatter localDateTimeISOformatter0 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+	private static DateTimeFormatter localDateTimeISOformatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.US);
+
+	public static String isoformat(LocalDateTime instance)
+	{
+		DateTimeFormatter formatter;
+		if (instance.getNano() != 0)
+			formatter = localDateTimeISOformatter1;
+		else
+			formatter = localDateTimeISOformatter0;
+		return instance.format(formatter);
+	}
+
+	public static String isoformat(LocalDateTime instance, BoundArguments args)
+	{
+		return isoformat(instance);
+	}
+
+	public static String isoformat(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return isoformat((LocalDateTime)instance, args);
+		else
+			return isoformat((Date)instance, args);
+	}
+
+	private static SimpleDateFormat mimeDateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+
+	public static String mimeformat(Date instance)
+	{
+		return mimeDateFormatter.format(instance);
+	}
+
+	public static String mimeformat(Date instance, BoundArguments args)
+	{
+		return mimeformat(instance);
+	}
+
+	private static DateTimeFormatter localDateTimeMIMEFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+
+	public static String mimeformat(LocalDateTime instance)
+	{
+		return instance.format(localDateTimeMIMEFormatter);
+	}
+
+	public static String mimeformat(LocalDateTime instance, BoundArguments args)
+	{
+		return mimeformat(instance);
+	}
+
+	public static String mimeformat(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return mimeformat((LocalDateTime)instance, args);
+		else
+			return mimeformat((Date)instance, args);
 	}
 
 	protected static Set<String> attributes = makeSet("year", "month", "day", "hour", "minute", "second", "microsecond", "date", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat");
@@ -138,88 +628,79 @@ public class DateTime extends AbstractType
 	}
 
 	@Override
-	public Object getAttr(EvaluationContext context, Object object, String key)
-	{
-		if (object instanceof LocalDateTime)
-			return getAttr(context, (LocalDateTime)object, key);
-		else
-			return getAttr(context, (Date)object, key);
-	}
-
-	public Object getAttr(EvaluationContext context, LocalDateTime object, String key)
+	public Object getAttr(EvaluationContext context, Object instance, String key)
 	{
 		switch (key)
 		{
 			case "year":
-				return new BoundLocalDateTimeMethodYear(object);
+				return methodYear.bindMethod(instance);
 			case "month":
-				return new BoundLocalDateTimeMethodMonth(object);
+				return methodMonth.bindMethod(instance);
 			case "day":
-				return new BoundLocalDateTimeMethodDay(object);
+				return methodDay.bindMethod(instance);
 			case "hour":
-				return new BoundLocalDateTimeMethodHour(object);
+				return methodHour.bindMethod(instance);
 			case "minute":
-				return new BoundLocalDateTimeMethodMinute(object);
+				return methodMinute.bindMethod(instance);
 			case "second":
-				return new BoundLocalDateTimeMethodSecond(object);
+				return methodSecond.bindMethod(instance);
 			case "microsecond":
-				return new BoundLocalDateTimeMethodMicrosecond(object);
+				return methodMicrosecond.bindMethod(instance);
 			case "date":
-				return new BoundLocalDateTimeMethodDate(object);
+				return methodDate.bindMethod(instance);
 			case "weekday":
-				return new BoundLocalDateTimeMethodWeekday(object);
+				return methodWeekday.bindMethod(instance);
 			case "yearday":
-				return new BoundLocalDateTimeMethodYearday(object);
+				return methodYearday.bindMethod(instance);
 			case "week":
-				return new BoundLocalDateTimeMethodWeek(object);
+				return methodWeek.bindMethod(instance);
 			case "calendar":
-				return new BoundLocalDateTimeMethodCalendar(object);
+				return methodCalendar.bindMethod(instance);
 			case "isoformat":
-				return new BoundLocalDateTimeMethodISOFormat(object);
+				return methodISOFormat.bindMethod(instance);
 			case "mimeformat":
-				return new BoundLocalDateTimeMethodMIMEFormat(object);
+				return methodMIMEFormat.bindMethod(instance);
 			default:
-				return super.getAttr(context, object, key);
+				return super.getAttr(context, instance, key);
 		}
 	}
 
-	public Object getAttr(EvaluationContext context, Date object, String key)
+	public Object callAttr(EvaluationContext context, Object instance, String key, List<Object> args, Map<String, Object> kwargs)
 	{
 		switch (key)
 		{
 			case "year":
-				return new BoundDateMethodYear(object);
+				return year(instance, methodYear.bindArguments(args, kwargs));
 			case "month":
-				return new BoundDateMethodMonth(object);
+				return month(instance, methodMonth.bindArguments(args, kwargs));
 			case "day":
-				return new BoundDateMethodDay(object);
+				return day(instance, methodDay.bindArguments(args, kwargs));
 			case "hour":
-				return new BoundDateMethodHour(object);
+				return hour(instance, methodHour.bindArguments(args, kwargs));
 			case "minute":
-				return new BoundDateMethodMinute(object);
+				return minute(instance, methodMinute.bindArguments(args, kwargs));
 			case "second":
-				return new BoundDateMethodSecond(object);
+				return second(instance, methodSecond.bindArguments(args, kwargs));
 			case "microsecond":
-				return new BoundDateMethodMicrosecond(object);
+				return microsecond(instance, methodMicrosecond.bindArguments(args, kwargs));
 			case "date":
-				return new BoundDateMethodDate(object);
+				return date(instance, methodDate.bindArguments(args, kwargs));
 			case "weekday":
-				return new BoundDateMethodWeekday(object);
+				return weekday(instance, methodWeekday.bindArguments(args, kwargs));
 			case "yearday":
-				return new BoundDateMethodYearday(object);
+				return yearday(instance, methodYearday.bindArguments(args, kwargs));
 			case "week":
-				return new BoundDateMethodWeek(object);
+				return week(instance, methodWeek.bindArguments(args, kwargs));
 			case "calendar":
-				return new BoundDateMethodCalendar(object);
+				return calendar(instance, methodCalendar.bindArguments(args, kwargs));
 			case "isoformat":
-				return new BoundDateMethodISOFormat(object);
+				return isoformat(instance, methodISOFormat.bindArguments(args, kwargs));
 			case "mimeformat":
-				return new BoundDateMethodMIMEFormat(object);
+				return mimeformat(instance, methodMIMEFormat.bindArguments(args, kwargs));
 			default:
-				return super.getAttr(context, object, key);
+				return super.callAttr(context, instance, key, args, kwargs);
 		}
 	}
-
 
 	static int javaWeekday2UL4Weekday(int javaWeekday)
 	{
@@ -258,6 +739,4 @@ public class DateTime extends AbstractType
 		ul4Weekdays2JavaWeekdays.put(5, Calendar.SATURDAY);
 		ul4Weekdays2JavaWeekdays.put(6, Calendar.SUNDAY);
 	}
-
-	public static final UL4Type type = new DateTime();
 }

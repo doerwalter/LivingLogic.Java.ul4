@@ -138,8 +138,8 @@ public class FunctionFormat extends Function
 
 	private static int week(EvaluationContext context, Date object, int firstWeekday)
 	{
-		int yearday = BoundDateMethodYearday.call(object)+6;
-		int jan1Weekday = Date_.weekday(Date_.call(BoundDateMethodYear.call(object), 1, 1));
+		int yearday = DateTime.yearday(object)+6;
+		int jan1Weekday = Date_.weekday(Date_.call(DateTime.year(object), 1, 1));
 		while (jan1Weekday != firstWeekday)
 		{
 			--yearday;
