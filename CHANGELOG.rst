@@ -1,3 +1,22 @@
+exp-158 (2021-07-23)
+--------------------
+
+It is now possible to implement method calls without having to create bound
+method objects. (Of course when the method is fetched without being called
+directly, a bound method object is still required.)
+
+For classes that implement ``UL4GetAttr`` this can be done by overwriting
+the default implementation of ``UL4GetAttr.callAttrUL4()``. The default
+implementation calls ``UL4GetAttr.getAttrUL4()`` and then calls
+``CallAST.call()`` for the result.
+
+For classes that can't implement ``UL4GetAttr`` this can be done by overwriting
+``UL4Type.callAttr()`` in the type class for the class.
+
+For examples how this is done see the class ``Color`` (for the ``UL4GetAttr``
+based version), or ``Str`` (for the non-``UL4GetAttr`` based version).
+
+
 exp-157 (2021-07-09)
 --------------------
 
