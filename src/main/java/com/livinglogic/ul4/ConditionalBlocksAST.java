@@ -49,6 +49,12 @@ public class ConditionalBlocksAST extends BlockAST
 		return type;
 	}
 
+	@Override
+	public String getBlockTag()
+	{
+		return "<?if?>";
+	}
+
 	public ConditionalBlocksAST(Template template, Slice startPos, Slice stopPos)
 	{
 		super(template, startPos, stopPos);
@@ -94,7 +100,7 @@ public class ConditionalBlocksAST extends BlockAST
 	{
 		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("if"))
-			throw new BlockException("if ended by end" + type);
+			throw new BlockException("<?if?> ended by <?end " + type + "?>");
 		super.finish(endtag);
 		BlockAST lastBlock = getLastBlock();
 		if (lastBlock != null)
@@ -115,23 +121,23 @@ public class ConditionalBlocksAST extends BlockAST
 		if (item instanceof IfBlockAST)
 		{
 			if (content.size() != 0)
-				throw new BlockException("if must be first in if/elif/else chain");
+				throw new BlockException("<?if?> must be first in <?if?>/<?elif?>/<?else?> chain");
 		}
 		else if (item instanceof ElIfBlockAST)
 		{
 			if (content.size() == 0)
-				throw new BlockException("elif can't be first in if/elif/else chain");
+				throw new BlockException("<?elif?> can't be first in <?if?>/<?elif?>/<?else?> chain");
 			BlockAST lastBlock = getLastBlock();
 			if (lastBlock instanceof ElseBlockAST)
-				throw new BlockException("elif can't follow else in if/elif/else chain");
+				throw new BlockException("<?elif?> can't follow <?else?> in <?if?>/<?elif?>/<?else?> chain");
 		}
 		else if (item instanceof ElseBlockAST)
 		{
 			if (content.size() == 0)
-				throw new BlockException("else can't be first in if/elif/else chain");
+				throw new BlockException("<?else?> can't be first in <?if?>/<?elif?>/<?else?> chain");
 			BlockAST lastBlock = getLastBlock();
 			if (lastBlock instanceof ElseBlockAST)
-				throw new BlockException("duplicate else in if/elif/else chain");
+				throw new BlockException("duplicate <?else?> in <?if?>/<?elif?>/<?else?> chain");
 		}
 		if (content.size() != 0)
 		{

@@ -75,11 +75,17 @@ public class ForBlockAST extends BlockAST
 	}
 
 	@Override
+	public String getBlockTag()
+	{
+		return "<?for?>";
+	}
+
+	@Override
 	public void finish(Tag endtag)
 	{
 		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("for"))
-			throw new BlockException("for ended by end" + type);
+			throw new BlockException("<?for?> ended by <?end " + type + "?>");
 		super.finish(endtag);
 	}
 

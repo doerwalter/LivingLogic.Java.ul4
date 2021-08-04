@@ -30,6 +30,8 @@ public interface BlockLike
 
 	String getType();
 
+	String getBlockTag();
+
 	default void decorateException(Throwable ex)
 	{
 		ex = findInnermostException(ex);

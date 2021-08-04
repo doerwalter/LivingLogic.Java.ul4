@@ -568,7 +568,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 								((ConditionalBlocksAST)innerBlock).startNewBlock(new ElIfBlockAST(tag.getTemplate(), tag.getStartPos(), null, parser.expression()));
 							}
 							else
-								throw new BlockException("elif doesn't match any if");
+								throw new BlockException("<?elif?> doesn't match any <?if?>");
 							break;
 						}
 						case "else":
@@ -578,7 +578,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 								((ConditionalBlocksAST)innerBlock).startNewBlock(new ElseBlockAST(tag.getTemplate(), tag.getStartPos(), null));
 							}
 							else
-								throw new BlockException("else doesn't match any if");
+								throw new BlockException("<?else?> doesn't match any <?if?>");
 							break;
 						}
 						case "end":
@@ -723,7 +723,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		if (blockStack.size() > 1) // the template itself is still on the stack
 		{
 			BlockLike innerBlock = blockStack.peek();
-			BlockException ex = new BlockException(innerBlock.getType() + " block unclosed");
+			BlockException ex = new BlockException(innerBlock.getBlockTag() + " block unclosed");
 			innerBlock.decorateException(ex);
 			throw ex;
 		}
@@ -1238,6 +1238,12 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		return "template";
 	}
 
+	@Override
+	public String getBlockTag()
+	{
+		return "<?def?>";
+	}
+
 	public String getTypeNameUL4()
 	{
 		return "template";
@@ -1386,9 +1392,17 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	**/
 	public List<Line> tokenizeTags()
 	{
-		Pattern tagPattern = Pattern.compile("<\\?\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblocks|renderblock|renderx|render)(\\s*(.*?)\\s*)?\\?>", Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile("<\\?\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblocks|renderblock|renderx|render|ignore)(\\s*(.*?)\\s*)?\\?>", Pattern.DOTALL);
 		LinkedList<Line> lines = new LinkedList<Line>();
 		boolean wasTag = false;
+		// Nesting level of <?ignore?>/<?end ignore?>
+		int ignore = 0;
+		// Location of the last active outermost <?ignore?> block
+		int lastIgnoreTagStart = -1;
+		int lastIgnoreTagStop = -1;
+		int lastIgnoreCodeStart = -1;
+		int lastIgnoreCodeStop = -1;
+
 		if (source != null)
 		{
 			Matcher matcher = tagPattern.matcher(source);
@@ -1400,7 +1414,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			{
 				tagStartPos = matcher.start();
 				tagStopPos = tagStartPos + matcher.group().length();
-				if (pos != tagStartPos)
+				if (ignore == 0 && (pos != tagStartPos))
 				{
 					addText2Lines(lines, new TextAST(this, new Slice(pos, tagStartPos)), wasTag ? 1 : 0);
 					wasTag = false;
@@ -1408,16 +1422,43 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				int codeStartPos = matcher.start(3);
 				int codeStopPos = codeStartPos + matcher.group(3).length();
 				String type = matcher.group(1);
-				if (!type.equals("note"))
+				if (type.equals("ignore"))
+				{
+					// Remember the initial ignore block so we can complain about it
+					// if it remains unclosed
+					if (ignore == 0)
+					{
+						lastIgnoreTagStart = tagStartPos;
+						lastIgnoreTagStop = tagStopPos;
+						lastIgnoreCodeStart = codeStartPos;
+						lastIgnoreCodeStop = codeStopPos;
+					}
+					++ignore;
+				}
+				else if (ignore > 0 && type.equals("end") && matcher.group(3).equals("ignore"))
+					--ignore;
+				else if (ignore == 0 && !type.equals("note"))
 					addPart2Lines(lines, new Tag(this, matcher.group(1), new Slice(tagStartPos, tagStopPos), new Slice(codeStartPos, codeStopPos)));
 				pos = tagStopPos;
 				wasTag = true;
 			}
 			tagStopPos = source.length();
-			if (pos != tagStopPos)
+			if (ignore == 0 && pos != tagStopPos)
 			{
 				addText2Lines(lines, new TextAST(this, new Slice(pos, tagStopPos)), wasTag ? 1 : 0);
 				wasTag = false;
+			}
+			if (ignore > 0)
+			{
+				BlockException exc = new BlockException("<?ignore?> block unclosed");
+				Tag endIgnore = new Tag(
+					this,
+					"ignore",
+					new Slice(lastIgnoreTagStart, lastIgnoreTagStop),
+					new Slice(lastIgnoreCodeStart, lastIgnoreCodeStop)
+				);
+				endIgnore.decorateException(exc);
+				throw exc;
 			}
 		}
 		return lines;
@@ -1428,13 +1469,13 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	{
 		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("def"))
-			throw new BlockException("def ended by end" + type);
+			throw new BlockException("<?def?> ended by <?end " + type + "?>");
 		super.finish(endtag);
 	}
 
 	public boolean handleLoopControl(String name)
 	{
-		throw new BlockException(name + " outside of for/while loop");
+		throw new BlockException("<?" + name + "?> outside of <?for?>/<?while?> loop");
 	}
 
 	private static class Line implements Iterable<AST>

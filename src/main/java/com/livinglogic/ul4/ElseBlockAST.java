@@ -59,6 +59,12 @@ public class ElseBlockAST extends ConditionalBlock
 		return "elseblock";
 	}
 
+	@Override
+	public String getBlockTag()
+	{
+		return "<?else?>";
+	}
+
 	public boolean hasToBeExecuted(EvaluationContext context)
 	{
 		return true;

@@ -54,6 +54,8 @@ abstract class BlockAST extends CodeAST implements BlockLike
 		super(template, startPos, stopPos);
 	}
 
+	public abstract String getBlockTag();
+
 	@Override
 	public IndentAST popTrailingIndent()
 	{

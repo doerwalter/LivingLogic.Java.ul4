@@ -58,4 +58,10 @@ public class IfBlockAST extends ConditionalBlockWithCondition
 	{
 		return "ifblock";
 	}
+
+	@Override
+	public String getBlockTag()
+	{
+		return "<?if?>";
+	}
 }

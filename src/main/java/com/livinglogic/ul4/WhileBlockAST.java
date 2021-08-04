@@ -57,6 +57,12 @@ public class WhileBlockAST extends BlockAST
 		return type;
 	}
 
+	@Override
+	public String getBlockTag()
+	{
+		return "<?while?>";
+	}
+
 	protected AST condition;
 
 	public WhileBlockAST(Template template, Slice startPos, Slice stopPos, AST condition)
@@ -76,7 +82,7 @@ public class WhileBlockAST extends BlockAST
 	{
 		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("while"))
-			throw new BlockException("while ended by end" + type);
+			throw new BlockException("<?while?> ended by <?end " + type + "?>");
 		super.finish(endtag);
 	}
 

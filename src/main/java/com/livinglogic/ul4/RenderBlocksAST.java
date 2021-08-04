@@ -86,6 +86,12 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 		return "renderblocks";
 	}
 
+	@Override
+	public String getBlockTag()
+	{
+		return "<?renderblocks?>";
+	}
+
 	public void toString(Formatter formatter)
 	{
 		formatter.write(getType());
@@ -127,14 +133,14 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 	{
 		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("renderblocks"))
-			throw new BlockException("renderblocks ended by end" + type);
+			throw new BlockException("<?renderblocks?> ended by <?end " + type + "?>");
 		setStopPos(endtag.getStartPos());
 	}
 
 	@Override
 	public boolean handleLoopControl(String name)
 	{
-		throw new BlockException(name + " outside of for/while loop");
+		throw new BlockException("<?" + name + "?> outside of <?for?>/<?while?> loop");
 	}
 
 	@Override

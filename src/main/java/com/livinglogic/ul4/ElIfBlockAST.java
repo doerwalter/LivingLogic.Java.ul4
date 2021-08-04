@@ -58,4 +58,10 @@ public class ElIfBlockAST extends ConditionalBlockWithCondition
 	{
 		return "elifblock";
 	}
+
+	@Override
+	public String getBlockTag()
+	{
+		return "<?elif?>";
+	}
 }
