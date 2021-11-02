@@ -3865,6 +3865,7 @@ public class UL4Test
 		checkOutput("42", t2, V("data", 42, "fmt", ""));
 		checkOutput("-42", t2, V("data", -42, "fmt", ""));
 		checkOutput("   42", t2, V("data", 42, "fmt", "5"));
+		checkOutput("49", T("<?print format(int(data), fmt)?>"), V("data", 49.955239, "fmt", "02"));
 		checkOutput("00042", t2, V("data", 42, "fmt", "05"));
 		checkOutput("-0042", t2, V("data", -42, "fmt", "05"));
 		checkOutput("+0042", t2, V("data", 42, "fmt", "+05"));
@@ -4191,7 +4192,7 @@ public class UL4Test
 	public void function_urlquote()
 	{
 		checkOutput("gurk", T("<?print urlquote('gurk')?>"));
-		checkOutput("%3C%3D%3E%2B%3F", T("<?print urlquote('<=>+?')?>"));
+		checkOutput("%3C%3D%3E%20%2B%20%3F", T("<?print urlquote('<=> + ?')?>"));
 		checkOutput("%7F%C3%BF%EF%BF%BF", T("<?print urlquote('\u007f\u00ff\uffff')?>"));
 
 		checkOutput("gurk", T("<?print urlquote(string='gurk')?>"));

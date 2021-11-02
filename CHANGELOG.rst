@@ -1,3 +1,10 @@
+exp-160 (2021-11-02)
+--------------------
+
+The UL4 function ``urlquote()`` now will encode the space character as ``%20``
+instead of ``+``.
+
+
 exp-159 (2021-08-04)
 --------------------
 

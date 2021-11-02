@@ -35,7 +35,7 @@ public class FunctionURLQuote extends Function
 	{
 		try
 		{
-			return URLEncoder.encode(obj, "utf-8");
+			return URLEncoder.encode(obj, "utf-8").replace("+", "%20");
 		}
 		catch (UnsupportedEncodingException ex)
 		{
