@@ -1,3 +1,9 @@
+exp-162 (2021-11-16)
+--------------------
+
+Added the missing Color methods ``withhue()`` and ``withsat()``.
+
+
 exp-161 (2021-11-16)
 --------------------
 

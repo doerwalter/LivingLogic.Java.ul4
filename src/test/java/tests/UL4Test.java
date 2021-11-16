@@ -4982,12 +4982,30 @@ public class UL4Test
 	}
 
 	@Test
+	public void method_withhue()
+	{
+		checkOutput("#f00", T("<?print #0f0.withhue(1)?>"));
+		checkOutput("#f00", T("<?code m = #0f0.withhue?><?print m(1)?>"));
+
+		checkOutput("#f00", T("<?print #0f0.withhue(hue=1)?>"));
+	}
+
+	@Test
 	public void method_withlight()
 	{
 		checkOutput("#fff", T("<?print #000.withlight(1)?>"));
 		checkOutput("#fff", T("<?code m = #000.withlight?><?print m(1)?>"));
 
 		checkOutput("#fff", T("<?print #000.withlight(light=1)?>"));
+	}
+
+	@Test
+	public void method_withsat()
+	{
+		checkOutput("#7f7f7f", T("<?print #0f0.withsat(0)?>"));
+		checkOutput("#7f7f7f", T("<?code m = #0f0.withsat?><?print m(0)?>"));
+
+		checkOutput("#7f7f7f", T("<?print #0f0.withsat(sat=0)?>"));
 	}
 
 	@Test

@@ -701,35 +701,22 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 		return (0.2126 * ((int)r) + 0.7152 * ((int)g) + 0.0722 * ((int)b))/255.;
 	}
 
+	public Color withhue(double hue)
+	{
+		ArrayList<Double> v = hlsa();
+		return fromhls(hue, v.get(1), v.get(2), v.get(3));
+	}
+
 	public Color withlight(double light)
 	{
-		int maxc = NumberUtils.max((int)r, (int)g, (int)b);
-		int minc = NumberUtils.min((int)r, (int)g, (int)b);
+		ArrayList<Double> v = hlsa();
+		return fromhls(v.get(0), light, v.get(2), v.get(3));
+	}
 
-		double dmaxc = maxc/255.;
-		double dminc = minc/255.;
-
-		double l = (dminc+dmaxc)/2.0;
-
-		if (minc == maxc)
-			return fromhls(0., light, 0., a/255.);
-
-		double s = l <= 0.5 ? (dmaxc-dminc) / (dmaxc+dminc) : (dmaxc-dminc) / (2.0-dmaxc-dminc);
-
-		double rc = (dmaxc-r/255.) / (dmaxc-dminc);
-		double gc = (dmaxc-g/255.) / (dmaxc-dminc);
-		double bc = (dmaxc-b/255.) / (dmaxc-dminc);
-
-		double h;
-		if (r == maxc)
-			h = bc-gc;
-		else if (g == maxc)
-			h = 2.0+rc-bc;
-		else
-			h = 4.0+gc-rc;
-		h = (h/6.0) % 1.0;
-
-		return fromhls(h, light, s, a/255.);
+	public Color withsat(double sat)
+	{
+		ArrayList<Double> v = hlsa();
+		return fromhls(v.get(0), v.get(1), sat, v.get(3));
 	}
 
 	public Color witha(int a)
@@ -1024,7 +1011,9 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 	}
 
 	private static final Signature signatureWithA = new Signature().addBoth("a");
+	private static final Signature signatureWithHue = new Signature().addBoth("hue");
 	private static final Signature signatureWithLight = new Signature().addBoth("light");
+	private static final Signature signatureWithSat = new Signature().addBoth("sat");
 	private static final Signature signatureWithF = new Signature().addBoth("f");
 	private static final Signature signatureWithLum = new Signature().addBoth("lum");
 	private static final Signature signatureInvert = new Signature().addBoth("f", 1.0);
@@ -1043,9 +1032,11 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 	private static final MethodDescriptor<Color> methodHSV = new MethodDescriptor<Color>(type, "hsv", Signature.noParameters);
 	private static final MethodDescriptor<Color> methodHSVA = new MethodDescriptor<Color>(type, "hsva", Signature.noParameters);
 	private static final MethodDescriptor<Color> methodWithA = new MethodDescriptor<Color>(type, "witha", signatureWithA);
+	private static final MethodDescriptor<Color> methodWithHue = new MethodDescriptor<Color>(type, "withhue", signatureWithHue);
 	private static final MethodDescriptor<Color> methodWithLight = new MethodDescriptor<Color>(type, "withlight", signatureWithLight);
 	private static final MethodDescriptor<Color> methodAbsLight = new MethodDescriptor<Color>(type, "abslight", signatureWithF);
 	private static final MethodDescriptor<Color> methodRelLight = new MethodDescriptor<Color>(type, "rellight", signatureWithF);
+	private static final MethodDescriptor<Color> methodWithSat = new MethodDescriptor<Color>(type, "withsat", signatureWithSat);
 	private static final MethodDescriptor<Color> methodWithLum = new MethodDescriptor<Color>(type, "withlum", signatureWithLum);
 	private static final MethodDescriptor<Color> methodAbsLum = new MethodDescriptor<Color>(type, "abslum", signatureWithF);
 	private static final MethodDescriptor<Color> methodRelLum = new MethodDescriptor<Color>(type, "rellum", signatureWithF);
@@ -1122,6 +1113,11 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 				{
 					return witha(Utils.toInt(boundArgs.get(0)));
 				}
+			case "withhue":
+				try (BoundArguments boundArgs = methodWithHue.bindArguments(args, kwargs))
+				{
+					return withhue(Utils.toDouble(boundArgs.get(0)));
+				}
 			case "withlight":
 				try (BoundArguments boundArgs = methodWithLight.bindArguments(args, kwargs))
 				{
@@ -1136,6 +1132,11 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 				try (BoundArguments boundArgs = methodRelLight.bindArguments(args, kwargs))
 				{
 					return rellight(Utils.toDouble(boundArgs.get(0)));
+				}
+			case "withsat":
+				try (BoundArguments boundArgs = methodWithSat.bindArguments(args, kwargs))
+				{
+					return withsat(Utils.toDouble(boundArgs.get(0)));
 				}
 			case "withlum":
 				try (BoundArguments boundArgs = methodWithLum.bindArguments(args, kwargs))
@@ -1208,12 +1209,16 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 				return methodHSVA.bindMethod(this);
 			case "witha":
 				return methodWithA.bindMethod(this);
+			case "withhue":
+				return methodWithHue.bindMethod(this);
 			case "withlight":
 				return methodWithLight.bindMethod(this);
 			case "abslight":
 				return methodAbsLight.bindMethod(this);
 			case "rellight":
 				return methodRelLight.bindMethod(this);
+			case "withsat":
+				return methodWithSat.bindMethod(this);
 			case "withlum":
 				return methodWithLum.bindMethod(this);
 			case "abslum":
