@@ -4563,7 +4563,7 @@ public class UL4Test
 		checkOutput("['a', 'abslight', 'abslum', 'b', 'combine', 'g', 'hls', 'hlsa', 'hsv', 'hsva', 'hue', 'invert', 'light', 'lum', 'r', 'rellight', 'rellum', 'sat', 'witha', 'withlight', 'withlum']", T("<?print sorted(dir(data))?>"), V("data", dataColor));
 		checkOutput("['append', 'count', 'find', 'insert', 'pop', 'rfind']", T("<?print sorted(dir(data))?>"), V("data", dataList));
 		checkOutput("['add', 'clear']", T("<?print sorted(dir(data))?>"), V("data", dataSet));
-		checkOutput("['clear', 'get', 'items', 'pop', 'update', 'values']", T("<?print sorted(dir(data))?>"), V("data", dataMap));
+		checkOutput("['clear', 'get', 'items', 'keys', 'pop', 'update', 'values']", T("<?print sorted(dir(data))?>"), V("data", dataMap));
 		checkOutput("['x', 'y']", T("<?print sorted(dir(data))?>"), V("data", dataPoint));
 		checkOutput("", T("<?for d in data?><?for an in dir(d)?><?if getattr(d, an, None) is None?><?print repr(d)?>.<?print an?>: FAIL<?end if?><?end for?><?end for?>"), V("data", dataAll));
 	}
@@ -4846,6 +4846,12 @@ public class UL4Test
 		Date t = makeDate(2010, 2, 22, 12, 34, 56);
 		checkOutput("Mon, 22 Feb 2010 12:34:56 GMT", T("<?print data.mimeformat()?>"), V("data", t));
 		checkOutput("Mon, 22 Feb 2010 12:34:56 GMT", T("<?code m = data.mimeformat?><?print m()?>"), V("data", t));
+	}
+
+	@Test
+	public void method_keys()
+	{
+		checkOutput("a;b;c;", T("<?for key in sorted(data.keys())?><?print key?>;<?end for?>"), V("data", V("a", 42, "b", 17, "c", 23)));
 	}
 
 	@Test

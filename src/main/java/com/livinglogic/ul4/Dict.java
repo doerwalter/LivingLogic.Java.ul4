@@ -74,12 +74,23 @@ public class Dict extends AbstractType
 	private static final Signature signatureGet = new Signature().addPositionalOnly("key").addPositionalOnly("default", null);
 	private static final Signature signatureUpdate = new Signature().addVarPositional("others").addVarKeyword("kwargs");
 	private static final Signature signaturePop = new Signature().addPositionalOnly("key").addPositionalOnly("default", Signature.noValue);
+	private static final BuiltinMethodDescriptor methodKeys = new BuiltinMethodDescriptor(type, "keys", Signature.noParameters);
 	private static final BuiltinMethodDescriptor methodItems = new BuiltinMethodDescriptor(type, "items", Signature.noParameters);
 	private static final BuiltinMethodDescriptor methodValues = new BuiltinMethodDescriptor(type, "values", Signature.noParameters);
 	private static final BuiltinMethodDescriptor methodGet = new BuiltinMethodDescriptor(type, "get", signatureGet);
 	private static final BuiltinMethodDescriptor methodUpdate = new BuiltinMethodDescriptor(type, "update", signatureUpdate);
 	private static final BuiltinMethodDescriptor methodClear = new BuiltinMethodDescriptor(type, "clear", Signature.noParameters);
 	private static final BuiltinMethodDescriptor methodPop = new BuiltinMethodDescriptor(type, "pop", signaturePop);
+
+	public static Iterator<Vector> keys(EvaluationContext context, Map instance)
+	{
+		return instance.keySet().iterator();
+	}
+
+	public static Iterator<Vector> keys(EvaluationContext context, Map instance, BoundArguments args)
+	{
+		return keys(context, instance);
+	}
 
 	public static Iterator<Vector> items(EvaluationContext context, Map instance)
 	{
@@ -212,7 +223,7 @@ public class Dict extends AbstractType
 			return pop(context, instance, args.get(0), args.get(1));
 	}
 
-	protected static Set<String> attributes = makeSet("items", "values", "get", "update", "clear", "pop");
+	protected static Set<String> attributes = makeSet("keys", "items", "values", "get", "update", "clear", "pop");
 
 	@Override
 	public Set<String> dirInstance(EvaluationContext context, Object instance)
@@ -229,6 +240,8 @@ public class Dict extends AbstractType
 
 		switch (key)
 		{
+			case "keys":
+				return methodKeys.bindMethod(instance);
 			case "items":
 				return methodItems.bindMethod(instance);
 			case "values":
@@ -262,6 +275,8 @@ public class Dict extends AbstractType
 
 		switch (key)
 		{
+			case "keys":
+				return keys(context, map, methodKeys.bindArguments(args, kwargs));
 			case "items":
 				return items(context, map, methodItems.bindArguments(args, kwargs));
 			case "values":
