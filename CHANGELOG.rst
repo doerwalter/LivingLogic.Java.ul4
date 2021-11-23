@@ -1,3 +1,10 @@
+exp-163 (2021-11-16)
+--------------------
+
+Added Color methods ``withhue()`` and ``withsat()`` to the output of the
+``dir()`` function.
+
+
 exp-162 (2021-11-16)
 --------------------
 

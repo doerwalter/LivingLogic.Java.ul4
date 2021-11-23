@@ -4560,7 +4560,7 @@ public class UL4Test
 		checkOutput(dateTimeAttrs, T("<?print sorted(dir(data))?>"), V("data", dataDate));
 		checkOutput(dateTimeAttrs, T("<?print sorted(dir(data))?>"), V("data", dataLocalDateTime));
 		checkOutput("['calendar', 'date', 'day', 'isoformat', 'mimeformat', 'month', 'week', 'weekday', 'year', 'yearday']", T("<?print sorted(dir(data))?>"), V("data", dataLocalDate));
-		checkOutput("['a', 'abslight', 'abslum', 'b', 'combine', 'g', 'hls', 'hlsa', 'hsv', 'hsva', 'hue', 'invert', 'light', 'lum', 'r', 'rellight', 'rellum', 'sat', 'witha', 'withlight', 'withlum']", T("<?print sorted(dir(data))?>"), V("data", dataColor));
+		checkOutput("['a', 'abslight', 'abslum', 'b', 'combine', 'g', 'hls', 'hlsa', 'hsv', 'hsva', 'hue', 'invert', 'light', 'lum', 'r', 'rellight', 'rellum', 'sat', 'witha', 'withhue', 'withlight', 'withlum', 'withsat']", T("<?print sorted(dir(data))?>"), V("data", dataColor));
 		checkOutput("['append', 'count', 'find', 'insert', 'pop', 'rfind']", T("<?print sorted(dir(data))?>"), V("data", dataList));
 		checkOutput("['add', 'clear']", T("<?print sorted(dir(data))?>"), V("data", dataSet));
 		checkOutput("['clear', 'get', 'items', 'keys', 'pop', 'update', 'values']", T("<?print sorted(dir(data))?>"), V("data", dataMap));

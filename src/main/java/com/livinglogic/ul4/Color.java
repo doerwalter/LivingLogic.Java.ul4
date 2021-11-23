@@ -1002,7 +1002,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 		}
 	}
 
-	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "hue", "light", "sat", "lum", "hls", "hlsa", "hsv", "hsva", "invert", "combine", "witha", "withlight", "abslight", "rellight", "withlum", "abslum", "rellum");
+	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "hue", "light", "sat", "lum", "hls", "hlsa", "hsv", "hsva", "invert", "combine", "withhue", "witha", "withlight", "abslight", "rellight", "withsat", "withlum", "abslum", "rellum");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)
