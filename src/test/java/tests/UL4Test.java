@@ -6436,6 +6436,30 @@ public class UL4Test
 	}
 
 	@Test
+	public void signature_serialization_varkwargs() throws Exception
+	{
+		Template t = T("<?ul4 t(a, **b)?><?print a?>,<?print b?>");
+
+		checkOutput("gurk,{'b': 'hurz', 'c': 'hinz', 'd': 'kunz'}", t, V("a", "gurk", "b", "hurz", "c", "hinz", "d", "kunz"));
+	}
+
+	@Test
+	public void signature_serialization_varargs() throws Exception
+	{
+		Template t = T("<?ul4 t(a, *b)?><?print a?>,<?print b?>");
+
+		checkOutput("gurk,[]", t, V("a", "gurk"));
+	}
+
+	@Test
+	public void signature_serialization_default() throws Exception
+	{
+		Template t = T("<?ul4 t(a, b='hurz')?><?print a?>,<?print b?>");
+
+		checkOutput("gurk,hurz", t, V("a", "gurk"));
+	}
+
+	@Test
 	public void function_subcall_default() throws Exception
 	{
 		checkOutput("42", T("<?def f(x=17, y=23)?><?return x+y?><?end def?><?print f(y=25)?>"));

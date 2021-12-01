@@ -1,3 +1,9 @@
+exp-164 (2021-12-01)
+--------------------
+
+Fixed UL4ON serialization of ``*`` and ``**`` arguments in template signatures.
+
+
 exp-163 (2021-11-16)
 --------------------
 

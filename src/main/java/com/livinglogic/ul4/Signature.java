@@ -351,6 +351,16 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 			if (type.hasDefault())
 				dump.add(param.getDefaultValue());
 		}
+		if (varPositional != null)
+		{
+			dump.add(varPositional.getName());
+			dump.add(varPositional.getType().getUL4ONString());
+		}
+		if (varKeyword != null)
+		{
+			dump.add(varKeyword.getName());
+			dump.add(varKeyword.getType().getUL4ONString());
+		}
 		return dump;
 	}
 
