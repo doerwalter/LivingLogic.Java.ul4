@@ -1172,18 +1172,18 @@ public class Utils
 		if (t instanceof LocationException)
 		{
 			AST ast = ((LocationException)t).getLocation();
-			buffer.append("<p>");
+			buffer.append("<p class='ul4-location'>");
 			buffer.append(ast.getTemplateDescriptionHTML());
 			buffer.append(": ");
 			buffer.append(ast.getLocationDescriptionHTML());
-			buffer.append("<p>");
+			buffer.append("</p>");
 			buffer.append("<pre>");
 			buffer.append(ast.getSourceSnippetHTML());
 			buffer.append("</pre>");
 		}
 		else
 		{
-			buffer.append("<p>");
+			buffer.append("<p class='ul4-exc'>");
 			buffer.append("<b>");
 			buffer.append(FunctionXMLEscape.call(t.getClass().getName()));
 			buffer.append("</b>: ");
@@ -1196,7 +1196,7 @@ public class Utils
 	public static String getExceptionChainAsHTML(Throwable t)
 	{
 		StringBuilder buffer = new StringBuilder();
-		buffer.append("<ul>");
+		buffer.append("<ul class='ul4-error'>");
 		addExceptionHTML2Buffer(buffer, t);
 		buffer.append("</ul>");
 		return buffer.toString();

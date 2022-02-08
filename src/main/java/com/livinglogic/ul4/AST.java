@@ -518,9 +518,9 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 		String code = getStartSource();
 		String suffix = getStartSourceSuffix();
 		buffer.append(FunctionXMLEscape.call(prefix));
-		buffer.append("<u>");
+		buffer.append("<b>");
 		buffer.append(FunctionXMLEscape.call(code));
-		buffer.append("</u>");
+		buffer.append("</b>");
 		buffer.append(FunctionXMLEscape.call(suffix));
 		return buffer.toString();
 	}

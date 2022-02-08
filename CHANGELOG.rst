@@ -1,3 +1,11 @@
+exp-165 (2022-02-08)
+--------------------
+
+Fixed HTML for UL4 stacktrace produced by ``Utils.getExceptionChainAsHTML()``.
+
+Enhance CSS markup.
+
+
 exp-164 (2021-12-01)
 --------------------
 
