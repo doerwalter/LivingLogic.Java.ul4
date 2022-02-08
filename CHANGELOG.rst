@@ -1,3 +1,10 @@
+exp-166 (2022-02-08)
+--------------------
+
+Updated HTML produced by ``Utils.getExceptionChainAsHTML()`` for better
+compatibility with WAF stack traces.
+
+
 exp-165 (2022-02-08)
 --------------------
 

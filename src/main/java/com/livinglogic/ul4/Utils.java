@@ -1168,7 +1168,6 @@ public class Utils
 		{
 			addExceptionHTML2Buffer(buffer, inner);
 		}
-		buffer.append("<li>");
 		if (t instanceof LocationException)
 		{
 			AST ast = ((LocationException)t).getLocation();
@@ -1190,15 +1189,14 @@ public class Utils
 			buffer.append(FunctionXMLEscape.call(t.toString()));
 			buffer.append("</p>");
 		}
-		buffer.append("</li>");
 	}
 
 	public static String getExceptionChainAsHTML(Throwable t)
 	{
 		StringBuilder buffer = new StringBuilder();
-		buffer.append("<ul class='ul4-error'>");
+		buffer.append("<div class='ul4-error'>");
 		addExceptionHTML2Buffer(buffer, t);
-		buffer.append("</ul>");
+		buffer.append("</div>");
 		return buffer.toString();
 	}
 
