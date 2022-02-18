@@ -1,3 +1,9 @@
+exp-168 (2022-02-18)
+--------------------
+
+Add methods to ``BoundArguments`` for converting arguments to ``bool``.
+
+
 exp-167 (2022-02-18)
 --------------------
 

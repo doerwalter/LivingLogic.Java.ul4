@@ -251,6 +251,42 @@ public class BoundArguments implements AutoCloseable
 		}
 	}
 
+	private boolean makeBool(Object value, int position, String name)
+	{
+		if (value instanceof Boolean)
+			return ((Boolean)value).booleanValue();
+		throw wrongArgumentType("<bool>", value, position, name);
+	}
+
+	private boolean makeBool(Object value, boolean nullValue, int position, String name)
+	{
+		if (value == null)
+			return nullValue;
+		return makeBool(value, position, name);
+	}
+
+	public boolean getBool(int position)
+	{
+		return makeBool(get(position), position, null);
+	}
+
+	public boolean getBool(String name)
+	{
+		makeArgumentsByName();
+		return makeBool(argumentsByName.get(name), -1, name);
+	}
+
+	public boolean getBool(int position, boolean nullValue)
+	{
+		return makeBool(get(position), nullValue, position, null);
+	}
+
+	public boolean getBool(String name, boolean nullValue)
+	{
+		makeArgumentsByName();
+		return makeBool(argumentsByName.get(name), nullValue, -1, name);
+	}
+
 	private int makeInt(Object value, int position, String name)
 	{
 		if (value instanceof Boolean)
