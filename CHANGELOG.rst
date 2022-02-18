@@ -1,5 +1,5 @@
-HEAD (2022-02-18)
------------------
+exp-167 (2022-02-18)
+--------------------
 
 Add methods to ``BoundArguments`` for checking arguments for their type and
 returning the converted value.
