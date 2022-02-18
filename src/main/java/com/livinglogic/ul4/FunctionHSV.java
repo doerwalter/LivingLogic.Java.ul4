@@ -25,17 +25,17 @@ public class FunctionHSV extends Function
 	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0), args.get(1), args.get(2), args.get(3));
+		return call(args.getDouble(0), args.getDouble(1), args.getDouble(2), args.getDouble(3));
 	}
 
-	public static Color call(Object arg1, Object arg2, Object arg3)
+	public static Color call(double arg1, double arg2, double arg3)
 	{
-		return Color.fromhsv(Utils.toDouble(arg1), Utils.toDouble(arg2), Utils.toDouble(arg3));
+		return Color.fromhsv(arg1, arg2, arg3);
 	}
 
-	public static Color call(Object arg1, Object arg2, Object arg3, Object arg4)
+	public static Color call(double arg1, double arg2, double arg3, double arg4)
 	{
-		return Color.fromhsv(Utils.toDouble(arg1), Utils.toDouble(arg2), Utils.toDouble(arg3), Utils.toDouble(arg4));
+		return Color.fromhsv(arg1, arg2, arg3, arg4);
 	}
 
 	public static final Function function = new FunctionHSV();

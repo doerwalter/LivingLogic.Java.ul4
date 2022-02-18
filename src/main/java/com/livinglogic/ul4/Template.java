@@ -738,6 +738,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		return parser;
 	}
 
+	@Override
 	public String getNameUL4()
 	{
 		return name;

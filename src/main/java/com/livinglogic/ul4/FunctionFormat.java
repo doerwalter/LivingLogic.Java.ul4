@@ -42,7 +42,7 @@ public class FunctionFormat extends Function
 	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(context, args.get(0), args.get(1), args.get(2));
+		return call(context, args.get(0), args.getString(1), args.getString(2, null));
 	}
 
 	private static HashMap<Integer, String> weekdayFormats;
@@ -737,34 +737,40 @@ public class FunctionFormat extends Function
 		throw new ArgumentTypeMismatchException("format({!t}, {!t}, {!t}) not supported", obj, formatString, locale);
 	}
 
+	public static String call(EvaluationContext context, Object obj, String formatString, String lang)
+	{
+		Locale locale = null;
+		if (lang != null)
+		{
+			int seppos = ((String)lang).indexOf("_");
+			if (seppos >= 0)
+				locale = new Locale(((String)lang).substring(0, seppos), ((String)lang).substring(seppos+1));
+			else
+				locale = new Locale((String)lang);
+		}
+		return call(context, obj, (String)formatString, locale);
+	}
+
 	public static String call(EvaluationContext context, Object obj, Object formatString, Object lang)
 	{
 		if (formatString instanceof String)
 		{
 			if (lang == null)
-				return call(context, obj, (String)formatString, null);
+				return call(context, obj, (String)formatString, (Locale)null);
 			else if (lang instanceof String)
-			{
-				Locale locale;
-				int seppos = ((String)lang).indexOf("_");
-				if (seppos >= 0)
-					locale = new Locale(((String)lang).substring(0, seppos), ((String)lang).substring(seppos+1));
-				else
-					locale = new Locale((String)lang);
-				return call(context, obj, (String)formatString, locale);
-			}
+				return call(context, obj, (String)formatString, (String)lang);
 		}
 		throw new ArgumentTypeMismatchException("format({!t}, {!t}, {!t}) not supported", obj, formatString, lang);
 	}
 
 	public static String call(EvaluationContext context, Object obj, String formatString)
 	{
-		return call(context, obj, formatString, null);
+		return call(context, obj, formatString, (Locale)null);
 	}
 
 	public static String call(EvaluationContext context, Object obj, Object formatString)
 	{
-		return call(context, obj, formatString, null);
+		return call(context, obj, formatString, (Locale)null);
 	}
 
 	public static final Function function = new FunctionFormat();

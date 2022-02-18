@@ -372,24 +372,22 @@ public class Connection implements UL4Instance, AutoCloseable, UL4GetAttr, UL4Di
 			case "queryargs":
 				try (BoundArguments boundArgs = methodQueryArgs.bindArguments(args, kwargs))
 				{
-					if (!(boundArgs.get(0) instanceof String))
-						throw new UnsupportedOperationException(Utils.formatMessage("query must be string, not {!t}!", boundArgs.get(0)));
-					return queryargs(context, (String)boundArgs.get(0), (List)boundArgs.get(1));
+					return queryargs(context, boundArgs.getString(0), boundArgs.getList(1));
 				}
 			case "query":
 				try (BoundArguments boundArgs = methodQuery.bindArguments(args, kwargs))
 				{
-					return query(context, (List)boundArgs.get(0));
+					return query(context, boundArgs.getList(0));
 				}
 			case "queryone":
 				try (BoundArguments boundArgs = methodQueryOne.bindArguments(args, kwargs))
 				{
-					return queryone((List)boundArgs.get(0));
+					return queryone(boundArgs.getList(0));
 				}
 			case "execute":
 				try (BoundArguments boundArgs = methodExecute.bindArguments(args, kwargs))
 				{
-					execute(context, (List)boundArgs.get(0));
+					execute(context, boundArgs.getList(0));
 					return null;
 				}
 			default:

@@ -26,16 +26,21 @@ public class FunctionIsClose extends Function
 	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments arguments)
 	{
-		Object arg1 = arguments.get(0);
-		Object arg2 = arguments.get(1);
-		Object arg3 = arguments.get(2);
-		Object arg4 = arguments.get(3);
+		double arg1 = arguments.getDouble(0);
+		double arg2 = arguments.getDouble(1);
+		double arg3 = arguments.getDouble(2);
+		double arg4 = arguments.getDouble(3);
 
 		return call(arg1, arg2, arg3, arg4);
 	}
 
 	public static boolean call(double a, double b, double rel_tol, double abs_tol)
 	{
+		if (rel_tol < 0.0)
+			throw new RuntimeException("math.isclose() argument rel_tol must be non-negative");
+		if (abs_tol < 0.0)
+			throw new RuntimeException("math.isclose() argument abs_tol must be non-negative");
+
 		if (a == b)
 			return true;
 
@@ -62,11 +67,6 @@ public class FunctionIsClose extends Function
 		double dbl_b = ((Number)b).doubleValue();
 		double dbl_rel_tol = ((Number)rel_tol).doubleValue();
 		double dbl_abs_tol = ((Number)abs_tol).doubleValue();
-
-		if (dbl_rel_tol < 0.0)
-			throw new RuntimeException("math.isclose() argument rel_tol must be non-negative");
-		if (dbl_abs_tol < 0.0)
-			throw new RuntimeException("math.isclose() argument abs_tol must be non-negative");
 
 		return call(dbl_a, dbl_b, dbl_rel_tol, dbl_abs_tol);
 	}

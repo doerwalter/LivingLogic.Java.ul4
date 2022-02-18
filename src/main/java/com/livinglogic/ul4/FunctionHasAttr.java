@@ -33,7 +33,7 @@ public class FunctionHasAttr extends Function
 	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(context, args.get(0), args.get(1));
+		return call(context, args.get(0), args.getString(1));
 	}
 
 	public static boolean call(EvaluationContext context, Object obj, String attrname)

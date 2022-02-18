@@ -74,6 +74,7 @@ public class TemplateClosure implements UL4Instance, UL4Call, UL4Render, UL4Name
 		return template;
 	}
 
+	@Override
 	public String getNameUL4()
 	{
 		return template.getNameUL4();

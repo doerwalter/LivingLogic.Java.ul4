@@ -33,18 +33,15 @@ public class FunctionCSS extends Function
 	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0), args.get(1));
+		return call(args.getString(0), args.get(1));
 	}
 
-	public static Object call(Object value, Object defaultValue)
+	public static Object call(String value, Object defaultValue)
 	{
-		if (value instanceof String)
-		{
-			if (defaultValue == Signature.noValue)
-				return Color.fromCSS((String)value);
-			else if (defaultValue instanceof Color || defaultValue == null)
-				return Color.fromCSS((String)value, (Color)defaultValue);
-		}
+		if (defaultValue == Signature.noValue)
+			return Color.fromCSS((String)value);
+		else if (defaultValue instanceof Color || defaultValue == null)
+			return Color.fromCSS((String)value, (Color)defaultValue);
 		throw new ArgumentTypeMismatchException("color.css({!t}, {!t}) not supported", value, defaultValue);
 	}
 

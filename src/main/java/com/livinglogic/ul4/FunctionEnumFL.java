@@ -19,14 +19,26 @@ public class FunctionEnumFL extends Function
 
 	private static final Signature signature = new Signature().addPositionalOnly("iterable").addBoth("start", 0);
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0), args.get(1));
+		return call(args.getIterator(0), args.getInt(1));
+	}
+
+	public static Object call(Iterator iterator)
+	{
+		return new SequenceEnumFL(iterator, 0);
+	}
+
+	public static Object call(Iterator iterator, int start)
+	{
+		return new SequenceEnumFL(iterator, start);
 	}
 
 	public static Object call(Object obj)

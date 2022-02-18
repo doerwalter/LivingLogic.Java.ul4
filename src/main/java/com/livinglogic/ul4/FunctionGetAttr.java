@@ -35,7 +35,7 @@ public class FunctionGetAttr extends Function
 	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(context, args.get(0), args.get(1), args.get(2));
+		return call(context, args.get(0), args.getString(1), args.get(2));
 	}
 
 	public static Object call(EvaluationContext context, Object obj, String attrname, Object defaultValue)

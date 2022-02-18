@@ -28,7 +28,12 @@ public class FunctionEnumerate extends Function
 	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0), args.get(1));
+		return call(args.get(0), args.getInt(1));
+	}
+
+	public static Object call(Object obj, int start)
+	{
+		return new SequenceEnumerator(Utils.iterator(obj), start);
 	}
 
 	public static Object call(Object obj, Object start)

@@ -51,13 +51,13 @@ public class DateTime extends AbstractType
 	@Override
 	public Object create(EvaluationContext context, BoundArguments arguments)
 	{
-		int year = Utils.toInt(arguments.get(0));
-		int month = Utils.toInt(arguments.get(1));
-		int day = Utils.toInt(arguments.get(2));
-		int hour = Utils.toInt(arguments.get(3));
-		int minute = Utils.toInt(arguments.get(4));
-		int second = Utils.toInt(arguments.get(5));
-		int microsecond = Utils.toInt(arguments.get(6));
+		int year = arguments.getInt(0);
+		int month = arguments.getInt(1);
+		int day = arguments.getInt(2);
+		int hour = arguments.getInt(3);
+		int minute = arguments.getInt(4);
+		int second = arguments.getInt(5);
+		int microsecond = arguments.getInt(6);
 
 		return LocalDateTime.of(year, month, day, hour, minute, second, microsecond*1000);
 	}
@@ -472,8 +472,8 @@ public class DateTime extends AbstractType
 
 	public static int week(Date instance, BoundArguments args)
 	{
-		int firstWeekday = Utils.toInt(args.get(0));
-		int minDaysInFirstWeek = Utils.toInt(args.get(1));
+		int firstWeekday = args.getInt(0);
+		int minDaysInFirstWeek = args.getInt(1);
 		return week(instance, firstWeekday, minDaysInFirstWeek);
 	}
 
@@ -484,8 +484,8 @@ public class DateTime extends AbstractType
 
 	public static int week(LocalDateTime instance, BoundArguments args)
 	{
-		int firstWeekday = Utils.toInt(args.get(0));
-		int minDaysInFirstWeek = Utils.toInt(args.get(1));
+		int firstWeekday = args.getInt(0);
+		int minDaysInFirstWeek = args.getInt(1);
 		return week(instance, firstWeekday, minDaysInFirstWeek);
 	}
 
@@ -520,8 +520,8 @@ public class DateTime extends AbstractType
 
 	public static List<Integer> calendar(Date instance, BoundArguments args)
 	{
-		int firstWeekday = Utils.toInt(args.get(0));
-		int minDaysInFirstWeek = Utils.toInt(args.get(1));
+		int firstWeekday = args.getInt(0);
+		int minDaysInFirstWeek = args.getInt(1);
 		return calendar(instance, firstWeekday, minDaysInFirstWeek).asList();
 	}
 
@@ -532,8 +532,8 @@ public class DateTime extends AbstractType
 
 	public static List<Integer> calendar(LocalDateTime object, BoundArguments args)
 	{
-		int firstWeekday = Utils.toInt(args.get(0));
-		int minDaysInFirstWeek = Utils.toInt(args.get(1));
+		int firstWeekday = args.getInt(0);
+		int minDaysInFirstWeek = args.getInt(1);
 		return calendar(object, firstWeekday, minDaysInFirstWeek).asList();
 	}
 

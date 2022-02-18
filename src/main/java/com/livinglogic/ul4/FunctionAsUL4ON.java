@@ -8,6 +8,7 @@ package com.livinglogic.ul4;
 
 public class FunctionAsUL4ON extends Function
 {
+	@Override
 	public String getNameUL4()
 	{
 		return "asul4on";
@@ -25,12 +26,9 @@ public class FunctionAsUL4ON extends Function
 	public Object evaluate(EvaluationContext context, BoundArguments arguments)
 	{
 		Object obj = arguments.get(0);
-		Object indent = arguments.get(1);
+		String indent = arguments.getString(1, null);
 
-		if (indent != null && !(indent instanceof String))
-			throw new ArgumentTypeMismatchException("dumps({!t}, {!t}) not supported", obj, indent);
-
-		return call(context, obj, (String)indent);
+		return call(context, obj, indent);
 	}
 
 	public static String call(EvaluationContext context, Object obj)

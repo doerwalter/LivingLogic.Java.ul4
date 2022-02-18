@@ -509,14 +509,11 @@ public class Str extends AbstractType
 
 	public static String replace(String instance, BoundArguments args)
 	{
-		Object oldObj = args.get(0);
-		Object newObj = args.get(1);
-		Object countObj = args.get(2);
+		String oldString = args.getString(0);
+		String newString = args.getString(1);
+		int count = args.getInt(2, -1);
 
-		if (!(oldObj instanceof String) || !(newObj instanceof String))
-			throw new ArgumentTypeMismatchException("{!t}.replace({!t}, {!t}) not supported", instance, oldObj, newObj);
-
-		return replace(instance, (String)oldObj, (String)newObj, countObj != null ? Utils.toInt(countObj) : -1);
+		return replace(instance, oldString, newString, count);
 	}
 
 	public static int count(String instance, String sub)
@@ -568,13 +565,9 @@ public class Str extends AbstractType
 
 	public static int count(String instance, BoundArguments args)
 	{
-		if (args.get(0) instanceof String)
-		{
-			int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
-			int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.length();
-			return count(instance, (String)args.get(0), startIndex, endIndex);
-		}
-		throw new ArgumentTypeMismatchException("{!t}.count({!t}, {!t}, {!t}) not supported", instance, args.get(0), args.get(1), args.get(2));
+		int startIndex = args.getInt(1, 0);
+		int endIndex = args.getInt(2, instance.length());
+		return count(instance, args.getString(0), startIndex, endIndex);
 	}
 
 	public static int find(String instance, String sub)
@@ -600,13 +593,9 @@ public class Str extends AbstractType
 
 	public static int find(String instance, BoundArguments args)
 	{
-		if (args.get(0) instanceof String)
-		{
-			int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
-			int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.length();
-			return find(instance, (String)args.get(0), startIndex, endIndex);
-		}
-		throw new ArgumentTypeMismatchException("{!t}.find({!t}, {!t}, {!t}) not supported", instance, args.get(0), args.get(1), args.get(2));
+		int startIndex = args.getInt(1, 0);
+		int endIndex = args.getInt(2, instance.length());
+		return find(instance, args.getString(0), startIndex, endIndex);
 	}
 
 	public static int rfind(String instance, String sub)
@@ -638,13 +627,9 @@ public class Str extends AbstractType
 
 	public static int rfind(String instance, BoundArguments args)
 	{
-		if (args.get(0) instanceof String)
-		{
-			int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
-			int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.length();
-			return rfind(instance, (String)args.get(0), startIndex, endIndex);
-		}
-		throw new ArgumentTypeMismatchException("{!t}.rfind({!t}, {!t}, {!t}) not supported", instance, args.get(0), args.get(1), args.get(2));
+		int startIndex = args.getInt(1, 0);
+		int endIndex = args.getInt(2, instance.length());
+		return rfind(instance, args.getString(0), startIndex, endIndex);
 	}
 
 

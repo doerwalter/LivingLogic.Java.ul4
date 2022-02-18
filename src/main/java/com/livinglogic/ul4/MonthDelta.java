@@ -51,7 +51,7 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 		@Override
 		public Object create(EvaluationContext context, BoundArguments args)
 		{
-			return new MonthDelta(Utils.toInt(args.get(0)));
+			return new MonthDelta(args.getInt(0));
 		}
 	}
 

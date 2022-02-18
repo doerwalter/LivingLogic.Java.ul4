@@ -66,6 +66,7 @@ public class FunctionSorted extends Function
 		}
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
 		return call(context, args.get(0), args.get(1), args.get(2));

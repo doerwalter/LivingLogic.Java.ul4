@@ -26,7 +26,7 @@ public class FunctionCos extends Function
 	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0));
+		return call(args.getDouble(0));
 	}
 
 	public static double call(double obj)

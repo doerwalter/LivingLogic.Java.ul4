@@ -44,8 +44,8 @@ public class Dict extends AbstractType
 	@Override
 	public Object create(EvaluationContext context, BoundArguments arguments)
 	{
-		List<Object> args = (List<Object>)arguments.get(0);
-		Map<String, Object> kwargs = (Map<String, Object>)arguments.get(1);
+		List<Object> args = arguments.getList(0);
+		Map<String, Object> kwargs = arguments.getMap(1);
 
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 
@@ -182,7 +182,7 @@ public class Dict extends AbstractType
 
 	public static Object update(EvaluationContext context, Map instance, BoundArguments args)
 	{
-		update(context, instance, (List<Object>)args.get(0), (Map<String, Object>)args.get(1));
+		update(context, instance, args.getList(0), args.getMap(1));
 		return null;
 	}
 

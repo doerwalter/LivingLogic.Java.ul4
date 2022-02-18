@@ -29,7 +29,12 @@ public class FunctionIsLast extends Function
 	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0));
+		return call(args.getIterator(0));
+	}
+
+	public static Object call(Iterator iterator)
+	{
+		return new SequenceIsLast(iterator);
 	}
 
 	public static Object call(Object obj)

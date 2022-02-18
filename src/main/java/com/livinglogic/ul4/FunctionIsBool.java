@@ -18,6 +18,7 @@ public class FunctionIsBool extends Function
 
 	private static final Signature signature = new Signature().addPositionalOnly("obj");
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;

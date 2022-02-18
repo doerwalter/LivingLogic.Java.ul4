@@ -62,10 +62,10 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 		@Override
 		public Color create(EvaluationContext context, BoundArguments args)
 		{
-			int r = Utils.toInt(args.get(0));
-			int g = Utils.toInt(args.get(1));
-			int b = Utils.toInt(args.get(2));
-			int a = Utils.toInt(args.get(3));
+			int r = args.getInt(0);
+			int g = args.getInt(1);
+			int b = args.getInt(2);
+			int a = args.getInt(3);
 
 			return new Color(r, g, b, a);
 		}
@@ -1111,67 +1111,62 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 			case "witha":
 				try (BoundArguments boundArgs = methodWithA.bindArguments(args, kwargs))
 				{
-					return witha(Utils.toInt(boundArgs.get(0)));
+					return witha(boundArgs.getInt(0));
 				}
 			case "withhue":
 				try (BoundArguments boundArgs = methodWithHue.bindArguments(args, kwargs))
 				{
-					return withhue(Utils.toDouble(boundArgs.get(0)));
+					return withhue(boundArgs.getDouble(0));
 				}
 			case "withlight":
 				try (BoundArguments boundArgs = methodWithLight.bindArguments(args, kwargs))
 				{
-					return withlight(Utils.toDouble(boundArgs.get(0)));
+					return withlight(boundArgs.getDouble(0));
 				}
 			case "abslight":
 				try (BoundArguments boundArgs = methodAbsLight.bindArguments(args, kwargs))
 				{
-					return abslight(Utils.toDouble(boundArgs.get(0)));
+					return abslight(boundArgs.getDouble(0));
 				}
 			case "rellight":
 				try (BoundArguments boundArgs = methodRelLight.bindArguments(args, kwargs))
 				{
-					return rellight(Utils.toDouble(boundArgs.get(0)));
+					return rellight(boundArgs.getDouble(0));
 				}
 			case "withsat":
 				try (BoundArguments boundArgs = methodWithSat.bindArguments(args, kwargs))
 				{
-					return withsat(Utils.toDouble(boundArgs.get(0)));
+					return withsat(boundArgs.getDouble(0));
 				}
 			case "withlum":
 				try (BoundArguments boundArgs = methodWithLum.bindArguments(args, kwargs))
 				{
-					return withlum(Utils.toDouble(boundArgs.get(0)));
+					return withlum(boundArgs.getDouble(0));
 				}
 			case "abslum":
 				try (BoundArguments boundArgs = methodAbsLum.bindArguments(args, kwargs))
 				{
-					return abslum(Utils.toDouble(boundArgs.get(0)));
+					return abslum(boundArgs.getDouble(0));
 				}
 			case "rellum":
 				try (BoundArguments boundArgs = methodRelLum.bindArguments(args, kwargs))
 				{
-					return rellum(Utils.toDouble(boundArgs.get(0)));
+					return rellum(boundArgs.getDouble(0));
 				}
 			case "invert":
 				try (BoundArguments boundArgs = methodInvert.bindArguments(args, kwargs))
 				{
-					return invert(Utils.toDouble(boundArgs.get(0)));
+					return invert(boundArgs.getDouble(0));
 				}
 			case "combine":
 				try (BoundArguments boundArgs = methodCombine.bindArguments(args, kwargs))
 				{
-					Object newR = boundArgs.get(0);
-					Object newG = boundArgs.get(1);
-					Object newB = boundArgs.get(2);
-					Object newA = boundArgs.get(3);
+					int newR = boundArgs.getInt(0, r);
+					int newG = boundArgs.getInt(1, g);
+					int newB = boundArgs.getInt(2, b);
+					int newA = boundArgs.getInt(3, a);
 
-					int intNewR = newR != null ? Utils.toInt(newR) : r;
-					int intNewG = newG != null ? Utils.toInt(newG) : g;
-					int intNewB = newB != null ? Utils.toInt(newB) : b;
-					int intNewA = newA != null ? Utils.toInt(newA) : a;
-
-					return new Color(intNewR, intNewG, intNewB, intNewA);
+					return new Color(newR, newG, newB, newA);
 				}
 			default:
 				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);

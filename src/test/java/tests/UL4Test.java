@@ -2584,31 +2584,31 @@ public class UL4Test
 		checkOutput("", T("<?print enumfl(1, 2, 3)?>"));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumfl_null()
 	{
 		checkOutput("", T("<?print enumfl(data)?>"), V("data", null));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumfl_true()
 	{
 		checkOutput("", T("<?print enumfl(data)?>"), V("data", true));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumfl_false()
 	{
 		checkOutput("", T("<?print enumfl(data)?>"), V("data", false));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumfl_int()
 	{
 		checkOutput("", T("<?print enumfl(data)?>"), V("data", 42));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_enumfl_float()
 	{
 		checkOutput("", T("<?print enumfl(data)?>"), V("data", 42.4));
@@ -2645,31 +2645,31 @@ public class UL4Test
 		checkOutput("", T("<?print isfirstlast(1, 2)?>"));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirstlast_null()
 	{
 		checkOutput("", T("<?print isfirstlast(data)?>"), V("data", null));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirstlast_true()
 	{
 		checkOutput("", T("<?print isfirstlast(data)?>"), V("data", true));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirstlast_false()
 	{
 		checkOutput("", T("<?print isfirstlast(data)?>"), V("data", false));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirstlast_int()
 	{
 		checkOutput("", T("<?print isfirstlast(data)?>"), V("data", 42));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirstlast_float()
 	{
 		checkOutput("", T("<?print isfirstlast(data)?>"), V("data", 42.4));
@@ -2706,31 +2706,31 @@ public class UL4Test
 		checkOutput("", T("<?print isfirst(1, 2)?>"));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirst_null()
 	{
 		checkOutput("", T("<?print isfirst(data)?>"), V("data", null));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirst_true()
 	{
 		checkOutput("", T("<?print isfirst(data)?>"), V("data", true));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirst_false()
 	{
 		checkOutput("", T("<?print isfirst(data)?>"), V("data", false));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirst_int()
 	{
 		checkOutput("", T("<?print isfirst(data)?>"), V("data", 42));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_isfirst_float()
 	{
 		checkOutput("", T("<?print isfirst(data)?>"), V("data", 42.4));
@@ -2768,31 +2768,31 @@ public class UL4Test
 		checkOutput("", T("<?print islast(1, 2)?>"));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_islast_null()
 	{
 		checkOutput("", T("<?print islast(data)?>"), V("data", null));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_islast_true()
 	{
 		checkOutput("", T("<?print islast(data)?>"), V("data", true));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_islast_false()
 	{
 		checkOutput("", T("<?print islast(data)?>"), V("data", false));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_islast_int()
 	{
 		checkOutput("", T("<?print islast(data)?>"), V("data", 42));
 	}
 
-	@CauseTest(expectedCause=NotIterableException.class)
+	@CauseTest(expectedCause=ArgumentTypeMismatchException.class)
 	public void function_islast_float()
 	{
 		checkOutput("", T("<?print islast(data)?>"), V("data", 42.4));

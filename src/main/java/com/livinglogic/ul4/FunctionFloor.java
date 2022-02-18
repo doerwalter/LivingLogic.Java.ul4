@@ -31,7 +31,7 @@ public class FunctionFloor extends Function
 	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0), args.get(1));
+		return call(args.get(0), args.getInt(1));
 	}
 
 	public static Object call(int x, int digits)

@@ -47,13 +47,13 @@ public class Date_ extends AbstractType
 	@Override
 	public Object create(EvaluationContext context, BoundArguments arguments)
 	{
-		int year = Utils.toInt(arguments.get(0));
-		int month = Utils.toInt(arguments.get(1));
-		int day = Utils.toInt(arguments.get(2));
-		int hour = Utils.toInt(arguments.get(3));
-		int minute = Utils.toInt(arguments.get(4));
-		int second = Utils.toInt(arguments.get(5));
-		int microsecond = Utils.toInt(arguments.get(6));
+		int year = arguments.getInt(0);
+		int month = arguments.getInt(1);
+		int day = arguments.getInt(2);
+		int hour = arguments.getInt(3);
+		int minute = arguments.getInt(4);
+		int second = arguments.getInt(5);
+		int microsecond = arguments.getInt(6);
 
 		if (hour == 0 && minute == 0 && second == 0 && microsecond == 0)
 			return LocalDate.of(year, month, day);
@@ -165,8 +165,8 @@ public class Date_ extends AbstractType
 
 	public static int week(LocalDate instance, BoundArguments args)
 	{
-		int firstWeekday = Utils.toInt(args.get(0));
-		int minDaysInFirstWeek = Utils.toInt(args.get(1));
+		int firstWeekday = args.getInt(0);
+		int minDaysInFirstWeek = args.getInt(1);
 		return week(instance, firstWeekday, minDaysInFirstWeek);
 	}
 
@@ -204,8 +204,8 @@ public class Date_ extends AbstractType
 
 	public List<Integer> calendar(LocalDate instance, BoundArguments args)
 	{
-		int firstWeekday = Utils.toInt(args.get(0));
-		int minDaysInFirstWeek = Utils.toInt(args.get(1));
+		int firstWeekday = args.getInt(0);
+		int minDaysInFirstWeek = args.getInt(1);
 		return calendar(instance, firstWeekday, minDaysInFirstWeek).asList();
 	}
 

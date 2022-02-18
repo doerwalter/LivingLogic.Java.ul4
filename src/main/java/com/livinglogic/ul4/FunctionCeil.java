@@ -31,7 +31,7 @@ public class FunctionCeil extends Function
 	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(context, args.get(0), args.get(1));
+		return call(context, args.get(0), args.getInt(1));
 	}
 
 	public static Object call(EvaluationContext context, int x, int digits)

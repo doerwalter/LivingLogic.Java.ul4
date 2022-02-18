@@ -181,7 +181,7 @@ public class List_ extends AbstractType
 
 	public static Object insert(EvaluationContext context, List instance, BoundArguments args)
 	{
-		insert(context, instance, Utils.toInt(args.get(0)), (List<Object>)args.get(1));
+		insert(context, instance, args.getInt(0), (List<Object>)args.get(1));
 		return null;
 	}
 
@@ -207,7 +207,7 @@ public class List_ extends AbstractType
 
 	public static Object pop(EvaluationContext context, List instance, BoundArguments args)
 	{
-		return pop(context, instance, Utils.toInt(args.get(0)));
+		return pop(context, instance, args.getInt(0));
 	}
 
 	public static Object pop(EvaluationContext context, Object instance, BoundArguments args)
@@ -244,8 +244,8 @@ public class List_ extends AbstractType
 
 	public static Object count(EvaluationContext context, Object[] instance, BoundArguments args)
 	{
-		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
-		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.length;
+		int startIndex = args.getInt(1, 0);
+		int endIndex = args.getInt(2, instance.length);
 
 		return count(context, instance, args.get(0), startIndex, endIndex);
 	}
@@ -276,8 +276,8 @@ public class List_ extends AbstractType
 
 	public static Object count(EvaluationContext context, List instance, BoundArguments args)
 	{
-		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
-		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.size();
+		int startIndex = args.getInt(1, 0);
+		int endIndex = args.getInt(2, instance.size());
 
 		return count(context, instance, args.get(0), startIndex, endIndex);
 	}
@@ -331,8 +331,8 @@ public class List_ extends AbstractType
 
 	public static Object find(EvaluationContext context, Object[] instance, BoundArguments args)
 	{
-		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
-		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.length;
+		int startIndex = args.getInt(1, 0);
+		int endIndex = args.getInt(2, instance.length);
 
 		return find(context, instance, args.get(0), startIndex, endIndex);
 	}
@@ -367,8 +367,8 @@ public class List_ extends AbstractType
 
 	public static Object find(EvaluationContext context, List instance, BoundArguments args)
 	{
-		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
-		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.size();
+		int startIndex = args.getInt(1, 0);
+		int endIndex = args.getInt(2, instance.size());
 
 		return find(context, instance, args.get(0), startIndex, endIndex);
 	}
@@ -422,8 +422,8 @@ public class List_ extends AbstractType
 
 	public static Object rfind(EvaluationContext context, Object[] instance, BoundArguments args)
 	{
-		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
-		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.length;
+		int startIndex = args.getInt(1, 0);
+		int endIndex = args.getInt(2, instance.length);
 
 		return rfind(context, instance, args.get(0), startIndex, endIndex);
 	}
@@ -455,8 +455,8 @@ public class List_ extends AbstractType
 
 	public static Object rfind(EvaluationContext context, List instance, BoundArguments args)
 	{
-		int startIndex = args.get(1) != null ? Utils.toInt(args.get(1)) : 0;
-		int endIndex = args.get(2) != null ? Utils.toInt(args.get(2)) : instance.size();
+		int startIndex = args.getInt(1, 0);
+		int endIndex = args.getInt(2, instance.size());
 
 		return rfind(context, instance, args.get(0), startIndex, endIndex);
 	}

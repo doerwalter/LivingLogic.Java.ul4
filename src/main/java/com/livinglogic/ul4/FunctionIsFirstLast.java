@@ -20,14 +20,21 @@ public class FunctionIsFirstLast extends Function
 
 	private static final Signature signature = new Signature().addPositionalOnly("iterable");
 
+	@Override
 	public Signature getSignature()
 	{
 		return signature;
 	}
 
+	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0));
+		return call(args.getIterator(0));
+	}
+
+	public static Object call(Iterator iterator)
+	{
+		return new SequenceIsFirstLast(iterator);
 	}
 
 	public static Object call(Object obj)
