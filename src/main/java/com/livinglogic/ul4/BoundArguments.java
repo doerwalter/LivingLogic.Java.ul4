@@ -507,6 +507,7 @@ public class BoundArguments implements AutoCloseable
 	as the variables might be referenced by a closure.
 	However for {@code Function} objects that can be done without problems.
 	**/
+	@Override
 	public void close()
 	{
 		if (signature != null)

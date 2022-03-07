@@ -196,6 +196,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	/**
 	Call this when the {@code EvaluationContext} is no longer required.
 	**/
+	@Override
 	public void close()
 	{
 		for (AutoCloseable closeable : closeables)
