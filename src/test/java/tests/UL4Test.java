@@ -4763,6 +4763,30 @@ public class UL4Test
 	}
 
 	@Test
+	public void render_or_print()
+	{
+		checkOutput("<&><&>", T("<?def x?><&><?end def?><?render_or_print x()?><?render_or_print '<&>'()?>"));
+	}
+
+	@Test
+	public void render_or_printx()
+	{
+		checkOutput("<&>&lt;&amp;&gt;", T("<?def x?><&><?end def?><?render_or_printx x()?><?render_or_printx '<&>'()?>"));
+	}
+
+	@Test
+	public void renderx_or_print()
+	{
+		checkOutput("&lt;&amp;&gt;<&>", T("<?def x?><&><?end def?><?renderx_or_print x()?><?renderx_or_print '<&>'()?>"));
+	}
+
+	@Test
+	public void renderx_or_printx()
+	{
+		checkOutput("&lt;&amp;&gt;&lt;&amp;&gt;", T("<?def x?><&><?end def?><?renderx_or_printx x()?><?renderx_or_printx '<&>'()?>"));
+	}
+
+	@Test
 	public void renderblock() throws Exception
 	{
 		checkOutput("(gurk)", T("<?def bracket(content)?>(<?render content()?>)<?end def?><?renderblock bracket()?>gurk<?end renderblock?>"));

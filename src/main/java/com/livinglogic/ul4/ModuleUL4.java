@@ -102,6 +102,10 @@ public class ModuleUL4 extends Module
 		addObject(CallAST.type);
 		addObject(RenderAST.type);
 		addObject(RenderXAST.type);
+		addObject(RenderXOrPrintXAST.type);
+		addObject(RenderXOrPrintAST.type);
+		addObject(RenderOrPrintXAST.type);
+		addObject(RenderOrPrintAST.type);
 		addObject(RenderBlockAST.type);
 		addObject(RenderBlocksAST.type);
 		addObject(SignatureAST.type);

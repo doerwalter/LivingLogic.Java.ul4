@@ -330,6 +330,34 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		return parts;
 	}
 
+	private boolean isClosingTag(String tagName)
+	{
+		return "elif".equals(tagName) || "else".equals(tagName) || "end".equals(tagName);
+	}
+
+	private boolean isOpeningTag(String tagName)
+	{
+		return
+			"for".equals(tagName) || "if".equals(tagName) || "def".equals(tagName) ||
+			"elif".equals(tagName) || "else".equals(tagName) ||
+			"renderblock".equals(tagName) || "renderblocks".equals(tagName)
+		;
+	}
+
+	private boolean isPrintTag(String tagName)
+	{
+		return "print".equals(tagName) || "printx".equals(tagName);
+	}
+
+	private boolean isRenderTag(String tagName)
+	{
+		return
+			"render".equals(tagName) || "renderx".equals(tagName) ||
+			"render_or_print".equals(tagName) || "renderx_or_print".equals(tagName) ||
+			"render_or_printx".equals(tagName) || "renderx_or_printx".equals(tagName)
+		;
+	}
+
 	private List<AST> handleWhitespaceSmart(List<Line> lines)
 	{
 		// Step 1: Determine the block structure of the lines
@@ -349,7 +377,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			else
 			{
 				// Tags "closing" a block
-				if ("elif".equals(tagName) || "else".equals(tagName) || "end".equals(tagName))
+				if (isClosingTag(tagName))
 				{
 					if (stack.size() > 0)
 					{
@@ -359,7 +387,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				}
 				newlines.add(new BlockLine(line, stack));
 				// Tags "opening" a block
-				if ("for".equals(tagName) || "if".equals(tagName) || "def".equals(tagName) || "elif".equals(tagName) || "else".equals(tagName) || "renderblock".equals(tagName))
+				if (isOpeningTag(tagName))
 				{
 					Block block = new Block(i+1); // Block starts on the next line
 					stack.add(block);
@@ -429,7 +457,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 					else if (line.get(1) instanceof Tag)
 					{
 						Tag tag = (Tag)line.get(1);
-						if (!tag.tag.equals("print") && !tag.tag.equals("printx") && !tag.tag.equals("render") && !tag.tag.equals("renderx"))
+						if (!isPrintTag(tag.tag) && !isRenderTag(tag.tag))
 						{
 							parts.add(tag);
 							continue;
@@ -444,13 +472,13 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 					if (line.get(1) instanceof Tag)
 					{
 						Tag tag = (Tag)line.get(1);
-						if (tag.tag.equals("render") || tag.tag.equals("renderx"))
+						if (isRenderTag(tag.tag))
 						{
 							parts.add(line.get(0)); // This will be moved into the render tag later
 							parts.add(tag);
 							continue;
 						}
-						else if (!tag.tag.equals("print") && !tag.tag.equals("printx"))
+						else if (!isPrintTag(tag.tag))
 						{
 							parts.add(tag);
 							continue;
@@ -653,6 +681,10 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 						}
 						case "render":
 						case "renderx":
+						case "render_or_print":
+						case "render_or_printx":
+						case "renderx_or_print":
+						case "renderx_or_printx":
 						{
 							UL4Parser parser = getParser(tag);
 							CodeAST code = parser.expression();
@@ -666,6 +698,18 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 									break;
 								case "renderx":
 									render = new RenderXAST((CallAST)code);
+									break;
+								case "render_or_print":
+									render = new RenderOrPrintAST((CallAST)code);
+									break;
+								case "render_or_printx":
+									render = new RenderOrPrintXAST((CallAST)code);
+									break;
+								case "renderx_or_print":
+									render = new RenderXOrPrintAST((CallAST)code);
+									break;
+								case "renderx_or_printx":
+									render = new RenderXOrPrintXAST((CallAST)code);
 									break;
 								// can't happen
 								default:
@@ -1393,7 +1437,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	**/
 	public List<Line> tokenizeTags()
 	{
-		Pattern tagPattern = Pattern.compile("<\\?\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblocks|renderblock|renderx|render|ignore)(\\s*(.*?)\\s*)?\\?>", Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile("<\\?\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblocks|renderblock|renderx_or_printx|render_or_printx|renderx_or_print|render_or_print|renderx|render|ignore)(\\s*(.*?)\\s*)?\\?>", Pattern.DOTALL);
 		LinkedList<Line> lines = new LinkedList<Line>();
 		boolean wasTag = false;
 		// Nesting level of <?ignore?>/<?end ignore?>
@@ -1695,6 +1739,10 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		Utils.register(CallAST.type);
 		Utils.register(RenderAST.type);
 		Utils.register(RenderXAST.type);
+		Utils.register(RenderXOrPrintXAST.type);
+		Utils.register(RenderXOrPrintAST.type);
+		Utils.register(RenderOrPrintXAST.type);
+		Utils.register(RenderOrPrintAST.type);
 		Utils.register(RenderBlockAST.type);
 		Utils.register(RenderBlocksAST.type);
 		Utils.register(Template.type);
