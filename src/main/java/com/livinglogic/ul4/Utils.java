@@ -10,8 +10,11 @@ import java.util.StringTokenizer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
@@ -188,6 +191,11 @@ public class Utils
 			return (int)arg;
 		else
 			throw new IllegalArgumentException("long value exceeds int");
+	}
+
+	public static LocalDateTime toLocalDateTime(Date date)
+	{
+		return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 
 	public static BigInteger powerOfTen(int exponent)
