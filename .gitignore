@@ -8,3 +8,6 @@
 .idea
 .vscode
 *.iml
+.env
+.sdkmanrc
+
