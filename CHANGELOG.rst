@@ -4,6 +4,8 @@ HEAD (2022-??-??)
 Add new classes ``RenderOrPrintAST``, ``RenderOrPrintXAST``,
 ``RenderXOrPrintAST``, ``RenderXOrPrintXAST``.
 
+Add method ``Utils.toLocalDateTime(java.util.Date)``.
+
 
 exp-168 (2022-02-18)
 --------------------
