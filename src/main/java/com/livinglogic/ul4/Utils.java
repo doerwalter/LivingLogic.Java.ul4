@@ -380,7 +380,8 @@ public class Utils
 			else if (arg2 instanceof BigInteger)
 				return toBigInteger(toInt(arg1)).equals(arg2);
 			else if (arg2 instanceof BigDecimal)
-				return new BigDecimal(toDouble(arg1)).compareTo((BigDecimal)arg2) == 0; // We don't want {@code equals}, as this would required the same scale on both numbers, for them to be equal
+				// We don't want {@code equals}, as this would require the same scale on both numbers for them to be equal
+				return new BigDecimal(toDouble(arg1)).compareTo((BigDecimal)arg2) == 0;
 			else
 				return false;
 		}
