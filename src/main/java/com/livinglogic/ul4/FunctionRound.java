@@ -32,7 +32,7 @@ public class FunctionRound extends Function
 		return call(args.get(0), args.get(1));
 	}
 
-	public static Object call(int x, int digits)
+	public static int call(int x, int digits)
 	{
 		if (digits >= 0)
 			return x;
@@ -50,7 +50,7 @@ public class FunctionRound extends Function
 		}
 	}
 
-	public static Object call(long x, int digits)
+	public static long call(long x, int digits)
 	{
 		if (digits >= 0)
 			return x;
@@ -68,7 +68,7 @@ public class FunctionRound extends Function
 		}
 	}
 
-	public static Object call(double x, int digits)
+	public static Number call(double x, int digits)
 	{
 		if (digits == 0)
 		{
@@ -113,7 +113,7 @@ public class FunctionRound extends Function
 		return x.divide(offset).add(new BigInteger(x.signum() >= 0 ? "5" : "-5")).divide(BigInteger.TEN).multiply(offset).multiply(BigInteger.TEN);
 	}
 
-	public static Object call(BigDecimal x, int digits)
+	public static Number call(BigDecimal x, int digits)
 	{
 		if (digits != 0)
 			x = x.movePointRight(digits);
@@ -129,7 +129,7 @@ public class FunctionRound extends Function
 			return new BigDecimal(x.toBigInteger().toString()).movePointLeft(digits);
 	}
 
-	public static Object call(Object x, int digits)
+	public static Number call(Object x, int digits)
 	{
 		if (x instanceof Byte || x instanceof Short || x instanceof Integer)
 			return call(((Number)x).intValue(), digits);
@@ -144,7 +144,7 @@ public class FunctionRound extends Function
 		throw new ArgumentTypeMismatchException("round({!t}, {!t}) not supported", x, digits);
 	}
 
-	public static Object call(Object x, Object digits)
+	public static Number call(Object x, Object digits)
 	{
 		return call(x, Utils.toInt(digits));
 	}
