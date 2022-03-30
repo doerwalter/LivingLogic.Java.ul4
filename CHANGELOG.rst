@@ -1,3 +1,13 @@
+exp-170 (2022-03-30)
+--------------------
+
+All versions of ``FunctionRound.call()`` now try to return the narrowest
+possible type (which means that the most generic version still returns a
+``Number`` instead of an ``Object``).
+
+Add method ``Utils.toLocalDateTime(java.util.Date)``.
+
+
 exp-169 (2022-03-10)
 --------------------
 
