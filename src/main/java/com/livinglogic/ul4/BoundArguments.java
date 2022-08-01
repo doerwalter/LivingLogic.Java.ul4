@@ -18,7 +18,7 @@ public class BoundArguments implements AutoCloseable
 {
 	protected String name;
 	protected Signature signature;
-	protected List<Object> argumentsByPosition;
+	protected Object[] argumentsByPosition;
 	protected Map<String, Object> argumentsByName;
 
 	public BoundArguments(Signature signature, UL4Name object, List<Object> args, Map<String, Object> kwargs)
@@ -50,9 +50,7 @@ public class BoundArguments implements AutoCloseable
 			List<Object> varPositionalArguments = varPositionalParameter != null ? new ArrayList<Object>() : null;
 			LinkedHashMap<String, Object> varKeywordArguments = varKeywordParameter != null ? new LinkedHashMap<String, Object>() : null;
 
-			argumentsByPosition = new ArrayList<Object>(count + (varPositionalParameter != null ? 1 : 0) + (varKeywordParameter != null ? 1 : 0));
-			for (i = 0; i < count; ++i)
-				argumentsByPosition.add(null);
+			argumentsByPosition = new Object[count + (varPositionalParameter != null ? 1 : 0) + (varKeywordParameter != null ? 1 : 0)];
 			argumentsByName = null; // will be created on demand
 			boolean[] haveValue = new boolean[count];
 
@@ -66,7 +64,7 @@ public class BoundArguments implements AutoCloseable
 					if (param != null && param.isPositional())
 					{
 						// A parameter exists in this position and it can be specified positionally
-						argumentsByPosition.set(i, argValue);
+						argumentsByPosition[i] = argValue;
 						haveValue[i] = true;
 					}
 					else
@@ -100,7 +98,7 @@ public class BoundArguments implements AutoCloseable
 							throw new DuplicateArgumentException(name, param);
 						else
 						{
-							argumentsByPosition.set(position, argValue);
+							argumentsByPosition[position] = argValue;
 							haveValue[position] = true;
 						}
 					}
@@ -129,7 +127,7 @@ public class BoundArguments implements AutoCloseable
 				{
 					if (param.hasDefault())
 					{
-						argumentsByPosition.set(i, param.getDefaultValue());
+						argumentsByPosition[i] = param.getDefaultValue();
 						haveValue[i] = true;
 					}
 					else
@@ -140,13 +138,13 @@ public class BoundArguments implements AutoCloseable
 
 			// Set variable parameters
 			if (varPositionalArguments != null)
-				argumentsByPosition.add(varPositionalArguments);
+				argumentsByPosition[i++] = varPositionalArguments;
 			if (varKeywordArguments != null)
-				argumentsByPosition.add(varKeywordArguments);
+				argumentsByPosition[i++] = varKeywordArguments;
 		}
 	}
 
-	public List<Object> byPosition()
+	public Object[] byPosition()
 	{
 		return argumentsByPosition;
 	}
@@ -155,19 +153,19 @@ public class BoundArguments implements AutoCloseable
 	{
 		if (argumentsByName == null)
 		{
-			argumentsByName = new LinkedHashMap<String, Object>(argumentsByPosition.size());
+			argumentsByName = new LinkedHashMap<String, Object>(argumentsByPosition.length);
 
 			int i = 0;
 			for (ParameterDescription param : signature.getParametersByPosition())
-				argumentsByName.put(param.getName(), argumentsByPosition.get(i++));
+				argumentsByName.put(param.getName(), argumentsByPosition[i++]);
 
 			ParameterDescription varPositional = signature.getVarPositional();
 			if (varPositional != null)
-				argumentsByName.put(varPositional.getName(), argumentsByPosition.get(i++));
+				argumentsByName.put(varPositional.getName(), argumentsByPosition[i++]);
 
 			ParameterDescription varKeyword = signature.getVarKeyword();
 			if (varKeyword != null)
-				argumentsByName.put(varKeyword.getName(), argumentsByPosition.get(i++));
+				argumentsByName.put(varKeyword.getName(), argumentsByPosition[i++]);
 		}
 	}
 
@@ -179,7 +177,7 @@ public class BoundArguments implements AutoCloseable
 
 	public Object get(int position)
 	{
-		return argumentsByPosition.get(position);
+		return argumentsByPosition[position];
 	}
 
 	public Object get(String name)
@@ -514,15 +512,14 @@ public class BoundArguments implements AutoCloseable
 		{
 			if (signature.hasVarKeyword())
 			{
-				Map<String, Object> kwargs = (Map<String, Object>)get(argumentsByPosition.size() - 1);
+				Map<String, Object> kwargs = (Map<String, Object>)get(argumentsByPosition.length - 1);
 				kwargs.clear();
 			}
 			if (signature.hasVarPositional())
 			{
-				List<Object> args = (List<Object>)get(argumentsByPosition.size() - (signature.hasVarKeyword() ? 2 : 1));
+				List<Object> args = (List<Object>)get(argumentsByPosition.length - (signature.hasVarKeyword() ? 2 : 1));
 				args.clear();
 			}
-			argumentsByPosition.clear();
 			argumentsByPosition = null;
 			if (argumentsByName != null)
 			{
