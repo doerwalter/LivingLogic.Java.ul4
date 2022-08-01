@@ -432,12 +432,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 					if (ok)
 						newIndentBuilder.append(oldIndent.charAt(j));
 				}
-				String newIndent = newIndentBuilder.toString();
-				if (allIndents.get(newIndent) != null)
-					newIndent = allIndents.get(newIndent);
-				else
-					allIndents.put(newIndent, newIndent);
-				((IndentAST)line.get(0)).setText(newIndent);
+				((IndentAST)line.get(0)).setText(newIndentBuilder.toString().intern());
 			}
 		}
 
@@ -1349,7 +1344,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		if (!(part instanceof IndentAST) && lastLine.size() == 0)
 		{
 			int start = part.getStartPos().getStart();
-			lastLine.add(new IndentAST(this, new Slice(start, start), null));
+			lastLine.add(new IndentAST(this, new Slice(start, start), "".intern()));
 		}
 		lastLine.add(part);
 		// If we added a line end append a new empty line
@@ -1377,7 +1372,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				else
 				{
 					if (pos != startPos)
-						addPart2Lines(lines, new IndentAST(this, new Slice(startPos, pos), null));
+						addPart2Lines(lines, new IndentAST(this, new Slice(startPos, pos), source.substring(startPos, pos).intern()));
 					startPos = pos++;
 					state = isLineEnd(c) ? 2 : 1;
 					wasR = (c == '\r');
@@ -1388,7 +1383,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				if (isLineEnd(c))
 				{
 					if (pos != startPos)
-						addPart2Lines(lines, new TextAST(this, new Slice(startPos, pos)));
+						addPart2Lines(lines, new TextAST(this, new Slice(startPos, pos), source.substring(startPos, pos).intern()));
 					startPos = pos++;
 					state = 2;
 					wasR = (c == '\r');
@@ -1407,14 +1402,14 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 					else
 					{
 						if (pos != startPos)
-							addPart2Lines(lines, new LineEndAST(this, new Slice(startPos, pos)));
+							addPart2Lines(lines, new LineEndAST(this, new Slice(startPos, pos), source.substring(startPos, pos).intern()));
 						startPos = pos++;
 					}
 					wasR = (c == '\r');
 				}
 				else
 				{
-					addPart2Lines(lines, new LineEndAST(this, new Slice(startPos, pos)));
+					addPart2Lines(lines, new LineEndAST(this, new Slice(startPos, pos), source.substring(startPos, pos).intern()));
 					state = (Character.isWhitespace(c)) ? 0 : 1;
 					startPos = pos++;
 				}
@@ -1423,11 +1418,11 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		if (startPos < stopPos)
 		{
 			if (state == 0)
-				addPart2Lines(lines, new IndentAST(this, new Slice(startPos, pos), null));
+				addPart2Lines(lines, new IndentAST(this, new Slice(startPos, pos), source.substring(startPos, pos).intern()));
 			else if (state == 1)
-				addPart2Lines(lines, new TextAST(this, new Slice(startPos, pos)));
+				addPart2Lines(lines, new TextAST(this, new Slice(startPos, pos), source.substring(startPos, pos).intern()));
 			else
-				addPart2Lines(lines, new LineEndAST(this, new Slice(startPos, pos)));
+				addPart2Lines(lines, new LineEndAST(this, new Slice(startPos, pos), source.substring(startPos, pos).intern()));
 		}
 	}
 
@@ -1461,7 +1456,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				tagStopPos = tagStartPos + matcher.group().length();
 				if (ignore == 0 && (pos != tagStartPos))
 				{
-					addText2Lines(lines, new TextAST(this, new Slice(pos, tagStartPos)), wasTag ? 1 : 0);
+					addText2Lines(lines, new TextAST(this, new Slice(pos, tagStartPos), source.substring(pos, tagStartPos).intern()), wasTag ? 1 : 0);
 					wasTag = false;
 				}
 				int codeStartPos = matcher.start(3);
@@ -1490,7 +1485,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			tagStopPos = source.length();
 			if (ignore == 0 && pos != tagStopPos)
 			{
-				addText2Lines(lines, new TextAST(this, new Slice(pos, tagStopPos)), wasTag ? 1 : 0);
+				addText2Lines(lines, new TextAST(this, new Slice(pos, tagStopPos), source.substring(pos, tagStopPos).intern()), wasTag ? 1 : 0);
 				wasTag = false;
 			}
 			if (ignore > 0)

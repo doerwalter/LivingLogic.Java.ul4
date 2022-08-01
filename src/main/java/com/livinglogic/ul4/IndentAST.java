@@ -58,18 +58,9 @@ public class IndentAST extends TextAST
 		return type;
 	}
 
-	protected String text;
-
 	public IndentAST(Template template, Slice pos, String text)
 	{
-		super(template, pos);
-		this.text = text;
-	}
-
-	@Override
-	public String getText()
-	{
-		return text != null ? text : super.getText();
+		super(template, pos, text);
 	}
 
 	public void setText(String text)
@@ -95,19 +86,5 @@ public class IndentAST extends TextAST
 	public String getType()
 	{
 		return "indent";
-	}
-
-	@Override
-	public void dumpUL4ON(Encoder encoder) throws IOException
-	{
-		super.dumpUL4ON(encoder);
-		encoder.dump(text);
-	}
-
-	@Override
-	public void loadUL4ON(Decoder decoder) throws IOException
-	{
-		super.loadUL4ON(decoder);
-		text = (String)decoder.load();
 	}
 }

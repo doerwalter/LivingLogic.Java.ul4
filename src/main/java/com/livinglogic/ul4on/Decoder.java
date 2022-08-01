@@ -123,13 +123,6 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 	private Map<String, Map<String, UL4ONSerializable>> persistentObjects = new HashMap<String, Map<String, UL4ONSerializable>>();
 
 	/**
-	A {@code Map} that maps string to strings of the same value. This is used
-	to make sure that string keys in a map always use the same string objects,
-	i.e. we're doing our own string deduplication here.
-	**/
-	private Map<Object, Object> keys = new HashMap<Object, Object>();
-
-	/**
 	Custom type registry. Any type name not found in this registry will be
 	looked up in the globals registry {@link Utils#registry}
 	**/
@@ -271,7 +264,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 		}
 		else if (typecode == 's' || typecode == 'S')
 		{
-			String result = Utils.parseUL4StringFromReader(reader);
+			String result = Utils.parseUL4StringFromReader(reader).intern();
 			if (typecode == 'S')
 				loading(result);
 			return result;
@@ -443,15 +436,6 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 						pushbackChar(typecode);
 						Object key = load();
 						Object value = load();
-						if (key instanceof String)
-						{
-							Object oldKey = keys.get(key);
-
-							if (oldKey == null)
-								keys.put(key, key);
-							else
-								key = oldKey;
-						}
 
 						result.put(key, value);
 					}
@@ -598,7 +582,6 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 		position = 0;
 		bufferedChar = -1;
 		objects = new ArrayList<Object>();
-		keys = new HashMap<Object, Object>();
 		stack = new Stack<String>();
 	}
 

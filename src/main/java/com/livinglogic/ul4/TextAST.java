@@ -42,7 +42,7 @@ public class TextAST extends AST
 		@Override
 		public TextAST create(String id)
 		{
-			return new TextAST(null, null);
+			return new TextAST(null, null, null);
 		}
 
 		@Override
@@ -60,9 +60,12 @@ public class TextAST extends AST
 		return type;
 	}
 
-	public TextAST(Template template, Slice pos)
+	protected String text;
+
+	public TextAST(Template template, Slice pos, String text)
 	{
 		super(template, pos);
+		this.text = text;
 	}
 
 	public void toString(Formatter formatter)
@@ -73,7 +76,7 @@ public class TextAST extends AST
 
 	public String getText()
 	{
-		return getSource();
+		return text;
 	}
 
 	public String getType()
@@ -115,5 +118,19 @@ public class TextAST extends AST
 		formatter.append(" text=");
 		formatter.visit(getText());
 		formatter.append(">");
+	}
+
+	@Override
+	public void dumpUL4ON(Encoder encoder) throws IOException
+	{
+		super.dumpUL4ON(encoder);
+		encoder.dump(text);
+	}
+
+	@Override
+	public void loadUL4ON(Decoder decoder) throws IOException
+	{
+		super.loadUL4ON(decoder);
+		text = (String)decoder.load();
 	}
 }
