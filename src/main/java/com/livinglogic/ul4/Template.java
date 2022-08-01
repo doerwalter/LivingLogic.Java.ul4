@@ -1779,7 +1779,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		String version = (String)decoder.load();
 		if (version == null) // this is a "source" version of the UL4ON dump
 		{
-			String name = (String)decoder.load();
+			String name = ((String)decoder.load()).intern();
 			String source = (String)decoder.load();
 			String signature = (String)decoder.load();
 			String whitespace = (String)decoder.load();

@@ -375,7 +375,7 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 		{
 			if (state == 0)
 			{
-				name = (String)item;
+				name = ((String)item).intern();
 				state = 1;
 			}
 			else if (state == 1)

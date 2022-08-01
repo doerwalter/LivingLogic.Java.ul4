@@ -146,7 +146,7 @@ public class VarAST extends CodeAST implements LValue
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		name = (String)decoder.load();
+		name = ((String)decoder.load()).intern();
 	}
 
 	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "name");

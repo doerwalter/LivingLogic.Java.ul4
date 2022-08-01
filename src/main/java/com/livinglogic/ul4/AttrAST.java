@@ -287,7 +287,7 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		super.loadUL4ON(decoder);
 		obj = (AST)decoder.load();
-		attrname = (String)decoder.load();
+		attrname = ((String)decoder.load()).intern();
 	}
 
 	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "obj", "attrname");

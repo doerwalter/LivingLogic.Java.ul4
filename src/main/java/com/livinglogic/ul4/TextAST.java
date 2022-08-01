@@ -131,6 +131,6 @@ public class TextAST extends AST
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		text = (String)decoder.load();
+		text = ((String)decoder.load()).intern();
 	}
 }

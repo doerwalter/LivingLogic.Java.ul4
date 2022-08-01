@@ -100,7 +100,7 @@ public class KeywordArgumentAST extends ArgumentASTBase
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		name = (String)decoder.load();
+		name = ((String)decoder.load()).intern();
 		value = (AST)decoder.load();
 	}
 
