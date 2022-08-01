@@ -241,7 +241,7 @@ color returns [ConstAST node]
 	;
 
 name returns [VarAST node]
-	: NAME { $node = new VarAST(tag.getTemplate(), getPos($NAME), $NAME.text); }
+	: NAME { $node = new VarAST(tag.getTemplate(), getPos($NAME), $NAME.text.intern()); }
 	;
 
 literal returns [CodeAST node]
@@ -465,7 +465,7 @@ argument returns [ArgumentASTBase node]
 	:
 		e=exprarg { $node = new PositionalArgumentAST(tag.getTemplate(), $e.node.getStartPos(), $e.node); }
 	|
-		en=name '=' ev=exprarg { $node = new KeywordArgumentAST(tag.getTemplate(), new Slice($en.node.getStartPos().getStart(), $ev.node.getStartPos().getStop()), $en.text, $ev.node); }
+		en=name '=' ev=exprarg { $node = new KeywordArgumentAST(tag.getTemplate(), new Slice($en.node.getStartPos().getStart(), $ev.node.getStartPos().getStop()), $en.text.intern(), $ev.node); }
 	|
 		star='*'
 		es=exprarg { $node = new UnpackListArgumentAST(tag.getTemplate(), new Slice(getStartPos($star), $es.node.getStartPos().getStop()), $es.node); }
@@ -480,7 +480,7 @@ expr_subscript returns [CodeAST node]
 		(
 			/* Attribute access */
 			'.'
-			n=name { $node = new AttrAST(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), $n.node.getStartPos().getStop()), $node, $n.text); }
+			n=name { $node = new AttrAST(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart(), $n.node.getStartPos().getStop()), $node, $n.text.intern()); }
 		|
 			/* Function/method call */
 			'(' { $node = new CallAST(tag.getTemplate(), new Slice($e1.node.getStartPos().getStart()), $node); }
@@ -788,56 +788,56 @@ signature returns [SignatureAST node]
 		/* No paramteers */
 	|
 		/* "**" parameter only */
-		'**' rkwargsname=name { $node.add($rkwargsname.text, ParameterDescription.Type.VAR_KEYWORD, null); }
+		'**' rkwargsname=name { $node.add($rkwargsname.text.intern(), ParameterDescription.Type.VAR_KEYWORD, null); }
 		','?
 	|
 		/* "*" parameter only (and maybe **) */
-		'*' rargsname=name { $node.add($rargsname.text, ParameterDescription.Type.VAR_POSITIONAL, null); }
+		'*' rargsname=name { $node.add($rargsname.text.intern(), ParameterDescription.Type.VAR_POSITIONAL, null); }
 		(
 			','
-			'**' rkwargsname=name { $node.add($rkwargsname.text, ParameterDescription.Type.VAR_KEYWORD, null); }
+			'**' rkwargsname=name { $node.add($rkwargsname.text.intern(), ParameterDescription.Type.VAR_KEYWORD, null); }
 		)?
 		','?
 	|
 		/* All parameters have a default */
 		aname1=name
 		'='
-		adefault1=exprarg { $node.add($aname1.text, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_DEFAULT, $adefault1.node); }
+		adefault1=exprarg { $node.add($aname1.text.intern(), ParameterDescription.Type.POSITIONAL_OR_KEYWORD_DEFAULT, $adefault1.node); }
 		(
 			','
 			aname2=name
 			'='
-			adefault2=exprarg { $node.add($aname2.text, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_DEFAULT, $adefault2.node); }
+			adefault2=exprarg { $node.add($aname2.text.intern(), ParameterDescription.Type.POSITIONAL_OR_KEYWORD_DEFAULT, $adefault2.node); }
 		)*
 		(
 			','
-			'*' rargsname=name { $node.add($rargsname.text, ParameterDescription.Type.VAR_POSITIONAL, null); }
+			'*' rargsname=name { $node.add($rargsname.text.intern(), ParameterDescription.Type.VAR_POSITIONAL, null); }
 		)?
 		(
 			','
-			'**' rkwargsname=name { $node.add($rkwargsname.text, ParameterDescription.Type.VAR_KEYWORD, null); }
+			'**' rkwargsname=name { $node.add($rkwargsname.text.intern(), ParameterDescription.Type.VAR_KEYWORD, null); }
 		)?
 		','?
 	|
 		/* At least one parameter without a default */
-		aname1=name { $node.add($aname1.text, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_REQUIRED, null); }
+		aname1=name { $node.add($aname1.text.intern(), ParameterDescription.Type.POSITIONAL_OR_KEYWORD_REQUIRED, null); }
 		(
 			','
-			aname2=name { $node.add($aname2.text, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_REQUIRED, null); }
+			aname2=name { $node.add($aname2.text.intern(), ParameterDescription.Type.POSITIONAL_OR_KEYWORD_REQUIRED, null); }
 		)*
 		(
 			','
 			aname3=name
 			'='
-			adefault3=exprarg { $node.add($aname3.text, ParameterDescription.Type.POSITIONAL_OR_KEYWORD_DEFAULT, $adefault3.node); }
+			adefault3=exprarg { $node.add($aname3.text.intern(), ParameterDescription.Type.POSITIONAL_OR_KEYWORD_DEFAULT, $adefault3.node); }
 		)*
 		(
 			','
-			'*' rargsname=name { $node.add($rargsname.text, ParameterDescription.Type.VAR_POSITIONAL, null); }
+			'*' rargsname=name { $node.add($rargsname.text.intern(), ParameterDescription.Type.VAR_POSITIONAL, null); }
 		)?
 		(
 			','
-			'**' rkwargsname=name { $node.add($rkwargsname.text, ParameterDescription.Type.VAR_KEYWORD, null); }
+			'**' rkwargsname=name { $node.add($rkwargsname.text.intern(), ParameterDescription.Type.VAR_KEYWORD, null); }
 		)?
 		','?
 	)
@@ -853,7 +853,7 @@ definition returns [Definition node]
 			$node = new Definition(null, null);
 		}
 		(
-			n=name { $node.setName($n.text); }
+			n=name { $node.setName($n.text.intern()); }
 		)?
 		(
 			sig=signature { $node.setSignature($sig.node); }
