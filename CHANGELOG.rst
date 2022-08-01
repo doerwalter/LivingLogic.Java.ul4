@@ -1,3 +1,13 @@
+HEAD (2022-??-??)
+-----------------
+
+Performance optimizations:
+
+* ``TextAST`` now always stores it's own copy of the string.
+* Most strings are now interned.
+* ``BoundArguments`` now uses an array for ``argumentsByPosition``.
+
+
 exp-170 (2022-03-30)
 --------------------
 
