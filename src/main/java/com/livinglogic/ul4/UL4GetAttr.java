@@ -24,13 +24,13 @@ public interface UL4GetAttr
 	/**
 	<p>Return the attribute named {@code key} of this object to UL4.</p>
 
-	<p>The default implementation throws an {@link AttributeException} for
+	<p>The default implementation returns an {@link UndefinedAttribute} for
 	all attributes.</p>
 
 	@param context The evaluation context.
 	@param key The name of the requested attribute.
-	@return the value of the requested attribute.
-	@throws AttributeException if the requested attribute doesn't exist.
+	@return the value of the requested attribute or an appropriate
+	        {@link UndefinedAttribute} object if the attribute doesn't exist.
 	**/
 	default Object getAttrUL4(EvaluationContext context, String key)
 	{
