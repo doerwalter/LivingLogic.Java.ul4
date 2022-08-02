@@ -979,20 +979,13 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 		switch (key)
 		{
 			case "loads":
-				try (BoundArguments boundArgs = methodLoadS.bindArguments(args, kwargs))
-				{
-					Object arg = boundArgs.get(0);
-
-					if (!(arg instanceof String))
-						throw new ArgumentTypeMismatchException("loads({!t}) not supported", arg);
-					return loads((String)arg);
-				}
+				BoundArguments boundLoadSArgs = methodLoadS.bindArguments(args, kwargs);
+				String arg = boundLoadSArgs.getString(0);
+				return loads(arg);
 			case "reset":
-				try (BoundArguments boundArgs = methodReset.bindArguments(args, kwargs))
-				{
-					reset();
-					return null;
-				}
+				BoundArguments boundArgs = methodReset.bindArguments(args, kwargs);
+				reset();
+				return null;
 			default:
 				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}

@@ -472,10 +472,8 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 		switch (key)
 		{
 			case "dumps":
-				try (BoundArguments boundArgs = methodDumps.bindArguments(args, kwargs))
-				{
-					return dumps(boundArgs.get(0));
-				}
+				BoundArguments boundDumpSArgs = methodDumps.bindArguments(args, kwargs);
+				return dumps(boundDumpSArgs.get(0));
 			default:
 				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}

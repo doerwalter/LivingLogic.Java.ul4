@@ -1049,125 +1049,79 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 		switch (key)
 		{
 			case "r":
-				try (BoundArguments boundArgs = methodR.bindArguments(args, kwargs))
-				{
-					return (int)r;
-				}
+				BoundArguments boundRArgs = methodR.bindArguments(args, kwargs);
+				return (int)r;
 			case "g":
-				try (BoundArguments boundArgs = methodG.bindArguments(args, kwargs))
-				{
-					return (int)g;
-				}
+				BoundArguments boundGArgs = methodG.bindArguments(args, kwargs);
+				return (int)g;
 			case "b":
-				try (BoundArguments boundArgs = methodB.bindArguments(args, kwargs))
-				{
-					return (int)b;
-				}
+				BoundArguments boundBArgs = methodB.bindArguments(args, kwargs);
+				return (int)b;
 			case "a":
-				try (BoundArguments boundArgs = methodA.bindArguments(args, kwargs))
-				{
-					return (int)a;
-				}
+				BoundArguments boundAArgs = methodA.bindArguments(args, kwargs);
+				return (int)a;
 			case "hue":
-				try (BoundArguments boundArgs = methodHue.bindArguments(args, kwargs))
-				{
-					return hue();
-				}
+				BoundArguments boundHueArgs = methodHue.bindArguments(args, kwargs);
+				return hue();
 			case "light":
-				try (BoundArguments boundArgs = methodLight.bindArguments(args, kwargs))
-				{
-					return light();
-				}
+				BoundArguments boundLightArgs = methodLight.bindArguments(args, kwargs);
+				return light();
 			case "sat":
-				try (BoundArguments boundArgs = methodSat.bindArguments(args, kwargs))
-				{
-					return sat();
-				}
+				BoundArguments boundSatArgs = methodSat.bindArguments(args, kwargs);
+				return sat();
 			case "lum":
-				try (BoundArguments boundArgs = methodLum.bindArguments(args, kwargs))
-				{
-					return lum();
-				}
+				BoundArguments boundLumArgs = methodLum.bindArguments(args, kwargs);
+				return lum();
 			case "hls":
-				try (BoundArguments boundArgs = methodHLS.bindArguments(args, kwargs))
-				{
-					return hls();
-				}
+				BoundArguments boundHLSArgs = methodHLS.bindArguments(args, kwargs);
+				return hls();
 			case "hlsa":
-				try (BoundArguments boundArgs = methodHLSA.bindArguments(args, kwargs))
-				{
-					return hlsa();
-				}
+				BoundArguments boundHLSAArgs = methodHLSA.bindArguments(args, kwargs);
+				return hlsa();
 			case "hsv":
-				try (BoundArguments boundArgs = methodHSV.bindArguments(args, kwargs))
-				{
-					return hsv();
-				}
+				BoundArguments boundHSVArgs = methodHSV.bindArguments(args, kwargs);
+				return hsv();
 			case "hsva":
-				try (BoundArguments boundArgs = methodHSVA.bindArguments(args, kwargs))
-				{
-					return hsva();
-				}
+				BoundArguments boundHSVAArgs = methodHSVA.bindArguments(args, kwargs);
+				return hsva();
 			case "witha":
-				try (BoundArguments boundArgs = methodWithA.bindArguments(args, kwargs))
-				{
-					return witha(boundArgs.getInt(0));
-				}
+				BoundArguments boundWithAArgs = methodWithA.bindArguments(args, kwargs);
+				return witha(boundWithAArgs.getInt(0));
 			case "withhue":
-				try (BoundArguments boundArgs = methodWithHue.bindArguments(args, kwargs))
-				{
-					return withhue(boundArgs.getDouble(0));
-				}
+				BoundArguments boundWithHueArgs = methodWithHue.bindArguments(args, kwargs);
+				return withhue(boundWithHueArgs.getDouble(0));
 			case "withlight":
-				try (BoundArguments boundArgs = methodWithLight.bindArguments(args, kwargs))
-				{
-					return withlight(boundArgs.getDouble(0));
-				}
+				BoundArguments boundWithLightArgs = methodWithLight.bindArguments(args, kwargs);
+				return withlight(boundWithLightArgs.getDouble(0));
 			case "abslight":
-				try (BoundArguments boundArgs = methodAbsLight.bindArguments(args, kwargs))
-				{
-					return abslight(boundArgs.getDouble(0));
-				}
+				BoundArguments boundAbsLightArgs = methodAbsLight.bindArguments(args, kwargs);
+				return abslight(boundAbsLightArgs.getDouble(0));
 			case "rellight":
-				try (BoundArguments boundArgs = methodRelLight.bindArguments(args, kwargs))
-				{
-					return rellight(boundArgs.getDouble(0));
-				}
+				BoundArguments boundRelLightArgs = methodRelLight.bindArguments(args, kwargs);
+				return rellight(boundRelLightArgs.getDouble(0));
 			case "withsat":
-				try (BoundArguments boundArgs = methodWithSat.bindArguments(args, kwargs))
-				{
-					return withsat(boundArgs.getDouble(0));
-				}
+				BoundArguments boundWithSatArgs = methodWithSat.bindArguments(args, kwargs);
+				return withsat(boundWithSatArgs.getDouble(0));
 			case "withlum":
-				try (BoundArguments boundArgs = methodWithLum.bindArguments(args, kwargs))
-				{
-					return withlum(boundArgs.getDouble(0));
-				}
+				BoundArguments boundWithLumArgs = methodWithLum.bindArguments(args, kwargs);
+				return withlum(boundWithLumArgs.getDouble(0));
 			case "abslum":
-				try (BoundArguments boundArgs = methodAbsLum.bindArguments(args, kwargs))
-				{
-					return abslum(boundArgs.getDouble(0));
-				}
+				BoundArguments boundAbsLumArgs = methodAbsLum.bindArguments(args, kwargs);
+				return abslum(boundAbsLumArgs.getDouble(0));
 			case "rellum":
-				try (BoundArguments boundArgs = methodRelLum.bindArguments(args, kwargs))
-				{
-					return rellum(boundArgs.getDouble(0));
-				}
+				BoundArguments boundRelLumArgs = methodRelLum.bindArguments(args, kwargs);
+				return rellum(boundRelLumArgs.getDouble(0));
 			case "invert":
-				try (BoundArguments boundArgs = methodInvert.bindArguments(args, kwargs))
-				{
-					return invert(boundArgs.getDouble(0));
-				}
+				BoundArguments boundInvertArgs = methodInvert.bindArguments(args, kwargs);
+				return invert(boundInvertArgs.getDouble(0));
 			case "combine":
-				try (BoundArguments boundArgs = methodCombine.bindArguments(args, kwargs))
-				{
-					int newR = boundArgs.getInt(0, r);
-					int newG = boundArgs.getInt(1, g);
-					int newB = boundArgs.getInt(2, b);
-					int newA = boundArgs.getInt(3, a);
+				BoundArguments boundCombineArgs = methodCombine.bindArguments(args, kwargs);
+				int newR = boundCombineArgs.getInt(0, r);
+				int newG = boundCombineArgs.getInt(1, g);
+				int newB = boundCombineArgs.getInt(2, b);
+				int newA = boundCombineArgs.getInt(3, a);
 
-					return new Color(newR, newG, newB, newA);
-				}
+				return new Color(newR, newG, newB, newA);
 			default:
 				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}

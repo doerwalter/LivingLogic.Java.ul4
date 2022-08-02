@@ -512,20 +512,14 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 		switch (key)
 		{
 			case "days":
-				try (BoundArguments boundArgs = methodDays.bindArguments(args, kwargs))
-				{
-					return days;
-				}
+				BoundArguments boundDaysArgs = methodDays.bindArguments(args, kwargs);
+				return days;
 			case "seconds":
-				try (BoundArguments boundArgs = methodSeconds.bindArguments(args, kwargs))
-				{
-					return seconds;
-				}
+				BoundArguments boundSecondArgs = methodSeconds.bindArguments(args, kwargs);
+				return seconds;
 			case "microseconds":
-				try (BoundArguments boundArgs = methodMicroseconds.bindArguments(args, kwargs))
-				{
-					return microseconds;
-				}
+				BoundArguments boundMicroSecondArgs = methodMicroseconds.bindArguments(args, kwargs);
+				return microseconds;
 			default:
 				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}

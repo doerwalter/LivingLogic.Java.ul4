@@ -370,26 +370,18 @@ public class Connection implements UL4Instance, AutoCloseable, UL4GetAttr, UL4Di
 		switch (key)
 		{
 			case "queryargs":
-				try (BoundArguments boundArgs = methodQueryArgs.bindArguments(args, kwargs))
-				{
-					return queryargs(context, boundArgs.getString(0), boundArgs.getList(1));
-				}
+				BoundArguments boundQueryArgsArgs = methodQueryArgs.bindArguments(args, kwargs);
+				return queryargs(context, boundQueryArgsArgs.getString(0), boundQueryArgsArgs.getList(1));
 			case "query":
-				try (BoundArguments boundArgs = methodQuery.bindArguments(args, kwargs))
-				{
-					return query(context, boundArgs.getList(0));
-				}
+				BoundArguments boundQueryArgs = methodQuery.bindArguments(args, kwargs);
+				return query(context, boundQueryArgs.getList(0));
 			case "queryone":
-				try (BoundArguments boundArgs = methodQueryOne.bindArguments(args, kwargs))
-				{
-					return queryone(boundArgs.getList(0));
-				}
+				BoundArguments boundQueryOneArgs = methodQueryOne.bindArguments(args, kwargs);
+				return queryone(boundQueryOneArgs.getList(0));
 			case "execute":
-				try (BoundArguments boundArgs = methodExecute.bindArguments(args, kwargs))
-				{
-					execute(context, boundArgs.getList(0));
-					return null;
-				}
+				BoundArguments boundExecuteArgs = methodExecute.bindArguments(args, kwargs);
+				execute(context, boundExecuteArgs.getList(0));
+				return null;
 			default:
 				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}

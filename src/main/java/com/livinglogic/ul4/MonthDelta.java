@@ -246,10 +246,8 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 		switch (key)
 		{
 			case "months":
-				try (BoundArguments boundArgs = methodMonths.bindArguments(args, kwargs))
-				{
-					return months;
-				}
+				BoundArguments boundMonthsArgs = methodMonths.bindArguments(args, kwargs);
+				return months;
 			default:
 				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}

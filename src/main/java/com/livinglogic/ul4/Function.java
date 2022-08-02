@@ -81,12 +81,8 @@ public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 	@Override
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		// We can clean up here, as the function implementation shouldn't be a "closure",
-		// i.e. it should not return the variables map or anything that needs the map
-		try (BoundArguments arguments = new BoundArguments(getSignature(), this, args, kwargs))
-		{
-			return evaluate(context, arguments);
-		}
+		BoundArguments arguments = new BoundArguments(getSignature(), this, args, kwargs);
+		return evaluate(context, arguments);
 	}
 
 	/**

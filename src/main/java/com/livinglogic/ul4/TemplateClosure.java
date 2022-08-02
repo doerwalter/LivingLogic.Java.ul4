@@ -88,10 +88,8 @@ public class TemplateClosure implements UL4Instance, UL4Call, UL4Render, UL4Name
 	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
 		// We can clean up here, as a "render" call can't pass anything to the outside world
-		try (BoundArguments arguments = new BoundArguments(signature, template, args, kwargs))
-		{
-			render(context, arguments.byName());
-		}
+		BoundArguments arguments = new BoundArguments(signature, template, args, kwargs);
+		render(context, arguments.byName());
 	}
 
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
@@ -156,16 +154,12 @@ public class TemplateClosure implements UL4Instance, UL4Call, UL4Render, UL4Name
 		switch (key)
 		{
 			case "renders":
-				try (BoundArguments boundArgs = new BoundArguments(signature, this, args, kwargs))
-				{
-					return renders(context, boundArgs.byName());
-				}
+				BoundArguments boundRenderSArgs = new BoundArguments(signature, this, args, kwargs);
+				return renders(context, boundRenderSArgs.byName());
 			case "render":
-				try (BoundArguments boundArgs = new BoundArguments(signature, this, args, kwargs))
-				{
-					render(context, boundArgs.byName());
-					return null;
-				}
+				BoundArguments boundRenderArgs = new BoundArguments(signature, this, args, kwargs);
+				render(context, boundRenderArgs.byName());
+				return null;
 			default:
 				return UL4Instance.super.callAttrUL4(context, key, args, kwargs);
 		}

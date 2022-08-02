@@ -893,13 +893,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 
 	public void render(EvaluationContext context, Map<String, Object> variables)
 	{
-		try (
-			BoundArguments arguments = new BoundArguments(signature, this, null, variables);
-		)
-		{
-			context.registerCloseable(arguments);
-			renderBound(context, arguments.byName());
-		}
+		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
+		renderBound(context, arguments.byName());
 	}
 
 	/**
@@ -992,10 +987,9 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	{
 		try (
 			StringWriter output = new StringWriter();
-			BoundArguments arguments = new BoundArguments(signature, this, null, variables);
 		)
 		{
-			context.registerCloseable(arguments);
+			BoundArguments arguments = new BoundArguments(signature, this, null, variables);
 			renderBound(context, output, arguments.byName());
 			return output.toString();
 		}
@@ -1009,7 +1003,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
 		BoundArguments arguments = new BoundArguments(signature, this, args, kwargs);
-		context.registerCloseable(arguments);
 		renderBound(context, null, arguments.byName());
 		// no cleanup here, as the render call might leak a closure to the outside world
 	}
@@ -1222,7 +1215,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	public Object call(EvaluationContext context, Map<String, Object> variables)
 	{
 		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
-		context.registerCloseable(arguments);
 		return callBound(context, arguments.byName());
 		// no cleanup here, as the result might be a closure that still needs the local variables
 	}
@@ -1230,7 +1222,6 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
 		BoundArguments arguments = new BoundArguments(signature, this, args, kwargs);
-		context.registerCloseable(arguments);
 		return callBound(context, arguments.byName());
 		// no cleanup here, as the result might be a closure that still needs the local variables
 	}
@@ -1876,18 +1867,14 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		switch (key)
 		{
 			case "renders":
-				try (BoundArguments boundArgs = new BoundArguments(signature, this, args, kwargs))
-				{
-					Writer writer = new StringWriter();
-					renderBound(context, writer, boundArgs.byName());
-					return writer.toString();
-				}
+				BoundArguments boundRenderSArgs = new BoundArguments(signature, this, args, kwargs);
+				Writer writer = new StringWriter();
+				renderBound(context, writer, boundRenderSArgs.byName());
+				return writer.toString();
 			case "render":
-				try (BoundArguments boundArgs = new BoundArguments(signature, this, args, kwargs))
-				{
-					renderBound(context, null, boundArgs.byName());
-					return null;
-				}
+				BoundArguments boundRenderArgs = new BoundArguments(signature, this, args, kwargs);
+				renderBound(context, null, boundRenderArgs.byName());
+				return null;
 			default:
 				return super.callAttrUL4(context, key, args, kwargs);
 		}
