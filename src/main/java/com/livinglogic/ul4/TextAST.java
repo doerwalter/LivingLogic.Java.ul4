@@ -42,7 +42,7 @@ public class TextAST extends AST
 		@Override
 		public TextAST create(String id)
 		{
-			return new TextAST(null, null, null);
+			return new TextAST(null, "", 0, 0);
 		}
 
 		@Override
@@ -62,10 +62,10 @@ public class TextAST extends AST
 
 	protected String text;
 
-	public TextAST(Template template, Slice pos, String text)
+	public TextAST(Template template, String source, int startPos, int stopPos)
 	{
-		super(template, pos);
-		this.text = text;
+		super(template, new Slice(startPos, stopPos));
+		this.text = source.substring(startPos, stopPos).intern();
 	}
 
 	public void toString(Formatter formatter)

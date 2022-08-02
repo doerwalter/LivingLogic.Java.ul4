@@ -40,7 +40,7 @@ public class IndentAST extends TextAST
 		@Override
 		public IndentAST create(String id)
 		{
-			return new IndentAST(null, null, null);
+			return new IndentAST(null, "", 0, 0);
 		}
 
 		@Override
@@ -58,9 +58,9 @@ public class IndentAST extends TextAST
 		return type;
 	}
 
-	public IndentAST(Template template, Slice pos, String text)
+	public IndentAST(Template template, String source, int startPos, int stopPos)
 	{
-		super(template, pos, text);
+		super(template, source, startPos, stopPos);
 	}
 
 	public void setText(String text)

@@ -36,7 +36,7 @@ public class LineEndAST extends TextAST
 		@Override
 		public LineEndAST create(String id)
 		{
-			return new LineEndAST(null, null, null);
+			return new LineEndAST(null, "", 0, 0);
 		}
 
 		@Override
@@ -54,9 +54,9 @@ public class LineEndAST extends TextAST
 		return type;
 	}
 
-	public LineEndAST(Template template, Slice pos, String text)
+	public LineEndAST(Template template, String source, int startPos, int stopPos)
 	{
-		super(template, pos, text);
+		super(template, source, startPos, stopPos);
 	}
 
 	public void toString(Formatter formatter)
