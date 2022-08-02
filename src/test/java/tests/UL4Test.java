@@ -4528,7 +4528,7 @@ public class UL4Test
 		checkOutput("", T("<?code setattr(data, 'x', 'gurk')?>"), V("data", new Point(17, 23)));
 	}
 
-	@CauseTest(expectedCause=AttributeException.class)
+	@CauseTest(expectedCause=ReadonlyException.class)
 	public void function_setattr_wrongattr()
 	{
 		checkOutput("", T("<?code setattr(data, 'z', 42)?>"), V("data", new Point(17, 23)));
