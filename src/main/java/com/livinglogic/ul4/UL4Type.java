@@ -153,7 +153,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 		if (instance instanceof UL4SetAttr)
 			((UL4SetAttr)instance).setAttrUL4(context, key, value);
 		else
-			throw new ReadOnlyException(instance, key);
+			throw new ReadonlyException(instance, key);
 	}
 
 	/**

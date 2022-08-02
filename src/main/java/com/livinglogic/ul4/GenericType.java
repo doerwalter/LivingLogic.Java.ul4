@@ -93,6 +93,6 @@ public class GenericType implements UL4Type
 		if (object instanceof UL4SetAttr)
 			((UL4SetAttr)object).setAttrUL4(context, key, value);
 		else
-			throw new ReadOnlyException(object, key);
+			throw new ReadonlyException(object, key);
 	}
 }
