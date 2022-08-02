@@ -179,7 +179,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	{
 		if (milliseconds >= 0 && System.currentTimeMillis() > startMilliseconds + milliseconds)
 		{
-			throw new RuntimeExceededException();
+			throw new RuntimeExceededException(milliseconds);
 		}
 	}
 

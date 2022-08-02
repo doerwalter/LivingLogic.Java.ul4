@@ -8,8 +8,8 @@ package com.livinglogic.ul4;
 
 public class RuntimeExceededException extends RuntimeException
 {
-	public RuntimeExceededException()
+	public RuntimeExceededException(long milliseconds)
 	{
-		super("Maximum runtime exceeded");
+		super("Maximum runtime of " + milliseconds + " ms exceeded");
 	}
 }
