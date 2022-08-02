@@ -24,6 +24,6 @@ public interface UL4SetAttr
 	**/
 	default void setAttrUL4(EvaluationContext context, String key, Object value)
 	{
-		throw new AttributeException(this, key);
+		throw new ReadOnlyException(this, key);
 	}
 }

@@ -84,7 +84,7 @@ public class GenericType implements UL4Type
 		if (object instanceof UL4GetAttr)
 			return ((UL4GetAttr)object).getAttrUL4(context, key);
 		else
-			throw new AttributeException(object, key);
+			return new UndefinedAttribute(object, key);
 	}
 
 	@Override
@@ -93,6 +93,6 @@ public class GenericType implements UL4Type
 		if (object instanceof UL4SetAttr)
 			((UL4SetAttr)object).setAttrUL4(context, key, value);
 		else
-			throw new AttributeException(object, key);
+			throw new ReadOnlyException(object, key);
 	}
 }

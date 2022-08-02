@@ -3,9 +3,14 @@ HEAD (2022-??-??)
 
 Performance optimizations:
 
-* ``TextAST`` now always stores it's own copy of the string.
+* ``TextAST`` instances now always store their own copy of the string.
 * Most strings are now interned.
 * ``BoundArguments`` now uses an array for ``argumentsByPosition``.
+* ``UL4GetAttr.getAttrUL4()`` now should return an ``UndefinedAttribute``
+  object instead of raising an ``AttributeError``. Unfortunately this makes
+  non-existant attributes indistinguishable from attributes that happen to
+  be ``UndefinedAttribute`` objects without calling ``hasAttrUL4()``, but this
+  distinction can't be made in UL4 anyway (without calling ``hasattr()``).
 
 
 exp-170 (2022-03-30)
