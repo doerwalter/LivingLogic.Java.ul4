@@ -34,7 +34,7 @@ public interface UL4GetAttr
 	**/
 	default Object getAttrUL4(EvaluationContext context, String key)
 	{
-		throw new AttributeException(this, key);
+		return new UndefinedAttribute(this, key);
 	}
 
 	/**
