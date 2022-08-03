@@ -74,8 +74,8 @@ public class CallAST extends CallRenderAST
 
 	private void makeArguments(EvaluationContext context, List<Object> realArguments, Map<String, Object> realKeywordArguments)
 	{
-			for (ArgumentASTBase argument : arguments)
-				argument.decoratedEvaluateCall(context, realArguments, realKeywordArguments);
+		for (ArgumentASTBase argument : arguments)
+			argument.decoratedEvaluateCall(context, realArguments, realKeywordArguments);
 	}
 
 	@Override
