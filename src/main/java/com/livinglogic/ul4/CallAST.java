@@ -92,7 +92,7 @@ public class CallAST extends CallRenderAST
 
 			// If {@code obj} is an attribute access, this means that this
 			// looks like a method call, so if the resulting object for which the
-			// method  must be called suuports {@link UL4GetAttr} and overwrites
+			// method must be called supports {@link UL4GetAttr} and overwrites
 			// {@code callAttrUL4} we can basically skip generating
 			// a bound method object.
 			if (obj instanceof AttrAST)
@@ -100,9 +100,11 @@ public class CallAST extends CallRenderAST
 				AST attrObject = ((AttrAST)obj).getObj();
 				String attrName = ((AttrAST)obj).getAttrName();
 				realObject = attrObject.decoratedEvaluate(context);
+				// Note that we can't move the {@code makeArguments} call out to a
+				// common spot as this would change the order of the AST evaluation.
+				makeArguments(context, realArguments, realKeywordArguments);
 				if (realObject instanceof UL4GetAttr)
 				{
-					makeArguments(context, realArguments, realKeywordArguments);
 					return ((UL4GetAttr)realObject).callAttrUL4(context, attrName, realArguments, realKeywordArguments);
 				}
 				else
@@ -110,7 +112,6 @@ public class CallAST extends CallRenderAST
 					// This is an attribute access, but the resulting object doesn't
 					// implement {@link UL4GetAttr}, so we have to get the attribute
 					// via {@link AttrAST}.
-					makeArguments(context, realArguments, realKeywordArguments);
 					UL4Type type = UL4Type.getType(realObject);
 					return type.callAttr(context, realObject, attrName, realArguments, realKeywordArguments);
 				}
