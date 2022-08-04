@@ -12,7 +12,9 @@ Performance optimizations:
   be ``UndefinedAttribute`` objects without calling ``hasAttrUL4()``, but this
   distinction can't be made in UL4 anyway (without calling ``hasattr()``).
 * ``BoundArguments`` objects are now no longer autocloseable. Instead we let
-  the garbage collector clean them up naturally.
+  the garbage collector clean them up naturally. Previously the
+  ``EvaluationContext`` kept some of the ``BoundArguments`` objects alive until
+  the end of the template call. Now they can die sooner.
 
 
 exp-170 (2022-03-30)
