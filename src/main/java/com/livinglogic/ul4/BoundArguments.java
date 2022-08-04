@@ -182,8 +182,17 @@ public class BoundArguments
 
 	public Object get(String name)
 	{
-		makeArgumentsByName();
-		return argumentsByName.get(name);
+		if (argumentsByName != null)
+			return argumentsByName.get(name);
+		else if (argumentsByPosition != null)
+		{
+			ParameterDescription param = signature.getParameterByName(name);
+			if (param == null)
+				return null;
+			return argumentsByPosition[param.getPosition()];
+		}
+		else
+			return null;
 	}
 
 	private ArgumentTypeMismatchException wrongArgumentType(String requiredType, Object argumentValue, int argumentPosition, String argumentName)
