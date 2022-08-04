@@ -37,7 +37,7 @@ public class PrintXAST extends UnaryAST
 		@Override
 		public PrintXAST create(String id)
 		{
-			return new PrintXAST(null, null, null);
+			return new PrintXAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -55,9 +55,9 @@ public class PrintXAST extends UnaryAST
 		return type;
 	}
 
-	public PrintXAST(Template template, Slice pos, CodeAST obj)
+	public PrintXAST(Template template, int posStart, int posStop, CodeAST obj)
 	{
-		super(template, pos, obj);
+		super(template, posStart, posStop, obj);
 	}
 
 	public void toString(Formatter formatter)

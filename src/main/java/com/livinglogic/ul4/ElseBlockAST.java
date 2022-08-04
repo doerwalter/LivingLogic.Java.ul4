@@ -31,7 +31,7 @@ public class ElseBlockAST extends ConditionalBlock
 		@Override
 		public ElseBlockAST create(String id)
 		{
-			return new ElseBlockAST(null, null, null);
+			return new ElseBlockAST(null, -1, -1, -1, -1);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class ElseBlockAST extends ConditionalBlock
 		return type;
 	}
 
-	public ElseBlockAST(Template template, Slice startPos, Slice stopPos)
+	public ElseBlockAST(Template template, int startPosStart, int startPosStop, int stopPosStart, int stopPosStop)
 	{
-		super(template, startPos, stopPos);
+		super(template, startPosStart, startPosStop, stopPosStart, stopPosStop);
 	}
 
 	public String getType()

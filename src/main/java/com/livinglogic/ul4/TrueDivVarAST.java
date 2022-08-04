@@ -31,7 +31,7 @@ public class TrueDivVarAST extends ChangeVarAST
 		@Override
 		public TrueDivVarAST create(String id)
 		{
-			return new TrueDivVarAST(null, null, null, null);
+			return new TrueDivVarAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class TrueDivVarAST extends ChangeVarAST
 		return type;
 	}
 
-	public TrueDivVarAST(Template template, Slice pos, LValue lvalue, AST value)
+	public TrueDivVarAST(Template template, int posStart, int posStop, LValue lvalue, AST value)
 	{
-		super(template, pos, lvalue, value);
+		super(template, posStart, posStop, lvalue, value);
 	}
 
 	public String getType()

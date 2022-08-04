@@ -11,9 +11,9 @@ import java.util.Map;
 
 public abstract class DictItemASTBase extends CodeAST
 {
-	public DictItemASTBase(Template template, Slice pos)
+	public DictItemASTBase(Template template, int posStart, int posStop)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 	}
 
 	@Override

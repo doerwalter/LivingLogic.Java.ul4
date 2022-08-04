@@ -39,7 +39,7 @@ public class SubAST extends BinaryAST
 		@Override
 		public SubAST create(String id)
 		{
-			return new SubAST(null, null, null, null);
+			return new SubAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -57,9 +57,9 @@ public class SubAST extends BinaryAST
 		return type;
 	}
 
-	public SubAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public SubAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

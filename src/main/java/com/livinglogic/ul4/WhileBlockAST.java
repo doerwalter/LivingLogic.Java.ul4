@@ -39,7 +39,7 @@ public class WhileBlockAST extends BlockAST
 		@Override
 		public WhileBlockAST create(String id)
 		{
-			return new WhileBlockAST(null, null, null, null);
+			return new WhileBlockAST(null, -1, -1, -1, -1, null);
 		}
 
 		@Override
@@ -65,9 +65,9 @@ public class WhileBlockAST extends BlockAST
 
 	protected AST condition;
 
-	public WhileBlockAST(Template template, Slice startPos, Slice stopPos, AST condition)
+	public WhileBlockAST(Template template, int startPosStart, int startPosStop, int stopPosStart, int stopPosStop, AST condition)
 	{
-		super(template, startPos, stopPos);
+		super(template, startPosStart, startPosStop, stopPosStart, stopPosStop);
 		this.condition = condition;
 	}
 

@@ -31,7 +31,7 @@ public class NEAST extends BinaryAST
 		@Override
 		public NEAST create(String id)
 		{
-			return new NEAST(null, null, null, null);
+			return new NEAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class NEAST extends BinaryAST
 		return type;
 	}
 
-	public NEAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public NEAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

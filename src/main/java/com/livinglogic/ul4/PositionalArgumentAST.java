@@ -41,7 +41,7 @@ public class PositionalArgumentAST extends ArgumentASTBase
 		@Override
 		public PositionalArgumentAST create(String id)
 		{
-			return new PositionalArgumentAST(null, null, null);
+			return new PositionalArgumentAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -61,9 +61,9 @@ public class PositionalArgumentAST extends ArgumentASTBase
 
 	AST value;
 
-	public PositionalArgumentAST(Template template, Slice pos, AST value)
+	public PositionalArgumentAST(Template template, int posStart, int posStop, AST value)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.value = value;
 	}
 

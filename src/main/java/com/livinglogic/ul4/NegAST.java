@@ -34,7 +34,7 @@ public class NegAST extends UnaryAST
 		@Override
 		public NegAST create(String id)
 		{
-			return new NegAST(null, null, null);
+			return new NegAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -52,9 +52,9 @@ public class NegAST extends UnaryAST
 		return type;
 	}
 
-	public NegAST(Template template, Slice pos, CodeAST obj)
+	public NegAST(Template template, int posStart, int posStop, CodeAST obj)
 	{
-		super(template, pos, obj);
+		super(template, posStart, posStop, obj);
 	}
 
 	public String getType()

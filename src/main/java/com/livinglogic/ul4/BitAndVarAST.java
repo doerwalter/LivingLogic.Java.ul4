@@ -31,7 +31,7 @@ public class BitAndVarAST extends ChangeVarAST
 		@Override
 		public BitAndVarAST create(String id)
 		{
-			return new BitAndVarAST(null, null, null, null);
+			return new BitAndVarAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class BitAndVarAST extends ChangeVarAST
 		return type;
 	}
 
-	public BitAndVarAST(Template template, Slice pos, LValue lvalue, AST value)
+	public BitAndVarAST(Template template, int posStart, int posStop, LValue lvalue, AST value)
 	{
-		super(template, pos, lvalue, value);
+		super(template, posStart, posStop, lvalue, value);
 	}
 
 	public String getType()

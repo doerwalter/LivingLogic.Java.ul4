@@ -35,7 +35,7 @@ public class ContainsAST extends BinaryAST
 		@Override
 		public ContainsAST create(String id)
 		{
-			return new ContainsAST(null, null, null, null);
+			return new ContainsAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -53,9 +53,9 @@ public class ContainsAST extends BinaryAST
 		return type;
 	}
 
-	public ContainsAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public ContainsAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

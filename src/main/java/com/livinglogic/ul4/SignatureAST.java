@@ -45,7 +45,7 @@ public class SignatureAST extends CodeAST
 		@Override
 		public SignatureAST create(String id)
 		{
-			return new SignatureAST(null, null);
+			return new SignatureAST(null, -1, -1);
 		}
 
 		@Override
@@ -65,9 +65,9 @@ public class SignatureAST extends CodeAST
 
 	protected List<Parameter> parameters;
 
-	public SignatureAST(Template template, Slice pos)
+	public SignatureAST(Template template, int posStart, int posStop)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		parameters = new LinkedList<Parameter>();
 	}
 

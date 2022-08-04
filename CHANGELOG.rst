@@ -1,9 +1,11 @@
 HEAD (2022-??-??)
 -----------------
 
-Performance optimizations:
+Performance and memory optimizations:
 
 * ``TextAST`` instances now always store their own copy of the string.
+* String offsets into the template source code are now no longer stored as
+  ``Slice`` objects. Instead we simply use two ints. This reduces memory usage.
 * Most strings are now interned.
 * ``BoundArguments`` now uses an array for ``argumentsByPosition``.
 * ``UL4GetAttr.getAttrUL4()`` now should return an ``UndefinedAttribute``

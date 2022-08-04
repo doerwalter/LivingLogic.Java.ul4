@@ -31,7 +31,7 @@ public class IsAST extends BinaryAST
 		@Override
 		public IsAST create(String id)
 		{
-			return new IsAST(null, null, null, null);
+			return new IsAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class IsAST extends BinaryAST
 		return type;
 	}
 
-	public IsAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public IsAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

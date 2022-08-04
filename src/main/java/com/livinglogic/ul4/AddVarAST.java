@@ -31,7 +31,7 @@ public class AddVarAST extends ChangeVarAST
 		@Override
 		public AddVarAST create(String id)
 		{
-			return new AddVarAST(null, null, null, null);
+			return new AddVarAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class AddVarAST extends ChangeVarAST
 		return type;
 	}
 
-	public AddVarAST(Template template, Slice pos, LValue lvalue, AST value)
+	public AddVarAST(Template template, int posStart, int posStop, LValue lvalue, AST value)
 	{
-		super(template, pos, lvalue, value);
+		super(template, posStart, posStop, lvalue, value);
 	}
 
 	public String getType()

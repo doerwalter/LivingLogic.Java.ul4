@@ -41,7 +41,7 @@ public class KeywordArgumentAST extends ArgumentASTBase
 		@Override
 		public KeywordArgumentAST create(String id)
 		{
-			return new KeywordArgumentAST(null, null, null, null);
+			return new KeywordArgumentAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -62,9 +62,9 @@ public class KeywordArgumentAST extends ArgumentASTBase
 	String name;
 	AST value;
 
-	public KeywordArgumentAST(Template template, Slice pos, String name, AST value)
+	public KeywordArgumentAST(Template template, int posStart, int posStop, String name, AST value)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.name = name;
 		this.value = value;
 	}

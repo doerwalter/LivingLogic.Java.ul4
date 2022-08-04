@@ -35,7 +35,7 @@ public class ReturnAST extends UnaryAST
 		@Override
 		public ReturnAST create(String id)
 		{
-			return new ReturnAST(null, null, null);
+			return new ReturnAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -53,9 +53,9 @@ public class ReturnAST extends UnaryAST
 		return type;
 	}
 
-	public ReturnAST(Template template, Slice pos, CodeAST obj)
+	public ReturnAST(Template template, int posStart, int posStop, CodeAST obj)
 	{
-		super(template, pos, obj);
+		super(template, posStart, posStop, obj);
 	}
 
 	public void toString(Formatter formatter)

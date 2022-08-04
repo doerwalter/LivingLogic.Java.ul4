@@ -43,7 +43,7 @@ public class SliceAST extends CodeAST
 		@Override
 		public SliceAST create(String id)
 		{
-			return new SliceAST(null, null, null, null);
+			return new SliceAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -64,9 +64,9 @@ public class SliceAST extends CodeAST
 	protected AST index1;
 	protected AST index2;
 
-	public SliceAST(Template template, Slice pos, AST index1, AST index2)
+	public SliceAST(Template template, int posStart, int posStop, AST index1, AST index2)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.index1 = index1;
 		this.index2 = index2;
 	}

@@ -33,7 +33,7 @@ public class BitXOrAST extends BinaryAST
 		@Override
 		public BitXOrAST create(String id)
 		{
-			return new BitXOrAST(null, null, null, null);
+			return new BitXOrAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -51,9 +51,9 @@ public class BitXOrAST extends BinaryAST
 		return type;
 	}
 
-	public BitXOrAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public BitXOrAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

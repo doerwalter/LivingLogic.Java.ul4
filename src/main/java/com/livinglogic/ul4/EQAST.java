@@ -31,7 +31,7 @@ public class EQAST extends BinaryAST
 		@Override
 		public EQAST create(String id)
 		{
-			return new EQAST(null, null, null, null);
+			return new EQAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class EQAST extends BinaryAST
 		return type;
 	}
 
-	public EQAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public EQAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

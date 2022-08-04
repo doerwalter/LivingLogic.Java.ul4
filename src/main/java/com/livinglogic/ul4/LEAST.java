@@ -31,7 +31,7 @@ public class LEAST extends BinaryAST
 		@Override
 		public LEAST create(String id)
 		{
-			return new LEAST(null, null, null, null);
+			return new LEAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class LEAST extends BinaryAST
 		return type;
 	}
 
-	public LEAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public LEAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

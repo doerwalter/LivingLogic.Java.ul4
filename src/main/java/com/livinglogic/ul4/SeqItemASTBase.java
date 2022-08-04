@@ -12,9 +12,9 @@ import java.util.Set;
 
 public abstract class SeqItemASTBase extends CodeAST
 {
-	public SeqItemASTBase(Template template, Slice pos)
+	public SeqItemASTBase(Template template, int posStart, int posStop)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 	}
 
 	public Object evaluate(EvaluationContext context)

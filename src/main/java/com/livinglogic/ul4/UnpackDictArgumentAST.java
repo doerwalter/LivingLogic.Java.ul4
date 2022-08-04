@@ -42,7 +42,7 @@ public class UnpackDictArgumentAST extends ArgumentASTBase
 		@Override
 		public UnpackDictArgumentAST create(String id)
 		{
-			return new UnpackDictArgumentAST(null, null, null);
+			return new UnpackDictArgumentAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -62,9 +62,9 @@ public class UnpackDictArgumentAST extends ArgumentASTBase
 
 	AST value;
 
-	public UnpackDictArgumentAST(Template template, Slice pos, AST value)
+	public UnpackDictArgumentAST(Template template, int posStart, int posStop, AST value)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.value = value;
 	}
 

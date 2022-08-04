@@ -31,7 +31,7 @@ public class GTAST extends BinaryAST
 		@Override
 		public GTAST create(String id)
 		{
-			return new GTAST(null, null, null, null);
+			return new GTAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class GTAST extends BinaryAST
 		return type;
 	}
 
-	public GTAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public GTAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

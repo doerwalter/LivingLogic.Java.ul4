@@ -40,7 +40,7 @@ public class IfAST extends CodeAST
 		@Override
 		public IfAST create(String id)
 		{
-			return new IfAST(null, null, null, null, null);
+			return new IfAST(null, -1, -1, null, null, null);
 		}
 
 		@Override
@@ -62,9 +62,9 @@ public class IfAST extends CodeAST
 	private CodeAST objCond;
 	private CodeAST objElse;
 
-	public IfAST(Template template, Slice pos, CodeAST objIf, CodeAST objCond, CodeAST objElse)
+	public IfAST(Template template, int posStart, int posStop, CodeAST objIf, CodeAST objCond, CodeAST objElse)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.objIf = objIf;
 		this.objCond = objCond;
 		this.objElse = objElse;

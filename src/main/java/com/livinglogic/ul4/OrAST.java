@@ -31,7 +31,7 @@ public class OrAST extends BinaryAST
 		@Override
 		public OrAST create(String id)
 		{
-			return new OrAST(null, null, null, null);
+			return new OrAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class OrAST extends BinaryAST
 		return type;
 	}
 
-	public OrAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public OrAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

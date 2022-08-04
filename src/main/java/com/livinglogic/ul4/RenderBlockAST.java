@@ -45,7 +45,7 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 		@Override
 		public RenderBlockAST create(String id)
 		{
-			return new RenderBlockAST(null, (Slice)null, (AST)null);
+			return new RenderBlockAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -65,9 +65,9 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 
 	protected Template content;
 
-	public RenderBlockAST(Template template, Slice pos, AST obj)
+	public RenderBlockAST(Template template, int posStart, int posStop, AST obj)
 	{
-		super(template, pos, obj);
+		super(template, posStart, posStop, obj);
 		content = null;
 	}
 
@@ -127,7 +127,7 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("renderblock"))
 			throw new BlockException("<?renderblock?> ended by <?end " + type + "?>");
-		setStopPos(endtag.getStartPos());
+		setStopPos(endtag.getStartPosStart(), endtag.getStartPosStop());
 		int start = content.getStartPos().getStart();
 		content.setStartPos(start, start);
 		int stop = endtag.getStartPos().getStart();
@@ -153,7 +153,8 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(stopPos);
+		encoder.dump(stopPosStart);
+		encoder.dump(stopPosStop);
 		encoder.dump(content);
 	}
 
@@ -161,7 +162,7 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		setStopPos((Slice)decoder.load());
+		setStopPos((int)decoder.load(), (int)decoder.load());
 		content = (Template)decoder.load();
 	}
 
@@ -179,7 +180,7 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 		switch (key)
 		{
 			case "stoppos":
-				return stopPos;
+				return getStopPos();
 			case "stopline":
 				return getStopLine();
 			case "stopcol":

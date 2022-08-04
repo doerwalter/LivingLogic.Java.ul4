@@ -56,18 +56,27 @@ public abstract class CodeAST extends AST
 		return type;
 	}
 
-	protected CodeAST(Template template, Slice startPos, Slice stopPos)
+	/**
+	Create a new {@code CodeAST} object.
+	@param template The {@code Template} object this node belongs to.
+	@param startPosStart The start index in the template source, where the source or the start tag for this object is located.
+	@param startPosStop The end index in the template source, where the source or the start tag for this object is located.
+	@param stopPosStart The start index in the template source, where end tag for this object is located.
+	@param stopPosStop The end index in the template source, where end tag for this object is located.
+	**/
+	protected CodeAST(Template template, int startPosStart, int startPosStop, int stopPosStart, int stopPosStop)
 	{
-		super(template, startPos, stopPos);
+		super(template, startPosStart, startPosStop, stopPosStart, stopPosStop);
 	}
 
 	/**
 	Create a new {@code CodeAST} object.
 	@param template The {@code Template} object this node belongs to.
-	@param startPos The slice in the template source, where the source for this object is located.
+	@param startPosStart The start index in the template source, where the source for this object is located.
+	@param startPosStop The end index in the template source, where the source for this object is located.
 	**/
-	public CodeAST(Template template, Slice startPos)
+	public CodeAST(Template template, int startPosStart, int startPosStop)
 	{
-		super(template, startPos);
+		super(template, startPosStart, startPosStop);
 	}
 }

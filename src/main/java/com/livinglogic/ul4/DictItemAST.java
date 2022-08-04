@@ -40,7 +40,7 @@ public class DictItemAST extends DictItemASTBase
 		@Override
 		public DictItemAST create(String id)
 		{
-			return new DictItemAST(null, null, null, null);
+			return new DictItemAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -61,9 +61,9 @@ public class DictItemAST extends DictItemASTBase
 	protected AST key;
 	protected AST value;
 
-	public DictItemAST(Template template, Slice pos, AST key, AST value)
+	public DictItemAST(Template template, int posStart, int posStop, AST key, AST value)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.key = key;
 		this.value = value;
 	}

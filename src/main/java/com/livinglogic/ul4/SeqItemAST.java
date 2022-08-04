@@ -40,7 +40,7 @@ public class SeqItemAST extends SeqItemASTBase
 		@Override
 		public SeqItemAST create(String id)
 		{
-			return new SeqItemAST(null, null, null);
+			return new SeqItemAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -60,9 +60,9 @@ public class SeqItemAST extends SeqItemASTBase
 
 	protected AST value;
 
-	public SeqItemAST(Template template, Slice pos, AST value)
+	public SeqItemAST(Template template, int posStart, int posStop, AST value)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.value = value;
 	}
 

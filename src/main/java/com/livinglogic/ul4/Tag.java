@@ -53,9 +53,14 @@ public class Tag extends AST
 	protected String tag;
 
 	/**
-	The start/end index in {@code source} where the code inside the tag starts.
+	The start index in {@code source} where the code inside the tag starts.
 	**/
-	protected Slice codePos;
+	protected int codePosStart;
+
+	/**
+	The end index in {@code source} where the code inside the tag starts.
+	**/
+	protected int codePosStop;
 
 	/**
 	Create a new {@code Tag} object.
@@ -64,11 +69,12 @@ public class Tag extends AST
 	@param tagPos The slice in the template source, where the source for this tag is located.
 	@param codePos The slice in the template source where the code inside the tag starts.
 	**/
-	public Tag(Template template, String tag, Slice tagPos, Slice codePos)
+	public Tag(Template template, String tag, int tagPosStart, int tagPosStop, int codePosStart, int codePosStop)
 	{
-		super(template, tagPos);
+		super(template, tagPosStart, tagPosStop);
 		this.tag = tag;
-		this.codePos = codePos;
+		this.codePosStart = codePosStart;
+		this.codePosStop = codePosStop;
 	}
 
 	// This never gets called
@@ -98,13 +104,23 @@ public class Tag extends AST
 		return tag;
 	}
 
+	public int getCodePosStart()
+	{
+		return codePosStart;
+	}
+
+	public int getCodePosStop()
+	{
+		return codePosStop;
+	}
+
 	public Slice getCodePos()
 	{
-		return codePos;
+		return new Slice(codePosStart, codePosStop);
 	}
 
 	public String getCode()
 	{
-		return codePos.getFrom(template.getFullSource());
+		return template.getFullSource().substring(codePosStart, codePosStop);
 	}
 }

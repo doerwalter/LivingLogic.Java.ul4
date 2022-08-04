@@ -33,7 +33,7 @@ public class BitNotAST extends UnaryAST
 		@Override
 		public BitNotAST create(String id)
 		{
-			return new BitNotAST(null, null, null);
+			return new BitNotAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -51,9 +51,9 @@ public class BitNotAST extends UnaryAST
 		return type;
 	}
 
-	public BitNotAST(Template template, Slice pos, CodeAST obj)
+	public BitNotAST(Template template, int posStart, int posStop, CodeAST obj)
 	{
-		super(template, pos, obj);
+		super(template, posStart, posStop, obj);
 	}
 
 	public String getType()

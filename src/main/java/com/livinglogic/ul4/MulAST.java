@@ -39,7 +39,7 @@ public class MulAST extends BinaryAST
 		@Override
 		public MulAST create(String id)
 		{
-			return new MulAST(null, null, null, null);
+			return new MulAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -57,9 +57,9 @@ public class MulAST extends BinaryAST
 		return type;
 	}
 
-	public MulAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public MulAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

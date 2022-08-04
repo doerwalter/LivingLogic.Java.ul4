@@ -110,7 +110,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	/**
 	The version number used in the UL4ON dump of the template.
 	**/
-	public static final String VERSION = "51";
+	public static final String VERSION = "52";
 
 	/**
 	The name of the template/function (defaults to {@code null})
@@ -151,9 +151,14 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	public SignatureAST signatureAST = null;
 
 	/**
-	The slice for the docstring (from a {@code <?doc?>} tag).
+	The start index for the docstring (from a {@code <?doc?>} tag), or -1 whn not {@code <?doc?>} tag is found.
 	**/
-	public Slice docPos = null;
+	public int docPosStart = -1;
+
+	/**
+	The end index for the docstring (from a {@code <?doc?>} tag), or -1 whn not {@code <?doc?>} tag is found.
+	**/
+	public int docPosStop = -1;
 
 	/**
 	The template/function source (of the top-level template, i.e. subtemplates always get the full source).
@@ -170,13 +175,14 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	**/
 	private Template()
 	{
-		super(null, new Slice(0, 0), null);
+		super(null, 0, 0, -1, -1);
 		this.source = null;
 		this.name = null;
 		this.whitespace = Whitespace.keep;
 		this.signature = null;
 		this.signatureAST = null;
-		this.docPos = null;
+		this.docPosStart = -1;
+		this.docPosStop = -1;
 		this.parentTemplate = null;
 	}
 
@@ -185,7 +191,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	**/
 	public Template(String source, String name, Whitespace whitespace)
 	{
-		super(null, new Slice(0, 0), null);
+		super(null, 0, 0, -1, -1);
 		int stop = source != null ? source.length() : 0; 
 		setStopPos(stop, stop);
 		this.template = this;
@@ -195,7 +201,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		this.whitespace = whitespace;
 		this.signature = null;
 		this.signatureAST = null;
-		this.docPos = null;
+		this.docPosStart = -1;
+		this.docPosStop = -1;
 		compile();
 	}
 
@@ -240,7 +247,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	**/
 	Template(Template template, String name, Whitespace whitespace, SignatureAST signature)
 	{
-		super(template, new Slice(0, 0), null);
+		super(template, 0, 0, -1, -1);
 		// Copy the full source instead of calling {@link getSource} (the full source is the source of the outermost template)
 		this.source = template.getFullSource();
 		int stop = source.length();
@@ -249,7 +256,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		this.whitespace = whitespace;
 		this.signature = null;
 		this.signatureAST = signature;
-		this.docPos = null;
+		this.docPosStart = -1;
+		this.docPosStop = -1;
 	}
 
 	protected void handleSpecialTags(List<Line> lines)
@@ -553,20 +561,22 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 						{
 							// Only use the first {@code <?doc?>} tag in each template, ignore all later ones
 							Template innerTemplate = templateStack.peek();
-							if (innerTemplate.docPos == null)
-								innerTemplate.docPos = tag.getCodePos();
+							if (innerTemplate.docPosStart == -1)
+							{
+								innerTemplate.setDocPos(tag.getCodePosStart(), tag.getCodePosStop());
+							}
 							break;
 						}
 						case "print":
 						{
 							UL4Parser parser = getParser(tag);
-							innerBlock.append(new PrintAST(tag.getTemplate(), tag.getStartPos(), parser.expression()));
+							innerBlock.append(new PrintAST(tag.getTemplate(), tag.getStartPosStart(), tag.getStartPosStop(), parser.expression()));
 							break;
 						}
 						case "printx":
 						{
 							UL4Parser parser = getParser(tag);
-							innerBlock.append(new PrintXAST(tag.getTemplate(), tag.getStartPos(), parser.expression()));
+							innerBlock.append(new PrintXAST(tag.getTemplate(), tag.getStartPosStart(), tag.getStartPosStop(), parser.expression()));
 							break;
 						}
 						case "code":
@@ -578,7 +588,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 						case "if":
 						{
 							UL4Parser parser = getParser(tag);
-							ConditionalBlocksAST node = new ConditionalBlocksAST(tag.getTemplate(), tag.getStartPos(), null, new IfBlockAST(tag.getTemplate(), tag.getStartPos(), null, parser.expression()));
+							ConditionalBlocksAST node = new ConditionalBlocksAST(tag.getTemplate(), tag.getStartPosStart(), tag.getStartPosStop(), -1, -1, new IfBlockAST(tag.getTemplate(), tag.getStartPosStart(), tag.getStartPosStop(), -1, -1, parser.expression()));
 							innerBlock.append(node);
 							blockStack.push(node);
 							break;
@@ -588,7 +598,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 							if (innerBlock instanceof ConditionalBlocksAST)
 							{
 								UL4Parser parser = getParser(tag);
-								((ConditionalBlocksAST)innerBlock).startNewBlock(new ElIfBlockAST(tag.getTemplate(), tag.getStartPos(), null, parser.expression()));
+								((ConditionalBlocksAST)innerBlock).startNewBlock(new ElIfBlockAST(tag.getTemplate(), tag.getStartPosStart(), tag.getStartPosStop(), -1, -1, parser.expression()));
 							}
 							else
 								throw new BlockException("<?elif?> doesn't match any <?if?>");
@@ -598,7 +608,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 						{
 							if (innerBlock instanceof ConditionalBlocksAST)
 							{
-								((ConditionalBlocksAST)innerBlock).startNewBlock(new ElseBlockAST(tag.getTemplate(), tag.getStartPos(), null));
+								((ConditionalBlocksAST)innerBlock).startNewBlock(new ElseBlockAST(tag.getTemplate(), tag.getStartPosStart(), tag.getStartPosStop(), -1, -1));
 							}
 							else
 								throw new BlockException("<?else?> doesn't match any <?if?>");
@@ -628,7 +638,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 						case "while":
 						{
 							UL4Parser parser = getParser(tag);
-							WhileBlockAST node = new WhileBlockAST(tag.getTemplate(), tag.getStartPos(), null, parser.expression());
+							WhileBlockAST node = new WhileBlockAST(tag.getTemplate(), tag.getStartPosStart(), tag.getStartPosStop(), -1, -1, parser.expression());
 							innerBlock.append(node);
 							blockStack.push(node);
 							break;
@@ -640,7 +650,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 								if (blockStack.get(i).handleLoopControl("break"))
 									break;
 							}
-							innerBlock.append(new BreakAST(tag.getTemplate(), tag.getStartPos()));
+							innerBlock.append(new BreakAST(tag.getTemplate(), tag.getStartPosStart(), tag.getStartPosStop()));
 							break;
 						}
 						case "continue":
@@ -650,13 +660,13 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 								if (blockStack.get(i).handleLoopControl("continue"))
 									break;
 							}
-							innerBlock.append(new ContinueAST(tag.getTemplate(), tag.getStartPos()));
+							innerBlock.append(new ContinueAST(tag.getTemplate(), tag.getStartPosStart(), tag.getStartPosStop()));
 							break;
 						}
 						case "return":
 						{
 							UL4Parser parser = getParser(tag);
-							innerBlock.append(new ReturnAST(tag.getTemplate(), tag.getStartPos(), parser.expression()));
+							innerBlock.append(new ReturnAST(tag.getTemplate(), tag.getStartPosStart(), tag.getStartPosStop(), parser.expression()));
 							break;
 						}
 						case "def":
@@ -669,7 +679,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 							blockStack.push(subtemplate);
 							subtemplate.parentTemplate = tag.getTemplate();
 							subtemplate.setTemplate(subtemplate);
-							subtemplate.setStartPos(tag.getStartPos());
+							subtemplate.setStartPos(tag.getStartPosStart(), tag.getStartPosStop());
 							tag.setTemplate(subtemplate);
 							templateStack.push(subtemplate);
 							break;
@@ -722,7 +732,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 							if (!(code instanceof CallAST))
 								throw new RuntimeException("render call required");
 							RenderBlockAST render = new RenderBlockAST(templateStack.peek(), (CallAST)code, whitespace);
-							render.setStartPos(tag.getStartPos());
+							render.setStartPos(tag.getStartPosStart(), tag.getStartPosStop());
 							render.stealIndent(innerBlock);
 							innerBlock.append(render);
 							blockStack.push(render);
@@ -735,7 +745,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 							if (!(code instanceof CallAST))
 								throw new RuntimeException("render call required");
 							RenderBlocksAST render = new RenderBlocksAST((CallAST)code);
-							render.setStartPos(tag.getStartPos());
+							render.setStartPos(tag.getStartPosStart(), tag.getStartPosStop());
 							render.stealIndent(innerBlock);
 							innerBlock.append(render);
 							blockStack.push(render);
@@ -805,9 +815,15 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		return whitespace;
 	}
 
+	public void setDocPos(int start, int stop)
+	{
+		docPosStart = start;
+		docPosStop = stop;
+	}
+
 	public String getDoc()
 	{
-		return docPos != null ? docPos.getFrom(source) : null;
+		return docPosStart != -1 ? source.substring(docPosStart, docPosStop) : null;
 	}
 
 	public Signature getSignature()
@@ -1469,7 +1485,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				else if (ignore > 0 && type.equals("end") && matcher.group(3).equals("ignore"))
 					--ignore;
 				else if (ignore == 0 && !type.equals("note"))
-					addPart2Lines(lines, new Tag(this, matcher.group(1), new Slice(tagStartPos, tagStopPos), new Slice(codeStartPos, codeStopPos)));
+					addPart2Lines(lines, new Tag(this, matcher.group(1), tagStartPos, tagStopPos, codeStartPos, codeStopPos));
 				pos = tagStopPos;
 				wasTag = true;
 			}
@@ -1485,8 +1501,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				Tag endIgnore = new Tag(
 					this,
 					"ignore",
-					new Slice(lastIgnoreTagStart, lastIgnoreTagStop),
-					new Slice(lastIgnoreCodeStart, lastIgnoreCodeStop)
+					lastIgnoreTagStart, lastIgnoreTagStop,
+					lastIgnoreCodeStart, lastIgnoreCodeStop
 				);
 				endIgnore.decorateException(exc);
 				throw exc;
@@ -1748,7 +1764,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		encoder.dump(name);
 		encoder.dump(source);
 		encoder.dump(whitespace.toString());
-		encoder.dump(docPos);
+		encoder.dump(docPosStart);
+		encoder.dump(docPosStop);
 		encoder.dump(parentTemplate);
 
 		dumpSignatureUL4ON(encoder);
@@ -1785,7 +1802,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			this.whitespace = Whitespace.fromString(whitespace);
 			this.signature = null;
 			this.signatureAST = null;
-			this.docPos = null;
+			this.docPosStart = -1;
+			this.docPosStop = -1;
 			this.source = makeSource(source, name, signature);
 			compile();
 		}
@@ -1798,7 +1816,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			name = (String)decoder.load();
 			source = (String)decoder.load();
 			whitespace = Whitespace.fromString((String)decoder.load());
-			docPos = (Slice)decoder.load();
+			docPosStart = (int)decoder.load();
+			docPosStop = (int)decoder.load();
 			parentTemplate = (Template)decoder.load();
 
 			loadSignatureUL4ON(decoder);

@@ -39,7 +39,7 @@ public class AddAST extends BinaryAST
 		@Override
 		public AddAST create(String id)
 		{
-			return new AddAST(null, null, null, null);
+			return new AddAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -57,9 +57,9 @@ public class AddAST extends BinaryAST
 		return type;
 	}
 
-	public AddAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public AddAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

@@ -31,7 +31,7 @@ public class IfBlockAST extends ConditionalBlockWithCondition
 		@Override
 		public IfBlockAST create(String id)
 		{
-			return new IfBlockAST(null, null, null, null);
+			return new IfBlockAST(null, -1, -1, -1, -1, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class IfBlockAST extends ConditionalBlockWithCondition
 		return type;
 	}
 
-	public IfBlockAST(Template template, Slice startPos, Slice stopPos, CodeAST condition)
+	public IfBlockAST(Template template, int startPosStart, int startPosStop, int stopPosStart, int stopPosStop, CodeAST condition)
 	{
-		super(template, startPos, stopPos, condition);
+		super(template, startPosStart, startPosStop, stopPosStart, stopPosStop, condition);
 	}
 
 	public String getType()

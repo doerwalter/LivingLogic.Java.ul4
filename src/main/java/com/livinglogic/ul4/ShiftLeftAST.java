@@ -37,7 +37,7 @@ public class ShiftLeftAST extends BinaryAST
 		@Override
 		public ShiftLeftAST create(String id)
 		{
-			return new ShiftLeftAST(null, null, null, null);
+			return new ShiftLeftAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -55,9 +55,9 @@ public class ShiftLeftAST extends BinaryAST
 		return type;
 	}
 
-	public ShiftLeftAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public ShiftLeftAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

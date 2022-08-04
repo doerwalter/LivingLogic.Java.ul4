@@ -45,7 +45,7 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 		@Override
 		public RenderBlocksAST create(String id)
 		{
-			return new RenderBlocksAST(null, null, null);
+			return new RenderBlocksAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -65,9 +65,9 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 
 	protected List<AST> content;
 
-	public RenderBlocksAST(Template template, Slice pos, AST obj)
+	public RenderBlocksAST(Template template, int posStart, int posStop, AST obj)
 	{
-		super(template, pos, obj);
+		super(template, posStart, posStop, obj);
 		content = new LinkedList<AST>();
 	}
 
@@ -134,7 +134,7 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 		String type = endtag.getCode().trim();
 		if (type != null && type.length() != 0 && !type.equals("renderblocks"))
 			throw new BlockException("<?renderblocks?> ended by <?end " + type + "?>");
-		setStopPos(endtag.getStartPos());
+		setStopPos(endtag.getStartPosStart(), endtag.getStartPosStop());
 	}
 
 	@Override
@@ -172,7 +172,8 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(stopPos);
+		encoder.dump(stopPosStart);
+		encoder.dump(stopPosStop);
 		encoder.dump(content);
 	}
 
@@ -180,7 +181,7 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		setStopPos((Slice)decoder.load());
+		setStopPos((int)decoder.load(), (int)decoder.load());
 		content = (List<AST>)decoder.load();
 	}
 
@@ -198,7 +199,7 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 		switch (key)
 		{
 			case "stoppos":
-				return stopPos;
+				return getStopPos();
 			case "stopline":
 				return getStopLine();
 			case "stopcol":

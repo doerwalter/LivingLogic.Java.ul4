@@ -31,7 +31,7 @@ public class GEAST extends BinaryAST
 		@Override
 		public GEAST create(String id)
 		{
-			return new GEAST(null, null, null, null);
+			return new GEAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class GEAST extends BinaryAST
 		return type;
 	}
 
-	public GEAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public GEAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

@@ -45,7 +45,7 @@ public class RenderAST extends CallRenderAST
 		@Override
 		public RenderAST create(String id)
 		{
-			return new RenderAST(null, null, null);
+			return new RenderAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -65,9 +65,9 @@ public class RenderAST extends CallRenderAST
 
 	protected IndentAST indent;
 
-	public RenderAST(Template template, Slice pos, AST obj)
+	public RenderAST(Template template, int posStart, int posStop, AST obj)
 	{
-		super(template, pos, obj);
+		super(template, posStart, posStop, obj);
 		this.indent = null;
 	}
 
@@ -76,7 +76,7 @@ public class RenderAST extends CallRenderAST
 	**/
 	public RenderAST(CallAST call)
 	{
-		super(call.template, call.startPos, call.obj);
+		super(call.template, call.startPosStart, call.startPosStop, call.obj);
 		this.indent = null;
 		this.arguments = call.arguments;
 	}

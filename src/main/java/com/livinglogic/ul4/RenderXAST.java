@@ -45,7 +45,7 @@ public class RenderXAST extends RenderAST
 		@Override
 		public RenderXAST create(String id)
 		{
-			return new RenderXAST(null, null, null);
+			return new RenderXAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -63,9 +63,9 @@ public class RenderXAST extends RenderAST
 		return type;
 	}
 
-	public RenderXAST(Template template, Slice pos, AST obj)
+	public RenderXAST(Template template, int posStart, int posStop, AST obj)
 	{
-		super(template, pos, obj);
+		super(template, posStart, posStop, obj);
 	}
 
 	public RenderXAST(CallAST call)

@@ -35,7 +35,7 @@ public class PrintAST extends UnaryAST
 		@Override
 		public PrintAST create(String id)
 		{
-			return new PrintAST(null, null, null);
+			return new PrintAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -53,9 +53,9 @@ public class PrintAST extends UnaryAST
 		return type;
 	}
 
-	public PrintAST(Template template, Slice pos, CodeAST obj)
+	public PrintAST(Template template, int posStart, int posStop, CodeAST obj)
 	{
-		super(template, pos, obj);
+		super(template, posStart, posStop, obj);
 	}
 
 	public void toString(Formatter formatter)

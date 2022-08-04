@@ -31,7 +31,7 @@ public class ShiftLeftVarAST extends ChangeVarAST
 		@Override
 		public ShiftLeftVarAST create(String id)
 		{
-			return new ShiftLeftVarAST(null, null, null, null);
+			return new ShiftLeftVarAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class ShiftLeftVarAST extends ChangeVarAST
 		return type;
 	}
 
-	public ShiftLeftVarAST(Template template, Slice pos, LValue lvalue, AST value)
+	public ShiftLeftVarAST(Template template, int posStart, int posStop, LValue lvalue, AST value)
 	{
-		super(template, pos, lvalue, value);
+		super(template, posStart, posStop, lvalue, value);
 	}
 
 	public String getType()

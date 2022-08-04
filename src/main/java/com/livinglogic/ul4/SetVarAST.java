@@ -39,7 +39,7 @@ public class SetVarAST extends CodeAST
 		@Override
 		public SetVarAST create(String id)
 		{
-			return new SetVarAST(null, null, null, null);
+			return new SetVarAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -63,9 +63,9 @@ public class SetVarAST extends CodeAST
 	protected Object lvalue;
 	protected AST value;
 
-	public SetVarAST(Template template, Slice pos, Object lvalue, AST value)
+	public SetVarAST(Template template, int posStart, int posStop, Object lvalue, AST value)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.lvalue = lvalue;
 		this.value = value;
 	}

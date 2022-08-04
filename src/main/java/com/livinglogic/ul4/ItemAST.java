@@ -36,7 +36,7 @@ public class ItemAST extends BinaryAST implements LValue
 		@Override
 		public ItemAST create(String id)
 		{
-			return new ItemAST(null, null, null, null);
+			return new ItemAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -54,9 +54,9 @@ public class ItemAST extends BinaryAST implements LValue
 		return type;
 	}
 
-	public ItemAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public ItemAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

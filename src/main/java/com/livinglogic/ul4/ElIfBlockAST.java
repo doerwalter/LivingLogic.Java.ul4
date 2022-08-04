@@ -31,7 +31,7 @@ public class ElIfBlockAST extends ConditionalBlockWithCondition
 		@Override
 		public ElIfBlockAST create(String id)
 		{
-			return new ElIfBlockAST(null, null, null, null);
+			return new ElIfBlockAST(null, -1, -1, -1, -1, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class ElIfBlockAST extends ConditionalBlockWithCondition
 		return type;
 	}
 
-	public ElIfBlockAST(Template template, Slice startPos, Slice stopPos, CodeAST condition)
+	public ElIfBlockAST(Template template, int startPosStart, int startPosStop, int stopPosStart, int stopPosStop, CodeAST condition)
 	{
-		super(template, startPos, stopPos, condition);
+		super(template, startPosStart, startPosStop, stopPosStart, stopPosStop, condition);
 	}
 
 	public String getType()

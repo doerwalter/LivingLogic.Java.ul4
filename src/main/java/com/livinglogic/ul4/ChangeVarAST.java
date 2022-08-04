@@ -48,9 +48,9 @@ public abstract class ChangeVarAST extends CodeAST
 	protected LValue lvalue;
 	protected AST value;
 
-	public ChangeVarAST(Template template, Slice pos, LValue lvalue, AST value)
+	public ChangeVarAST(Template template, int posStart, int posStop, LValue lvalue, AST value)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.lvalue = lvalue;
 		this.value = value;
 	}

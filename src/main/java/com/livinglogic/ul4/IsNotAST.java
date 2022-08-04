@@ -31,7 +31,7 @@ public class IsNotAST extends BinaryAST
 		@Override
 		public IsNotAST create(String id)
 		{
-			return new IsNotAST(null, null, null, null);
+			return new IsNotAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class IsNotAST extends BinaryAST
 		return type;
 	}
 
-	public IsNotAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public IsNotAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

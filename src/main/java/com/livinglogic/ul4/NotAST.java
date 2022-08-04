@@ -31,7 +31,7 @@ public class NotAST extends UnaryAST
 		@Override
 		public NotAST create(String id)
 		{
-			return new NotAST(null, null, null);
+			return new NotAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class NotAST extends UnaryAST
 		return type;
 	}
 
-	public NotAST(Template template, Slice pos, CodeAST obj)
+	public NotAST(Template template, int posStart, int posStop, CodeAST obj)
 	{
-		super(template, pos, obj);
+		super(template, posStart, posStop, obj);
 	}
 
 	public String getType()

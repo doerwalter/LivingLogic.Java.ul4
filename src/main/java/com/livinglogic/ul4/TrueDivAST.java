@@ -35,7 +35,7 @@ public class TrueDivAST extends BinaryAST
 		@Override
 		public TrueDivAST create(String id)
 		{
-			return new TrueDivAST(null, null, null, null);
+			return new TrueDivAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -53,9 +53,9 @@ public class TrueDivAST extends BinaryAST
 		return type;
 	}
 
-	public TrueDivAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public TrueDivAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

@@ -34,7 +34,7 @@ public class FloorDivAST extends BinaryAST
 		@Override
 		public FloorDivAST create(String id)
 		{
-			return new FloorDivAST(null, null, null, null);
+			return new FloorDivAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -52,9 +52,9 @@ public class FloorDivAST extends BinaryAST
 		return type;
 	}
 
-	public FloorDivAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public FloorDivAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

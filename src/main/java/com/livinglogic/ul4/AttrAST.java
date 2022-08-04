@@ -42,7 +42,7 @@ public class AttrAST extends CodeAST implements LValue
 		@Override
 		public AttrAST create(String id)
 		{
-			return new AttrAST(null, null, null, null);
+			return new AttrAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -63,9 +63,9 @@ public class AttrAST extends CodeAST implements LValue
 	protected AST obj;
 	protected String attrname;
 
-	public AttrAST(Template template, Slice pos, AST obj, String attrname)
+	public AttrAST(Template template, int posStart, int posStop, AST obj, String attrname)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.obj = obj;
 		this.attrname = attrname;
 	}

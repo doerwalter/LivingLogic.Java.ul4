@@ -40,7 +40,7 @@ public class ListComprehensionAST extends CodeAST
 		@Override
 		public ListComprehensionAST create(String id)
 		{
-			return new ListComprehensionAST(null, null, null, null, null, null);
+			return new ListComprehensionAST(null, -1, -1, null, null, null, null);
 		}
 
 		@Override
@@ -63,9 +63,9 @@ public class ListComprehensionAST extends CodeAST
 	protected CodeAST container;
 	protected CodeAST condition;
 
-	public ListComprehensionAST(Template template, Slice pos, CodeAST item, Object varname, CodeAST container, CodeAST condition)
+	public ListComprehensionAST(Template template, int posStart, int posStop, CodeAST item, Object varname, CodeAST container, CodeAST condition)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.item = item;
 		this.varname = varname;
 		this.container = container;

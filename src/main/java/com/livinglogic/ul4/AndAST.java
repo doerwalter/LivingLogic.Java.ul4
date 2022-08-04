@@ -31,7 +31,7 @@ public class AndAST extends BinaryAST
 		@Override
 		public AndAST create(String id)
 		{
-			return new AndAST(null, null, null, null);
+			return new AndAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class AndAST extends BinaryAST
 		return type;
 	}
 
-	public AndAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public AndAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

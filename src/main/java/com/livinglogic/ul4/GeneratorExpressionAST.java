@@ -40,7 +40,7 @@ public class GeneratorExpressionAST extends CodeAST
 		@Override
 		public GeneratorExpressionAST create(String id)
 		{
-			return new GeneratorExpressionAST(null, null, null, null, null, null);
+			return new GeneratorExpressionAST(null, -1, -1, null, null, null, null);
 		}
 
 		@Override
@@ -63,9 +63,9 @@ public class GeneratorExpressionAST extends CodeAST
 	protected CodeAST container;
 	protected CodeAST condition;
 
-	public GeneratorExpressionAST(Template template, Slice pos, CodeAST item, Object varname, CodeAST container, CodeAST condition)
+	public GeneratorExpressionAST(Template template, int posStart, int posStop, CodeAST item, Object varname, CodeAST container, CodeAST condition)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.item = item;
 		this.varname = varname;
 		this.container = container;

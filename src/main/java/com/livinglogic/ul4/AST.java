@@ -71,9 +71,14 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 	protected Template template;
 
 	/**
-	The start/end index of this node in the source (or of the start tag of a block)
+	The start index of this node in the source (or of the start tag of a block)
 	**/
-	protected Slice startPos;
+	protected int startPosStart;
+
+	/**
+	The end index of this node in the source (or of the start tag of a block)
+	**/
+	protected int startPosStop;
 
 	/**
 	Source position as a line number/column number pair.
@@ -83,10 +88,16 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 	protected LineCol startLineCol;
 
 	/**
-	The start/end index of this end tag for this node in the source (or
-	``null`` if this is not a block).
+	The start index of this end tag for this node in the source (or
+	-1 if this is not a block).
 	**/
-	protected Slice stopPos;
+	protected int stopPosStart;
+
+	/**
+	The end index of this end tag for this node in the source (or
+	-1 if this is not a block).
+	**/
+	protected int stopPosStop;
 
 	/**
 	Source position of the end tag (if this is a blog) as a line
@@ -99,17 +110,23 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 	/**
 	Create a new {@code AST} object for a block (i.e. something with
 	a start and end tag).
-	@param startPos The slice in the template source, where the source for
-	                this object (or its start tag) is located.
-	@param stopPos The slice in the template source, where the end tag is
-	               located (or ``null`` if this is not a block).
+	@param startPosStart The start index in the template source, where the source
+	                     for this object (or its start tag) is located.
+	@param startPosStop The end index in the template source, where the source
+   	                 for this object (or its start tag) is located.
+	@param stopPosStart The start index in the template source, where the end tag
+	                    is located (or -1 if this is not a block).
+	@param stopPosStop The end index in the template source, where the end tag
+	                   is located (or -1 if this is not a block).
 	**/
-	protected AST(Template template, Slice startPos, Slice stopPos)
+	protected AST(Template template, int startPosStart, int startPosStop, int stopPosStart, int stopPosStop)
 	{
 		this.template = template;
-		this.startPos = startPos;
+		this.startPosStart = startPosStart;
+		this.startPosStop = startPosStop;
 		this.startLineCol = null;
-		this.stopPos = stopPos;
+		this.stopPosStart = stopPosStart;
+		this.stopPosStop = stopPosStop;
 		this.stopLineCol = null;
 	}
 
@@ -118,9 +135,9 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 	@param startPos The slice in the template source, where the source for
 	                this object (or its start tag) is located.
 	**/
-	public AST(Template template, Slice startPos)
+	public AST(Template template, int startPosStart, int startPosStop)
 	{
-		this(template, startPos, null);
+		this(template, startPosStart, startPosStop, -1, -1);
 	}
 
 	/**
@@ -139,81 +156,106 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 		this.template = template;
 	}
 
+	public int getStartPosStart()
+	{
+		return startPosStart;
+	}
+
+	public int getStartPosStop()
+	{
+		return startPosStop;
+	}
+
 	public Slice getStartPos()
 	{
-		return startPos;
+		return new Slice(startPosStart, startPosStop);
 	}
 
 	// Used by {@link Template#compile} to fix the position for inner templates
-	void setStartPos(Slice pos)
+	void setStartPos(int start, int stop)
 	{
-		this.startPos = pos;
+		this.startPosStart = start;
+		this.startPosStop = stop;
 		// Reset line and column information
 		startLineCol = null;
 	}
 
-	void setStartPos(int start, int stop)
-	{
-		setStartPos(new Slice(start, stop));
-	}
-
 	public void setStartPosStart(int start)
 	{
-		setStartPos(startPos == null ? new Slice(true, false, start, -1) : startPos.withStart(start));
+		this.startPosStart = start;
+		// Reset line and column information
+		startLineCol = null;
 	}
 
 	public void setStartPosStop(int stop)
 	{
-		setStartPos(startPos == null ? new Slice(false, true, -1, stop) : startPos.withStop(stop));
+		this.startPosStop = stop;
+		// Reset line and column information
+		startLineCol = null;
+	}
+
+	public int getStopPosStart()
+	{
+		return stopPosStart;
+	}
+
+	public int getStopPosStop()
+	{
+		return stopPosStop;
 	}
 
 	public Slice getStopPos()
 	{
-		return stopPos;
-	}
-
-	void setStopPos(Slice pos)
-	{
-		this.stopPos = pos;
-		// Reset line and column information
-		stopLineCol = null;
-	}
-
-	void setStopPos(int start, int stop)
-	{
-		setStopPos(new Slice(start, stop));
-	}
-
-	public void setStopPosStart(int start)
-	{
-		setStopPos(stopPos == null ? new Slice(true, false, start, -1) : stopPos.withStart(start));
-	}
-
-	public void setStopPosStop(int stop)
-	{
-		setStopPos(stopPos == null ? new Slice(false, true, -1, stop) : stopPos.withStop(stop));
+		return stopPosStart >= 0 ? new Slice(stopPosStart, stopPosStop) : null;
 	}
 
 	public Slice getPos()
 	{
-		return stopPos == null ? startPos : new Slice(startPos.getStart(), stopPos.getStop());
+		return new Slice(startPosStart, stopPosStop >= 0 ? stopPosStop : startPosStop);
 	}
+
+	void setStopPos(int start, int stop)
+	{
+		this.stopPosStart = start;
+		this.stopPosStop = stop;
+		// Reset line and column information
+		startLineCol = null;
+	}
+
+	public void setStopPosStart(int start)
+	{
+		this.stopPosStart = start;
+		// Reset line and column information
+		startLineCol = null;
+	}
+
+	public void setStopPosStop(int stop)
+	{
+		this.stopPosStop = stop;
+		// Reset line and column information
+		startLineCol = null;
+	}
+
+	// public Slice getPos()
+	// {
+	// 	return stopPos == null ? startPos : new Slice(startPos.getStart(), stopPos.getStop());
+	// }
 
 	public String getStartSource()
 	{
 		// Use the full source, as positions are relative to that
 		// (and not to the source of any inner template in which {@this} might live)
-		return startPos.getFrom(getFullSource());
+		return getFullSource().substring(startPosStart, startPosStop);
 	}
 
 	public String getSource()
 	{
-		return getPos().getFrom(getFullSource());
+		return getFullSource().substring(startPosStart, stopPosStop >= 0 ? stopPosStop : startPosStop);
 	}
 
 	public String getStopSource()
 	{
-		return stopPos == null ? null : stopPos.getFrom(getFullSource());
+		return getFullSource().substring(stopPosStart, stopPosStop);
 	}
 
 	public String getFullSource()
@@ -223,63 +265,63 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 
 	public String getSourcePrefix()
 	{
-		return Utils.getSourcePrefix(getFullSource(), getPos().getStart());
+		return Utils.getSourcePrefix(getFullSource(), startPosStart);
 	}
 
 	public String getSourceSuffix()
 	{
-		return Utils.getSourceSuffix(getFullSource(), getPos().getStop());
+		return Utils.getSourceSuffix(getFullSource(), stopPosStop >= 0 ? stopPosStop : startPosStop);
 	}
 
 	public String getStartSourcePrefix()
 	{
-		return Utils.getSourcePrefix(getFullSource(), startPos.getStart());
+		return Utils.getSourcePrefix(getFullSource(), startPosStart);
 	}
 
 	public String getStartSourceSuffix()
 	{
-		return Utils.getSourceSuffix(getFullSource(), startPos.getStop());
+		return Utils.getSourceSuffix(getFullSource(), startPosStop);
 	}
 
 	public String getStopSourcePrefix()
 	{
-		return stopPos != null ? Utils.getSourcePrefix(getFullSource(), stopPos.getStart()) : null;
+		return stopPosStart >= 0 ? Utils.getSourcePrefix(getFullSource(), stopPosStart) : null;
 	}
 
 	public String getStopSourceSuffix()
 	{
-		return stopPos != null ? Utils.getSourceSuffix(getFullSource(), stopPos.getStop()) : null;
+		return stopPosStart >= 0 ? Utils.getSourceSuffix(getFullSource(), stopPosStop) : null;
 	}
 
 	public int getStartLine()
 	{
 		if (startLineCol == null)
-			startLineCol = new LineCol(getFullSource(), getStartPos().getStart());
+			startLineCol = new LineCol(getFullSource(), startPosStart);
 		return startLineCol.getLine();
 	}
 
 	public int getStartCol()
 	{
 		if (startLineCol == null)
-			startLineCol = new LineCol(getFullSource(), getStartPos().getStart());
+			startLineCol = new LineCol(getFullSource(), startPosStart);
 		return startLineCol.getCol();
 	}
 
 	public int getStopLine()
 	{
-		if (stopPos == null)
+		if (stopPosStop < 0)
 			return -1;
 		if (stopLineCol == null)
-			stopLineCol = new LineCol(getFullSource(), getStopPos().getStop());
+			stopLineCol = new LineCol(getFullSource(), stopPosStop);
 		return stopLineCol.getLine();
 	}
 
 	public int getStopCol()
 	{
-		if (stopPos == null)
+		if (stopPosStop < 0)
 			return -1;
 		if (stopLineCol == null)
-			stopLineCol = new LineCol(getFullSource(), getStopPos().getStop());
+			stopLineCol = new LineCol(getFullSource(), stopPosStop);
 		return stopLineCol.getCol();
 	}
 
@@ -407,10 +449,9 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 	{
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("offset ");
-		Slice pos = getStartPos();
-		buffer.append(pos.getStart());
+		buffer.append(startPosStart);
 		buffer.append(":");
-		buffer.append(pos.getStop());
+		buffer.append(startPosStop);
 		buffer.append("; line ");
 		buffer.append(getStartLine());
 		buffer.append("; column ");
@@ -428,11 +469,10 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 	{
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("offset ");
-		Slice pos = getStartPos();
 		buffer.append("**");
-		buffer.append(pos.getStart());
+		buffer.append(startPosStart);
 		buffer.append(":");
-		buffer.append(pos.getStop());
+		buffer.append(startPosStop);
 		buffer.append("**");
 		buffer.append("; line ");
 		buffer.append("**");
@@ -455,10 +495,9 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 	{
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("offset <b>");
-		Slice pos = getStartPos();
-		buffer.append(pos.getStart());
+		buffer.append(startPosStart);
 		buffer.append(":");
-		buffer.append(pos.getStop());
+		buffer.append(startPosStop);
 		buffer.append("</b>; line <b>");
 		buffer.append(getStartLine());
 		buffer.append("</b>; column <b>");
@@ -658,15 +697,16 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		encoder.dump(template);
-		encoder.dump(startPos);
+		encoder.dump(startPosStart);
+		encoder.dump(startPosStop);
 	}
 
 	@Override
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		template = (Template)decoder.load();
-		setStartPos((Slice)decoder.load());
-		setStopPos(null);
+		setStartPos((int)decoder.load(), (int)decoder.load());
+		setStopPos(-1, -1);
 	}
 
 	protected static Set<String> attributes = makeSet("type", "template", "pos", "startpos", "startline", "startcol", "fullsource", "startsource", "source", "sourceprefix", "sourcesuffix", "startsourceprefix", "startsourcesuffix");

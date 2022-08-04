@@ -31,7 +31,7 @@ public class ConditionalBlocksAST extends BlockAST
 		@Override
 		public ConditionalBlocksAST create(String id)
 		{
-			return new ConditionalBlocksAST(null, null, null);
+			return new ConditionalBlocksAST(null, -1, -1, -1, -1);
 		}
 
 		@Override
@@ -55,14 +55,14 @@ public class ConditionalBlocksAST extends BlockAST
 		return "<?if?>";
 	}
 
-	public ConditionalBlocksAST(Template template, Slice startPos, Slice stopPos)
+	public ConditionalBlocksAST(Template template, int startPosStart, int startPosStop, int stopPosStart, int stopPosStop)
 	{
-		super(template, startPos, stopPos);
+		super(template, startPosStart, startPosStop, stopPosStart, stopPosStop);
 	}
 
-	public ConditionalBlocksAST(Template template, Slice startPos, Slice stopPos, IfBlockAST block)
+	public ConditionalBlocksAST(Template template, int startPosStart, int startPosStop, int stopPosStart, int stopPosStop, IfBlockAST block)
 	{
-		super(template, startPos, stopPos);
+		super(template, startPosStart, startPosStop, stopPosStart, stopPosStop);
 		startNewBlock(block);
 	}
 

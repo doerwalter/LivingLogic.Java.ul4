@@ -39,7 +39,7 @@ public class VarAST extends CodeAST implements LValue
 		@Override
 		public VarAST create(String id)
 		{
-			return new VarAST(null, null, null);
+			return new VarAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -59,9 +59,9 @@ public class VarAST extends CodeAST implements LValue
 
 	protected String name;
 
-	public VarAST(Template template, Slice pos, String name)
+	public VarAST(Template template, int posStart, int posStop, String name)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.name = name;
 	}
 

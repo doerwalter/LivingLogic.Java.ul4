@@ -31,7 +31,7 @@ public class FloorDivVarAST extends ChangeVarAST
 		@Override
 		public FloorDivVarAST create(String id)
 		{
-			return new FloorDivVarAST(null, null, null, null);
+			return new FloorDivVarAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -48,9 +48,9 @@ public class FloorDivVarAST extends ChangeVarAST
 	{
 		return type;
 	}
-	public FloorDivVarAST(Template template, Slice pos, LValue lvalue, AST value)
+	public FloorDivVarAST(Template template, int posStart, int posStop, LValue lvalue, AST value)
 	{
-		super(template, pos, lvalue, value);
+		super(template, posStart, posStop, lvalue, value);
 	}
 
 	public String getType()

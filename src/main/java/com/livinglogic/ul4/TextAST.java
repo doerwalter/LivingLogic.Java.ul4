@@ -64,7 +64,7 @@ public class TextAST extends AST
 
 	public TextAST(Template template, String source, int startPos, int stopPos)
 	{
-		super(template, new Slice(startPos, stopPos));
+		super(template, startPos, stopPos);
 		this.text = source.substring(startPos, stopPos).intern();
 	}
 

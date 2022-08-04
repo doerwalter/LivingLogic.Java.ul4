@@ -41,7 +41,7 @@ public class UnpackSeqItemAST extends SeqItemASTBase
 		@Override
 		public UnpackSeqItemAST create(String id)
 		{
-			return new UnpackSeqItemAST(null, null, null);
+			return new UnpackSeqItemAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -61,9 +61,9 @@ public class UnpackSeqItemAST extends SeqItemASTBase
 
 	protected AST value;
 
-	public UnpackSeqItemAST(Template template, Slice pos, AST value)
+	public UnpackSeqItemAST(Template template, int posStart, int posStop, AST value)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.value = value;
 	}
 

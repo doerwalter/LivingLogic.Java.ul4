@@ -44,7 +44,7 @@ public class DictAST extends CodeAST
 		@Override
 		public DictAST create(String id)
 		{
-			return new DictAST(null, null);
+			return new DictAST(null, -1, -1);
 		}
 
 		@Override
@@ -64,9 +64,9 @@ public class DictAST extends CodeAST
 
 	protected List<DictItemASTBase> items = new LinkedList<DictItemASTBase>();
 
-	public DictAST(Template template, Slice pos)
+	public DictAST(Template template, int posStart, int posStop)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 	}
 
 	public void append(DictItemASTBase item)

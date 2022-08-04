@@ -49,9 +49,9 @@ abstract class BlockAST extends CodeAST implements BlockLike
 
 	protected List<AST> content = new LinkedList<AST>();
 
-	public BlockAST(Template template, Slice startPos, Slice stopPos)
+	public BlockAST(Template template, int startPosStart, int startPosStop, int stopPosStart, int stopPosStop)
 	{
-		super(template, startPos, stopPos);
+		super(template, startPosStart, startPosStop, stopPosStart, stopPosStop);
 	}
 
 	public abstract String getBlockTag();
@@ -79,7 +79,7 @@ abstract class BlockAST extends CodeAST implements BlockLike
 
 	public void finish(Tag endtag)
 	{
-		setStopPos(endtag.getStartPos());
+		setStopPos(endtag.getStartPosStart(), endtag.getStartPosStop());
 	}
 
 	public List<AST> getContent()
@@ -130,7 +130,8 @@ abstract class BlockAST extends CodeAST implements BlockLike
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
 		super.dumpUL4ON(encoder);
-		encoder.dump(stopPos);
+		encoder.dump(stopPosStart);
+		encoder.dump(stopPosStop);
 		encoder.dump(content);
 	}
 
@@ -138,7 +139,7 @@ abstract class BlockAST extends CodeAST implements BlockLike
 	public void loadUL4ON(Decoder decoder) throws IOException
 	{
 		super.loadUL4ON(decoder);
-		setStopPos((Slice)decoder.load());
+		setStopPos((int)decoder.load(), (int)decoder.load());
 		content = (List<AST>)decoder.load();
 	}
 
@@ -156,11 +157,11 @@ abstract class BlockAST extends CodeAST implements BlockLike
 		switch (key)
 		{
 			case "stoppos":
-				return stopPos;
+				return getStopPos();
 			case "stopline":
-				return stopPos == null ? null : getStopLine();
+				return stopPosStart < 0 ? null : getStopLine();
 			case "stopcol":
-				return stopPos == null ? null : getStopCol();
+				return stopPosStart < 0 ? null : getStopCol();
 			case "stopsource":
 				return getStopSource();
 			case "stopsourceprefix":

@@ -39,7 +39,7 @@ public class DictComprehensionAST extends CodeAST
 		@Override
 		public DictComprehensionAST create(String id)
 		{
-			return new DictComprehensionAST(null, null, null, null, null, null, null);
+			return new DictComprehensionAST(null, -1, -1, null, null, null, null, null);
 		}
 
 		@Override
@@ -63,9 +63,9 @@ public class DictComprehensionAST extends CodeAST
 	protected CodeAST container;
 	protected CodeAST condition;
 
-	public DictComprehensionAST(Template template, Slice pos, CodeAST key, CodeAST value, Object varname, CodeAST container, CodeAST condition)
+	public DictComprehensionAST(Template template, int posStart, int posStop, CodeAST key, CodeAST value, Object varname, CodeAST container, CodeAST condition)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.key = key;
 		this.value = value;
 		this.varname = varname;

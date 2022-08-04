@@ -39,7 +39,7 @@ public class ConstAST extends CodeAST
 		@Override
 		public ConstAST create(String id)
 		{
-			return new ConstAST(null, null, null);
+			return new ConstAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -59,9 +59,9 @@ public class ConstAST extends CodeAST
 
 	protected Object value;
 
-	public ConstAST(Template template, Slice startPos, Object value)
+	public ConstAST(Template template, int posStart, int posStop, Object value)
 	{
-		super(template, startPos);
+		super(template, posStart, posStop);
 		this.value = value;
 	}
 

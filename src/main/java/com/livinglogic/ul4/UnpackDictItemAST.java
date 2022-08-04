@@ -42,7 +42,7 @@ public class UnpackDictItemAST extends DictItemASTBase
 		@Override
 		public UnpackDictItemAST create(String id)
 		{
-			return new UnpackDictItemAST(null, null, null);
+			return new UnpackDictItemAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -62,9 +62,9 @@ public class UnpackDictItemAST extends DictItemASTBase
 
 	protected AST item;
 
-	public UnpackDictItemAST(Template template, Slice pos, AST item)
+	public UnpackDictItemAST(Template template, int posStart, int posStop, AST item)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 		this.item = item;
 	}
 

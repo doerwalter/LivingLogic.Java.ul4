@@ -31,7 +31,7 @@ public class ContinueAST extends CodeAST
 		@Override
 		public ContinueAST create(String id)
 		{
-			return new ContinueAST(null, null);
+			return new ContinueAST(null, -1, -1);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class ContinueAST extends CodeAST
 		return type;
 	}
 
-	public ContinueAST(Template template, Slice pos)
+	public ContinueAST(Template template, int posStart, int posStop)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 	}
 
 	public String getType()

@@ -37,7 +37,7 @@ public class ForBlockAST extends BlockAST
 		@Override
 		public ForBlockAST create(String id)
 		{
-			return new ForBlockAST(null, null, null, null, null);
+			return new ForBlockAST(null, -1, -1, -1, -1, null, null);
 		}
 
 		@Override
@@ -61,9 +61,9 @@ public class ForBlockAST extends BlockAST
 	protected Object varname;
 	protected CodeAST container;
 
-	public ForBlockAST(Template template, Slice startPos, Slice stopPos, Object varname, CodeAST container)
+	public ForBlockAST(Template template, int startPosStart, int startPosStop, int stopPosStart, int stopPosStop, Object varname, CodeAST container)
 	{
-		super(template, startPos, stopPos);
+		super(template, startPosStart, startPosStop, stopPosStart, stopPosStop);
 		this.varname = varname;
 		this.container = container;
 	}

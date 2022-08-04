@@ -31,7 +31,7 @@ public class BreakAST extends CodeAST
 		@Override
 		public BreakAST create(String id)
 		{
-			return new BreakAST(null, null);
+			return new BreakAST(null, -1, -1);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class BreakAST extends CodeAST
 		return type;
 	}
 
-	public BreakAST(Template template, Slice pos)
+	public BreakAST(Template template, int posStart, int posStop)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 	}
 
 	public String getType()

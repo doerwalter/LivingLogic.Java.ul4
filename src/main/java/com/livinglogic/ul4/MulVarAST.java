@@ -31,7 +31,7 @@ public class MulVarAST extends ChangeVarAST
 		@Override
 		public MulVarAST create(String id)
 		{
-			return new MulVarAST(null, null, null, null);
+			return new MulVarAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class MulVarAST extends ChangeVarAST
 		return type;
 	}
 
-	public MulVarAST(Template template, Slice pos, LValue lvalue, AST value)
+	public MulVarAST(Template template, int posStart, int posStop, LValue lvalue, AST value)
 	{
-		super(template, pos, lvalue, value);
+		super(template, posStart, posStop, lvalue, value);
 	}
 
 	public String getType()

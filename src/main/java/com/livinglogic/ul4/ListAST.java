@@ -42,7 +42,7 @@ public class ListAST extends CodeAST
 		@Override
 		public ListAST create(String id)
 		{
-			return new ListAST(null, null);
+			return new ListAST(null, -1, -1);
 		}
 
 		@Override
@@ -62,9 +62,9 @@ public class ListAST extends CodeAST
 
 	protected List<SeqItemASTBase> items = new LinkedList<SeqItemASTBase>();
 
-	public ListAST(Template template, Slice pos)
+	public ListAST(Template template, int posStart, int posStop)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 	}
 
 	public void append(SeqItemASTBase item)

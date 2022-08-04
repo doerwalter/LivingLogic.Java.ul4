@@ -31,7 +31,7 @@ public class SubVarAST extends ChangeVarAST
 		@Override
 		public SubVarAST create(String id)
 		{
-			return new SubVarAST(null, null, null, null);
+			return new SubVarAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class SubVarAST extends ChangeVarAST
 		return type;
 	}
 
-	public SubVarAST(Template template, Slice pos, LValue lvalue, AST value)
+	public SubVarAST(Template template, int posStart, int posStop, LValue lvalue, AST value)
 	{
-		super(template, pos, lvalue, value);
+		super(template, posStart, posStop, lvalue, value);
 	}
 
 	public String getType()

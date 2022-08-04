@@ -31,7 +31,7 @@ public class NotContainsAST extends BinaryAST
 		@Override
 		public NotContainsAST create(String id)
 		{
-			return new NotContainsAST(null, null, null, null);
+			return new NotContainsAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class NotContainsAST extends BinaryAST
 		return type;
 	}
 
-	public NotContainsAST(Template template, Slice pos, CodeAST obj1, CodeAST obj2)
+	public NotContainsAST(Template template, int posStart, int posStop, CodeAST obj1, CodeAST obj2)
 	{
-		super(template, pos, obj1, obj2);
+		super(template, posStart, posStop, obj1, obj2);
 	}
 
 	public String getType()

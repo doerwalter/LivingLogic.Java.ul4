@@ -11,9 +11,9 @@ import java.util.Map;
 
 public abstract class ArgumentASTBase extends CodeAST
 {
-	public ArgumentASTBase(Template template, Slice pos)
+	public ArgumentASTBase(Template template, int posStart, int posStop)
 	{
-		super(template, pos);
+		super(template, posStart, posStop);
 	}
 
 	@Override

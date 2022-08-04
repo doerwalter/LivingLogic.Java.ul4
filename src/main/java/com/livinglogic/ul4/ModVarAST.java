@@ -31,7 +31,7 @@ public class ModVarAST extends ChangeVarAST
 		@Override
 		public ModVarAST create(String id)
 		{
-			return new ModVarAST(null, null, null, null);
+			return new ModVarAST(null, -1, -1, null, null);
 		}
 
 		@Override
@@ -49,9 +49,9 @@ public class ModVarAST extends ChangeVarAST
 		return type;
 	}
 
-	public ModVarAST(Template template, Slice pos, LValue lvalue, AST value)
+	public ModVarAST(Template template, int posStart, int posStop, LValue lvalue, AST value)
 	{
-		super(template, pos, lvalue, value);
+		super(template, posStart, posStop, lvalue, value);
 	}
 
 	public String getType()

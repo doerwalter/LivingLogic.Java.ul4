@@ -44,7 +44,7 @@ public class CallAST extends CallRenderAST
 		@Override
 		public CallAST create(String id)
 		{
-			return new CallAST(null, null, null);
+			return new CallAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -62,9 +62,9 @@ public class CallAST extends CallRenderAST
 		return type;
 	}
 
-	public CallAST(Template template, Slice pos, AST obj)
+	public CallAST(Template template, int posStart, int posStop, AST obj)
 	{
-		super(template, pos, obj);
+		super(template, posStart, posStop, obj);
 	}
 
 	public String getType()

@@ -34,7 +34,7 @@ public class RenderXOrPrintAST extends RenderAST
 		@Override
 		public RenderXOrPrintAST create(String id)
 		{
-			return new RenderXOrPrintAST(null, null, null);
+			return new RenderXOrPrintAST(null, -1, -1, null);
 		}
 
 		@Override
@@ -52,9 +52,9 @@ public class RenderXOrPrintAST extends RenderAST
 		return type;
 	}
 
-	public RenderXOrPrintAST(Template template, Slice pos, AST obj)
+	public RenderXOrPrintAST(Template template, int posStart, int posStop, AST obj)
 	{
-		super(template, pos, obj);
+		super(template, posStart, posStop, obj);
 	}
 
 	public RenderXOrPrintAST(CallAST call)
