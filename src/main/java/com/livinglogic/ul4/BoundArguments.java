@@ -496,42 +496,4 @@ public class BoundArguments
 		makeArgumentsByName();
 		return makeIterator(argumentsByName.get(name), -1, name);
 	}
-
-	// /**
-	// "Destroys" a {@code BoundArguments} object to simplify the work the Java GC has to do
-	// After the call the object is no longer usable.
-
-	// Note that this should not be called for any template arguments,
-	// as the variables might be referenced by a closure.
-	// However for {@code Function} objects that can be done without problems.
-	// **/
-	// @Override
-	// public void close()
-	// {
-	// 	if (signature != null)
-	// 	{
-	// 		if (signature.hasVarKeyword())
-	// 		{
-	// 			Map<String, Object> kwargs = (Map<String, Object>)get(argumentsByPosition.length - 1);
-	// 			kwargs.clear();
-	// 		}
-	// 		if (signature.hasVarPositional())
-	// 		{
-	// 			List<Object> args = (List<Object>)get(argumentsByPosition.length - (signature.hasVarKeyword() ? 2 : 1));
-	// 			args.clear();
-	// 		}
-	// 		argumentsByPosition = null;
-	// 		if (argumentsByName != null)
-	// 		{
-	// 			argumentsByName.clear();
-	// 			argumentsByName = null;
-	// 		}
-	// 		signature = null;
-	// 	}
-	// 	else
-	// 	{
-	// 		argumentsByName.clear();
-	// 		argumentsByName = null;
-	// 	}
-	// }
 }
