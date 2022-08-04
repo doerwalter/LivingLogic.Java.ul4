@@ -36,12 +36,12 @@
 	</repositories>
 	<distributionManagement>
 		<repository>
-			<id>nexus-new</id>
+			<id>ll-nexus</id>
 			<name>LivingLogic Nexus Maven Releases</name>
 			<url>https://nexus.livinglogic.de/repository/maven-releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>nexus-new</id>
+			<id>ll-nexus</id>
 			<name>LivingLogic Nexus Maven Snapshot</name>
 			<url>https://nexus.livinglogic.de/repository/maven-snapshots</url>
 		</snapshotRepository>
