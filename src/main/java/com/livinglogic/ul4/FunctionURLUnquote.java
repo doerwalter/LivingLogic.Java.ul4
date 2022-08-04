@@ -28,7 +28,7 @@ public class FunctionURLUnquote extends Function
 	@Override
 	public Object evaluate(EvaluationContext context, BoundArguments args)
 	{
-		return call(args.get(0));
+		return call(args.getString(0));
 	}
 
 	public static Object call(String obj)
