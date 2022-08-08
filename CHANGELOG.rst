@@ -1,3 +1,11 @@
+exp-172 (2002-08-08)
+--------------------
+
+When loading an UL4 template from source, don't incorparate the loaded signature
+again in the source. We assume that the signature was specified in the source
+anyway.
+
+
 exp-171 (2022-08-07)
 --------------------
 

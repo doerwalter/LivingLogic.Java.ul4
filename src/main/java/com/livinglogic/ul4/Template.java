@@ -1804,7 +1804,10 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			this.signatureAST = null;
 			this.docPosStart = -1;
 			this.docPosStop = -1;
-			this.source = makeSource(source, name, signature);
+			/* We assume that we got the signature from the template source
+			 * itself, so we don't need to add the signature again to the source.
+			 */
+			this.source = source;
 			compile();
 		}
 		else // this is a "compiled" version of the UL4ON dump
