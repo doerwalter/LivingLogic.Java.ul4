@@ -285,7 +285,7 @@ public class UL4ONTest
 	@Test
 	public void template_from_source()
 	{
-		Template template = (Template)loads("o s'de.livinglogic.ul4.template' n s'test' s'<?print x + y?>' s'x, y=23' s'keep' )", null);
+		Template template = (Template)loads("o s'de.livinglogic.ul4.template' n s'test' s'<?ul4 test(x, y=23)?><?print x + y?>' s'x, y=23' s'keep' )", null);
 		assertEquals("40", template.renders(makeMap("x", 17)));
 	}
 
