@@ -13,10 +13,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Timer;
 
 import com.livinglogic.utils.CloseableRegistry;
 import com.livinglogic.utils.MapChain;
 import com.livinglogic.utils.MapUtils;
+import com.livinglogic.utils.InterruptTimerTask;
 
 /**
 An {@code EvaluationContext} object is passed around calls to the node method
@@ -75,7 +77,11 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	the runtime of a template. If negative the runtime is unlimited.
 	**/
 	private long milliseconds = -1;
-	private long startMilliseconds;
+
+	/**
+	The timer used to limit the maimum runtime
+	**/
+	private Timer timer;
 
 	/**
 	Create a new {@code EvaluationContext} object.
@@ -87,6 +93,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 
 	/**
 	Create a new {@code EvaluationContext} object.
+
 	@param writer The output stream where the template output will be written
 	**/
 	public EvaluationContext(Writer writer)
@@ -96,8 +103,10 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 
 	/**
 	Create a new {@code EvaluationContext} object.
+
 	@param milliseconds The maximum number of milliseconds allowed for
-	             templates using this {@code EvaluationContext}.
+	                    templates using this {@code EvaluationContext}. If
+	                    {@code milliseconds} is < 0 there's no runtime limit.
 	**/
 	public EvaluationContext(long milliseconds)
 	{
@@ -108,7 +117,8 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	Create a new {@code EvaluationContext} object.
 	@param writer The output stream where the template output will be written
 	@param milliseconds The maximum number of milliseconds allowed for
-	             templates using this {@code EvaluationContext}.
+	                    templates using this {@code EvaluationContext}. If
+	                    {@code milliseconds} is < 0 there's no runtime limit.
 	**/
 	public EvaluationContext(Writer writer, long milliseconds)
 	{
@@ -139,7 +149,8 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	/**
 	Create a new {@code EvaluationContext} object.
 	@param milliseconds The maximum number of milliseconds allowed for
-	                    templates using this {@code EvaluationContext}.
+	                    templates using this {@code EvaluationContext}. If
+	                    {@code milliseconds} is < 0 there's no runtime limit.
 	@param globalVariables The global variables that should be available in
 	                       the template and any called recursively.
 	**/
@@ -150,9 +161,18 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 
 	/**
 	Create a new {@code EvaluationContext} object.
+
+	{@code milliseconds} can be used to limit the runtime of the template using
+	this {@code EvaluationContext}. In reality this means that the code
+	instantiating the {@code EvaluationContext} has the specified amount of time
+	before a timer thread will interupt the thread that created the
+	{@code EvaluationContext}. This timer will be cancel when the
+	{@code EvaluationContext} gets closed before the timer fires.
+
 	@param writer The output stream where the template output will be written
 	@param milliseconds The maximum number of milliseconds allowed for
-	                    templates using this {@code EvaluationContext}.
+	                    templates using this {@code EvaluationContext}. If
+	                    {@code milliseconds} is < 0 there's no runtime limit.
 	@param globalVariables The global variables that should be available in
 	                       the template and any called recursively.
 	**/
@@ -172,13 +192,20 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 		closeables = new LinkedList<AutoCloseable>();
 		escapes = new LinkedList<StringEscape>();
 		this.milliseconds = milliseconds;
-		startMilliseconds = System.currentTimeMillis();
+		if (milliseconds >= 0)
+		{
+			timer = new Timer("Runtime monitor for UL4 template", true);
+			InterruptTimerTask interruptTimerTask = new InterruptTimerTask(Thread.currentThread());
+			timer.schedule(interruptTimerTask, milliseconds);
+		}
+		else
+			timer = null;
 	}
 
-	protected void tick() throws InterruptedException
+	protected void tick()
 	{
 		if (Thread.interrupted())
-			throw new InterruptedException("Maximum runtime of " + milliseconds + " ms exceeded");
+			throw new RuntimeException(new InterruptedException("Maximum runtime of " + milliseconds + " ms exceeded"));
 	}
 
 	public void pushIndent(String indent)
@@ -197,6 +224,8 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	@Override
 	public void close()
 	{
+		if (timer != null)
+			timer.cancel();
 		for (AutoCloseable closeable : closeables)
 		{
 			try

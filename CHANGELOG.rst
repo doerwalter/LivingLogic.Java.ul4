@@ -1,3 +1,12 @@
+exp-173 (2002-08-22)
+--------------------
+
+Limiting the maximum runtime is now no longer done via checking
+``System.currentTimeMillis``, but via an additional timer thread that interrupts
+the main thread. This results in a 20-fold speedup on some hardware/OS
+constellations (e.g. running in a Docker container etc.).
+
+
 exp-172 (2002-08-08)
 --------------------
 

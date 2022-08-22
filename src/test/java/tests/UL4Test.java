@@ -41,7 +41,6 @@ import com.livinglogic.ul4.TooManyArgumentsException;
 import com.livinglogic.ul4.UnsupportedArgumentNameException;
 import com.livinglogic.ul4.ReadonlyException;
 import com.livinglogic.ul4.AttributeException;
-import com.livinglogic.ul4.RuntimeExceededException;
 import com.livinglogic.ul4.NotIterableException;
 import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.SyntaxException;
@@ -5951,7 +5950,8 @@ public class UL4Test
 		checkOutput("", T("<?def f(container)?><?for child in container?><?code f(container)?><?end for?><?end def?><?code x = []?><?code x.append(x)?><?code f(x)?>"));
 	}
 
-	@CauseTest(expectedCause=RuntimeExceededException.class)
+	// In reality this throws an {@code }
+	@CauseTest(expectedCause=RuntimeException.class)
 	public void runtime_limit()
 	{
 		checkOutput("", T("<?while True?><?end while?>"), 10);
