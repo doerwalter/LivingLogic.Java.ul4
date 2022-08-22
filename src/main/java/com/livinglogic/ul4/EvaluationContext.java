@@ -175,12 +175,10 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 		startMilliseconds = System.currentTimeMillis();
 	}
 
-	protected void tick()
+	protected void tick() throws InterruptedException
 	{
-		if (milliseconds >= 0 && System.currentTimeMillis() > startMilliseconds + milliseconds)
-		{
-			throw new RuntimeExceededException(milliseconds);
-		}
+		if (Thread.interrupted())
+			throw new InterruptedException("Maximum runtime of " + milliseconds + " ms exceeded");
 	}
 
 	public void pushIndent(String indent)
