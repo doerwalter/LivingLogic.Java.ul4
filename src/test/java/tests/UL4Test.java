@@ -5130,7 +5130,7 @@ public class UL4Test
 		checkTemplateOutput("", "<?def f(container)?><?for child in container?><?code f(container)?><?end for?><?end def?><?code x = []?><?code x.append(x)?><?code f(x)?>");
 	}
 
-	@CauseTest(expectedCause=RuntimeExceededException.class)
+	@CauseTest(expectedCause=RuntimeException.class)
 	public void runtime_limit()
 	{
 		checkTemplateOutputLimit("", "<?while True?><?end while?>", 10);

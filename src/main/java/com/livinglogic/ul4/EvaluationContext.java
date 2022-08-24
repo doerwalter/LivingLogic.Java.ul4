@@ -13,10 +13,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Timer;
 
 import com.livinglogic.utils.CloseableRegistry;
 import com.livinglogic.utils.MapChain;
 import com.livinglogic.utils.MapUtils;
+import com.livinglogic.utils.InterruptTimerTask;
 
 /**
  * An {@code EvaluationContext} object is passed around calls to the node method
@@ -70,7 +72,11 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	 * the runtime of a template. If negative the runtime is unlimited.
 	 */
 	private long milliseconds = -1;
-	private long startMilliseconds;
+
+	/**
+	The timer used to limit the maimum runtime
+	**/
+	private Timer timer;
 
 	/**
 	 * Create a new {@code EvaluationContext} object.
@@ -115,15 +121,20 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 		closeables = new LinkedList<AutoCloseable>();
 		escapes = new LinkedList<StringEscape>();
 		this.milliseconds = milliseconds;
-		startMilliseconds = System.currentTimeMillis();
+		if (milliseconds >= 0)
+		{
+			timer = new Timer("Runtime monitor for UL4 template", true);
+			InterruptTimerTask interruptTimerTask = new InterruptTimerTask(Thread.currentThread());
+			timer.schedule(interruptTimerTask, milliseconds);
+		}
+		else
+			timer = null;
 	}
 
 	protected void tick()
 	{
-		if (milliseconds >= 0 && System.currentTimeMillis() > startMilliseconds + milliseconds)
-		{
-			throw new RuntimeExceededException();
-		}
+		if (Thread.interrupted())
+			throw new RuntimeException(new InterruptedException("Maximum runtime of " + milliseconds + " ms exceeded"));
 	}
 
 	public void pushIndent(String indent)
@@ -141,6 +152,8 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	 */
 	public void close()
 	{
+		if (timer != null)
+			timer.cancel();
 		for (AutoCloseable closeable : closeables)
 		{
 			try

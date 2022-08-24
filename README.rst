@@ -46,6 +46,14 @@ Authors
 History
 =======
 
+exp-138-1 (2022-08-24)
+----------------------
+
+Backported the performance improvements from ``exp-173``: Replace runtime
+checks with ``System.currentTimeMillis()`` with a timer thread that interrupts
+the main thread.
+
+
 exp-138 (2019-02-26)
 ----------------------
 Added ``com.livinglogic.utils.ArrayUtils`` (with the method
