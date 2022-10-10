@@ -1,3 +1,12 @@
+exp-175 (2022-10-10)
+--------------------
+
+Updated to use Java 17 for compiling.
+
+Fixed german date formatting tests where the output differs between
+``java.util.Date`` and ``java.time.LocalTime`` objects (but only on Java 17).
+
+
 exp-174 (2022-10-10)
 --------------------
 
