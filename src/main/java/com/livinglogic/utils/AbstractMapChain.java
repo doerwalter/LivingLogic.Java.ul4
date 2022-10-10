@@ -6,8 +6,10 @@
 
 package com.livinglogic.utils;
 
+import java.util.Objects;
 import java.util.AbstractSet;
 import java.util.Collection;
+import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.AbstractMap;
@@ -18,7 +20,7 @@ import org.apache.commons.lang3.ObjectUtils;
 
 
 /**
-A {@code Map} implemention that forwards all operations to one or two mapps.
+A {@code Map} implemention that forwards all operations to one or two maps.
 When a key or entry isn't found in the first map the second ("chained")
 {@code Map} is consulted.
 
@@ -48,6 +50,7 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 				bufferedKey = null;
 			}
 
+			@Override
 			public boolean hasNext()
 			{
 				if (haveBufferedKey)
@@ -70,6 +73,7 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 				return false;
 			}
 
+			@Override
 			public K next()
 			{
 				if (haveBufferedKey)
@@ -99,11 +103,13 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 			}
 		}
 
+		@Override
 		public boolean contains(Object o)
 		{
 			return containsKey(o);
 		}
 
+		@Override
 		public boolean containsAll(Collection<?> c)
 		{
 			for (Object obj : c)
@@ -114,6 +120,7 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 			return true;
 		}
 
+		@Override
 		public boolean equals(Object other)
 		{
 			if (!(other instanceof Set))
@@ -132,16 +139,19 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 			return true;
 		}
 
+		@Override
 		public Iterator<K> iterator()
 		{
 			return new KeySetIterator();
 		}
 
+		@Override
 		public boolean isEmpty()
 		{
 			return AbstractMapChain.this.isEmpty();
 		}
 
+		@Override
 		public int size()
 		{
 			return AbstractMapChain.this.size();
@@ -243,6 +253,77 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 		}
 	}
 
+	class ValuesCollection extends AbstractCollection<V>
+	{
+		ValuesCollection()
+		{
+		}
+
+		@Override
+		public int size()
+		{
+			return AbstractMapChain.this.size();
+		}
+
+		@Override
+		public boolean isEmpty()
+		{
+			return AbstractMapChain.this.isEmpty();
+		}
+
+		@Override
+		public Iterator<V> iterator()
+		{
+			return new ValuesIterator();
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if (!(o instanceof Collection))
+				return false;
+			Collection c = (Collection)o;
+			if (size() != c.size())
+				return false;
+			Iterator<V> thisIterator = iterator();
+			Iterator<V> otherIterator = c.iterator();
+
+			// We assume here that both iterator return the same amount of
+			// items, which is reasonable, because their collection have
+			// the same size.
+			while (thisIterator.hasNext())
+			{
+				if (!Objects.equals(thisIterator.next(), otherIterator.next()))
+					return false;
+			}
+			return true;
+		}
+	}
+
+	class ValuesIterator implements Iterator<V>
+	{
+		private Iterator<Map.Entry<K, V>> iterator;
+
+		ValuesIterator()
+		{
+			iterator = entrySet().iterator();
+		}
+
+		@Override
+		public boolean hasNext()
+		{
+			return iterator.hasNext();
+		}
+
+		@Override
+		public V next()
+		{
+			if (iterator.hasNext())
+				return iterator.next().getValue();
+			return null;
+		}
+	}
+
 	protected Map<K, V> first;
 
 	public AbstractMapChain(Map<K, V> first)
@@ -250,6 +331,7 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 		this.first = first;
 	}
 
+	@Override
 	public boolean containsKey(Object key)
 	{
 		boolean containsKey = first.containsKey(key);
@@ -262,6 +344,7 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 		return containsKey;
 	}
 
+	@Override
 	public boolean containsValue(Object value)
 	{
 		boolean containsValue = first.containsValue(value);
@@ -274,12 +357,14 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 		return containsValue;
 	}
 
+	@Override
 	public Set<Map.Entry<K,V>> entrySet()
 	{
 		Map<K, V> second = getSecond();
 		return second != null ? new EntrySet() : first.entrySet();
 	}
 
+	@Override
 	public V get(Object key)
 	{
 		V value = first.get(key);
@@ -292,6 +377,7 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 		return value;
 	}
 
+	@Override
 	public boolean isEmpty()
 	{
 		boolean isEmpty = first.isEmpty();
@@ -304,12 +390,14 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 		return isEmpty;
 	}
 
+	@Override
 	public Set<K> keySet()
 	{
 		Map<K, V> second = getSecond();
 		return second != null ? new KeySet() : first.keySet();
 	}
 
+	@Override
 	public int hashCode()
 	{
 		int hashCode = first.hashCode();
@@ -319,6 +407,7 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 		return hashCode;
 	}
 
+	@Override
 	public int size()
 	{
 		int size = first.size();
@@ -335,6 +424,7 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 		return size;
 	}
 
+	@Override
 	public boolean equals(Object other)
 	{
 		Map<K, V> second = getSecond();
@@ -366,30 +456,34 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 			return first.equals(other);
 	}
 
+	@Override
 	public void clear()
 	{
 		first.clear();
 	}
 
+	@Override
 	public V put(K key, V value)
 	{
 		return first.put(key, value);
 	}
 
+	@Override
 	public V remove(Object key)
 	{
 		return first.remove(key);
 	}
 
+	@Override
 	public void putAll(Map<? extends K,? extends V> m)
 	{
 		first.putAll(m);
 	}
 
-	// FIXME: Implement this
+	@Override
 	public Collection<V> values()
 	{
-		throw new UnsupportedOperationException();
+		return new ValuesCollection();
 	}
 
 	public Map<K, V> setFirst(Map<K, V> first)

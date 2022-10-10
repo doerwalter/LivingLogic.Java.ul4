@@ -11,6 +11,7 @@ import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Iterator;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,11 +62,12 @@ public class MapChainTest
 	@Test
 	public void entrySet_contains()
 	{
-		AbstractMapChain c = makeMapChain(makeMap(1, 2), makeMap(3, 4));
+		AbstractMapChain c = makeMapChain(makeMap(1, 2, 3, 4), makeMap(3, 5, 6, 7));
 		assertTrue(c.entrySet().contains(entry(1, 2)));
-		assertTrue(c.entrySet().contains(entry(3, 4)));
 		assertFalse(c.entrySet().contains(entry(3, 5)));
-		assertFalse(c.entrySet().contains(entry(6, 7)));
+		assertTrue(c.entrySet().contains(entry(3, 4)));
+		assertTrue(c.entrySet().contains(entry(6, 7)));
+		assertFalse(c.entrySet().contains(entry(8, 9)));
 	}
 
 	@Test
@@ -189,6 +191,50 @@ public class MapChainTest
 	{
 		AbstractMapChain c = makeMapChain(makeMap(1, 2), makeMap(3, 4));
 		assertEquals(c.keySet().size(), 2);
+	}
+
+	@Test
+	public void values_size()
+	{
+		AbstractMapChain c = makeMapChain(makeMap(1, 2, 3, 4), makeMap(3, 5, 6, 7));
+		assertEquals(c.values().size(), 3);
+	}
+
+	@Test
+	public void values_equals()
+	{
+		AbstractMapChain c = makeMapChain(makeMap(1, 2, 3, 4), makeMap(3, 5, 6, 7));
+		assertTrue(c.values().equals(asList(2, 4, 7)));
+	}
+
+	@Test
+	public void values_isEmpty()
+	{
+		AbstractMapChain c1 = makeMapChain(makeMap(1, 2, 3, 4), makeMap(3, 5, 6, 7));
+		assertFalse(c1.values().isEmpty());
+		AbstractMapChain c2 = makeMapChain(makeMap(1, 2, 3, 4), makeMap());
+		assertFalse(c2.values().isEmpty());
+		AbstractMapChain c3 = makeMapChain(makeMap(), makeMap(3, 5, 6, 7));
+		assertFalse(c3.values().isEmpty());
+		AbstractMapChain c4 = makeMapChain(makeMap(), makeMap());
+		assertTrue(c4.values().isEmpty());
+	}
+
+	@Test
+	public void values_iterator()
+	{
+		AbstractMapChain<Integer, Integer> c = (AbstractMapChain<Integer, Integer>)makeMapChain(
+			makeMap(1, 2, 3, 4),
+			makeMap(3, 5, 6, 7)
+		);
+		Iterator<Integer> i = c.values().iterator();
+		assertTrue(i.hasNext());
+		assertEquals((long)i.next(), 2L);
+		assertTrue(i.hasNext());
+		assertEquals((long)i.next(), 4L);
+		assertTrue(i.hasNext());
+		assertEquals((long)i.next(), 7L);
+		assertFalse(i.hasNext());
 	}
 
 	@Test

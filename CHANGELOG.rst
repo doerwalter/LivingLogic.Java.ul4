@@ -1,4 +1,10 @@
-exp-173 (2002-08-22)
+exp-174 (2022-10-10)
+--------------------
+
+Implemented ``AbstractMapChain.values()``.
+
+
+exp-173 (2022-08-22)
 --------------------
 
 Limiting the maximum runtime is now no longer done via checking
@@ -7,7 +13,7 @@ the main thread. This results in a 20-fold speedup on some hardware/OS
 constellations (e.g. running in a Docker container etc.).
 
 
-exp-172 (2002-08-08)
+exp-172 (2022-08-08)
 --------------------
 
 When loading an UL4 template from source, don't incorparate the loaded signature
