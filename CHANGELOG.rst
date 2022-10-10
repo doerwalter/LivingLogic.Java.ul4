@@ -1,3 +1,9 @@
+exp-176 (2022-10-10)
+--------------------
+
+Reverted to use Java 1.8 for compiling, since we need backwards compatibility.
+
+
 exp-175 (2022-10-10)
 --------------------
 
