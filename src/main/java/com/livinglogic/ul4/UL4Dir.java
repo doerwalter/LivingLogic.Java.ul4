@@ -18,7 +18,7 @@ the attributes it makes accessible to UL4.</p>
 querying whether on object has a particular attribute.</p>
 
 <p>Since {@link #hasAttrUL4(EvaluationContext, String)} falls back to
-{@link #dirUL4(evaluationContext)} only {@link #dirUL4(evaluationContext)}
+{@link #dirUL4(EvaluationContext)} only {@link #dirUL4(EvaluationContext)}
 has to be implemented.</p>
 **/
 public interface UL4Dir

@@ -66,8 +66,10 @@ public class Tag extends AST
 	Create a new {@code Tag} object.
 	@param template The template
 	@param tag The tag type ("print", "printx", "for", "if", "end", etc.)
-	@param tagPos The slice in the template source, where the source for this tag is located.
-	@param codePos The slice in the template source where the code inside the tag starts.
+	@param tagPosStart The start position in the template source where the source for this tag is located.
+	@param tagPosStop The stop position in the template source where the source for this tag is located.
+	@param codePosStart The start position in the template source where the code inside the tag starts.
+	@param codePosStop The stop position in the template source where the code inside the tag starts.
 	**/
 	public Tag(Template template, String tag, int tagPosStart, int tagPosStop, int codePosStart, int codePosStop)
 	{

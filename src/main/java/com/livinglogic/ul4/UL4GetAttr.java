@@ -17,7 +17,7 @@ accessible attributes of an object.</p>
 <p>These attributes can either be normal "data attributes" or they can be
 methods. To implement a method define a subclass of {@link BoundMethod} and
 return an instance of it in {@link #getAttrUL4(EvaluationContext, String)} and/or
-{@link #getAttrUL4(String)}.</p>
+{@link #getAttrUL4(EvaluationContext, String)}.</p>
 **/
 public interface UL4GetAttr
 {

@@ -132,8 +132,10 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 
 	/**
 	Create a new {@code AST} object for a non-block.
-	@param startPos The slice in the template source, where the source for
-	                this object (or its start tag) is located.
+	@param startPosStart The start position in the template source, where the source for
+	                     this object (or its start tag) is located.
+	 @param startPosStop The stop position in the template source, where the source for
+	                     this object (or its start tag) is located.
 	**/
 	public AST(Template template, int startPosStart, int startPosStop)
 	{

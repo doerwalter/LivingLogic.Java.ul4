@@ -17,7 +17,7 @@ from UL4.</p>
 
 <p>The difference to {@code BoundMethod} is that the object to which the method
 is bound must implement {@link UL4GetAttr} and calling the bound method will
-be dispatched to {@link UL4GetAttr#getAttrUL4(String)}.</p>
+be dispatched to {@link UL4GetAttr#getAttrUL4(EvaluationContext, String)}.</p>
 
 <p>Furthermore since a {@code GenericBoundMethod} can be bound to any method
 it doesn't handle binding arguments in its default implementation. this must
@@ -62,7 +62,7 @@ public class GenericBoundMethod<T extends UL4GetAttr> implements UL4Instance, UL
 
 	<p>Calling the bound method object will call the method named {@code methodName}
 	on the object to which this method is bound by calling
-	{@link UL4GetAttr#getAttrUL4(String)} on {@code object} passing
+	{@link UL4GetAttr#getAttrUL4(EvaluationContext, String)} on {@code object} passing
 	{@code methodName} as the attribute name.</p>
 
 	@param object The object this {@code GenericBoundMethod} is bound to.

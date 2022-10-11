@@ -1,3 +1,13 @@
+0.177 (2022-10-11)
+------------------
+
+Switch to gradle as the build infrastructure.
+
+Switch naming schema for versions/tags to use the bare version number.
+
+Add infrastructure for building the jar in gitlab.
+
+
 exp-176 (2022-10-10)
 --------------------
 
