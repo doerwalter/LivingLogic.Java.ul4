@@ -1,5 +1,5 @@
 /bin
-/target
+/build
 .project
 .classpath
 .settings
@@ -10,4 +10,5 @@
 *.iml
 .env
 .sdkmanrc
+.build-cache
 
