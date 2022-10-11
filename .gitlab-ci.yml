@@ -18,6 +18,8 @@ test:
   stage: test
   script:
     - gradle --build-cache test
+  variables:
+    LL_JAVA_TEST_CONNECT: ${LL_JAVA_TEST_CONNECT}
   artifacts:
     paths:
       - build
