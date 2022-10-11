@@ -27,7 +27,7 @@ test:
 deploy-snapshot:
   stage: deploy
   script:
-    - gradle --build-cache publish -DllnexusUsername=gitlab -DllnexusPassword=$NEXUS_GITLAB_PASSWORD -Pversion=0.0.0-SNAPSHOT
+    - gradle --build-cache publish -DllnexusUsername=gitlab -DllnexusPassword=$NEXUS_GITLAB_PASSWORD -Pversion=999-SNAPSHOT
   artifacts:
     paths:
       - build
