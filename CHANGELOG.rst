@@ -1,3 +1,10 @@
+0.178 (2022-10-20)
+------------------
+
+For UL4ON decoders make to list of backreferences accessible via
+``Decoder.getBackReferences()``.
+
+
 0.177 (2022-10-11)
 ------------------
 

@@ -150,6 +150,21 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 	}
 
 	/**
+	Return the list of objects the decoder has remembered for backreferences.
+
+	Normally the user doesn't need this info. This is only useful to recreate
+	the exact state of a {@code Decoder}.
+
+	Never modify this list.
+
+	@return the list of backreferences.
+	**/
+	public List<Object> getBackReferences()
+	{
+		return backReferences;
+	}
+
+	/**
 	Reads a object in the UL4ON dump from the reader and return the deserialized object.
 	@param reader the {@code Reader} from which the UL4ON dump will be read.
 	@return the object read form the dump.
