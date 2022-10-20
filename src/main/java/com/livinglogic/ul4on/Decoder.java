@@ -114,7 +114,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 	The list of objects that have been read so far from {@code reader} and
 	that must be available for backreferences.
 	**/
-	private List<Object> objects = new ArrayList<Object>();
+	private List<Object> backReferences = new ArrayList<Object>();
 
 	/**
 	Stores persistent objects (i.e. those whose
@@ -147,6 +147,21 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 	public Decoder(Map<String, ObjectFactory> registry)
 	{
 		this.registry = registry;
+	}
+
+	/**
+	Return the list of objects the decoder has remembered for backreferences.
+
+	Normally the user doesn't need this info. This is only useful to recreate
+	the exact state of a {@code Decoder}.
+
+	Never modify this list.
+
+	@return the list of backreferences.
+	**/
+	public List<Object> getBackReferences()
+	{
+		return backReferences;
 	}
 
 	/**
@@ -198,7 +213,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 		if (typecode == '^')
 		{
 			int position = (Integer)readInt();
-			return objects.get(position);
+			return backReferences.get(position);
 		}
 		else if (typecode == 'n' || typecode == 'N')
 		{
@@ -581,7 +596,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 		reader = null;
 		position = 0;
 		bufferedChar = -1;
-		objects = new ArrayList<Object>();
+		backReferences = new ArrayList<Object>();
 		stack = new Stack<String>();
 	}
 
@@ -665,7 +680,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 	**/
 	private void loading(Object obj)
 	{
-		objects.add(obj);
+		backReferences.add(obj);
 	}
 
 	/**
@@ -681,7 +696,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 	*/
 	private int beginFakeLoading()
 	{
-		int oldpos = objects.size();
+		int oldpos = backReferences.size();
 		loading(null);
 		return oldpos;
 	}
@@ -691,7 +706,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 	**/
 	private void endFakeLoading(int oldpos, Object value)
 	{
-		objects.set(oldpos, value);
+		backReferences.set(oldpos, value);
 	}
 
 	private int readChar() throws IOException
