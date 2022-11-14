@@ -1,7 +1,8 @@
 HEAD (2022-11-??)
 -----------------
 
-Update version of Apache Commons Text to 1.10.0 for security reasons.
+Update version of Apache Commons Text to 1.10.0 for security reasons
+(CVE-2022-42889) which doesn't affect UL4.
 
 
 0.178 (2022-10-20)
