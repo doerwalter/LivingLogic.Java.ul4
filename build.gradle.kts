@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
 	implementation("org.apache.commons:commons-lang3:3.11")
-	implementation("org.apache.commons:commons-text:1.9")
+	implementation("org.apache.commons:commons-text:1.10.0")
 	implementation("commons-collections:commons-collections:3.2.2")
 	antlr("org.antlr:antlr:3.5.2")
 	implementation("com.googlecode.json-simple:json-simple:1.1.1")
