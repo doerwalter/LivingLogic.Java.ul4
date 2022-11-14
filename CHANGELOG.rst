@@ -1,3 +1,9 @@
+HEAD (2022-11-??)
+-----------------
+
+Update version of Apache Commons Text to 1.10.0 for security reasons.
+
+
 0.178 (2022-10-20)
 ------------------
 
