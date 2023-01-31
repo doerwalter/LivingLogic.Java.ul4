@@ -60,6 +60,13 @@ tasks.withType<Javadoc> {
 	(options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
 }
 
+task("execute", JavaExec::class) {
+	classpath = sourceSets["main"].runtimeClasspath
+	standardInput = System.`in`
+
+	mainClass.set("com.livinglogic.ul4.Tester")
+}
+
 task("copyDependencies", Copy::class) {
 	configurations.compileClasspath.get()
 		.filter { it.extension == "jar" }
