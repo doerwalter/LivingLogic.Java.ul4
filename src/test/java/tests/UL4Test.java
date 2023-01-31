@@ -3884,6 +3884,7 @@ public class UL4Test
 	public void function_format_double()
 	{
 		Template t2 = T("<?print format(data, fmt)?>");
+		Template t3 = T("<?print format(data, fmt, lang)?>");
 
 		// type f
 		checkOutput("042.13", t2, V("data", 42.125, "fmt", "06.2f")); // "{:8.2f}".format(42.125) -> '   42.12' python rundet nicht auf
@@ -3902,6 +3903,7 @@ public class UL4Test
 		checkOutput("000042", t2, V("data",  42.0, "fmt", "06.0f"));
 		checkOutput("42.000", t2, V("data",  42.0, "fmt", "#06.3f"));
 		checkOutput("042.00", t2, V("data",  42.0, "fmt", "06.2f"));
+		checkOutput("042,00", t3, V("data",  42.0, "fmt", "06.2f", "lang", "de"));
 		// ??? nan and inf ???
 
 		// type e
@@ -3916,6 +3918,7 @@ public class UL4Test
 	public void function_format_BigDecimal()
 	{
 		Template t2 = T("<?print format(data, fmt)?>");
+		Template t3 = T("<?print format(data, fmt, lang)?>");
 
 		// type f
 		checkOutput("042.13", t2, V("data", BigDecimal.valueOf(42.125), "fmt", "06.2f")); // "{:8.2f}".format(42.125) -> '   42.12' python rundet nicht auf
@@ -3934,7 +3937,7 @@ public class UL4Test
 		checkOutput("000042", t2, V("data",  BigDecimal.valueOf(42.0), "fmt", "06.0f"));
 		checkOutput("42.000", t2, V("data",  BigDecimal.valueOf(42.0), "fmt", "#06.3f"));
 		checkOutput("042.00", t2, V("data",  BigDecimal.valueOf(42.0), "fmt", "06.2f"));
-		// ??? nan and inf ???
+		checkOutput("042,00", t3, V("data",  BigDecimal.valueOf(42.0), "fmt", "06.2f", "lang", "de"));
 
 		// type e
 		checkOutput("4.21250e+01", t2, V("data",  BigDecimal.valueOf(42.125), "fmt", "1.5e"));

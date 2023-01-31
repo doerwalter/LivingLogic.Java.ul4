@@ -106,7 +106,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 
 	@param milliseconds The maximum number of milliseconds allowed for
 	                    templates using this {@code EvaluationContext}. If
-	                    {@code milliseconds} is < 0 there's no runtime limit.
+	                    {@code milliseconds} is &lt; 0 there's no runtime limit.
 	**/
 	public EvaluationContext(long milliseconds)
 	{
@@ -118,7 +118,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	@param writer The output stream where the template output will be written
 	@param milliseconds The maximum number of milliseconds allowed for
 	                    templates using this {@code EvaluationContext}. If
-	                    {@code milliseconds} is < 0 there's no runtime limit.
+	                    {@code milliseconds} is &lt; 0 there's no runtime limit.
 	**/
 	public EvaluationContext(Writer writer, long milliseconds)
 	{
@@ -150,7 +150,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	Create a new {@code EvaluationContext} object.
 	@param milliseconds The maximum number of milliseconds allowed for
 	                    templates using this {@code EvaluationContext}. If
-	                    {@code milliseconds} is < 0 there's no runtime limit.
+	                    {@code milliseconds} is &lt 0 there's no runtime limit.
 	@param globalVariables The global variables that should be available in
 	                       the template and any called recursively.
 	**/
@@ -172,7 +172,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	@param writer The output stream where the template output will be written
 	@param milliseconds The maximum number of milliseconds allowed for
 	                    templates using this {@code EvaluationContext}. If
-	                    {@code milliseconds} is < 0 there's no runtime limit.
+	                    {@code milliseconds} is &lt; 0 there's no runtime limit.
 	@param globalVariables The global variables that should be available in
 	                       the template and any called recursively.
 	**/

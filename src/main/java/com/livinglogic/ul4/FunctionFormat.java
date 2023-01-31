@@ -895,7 +895,7 @@ public class FunctionFormat extends Function
 		if (neg)
 			obj = -obj;
 
-		output =  String.format(format.getJavaFormatString(), obj);
+		output =  String.format(locale, format.getJavaFormatString(), obj);
 
 		return formatDoubleString(output, neg, format);
 	}
@@ -913,7 +913,7 @@ public class FunctionFormat extends Function
 		if (neg)
 			obj = obj.negate();
 
-		output =  String.format(format.getJavaFormatString(), obj);
+		output =  String.format(locale, format.getJavaFormatString(), obj);
 
 		return formatDoubleString(output, neg, format);
 	}
