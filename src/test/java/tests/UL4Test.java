@@ -107,7 +107,7 @@ public class UL4Test
 		@Override
 		public boolean boolUL4(EvaluationContext context)
 		{
-			return x != 0 || x != 0;
+			return x != 0 || y != 0;
 		}
 
 		@Override
@@ -3812,8 +3812,8 @@ public class UL4Test
 			checkOutput("Tue", t2, V("data", t, "fmt", "%a"));
 			checkOutput("Tue", t3, V("data", t, "fmt", "%a", "lang", null));
 			checkOutput("Tue", t3, V("data", t, "fmt", "%a", "lang", "en"));
-			checkOutput("Di", t3, V("data", t, "fmt", "%a", "lang", "de"));
-			checkOutput("Di", t3, V("data", t, "fmt", "%a", "lang", "de_DE"));
+			checkOutput("Di.", t3, V("data", t, "fmt", "%a", "lang", "de"));
+			checkOutput("Di.", t3, V("data", t, "fmt", "%a", "lang", "de_DE"));
 			checkOutput("Tuesday", t2, V("data", t, "fmt", "%A"));
 			checkOutput("Tuesday", t3, V("data", t, "fmt", "%A", "lang", null));
 			checkOutput("Tuesday", t3, V("data", t, "fmt", "%A", "lang", "en"));
@@ -3822,8 +3822,8 @@ public class UL4Test
 			checkOutput("Jan", t2, V("data", t, "fmt", "%b"));
 			checkOutput("Jan", t3, V("data", t, "fmt", "%b", "lang", null));
 			checkOutput("Jan", t3, V("data", t, "fmt", "%b", "lang", "en"));
-			checkOutput("Jan", t3, V("data", t, "fmt", "%b", "lang", "de"));
-			checkOutput("Jan", t3, V("data", t, "fmt", "%b", "lang", "de_DE"));
+			checkOutput("Jan.", t3, V("data", t, "fmt", "%b", "lang", "de"));
+			checkOutput("Jan.", t3, V("data", t, "fmt", "%b", "lang", "de_DE"));
 			checkOutput("January", t2, V("data", t, "fmt", "%B"));
 			checkOutput("January", t3, V("data", t, "fmt", "%B", "lang", null));
 			checkOutput("January", t3, V("data", t, "fmt", "%B", "lang", "en"));
