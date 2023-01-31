@@ -320,7 +320,7 @@ public class UL4ONTest
 	@Test
 	public void roundtripLocalDateTime()
 									{
-										checkRoundtrip(LocalDateTime.now(ZoneId.of("Europe/Berlin")));
+										checkRoundtrip(LocalDateTime.now());
 									}
 	@Test
 	public void roundtripTimeDelta()

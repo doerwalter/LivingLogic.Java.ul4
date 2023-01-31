@@ -21,6 +21,7 @@ test:
   variables:
     LL_JAVA_TEST_CONNECT: ${LL_JAVA_TEST_CONNECT}
   artifacts:
+    when: always
     paths:
       - build
       - .build-cache
