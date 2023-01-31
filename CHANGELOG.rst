@@ -1,5 +1,10 @@
-HEAD (2022-11-??)
------------------
+0.179 (2023-01-31)
+------------------
+
+Update to jdk 17.
+
+Implement ``format()`` for floating point numbers. Currently only the
+formats ``e``, ``E``, ``f``, and ``F`` are supported.
 
 Update version of Apache Commons Text to 1.10.0 for security reasons
 (CVE-2022-42889) which doesn't affect UL4.
