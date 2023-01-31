@@ -150,7 +150,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	Create a new {@code EvaluationContext} object.
 	@param milliseconds The maximum number of milliseconds allowed for
 	                    templates using this {@code EvaluationContext}. If
-	                    {@code milliseconds} is &lt 0 there's no runtime limit.
+	                    {@code milliseconds} is &lt; 0 there's no runtime limit.
 	@param globalVariables The global variables that should be available in
 	                       the template and any called recursively.
 	**/
