@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -498,26 +500,54 @@ public class FunctionFormat extends Function
 		return buffer.toString();
 	}
 
-	private static class IntegerFormat
+	private abstract static class Format
 	{
 		// The format string is
-		// [[fill]align][sign][#][0][minimumwidth][type]
-		private char fill = ' ';
-		private char align = '>'; // '<', '>', '=' or '^'
-		private char sign = '-'; // '+', '-' or ' '
-		private boolean alternate = false;
-		private int minimumwidth = 0;
-		private char type = 'd'; // 'b', 'c', 'd', 'o', 'x', 'X' or 'n'
+		// [[fill]align][sign][#][0][minimumwidth][.precision][type]
+		protected char fill = ' ';
+		protected char align = '>'; // '<', '>', '=' or '^'
+		protected char sign = '-'; // '+', '-' or ' '
+		protected boolean alternate = false;
+		protected int minimumwidth = 0;
+		protected int precision = 6;
+		protected char type = getDefaultType();
 
-		public IntegerFormat(String formatString)
+		abstract protected char getDefaultType();
+		abstract protected List<Character> getTypes();
+		abstract protected boolean determinePrecision();
+
+		protected Format(String formatString)
 		{
 			String workStr = formatString;
 
 			// Determine output type
-			if (workStr.endsWith("b") || workStr.endsWith("c") || workStr.endsWith("d") || workStr.endsWith("o") || workStr.endsWith("x") || workStr.endsWith("X") || workStr.endsWith("n"))
+			for (Character c: getTypes())
 			{
-				this.type = workStr.charAt(workStr.length()-1);
-				workStr = workStr.substring(0, workStr.length()-1);
+				if (workStr.endsWith(Character.toString(c)))
+				{
+					this.type = workStr.charAt(workStr.length() - 1);
+					workStr = workStr.substring(0, workStr.length() - 1);
+					break;
+				}
+			}
+
+			// determine precision
+			if (determinePrecision())
+			{
+				int indexOfDot = workStr.lastIndexOf('.');
+				if (indexOfDot > -1)
+				{
+					String precisionString = workStr.substring(indexOfDot + 1);
+					try
+					{
+						precision = Integer.valueOf(precisionString);
+						workStr = workStr.substring(0, indexOfDot);
+					}
+					catch (NumberFormatException nfe)
+					{
+						throw new RuntimeException(String.format("'%s' is not a valid value for precision - an integer is expected", precisionString));
+					}
+				}
 			}
 
 			// Extract minimum width
@@ -578,7 +608,88 @@ public class FunctionFormat extends Function
 
 		public String toString()
 		{
-			return "fill=" + Character.toString(fill) + "; align=" + Character.toString(align) + "; sign=" + Character.toString(sign) + "; alternate=" + (alternate ? "true" : "false") + "; minimumwidth=" + minimumwidth + "; type=" + Character.toString(type);
+			String precisionStr = determinePrecision() ? ("; precision=" + precision) : "";
+			return "fill=" + Character.toString(fill) + "; align=" + Character.toString(align) + "; sign=" + Character.toString(sign) + "; alternate=" + (alternate ? "true" : "false") + "; minimumwidth=" + minimumwidth + precisionStr + "; type=" + Character.toString(type);
+		}
+	}
+
+	private static class InternalDecimalFormat extends Format
+	{
+		// The format string is
+		// [[fill]align][sign][#][0][minimumwidth][.precision][type]
+
+		@Override
+		protected char getDefaultType()
+		{
+			return 'g';
+		}
+
+		@Override
+		protected List<Character> getTypes()
+		{
+			return List.of('e', 'E', 'f', 'F', 'g', 'G', 'n');
+		}
+
+		@Override
+		protected boolean determinePrecision()
+		{
+			return true;
+		}
+
+		/**
+		 * Create a format string for the String::format method so that the post formatting is as simple
+		 * as possible.
+		 * @return
+		 */
+		public String getJavaFormatString()
+		{
+			String result = "%";
+
+			if (alternate)
+				result += "#";
+
+			if (minimumwidth > 0)
+				result += String.valueOf(minimumwidth);
+
+			result += "." + String.valueOf(precision);
+
+			result += type;
+
+			return result;
+		}
+
+		public InternalDecimalFormat(String formatString)
+		{
+			super(formatString);
+		}
+	}
+
+	private static class IntegerFormat extends Format
+	{
+		// The format string is
+		// [[fill]align][sign][#][0][minimumwidth][type]
+
+		@Override
+		protected char getDefaultType()
+		{
+			return 'd';
+		}
+
+		@Override
+		protected List<Character> getTypes()
+		{
+			return List.of('b', 'c', 'd', 'o', 'x', 'X', 'n');
+		}
+
+		@Override
+		protected boolean determinePrecision()
+		{
+			return false;
+		}
+
+		public IntegerFormat(String formatString)
+		{
+			super(formatString);
 		}
 	}
 
@@ -722,6 +833,91 @@ public class FunctionFormat extends Function
 		return formatIntegerString(output, neg, format);
 	}
 
+	private static String formatDoubleString(String string, boolean neg, InternalDecimalFormat format)
+	{
+		string = string.trim();
+
+		if (format.align == '=')
+		{
+			int minimumwidth = format.minimumwidth;
+			if (neg || format.sign != '-')
+				--minimumwidth;
+
+			if (string.length() < minimumwidth)
+				string = StringUtils.repeat(Character.toString(format.fill), minimumwidth-string.length()) + string;
+
+			if (neg)
+				string = "-" + string;
+			else
+			{
+				if (format.sign != '-')
+					string = Character.toString(format.sign) + string;
+			}
+			return string;
+		}
+		else
+		{
+			if (neg)
+				string = "-" + string;
+			else
+			{
+				if (format.sign != '-')
+					string = Character.toString(format.sign) + string;
+			}
+			if (string.length() < format.minimumwidth)
+			{
+				if (format.align == '<')
+					string = string + StringUtils.repeat(Character.toString(format.fill), format.minimumwidth-string.length());
+				else if (format.align == '>')
+					string = StringUtils.repeat(Character.toString(format.fill), format.minimumwidth-string.length()) + string;
+				else // if (format.align == '^')
+				{
+					int pad = format.minimumwidth - string.length();
+					int padBefore = pad/2;
+					int padAfter = pad-padBefore;
+					string = StringUtils.repeat(Character.toString(format.fill), padBefore) + string + StringUtils.repeat(Character.toString(format.fill), padAfter);
+				}
+			}
+			return string;
+		}
+	}
+
+	public static String call(EvaluationContext context, double obj, String formatString, Locale locale)
+	{
+		InternalDecimalFormat format = new InternalDecimalFormat(formatString);
+
+		if (locale == null)
+			locale = Locale.US;
+
+		String output = null;
+
+		boolean neg = obj < 0;
+		if (neg)
+			obj = -obj;
+
+		output =  String.format(locale, format.getJavaFormatString(), obj);
+
+		return formatDoubleString(output, neg, format);
+	}
+
+	public static String call(EvaluationContext context, BigDecimal obj, String formatString, Locale locale)
+	{
+		InternalDecimalFormat format = new InternalDecimalFormat(formatString);
+
+		if (locale == null)
+			locale = Locale.US;
+
+		String output = null;
+
+		boolean neg = obj.signum() < 0;
+		if (neg)
+			obj = obj.negate();
+
+		output =  String.format(locale, format.getJavaFormatString(), obj);
+
+		return formatDoubleString(output, neg, format);
+	}
+
 	public static String call(EvaluationContext context, Object obj, String formatString, Locale locale)
 	{
 		if (obj instanceof Date)
@@ -734,6 +930,10 @@ public class FunctionFormat extends Function
 			return call(context, Utils.toLong(obj), formatString, locale);
 		else if (obj instanceof BigInteger)
 			return call(context, (BigInteger)obj, formatString, locale);
+		else if (obj instanceof Float || obj instanceof Double)
+			return call(context, Utils.toDouble(obj), formatString, locale);
+		else if (obj instanceof BigDecimal)
+			return call(context, (BigDecimal)obj, formatString, locale);
 		throw new ArgumentTypeMismatchException("format({!t}, {!t}, {!t}) not supported", obj, formatString, locale);
 	}
 

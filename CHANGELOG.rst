@@ -1,3 +1,22 @@
+0.179 (2023-01-31)
+------------------
+
+Update to jdk 17.
+
+Implement ``format()`` for floating point numbers. Currently only the
+formats ``e``, ``E``, ``f``, and ``F`` are supported.
+
+Update version of Apache Commons Text to 1.10.0 for security reasons
+(CVE-2022-42889) which doesn't affect UL4.
+
+
+0.178 (2022-10-20)
+------------------
+
+For UL4ON decoders make to list of backreferences accessible via
+``Decoder.getBackReferences()``.
+
+
 0.177 (2022-10-11)
 ------------------
 

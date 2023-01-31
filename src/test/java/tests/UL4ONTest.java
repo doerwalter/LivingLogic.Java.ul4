@@ -1,5 +1,6 @@
 package tests;
 
+import java.time.ZoneId;
 import java.util.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -261,7 +262,7 @@ public class UL4ONTest
 		checkRoundtrip("gurk<>'\"");
 		checkRoundtrip(new Color(0x66, 0x99, 0xcc, 0xff));
 		checkRoundtrip(LocalDate.now());
-		checkRoundtrip(LocalDateTime.now());
+		checkRoundtrip(LocalDateTime.of(2000, 2, 29, 12, 34, 56, 987654000));
 		checkRoundtrip(new TimeDelta(-1, 1, 1));
 		checkRoundtrip(new MonthDelta(-1));
 		checkRoundtrip(new Slice(false, false, -1, -1));
