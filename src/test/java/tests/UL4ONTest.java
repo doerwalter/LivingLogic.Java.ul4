@@ -249,140 +249,33 @@ public class UL4ONTest
 		assertEquals(object, recreated);
 	}
 
-//	@Test
-//	public void roundtrip()
-//	{
-//		Template template = getTemplate("<?for i in range(10)?>[<?print i?>]<?end for?>");
-//
-//		checkRoundtrip(null);
-//		checkRoundtrip(true);
-//		checkRoundtrip(false);
-//		checkRoundtrip(42);
-//		checkRoundtrip(42.666);
-//		checkRoundtrip("gurk<>'\"");
-//		checkRoundtrip(new Color(0x66, 0x99, 0xcc, 0xff));
-//		checkRoundtrip(LocalDate.now());
-//		checkRoundtrip(LocalDateTime.now());
-//		checkRoundtrip(new TimeDelta(-1, 1, 1));
-//		checkRoundtrip(new MonthDelta(-1));
-//		checkRoundtrip(new Slice(false, false, -1, -1));
-//		checkRoundtrip(new Slice(false, true, -1, 3));
-//		checkRoundtrip(new Slice(true, false, 1, -1));
-//		checkRoundtrip(new Slice(true, true, 1, 3));
-//		checkRoundtrip(asList(1, 2, 3));
-//		checkRoundtrip(makeMap("eins", 1, "zwei", 2, "drei", 3));
-//		checkRoundtrip(makeSet());
-//		checkRoundtrip(makeSet(1, 2, 3));
-//		checkRoundtrip(template);
-//		checkRoundtrip(asList(asList(1, 2, 3), asList(4, 5, 6), asList(7, 8, 9)));
-//	}
-
 	@Test
-	public void roundtripNull()
+	public void roundtrip()
 	{
+		Template template = getTemplate("<?for i in range(10)?>[<?print i?>]<?end for?>");
+
 		checkRoundtrip(null);
+		checkRoundtrip(true);
+		checkRoundtrip(false);
+		checkRoundtrip(42);
+		checkRoundtrip(42.666);
+		checkRoundtrip("gurk<>'\"");
+		checkRoundtrip(new Color(0x66, 0x99, 0xcc, 0xff));
+		checkRoundtrip(LocalDate.now());
+		checkRoundtrip(LocalDateTime.of(2000, 2, 29, 12, 34, 56, 987654000));
+		checkRoundtrip(new TimeDelta(-1, 1, 1));
+		checkRoundtrip(new MonthDelta(-1));
+		checkRoundtrip(new Slice(false, false, -1, -1));
+		checkRoundtrip(new Slice(false, true, -1, 3));
+		checkRoundtrip(new Slice(true, false, 1, -1));
+		checkRoundtrip(new Slice(true, true, 1, 3));
+		checkRoundtrip(asList(1, 2, 3));
+		checkRoundtrip(makeMap("eins", 1, "zwei", 2, "drei", 3));
+		checkRoundtrip(makeSet());
+		checkRoundtrip(makeSet(1, 2, 3));
+		checkRoundtrip(template);
+		checkRoundtrip(asList(asList(1, 2, 3), asList(4, 5, 6), asList(7, 8, 9)));
 	}
-	@Test
-	public void roundtripTrue()
-		{
-			checkRoundtrip(true);
-		}
-	@Test
-	public void roundtripFalse()
-			{
-				checkRoundtrip(false);
-			}
-	@Test
-	public void roundtrip42()
-				{
-					checkRoundtrip(42);
-				}
-	@Test
-	public void roundtrip42_666()
-					{
-						checkRoundtrip(42.666);
-					}
-	@Test
-	public void roundtripGurk()
-						{
-							checkRoundtrip("gurk<>'\"");
-						}
-	@Test
-	public void roundtripColor()
-							{
-								checkRoundtrip(new Color(0x66, 0x99, 0xcc, 0xff));
-							}
-	@Test
-	public void roundtripLocalDate()
-								{
-									checkRoundtrip(LocalDate.now());
-								}
-	@Test
-	public void roundtripLocalDateTime()
-									{
-										checkRoundtrip(LocalDateTime.now());
-									}
-	@Test
-	public void roundtripTimeDelta()
-										{
-											checkRoundtrip(new TimeDelta(-1, 1, 1));
-										}
-	@Test
-	public void roundtripMonthDelta()
-											{
-												checkRoundtrip(new MonthDelta(-1));
-											}
-	@Test
-	public void roundtripSlice1()
-												{
-													checkRoundtrip(new Slice(false, false, -1, -1));
-												}
-	@Test
-	public void roundtripSlice2()
-													{
-														checkRoundtrip(new Slice(false, true, -1, 3));
-													}
-	@Test
-	public void roundtripSlice3()
-														{
-															checkRoundtrip(new Slice(true, false, 1, -1));
-														}
-	@Test
-	public void roundtripSlice4()
-															{
-																checkRoundtrip(new Slice(true, true, 1, 3));
-															}
-	@Test
-	public void roundtripList()
-																{
-																	checkRoundtrip(asList(1, 2, 3));
-																}
-	@Test
-	public void roundtripMap()
-																	{
-																		checkRoundtrip(makeMap("eins", 1, "zwei", 2, "drei", 3));
-																	}
-	@Test
-	public void roundtripSet1()
-																		{
-																			checkRoundtrip(makeSet());
-																		}
-	@Test
-	public void roundtripSet2()
-																			{
-																				checkRoundtrip(makeSet(1, 2, 3));
-																			}
-	@Test
-	public void roundtripTemplate()
-																				{
-																					Template template = getTemplate("<?for i in range(10)?>[<?print i?>]<?end for?>");
-																					checkRoundtrip(template);
-																				}
-	@Test
-	public void roundtripListOfLists()
-																					{
-																						checkRoundtrip(asList(asList(1, 2, 3), asList(4, 5, 6), asList(7, 8, 9)));
-																					}
 
 	@Test
 	public void xss()
