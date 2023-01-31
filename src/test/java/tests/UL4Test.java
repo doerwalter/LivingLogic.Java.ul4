@@ -7,7 +7,6 @@ import static com.livinglogic.utils.SetUtils.makeSet;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.io.IOException;
@@ -34,13 +33,11 @@ import com.livinglogic.ul4.Utils;
 import com.livinglogic.ul4.UL4Type;
 import com.livinglogic.ul4.UL4Instance;
 import com.livinglogic.ul4.AbstractInstanceType;
-import com.livinglogic.ul4.ArgumentCountMismatchException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.MissingArgumentException;
 import com.livinglogic.ul4.TooManyArgumentsException;
 import com.livinglogic.ul4.UnsupportedArgumentNameException;
 import com.livinglogic.ul4.ReadonlyException;
-import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.ul4.NotIterableException;
 import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.SyntaxException;
@@ -264,7 +261,7 @@ public class UL4Test
 	{
 		// Render the template once directly
 		String output1 = template.renders(milliseconds, globalVariables, variables);
-		assertEquals(output1, expected);
+		assertEquals(expected, output1);
 
 		// Recreate the template from the dump of the compiled template
 		Template template2 = Template.loads(template.dumps());
@@ -274,7 +271,7 @@ public class UL4Test
 
 		// Check that they have the same output
 		String output2 = template2.renders(milliseconds, globalVariables, variables);
-		assertEquals(output2, expected);
+		assertEquals(expected, output2);
 	}
 
 	private static void checkResult(Object expected, Template template)
@@ -1339,12 +1336,12 @@ public class UL4Test
 		checkOutput("False", t, V("x", makeSet(1, 2), "y", makeSet(1, 2, 3)));
 
 		// Check mixed number types
-		checkOutput("True", t, V("x", new Integer(42), "y", new Long(42)));
-		checkOutput("True", t, V("x", new Integer(42), "y", new BigInteger("42")));
-		checkOutput("True", t, V("x", asList(new Integer(42)), "y", asList(new Long(42))));
-		checkOutput("True", t, V("x", asList(new Integer(42)), "y", asList(new BigInteger("42"))));
-		checkOutput("True", t, V("x", V("42", new Integer(42)), "y", V("42", new Long(42))));
-		checkOutput("True", t, V("x", V("42", new Integer(42)), "y", V("42", new BigInteger("42"))));
+		checkOutput("True", t, V("x", Integer.valueOf(42), "y", Long.valueOf(42l)));
+		checkOutput("True", t, V("x", Integer.valueOf(42), "y", new BigInteger("42")));
+		checkOutput("True", t, V("x", asList(Integer.valueOf(42)), "y", asList(Long.valueOf(42))));
+		checkOutput("True", t, V("x", asList(Integer.valueOf(42)), "y", asList(new BigInteger("42"))));
+		checkOutput("True", t, V("x", V("42", Integer.valueOf(42)), "y", V("42", Long.valueOf(42))));
+		checkOutput("True", t, V("x", V("42", Integer.valueOf(42)), "y", V("42", new BigInteger("42"))));
 
 		// Check mixed type comparisons
 		checkOutput("False", t, V("x", null, "y", true));
@@ -1400,7 +1397,7 @@ public class UL4Test
 		checkOutput("True", t, V("x", V(1, 2, "foo", "bar"), "y", V(1, 2, "foo", "baz")));
 		checkOutput("True", t, V("x", V(1, 2, "foo", "bar", 3, 4), "y", V(1, 2, "foo", "bar", 5, 6)));
 		checkOutput("False", t, V("x", makeSet(), "y", makeSet()));
-		checkOutput("True", t, V("x", makeSet(42), "y", makeSet(new Long(42))));
+		checkOutput("True", t, V("x", makeSet(42), "y", makeSet(Long.valueOf(42))));
 		checkOutput("False", t, V("x", makeSet(1, "foo"), "y", makeSet(1, "foo")));
 		checkOutput("True", t, V("x", makeSet(1, "foo"), "y", makeSet(1, "bar")));
 		checkOutput("True", t, V("x", makeSet(1, 2), "y", makeSet(1, 2, 3)));
@@ -2215,7 +2212,7 @@ public class UL4Test
 		checkOutput("False", t, V("data", false));
 		checkOutput("False", t, V("data", 0));
 		checkOutput("True", t, V("data", 42));
-		checkOutput("True", t, V("data", new Long(42)));
+		checkOutput("True", t, V("data", Long.valueOf(42)));
 		checkOutput("False", t, V("data", new BigInteger("0")));
 		checkOutput("True", t, V("data", new BigInteger("42")));
 		checkOutput("False", t, V("data", 0.0f));
@@ -3884,6 +3881,70 @@ public class UL4Test
 	}
 
 	@Test
+	public void function_format_double()
+	{
+		Template t2 = T("<?print format(data, fmt)?>");
+
+		// type f
+		checkOutput("042.13", t2, V("data", 42.125, "fmt", "06.2f")); // "{:8.2f}".format(42.125) -> '   42.12' python rundet nicht auf
+		checkOutput("-42.13", t2, V("data", -42.125, "fmt", "06.2f"));
+		checkOutput("   42.13", t2, V("data", 42.125, "fmt", "8.2f"));
+		checkOutput("   42.13", t2, V("data", 42.125, "fmt", ">8.2f"));
+		checkOutput("42.13   ", t2, V("data", 42.125, "fmt", "<8.2f"));
+		checkOutput("   42.13", t2, V("data", 42.125, "fmt", "=8.2f"));
+		checkOutput(" 42.13  ", t2, V("data", 42.125, "fmt", "^8.2f"));
+		checkOutput("  +42.13", t2, V("data", 42.125, "fmt", "+8.2f"));
+		checkOutput("   42.13", t2, V("data", 42.125, "fmt", "-8.2f"));
+		checkOutput("  -42.13", t2, V("data", -42.125, "fmt", "-8.2f"));
+		checkOutput("  -42.13", t2, V("data", -42.125, "fmt", " 8.2f"));
+		checkOutput(" 0042.13", t2, V("data",  42.125, "fmt", " 08.2f"));
+		checkOutput("00042.", t2, V("data",  42.0, "fmt", "#06.0f"));
+		checkOutput("000042", t2, V("data",  42.0, "fmt", "06.0f"));
+		checkOutput("42.000", t2, V("data",  42.0, "fmt", "#06.3f"));
+		checkOutput("042.00", t2, V("data",  42.0, "fmt", "06.2f"));
+		// ??? nan and inf ???
+
+		// type e
+		checkOutput("4.21250e+01", t2, V("data",  42.125, "fmt", "1.5e"));
+		checkOutput("4.2125000e+01", t2, V("data",  42.125, "fmt", "01.7e"));
+		checkOutput("-4.21250e+01", t2, V("data",  -42.125, "fmt", "1.5e"));
+		checkOutput("-4.21250E+01", t2, V("data",  -42.125, "fmt", "1.5E"));
+		checkOutput("-4.213e+01", t2, V("data",  -42.125, "fmt", "1.3e")); // "{:1.3e}".format(-42.125) -> '-4.212e+01' python rundet nicht auf
+	}
+
+	@Test
+	public void function_format_BigDecimal()
+	{
+		Template t2 = T("<?print format(data, fmt)?>");
+
+		// type f
+		checkOutput("042.13", t2, V("data", BigDecimal.valueOf(42.125), "fmt", "06.2f")); // "{:8.2f}".format(42.125) -> '   42.12' python rundet nicht auf
+		checkOutput("-42.13", t2, V("data", BigDecimal.valueOf(-42.125), "fmt", "06.2f"));
+		checkOutput("   42.13", t2, V("data", BigDecimal.valueOf(42.125), "fmt", "8.2f"));
+		checkOutput("   42.13", t2, V("data", BigDecimal.valueOf(42.125), "fmt", ">8.2f"));
+		checkOutput("42.13   ", t2, V("data", BigDecimal.valueOf(42.125), "fmt", "<8.2f"));
+		checkOutput("   42.13", t2, V("data", BigDecimal.valueOf(42.125), "fmt", "=8.2f"));
+		checkOutput(" 42.13  ", t2, V("data", BigDecimal.valueOf(42.125), "fmt", "^8.2f"));
+		checkOutput("  +42.13", t2, V("data", BigDecimal.valueOf(42.125), "fmt", "+8.2f"));
+		checkOutput("   42.13", t2, V("data", BigDecimal.valueOf(42.125), "fmt", "-8.2f"));
+		checkOutput("  -42.13", t2, V("data", BigDecimal.valueOf(-42.125), "fmt", "-8.2f"));
+		checkOutput("  -42.13", t2, V("data", BigDecimal.valueOf(-42.125), "fmt", " 8.2f"));
+		checkOutput(" 0042.13", t2, V("data", BigDecimal.valueOf( 42.125), "fmt", " 08.2f"));
+		checkOutput("00042.", t2, V("data",  BigDecimal.valueOf(42.0), "fmt", "#06.0f"));
+		checkOutput("000042", t2, V("data",  BigDecimal.valueOf(42.0), "fmt", "06.0f"));
+		checkOutput("42.000", t2, V("data",  BigDecimal.valueOf(42.0), "fmt", "#06.3f"));
+		checkOutput("042.00", t2, V("data",  BigDecimal.valueOf(42.0), "fmt", "06.2f"));
+		// ??? nan and inf ???
+
+		// type e
+		checkOutput("4.21250e+01", t2, V("data",  BigDecimal.valueOf(42.125), "fmt", "1.5e"));
+		checkOutput("4.2125000e+01", t2, V("data",  BigDecimal.valueOf(42.125), "fmt", "01.7e"));
+		checkOutput("-4.21250e+01", t2, V("data",  BigDecimal.valueOf(-42.125), "fmt", "1.5e"));
+		checkOutput("-4.21250E+01", t2, V("data",  BigDecimal.valueOf(-42.125), "fmt", "1.5E"));
+		checkOutput("-4.213e+01", t2, V("data",  BigDecimal.valueOf(-42.125), "fmt", "1.3e")); // "{:1.3e}".format(-42.125) -> '-4.212e+01' python rundet nicht auf
+	}
+
+	@Test
 	public void function_chr()
 	{
 		Template t = T("<?print chr(data)?>");
@@ -4245,10 +4306,10 @@ public class UL4Test
 		checkOutput("<type int>", T("<?print type(round(x, 1))?>"), V("x", 42));
 		checkOutput("<type int>", T("<?print type(round(x, -1))?>"), V("x", 42));
 
-		checkOutput("True", T("<?print round(x) == 42?>"), V("x", new Long(42)));
-		checkOutput("True", T("<?print round(x, 1) == 42?>"), V("x", new Long(42)));
-		checkOutput("True", T("<?print round(x, -1) == 40?>"), V("x", new Long(42)));
-		checkOutput("True", T("<?print round(x, -1) == 50?>"), V("x", new Long(48)));
+		checkOutput("True", T("<?print round(x) == 42?>"), V("x", Long.valueOf(42)));
+		checkOutput("True", T("<?print round(x, 1) == 42?>"), V("x", Long.valueOf(42)));
+		checkOutput("True", T("<?print round(x, -1) == 40?>"), V("x", Long.valueOf(42)));
+		checkOutput("True", T("<?print round(x, -1) == 50?>"), V("x", Long.valueOf(48)));
 
 		checkOutput("True", T("<?print round(x) == 42?>"), V("x", new BigInteger("42")));
 		checkOutput("True", T("<?print round(x, 1) == 42?>"), V("x", new BigInteger("42")));
@@ -4318,10 +4379,10 @@ public class UL4Test
 		checkOutput("<type int>", T("<?print type(floor(x, 1))?>"), V("x", 42));
 		checkOutput("<type int>", T("<?print type(floor(x, -1))?>"), V("x", 49));
 
-		checkOutput("True", T("<?print floor(x) == 42?>"), V("x", new Long(42)));
-		checkOutput("True", T("<?print floor(x, 1) == 42?>"), V("x", new Long(42)));
-		checkOutput("True", T("<?print floor(x, -1) == 40?>"), V("x", new Long(40)));
-		checkOutput("True", T("<?print floor(x, -1) == 40?>"), V("x", new Long(49)));
+		checkOutput("True", T("<?print floor(x) == 42?>"), V("x", Long.valueOf(42)));
+		checkOutput("True", T("<?print floor(x, 1) == 42?>"), V("x", Long.valueOf(42)));
+		checkOutput("True", T("<?print floor(x, -1) == 40?>"), V("x", Long.valueOf(40)));
+		checkOutput("True", T("<?print floor(x, -1) == 40?>"), V("x", Long.valueOf(49)));
 
 		checkOutput("True", T("<?print floor(x) == 42?>"), V("x", new BigInteger("42")));
 		checkOutput("True", T("<?print floor(x, 1) == 42?>"), V("x", new BigInteger("42")));
@@ -4402,10 +4463,10 @@ public class UL4Test
 		checkOutput("<type int>", T("<?print type(ceil(x, 1))?>"), V("x", 42));
 		checkOutput("<type int>", T("<?print type(ceil(x, -1))?>"), V("x", 42));
 
-		checkOutput("True", T("<?print ceil(x) == 42?>"), V("x", new Long(42)));
-		checkOutput("True", T("<?print ceil(x, 1) == 42?>"), V("x", new Long(42)));
-		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", new Long(41)));
-		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", new Long(50)));
+		checkOutput("True", T("<?print ceil(x) == 42?>"), V("x", Long.valueOf(42)));
+		checkOutput("True", T("<?print ceil(x, 1) == 42?>"), V("x", Long.valueOf(42)));
+		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", Long.valueOf(41)));
+		checkOutput("True", T("<?print ceil(x, -1) == 50?>"), V("x", Long.valueOf(50)));
 
 		checkOutput("True", T("<?print ceil(x) == 42?>"), V("x", new BigInteger("42")));
 		checkOutput("True", T("<?print ceil(x, 1) == 42?>"), V("x", new BigInteger("42")));

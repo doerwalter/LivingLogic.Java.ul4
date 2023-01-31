@@ -32,8 +32,8 @@ dependencies {
 
 group = "com.livinglogic"
 description = "Java implementation of the UL4 templating language"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
-java.targetCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17
 
 java {
 	withSourcesJar()
