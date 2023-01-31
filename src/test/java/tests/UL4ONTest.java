@@ -1,5 +1,6 @@
 package tests;
 
+import java.time.ZoneId;
 import java.util.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -319,7 +320,7 @@ public class UL4ONTest
 	@Test
 	public void roundtripLocalDateTime()
 									{
-										checkRoundtrip(LocalDateTime.now());
+										checkRoundtrip(LocalDateTime.now(ZoneId.of("Europe/Berlin")));
 									}
 	@Test
 	public void roundtripTimeDelta()
