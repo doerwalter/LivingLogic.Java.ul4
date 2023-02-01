@@ -627,7 +627,7 @@ public class FunctionFormat extends Function
 		@Override
 		protected List<Character> getTypes()
 		{
-			return List.of('e', 'E', 'f', 'F', 'g', 'G', 'n');
+			return List.of('e', 'E', 'f', 'F');
 		}
 
 		@Override

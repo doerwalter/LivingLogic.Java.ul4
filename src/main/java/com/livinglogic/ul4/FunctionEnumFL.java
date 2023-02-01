@@ -73,7 +73,7 @@ public class FunctionEnumFL extends Function
 		{
 			Object next = sequenceIterator.next();
 			Vector retVal = new Vector(4);
-			retVal.add(new Integer(index++));
+			retVal.add(index++);
 			retVal.add(index == start+1);
 			retVal.add(!sequenceIterator.hasNext());
 			retVal.add(next);

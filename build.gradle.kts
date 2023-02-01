@@ -75,9 +75,10 @@ task("copyDependencies", Copy::class) {
 
 tasks.withType<JavaCompile> {
 	options.encoding = "UTF-8"
-	// only possible with jdk >= 9   options.compilerArgs.addAll(listOf("--release", "1_8"))
+	options.compilerArgs.addAll(listOf("-Xlint:deprecation"/*, "-Xlint:unchecked"*/))
 }
 
 tasks.named("sourcesJar") {
 	dependsOn(":generateGrammarSource")
 }
+

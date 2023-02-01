@@ -206,7 +206,7 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 
 			if (ourValue == null && !containsKey(key))
 				return false;
-			return ObjectUtils.equals(value, ourValue);
+			return Objects.equals(value, ourValue);
 		}
 
 		public boolean containsAll(Collection<?> c)
@@ -445,7 +445,7 @@ public abstract class AbstractMapChain<K, V> implements Map<K, V>
 
 				Object thisValue = get(key);
 				Object otherValue = ((Map)other).get(key);
-				if (!ObjectUtils.equals(thisValue, otherValue))
+				if (!Objects.equals(thisValue, otherValue))
 					return false;
 			}
 			if (size != 0)
