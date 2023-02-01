@@ -593,9 +593,9 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 		if (minc == maxc)
 		{
 			ArrayList retVal = new ArrayList(3);
-			retVal.add(new Double(0.0));
-			retVal.add(new Double(l));
-			retVal.add(new Double(0.0));
+			retVal.add(0.0);
+			retVal.add(l);
+			retVal.add(0.0);
 			return retVal;
 		}
 		double s = l <= 0.5 ? (dmaxc-dminc) / (dmaxc+dminc) : (dmaxc-dminc) / (2.0-dmaxc-dminc);
@@ -614,16 +614,16 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 		h = (h/6.0) % 1.0;
 
 		ArrayList retVal = new ArrayList(3);
-		retVal.add(new Double(h));
-		retVal.add(new Double(l));
-		retVal.add(new Double(s));
+		retVal.add(h);
+		retVal.add(l);
+		retVal.add(s);
 		return retVal;
 	}
 
 	public ArrayList<Double> hlsa()
 	{
 		ArrayList retVal = hls();
-		retVal.add(new Double(a/255.));
+		retVal.add(a/255.);
 		return retVal;
 	}
 
@@ -669,7 +669,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 	public ArrayList<Double> hsva()
 	{
 		ArrayList<Double> retVal = hsv();
-		retVal.add(new Double(a/255.));
+		retVal.add(a/255.);
 		return retVal;
 	}
 
@@ -933,10 +933,10 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 	public Object[] toArray()
 	{
 		Object[] retVal = new Object[4];
-		retVal[0] = new Integer(r);
-		retVal[1] = new Integer(g);
-		retVal[2] = new Integer(b);
-		retVal[3] = new Integer(a);
+		retVal[0] = Integer.valueOf(r);
+		retVal[1] = Integer.valueOf(g);
+		retVal[2] = Integer.valueOf(b);
+		retVal[3] = Integer.valueOf(a);
 		return retVal;
 	}
 

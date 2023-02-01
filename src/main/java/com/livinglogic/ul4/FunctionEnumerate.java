@@ -66,7 +66,7 @@ public class FunctionEnumerate extends Function
 		public Vector next()
 		{
 			Vector retVal = new Vector(2);
-			retVal.add(new Integer(index++));
+			retVal.add(index++);
 			retVal.add(sequenceIterator.next());
 			return retVal;
 		}
