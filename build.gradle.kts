@@ -74,3 +74,4 @@ tasks.withType<JavaCompile> {
 tasks.named("sourcesJar") {
 	dependsOn(":generateGrammarSource")
 }
+
