@@ -128,6 +128,8 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 		ParameterDescription param = new ParameterDescription(name, parametersByPosition.size() + (varPositional != null ? 1 : 0) + (varKeyword != null ? 1 : 0), type, defaultValue);
 		if (!type.isVar())
 		{
+			if (parametersByName.get(name) != null)
+				throw new DuplicateParameterException(name);
 			parametersByName.put(name, param);
 			parametersByPosition.add(param);
 		}
