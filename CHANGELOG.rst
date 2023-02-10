@@ -1,5 +1,5 @@
-HEAD (2023-02-??)
------------------
+0.180 (2023-02-10)
+------------------
 
 Add ``DuplicateParameterException``. Throw it when a parameter with the same
 name is added to a ``Signature`` twice.
