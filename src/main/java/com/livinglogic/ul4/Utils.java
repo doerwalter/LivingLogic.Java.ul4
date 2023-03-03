@@ -197,7 +197,14 @@ public class Utils
 	{
 		if (date == null)
 			return null;
-		return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+	}
+
+	public static LocalDate toLocalDate(Date date)
+	{
+		if (date == null)
+			return null;
+		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
 	public static BigInteger powerOfTen(int exponent)
