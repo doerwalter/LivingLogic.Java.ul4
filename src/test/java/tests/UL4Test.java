@@ -33,6 +33,7 @@ import com.livinglogic.ul4.Utils;
 import com.livinglogic.ul4.UL4Type;
 import com.livinglogic.ul4.UL4Instance;
 import com.livinglogic.ul4.AbstractInstanceType;
+import com.livinglogic.ul4.DuplicateParameterException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.MissingArgumentException;
 import com.livinglogic.ul4.TooManyArgumentsException;
@@ -6545,6 +6546,12 @@ public class UL4Test
 		Template t = T("<?ul4 t(a, b='hurz')?><?print a?>,<?print b?>");
 
 		checkOutput("gurk,hurz", t, V("a", "gurk"));
+	}
+
+	@CauseTest(expectedCause=DuplicateParameterException.class)
+	public void signature_duplicate_parameter() throws Exception
+	{
+		Template t = T("<?ul4 t(a, a)?>");
 	}
 
 	@Test

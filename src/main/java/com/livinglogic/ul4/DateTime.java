@@ -1,25 +1,24 @@
 /*
-** Copyright 2021-2022 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2021-2023 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
 
 package com.livinglogic.ul4;
 
-import java.util.List;
-import java.util.Set;
-import java.util.  Map;
-import java.util.HashMap;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.time.LocalDateTime;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
@@ -363,14 +362,9 @@ public class DateTime extends AbstractType
 			return microsecond((Date)instance, args);
 	}
 
-	public static LocalDate date(Date instance)
-	{
-		return instance.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	}
-
 	public static LocalDate date(Date instance, BoundArguments args)
 	{
-		return date(instance);
+		return Utils.toLocalDate(instance);
 	}
 
 	public static LocalDate date(LocalDateTime instance)
