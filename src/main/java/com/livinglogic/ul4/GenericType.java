@@ -12,21 +12,13 @@ import java.util.Set;
 import java.util.Collections;
 
 
-public class GenericType implements UL4Type
+public class GenericType extends AbstractType
 {
 	private Class clazz;
 
 	public GenericType(Class clazz)
 	{
 		this.clazz = clazz;
-	}
-
-	private Signature signature = new Signature();
-
-	@Override
-	public Signature getSignature()
-	{
-		return signature;
 	}
 
 	@Override
@@ -36,15 +28,15 @@ public class GenericType implements UL4Type
 	}
 
 	@Override
-	public String getNameUL4()
+	public String getModuleName()
 	{
-		return clazz.getSimpleName();
+		return clazz.getPackage().getName();
 	}
 
 	@Override
-	public String getFullNameUL4()
+	public String getNameUL4()
 	{
-		return clazz.getPackage().getName() + "." + getNameUL4();
+		return clazz.getSimpleName();
 	}
 
 	@Override
