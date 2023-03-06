@@ -1,3 +1,9 @@
+0.182 (2023-03-06)
+------------------
+
+Don't include class name twice in ``Utils.addExceptionHTML2Buffer()``.
+
+
 0.181 (2023-03-03)
 ------------------
 

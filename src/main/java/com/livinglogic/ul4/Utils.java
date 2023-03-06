@@ -1079,7 +1079,7 @@ public class Utils
 	{
 		Map<String, Object> result = makeMap(
 			"type", t.getClass().getName(),
-			"message", t.getMessage()
+			"message", t.getLocalizedMessage()
 		);
 		if (t instanceof LocationException)
 		{
@@ -1204,7 +1204,7 @@ public class Utils
 			buffer.append("<b>");
 			buffer.append(FunctionXMLEscape.call(t.getClass().getName()));
 			buffer.append("</b>: ");
-			buffer.append(FunctionXMLEscape.call(t.toString()));
+			buffer.append(FunctionXMLEscape.call(t.getLocalizedMessage()));
 			buffer.append("</p>");
 		}
 	}
