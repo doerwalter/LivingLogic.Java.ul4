@@ -362,6 +362,11 @@ public class DateTime extends AbstractType
 			return microsecond((Date)instance, args);
 	}
 
+	public static LocalDate date(Date instance)
+	{
+		return Utils.toLocalDate(instance);
+	}
+
 	public static LocalDate date(Date instance, BoundArguments args)
 	{
 		return Utils.toLocalDate(instance);
