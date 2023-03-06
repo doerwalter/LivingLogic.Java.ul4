@@ -1,7 +1,15 @@
+0.184 (2023-03-06)
+------------------
+
+``GenericType`` now subclasses ``AbstractType``. This adds the UL4 attributes
+``__module__``, ``__name__`` and ``__doc__`` to generic instances (e.g.
+exception objects).
+
+
 0.183 (2023-03-06)
 ------------------
 
-Add missing method `DateTime.date(Date)`.
+Add missing method ``DateTime.date(Date)``.
 
 
 0.182 (2023-03-06)

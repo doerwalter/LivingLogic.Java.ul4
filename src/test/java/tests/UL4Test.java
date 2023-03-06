@@ -6770,4 +6770,16 @@ public class UL4Test
 	{
 		checkOutput("gurk;hurz", T("<?code t = ul4.Template('<?print x?' + '>', name='gurk', signature='x')?><?print t.name?>;<?render t('hurz')?>"));
 	}
+
+	@Test
+	public void type_attributes_int()
+	{
+		checkOutput(";int;An integer value", T("<?code t = type(42)?><?print t.__module__?>;<?print t.__name__?>;<?print t.__doc__?>"));
+	}
+
+	@Test
+	public void type_attributes_exc()
+	{
+		checkOutput("com.livinglogic.ul4;DuplicateParameterException;", T("<?code t = type(e)?><?print t.__module__?>;<?print t.__name__?>;<?print t.__doc__?>"), V("e", new DuplicateParameterException("foo")));
+	}
 }
