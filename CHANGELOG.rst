@@ -1,3 +1,9 @@
+0.185 (2023-03-08)
+------------------
+
+Avoid calling ``java.sql.Date::toInstant()`` in ``Utils.toLocalDate*()`` methods.
+
+
 0.184 (2023-03-06)
 ------------------
 
