@@ -197,6 +197,8 @@ public class Utils
 	{
 		if (date == null)
 			return null;
+		if (date instanceof java.sql.Date)
+			date = new Date(date.getTime());
 		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 
@@ -204,6 +206,8 @@ public class Utils
 	{
 		if (date == null)
 			return null;
+		if (date instanceof java.sql.Date)
+			return ((java.sql.Date)date).toLocalDate();
 		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
