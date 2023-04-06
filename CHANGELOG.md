@@ -1,3 +1,8 @@
+## 0.186 (2023-04-06)
+
+Prevent NullPointerException in `Utils.addExceptionHTML2Buffer()`.
+
+
 ## 0.185 (2023-03-08)
 
 Avoid calling `java.sql.Date::toInstant()` in `Utils.toLocalDate*()` methods.
