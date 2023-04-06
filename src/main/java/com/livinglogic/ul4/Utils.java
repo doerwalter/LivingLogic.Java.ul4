@@ -1207,8 +1207,13 @@ public class Utils
 			buffer.append("<p class='ul4-exc'>");
 			buffer.append("<b>");
 			buffer.append(FunctionXMLEscape.call(t.getClass().getName()));
-			buffer.append("</b>: ");
-			buffer.append(FunctionXMLEscape.call(t.getLocalizedMessage()));
+			buffer.append("</b>");
+			String message = t.getLocalizedMessage();
+			if (message != null)
+			{
+				buffer.append(": ");
+				buffer.append(FunctionXMLEscape.call(message));
+			}
 			buffer.append("</p>");
 		}
 	}
