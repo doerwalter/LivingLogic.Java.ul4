@@ -2,6 +2,7 @@ plugins {
 	`java-library`
 	`maven-publish`
 	`antlr`
+	id("com.github.ben-manes.versions") version "0.46.0"
 }
 
 val releaseRepository = "https://nexus.livinglogic.de/repository/maven-releases"
@@ -82,3 +83,15 @@ tasks.named("sourcesJar") {
 	dependsOn(":generateGrammarSource")
 }
 
+tasks.register("createVersionTxt") {
+	doLast {
+		val version = findProperty("version") // returns "unspecified" if no version is set
+		val dir = "src/main/resources/com/livinglogic/ul4"
+		mkdir(dir)
+		file("${dir}/version.txt").writeText("${version}")
+	}
+}
+
+tasks.named("compileJava") {
+	dependsOn(":createVersionTxt")
+}
