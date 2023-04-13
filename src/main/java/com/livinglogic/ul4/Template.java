@@ -8,6 +8,9 @@ package com.livinglogic.ul4;
 
 import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -23,6 +26,7 @@ import java.io.Writer;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -110,7 +114,12 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	/**
 	The version number used in the UL4ON dump of the template.
 	**/
-	public static final String VERSION = "52";
+	public static final String API_VERSION = "52";
+
+	/**
+	Version of this software package.
+	**/
+	public static String VERSION = null;
 
 	/**
 	The name of the template/function (defaults to {@code null})
@@ -258,6 +267,32 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		this.signatureAST = signature;
 		this.docPosStart = -1;
 		this.docPosStop = -1;
+	}
+
+	public static String getVersion()
+	{
+		if (VERSION == null)
+		{
+			InputStream is = Template.class.getResourceAsStream("version.txt");
+
+			if (is == null)
+			{
+				VERSION = "no version";
+			}
+			else
+			{
+				try(is)
+				{
+					VERSION = new BufferedReader(new InputStreamReader(is)).lines().collect(Collectors.joining("\n")).trim();
+				}
+				catch (IOException e)
+				{
+					throw new RuntimeException(e);
+				}
+			}
+		}
+
+		return VERSION;
 	}
 
 	protected void handleSpecialTags(List<Line> lines)
@@ -1760,7 +1795,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
-		encoder.dump(VERSION);
+		encoder.dump(API_VERSION);
 		encoder.dump(name);
 		encoder.dump(source);
 		encoder.dump(whitespace.toString());
@@ -1812,9 +1847,9 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		}
 		else // this is a "compiled" version of the UL4ON dump
 		{
-			if (!VERSION.equals(version))
+			if (!API_VERSION.equals(version))
 			{
-				throw new RuntimeException("Invalid version, expected " + VERSION + ", got " + version);
+				throw new RuntimeException("Invalid version, expected " + API_VERSION + ", got " + version);
 			}
 			name = (String)decoder.load();
 			source = (String)decoder.load();
@@ -1851,7 +1886,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		}
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "name", "whitespace", "signature", "doc", "source", "parenttemplate", "renders", "render");
+	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "version", "name", "whitespace", "signature", "doc", "source", "parenttemplate", "renders", "render");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)
@@ -1864,6 +1899,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	{
 		switch (key)
 		{
+			case "version":
+				return API_VERSION;
 			case "name":
 				return name;
 			case "whitespace":

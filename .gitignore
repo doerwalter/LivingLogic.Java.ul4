@@ -12,3 +12,4 @@
 .sdkmanrc
 .build-cache
 target
+/src/main/resources/com/livinglogic/ul4/version.txt

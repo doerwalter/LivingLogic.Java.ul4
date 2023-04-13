@@ -1,3 +1,9 @@
+## 0.187 (2023-04-13)
+
+Added UL4 attribute `Template.version` (the UL4 API version) and
+`ul4.__version__` (the version of this software package).
+
+
 ## 0.186 (2023-04-06)
 
 Prevent NullPointerException in `Utils.addExceptionHTML2Buffer()`.

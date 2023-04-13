@@ -20,6 +20,7 @@ public class ModuleUL4 extends Module
 	public ModuleUL4()
 	{
 		super("ul4", "UL4 - A templating language");
+		addObject("__version__", Template.getVersion());
 		addObject(AST.type);
 		addObject(TextAST.type);
 		addObject(IndentAST.type);
