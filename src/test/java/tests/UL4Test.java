@@ -8,6 +8,9 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.List;
 import java.io.IOException;
 import java.io.Reader;
@@ -537,8 +540,13 @@ public class UL4Test
 		checkOutput("2000-02-29T12:34:56", T("<?print @(2000-02-29T12:34:56).isoformat()?>"));
 		checkOutput("2000-02-29T12:34:56.987654", T("<?print @(2000-02-29T12:34:56.987654).isoformat()?>"));
 		checkOutput("yes", T("<?if @(2000-02-29T12:34:56.987654)?>yes<?else?>no<?end if?>"));
-		checkOutput("0.0", T("<?print @(1970-01-01T01:00:00).timestamp()?>"));
-		checkOutput("-3600.0", T("<?print @(1970-01-01T).timestamp()?>"));
+
+		var offset = ZoneOffset.systemDefault().getRules().getOffset(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
+		var offsetSeconds = offset.get(ChronoField.OFFSET_SECONDS);
+		var seconds = 3600 * 10 - offsetSeconds;
+		checkOutput(seconds + ".0", T("<?print @(1970-01-01T10:00:00).timestamp()?>"));
+		seconds = -offsetSeconds;
+		checkOutput(seconds + ".0", T("<?print @(1970-01-01T).timestamp()?>"));
 	}
 
 	@Test
