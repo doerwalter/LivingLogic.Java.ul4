@@ -1040,7 +1040,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			StringWriter output = new StringWriter();
 		)
 		{
-			BoundArguments arguments = new BoundArguments(signature, this, null, variables);
+			BoundArguments arguments = new BoundArguments(signature, this, null, null, variables);
 			renderBound(context, output, arguments.byName());
 			return output.toString();
 		}
@@ -1084,6 +1084,19 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			context.setTemplate(oldTemplate);
 			context.setVariables(oldVariables);
 		}
+	}
+
+	/**
+	Internal method that renders the template when all variables are already
+	bound.
+
+	@param context   the EvaluationContext. May not be null.
+	@param arguments the bound arguments containing the level variables that
+	                 should be available to the function code. May be not null.
+	**/
+	public void renderBound(EvaluationContext context, BoundArguments arguments)
+	{
+		renderBound(context, arguments.byName());
 	}
 
 	/**

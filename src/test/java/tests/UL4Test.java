@@ -42,8 +42,12 @@ import com.livinglogic.ul4.ReadonlyException;
 import com.livinglogic.ul4.NotIterableException;
 import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.SyntaxException;
+import com.livinglogic.ul4.NotCallableException;
 import com.livinglogic.ul4.EvaluationContext;
+import com.livinglogic.ul4.UL4Repr;
+import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.Template;
+import com.livinglogic.ul4.BoundTemplate;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.Date_;
 import com.livinglogic.ul4.DateTime;
@@ -55,6 +59,7 @@ import com.livinglogic.ul4.UndefinedAttribute;
 import com.livinglogic.ul4.UL4Bool;
 import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.UL4SetAttr;
+import com.livinglogic.ul4.UL4Call;
 import com.livinglogic.ul4.UL4Dir;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.Function;
@@ -166,6 +171,88 @@ public class UL4Test
 		public Iterator iterator()
 		{
 			return asList(1, 2, 3).iterator();
+		}
+	}
+
+	private static class ObjectWithTemplate implements UL4Repr, UL4GetAttr, UL4Call
+	{
+		private Object object;
+
+		private static Template template_call = T("<?ul4 call(self)?><?return self.object?>");
+		private static Template template_render1 = T("<?ul4 render1(self)?><?print repr(self)?>");
+		private static Template template_render2 = T("<?ul4 render2(self)?><?render self.t_render1()?>");
+
+		public ObjectWithTemplate(Object object)
+		{
+			this.object = object;
+		}
+
+		@Override
+		public Object getAttrUL4(EvaluationContext context, String key)
+		{
+			switch (key)
+			{
+				case "object":
+					return object;
+				case "t_call":
+					return new BoundTemplate(this, template_call);
+				case "t_render1":
+					return new BoundTemplate(this, template_render1);
+				case "t_render2":
+					return new BoundTemplate(this, template_render2);
+				default:
+					return new UndefinedAttribute(this, key);
+			}
+		}
+
+		@Override
+		public Object callAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
+		{
+			switch (key)
+			{
+				case "t_call":
+					BoundArguments callArgs = new BoundArguments(template_call.getSignature(), "t_call", this, args, kwargs);
+					return template_call.callBound(context, callArgs.byName());
+				case "t_render1":
+					BoundArguments render1Args = new BoundArguments(template_render1.getSignature(), "t_render1", this, args, kwargs);
+					return template_render1.callBound(context, render1Args.byName());
+				case "t_render2":
+					BoundArguments render2Args = new BoundArguments(template_render2.getSignature(), "t_render2", this, args, kwargs);
+					return template_render2.callBound(context, render2Args.byName());
+				default:
+					throw new NotCallableException("undefined attribute " + FunctionRepr.call(key));
+			}
+		}
+
+		// @Override
+		public void renderAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
+		{
+			switch (key)
+			{
+				case "t_call":
+					BoundArguments callArgs = new BoundArguments(template_call.getSignature(), "t_call", this, args, kwargs);
+					template_call.renderBound(context, callArgs);
+					break;
+				case "t_render1":
+					BoundArguments render1Args = new BoundArguments(template_render1.getSignature(), "t_render1", this, args, kwargs);
+					template_render1.renderBound(context, render1Args);
+					break;
+				case "t_render2":
+					BoundArguments render2Args = new BoundArguments(template_render2.getSignature(), "t_render2", this, args, kwargs);
+					template_render2.renderBound(context, render2Args);
+					break;
+				default:
+					throw new NotCallableException("undefined attribute " + FunctionRepr.call(key));
+			}
+		}
+
+		public void reprUL4(UL4Repr.Formatter formatter)
+		{
+			formatter.append("<");
+			formatter.append(getClass().getName());
+			formatter.append(" object=");
+			formatter.visit(object);
+			formatter.append(">");
 		}
 	}
 
@@ -6781,5 +6868,21 @@ public class UL4Test
 	public void type_attributes_exc()
 	{
 		checkOutput("com.livinglogic.ul4;DuplicateParameterException;", T("<?code t = type(e)?><?print t.__module__?>;<?print t.__name__?>;<?print t.__doc__?>"), V("e", new DuplicateParameterException("foo")));
+	}
+
+	@Test
+	public void bound_method_render()
+	{
+		checkOutput("<&>", T("<?print t.t_call()?>"), V("t", new ObjectWithTemplate("<&>")));
+		checkOutput("<tests.UL4Test$ObjectWithTemplate object='<17>'>", T("<?render t.t_render1()?>"), V("t", new ObjectWithTemplate("<17>")));
+		checkOutput("<tests.UL4Test$ObjectWithTemplate object='<23>'>", T("<?render t.t_render2()?>"), V("t", new ObjectWithTemplate("<23>")));
+	}
+
+	@Test
+	public void bound_method_renderx()
+	{
+		checkOutput("<&>", T("<?print t.t_call()?>"), V("t", new ObjectWithTemplate("<&>")));
+		checkOutput("&lt;tests.UL4Test$ObjectWithTemplate object=&#39;&lt;&amp;&gt;&#39;&gt;", T("<?renderx t.t_render1()?>"), V("t", new ObjectWithTemplate("<&>")));
+		checkOutput("&lt;tests.UL4Test$ObjectWithTemplate object=&#39;&lt;&amp;&gt;&#39;&gt;", T("<?renderx t.t_render2()?>"), V("t", new ObjectWithTemplate("<&>")));
 	}
 }

@@ -23,10 +23,20 @@ public class BoundArguments
 
 	public BoundArguments(Signature signature, UL4Name object, List<Object> args, Map<String, Object> kwargs)
 	{
-		this(signature, object.getFullNameUL4(), args, kwargs);
+		this(signature, object.getFullNameUL4(), null, args, kwargs);
 	}
 
 	public BoundArguments(Signature signature, String name, List<Object> args, Map<String, Object> kwargs)
+	{
+		this(signature, name, null, args, kwargs);
+	}
+
+	public BoundArguments(Signature signature, UL4Name object, Object self, List<Object> args, Map<String, Object> kwargs)
+	{
+		this(signature, object.getFullNameUL4(), self, args, kwargs);
+	}
+
+	public BoundArguments(Signature signature, String name, Object self, List<Object> args, Map<String, Object> kwargs)
 	{
 		this.name = name;
 		this.signature = signature;
@@ -38,6 +48,9 @@ public class BoundArguments
 
 			argumentsByPosition = null;
 			argumentsByName = kwargs != null ? new LinkedHashMap<String, Object>(kwargs) : new LinkedHashMap<String, Object>();
+			// If we are a bound method, instead of a simple function, pass the object we're bound to, as `self`
+			if (self != null)
+				argumentsByName.put("self", self);
 		}
 		else
 		{
@@ -58,6 +71,28 @@ public class BoundArguments
 			if (args != null)
 			{
 				i = 0;
+				if (self != null)
+				{
+					ParameterDescription param = signature.getParameterByPosition(0);
+					if (param != null && param.isPositional())
+					{
+						// A parameter exists in the first position and it can be specified positionally
+						argumentsByPosition[0] = self;
+						haveValue[0] = true;
+					}
+					else
+					{
+						// No positional parameter supported in the first position, see if we have var positionals (i.e. an {@code *args} parameter)
+						if (varPositionalArguments != null)
+							// If we do, add it to the {@code *} parameter
+							varPositionalArguments.add(self);
+						else
+							// else complain
+							throw new TooManyArgumentsException(name, signature, args.size());
+					}
+					++i;
+				}
+
 				for (Object argValue : args)
 				{
 					ParameterDescription param = signature.getParameterByPosition(i);
