@@ -1,3 +1,12 @@
+## HEAD (2023-11-??)
+
+Templates can now be used as bound methods. Calling/rendering the template
+will pass the bound object as first argument.
+
+Type `DateTime` has a method `timestamp` which returns the seconds since epoch
+with microseconds resolution.
+
+
 ## 0.187 (2023-04-13)
 
 Added UL4 attribute `Template.version` (the UL4 API version) and

@@ -7,9 +7,7 @@
 package com.livinglogic.ul4;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static com.livinglogic.utils.SetUtils.makeSet;
 
@@ -151,6 +150,7 @@ public class DateTime extends AbstractType
 	private static final BuiltinMethodDescriptor methodCalendar = new BuiltinMethodDescriptor(type, "calendar", signatureWeekCalendar);
 	private static final BuiltinMethodDescriptor methodISOFormat = new BuiltinMethodDescriptor(type, "isoformat", Signature.noParameters);
 	private static final BuiltinMethodDescriptor methodMIMEFormat = new BuiltinMethodDescriptor(type, "mimeformat", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodTimestamp = new BuiltinMethodDescriptor(type, "timestamp", Signature.noParameters);
 
 	public static int year(Date instance)
 	{
@@ -618,7 +618,38 @@ public class DateTime extends AbstractType
 			return mimeformat((Date)instance, args);
 	}
 
-	protected static Set<String> attributes = makeSet("year", "month", "day", "hour", "minute", "second", "microsecond", "date", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat");
+	public static Double timestamp(Date instance) {
+		return timestamp(instance.toInstant());
+	}
+
+	public static Double timestamp(Date instance, BoundArguments args) {
+		return timestamp(instance);
+	}
+
+	public static Double timestamp(LocalDateTime instance) {
+		return timestamp(instance.toInstant(ZoneOffset.systemDefault().getRules().getOffset(instance)));
+	}
+
+	public static Double timestamp(LocalDateTime instance, BoundArguments args) {
+		return timestamp(instance);
+	}
+
+	public static Double timestamp(Instant instance)
+	{
+		var microSeconds = TimeUnit.NANOSECONDS.toMicros(instance.getNano());
+
+		return Double.valueOf(instance.getEpochSecond()) + microSeconds/1_000_000.0;
+	}
+
+	public static Double timestamp(Object instance, BoundArguments args)
+	{
+		if (instance instanceof LocalDateTime)
+			return timestamp((LocalDateTime)instance, args);
+		else
+			return timestamp((Date)instance, args);
+	}
+
+	protected static Set<String> attributes = makeSet("year", "month", "day", "hour", "minute", "second", "microsecond", "date", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat", "timestamp");
 
 	@Override
 	public Set<String> dirInstance(EvaluationContext context, Object instance)
@@ -659,6 +690,8 @@ public class DateTime extends AbstractType
 				return methodISOFormat.bindMethod(instance);
 			case "mimeformat":
 				return methodMIMEFormat.bindMethod(instance);
+			case "timestamp":
+				return methodTimestamp.bindMethod(instance);
 			default:
 				return super.getAttr(context, instance, key);
 		}
@@ -696,6 +729,8 @@ public class DateTime extends AbstractType
 				return isoformat(instance, methodISOFormat.bindArguments(args, kwargs));
 			case "mimeformat":
 				return mimeformat(instance, methodMIMEFormat.bindArguments(args, kwargs));
+			case "timestamp":
+				return timestamp(instance, methodTimestamp.bindArguments(args, kwargs));
 			default:
 				return super.callAttr(context, instance, key, args, kwargs);
 		}

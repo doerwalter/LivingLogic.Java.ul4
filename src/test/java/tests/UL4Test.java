@@ -537,6 +537,8 @@ public class UL4Test
 		checkOutput("2000-02-29T12:34:56", T("<?print @(2000-02-29T12:34:56).isoformat()?>"));
 		checkOutput("2000-02-29T12:34:56.987654", T("<?print @(2000-02-29T12:34:56.987654).isoformat()?>"));
 		checkOutput("yes", T("<?if @(2000-02-29T12:34:56.987654)?>yes<?else?>no<?end if?>"));
+		checkOutput("0.0", T("<?print @(1970-01-01T01:00:00).timestamp()?>"));
+		checkOutput("-3600.0", T("<?print @(1970-01-01T).timestamp()?>"));
 	}
 
 	@Test
@@ -4707,7 +4709,7 @@ public class UL4Test
 		checkOutput("[]", T("<?print sorted(dir(data))?>"), V("data", dataBool));
 		checkOutput("[]", T("<?print sorted(dir(data))?>"), V("data", dataInt));
 		checkOutput("[]", T("<?print sorted(dir(data))?>"), V("data", dataFloat));
-		String dateTimeAttrs = "['calendar', 'date', 'day', 'hour', 'isoformat', 'microsecond', 'mimeformat', 'minute', 'month', 'second', 'week', 'weekday', 'year', 'yearday']";
+		String dateTimeAttrs = "['calendar', 'date', 'day', 'hour', 'isoformat', 'microsecond', 'mimeformat', 'minute', 'month', 'second', 'timestamp', 'week', 'weekday', 'year', 'yearday']";
 		checkOutput(dateTimeAttrs, T("<?print sorted(dir(data))?>"), V("data", dataDate));
 		checkOutput(dateTimeAttrs, T("<?print sorted(dir(data))?>"), V("data", dataLocalDateTime));
 		checkOutput("['calendar', 'date', 'day', 'isoformat', 'mimeformat', 'month', 'week', 'weekday', 'year', 'yearday']", T("<?print sorted(dir(data))?>"), V("data", dataLocalDate));

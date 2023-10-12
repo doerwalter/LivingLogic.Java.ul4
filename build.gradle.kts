@@ -20,6 +20,14 @@ repositories {
 	}
 }
 
+tasks.withType<JavaCompile> {
+	options.encoding = "UTF-8"
+}
+
+tasks.withType<Javadoc> {
+	options.encoding = "UTF-8"
+}
+
 dependencies {
 	implementation("org.apache.commons:commons-lang3:3.11")
 	implementation("org.apache.commons:commons-text:1.10.0")
