@@ -64,7 +64,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			return new Template();
 		}
 
-		private static final Signature signature = new Signature().addBoth("source").addBoth("name", null).addKeywordOnly("whitespace", "keep").addKeywordOnly("signature", null);
+		private static final Signature signature = new Signature().addBoth("source").addBoth("name", null).addKeywordOnly("namespace", null).addKeywordOnly("whitespace", "keep").addKeywordOnly("signature", null);
 
 		@Override
 		public Signature getSignature()
@@ -77,20 +77,23 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		{
 			Object source = args.get(0);
 			Object name = args.get(1);
-			Object whitespace = args.get(2);
-			Object signature = args.get(3);
+			Object namespace = args.get(2);
+			Object whitespace = args.get(3);
+			Object signature = args.get(4);
 
 			if (
 				(!(source instanceof String)) ||
 				(name != null && !(name instanceof String)) ||
+				(namespace != null && !(namespace instanceof String)) ||
 				(whitespace != null && !(whitespace instanceof String)) ||
 				(signature != null && !(signature instanceof String))
 			)
-				throw new ArgumentTypeMismatchException("ul4.Template({!t}, {!t}, {!t}, {!t}) not supported", source, name, whitespace, signature);
+				throw new ArgumentTypeMismatchException("ul4.Template({!t}, {!t}, {!t}, {!t}, {!t}) not supported", source, name, namespace, whitespace, signature);
 
 			return new Template(
 				(String)source,
 				(String)name,
+				(String)namespace,
 				whitespace != null ? Whitespace.fromString((String)whitespace) : Whitespace.keep,
 				(String)signature
 			);
@@ -125,6 +128,11 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	The name of the template/function (defaults to {@code null})
 	**/
 	public String name = null;
+
+	/**
+	 The name of the namespace (defaults to {@code null})
+	 **/
+	public String namespace = null;
 
 	public enum Whitespace
 	{
@@ -187,6 +195,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		super(null, 0, 0, -1, -1);
 		this.source = null;
 		this.name = null;
+		this.namespace = null;
 		this.whitespace = Whitespace.keep;
 		this.signature = null;
 		this.signatureAST = null;
@@ -198,7 +207,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	/**
 	Create of toplevel template without a signature
 	**/
-	public Template(String source, String name, Whitespace whitespace)
+	public Template(String source, String name, String namespace, Whitespace whitespace)
 	{
 		super(null, 0, 0, -1, -1);
 		int stop = source != null ? source.length() : 0; 
@@ -207,6 +216,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		// Make sure that the source is always a string (so that {@code getSource()} works)
 		this.source = source != null ? source : "";
 		this.name = name;
+		this.namespace = namespace;
 		this.whitespace = whitespace;
 		this.signature = null;
 		this.signatureAST = null;
@@ -234,11 +244,11 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	}
 
 	/**
-	Create of toplevel template with a specified signature
-	**/
-	public Template(String source, String name, Whitespace whitespace, Signature signature)
+	 Create of toplevel template with a specified signature
+	 **/
+	public Template(String source, String name, String namespace, Whitespace whitespace, Signature signature)
 	{
-		this(source, name, whitespace);
+		this(source, name, namespace, whitespace);
 		if (this.signature == null) // signature from <?ul4?> tag wins
 			this.signature = signature;
 	}
@@ -246,9 +256,9 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	/**
 	Create of toplevel template with a signature compiled from a string
 	**/
-	public Template(String source, String name, Whitespace whitespace, String signature)
+	public Template(String source, String name, String namespace, Whitespace whitespace, String signature)
 	{
-		this(makeSource(source, name, signature), name, whitespace);
+		this(makeSource(source, name, signature), name, namespace, whitespace);
 	}
 
 	/**
@@ -262,6 +272,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		int stop = source.length();
 		setStopPos(stop, stop);
 		this.name = name;
+		this.namespace = null;
 		this.whitespace = whitespace;
 		this.signature = null;
 		this.signatureAST = signature;
@@ -828,9 +839,27 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		return name;
 	}
 
+	@Override
+	public String getFullNameUL4()
+	{
+		return getFullName();
+	}
+
+	public String getFullName()
+	{
+		if (name == null)
+			return null;
+		return namespace != null ? namespace + "." + name : name;
+	}
+
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public void setNamespace(String namespace)
+	{
+		this.namespace = namespace;
 	}
 
 	public Template getParentTemplate()
@@ -869,6 +898,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	public void toString(AST.Formatter formatter)
 	{
 		formatter.write("def ");
+		if (namespace != null && name != null)
+			formatter.write(namespace + ".");
 		formatter.write(name != null ? name : "unnamed");
 		if (signatureAST != null)
 			signatureAST.toString(formatter);
@@ -1348,10 +1379,11 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	{
 		formatter.append("<");
 		formatter.append(getClass().getName());
-		if (name != null)
+		String fullname = getFullName();
+		if (fullname != null)
 		{
-			formatter.append(" name=");
-			formatter.visit(name);
+			formatter.append(" fullname=");
+			formatter.visit(fullname);
 		}
 		if (whitespace != Whitespace.keep)
 		{
@@ -1810,6 +1842,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	{
 		encoder.dump(API_VERSION);
 		encoder.dump(name);
+		encoder.dump(namespace);
 		encoder.dump(source);
 		encoder.dump(whitespace.toString());
 		encoder.dump(docPosStart);
@@ -1836,6 +1869,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		if (version == null) // this is a "source" version of the UL4ON dump
 		{
 			String name = ((String)decoder.load()).intern();
+			String namespace = ((String)decoder.load()).intern();
 			String source = (String)decoder.load();
 			String signature = (String)decoder.load();
 			String whitespace = (String)decoder.load();
@@ -1847,6 +1881,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			this.template = this;
 			this.content.clear();
 			this.name = name;
+			this.namespace = namespace;
 			this.whitespace = Whitespace.fromString(whitespace);
 			this.signature = null;
 			this.signatureAST = null;
@@ -1865,6 +1900,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				throw new RuntimeException("Invalid version, expected " + API_VERSION + ", got " + version);
 			}
 			name = (String)decoder.load();
+			namespace = (String)decoder.load();
 			source = (String)decoder.load();
 			whitespace = Whitespace.fromString((String)decoder.load());
 			docPosStart = (int)decoder.load();
@@ -1899,7 +1935,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		}
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "version", "name", "whitespace", "signature", "doc", "source", "parenttemplate", "renders", "render");
+	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "version", "name", "namespace", "fullname", "whitespace", "signature", "doc", "source", "parenttemplate", "renders", "render");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)
@@ -1916,6 +1952,10 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				return API_VERSION;
 			case "name":
 				return name;
+			case "namespace":
+				return namespace;
+			case "fullname":
+				return getFullName();
 			case "whitespace":
 				return whitespace.toString();
 			case "signature":

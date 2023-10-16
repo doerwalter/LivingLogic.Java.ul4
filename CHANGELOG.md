@@ -6,6 +6,8 @@ will pass the bound object as first argument.
 Type `DateTime` has a method `timestamp` which returns the seconds since epoch
 with microseconds resolution.
 
+Add `namespace` attribute to `Template` class.
+
 
 ## 0.187 (2023-04-13)
 

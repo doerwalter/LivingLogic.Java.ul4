@@ -311,14 +311,14 @@ public class UL4Test
 
 	private static Template T(String source, String name, Template.Whitespace whitespace, String signature)
 	{
-		Template template = new Template(source, name, whitespace, signature);
+		Template template = new Template(source, name, "test", whitespace, signature);
 		// System.out.println(template);
 		return template;
 	}
 
 	private static Template T(String source, String name, Template.Whitespace whitespace, Signature signature)
 	{
-		Template template = new Template(source, name, whitespace, signature);
+		Template template = new Template(source, name, "test", whitespace, signature);
 		// System.out.println(template);
 		return template;
 	}
@@ -5974,10 +5974,13 @@ public class UL4Test
 		String source = "<?print x?>";
 		Template t = T(source, "t");
 
-		checkOutput("<com.livinglogic.ul4.UndefinedAttribute 'foo' of <com.livinglogic.ul4.Template name='t' whitespace='strip'>>", T("<?print repr(template.foo)?>"), V("template", t));
+		checkOutput("<com.livinglogic.ul4.UndefinedAttribute 'foo' of <com.livinglogic.ul4.Template fullname='test.t' whitespace='strip'>>", T("<?print repr(template.foo)?>"), V("template", t));
+		checkOutput("t", T("<?print template.name?>"), V("template", t));
+		checkOutput("test", T("<?print template.namespace?>"), V("template", t));
+		checkOutput("test.t", T("<?print template.fullname?>"), V("template", t));
 		checkOutput(source, T("<?print template.source?>"), V("template", t));
 		checkOutput("2", T("<?print len(template.content)?>"), V("template", t));
-		checkOutput("t", T("<?print template.content[0].template.name?>"), V("template", t));
+		checkOutput("True", T("<?print template.content[0].template is template?>"), V("template", t));
 		// Test the second item, because the first one is an empty indent node
 		checkOutput("print", T("<?print template.content[1].type?>"), V("template", t));
 		checkOutput(source, T("<?print template.content[1].source?>"), V("template", t));
@@ -6684,16 +6687,16 @@ public class UL4Test
 		Template t;
 
 		t = T("<?print 42?>", "foo", Template.Whitespace.keep);
-		assertEquals("<com.livinglogic.ul4.Template name='foo'>", FunctionRepr.call(t));
+		assertEquals("<com.livinglogic.ul4.Template fullname='test.foo'>", FunctionRepr.call(t));
 
 		t = T("<?print 42?>", "foo", Template.Whitespace.strip);
-		assertEquals("<com.livinglogic.ul4.Template name='foo' whitespace='strip'>", FunctionRepr.call(t));
+		assertEquals("<com.livinglogic.ul4.Template fullname='test.foo' whitespace='strip'>", FunctionRepr.call(t));
 
 		t = T("<?print 42?>", "foo", Template.Whitespace.strip, "a, b=0xff");
-		assertEquals("<com.livinglogic.ul4.Template name='foo' whitespace='strip' signature=(a, b=255)>", FunctionRepr.call(t));
+		assertEquals("<com.livinglogic.ul4.Template fullname='test.foo' whitespace='strip' signature=(a, b=255)>", FunctionRepr.call(t));
 
 		t = T("<?def x(a, b=0xff)?><?end def?><?print repr(x)?>", "foo", Template.Whitespace.keep);
-		checkOutput("<com.livinglogic.ul4.TemplateClosure for <com.livinglogic.ul4.Template name='x' signatureAST=(a, b=0xff)>>", t);
+		checkOutput("<com.livinglogic.ul4.TemplateClosure for <com.livinglogic.ul4.Template fullname='x' signatureAST=(a, b=0xff)>>", t);
 
 		checkOutput("<com.livinglogic.ul4.Signature (x=17, y=@(2000-02-29))>", T("<?def f(x=17, y=@(2000-02-29))?><?return x+y?><?end def?><?print repr(f.signature)?>"));
 		checkOutput("<com.livinglogic.ul4.Signature (bad=[...])>", T("<?code bad = []?><?code bad.append(bad)?><?def f(bad=bad)?><?end def?><?print repr(f.signature)?>"));
