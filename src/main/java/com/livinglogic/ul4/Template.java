@@ -852,6 +852,11 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		return namespace != null ? namespace + "." + name : name;
 	}
 
+	public String getNamespace()
+	{
+		return namespace;
+	}
+
 	public void setName(String name)
 	{
 		this.name = name;
