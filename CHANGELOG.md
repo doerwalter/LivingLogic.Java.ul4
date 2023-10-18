@@ -8,6 +8,8 @@ with microseconds resolution.
 
 Add `namespace` attribute to `Template` class.
 
+Transfer test output as hex dumps to workaround a problem with gradle.
+
 
 ## 0.187 (2023-04-13)
 

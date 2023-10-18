@@ -69,11 +69,18 @@ tasks.withType<Javadoc> {
 	(options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
 }
 
-task("execute", JavaExec::class) {
+task("execute_ul4", JavaExec::class) {
 	classpath = sourceSets["main"].runtimeClasspath
 	standardInput = System.`in`
 
 	mainClass.set("com.livinglogic.ul4.Tester")
+}
+
+task("execute_ul4on", JavaExec::class) {
+	classpath = sourceSets["main"].runtimeClasspath
+	standardInput = System.`in`
+
+	mainClass.set("com.livinglogic.ul4on.Tester")
 }
 
 task("copyDependencies", Copy::class) {
