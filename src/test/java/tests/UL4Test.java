@@ -5921,16 +5921,30 @@ public class UL4Test
 	public void tag_note()
 	{
 		checkOutput("foo", T("f<?note This is?>o<?note a comment?>o"));
+		checkOutput("foo", T("f<?note\r\n\t ?>This is<?end note?>o<?note  \r\n\t?>a comment<?end note?>o"));
+	}
+
+	@CauseTest(expectedCause=BlockException.class)
+	public void tag_note_badnesting()
+	{
+		checkOutput("foo", T("f<?note?>This is<?note?>unclosed<?end note?>"));
 	}
 
 	@Test
 	public void tag_doc()
 	{
 		Template t = T("<?doc foo?><?def inner?><?doc innerfoo?><?doc innerbar?><?end def?><?doc bar?><?printx inner.doc?>", "t");
-
 		assertEquals("foo", t.getDoc());
-
 		checkOutput("innerfoo", t);
+
+		t = T("<?doc?><?note?><?note?><?end note?><?end doc?>");
+		assertEquals("<?note?><?note?><?end note?>", t.getDoc());
+	}
+
+	@Test
+	public void tag_ignore()
+	{
+
 	}
 
 	@Test

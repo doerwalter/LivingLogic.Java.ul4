@@ -9,7 +9,12 @@ with microseconds resolution.
 Add `namespace` attribute to `Template` class.
 
 Transfer test output as hex dumps to workaround a problem with gradle.
-
+   
+In UL4 `<?doc?>` and `<?note?>` can now be nested, and otherwise can
+contain anything up to the matching `<?end doc?>` or `<?end note?>` tag,
+but only if the initial `<?doc?>` or `<?note?>` tag contains only
+whitespace (e.g. `<?doc    ?>` etc.). This makes it possible to have source
+code examples in `<?doc?>` or `<?note?>` tags.
 
 ## 0.187 (2023-04-13)
 

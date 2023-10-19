@@ -1518,6 +1518,16 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		}
 	}
 
+	private static boolean isNestedStartTag(String type, Matcher matcher)
+	{
+		if (type.equals("ignore"))
+			return true;
+		else if (type.equals("doc") || type.equals("note"))
+			return matcher.group(3).isBlank();
+		else
+			return false;
+	}
+
 	/**
 	Split the template source into tags and literal text.
 	@return A list of lines containing {@link Tag} or {@link TextAST} objects
@@ -1527,13 +1537,15 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		Pattern tagPattern = Pattern.compile("<\\?\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblocks|renderblock|renderx_or_printx|render_or_printx|renderx_or_print|render_or_print|renderx|render|ignore)(\\s*(.*?)\\s*)?\\?>", Pattern.DOTALL);
 		LinkedList<Line> lines = new LinkedList<Line>();
 		boolean wasTag = false;
-		// Nesting level of <?ignore?>/<?end ignore?>
-		int ignore = 0;
-		// Location of the last active outermost <?ignore?> block
-		int lastIgnoreTagStart = -1;
-		int lastIgnoreTagStop = -1;
-		int lastIgnoreCodeStart = -1;
-		int lastIgnoreCodeStop = -1;
+		// Nesting level of <?ignore?>/<?end ignore?>, <?doc?>/<?end doc?> or <?note?>/<?end note?>
+		int nestingLevel = 0;
+		// type of nesting, can be one of "ignore", "doc" or "note"
+		String nestingType = null;
+		// Location of the last active outermost nested <?ignore?>, <?doc?> or <?note?> block
+		int lastNestedTagStart = -1;
+		int lastNestedTagStop = -1;
+		int lastNestedCodeStart = -1;
+		int lastNestedCodeStop = -1;
 
 		if (source != null)
 		{
@@ -1546,7 +1558,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			{
 				tagStartPos = matcher.start();
 				tagStopPos = tagStartPos + matcher.group().length();
-				if (ignore == 0 && (pos != tagStartPos))
+				if (nestingLevel == 0 && (pos != tagStartPos))
 				{
 					addText2Lines(lines, new TextAST(this, source, pos, tagStartPos), wasTag ? 1 : 0);
 					wasTag = false;
@@ -1554,42 +1566,53 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				int codeStartPos = matcher.start(3);
 				int codeStopPos = codeStartPos + matcher.group(3).length();
 				String type = matcher.group(1);
-				if (type.equals("ignore"))
+
+				if (nestingLevel == 0)
 				{
-					// Remember the initial ignore block so we can complain about it
-					// if it remains unclosed
-					if (ignore == 0)
+					if (isNestedStartTag(type, matcher))
 					{
-						lastIgnoreTagStart = tagStartPos;
-						lastIgnoreTagStop = tagStopPos;
-						lastIgnoreCodeStart = codeStartPos;
-						lastIgnoreCodeStop = codeStopPos;
+						// Remember the initial ignore/doc/note block so we can complain about it
+						// if it remains unclosed
+						nestingType = type;
+						lastNestedTagStart = tagStartPos;
+						lastNestedTagStop = tagStopPos;
+						lastNestedCodeStart = codeStartPos;
+						lastNestedCodeStop = codeStopPos;
+						++nestingLevel;
 					}
-					++ignore;
+					else if (!(type.equals("ignore") || type.equals("note")))
+						addPart2Lines(lines, new Tag(this, matcher.group(1), tagStartPos, tagStopPos, codeStartPos, codeStopPos));
 				}
-				else if (ignore > 0 && type.equals("end") && matcher.group(3).equals("ignore"))
-					--ignore;
-				else if (ignore == 0 && !type.equals("note"))
-					addPart2Lines(lines, new Tag(this, matcher.group(1), tagStartPos, tagStopPos, codeStartPos, codeStopPos));
+				else if (type.equals(nestingType) && isNestedStartTag(type, matcher))
+				{
+					++nestingLevel;
+				}
+				else if (type.equals("end") && matcher.group(3).equals(nestingType))
+				{
+					--nestingLevel;
+					if (nestingLevel == 0 && nestingType.equals("doc"))
+						addPart2Lines(lines, new Tag(this, nestingType, lastNestedTagStart, tagStopPos, lastNestedTagStop, tagStartPos));
+				}
+
 				pos = tagStopPos;
 				wasTag = true;
 			}
 			tagStopPos = source.length();
-			if (ignore == 0 && pos != tagStopPos)
+			if (nestingLevel == 0 && pos != tagStopPos)
 			{
 				addText2Lines(lines, new TextAST(this, source, pos, tagStopPos), wasTag ? 1 : 0);
 				wasTag = false;
 			}
-			if (ignore > 0)
+			if (nestingLevel > 0)
 			{
-				BlockException exc = new BlockException("<?ignore?> block unclosed");
-				Tag endIgnore = new Tag(
+				BlockException exc = new BlockException("<?" + nestingType + "?> block unclosed");
+				Tag endNested = new Tag(
 					this,
-					"ignore",
-					lastIgnoreTagStart, lastIgnoreTagStop,
-					lastIgnoreCodeStart, lastIgnoreCodeStop
+					nestingType,
+					lastNestedTagStart, lastNestedTagStop,
+					lastNestedCodeStart, lastNestedCodeStop
 				);
-				endIgnore.decorateException(exc);
+				endNested.decorateException(exc);
 				throw exc;
 			}
 		}
