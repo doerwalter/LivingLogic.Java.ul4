@@ -88,7 +88,7 @@ public class BoundArguments
 							varPositionalArguments.add(self);
 						else
 							// else complain
-							throw new TooManyArgumentsException(name, signature, args.size());
+							throw new TooManyArgumentsException(name, signature, args.size() + 1);
 					}
 					++i;
 				}
@@ -110,7 +110,7 @@ public class BoundArguments
 							varPositionalArguments.add(argValue);
 						else
 							// else complain
-							throw new TooManyArgumentsException(name, signature, args.size());
+							throw new TooManyArgumentsException(name, signature, args.size() + (self != null ? 1 : 0));
 					}
 					++i;
 				}
