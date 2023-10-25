@@ -160,7 +160,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	Call an attribute of an instance of this type as a method.
 
 	@param context The evaluation context.
-	@param instance The instance whose method should be be called.
+	@param instance The instance whose method should be called.
 	@param key The name of the method/attribute to call.
 	@param args Positional arguments.
 	@param kwargs Keyword arguments.

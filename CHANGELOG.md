@@ -3,18 +3,19 @@
 Templates can now be used as bound methods. Calling/rendering the template
 will pass the bound object as first argument.
 
-Type `DateTime` has a method `timestamp` which returns the seconds since epoch
-with microseconds resolution.
-
-Add `namespace` attribute to `Template` class.
-
-Transfer test output as hex dumps to workaround a problem with gradle.
-   
 In UL4 `<?doc?>` and `<?note?>` can now be nested, and otherwise can
 contain anything up to the matching `<?end doc?>` or `<?end note?>` tag,
 but only if the initial `<?doc?>` or `<?note?>` tag contains only
 whitespace (e.g. `<?doc    ?>` etc.). This makes it possible to have source
 code examples in `<?doc?>` or `<?note?>` tags.
+
+Add `namespace` attribute to `Template` class.
+
+The UL4 type `datetime` has a new method `timestamp` which returns the seconds
+since epoch with microseconds resolution.
+
+Transfer test output as hex dumps to workaround a problem with gradle.
+
 
 ## 0.187 (2023-04-13)
 
