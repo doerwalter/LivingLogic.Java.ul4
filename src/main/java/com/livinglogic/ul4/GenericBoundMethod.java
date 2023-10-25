@@ -23,7 +23,7 @@ be dispatched to {@link UL4GetAttr#getAttrUL4(EvaluationContext, String)}.</p>
 it doesn't handle binding arguments in its default implementation. This must
 be done by the object the bound method is bound to.</p>
 **/
-public class GenericBoundMethod<T extends UL4GetAttr> implements UL4Instance, UL4Call, UL4Render, UL4Name, UL4Repr
+public class GenericBoundMethod<T extends UL4GetAttr> implements UL4Instance, UL4Render, UL4Name, UL4Repr
 {
 	protected static class Type extends AbstractInstanceType
 	{

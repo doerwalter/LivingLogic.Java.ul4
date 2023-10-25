@@ -24,7 +24,7 @@ Calling/rendering the bound template will pass the object as the first argument.
 @author W. Doerwald
 **/
 
-public class BoundTemplate implements UL4Instance, UL4Call, UL4Render, UL4Name, UL4Dir, UL4Repr
+public class BoundTemplate implements UL4Instance, UL4Render, UL4Name, UL4Dir, UL4Repr
 {
 	protected static class Type extends AbstractInstanceType
 	{

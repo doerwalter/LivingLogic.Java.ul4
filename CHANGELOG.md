@@ -9,6 +9,8 @@ but only if the initial `<?doc?>` or `<?note?>` tag contains only
 whitespace (e.g. `<?doc    ?>` etc.). This makes it possible to have source
 code examples in `<?doc?>` or `<?note?>` tags.
 
+`UL4Render` now is a sub interface of `UL4Call`.
+
 Add `namespace` attribute to `Template` class.
 
 The UL4 type `datetime` has a new method `timestamp` which returns the seconds
