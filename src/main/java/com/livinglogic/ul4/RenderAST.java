@@ -111,7 +111,7 @@ public class RenderAST extends CallRenderAST
 		indent = block.popTrailingIndent();
 	}
 
-	private void makeArguments(EvaluationContext context, List<Object> realArguments, Map<String, Object> realKeywordArguments)
+	protected void makeArguments(EvaluationContext context, List<Object> realArguments, Map<String, Object> realKeywordArguments)
 	{
 		for (ArgumentASTBase argument : arguments)
 			argument.decoratedEvaluateCall(context, realArguments, realKeywordArguments);
