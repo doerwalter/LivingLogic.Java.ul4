@@ -434,7 +434,7 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 			if (name == null)
 				buffer.append("(unnamed)");
 			else
-				buffer.append(FunctionXMLEscape.call(rawRepr(name)));
+				buffer.append(FunctionXMLEscape.call(rawRepr(name)).replace(".", "<wbr />."));
 			buffer.append("</code>");
 			template = template.parentTemplate;
 		}
