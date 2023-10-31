@@ -246,7 +246,10 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 
 	@return The signature
 	**/
-	Signature getSignature();
+	default Signature getSignature()
+	{
+		return Signature.noParameters;
+	}
 
 	/**
 	<p>Return a new instance of this type</p>
