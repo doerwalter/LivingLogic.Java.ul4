@@ -1,4 +1,4 @@
-## HEAD (2023-11-??)
+## 0.188 (2023-11-02)
 
 Templates can now be used as bound methods. Calling/rendering the template
 will pass the bound object as first argument.
