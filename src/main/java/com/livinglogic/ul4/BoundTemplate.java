@@ -14,14 +14,17 @@ import java.io.Writer;
 import java.io.StringWriter;
 
 import com.livinglogic.utils.MapChain;
+import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 /**
-Template closure
+A template bound as an attribute of an object.
+
+Calling/rendering the bound template will pass the object as the first argument.
 
 @author W. Doerwald
 **/
 
-public class TemplateClosure implements UL4Instance, UL4Render, UL4Name, UL4Dir, UL4Repr
+public class BoundTemplate implements UL4Instance, UL4Render, UL4Name, UL4Dir, UL4Repr
 {
 	protected static class Type extends AbstractInstanceType
 	{
@@ -34,19 +37,19 @@ public class TemplateClosure implements UL4Instance, UL4Render, UL4Name, UL4Dir,
 		@Override
 		public String getNameUL4()
 		{
-			return "TemplateClosure";
+			return "BundTemplate";
 		}
 
 		@Override
 		public String getDoc()
 		{
-			return "A locally defined UL4 template";
+			return "An UL4 template bound to an object";
 		}
 
 		@Override
 		public boolean instanceCheck(Object object)
 		{
-			return object instanceof TemplateClosure;
+			return object instanceof BoundTemplate;
 		}
 	}
 
@@ -58,15 +61,18 @@ public class TemplateClosure implements UL4Instance, UL4Render, UL4Name, UL4Dir,
 		return type;
 	}
 
+	private Object self;
 	private Template template;
-	private Map<String, Object> variables;
-	private Signature signature;
 
-	public TemplateClosure(Template template, EvaluationContext context)
+	public BoundTemplate(Object self, Template template)
 	{
+		this.self = self;
 		this.template = template;
-		this.variables = context.getVariables();
-		signature = template.signatureAST != null ? template.signatureAST.evaluate(context) : null;
+	}
+
+	public Object getSelf()
+	{
+		return self;
 	}
 
 	public Template getTemplate()
@@ -89,13 +95,13 @@ public class TemplateClosure implements UL4Instance, UL4Render, UL4Name, UL4Dir,
 	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
 		// We can clean up here, as a "render" call can't pass anything to the outside world
-		BoundArguments arguments = new BoundArguments(signature, template, args, kwargs);
+		BoundArguments arguments = new BoundArguments(template.signature, template, self, args, kwargs);
 		render(context, arguments.byName());
 	}
 
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		BoundArguments arguments = new BoundArguments(signature, template, args, kwargs);
+		BoundArguments arguments = new BoundArguments(template.signature, template, self, args, kwargs);
 		Object result = null;
 		try
 		{
@@ -110,22 +116,26 @@ public class TemplateClosure implements UL4Instance, UL4Render, UL4Name, UL4Dir,
 
 	private Object call(EvaluationContext context, Map<String, Object> variables)
 	{
-		return template.callBound(context, new MapChain<String, Object>(variables, this.variables));
+		return template.callBound(context, variables);
 	}
 
 	private void render(EvaluationContext context, Map<String, Object> variables)
 	{
-		template.renderBound(context, null, new MapChain<String, Object>(variables, this.variables));
+		template.renderBound(context, null, variables);
 	}
 
 	private String renders(EvaluationContext context, Map<String, Object> variables)
 	{
 		Writer writer = new StringWriter();
-		template.renderBound(context, writer, new MapChain<String, Object>(variables, this.variables));
+		template.renderBound(context, writer, variables);
 		return writer.toString();
 	}
 
-	protected static Set<String> attributes = Template.attributes;
+	protected static Set<String> attributes = makeExtendedSet(
+		Template.attributes,
+		"self",
+		"template"
+	);
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)
@@ -139,11 +149,15 @@ public class TemplateClosure implements UL4Instance, UL4Render, UL4Name, UL4Dir,
 		switch (key)
 		{
 			case "renders":
-				return new GenericBoundMethod<TemplateClosure>(this, "renders");
+				return new GenericBoundMethod<BoundTemplate>(this, "renders");
 			case "render":
-				return new GenericBoundMethod<TemplateClosure>(this, "render");
+				return new GenericBoundMethod<BoundTemplate>(this, "render");
+			case "self":
+				return self;
+			case "template":
+				return template;
 			case "signature":
-				return signature;
+				return template.signature;
 			default:
 				return template.getAttrUL4(context, key);
 		}
@@ -155,10 +169,10 @@ public class TemplateClosure implements UL4Instance, UL4Render, UL4Name, UL4Dir,
 		switch (key)
 		{
 			case "renders":
-				BoundArguments boundRenderSArgs = new BoundArguments(signature, this, args, kwargs);
+				BoundArguments boundRenderSArgs = new BoundArguments(template.signature, this, self, args, kwargs);
 				return renders(context, boundRenderSArgs.byName());
 			case "render":
-				BoundArguments boundRenderArgs = new BoundArguments(signature, this, args, kwargs);
+				BoundArguments boundRenderArgs = new BoundArguments(template.signature, this, self, args, kwargs);
 				render(context, boundRenderArgs.byName());
 				return null;
 			default:
@@ -170,7 +184,9 @@ public class TemplateClosure implements UL4Instance, UL4Render, UL4Name, UL4Dir,
 	{
 		formatter.append("<");
 		formatter.append(getClass().getName());
-		formatter.append(" for ");
+		formatter.append(" self=");
+		formatter.visit(self);
+		formatter.append(" template=");
 		formatter.visit(template);
 		formatter.append(">");
 	}

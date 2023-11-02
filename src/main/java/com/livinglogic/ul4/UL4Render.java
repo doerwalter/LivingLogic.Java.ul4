@@ -14,10 +14,10 @@ import java.util.Map;
 from UL4 (i.e. it can be used in the {@code render}, {@code renderx},
 {@code renderblock} and {@code renderblocks} tags).</p>
 
-<p>Since rendering always outputs the the {@link EvaluationContext} there is
-no method with one.</p>
+<p>Since rendering always outputs to the {@link EvaluationContext} there is
+no method without the {@link EvaluationContext} argument.</p>
 **/
-public interface UL4Render
+public interface UL4Render extends UL4Call
 {
 	/**
 	<p>Render this object.</p>
@@ -26,5 +26,8 @@ public interface UL4Render
 	@param args Positional arguments.
 	@param kwargs Keyword arguments.
 	**/
-	void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs);
+	default void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
+	{
+		throw new NotRenderableException(this);
+	}
 }

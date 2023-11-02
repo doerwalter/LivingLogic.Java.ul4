@@ -17,7 +17,7 @@ public interface UL4Call
 	/**
 	<p>Call the object with positional and keyword arguments.</p>
 
-	<p>The default implementation always throws a {@link NotCallableException}..</p>
+	<p>The default implementation always throws a {@link NotCallableException}.</p>
 
 	@param context The evaluation context.
 	@param args Positional arguments.

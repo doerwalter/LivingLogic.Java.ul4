@@ -225,7 +225,7 @@ public class UL4ONTest
 
 	private static Template getTemplate(String source, String name)
 	{
-		Template template = new Template(source, name, Template.Whitespace.keep, (String)null);
+		Template template = new Template(source, name, "test", Template.Whitespace.keep, (String)null);
 		// System.out.println(template);
 		return template;
 	}
@@ -286,7 +286,7 @@ public class UL4ONTest
 	@Test
 	public void template_from_source()
 	{
-		Template template = (Template)loads("o s'de.livinglogic.ul4.template' n s'test' s'<?ul4 test(x, y=23)?><?print x + y?>' s'x, y=23' s'keep' )", null);
+		Template template = (Template)loads("o s'de.livinglogic.ul4.template' n s'test' s'namespace' s'<?ul4 test(x, y=23)?><?print x + y?>' s'x, y=23' s'keep' )", null);
 		assertEquals("40", template.renders(makeMap("x", 17)));
 	}
 

@@ -144,8 +144,10 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 	}
 
 	@Override
-	public void call(EvaluationContext context, UL4Render obj, List<Object> args, Map<String, Object> kwargs)
+	protected void makeArguments(EvaluationContext context, List<Object> realArguments, Map<String, Object> realKeywordArguments)
 	{
+		super.makeArguments(context, realArguments, realKeywordArguments);
+
 		Map<String, Object> variables = new LinkedHashMap<String, Object>();
 		Map<String, Object> oldVariables = context.pushVariables(variables);
 
@@ -161,11 +163,10 @@ public class RenderBlocksAST extends RenderAST implements BlockLike
 
 		for (String key : variables.keySet())
 		{
-			if (kwargs.containsKey(key))
+			if (realKeywordArguments.containsKey(key))
 				throw new DuplicateArgumentException(obj, key);
 		}
-		kwargs.putAll(variables);
-		super.call(context, obj, args, kwargs);
+		realKeywordArguments.putAll(variables);
 	}
 
 	@Override

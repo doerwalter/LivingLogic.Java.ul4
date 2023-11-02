@@ -38,6 +38,11 @@ public class MethodDescriptor<T extends UL4GetAttr>
 
 	public BoundArguments bindArguments(List<Object> args, Map<String, Object> kwargs)
 	{
-		return signature.bind(typeName + "." + methodName, args, kwargs);
+		return signature.bind(typeName + "." + methodName, null, args, kwargs);
+	}
+
+	public BoundArguments bindArguments(T object, List<Object> args, Map<String, Object> kwargs)
+	{
+		return signature.bind(typeName + "." + methodName, object, args, kwargs);
 	}
 }

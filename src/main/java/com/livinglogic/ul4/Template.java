@@ -36,7 +36,7 @@ import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Utils;
 
 
-public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call, UL4Render, UL4Dir
+public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Render, UL4Dir
 {
 	protected static class Type extends BlockAST.Type
 	{
@@ -64,7 +64,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			return new Template();
 		}
 
-		private static final Signature signature = new Signature().addBoth("source").addBoth("name", null).addKeywordOnly("whitespace", "keep").addKeywordOnly("signature", null);
+		private static final Signature signature = new Signature().addBoth("source").addBoth("name", null).addKeywordOnly("namespace", null).addKeywordOnly("whitespace", "keep").addKeywordOnly("signature", null);
 
 		@Override
 		public Signature getSignature()
@@ -77,20 +77,23 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		{
 			Object source = args.get(0);
 			Object name = args.get(1);
-			Object whitespace = args.get(2);
-			Object signature = args.get(3);
+			Object namespace = args.get(2);
+			Object whitespace = args.get(3);
+			Object signature = args.get(4);
 
 			if (
 				(!(source instanceof String)) ||
 				(name != null && !(name instanceof String)) ||
+				(namespace != null && !(namespace instanceof String)) ||
 				(whitespace != null && !(whitespace instanceof String)) ||
 				(signature != null && !(signature instanceof String))
 			)
-				throw new ArgumentTypeMismatchException("ul4.Template({!t}, {!t}, {!t}, {!t}) not supported", source, name, whitespace, signature);
+				throw new ArgumentTypeMismatchException("ul4.Template({!t}, {!t}, {!t}, {!t}, {!t}) not supported", source, name, namespace, whitespace, signature);
 
 			return new Template(
 				(String)source,
 				(String)name,
+				(String)namespace,
 				whitespace != null ? Whitespace.fromString((String)whitespace) : Whitespace.keep,
 				(String)signature
 			);
@@ -125,6 +128,11 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	The name of the template/function (defaults to {@code null})
 	**/
 	public String name = null;
+
+	/**
+	 The name of the namespace (defaults to {@code null})
+	 **/
+	public String namespace = null;
 
 	public enum Whitespace
 	{
@@ -187,6 +195,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		super(null, 0, 0, -1, -1);
 		this.source = null;
 		this.name = null;
+		this.namespace = null;
 		this.whitespace = Whitespace.keep;
 		this.signature = null;
 		this.signatureAST = null;
@@ -198,7 +207,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	/**
 	Create of toplevel template without a signature
 	**/
-	public Template(String source, String name, Whitespace whitespace)
+	public Template(String source, String name, String namespace, Whitespace whitespace)
 	{
 		super(null, 0, 0, -1, -1);
 		int stop = source != null ? source.length() : 0; 
@@ -207,6 +216,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		// Make sure that the source is always a string (so that {@code getSource()} works)
 		this.source = source != null ? source : "";
 		this.name = name;
+		this.namespace = namespace;
 		this.whitespace = whitespace;
 		this.signature = null;
 		this.signatureAST = null;
@@ -234,11 +244,11 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	}
 
 	/**
-	Create of toplevel template with a specified signature
-	**/
-	public Template(String source, String name, Whitespace whitespace, Signature signature)
+	 Create of toplevel template with a specified signature
+	 **/
+	public Template(String source, String name, String namespace, Whitespace whitespace, Signature signature)
 	{
-		this(source, name, whitespace);
+		this(source, name, namespace, whitespace);
 		if (this.signature == null) // signature from <?ul4?> tag wins
 			this.signature = signature;
 	}
@@ -246,9 +256,9 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	/**
 	Create of toplevel template with a signature compiled from a string
 	**/
-	public Template(String source, String name, Whitespace whitespace, String signature)
+	public Template(String source, String name, String namespace, Whitespace whitespace, String signature)
 	{
-		this(makeSource(source, name, signature), name, whitespace);
+		this(makeSource(source, name, signature), name, namespace, whitespace);
 	}
 
 	/**
@@ -262,6 +272,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		int stop = source.length();
 		setStopPos(stop, stop);
 		this.name = name;
+		this.namespace = null;
 		this.whitespace = whitespace;
 		this.signature = null;
 		this.signatureAST = signature;
@@ -828,9 +839,32 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		return name;
 	}
 
+	@Override
+	public String getFullNameUL4()
+	{
+		return getFullName();
+	}
+
+	public String getFullName()
+	{
+		if (name == null)
+			return null;
+		return namespace != null ? namespace + "." + name : name;
+	}
+
+	public String getNamespace()
+	{
+		return namespace;
+	}
+
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public void setNamespace(String namespace)
+	{
+		this.namespace = namespace;
 	}
 
 	public Template getParentTemplate()
@@ -869,6 +903,8 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	public void toString(AST.Formatter formatter)
 	{
 		formatter.write("def ");
+		if (namespace != null && name != null)
+			formatter.write(namespace + ".");
 		formatter.write(name != null ? name : "unnamed");
 		if (signatureAST != null)
 			signatureAST.toString(formatter);
@@ -1040,7 +1076,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			StringWriter output = new StringWriter();
 		)
 		{
-			BoundArguments arguments = new BoundArguments(signature, this, null, variables);
+			BoundArguments arguments = new BoundArguments(signature, this, null, null, variables);
 			renderBound(context, output, arguments.byName());
 			return output.toString();
 		}
@@ -1084,6 +1120,19 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			context.setTemplate(oldTemplate);
 			context.setVariables(oldVariables);
 		}
+	}
+
+	/**
+	Internal method that renders the template when all variables are already
+	bound.
+
+	@param context   the EvaluationContext. May not be null.
+	@param arguments the bound arguments containing the level variables that
+	                 should be available to the function code. May be not null.
+	**/
+	public void renderBound(EvaluationContext context, BoundArguments arguments)
+	{
+		renderBound(context, arguments.byName());
 	}
 
 	/**
@@ -1335,10 +1384,11 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	{
 		formatter.append("<");
 		formatter.append(getClass().getName());
-		if (name != null)
+		String fullname = getFullName();
+		if (fullname != null)
 		{
-			formatter.append(" name=");
-			formatter.visit(name);
+			formatter.append(" fullname=");
+			formatter.visit(fullname);
 		}
 		if (whitespace != Whitespace.keep)
 		{
@@ -1468,6 +1518,16 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		}
 	}
 
+	private static boolean isNestedStartTag(String type, Matcher matcher)
+	{
+		if (type.equals("ignore"))
+			return true;
+		else if (type.equals("doc") || type.equals("note"))
+			return matcher.group(3).isBlank();
+		else
+			return false;
+	}
+
 	/**
 	Split the template source into tags and literal text.
 	@return A list of lines containing {@link Tag} or {@link TextAST} objects
@@ -1477,13 +1537,15 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		Pattern tagPattern = Pattern.compile("<\\?\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblocks|renderblock|renderx_or_printx|render_or_printx|renderx_or_print|render_or_print|renderx|render|ignore)(\\s*(.*?)\\s*)?\\?>", Pattern.DOTALL);
 		LinkedList<Line> lines = new LinkedList<Line>();
 		boolean wasTag = false;
-		// Nesting level of <?ignore?>/<?end ignore?>
-		int ignore = 0;
-		// Location of the last active outermost <?ignore?> block
-		int lastIgnoreTagStart = -1;
-		int lastIgnoreTagStop = -1;
-		int lastIgnoreCodeStart = -1;
-		int lastIgnoreCodeStop = -1;
+		// Nesting level of <?ignore?>/<?end ignore?>, <?doc?>/<?end doc?> or <?note?>/<?end note?>
+		int nestingLevel = 0;
+		// type of nesting, can be one of "ignore", "doc" or "note"
+		String nestingType = null;
+		// Location of the last active outermost nested <?ignore?>, <?doc?> or <?note?> block
+		int lastNestedTagStart = -1;
+		int lastNestedTagStop = -1;
+		int lastNestedCodeStart = -1;
+		int lastNestedCodeStop = -1;
 
 		if (source != null)
 		{
@@ -1496,7 +1558,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			{
 				tagStartPos = matcher.start();
 				tagStopPos = tagStartPos + matcher.group().length();
-				if (ignore == 0 && (pos != tagStartPos))
+				if (nestingLevel == 0 && (pos != tagStartPos))
 				{
 					addText2Lines(lines, new TextAST(this, source, pos, tagStartPos), wasTag ? 1 : 0);
 					wasTag = false;
@@ -1504,42 +1566,53 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				int codeStartPos = matcher.start(3);
 				int codeStopPos = codeStartPos + matcher.group(3).length();
 				String type = matcher.group(1);
-				if (type.equals("ignore"))
+
+				if (nestingLevel == 0)
 				{
-					// Remember the initial ignore block so we can complain about it
-					// if it remains unclosed
-					if (ignore == 0)
+					if (isNestedStartTag(type, matcher))
 					{
-						lastIgnoreTagStart = tagStartPos;
-						lastIgnoreTagStop = tagStopPos;
-						lastIgnoreCodeStart = codeStartPos;
-						lastIgnoreCodeStop = codeStopPos;
+						// Remember the initial ignore/doc/note block so we can complain about it
+						// if it remains unclosed
+						nestingType = type;
+						lastNestedTagStart = tagStartPos;
+						lastNestedTagStop = tagStopPos;
+						lastNestedCodeStart = codeStartPos;
+						lastNestedCodeStop = codeStopPos;
+						++nestingLevel;
 					}
-					++ignore;
+					else if (!(type.equals("ignore") || type.equals("note")))
+						addPart2Lines(lines, new Tag(this, matcher.group(1), tagStartPos, tagStopPos, codeStartPos, codeStopPos));
 				}
-				else if (ignore > 0 && type.equals("end") && matcher.group(3).equals("ignore"))
-					--ignore;
-				else if (ignore == 0 && !type.equals("note"))
-					addPart2Lines(lines, new Tag(this, matcher.group(1), tagStartPos, tagStopPos, codeStartPos, codeStopPos));
+				else if (type.equals(nestingType) && isNestedStartTag(type, matcher))
+				{
+					++nestingLevel;
+				}
+				else if (type.equals("end") && matcher.group(3).equals(nestingType))
+				{
+					--nestingLevel;
+					if (nestingLevel == 0 && nestingType.equals("doc"))
+						addPart2Lines(lines, new Tag(this, nestingType, lastNestedTagStart, tagStopPos, lastNestedTagStop, tagStartPos));
+				}
+
 				pos = tagStopPos;
 				wasTag = true;
 			}
 			tagStopPos = source.length();
-			if (ignore == 0 && pos != tagStopPos)
+			if (nestingLevel == 0 && pos != tagStopPos)
 			{
 				addText2Lines(lines, new TextAST(this, source, pos, tagStopPos), wasTag ? 1 : 0);
 				wasTag = false;
 			}
-			if (ignore > 0)
+			if (nestingLevel > 0)
 			{
-				BlockException exc = new BlockException("<?ignore?> block unclosed");
-				Tag endIgnore = new Tag(
+				BlockException exc = new BlockException("<?" + nestingType + "?> block unclosed");
+				Tag endNested = new Tag(
 					this,
-					"ignore",
-					lastIgnoreTagStart, lastIgnoreTagStop,
-					lastIgnoreCodeStart, lastIgnoreCodeStop
+					nestingType,
+					lastNestedTagStart, lastNestedTagStop,
+					lastNestedCodeStart, lastNestedCodeStop
 				);
-				endIgnore.decorateException(exc);
+				endNested.decorateException(exc);
 				throw exc;
 			}
 		}
@@ -1797,6 +1870,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 	{
 		encoder.dump(API_VERSION);
 		encoder.dump(name);
+		encoder.dump(namespace);
 		encoder.dump(source);
 		encoder.dump(whitespace.toString());
 		encoder.dump(docPosStart);
@@ -1823,6 +1897,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		if (version == null) // this is a "source" version of the UL4ON dump
 		{
 			String name = ((String)decoder.load()).intern();
+			String namespace = ((String)decoder.load()).intern();
 			String source = (String)decoder.load();
 			String signature = (String)decoder.load();
 			String whitespace = (String)decoder.load();
@@ -1834,6 +1909,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 			this.template = this;
 			this.content.clear();
 			this.name = name;
+			this.namespace = namespace;
 			this.whitespace = Whitespace.fromString(whitespace);
 			this.signature = null;
 			this.signatureAST = null;
@@ -1852,6 +1928,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				throw new RuntimeException("Invalid version, expected " + API_VERSION + ", got " + version);
 			}
 			name = (String)decoder.load();
+			namespace = (String)decoder.load();
 			source = (String)decoder.load();
 			whitespace = Whitespace.fromString((String)decoder.load());
 			docPosStart = (int)decoder.load();
@@ -1886,7 +1963,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 		}
 	}
 
-	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "version", "name", "whitespace", "signature", "doc", "source", "parenttemplate", "renders", "render");
+	protected static Set<String> attributes = makeExtendedSet(BlockAST.attributes, "version", "name", "namespace", "fullname", "whitespace", "signature", "doc", "source", "parenttemplate", "renders", "render");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)
@@ -1903,6 +1980,10 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Call,
 				return API_VERSION;
 			case "name":
 				return name;
+			case "namespace":
+				return namespace;
+			case "fullname":
+				return getFullName();
 			case "whitespace":
 				return whitespace.toString();
 			case "signature":

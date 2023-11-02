@@ -123,6 +123,16 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 		return new BoundArguments(this, name, args, kwargs);
 	}
 
+	public BoundArguments bind(UL4Name object, Object self, List<Object> args, Map<String, Object> kwargs)
+	{
+		return new BoundArguments(this, object, self, args, kwargs);
+	}
+
+	public BoundArguments bind(String name, Object self, List<Object> args, Map<String, Object> kwargs)
+	{
+		return new BoundArguments(this, name, self, args, kwargs);
+	}
+
 	ParameterDescription add(String name, ParameterDescription.Type type, Object defaultValue)
 	{
 		ParameterDescription param = new ParameterDescription(name, parametersByPosition.size() + (varPositional != null ? 1 : 0) + (varKeyword != null ? 1 : 0), type, defaultValue);

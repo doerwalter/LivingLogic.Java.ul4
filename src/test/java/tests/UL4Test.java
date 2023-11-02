@@ -8,6 +8,9 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.List;
 import java.io.IOException;
 import java.io.Reader;
@@ -42,8 +45,12 @@ import com.livinglogic.ul4.ReadonlyException;
 import com.livinglogic.ul4.NotIterableException;
 import com.livinglogic.ul4.BlockException;
 import com.livinglogic.ul4.SyntaxException;
+import com.livinglogic.ul4.NotCallableException;
 import com.livinglogic.ul4.EvaluationContext;
+import com.livinglogic.ul4.UL4Repr;
+import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.Template;
+import com.livinglogic.ul4.BoundTemplate;
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.Date_;
 import com.livinglogic.ul4.DateTime;
@@ -55,6 +62,8 @@ import com.livinglogic.ul4.UndefinedAttribute;
 import com.livinglogic.ul4.UL4Bool;
 import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.UL4SetAttr;
+import com.livinglogic.ul4.UL4Call;
+import com.livinglogic.ul4.UL4Render;
 import com.livinglogic.ul4.UL4Dir;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.Function;
@@ -169,6 +178,88 @@ public class UL4Test
 		}
 	}
 
+	private static class ObjectWithTemplate implements UL4Repr, UL4GetAttr, UL4Call
+	{
+		private Object object;
+
+		private static Template template_call = T("<?ul4 call(self)?><?return self.object?>");
+		private static Template template_render1 = T("<?ul4 render1(self)?><?print repr(self)?>");
+		private static Template template_render2 = T("<?ul4 render2(self)?><?render self.t_render1()?>");
+
+		public ObjectWithTemplate(Object object)
+		{
+			this.object = object;
+		}
+
+		@Override
+		public Object getAttrUL4(EvaluationContext context, String key)
+		{
+			switch (key)
+			{
+				case "object":
+					return object;
+				case "t_call":
+					return new BoundTemplate(this, template_call);
+				case "t_render1":
+					return new BoundTemplate(this, template_render1);
+				case "t_render2":
+					return new BoundTemplate(this, template_render2);
+				default:
+					return new UndefinedAttribute(this, key);
+			}
+		}
+
+		@Override
+		public Object callAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
+		{
+			switch (key)
+			{
+				case "t_call":
+					BoundArguments callArgs = new BoundArguments(template_call.getSignature(), "t_call", this, args, kwargs);
+					return template_call.callBound(context, callArgs.byName());
+				case "t_render1":
+					BoundArguments render1Args = new BoundArguments(template_render1.getSignature(), "t_render1", this, args, kwargs);
+					return template_render1.callBound(context, render1Args.byName());
+				case "t_render2":
+					BoundArguments render2Args = new BoundArguments(template_render2.getSignature(), "t_render2", this, args, kwargs);
+					return template_render2.callBound(context, render2Args.byName());
+				default:
+					throw new NotCallableException("undefined attribute " + FunctionRepr.call(key));
+			}
+		}
+
+		// @Override
+		public void renderAttrUL4(EvaluationContext context, String key, List<Object> args, Map<String, Object> kwargs)
+		{
+			switch (key)
+			{
+				case "t_call":
+					BoundArguments callArgs = new BoundArguments(template_call.getSignature(), "t_call", this, args, kwargs);
+					template_call.renderBound(context, callArgs);
+					break;
+				case "t_render1":
+					BoundArguments render1Args = new BoundArguments(template_render1.getSignature(), "t_render1", this, args, kwargs);
+					template_render1.renderBound(context, render1Args);
+					break;
+				case "t_render2":
+					BoundArguments render2Args = new BoundArguments(template_render2.getSignature(), "t_render2", this, args, kwargs);
+					template_render2.renderBound(context, render2Args);
+					break;
+				default:
+					throw new NotCallableException("undefined attribute " + FunctionRepr.call(key));
+			}
+		}
+
+		public void reprUL4(UL4Repr.Formatter formatter)
+		{
+			formatter.append("<");
+			formatter.append(getClass().getName());
+			formatter.append(" object=");
+			formatter.visit(object);
+			formatter.append(">");
+		}
+	}
+
 	public static Date makeDate(int year, int month, int day)
 	{
 		Calendar calendar = new GregorianCalendar();
@@ -221,14 +312,14 @@ public class UL4Test
 
 	private static Template T(String source, String name, Template.Whitespace whitespace, String signature)
 	{
-		Template template = new Template(source, name, whitespace, signature);
+		Template template = new Template(source, name, "test", whitespace, signature);
 		// System.out.println(template);
 		return template;
 	}
 
 	private static Template T(String source, String name, Template.Whitespace whitespace, Signature signature)
 	{
-		Template template = new Template(source, name, whitespace, signature);
+		Template template = new Template(source, name, "test", whitespace, signature);
 		// System.out.println(template);
 		return template;
 	}
@@ -450,6 +541,13 @@ public class UL4Test
 		checkOutput("2000-02-29T12:34:56", T("<?print @(2000-02-29T12:34:56).isoformat()?>"));
 		checkOutput("2000-02-29T12:34:56.987654", T("<?print @(2000-02-29T12:34:56.987654).isoformat()?>"));
 		checkOutput("yes", T("<?if @(2000-02-29T12:34:56.987654)?>yes<?else?>no<?end if?>"));
+
+		var offset = ZoneOffset.systemDefault().getRules().getOffset(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
+		var offsetSeconds = offset.get(ChronoField.OFFSET_SECONDS);
+		var seconds = 3600 * 10 - offsetSeconds;
+		checkOutput(seconds + ".0", T("<?print @(1970-01-01T10:00:00).timestamp()?>"));
+		seconds = -offsetSeconds;
+		checkOutput(seconds + ".0", T("<?print @(1970-01-01T).timestamp()?>"));
 	}
 
 	@Test
@@ -4620,7 +4718,7 @@ public class UL4Test
 		checkOutput("[]", T("<?print sorted(dir(data))?>"), V("data", dataBool));
 		checkOutput("[]", T("<?print sorted(dir(data))?>"), V("data", dataInt));
 		checkOutput("[]", T("<?print sorted(dir(data))?>"), V("data", dataFloat));
-		String dateTimeAttrs = "['calendar', 'date', 'day', 'hour', 'isoformat', 'microsecond', 'mimeformat', 'minute', 'month', 'second', 'week', 'weekday', 'year', 'yearday']";
+		String dateTimeAttrs = "['calendar', 'date', 'day', 'hour', 'isoformat', 'microsecond', 'mimeformat', 'minute', 'month', 'second', 'timestamp', 'week', 'weekday', 'year', 'yearday']";
 		checkOutput(dateTimeAttrs, T("<?print sorted(dir(data))?>"), V("data", dataDate));
 		checkOutput(dateTimeAttrs, T("<?print sorted(dir(data))?>"), V("data", dataLocalDateTime));
 		checkOutput("['calendar', 'date', 'day', 'isoformat', 'mimeformat', 'month', 'week', 'weekday', 'year', 'yearday']", T("<?print sorted(dir(data))?>"), V("data", dataLocalDate));
@@ -5824,16 +5922,30 @@ public class UL4Test
 	public void tag_note()
 	{
 		checkOutput("foo", T("f<?note This is?>o<?note a comment?>o"));
+		checkOutput("foo", T("f<?note\r\n\t ?>This is<?end note?>o<?note  \r\n\t?>a comment<?end note?>o"));
+	}
+
+	@CauseTest(expectedCause=BlockException.class)
+	public void tag_note_badnesting()
+	{
+		checkOutput("foo", T("f<?note?>This is<?note?>unclosed<?end note?>"));
 	}
 
 	@Test
 	public void tag_doc()
 	{
 		Template t = T("<?doc foo?><?def inner?><?doc innerfoo?><?doc innerbar?><?end def?><?doc bar?><?printx inner.doc?>", "t");
-
 		assertEquals("foo", t.getDoc());
-
 		checkOutput("innerfoo", t);
+
+		t = T("<?doc?><?note?><?note?><?end note?><?end doc?>");
+		assertEquals("<?note?><?note?><?end note?>", t.getDoc());
+	}
+
+	@Test
+	public void tag_ignore()
+	{
+
 	}
 
 	@Test
@@ -5877,10 +5989,13 @@ public class UL4Test
 		String source = "<?print x?>";
 		Template t = T(source, "t");
 
-		checkOutput("<com.livinglogic.ul4.UndefinedAttribute 'foo' of <com.livinglogic.ul4.Template name='t' whitespace='strip'>>", T("<?print repr(template.foo)?>"), V("template", t));
+		checkOutput("<com.livinglogic.ul4.UndefinedAttribute 'foo' of <com.livinglogic.ul4.Template fullname='test.t' whitespace='strip'>>", T("<?print repr(template.foo)?>"), V("template", t));
+		checkOutput("t", T("<?print template.name?>"), V("template", t));
+		checkOutput("test", T("<?print template.namespace?>"), V("template", t));
+		checkOutput("test.t", T("<?print template.fullname?>"), V("template", t));
 		checkOutput(source, T("<?print template.source?>"), V("template", t));
 		checkOutput("2", T("<?print len(template.content)?>"), V("template", t));
-		checkOutput("t", T("<?print template.content[0].template.name?>"), V("template", t));
+		checkOutput("True", T("<?print template.content[0].template is template?>"), V("template", t));
 		// Test the second item, because the first one is an empty indent node
 		checkOutput("print", T("<?print template.content[1].type?>"), V("template", t));
 		checkOutput(source, T("<?print template.content[1].source?>"), V("template", t));
@@ -6587,16 +6702,16 @@ public class UL4Test
 		Template t;
 
 		t = T("<?print 42?>", "foo", Template.Whitespace.keep);
-		assertEquals("<com.livinglogic.ul4.Template name='foo'>", FunctionRepr.call(t));
+		assertEquals("<com.livinglogic.ul4.Template fullname='test.foo'>", FunctionRepr.call(t));
 
 		t = T("<?print 42?>", "foo", Template.Whitespace.strip);
-		assertEquals("<com.livinglogic.ul4.Template name='foo' whitespace='strip'>", FunctionRepr.call(t));
+		assertEquals("<com.livinglogic.ul4.Template fullname='test.foo' whitespace='strip'>", FunctionRepr.call(t));
 
 		t = T("<?print 42?>", "foo", Template.Whitespace.strip, "a, b=0xff");
-		assertEquals("<com.livinglogic.ul4.Template name='foo' whitespace='strip' signature=(a, b=255)>", FunctionRepr.call(t));
+		assertEquals("<com.livinglogic.ul4.Template fullname='test.foo' whitespace='strip' signature=(a, b=255)>", FunctionRepr.call(t));
 
 		t = T("<?def x(a, b=0xff)?><?end def?><?print repr(x)?>", "foo", Template.Whitespace.keep);
-		checkOutput("<com.livinglogic.ul4.TemplateClosure for <com.livinglogic.ul4.Template name='x' signatureAST=(a, b=0xff)>>", t);
+		checkOutput("<com.livinglogic.ul4.TemplateClosure for <com.livinglogic.ul4.Template fullname='x' signatureAST=(a, b=0xff)>>", t);
 
 		checkOutput("<com.livinglogic.ul4.Signature (x=17, y=@(2000-02-29))>", T("<?def f(x=17, y=@(2000-02-29))?><?return x+y?><?end def?><?print repr(f.signature)?>"));
 		checkOutput("<com.livinglogic.ul4.Signature (bad=[...])>", T("<?code bad = []?><?code bad.append(bad)?><?def f(bad=bad)?><?end def?><?print repr(f.signature)?>"));
@@ -6781,5 +6896,21 @@ public class UL4Test
 	public void type_attributes_exc()
 	{
 		checkOutput("com.livinglogic.ul4;DuplicateParameterException;", T("<?code t = type(e)?><?print t.__module__?>;<?print t.__name__?>;<?print t.__doc__?>"), V("e", new DuplicateParameterException("foo")));
+	}
+
+	@Test
+	public void bound_method_render()
+	{
+		checkOutput("<&>", T("<?print t.t_call()?>"), V("t", new ObjectWithTemplate("<&>")));
+		checkOutput("<tests.UL4Test$ObjectWithTemplate object='<17>'>", T("<?render t.t_render1()?>"), V("t", new ObjectWithTemplate("<17>")));
+		checkOutput("<tests.UL4Test$ObjectWithTemplate object='<23>'>", T("<?render t.t_render2()?>"), V("t", new ObjectWithTemplate("<23>")));
+	}
+
+	@Test
+	public void bound_method_renderx()
+	{
+		checkOutput("<&>", T("<?print t.t_call()?>"), V("t", new ObjectWithTemplate("<&>")));
+		checkOutput("&lt;tests.UL4Test$ObjectWithTemplate object=&#39;&lt;&amp;&gt;&#39;&gt;", T("<?renderx t.t_render1()?>"), V("t", new ObjectWithTemplate("<&>")));
+		checkOutput("&lt;tests.UL4Test$ObjectWithTemplate object=&#39;&lt;&amp;&gt;&#39;&gt;", T("<?renderx t.t_render2()?>"), V("t", new ObjectWithTemplate("<&>")));
 	}
 }

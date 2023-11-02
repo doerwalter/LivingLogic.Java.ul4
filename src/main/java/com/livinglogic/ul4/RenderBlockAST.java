@@ -141,12 +141,13 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 	}
 
 	@Override
-	public void call(EvaluationContext context, UL4Render obj, List<Object> args, Map<String, Object> kwargs)
+	protected void makeArguments(EvaluationContext context, List<Object> realArguments, Map<String, Object> realKeywordArguments)
 	{
-		if (kwargs.containsKey("content"))
+		super.makeArguments(context, realArguments, realKeywordArguments);
+
+		if (realKeywordArguments.containsKey("content"))
 			throw new DuplicateArgumentException(content, "content");
-		kwargs.put("content", new TemplateClosure(content, context));
-		super.call(context, obj, args, kwargs);
+		realKeywordArguments.put("content", new TemplateClosure(content, context));
 	}
 
 	@Override

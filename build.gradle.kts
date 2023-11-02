@@ -20,6 +20,14 @@ repositories {
 	}
 }
 
+tasks.withType<JavaCompile> {
+	options.encoding = "UTF-8"
+}
+
+tasks.withType<Javadoc> {
+	options.encoding = "UTF-8"
+}
+
 dependencies {
 	implementation("org.apache.commons:commons-lang3:3.11")
 	implementation("org.apache.commons:commons-text:1.10.0")
@@ -61,11 +69,18 @@ tasks.withType<Javadoc> {
 	(options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
 }
 
-task("execute", JavaExec::class) {
+task("execute_ul4", JavaExec::class) {
 	classpath = sourceSets["main"].runtimeClasspath
 	standardInput = System.`in`
 
 	mainClass.set("com.livinglogic.ul4.Tester")
+}
+
+task("execute_ul4on", JavaExec::class) {
+	classpath = sourceSets["main"].runtimeClasspath
+	standardInput = System.`in`
+
+	mainClass.set("com.livinglogic.ul4on.Tester")
 }
 
 task("copyDependencies", Copy::class) {

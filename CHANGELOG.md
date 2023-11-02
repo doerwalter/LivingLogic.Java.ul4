@@ -1,3 +1,24 @@
+## 0.188 (2023-11-02)
+
+Templates can now be used as bound methods. Calling/rendering the template
+will pass the bound object as first argument.
+
+In UL4 `<?doc?>` and `<?note?>` can now be nested, and otherwise can
+contain anything up to the matching `<?end doc?>` or `<?end note?>` tag,
+but only if the initial `<?doc?>` or `<?note?>` tag contains only
+whitespace (e.g. `<?doc    ?>` etc.). This makes it possible to have source
+code examples in `<?doc?>` or `<?note?>` tags.
+
+`UL4Render` now is a sub interface of `UL4Call`.
+
+Add `namespace` attribute to `Template` class.
+
+The UL4 type `datetime` has a new method `timestamp` which returns the seconds
+since epoch with microseconds resolution.
+
+Transfer test output as hex dumps to workaround a problem with gradle.
+
+
 ## 0.187 (2023-04-13)
 
 Added UL4 attribute `Template.version` (the UL4 API version) and
@@ -6,7 +27,7 @@ Added UL4 attribute `Template.version` (the UL4 API version) and
 
 ## 0.186 (2023-04-06)
 
-Prevent NullPointerException in `Utils.addExceptionHTML2Buffer()`.
+Prevent `NullPointerException` in `Utils.addExceptionHTML2Buffer()`.
 
 
 ## 0.185 (2023-03-08)

@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.HexFormat;
 import java.util.Map;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -39,7 +40,7 @@ public class Tester
 
 	public static Template compileTemplate(String source, String name, Template.Whitespace whitespace, String signature)
 	{
-		return new Template(source, name, whitespace, signature);
+		return new Template(source, name, "test", whitespace, signature);
 	}
 
 	public static String executeCommand(Map<String, Object> data)
@@ -89,9 +90,13 @@ public class Tester
 
 		String output = executeCommand(data);
 
-		// We can't use {@code System.out.print} here, because this gives us no control over the encoding
-		// Use {@code System.out.write} to make sure the output is in UTF-8
+		// We can't use {@code System.out.print} here
+		// because this gives us no control over the encoding.
+		// We also can't use {@code System.out.write} with UTF-8 bytes
+		// because this won't work reliably when running under Gradle.
+		// For example if we output a single CR (i.e. "\r")
+		// this will get swallowed by Gradle.
 		byte[] outputBytes = output.getBytes("utf-8");
-		System.out.write(outputBytes, 0, outputBytes.length);
+		System.out.println("hexdump:" + HexFormat.of().formatHex(outputBytes));
 	}
 }

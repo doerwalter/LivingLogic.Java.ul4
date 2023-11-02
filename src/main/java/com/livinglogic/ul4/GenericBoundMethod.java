@@ -20,10 +20,10 @@ is bound must implement {@link UL4GetAttr} and calling the bound method will
 be dispatched to {@link UL4GetAttr#getAttrUL4(EvaluationContext, String)}.</p>
 
 <p>Furthermore since a {@code GenericBoundMethod} can be bound to any method
-it doesn't handle binding arguments in its default implementation. this must
+it doesn't handle binding arguments in its default implementation. This must
 be done by the object the bound method is bound to.</p>
 **/
-public class GenericBoundMethod<T extends UL4GetAttr> implements UL4Instance, UL4Call, UL4Name, UL4Repr
+public class GenericBoundMethod<T extends UL4GetAttr> implements UL4Instance, UL4Render, UL4Name, UL4Repr
 {
 	protected static class Type extends AbstractInstanceType
 	{
@@ -91,6 +91,12 @@ public class GenericBoundMethod<T extends UL4GetAttr> implements UL4Instance, UL
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
 		return object.callAttrUL4(context, methodName, args, kwargs);
+	}
+
+	@Override
+	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
+	{
+		object.renderAttrUL4(context, methodName, args, kwargs);
 	}
 
 	public void reprUL4(UL4Repr.Formatter formatter)

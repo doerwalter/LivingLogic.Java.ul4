@@ -36,4 +36,9 @@ public class BuiltinMethodDescriptor
 	{
 		return signature.bind(type.getFullNameUL4() + "." + methodName, args, kwargs);
 	}
+
+	public BoundArguments bindArguments(Object self, List<Object> args, Map<String, Object> kwargs)
+	{
+		return signature.bind(type.getFullNameUL4() + "." + methodName, self, args, kwargs);
+	}
 }

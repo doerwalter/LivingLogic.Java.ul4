@@ -78,16 +78,18 @@ public class RenderXAST extends RenderAST
 		return "renderx";
 	}
 
-	public void call(EvaluationContext context, UL4Render obj, List<Object> args, Map<String, Object> kwargs)
+	@Override
+	public Object decoratedEvaluate(EvaluationContext context)
 	{
 		context.pushEscape(XMLStringEscape.function);
 		try
 		{
-			super.call(context, obj, args, kwargs);
+			super.decoratedEvaluate(context);
 		}
 		finally
 		{
 			context.popEscape();
 		}
+		return null;
 	}
 }
