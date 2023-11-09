@@ -11,54 +11,21 @@ import static org.junit.Assert.assertTrue;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalField;
-import java.util.List;
+import java.util.*;
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Map;
-import java.util.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
+import com.livinglogic.ul4.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.livinglogic.ul4.Utils;
-import com.livinglogic.ul4.UL4Type;
-import com.livinglogic.ul4.UL4Instance;
-import com.livinglogic.ul4.AbstractInstanceType;
-import com.livinglogic.ul4.DuplicateParameterException;
-import com.livinglogic.ul4.ArgumentTypeMismatchException;
-import com.livinglogic.ul4.MissingArgumentException;
-import com.livinglogic.ul4.TooManyArgumentsException;
-import com.livinglogic.ul4.UnsupportedArgumentNameException;
-import com.livinglogic.ul4.ReadonlyException;
-import com.livinglogic.ul4.NotIterableException;
-import com.livinglogic.ul4.BlockException;
-import com.livinglogic.ul4.SyntaxException;
-import com.livinglogic.ul4.NotCallableException;
-import com.livinglogic.ul4.EvaluationContext;
-import com.livinglogic.ul4.UL4Repr;
-import com.livinglogic.ul4.UL4GetAttr;
-import com.livinglogic.ul4.Template;
-import com.livinglogic.ul4.BoundTemplate;
-import com.livinglogic.ul4.Color;
-import com.livinglogic.ul4.Date_;
-import com.livinglogic.ul4.DateTime;
-import com.livinglogic.ul4.FunctionRepr;
-import com.livinglogic.ul4.MonthDelta;
-import com.livinglogic.ul4.TimeDelta;
-import com.livinglogic.ul4.UndefinedKey;
-import com.livinglogic.ul4.UndefinedAttribute;
 import com.livinglogic.ul4.UL4Bool;
 import com.livinglogic.ul4.UL4GetAttr;
 import com.livinglogic.ul4.UL4SetAttr;
@@ -178,13 +145,14 @@ public class UL4Test
 		}
 	}
 
-	private static class ObjectWithTemplate implements UL4Repr, UL4GetAttr, UL4Call
+	private static class ObjectWithTemplate implements UL4Repr, UL4GetAttr, UL4Call, UL4AddStackFrame
 	{
 		private Object object;
 
 		private static Template template_call = T("<?ul4 call(self)?><?return self.object?>");
 		private static Template template_render1 = T("<?ul4 render1(self)?><?print repr(self)?>");
 		private static Template template_render2 = T("<?ul4 render2(self)?><?render self.t_render1()?>");
+		private static Template template_content = T("<?ul4 content(self, content)?><?render_or_printx content()?>");
 
 		public ObjectWithTemplate(Object object)
 		{
@@ -204,6 +172,8 @@ public class UL4Test
 					return new BoundTemplate(this, template_render1);
 				case "t_render2":
 					return new BoundTemplate(this, template_render2);
+				case "t_content":
+					return new BoundTemplate(this, template_content);
 				default:
 					return new UndefinedAttribute(this, key);
 			}
@@ -223,6 +193,9 @@ public class UL4Test
 				case "t_render2":
 					BoundArguments render2Args = new BoundArguments(template_render2.getSignature(), "t_render2", this, args, kwargs);
 					return template_render2.callBound(context, render2Args.byName());
+				case "t_content":
+					BoundArguments contentArgs = new BoundArguments(template_content.getSignature(), "t_content", this, args, kwargs);
+					return template_content.callBound(context, contentArgs.byName());
 				default:
 					throw new NotCallableException("undefined attribute " + FunctionRepr.call(key));
 			}
@@ -244,6 +217,10 @@ public class UL4Test
 				case "t_render2":
 					BoundArguments render2Args = new BoundArguments(template_render2.getSignature(), "t_render2", this, args, kwargs);
 					template_render2.renderBound(context, render2Args);
+					break;
+				case "t_content":
+					BoundArguments contentArgs = new BoundArguments(template_content.getSignature(), "t_content", this, args, kwargs);
+					template_content.renderBound(context, contentArgs);
 					break;
 				default:
 					throw new NotCallableException("undefined attribute " + FunctionRepr.call(key));
@@ -6912,5 +6889,92 @@ public class UL4Test
 		checkOutput("<&>", T("<?print t.t_call()?>"), V("t", new ObjectWithTemplate("<&>")));
 		checkOutput("&lt;tests.UL4Test$ObjectWithTemplate object=&#39;&lt;&amp;&gt;&#39;&gt;", T("<?renderx t.t_render1()?>"), V("t", new ObjectWithTemplate("<&>")));
 		checkOutput("&lt;tests.UL4Test$ObjectWithTemplate object=&#39;&lt;&amp;&gt;&#39;&gt;", T("<?renderx t.t_render2()?>"), V("t", new ObjectWithTemplate("<&>")));
+	}
+
+	private void checkStackTrace(Throwable throwable, String... expectedFrameMessages)
+	{
+		List<Throwable> actualFrames = new LinkedList<>();
+		while (throwable != null)
+		{
+			actualFrames.add(throwable);
+			throwable = Utils.getInnerException(throwable);
+		}
+
+		if (actualFrames.size() != expectedFrameMessages.length)
+		{
+			assertEquals(expectedFrameMessages.length, actualFrames.size());
+			throw new RuntimeException("Expected " + expectedFrameMessages.length + " but got " + actualFrames.size() + " stack frames");
+		}
+
+		int i = 0;
+		for (Throwable frame : actualFrames)
+		{
+			if (!frame.getMessage().contains(expectedFrameMessages[i]))
+				throw new RuntimeException("Frame message #" + i + " '" + frame.getMessage() + "' does not contain expected message '" + expectedFrameMessages[i] + "'");
+			i++;
+		}
+	}
+
+	@Test
+	public void stackframes()
+	{
+		try
+		{
+			checkOutput(
+				"",
+				T("""
+				<?renderblock t.t_content()?>
+					<?renderblock t.t_content()?>
+						<?print 1/0?>
+					<?end renderblock?>
+				<?end renderblock?>
+			"""),
+				V("t", new ObjectWithTemplate("42"))
+			);
+		}
+		catch (Exception e)
+		{
+			checkStackTrace(
+				e,
+				"division by zero",
+				"1/0",
+				"<?render_or_printx content()?>",
+				"<?renderblock t.t_content()?>",
+				"<?render_or_printx content()?>",
+				"<?renderblock t.t_content()?>"
+			);
+		}
+	}
+
+	@Test
+	public void boundtemplate()
+	{
+		try
+		{
+			checkOutput(
+				"",
+				T("""
+				<?code t_content = t.t_content?>
+				<?renderblock t_content()?>
+					<?renderblock t_content()?>
+						<?print 1/0?>
+					<?end renderblock?>
+				<?end renderblock?>
+			"""),
+				V("t", new ObjectWithTemplate("42"))
+			);
+		}
+		catch (Exception e)
+		{
+			checkStackTrace(
+				e,
+				"division by zero",
+				"1/0",
+				"<?render_or_printx content()?>",
+				"<?renderblock t_content()?>",
+				"<?render_or_printx content()?>",
+				"<?renderblock t_content()?>"
+			);
+		}
 	}
 }

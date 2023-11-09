@@ -1,3 +1,12 @@
+## 0.189 (2023-11-09)
+
+Fix stack traces containing objects that implement `UL4GetAttr.renderAttrUL4()`.
+Now objects that get called/rendered or whose attributes get called/rendered
+that should appear in the UL4 stack trace must now implement the marker interface
+`UL4AddStackFrame`. `Template`, `TemplateClosure` and `BoundTemplate` implement
+that marker interface.
+
+
 ## 0.188 (2023-11-02)
 
 Templates can now be used as bound methods. Calling/rendering the template

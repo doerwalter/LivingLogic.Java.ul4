@@ -36,7 +36,7 @@ import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Utils;
 
 
-public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Render, UL4Dir
+public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Render, UL4Dir, UL4AddStackFrame
 {
 	protected static class Type extends BlockAST.Type
 	{
