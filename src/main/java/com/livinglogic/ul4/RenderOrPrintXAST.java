@@ -67,6 +67,7 @@ public class RenderOrPrintXAST extends RenderAST
 		return "render_or_printx";
 	}
 
+	@Override
 	public void call(EvaluationContext context, Object obj, List<Object> args, Map<String, Object> kwargs)
 	{
 		if (obj instanceof UL4Render)
