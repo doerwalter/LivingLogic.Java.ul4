@@ -24,7 +24,7 @@ Calling/rendering the bound template will pass the object as the first argument.
 @author W. Doerwald
 **/
 
-public class BoundTemplate implements UL4Instance, UL4Render, UL4Name, UL4Dir, UL4Repr
+public class BoundTemplate implements UL4Instance, UL4Render, UL4Name, UL4Dir, UL4Repr, UL4AddStackFrame
 {
 	protected static class Type extends AbstractInstanceType
 	{
@@ -37,7 +37,7 @@ public class BoundTemplate implements UL4Instance, UL4Render, UL4Name, UL4Dir, U
 		@Override
 		public String getNameUL4()
 		{
-			return "BundTemplate";
+			return "BoundTemplate";
 		}
 
 		@Override
