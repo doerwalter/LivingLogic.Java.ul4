@@ -95,13 +95,13 @@ public class BoundTemplate implements UL4Instance, UL4Render, UL4Name, UL4Dir, U
 	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
 		// We can clean up here, as a "render" call can't pass anything to the outside world
-		BoundArguments arguments = new BoundArguments(template.signature, template, self, args, kwargs);
+		BoundArguments arguments = new BoundArguments(template, self, args, kwargs);
 		render(context, arguments.byName());
 	}
 
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		BoundArguments arguments = new BoundArguments(template.signature, template, self, args, kwargs);
+		BoundArguments arguments = new BoundArguments(template, self, args, kwargs);
 		Object result = null;
 		try
 		{
@@ -169,10 +169,10 @@ public class BoundTemplate implements UL4Instance, UL4Render, UL4Name, UL4Dir, U
 		switch (key)
 		{
 			case "renders":
-				BoundArguments boundRenderSArgs = new BoundArguments(template.signature, this, self, args, kwargs);
+				BoundArguments boundRenderSArgs = new BoundArguments(template, self, args, kwargs);
 				return renders(context, boundRenderSArgs.byName());
 			case "render":
-				BoundArguments boundRenderArgs = new BoundArguments(template.signature, this, self, args, kwargs);
+				BoundArguments boundRenderArgs = new BoundArguments(template, self, args, kwargs);
 				render(context, boundRenderArgs.byName());
 				return null;
 			default:

@@ -81,7 +81,7 @@ public abstract class Function implements UL4Instance, UL4Call, UL4Name, UL4Repr
 	@Override
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		BoundArguments arguments = new BoundArguments(getSignature(), this, args, kwargs);
+		BoundArguments arguments = new BoundArguments(getSignature(), this, null, args, kwargs);
 		return evaluate(context, arguments);
 	}
 

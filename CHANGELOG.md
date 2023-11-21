@@ -1,3 +1,9 @@
+## 0.190 (2023-11-21)
+
+Add a new `BoundArguments` constructor that gets the signature and the name
+from a `Template`.
+
+
 ## 0.189 (2023-11-09)
 
 Fix stack traces containing objects that implement `UL4GetAttr.renderAttrUL4()`.
@@ -135,20 +141,25 @@ anyway.
 
 Performance and memory optimizations:
 
-* `TextAST` instances now always store their own copy of the string.
-* String offsets into the template source code are now no longer stored as
-  `Slice` objects. Instead we simply use two ints. This reduces memory usage.
-* Most strings are now interned.
-* `BoundArguments` now uses an array for `argumentsByPosition`.
-* `UL4GetAttr.getAttrUL4()` now should return an `UndefinedAttribute`
-  object instead of raising an `AttributeError`. Unfortunately this makes
-  non-existant attributes indistinguishable from attributes that happen to
-  be `UndefinedAttribute` objects without calling `hasAttrUL4()`, but this
-  distinction can't be made in UL4 anyway (without calling `hasattr()`).
-* `BoundArguments` objects are now no longer autocloseable. Instead we let
-  the garbage collector clean them up naturally. Previously the
-  `EvaluationContext` kept some of the `BoundArguments` objects alive until
-  the end of the template call. Now they can die sooner.
+`TextAST` instances now always store their own copy of the string.
+
+String offsets into the template source code are now no longer stored as
+Slice` objects. Instead we simply use two ints. This reduces memory usage.
+
+Most strings are now interned.
+
+`BoundArguments` now uses an array for `argumentsByPosition`.
+
+`UL4GetAttr.getAttrUL4()` now should return an `UndefinedAttribute`
+object instead of raising an `AttributeError`. Unfortunately this makes
+non-existant attributes indistinguishable from attributes that happen to
+be `UndefinedAttribute` objects without calling `hasAttrUL4()`, but this
+istinction can't be made in UL4 anyway (without calling `hasattr()`).
+
+`BoundArguments` objects are now no longer autocloseable. Instead we let
+the garbage collector clean them up naturally. Previously the
+`EvaluationContext` kept some of the `BoundArguments` objects alive until
+the end of the template call. Now they can die sooner.
 
 
 ## exp-170 (2022-03-30)

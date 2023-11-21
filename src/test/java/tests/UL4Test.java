@@ -185,16 +185,16 @@ public class UL4Test
 			switch (key)
 			{
 				case "t_call":
-					BoundArguments callArgs = new BoundArguments(template_call.getSignature(), "t_call", this, args, kwargs);
+					BoundArguments callArgs = new BoundArguments(template_call, this, args, kwargs);
 					return template_call.callBound(context, callArgs.byName());
 				case "t_render1":
-					BoundArguments render1Args = new BoundArguments(template_render1.getSignature(), "t_render1", this, args, kwargs);
+					BoundArguments render1Args = new BoundArguments(template_render1, this, args, kwargs);
 					return template_render1.callBound(context, render1Args.byName());
 				case "t_render2":
-					BoundArguments render2Args = new BoundArguments(template_render2.getSignature(), "t_render2", this, args, kwargs);
+					BoundArguments render2Args = new BoundArguments(template_render2, this, args, kwargs);
 					return template_render2.callBound(context, render2Args.byName());
 				case "t_content":
-					BoundArguments contentArgs = new BoundArguments(template_content.getSignature(), "t_content", this, args, kwargs);
+					BoundArguments contentArgs = new BoundArguments(template_content, this, args, kwargs);
 					return template_content.callBound(context, contentArgs.byName());
 				default:
 					throw new NotCallableException("undefined attribute " + FunctionRepr.call(key));
@@ -207,19 +207,19 @@ public class UL4Test
 			switch (key)
 			{
 				case "t_call":
-					BoundArguments callArgs = new BoundArguments(template_call.getSignature(), "t_call", this, args, kwargs);
+					BoundArguments callArgs = new BoundArguments(template_call, this, args, kwargs);
 					template_call.renderBound(context, callArgs);
 					break;
 				case "t_render1":
-					BoundArguments render1Args = new BoundArguments(template_render1.getSignature(), "t_render1", this, args, kwargs);
+					BoundArguments render1Args = new BoundArguments(template_render1, this, args, kwargs);
 					template_render1.renderBound(context, render1Args);
 					break;
 				case "t_render2":
-					BoundArguments render2Args = new BoundArguments(template_render2.getSignature(), "t_render2", this, args, kwargs);
+					BoundArguments render2Args = new BoundArguments(template_render2, this, args, kwargs);
 					template_render2.renderBound(context, render2Args);
 					break;
 				case "t_content":
-					BoundArguments contentArgs = new BoundArguments(template_content.getSignature(), "t_content", this, args, kwargs);
+					BoundArguments contentArgs = new BoundArguments(template_content, this, args, kwargs);
 					template_content.renderBound(context, contentArgs);
 					break;
 				default:
@@ -6975,6 +6975,20 @@ public class UL4Test
 				"<?render_or_printx content()?>",
 				"<?renderblock t_content()?>"
 			);
+		}
+	}
+
+	@Test
+	public void full_template_name_in_exception_message()
+	{
+		try
+		{
+			Template t1 = T("<?ul4 t()?>");
+			T("<?render t(x=42)?>").renders(V("t", t1));
+		}
+		catch (UnsupportedArgumentNameException ex)
+		{
+			assertEquals("test.t() doesn't support an argument named 'x'", ex.getMessage());
 		}
 	}
 }

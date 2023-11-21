@@ -980,7 +980,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Rende
 
 	public void render(EvaluationContext context, Map<String, Object> variables)
 	{
-		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
+		BoundArguments arguments = new BoundArguments(this, null, null, variables);
 		renderBound(context, arguments.byName());
 	}
 
@@ -1076,7 +1076,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Rende
 			StringWriter output = new StringWriter();
 		)
 		{
-			BoundArguments arguments = new BoundArguments(signature, this, null, null, variables);
+			BoundArguments arguments = new BoundArguments(this, null, null, variables);
 			renderBound(context, output, arguments.byName());
 			return output.toString();
 		}
@@ -1089,7 +1089,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Rende
 
 	public void renderUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		BoundArguments arguments = new BoundArguments(signature, this, args, kwargs);
+		BoundArguments arguments = new BoundArguments(this, null, args, kwargs);
 		renderBound(context, null, arguments.byName());
 		// no cleanup here, as the render call might leak a closure to the outside world
 	}
@@ -1314,14 +1314,14 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Rende
 	**/
 	public Object call(EvaluationContext context, Map<String, Object> variables)
 	{
-		BoundArguments arguments = new BoundArguments(signature, this, null, variables);
+		BoundArguments arguments = new BoundArguments(this, null, null, variables);
 		return callBound(context, arguments.byName());
 		// no cleanup here, as the result might be a closure that still needs the local variables
 	}
 
 	public Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		BoundArguments arguments = new BoundArguments(signature, this, args, kwargs);
+		BoundArguments arguments = new BoundArguments(this, null, args, kwargs);
 		return callBound(context, arguments.byName());
 		// no cleanup here, as the result might be a closure that still needs the local variables
 	}
@@ -2007,12 +2007,12 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Rende
 		switch (key)
 		{
 			case "renders":
-				BoundArguments boundRenderSArgs = new BoundArguments(signature, this, args, kwargs);
+				BoundArguments boundRenderSArgs = new BoundArguments(this, null, args, kwargs);
 				Writer writer = new StringWriter();
 				renderBound(context, writer, boundRenderSArgs.byName());
 				return writer.toString();
 			case "render":
-				BoundArguments boundRenderArgs = new BoundArguments(signature, this, args, kwargs);
+				BoundArguments boundRenderArgs = new BoundArguments(this, null, args, kwargs);
 				renderBound(context, null, boundRenderArgs.byName());
 				return null;
 			default:

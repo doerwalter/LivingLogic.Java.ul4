@@ -21,14 +21,9 @@ public class BoundArguments
 	protected Object[] argumentsByPosition;
 	protected Map<String, Object> argumentsByName;
 
-	public BoundArguments(Signature signature, UL4Name object, List<Object> args, Map<String, Object> kwargs)
+	public BoundArguments(Template template, Object self, List<Object> args, Map<String, Object> kwargs)
 	{
-		this(signature, object.getFullNameUL4(), null, args, kwargs);
-	}
-
-	public BoundArguments(Signature signature, String name, List<Object> args, Map<String, Object> kwargs)
-	{
-		this(signature, name, null, args, kwargs);
+		this(template.getSignature(), template.getFullName(), self, args, kwargs);
 	}
 
 	public BoundArguments(Signature signature, UL4Name object, Object self, List<Object> args, Map<String, Object> kwargs)

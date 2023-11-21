@@ -277,7 +277,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	@Override
 	default Object callUL4(EvaluationContext context, List<Object> args, Map<String, Object> kwargs)
 	{
-		return create(context, new BoundArguments(getSignature(), this, args, kwargs));
+		return create(context, new BoundArguments(getSignature(), this, null, args, kwargs));
 	}
 
 	@Override
