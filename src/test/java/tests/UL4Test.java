@@ -6977,4 +6977,18 @@ public class UL4Test
 			);
 		}
 	}
+
+	@Test
+	public void full_template_name_in_exception_message()
+	{
+		try
+		{
+			Template t1 = T("<?ul4 t()?>");
+			T("<?render t(x=42)?>").renders(V("t", t1));
+		}
+		catch (UnsupportedArgumentNameException ex)
+		{
+			assertEquals("test.t() doesn't support an argument named 'x'", ex.getMessage());
+		}
+	}
 }
