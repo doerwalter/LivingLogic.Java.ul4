@@ -1,3 +1,9 @@
+## 0.190 (2023-11-21)
+
+Add a new `BoundArguments` constructor that gets the signature and the name
+from a `Template`.
+
+
 ## 0.189 (2023-11-09)
 
 Fix stack traces containing objects that implement `UL4GetAttr.renderAttrUL4()`.

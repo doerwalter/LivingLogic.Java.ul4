@@ -115,12 +115,12 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 
 	public BoundArguments bind(UL4Name object, List<Object> args, Map<String, Object> kwargs)
 	{
-		return new BoundArguments(this, object, args, kwargs);
+		return new BoundArguments(this, object, null, args, kwargs);
 	}
 
 	public BoundArguments bind(String name, List<Object> args, Map<String, Object> kwargs)
 	{
-		return new BoundArguments(this, name, args, kwargs);
+		return new BoundArguments(this, name, null, args, kwargs);
 	}
 
 	public BoundArguments bind(UL4Name object, Object self, List<Object> args, Map<String, Object> kwargs)
