@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 import java.util.Set;
 import java.util.Collections;

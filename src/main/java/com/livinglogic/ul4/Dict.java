@@ -14,8 +14,6 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.Collection;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-
 
 public class Dict extends AbstractType
 {
@@ -223,7 +221,7 @@ public class Dict extends AbstractType
 			return pop(context, instance, args.get(0), args.get(1));
 	}
 
-	protected static Set<String> attributes = makeSet("keys", "items", "values", "get", "update", "clear", "pop");
+	protected static Set<String> attributes = Set.of("keys", "items", "values", "get", "update", "clear", "pop");
 
 	@Override
 	public Set<String> dirInstance(EvaluationContext context, Object instance)

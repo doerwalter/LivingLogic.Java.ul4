@@ -6,8 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-
 import java.io.IOException;
 import java.util.Set;
 
@@ -711,7 +709,7 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 		setStopPos(-1, -1);
 	}
 
-	protected static Set<String> attributes = makeSet("type", "template", "pos", "startpos", "startline", "startcol", "fullsource", "startsource", "source", "sourceprefix", "sourcesuffix", "startsourceprefix", "startsourcesuffix");
+	protected static Set<String> attributes = Set.of("type", "template", "pos", "startpos", "startline", "startcol", "fullsource", "startsource", "source", "sourceprefix", "sourcesuffix", "startsourceprefix", "startsourcesuffix");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)

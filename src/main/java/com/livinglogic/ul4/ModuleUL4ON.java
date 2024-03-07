@@ -12,8 +12,6 @@ import com.livinglogic.ul4on.Utils;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.Decoder;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-
 
 public class ModuleUL4ON extends Module
 {

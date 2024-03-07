@@ -43,7 +43,6 @@ import com.livinglogic.ul4.BoundArguments;
 import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 /**
 A {@code Decoder} object wraps a {@code Reader} object and can read any object
@@ -968,7 +967,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 	private static final MethodDescriptor<Decoder> methodLoadS = new MethodDescriptor<Decoder>(type, "loads", signatureLoadS);
 	private static final MethodDescriptor<Decoder> methodReset = new MethodDescriptor<Decoder>(type, "reset", Signature.noParameters);
 
-	protected static Set<String> attributes = makeSet("loads");
+	protected static Set<String> attributes = Set.of("loads");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)

@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.Map;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-
 
 public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL4Abs, UL4Dir
 {
@@ -220,7 +218,7 @@ public class MonthDelta implements Comparable, UL4Instance, UL4Bool, UL4Repr, UL
 
 	private static final MethodDescriptor<MonthDelta> methodMonths = new MethodDescriptor<MonthDelta>(type, "months", Signature.noParameters);
 
-	protected static Set<String> attributes = makeSet("months");
+	protected static Set<String> attributes = Set.of("months");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)

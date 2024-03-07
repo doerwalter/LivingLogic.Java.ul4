@@ -28,7 +28,6 @@ import com.livinglogic.ul4on.Decoder;
 import static com.livinglogic.ul4on.Utils.dumps;
 import static com.livinglogic.ul4on.Utils.loads;
 import static com.livinglogic.utils.MapUtils.makeMap;
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 import com.livinglogic.ul4.Color;
 import com.livinglogic.ul4.Template;
@@ -271,8 +270,8 @@ public class UL4ONTest
 		checkRoundtrip(new Slice(true, true, 1, 3));
 		checkRoundtrip(asList(1, 2, 3));
 		checkRoundtrip(makeMap("eins", 1, "zwei", 2, "drei", 3));
-		checkRoundtrip(makeSet());
-		checkRoundtrip(makeSet(1, 2, 3));
+		checkRoundtrip(Set.of());
+		checkRoundtrip(Set.of(1, 2, 3));
 		checkRoundtrip(template);
 		checkRoundtrip(asList(asList(1, 2, 3), asList(4, 5, 6), asList(7, 8, 9)));
 	}
@@ -406,19 +405,19 @@ public class UL4ONTest
 		PersistentPoint p4 = new PersistentPoint2("hurz", 105, 17);
 
 		Decoder decoder = new Decoder();
-		assertEquals(setFromIterator(decoder.allPersistentObjects()), makeSet());
+		assertEquals(setFromIterator(decoder.allPersistentObjects()), Set.of());
 
 		decoder.storePersistentObject(p1);
-		assertEquals(setFromIterator(decoder.allPersistentObjects()), makeSet(p1));
+		assertEquals(setFromIterator(decoder.allPersistentObjects()), Set.of(p1));
 
 		decoder.storePersistentObject(p2);
-		assertEquals(setFromIterator(decoder.allPersistentObjects()), makeSet(p1, p2));
+		assertEquals(setFromIterator(decoder.allPersistentObjects()), Set.of(p1, p2));
 
 		decoder.storePersistentObject(p3);
-		assertEquals(setFromIterator(decoder.allPersistentObjects()), makeSet(p1, p2, p3));
+		assertEquals(setFromIterator(decoder.allPersistentObjects()), Set.of(p1, p2, p3));
 
 		decoder.storePersistentObject(p4);
-		assertEquals(setFromIterator(decoder.allPersistentObjects()), makeSet(p1, p2, p3, p4));
+		assertEquals(setFromIterator(decoder.allPersistentObjects()), Set.of(p1, p2, p3, p4));
 	}
 
 	@CauseTest(expectedCause=DecoderException.class)

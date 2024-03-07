@@ -16,8 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import static java.util.Arrays.asList;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-
 
 public class List_ extends AbstractType
 {
@@ -469,7 +467,7 @@ public class List_ extends AbstractType
 			return rfind(context, (Object[])instance, args);
 	}
 
-	protected static Set<String> attributes = makeSet("append", "insert", "pop", "count", "find", "rfind");
+	protected static Set<String> attributes = Set.of("append", "insert", "pop", "count", "find", "rfind");
 
 	@Override
 	public Set<String> dirInstance(EvaluationContext context, Object instance)

@@ -8,7 +8,6 @@ package com.livinglogic.ul4;
 
 import java.util.Set;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 public class Slice implements UL4Instance, UL4Dir, UL4Repr, Comparable<Slice>
 {
@@ -156,7 +155,7 @@ public class Slice implements UL4Instance, UL4Dir, UL4Repr, Comparable<Slice>
 		return buffer.toString();
 	}
 
-	protected static Set<String> attributes = makeSet("start", "stop");
+	protected static Set<String> attributes = Set.of("start", "stop");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)

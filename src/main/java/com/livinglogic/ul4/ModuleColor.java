@@ -9,8 +9,6 @@ package com.livinglogic.ul4;
 import java.util.Set;
 import java.util.List;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-
 
 public class ModuleColor extends Module
 {

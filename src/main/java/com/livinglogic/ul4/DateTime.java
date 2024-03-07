@@ -19,8 +19,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
-
 
 public class DateTime extends AbstractType
 {
@@ -649,7 +647,7 @@ public class DateTime extends AbstractType
 			return timestamp((Date)instance, args);
 	}
 
-	protected static Set<String> attributes = makeSet("year", "month", "day", "hour", "minute", "second", "microsecond", "date", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat", "timestamp");
+	protected static Set<String> attributes = Set.of("year", "month", "day", "hour", "minute", "second", "microsecond", "date", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat", "timestamp");
 
 	@Override
 	public Set<String> dirInstance(EvaluationContext context, Object instance)
