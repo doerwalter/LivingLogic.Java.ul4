@@ -99,7 +99,7 @@ public class CombiningMapChainTest extends MapChainTest
 		super.entrySet_equals();
 
 		AbstractMapChain c = makeMapChain(makeMap(1, "one", 2, "two"), makeMap(2, "zwei", 3, "three"));
-		assertTrue(c.entrySet().equals(makeSet(entry(1, "one"), entry(2, "twozwei"), entry(3, "three"))));
+		assertTrue(c.entrySet().equals(Set.of(entry(1, "one"), entry(2, "twozwei"), entry(3, "three"))));
 	}
 
 	@Test

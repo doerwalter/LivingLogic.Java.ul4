@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2023 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -21,7 +21,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import static com.livinglogic.utils.MapUtils.makeMap;
-import static com.livinglogic.utils.SetUtils.makeSet;
+
 
 public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4Dir, UL4Len
 {
@@ -1002,7 +1002,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 		}
 	}
 
-	protected static Set<String> attributes = makeSet("r", "g", "b", "a", "hue", "light", "sat", "lum", "hls", "hlsa", "hsv", "hsva", "invert", "combine", "withhue", "witha", "withlight", "abslight", "rellight", "withsat", "withlum", "abslum", "rellum");
+	protected static Set<String> attributes = Set.of("r", "g", "b", "a", "hue", "light", "sat", "lum", "hls", "hlsa", "hsv", "hsva", "invert", "combine", "withhue", "witha", "withlight", "abslight", "rellight", "withsat", "withlum", "abslum", "rellum");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)

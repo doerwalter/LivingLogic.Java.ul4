@@ -1,5 +1,5 @@
 /*
-** Copyright 2012-2023 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2012-2024 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -41,8 +41,6 @@ import com.livinglogic.ul4.ArgumentTypeMismatchException;
 import com.livinglogic.ul4.BoundMethod;
 import com.livinglogic.ul4.Signature;
 import com.livinglogic.ul4.BoundArguments;
-
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 
 /**
@@ -446,7 +444,7 @@ public class Encoder implements UL4Repr, UL4GetAttr, UL4Dir, UL4Instance
 	private static final Signature signatureDumpS = new Signature().addBoth("obj");
 	private static final MethodDescriptor<Encoder> methodDumps = new MethodDescriptor<Encoder>(type, "dumps", signatureDumpS);
 
-	protected static Set<String> attributes = makeSet("dumps");
+	protected static Set<String> attributes = Set.of("dumps");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)

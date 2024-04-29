@@ -1,12 +1,10 @@
 /*
-** Copyright 2009-2023 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
 
 package com.livinglogic.ul4;
-
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 import java.util.Set;
 
@@ -46,7 +44,7 @@ public abstract class AbstractType implements UL4Type, UL4GetAttr, UL4Dir
 		return signature;
 	}
 
-	protected static Set<String> attributes = makeSet("__module__", "__name__", "__doc__");
+	protected static Set<String> attributes = Set.of("__module__", "__name__", "__doc__");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)

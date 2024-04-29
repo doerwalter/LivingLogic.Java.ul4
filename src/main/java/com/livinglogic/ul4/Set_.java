@@ -1,5 +1,5 @@
 /*
-** Copyright 2021-2023 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2021-2024 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -14,8 +14,6 @@ import java.util.Iterator;
 import java.util.Collection;
 import java.util.Collections;
 import static java.util.Arrays.asList;
-
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 
 public class Set_ extends AbstractType
@@ -148,7 +146,7 @@ public class Set_ extends AbstractType
 		return null;
 	}
 
-	protected static Set<String> attributes = makeSet("add", "clear");
+	protected static Set<String> attributes = Set.of("add", "clear");
 
 	@Override
 	public Set<String> dirInstance(EvaluationContext context, Object instance)

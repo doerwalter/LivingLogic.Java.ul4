@@ -1,5 +1,5 @@
 /*
-** Copyright 2013-2023 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2013-2024 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -38,8 +38,6 @@ import com.livinglogic.ul4.BoundMethod;
 import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.utils.CloseableRegistry;
 import com.livinglogic.ul4.BoundArguments;
-
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 public class Connection implements UL4Instance, AutoCloseable, UL4GetAttr, UL4Dir
 {
@@ -328,7 +326,7 @@ public class Connection implements UL4Instance, AutoCloseable, UL4GetAttr, UL4Di
 	private static final MethodDescriptor<Connection> methodQueryOne = new MethodDescriptor<Connection>(type, "queryone", signatureArgs);
 	private static final MethodDescriptor<Connection> methodExecute = new MethodDescriptor<Connection>(type, "execute", signatureArgs);
 
-	protected static Set<String> attributes = makeSet("queryargs", "query", "queryone", "execute", "int", "number", "str", "clob", "date");
+	protected static Set<String> attributes = Set.of("queryargs", "query", "queryone", "execute", "int", "number", "str", "clob", "date");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)

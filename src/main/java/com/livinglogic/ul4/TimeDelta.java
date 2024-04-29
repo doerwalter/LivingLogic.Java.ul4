@@ -1,5 +1,5 @@
 /*
-** Copyright 2012-2023 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2012-2024 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4Abs, UL4Dir
 {
@@ -482,7 +481,7 @@ public class TimeDelta implements UL4Instance, Comparable, UL4Bool, UL4Repr, UL4
 	private static final MethodDescriptor<TimeDelta> methodSeconds = new MethodDescriptor<TimeDelta>(type, "seconds", Signature.noParameters);
 	private static final MethodDescriptor<TimeDelta> methodMicroseconds = new MethodDescriptor<TimeDelta>(type, "microseconds", Signature.noParameters);
 
-	protected static Set<String> attributes = makeSet("days", "seconds", "microseonds");
+	protected static Set<String> attributes = Set.of("days", "seconds", "microseonds");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)

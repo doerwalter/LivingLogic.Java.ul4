@@ -1,5 +1,5 @@
 /*
-** Copyright 2021-2023 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2021-2024 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -11,13 +11,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Arrays;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
-
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 
 public class Date_ extends AbstractType
@@ -233,7 +230,7 @@ public class Date_ extends AbstractType
 		return mimeformat(instance);
 	}
 
-	protected static Set<String> attributes = makeSet("year", "month", "day", "date", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat");
+	protected static Set<String> attributes = Set.of("year", "month", "day", "date", "weekday", "yearday", "week", "calendar", "isoformat", "mimeformat");
 
 	@Override
 	public Set<String> dirInstance(EvaluationContext context, Object instance)
@@ -358,7 +355,7 @@ public class Date_ extends AbstractType
 
 		public List<Integer> asList()
 		{
-			return Arrays.asList(year, week, weekday);
+			return List.of(year, week, weekday);
 		}
 	}
 }

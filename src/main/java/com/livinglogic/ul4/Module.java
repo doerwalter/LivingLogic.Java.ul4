@@ -1,5 +1,5 @@
 /*
-** Copyright 2021-2023 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2021-2024 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -10,8 +10,6 @@ import java.util.Set;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.LinkedHashMap;
-
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 
 public class Module implements UL4Instance, UL4Repr, UL4Dir, UL4Name

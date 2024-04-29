@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2023 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -8,7 +8,6 @@ package com.livinglogic.ul4;
 
 import java.util.Set;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
 import static com.livinglogic.ul4.Utils.getInnerException;
 
 public class LocationException extends RuntimeException implements UL4Dir, UL4GetAttr
@@ -42,10 +41,7 @@ public class LocationException extends RuntimeException implements UL4Dir, UL4Ge
 		return location.getTemplateDescriptionText() + "; " + location.getLocationDescriptionText();
 	}
 
-	protected static Set<String> attributes = makeSet(
-		"context",
-		"location"
-	);
+	protected static Set<String> attributes = Set.of("context", "location");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)

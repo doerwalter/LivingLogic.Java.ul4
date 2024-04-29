@@ -1,5 +1,5 @@
 /*
-** Copyright 2014-2023 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2014-2024 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -18,7 +18,6 @@ import com.livinglogic.ul4.UL4Dir;
 import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.ul4.ReadonlyException;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 public abstract class Var implements UL4GetAttr, UL4SetAttr, UL4Dir
 {
@@ -31,7 +30,7 @@ public abstract class Var implements UL4GetAttr, UL4SetAttr, UL4Dir
 		this.value = noValue;
 	}
 
-	protected static Set<String> attributes = makeSet("value");
+	protected static Set<String> attributes = Set.of("value");
 
 	@Override
 	public Set<String> dirUL4(EvaluationContext context)

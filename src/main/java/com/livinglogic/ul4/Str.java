@@ -1,5 +1,5 @@
 /*
-** Copyright 2021-2023 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2021-2024 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -15,8 +15,6 @@ import java.util.Iterator;
 import java.math.BigInteger;
 
 import org.apache.commons.lang3.StringUtils;
-
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 
 public class Str extends AbstractType
@@ -659,7 +657,7 @@ public class Str extends AbstractType
 		return join(instance, args.get(0));
 	}
 
-	protected static Set<String> attributes = makeSet(
+	protected static Set<String> attributes = Set.of(
 		"split",
 		"rsplit",
 		"splitlines",

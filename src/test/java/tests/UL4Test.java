@@ -915,6 +915,12 @@ public class UL4Test
 	}
 
 	@CauseTest(expectedCause=BlockException.class)
+	public void tag_illegal_end_tag()
+	{
+		checkOutput("", T("<?if True?><?endif?>"));
+	}
+
+	@CauseTest(expectedCause=BlockException.class)
 	public void tag_break_outside_loop_in_template()
 	{
 		checkOutput("", T("<?def gurk?><?break?><?end def?>"));
@@ -6341,17 +6347,17 @@ public class UL4Test
 	public void db_query() throws Exception
 	{
 		Template t = T(
-			"<?code db.execute('create table ul4test(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" +
-			"<?code db.execute('insert into ul4test values(1, ', 'first', ', ', 10000*'first', ')')?>\n" +
-			"<?code db.execute('insert into ul4test values(2, ', 'second', ', ', 10000*'second', ')')?>\n" +
-			"<?code db.execute('insert into ul4test values(3, ', 'third', ', ', 10000*'third', ')')?>\n" +
+			"<?code db.execute('create table ul4test_query(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" +
+			"<?code db.execute('insert into ul4test_query values(1, ', 'first', ', ', 10000*'first', ')')?>\n" +
+			"<?code db.execute('insert into ul4test_query values(2, ', 'second', ', ', 10000*'second', ')')?>\n" +
+			"<?code db.execute('insert into ul4test_query values(3, ', 'third', ', ', 10000*'third', ')')?>\n" +
 			"<?code vin = db.int(2)?>\n" +
-			"<?for row in db.query('select * from ul4test where ul4_int <= ', vin, ' order by ul4_int')?>\n" +
+			"<?for row in db.query('select * from ul4test_query where ul4_int <= ', vin, ' order by ul4_int')?>\n" +
 				"<?print row.ul4_int?>|\n" +
 				"<?print row.ul4_char?>|\n" +
 				"<?print row.ul4_clob?>|\n" +
 			"<?end for?>\n" +
-			"<?code db.execute('drop table ul4test')?>\n"
+			"<?code db.execute('drop table ul4test_query')?>\n"
 		);
 
 		Connection db = getDatabaseConnection();
@@ -6370,14 +6376,14 @@ public class UL4Test
 	public void db_queryone_record() throws Exception
 	{
 		Template t = T(
-			"<?code db.execute('create table ul4test(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" +
-			"<?code db.execute('insert into ul4test values(1, ', 'first', ', ', 10000*'first', ')')?>\n" +
+			"<?code db.execute('create table ul4test_queryone(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" +
+			"<?code db.execute('insert into ul4test_queryone values(1, ', 'first', ', ', 10000*'first', ')')?>\n" +
 			"<?code vin = db.int(2)?>\n" +
-			"<?code row = db.queryone('select * from ul4test where ul4_int <= ', vin, ' order by ul4_int')?>\n" +
+			"<?code row = db.queryone('select * from ul4test_queryone where ul4_int <= ', vin, ' order by ul4_int')?>\n" +
 			"<?print row.ul4_int?>|\n" +
 			"<?print row.ul4_char?>|\n" +
 			"<?print row.ul4_clob?>" +
-			"<?code db.execute('drop table ul4test')?>\n"
+			"<?code db.execute('drop table ul4test_queryone')?>\n"
 		);
 
 		Connection db = getDatabaseConnection();
@@ -6396,11 +6402,11 @@ public class UL4Test
 	public void db_queryone_norecord() throws Exception
 	{
 		Template t = T(
-			"<?code db.execute('create table ul4test(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" +
+			"<?code db.execute('create table ul4test_table(ul4_int integer, ul4_char varchar2(1000), ul4_clob clob)')?>\n" +
 			"<?code vin = db.int(2)?>\n" +
-			"<?code row = db.queryone('select * from ul4test where ul4_int <= ', vin, ' order by ul4_int')?>\n" +
+			"<?code row = db.queryone('select * from ul4test_table where ul4_int <= ', vin, ' order by ul4_int')?>\n" +
 			"<?print row is None?>" +
-			"<?code db.execute('drop table ul4test')?>\n"
+			"<?code db.execute('drop table ul4test_table')?>\n"
 		);
 
 		Connection db = getDatabaseConnection();
@@ -6415,12 +6421,12 @@ public class UL4Test
 	public void db_execute_function() throws Exception
 	{
 		Template t = T(
-			"<?code db.execute('create or replace function ul4test(p_arg integer) return integer as begin return 2*p_arg; end;')?>\n" + 
+			"<?code db.execute('create or replace function ul4test_function(p_arg integer) return integer as begin return 2*p_arg; end;')?>\n" + 
 			"<?code vin = db.int(42)?>\n" + 
 			"<?code vout = db.int()?>\n" + 
-			"<?code db.execute('begin ', vout, ' := ul4test(', vin, '); end;')?>\n" + 
+			"<?code db.execute('begin ', vout, ' := ul4test_function(', vin, '); end;')?>\n" + 
 			"<?print vout.value?>" +
-			"<?code db.execute('drop function ul4test')?>\n",
+			"<?code db.execute('drop function ul4test_function')?>\n",
 			Template.Whitespace.strip
 		);
 
@@ -6435,7 +6441,7 @@ public class UL4Test
 	{
 		Template t = T(
 			"<?code db.execute('''\n" +
-			" create or replace procedure ul4test(p_intarg out integer, p_numberarg out number, p_strarg out varchar2, p_clobarg out clob, p_datearg out timestamp)" +
+			" create or replace procedure ul4test_procedure(p_intarg out integer, p_numberarg out number, p_strarg out varchar2, p_clobarg out clob, p_datearg out timestamp)" +
 			" as\n" +
 			" begin\n" +
 			"  p_intarg := 42;\n" +
@@ -6453,9 +6459,9 @@ public class UL4Test
 			"<?code vstr = db.str()?>\n" + 
 			"<?code vclob = db.clob()?>\n" + 
 			"<?code vdate = db.date()?>\n" + 
-			"<?code db.execute('call ul4test(', vint, ', ', vnumber, ', ', vstr, ', ', vclob, ', ', vdate, ')')?>\n" + 
+			"<?code db.execute('call ul4test_procedure(', vint, ', ', vnumber, ', ', vstr, ', ', vclob, ', ', vdate, ')')?>\n" + 
 			"<?print vint.value?>|<?print vnumber.value?>|<?print vstr.value?>|<?print vclob.value?>|<?print vdate.value?>" +
-			"<?code db.execute('drop procedure ul4test')?>\n"
+			"<?code db.execute('drop procedure ul4test_procedure')?>\n"
 		);
 
 		Connection db = getDatabaseConnection();
@@ -6469,7 +6475,7 @@ public class UL4Test
 	{
 		Template t = T(
 			"<?code db.execute('''\n" +
-			" create or replace procedure ul4test(p_intarg in out integer, p_numberarg in out number, p_strarg in out varchar2, p_clobarg in out nocopy clob, p_datearg in out timestamp)\n" +
+			" create or replace procedure ul4test_procedure_inout(p_intarg in out integer, p_numberarg in out number, p_strarg in out varchar2, p_clobarg in out nocopy clob, p_datearg in out timestamp)\n" +
 			" as\n" +
 			" begin\n" +
 			"  p_intarg := 2*p_intarg;\n" +
@@ -6486,9 +6492,9 @@ public class UL4Test
 			"<?code vstr = db.str('foo')?>\n" + 
 			"<?code vclob = db.clob(100000*'foo')?>\n" + 
 			"<?code vdate = db.date(@(2014-10-05T16:17:18))?>\n" + 
-			"<?code db.execute('call ul4test(', vint, ', ', vnumber, ', ', vstr, ', ', vclob, ', ', vdate, ')')?>\n" + 
+			"<?code db.execute('call ul4test_procedure_inout(', vint, ', ', vnumber, ', ', vstr, ', ', vclob, ', ', vdate, ')')?>\n" + 
 			"<?print vint.value?>|<?print vnumber.value?>|<?print vstr.value?>|<?print vclob.value?>|<?print vdate.value?>" +
-			"<?code db.execute('drop procedure ul4test')?>\n"
+			"<?code db.execute('drop procedure ul4test_procedure_inout')?>\n"
 		);
 
 		Connection db = getDatabaseConnection();

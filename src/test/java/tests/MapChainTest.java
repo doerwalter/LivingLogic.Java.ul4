@@ -1,7 +1,6 @@
 package tests;
 
 import static com.livinglogic.utils.MapUtils.makeMap;
-import static com.livinglogic.utils.SetUtils.makeSet;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -74,17 +73,17 @@ public class MapChainTest
 	public void entrySet_containsAll()
 	{
 		AbstractMapChain c = makeMapChain(makeMap(1, 2), makeMap(3, 4));
-		assertTrue(c.entrySet().containsAll(makeSet(entry(1, 2))));
-		assertTrue(c.entrySet().containsAll(makeSet(entry(1, 2), entry(3, 4))));
-		assertFalse(c.entrySet().containsAll(makeSet(entry(1, 2), entry(3, 5))));
-		assertFalse(c.entrySet().containsAll(makeSet(entry(1, 2), entry(3, 4), entry(5, 6))));
+		assertTrue(c.entrySet().containsAll(Set.of(entry(1, 2))));
+		assertTrue(c.entrySet().containsAll(Set.of(entry(1, 2), entry(3, 4))));
+		assertFalse(c.entrySet().containsAll(Set.of(entry(1, 2), entry(3, 5))));
+		assertFalse(c.entrySet().containsAll(Set.of(entry(1, 2), entry(3, 4), entry(5, 6))));
 	}
 
 	@Test
 	public void entrySet_equals()
 	{
 		AbstractMapChain c = makeMapChain(makeMap(1, 2), makeMap(3, 4));
-		assertTrue(c.entrySet().equals(makeSet(entry(1, 2), entry(3, 4))));
+		assertTrue(c.entrySet().equals(Set.of(entry(1, 2), entry(3, 4))));
 	}
 
 	@Test
@@ -114,8 +113,8 @@ public class MapChainTest
 			keys.add(entry.getKey());
 			values.add(entry.getValue());
 		}
-		assertEquals(keys, makeSet(1, 3));
-		assertEquals(values, makeSet(2, 4));
+		assertEquals(keys, Set.of(1, 3));
+		assertEquals(values, Set.of(2, 4));
 	}
 
 	@Test
@@ -174,7 +173,7 @@ public class MapChainTest
 	public void keySet_equals()
 	{
 		AbstractMapChain c = makeMapChain(makeMap(1, 2), makeMap(3, 4));
-		assertTrue(c.keySet().equals(makeSet(1, 3)));
+		assertTrue(c.keySet().equals(Set.of(1, 3)));
 	}
 
 	@Test
@@ -244,7 +243,7 @@ public class MapChainTest
 		AbstractMapChain c = makeMapChain(makeMap(1, 2), makeMap(3, 4));
 		for (Object key : c.keySet())
 			keys.add(key);
-		assertEquals(keys, makeSet(1, 3));
+		assertEquals(keys, Set.of(1, 3));
 	}
 
 	@Test

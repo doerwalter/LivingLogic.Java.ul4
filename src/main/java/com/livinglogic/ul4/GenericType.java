@@ -1,12 +1,11 @@
 /*
-** Copyright 2009-2023 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
 
 package com.livinglogic.ul4;
 
-import static com.livinglogic.utils.SetUtils.makeSet;
 
 import java.util.Set;
 import java.util.Collections;
