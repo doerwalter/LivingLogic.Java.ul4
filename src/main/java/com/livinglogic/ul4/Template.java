@@ -1534,7 +1534,7 @@ public class Template extends BlockAST implements UL4Instance, UL4Name, UL4Rende
 	**/
 	public List<Line> tokenizeTags()
 	{
-		Pattern tagPattern = Pattern.compile("<\\?\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblocks|renderblock|renderx_or_printx|render_or_printx|renderx_or_print|render_or_print|renderx|render|ignore)(\\s*(.*?)\\s*)?\\?>", Pattern.DOTALL);
+		Pattern tagPattern = Pattern.compile("<\\?\\s*(ul4|whitespace|printx|print|code|for|while|if|elif|else|end|break|continue|def|return|note|doc|renderblocks|renderblock|renderx_or_printx|render_or_printx|renderx_or_print|render_or_print|renderx|render|ignore)\\b(\\s*(.*?)\\s*)?\\?>", Pattern.DOTALL);
 		LinkedList<Line> lines = new LinkedList<Line>();
 		boolean wasTag = false;
 		// Nesting level of <?ignore?>/<?end ignore?>, <?doc?>/<?end doc?> or <?note?>/<?end note?>

@@ -1,3 +1,9 @@
+## 0.191 (2024-04-29)
+
+Fixed the regular expression that is used for tokenizing the template source
+code to reject `<?endif?>` as a proper end tag.
+
+
 ## 0.190 (2023-11-21)
 
 Add a new `BoundArguments` constructor that gets the signature and the name

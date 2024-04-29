@@ -915,6 +915,12 @@ public class UL4Test
 	}
 
 	@CauseTest(expectedCause=BlockException.class)
+	public void tag_illegal_end_tag()
+	{
+		checkOutput("", T("<?if True?><?endif?>"));
+	}
+
+	@CauseTest(expectedCause=BlockException.class)
 	public void tag_break_outside_loop_in_template()
 	{
 		checkOutput("", T("<?def gurk?><?break?><?end def?>"));
