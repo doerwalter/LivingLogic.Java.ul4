@@ -66,11 +66,6 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	**/
 	private LinkedList<AutoCloseable> closeables;
 
-	/*
-	A stack of currently active escaping functions
-	**/
-	protected List<StringEscape> escapes;
-
 	/**
 	The maximum number of milliseconds of runtime that are allowed
 	using this {@code EvaluationContext} object. This can be used to limit
@@ -166,7 +161,7 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	this {@code EvaluationContext}. In reality this means that the code
 	instantiating the {@code EvaluationContext} has the specified amount of time
 	before a timer thread will interupt the thread that created the
-	{@code EvaluationContext}. This timer will be cancel when the
+	{@code EvaluationContext}. This timer will be cancelled when the
 	{@code EvaluationContext} gets closed before the timer fires.
 
 	@param writer The output stream where the template output will be written
@@ -190,7 +185,6 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 			new MapChain<String, Object>(globalVariables, builtins)
 		);
 		closeables = new LinkedList<AutoCloseable>();
-		escapes = new LinkedList<StringEscape>();
 		this.milliseconds = milliseconds;
 		if (milliseconds >= 0)
 		{
@@ -245,22 +239,6 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	public void registerCloseable(AutoCloseable closeable)
 	{
 		closeables.add(closeable);
-	}
-
-	/**
-	Push a new escaping method onto the stack.
-	**/
-	public void pushEscape(StringEscape escape)
-	{
-		escapes.add(escape);
-	}
-
-	/**
-	Pop the innermost escaping method from the stack.
-	**/
-	public void popEscape()
-	{
-		escapes.remove(escapes.size()-1);
 	}
 
 	/**
@@ -361,8 +339,6 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 		{
 			try
 			{
-				for (StringEscape escape : escapes)
-					string = escape.escape(string);
 				writer.write(string);
 			}
 			catch (IOException exc)

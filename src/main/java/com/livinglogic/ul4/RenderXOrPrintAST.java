@@ -8,6 +8,9 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 import java.util.Map;
+import java.io.Writer;
+import java.io.StringWriter;
+import java.io.IOException;
 
 public class RenderXOrPrintAST extends RenderAST
 {
@@ -72,9 +75,16 @@ public class RenderXOrPrintAST extends RenderAST
 	{
 		if (obj instanceof UL4Render)
 		{
-			context.pushEscape(XMLStringEscape.function);
-			call(context, (UL4Render)obj, args, kwargs);
-			context.popEscape();
+			Writer newWriter = new XMLEscapeWriter(context.getWriter());
+			Writer oldWriter = context.setWriter(newWriter);
+			try
+			{
+				call(context, (UL4Render)obj, args, kwargs);
+			}
+			finally
+			{
+				context.setWriter(oldWriter);
+			}
 		}
 		else
 		{

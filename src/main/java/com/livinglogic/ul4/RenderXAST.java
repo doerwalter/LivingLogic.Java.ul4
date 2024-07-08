@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Set;
 import static java.util.Arrays.asList;
 import java.io.IOException;
+import java.io.Writer;
+import java.io.StringWriter;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
@@ -81,14 +83,15 @@ public class RenderXAST extends RenderAST
 	@Override
 	public Object decoratedEvaluate(EvaluationContext context)
 	{
-		context.pushEscape(XMLStringEscape.function);
+		Writer newWriter = new XMLEscapeWriter(context.getWriter());
+		Writer oldWriter = context.setWriter(newWriter);
 		try
 		{
 			super.decoratedEvaluate(context);
 		}
 		finally
 		{
-			context.popEscape();
+			context.setWriter(oldWriter);
 		}
 		return null;
 	}

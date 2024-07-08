@@ -1,3 +1,10 @@
+## 0.192 (2024-07-08)
+
+Fixed XML escaping logic, which resulted in the escaping happening twice when
+`renders()` was called during a `renderx` (or `renderx_or_print` or
+`renderx_or_printx`) call.
+
+
 ## 0.191 (2024-04-29)
 
 Fixed the regular expression that is used for tokenizing the template source
