@@ -6997,4 +6997,24 @@ public class UL4Test
 			assertEquals("test.t() doesn't support an argument named 'x'", ex.getMessage());
 		}
 	}
+
+	@Test
+	public void renders_in_renderx_doesnt_escape_twice()
+	{
+		Template t = T("""
+		<?whitespace strip?>
+
+		<?def a()?>
+			<h1>foo</h1>
+		<?end def?>
+
+		<?def b()?>
+			<?print a.renders()?>
+		<?end def?>
+
+		<?renderx b()?>
+		""");
+
+		checkOutput("&lt;h1&gt;foo&lt;/h1&gt;", t, V());
+	}
 }
