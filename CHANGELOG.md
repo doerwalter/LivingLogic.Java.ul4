@@ -1,3 +1,9 @@
+## 0.194 (2024-07-16)
+
+Make the timer an instance variable within `EvaluationContext` to properly
+clean its resources and make it a user thread instead of a daemon thread.
+
+
 ## 0.193 (2024-07-16)
 
 When an UL4 template finishes normally without exceeding the maximum allowed
