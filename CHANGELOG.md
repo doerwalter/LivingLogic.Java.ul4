@@ -1,3 +1,9 @@
+## 0.193 (2024-07-16)
+
+When an UL4 template finishes normally without exceeding the maximum allowed
+runtime cancel the timer task instead of the timer.
+
+
 ## 0.192 (2024-07-08)
 
 Fixed XML escaping logic, which resulted in the escaping happening twice when
