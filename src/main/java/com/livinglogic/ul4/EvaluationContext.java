@@ -74,6 +74,11 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	private long milliseconds = -1;
 
 	/**
+	 The timer used to limit the maximum runtime
+	 **/
+	private Timer timer;
+
+	/**
 	The timer task used to limit the maximum runtime
 	**/
 	private InterruptTimerTask interruptTimerTask;
@@ -188,12 +193,15 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 		this.milliseconds = milliseconds;
 		if (milliseconds >= 0)
 		{
-			Timer timer = new Timer("Runtime monitor for UL4 template", true);
+			timer = new Timer("Runtime monitor for UL4 template", false);
 			interruptTimerTask = new InterruptTimerTask(Thread.currentThread());
 			timer.schedule(interruptTimerTask, milliseconds);
 		}
 		else
+		{
 			interruptTimerTask = null;
+			timer = null;
+		}
 	}
 
 	protected void tick()
@@ -220,6 +228,8 @@ public class EvaluationContext implements AutoCloseable, CloseableRegistry
 	{
 		if (interruptTimerTask != null)
 			interruptTimerTask.cancel();
+		if (timer != null)
+			timer.cancel();
 		for (AutoCloseable closeable : closeables)
 		{
 			try
