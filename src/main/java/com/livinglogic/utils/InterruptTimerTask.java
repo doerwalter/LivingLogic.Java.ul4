@@ -17,6 +17,6 @@ public class InterruptTimerTask extends TimerTask
 	@Override
 	public void run()
 	{
-		tread.interrupt();
+		//tread.interrupt();
 	}
 }
