@@ -6114,11 +6114,11 @@ public class UL4Test
 	}
 
 	// In reality this throws an {@code }
-//	@CauseTest(expectedCause=RuntimeException.class)
-//	public void runtime_limit()
-//	{
-//		checkOutput("", T("<?while True?><?end while?>"), 10);
-//	}
+	@CauseTest(expectedCause=RuntimeException.class)
+	public void runtime_limit()
+	{
+		checkOutput("", T("<?while True?><?end while?>"), 10);
+	}
 
 	@Test
 	public void stripWhitespace()
