@@ -128,6 +128,34 @@ public class List_ extends AbstractType
 			return ((Object[])instance).length;
 	}
 
+	@Override
+	public Object getItem(EvaluationContext context, Object instance, Object index)
+	{
+		List list = (List)instance;
+
+		// If {@code instance} implements {@link UL4GetItem} prefer that
+		if (instance instanceof UL4GetItem ul4GetItem)
+			return ul4GetItem.getItemUL4(context, index);
+		else if (index instanceof Slice slice)
+		{
+			int size = list.size();
+			int startIndex = slice.getStartIndex(size);
+			int endIndex = slice.getStopIndex(size);
+			if (endIndex < startIndex)
+				endIndex = startIndex;
+			return new ArrayList(list.subList(startIndex, endIndex));
+		}
+		else if (index instanceof Boolean || index instanceof Number)
+		{
+			int i = Utils.toInt(index);
+			if (0 > i)
+				i += list.size();
+			return list.get(i);
+		}
+
+		throw new ArgumentTypeMismatchException("{!t}[{!t}] not supported", instance, index);
+	}
+
 	private static final Signature signatureAppend = new Signature().addVarPositional("items");
 	private static final Signature signatureInsert = new Signature().addPositionalOnly("pos").addVarPositional("items");
 	private static final Signature signaturePop = new Signature().addPositionalOnly("pos", -1);

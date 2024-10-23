@@ -129,95 +129,9 @@ public class ItemAST extends BinaryAST implements LValue
 		callBitOr(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context), value);
 	}
 
-	public static Object call(EvaluationContext context, String obj, int index)
-	{
-		if (0 > index)
-			index += obj.length();
-		return obj.substring(index, index+1);
-	}
-
-	public static Object call(EvaluationContext context, String obj, Slice slice)
-	{
-		int size = obj.length();
-		int startIndex = slice.getStartIndex(size);
-		int stopIndex = slice.getStopIndex(size);
-		if (stopIndex < startIndex)
-			stopIndex = startIndex;
-		return obj.substring(startIndex, stopIndex);
-	}
-
-	public static Object call(EvaluationContext context, List obj, int index)
-	{
-		if (0 > index)
-			index += obj.size();
-		return obj.get(index);
-	}
-
-	public static Object call(EvaluationContext context, List obj, Slice slice)
-	{
-		int size = obj.size();
-		int startIndex = slice.getStartIndex(size);
-		int endIndex = slice.getStopIndex(size);
-		if (endIndex < startIndex)
-			endIndex = startIndex;
-		return new ArrayList(obj.subList(startIndex, endIndex));
-	}
-
-	public static Object call(EvaluationContext context, UL4GetItem obj, Object key)
-	{
-		try
-		{
-			return obj.getItemUL4(context, key);
-		}
-		catch (AttributeException exc)
-		{
-			if (exc.getObject() == obj)
-				return new UndefinedKey(obj, key);
-			else
-				// The {@code AttributeException} originated from another object
-				throw exc;
-		}
-	}
-
-	public static Object call(EvaluationContext context, Map obj, Object index)
-	{
-		Object result = obj.get(index);
-
-		if ((result == null) && !obj.containsKey(index))
-			return new UndefinedKey(obj, index);
-		return result;
-	}
-
-	public static Object call(EvaluationContext context, Object obj, String key)
-	{
-		if (obj instanceof UL4GetItem)
-			return call(context, (UL4GetItem)obj, (Object)key);
-		else if (obj instanceof Map)
-			return call(context, (Map)obj, (Object)key);
-		throw new ArgumentTypeMismatchException("{!t}[{!t}] not supported", obj, key);
-	}
-
 	public static Object call(EvaluationContext context, Object obj, Object index)
 	{
-		if (obj instanceof UL4GetItem)
-			return call(context, (UL4GetItem)obj, index);
-		else if (obj instanceof Map)
-			return call(context, (Map)obj, index);
-		else if (index instanceof Slice)
-		{
-			if (obj instanceof String)
-				return call(context, (String)obj, (Slice)index);
-			else if (obj instanceof List)
-				return call(context, (List)obj, (Slice)index);
-		}
-		else if (index instanceof Boolean || index instanceof Number)
-		{
-			if (obj instanceof String)
-				return call(context, (String)obj, Utils.toInt(index));
-			else if (obj instanceof List)
-				return call(context, (List)obj, Utils.toInt(index));
-		}
-		throw new ArgumentTypeMismatchException("{!t}[{!t}] not supported", obj, index);
+		return UL4Type.getType(obj).getItem(context, obj, index);
 	}
 
 	public static void callSet(EvaluationContext context, List obj, int index, Object value)
