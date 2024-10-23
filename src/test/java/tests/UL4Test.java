@@ -6845,6 +6845,15 @@ public class UL4Test
 	}
 
 	@Test
+	public void module_operator_itemgetter()
+	{
+		checkOutput("0", T("<?print operator.itemgetter(0)(p)?>"), V("p", new Color(0, 1, 2, 3)));
+		checkOutput("3", T("<?print operator.itemgetter(3)(p)?>"), V("p", new Color(0, 1, 2, 3)));
+		checkOutput("[0, 3]", T("<?print operator.itemgetter(0, 3)(p)?>"), V("p", new Color(0, 1, 2, 3)));
+		checkOutput("1", T("<?print repr(operator.itemgetter(0)(p))?>"), V("p", List.of(1, 2, 3)));
+	}
+
+	@Test
 	public void module_math_pi()
 	{
 		checkOutput("True", T("<?print 3.14 < math.pi and math.pi < 3.15?>"));

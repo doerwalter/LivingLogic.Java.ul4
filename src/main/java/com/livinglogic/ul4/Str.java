@@ -103,6 +103,31 @@ public class Str extends AbstractType
 		return (String)instance;
 	}
 
+	@Override
+	public Object getItem(EvaluationContext context, Object instance, Object index)
+	{
+		String string = (String)instance;
+
+		if (index instanceof Slice slice)
+		{
+			int size = string.length();
+			int startIndex = slice.getStartIndex(size);
+			int endIndex = slice.getStopIndex(size);
+			if (endIndex < startIndex)
+				endIndex = startIndex;
+			return string.substring(startIndex, endIndex);
+		}
+		else if (index instanceof Boolean || index instanceof Number)
+		{
+			int i = Utils.toInt(index);
+			if (0 > i)
+				i += string.length();
+			return string.substring(i, i+1);
+		}
+
+		throw new ArgumentTypeMismatchException("{!t}[{!t}] not supported", instance, index);
+	}
+
 	private static final Signature signatureSplit = new Signature().addBoth("sep", null).addBoth("maxsplit", null);
 	private static final Signature signatureSplitLines = new Signature().addBoth("keepends", false);
 	private static final Signature signatureStrip = new Signature().addPositionalOnly("chars", null);

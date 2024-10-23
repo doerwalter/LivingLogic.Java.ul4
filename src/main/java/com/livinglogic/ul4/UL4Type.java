@@ -175,6 +175,21 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	}
 
 	/**
+	 Return an item of an instance of this type with the specified index (or key).
+
+	 @param context The evaluation context.
+	 @param instance The instance whose attribute should be be returned.
+	 @param index The index (or key) of the item to be returned.
+	 @return The specified item.
+	 **/
+	default Object getItem(EvaluationContext context, Object instance, Object index)
+	{
+		if (instance instanceof UL4GetItem)
+			return ((UL4GetItem)instance).getItemUL4(context, index);
+		throw new UnsupportedOperationException(Utils.formatMessage("{!t}[{!t}] not supported", instance, index));
+	}
+
+	/**
 	For types where we don't have a special type object (i.e. those that
 	are neither subclasses of {@link UL4Instance} nor any of a number of basic
 	types (like {@code boolean}, {@code int}, {@code str} etc.)), we create an

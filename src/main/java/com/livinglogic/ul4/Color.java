@@ -6,19 +6,12 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Locale;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.StringUtils;
+import java.util.*;
 
 import static com.livinglogic.utils.MapUtils.makeMap;
 
@@ -998,7 +991,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 			case -1:
 				return a;
 			default:
-				throw new ArrayIndexOutOfBoundsException(index);
+				throw new IndexOutOfBoundsException(index);
 		}
 	}
 

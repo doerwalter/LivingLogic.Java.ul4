@@ -16,6 +16,7 @@ public class ModuleOperator extends Module
 	{
 		super("operator", "Various operators as functions");
 		addObject(OperatorAttrGetter.type);
+		addObject(OperatorItemGetter.type);
 	}
 
 	public static final Module module = new ModuleOperator();

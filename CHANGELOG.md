@@ -1,3 +1,10 @@
+## 0.195 (2024-10-23)
+
+Added support for `operator.itemgetter`.
+
+Changed `ItemAST` logic to work via the type objects.
+
+
 ## 0.194 (2024-07-16)
 
 Make the timer an instance variable within `EvaluationContext` to properly

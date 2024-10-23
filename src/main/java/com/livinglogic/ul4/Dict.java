@@ -301,4 +301,21 @@ public class Dict extends AbstractType
 		else
 			((Map)object).put(key, value);
 	}
+
+	@Override
+	public Object getItem(EvaluationContext context, Object instance, Object index)
+	{
+		// If {@code instance} implements {@link UL4GetItem} prefer that
+		if (instance instanceof UL4GetItem)
+			return ((UL4GetItem)instance).getItemUL4(context, index);
+		else
+		{
+			Object result = ((Map)instance).get(index);
+
+			if ((result == null) && !((Map)instance).containsKey(index))
+				return new UndefinedKey(instance, index);
+
+			return result;
+		}
+	}
 }
