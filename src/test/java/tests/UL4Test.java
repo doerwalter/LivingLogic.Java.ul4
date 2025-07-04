@@ -547,8 +547,12 @@ public class UL4Test
 		checkOutput("17,34,51,68", T("<?code c = #1234?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>"));
 		checkOutput("18,52,86,120", T("<?code c = #12345678?><?print c[0]?>,<?print c[1]?>,<?print c[2]?>,<?print c[3]?>"));
 		checkOutput("yes", T("<?if #fff?>yes<?else?>no<?end if?>"));
-		checkOutput("rgba(0,0,0,0)", T("<?code c = #0000?><?print c?>"));
-		checkOutput("rgba(136,136,136,0.533)", T("<?code c = #8888?><?print c?>"));
+		checkOutput("#000", T("<?code c = #000?><?print c?>"));
+		checkOutput("#888", T("<?code c = #888?><?print c?>"));
+		checkOutput("#123456", T("<?code c = #123456?><?print c?>"));
+		checkOutput("#0000", T("<?code c = #0000?><?print c?>"));
+		checkOutput("#8888", T("<?code c = #8888?><?print c?>"));
+		checkOutput("#12345678", T("<?code c = #12345678?><?print c?>"));
 	}
 
 	@Test

@@ -292,8 +292,28 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 		}
 		else
 		{
-			DecimalFormat df = new DecimalFormat("0.###", new DecimalFormatSymbols(Locale.US));
-			return "rgba(" + Integer.toString(r) + "," + Integer.toString(g) + "," + Integer.toString(b) + "," + df.format((double)a/255.) + ")";
+			if (((r>>4) == (r&0xf)) && ((g>>4) == (g&0xf)) && ((b>>4) == (b&0xf)) && ((a>>4) == (a&0xf)))
+				return "#" + Integer.toHexString(r>>4) + Integer.toHexString(g>>4) + Integer.toHexString(b>>4) + Integer.toHexString(a>>4);
+			else
+			{
+				String sr = Integer.toHexString(r);
+				if (sr.length() < 2)
+					sr = "0" + sr;
+
+				String sg = Integer.toHexString(g);
+				if (sg.length() < 2)
+					sg = "0" + sg;
+
+				String sb = Integer.toHexString(b);
+				if (sb.length() < 2)
+					sb = "0" + sb;
+
+				String sa = Integer.toHexString(a);
+				if (sa.length() < 2)
+					sa = "0" + sa;
+
+				return "#" + sr + sg + sb + sa;
+			}
 		}
 	}
 
