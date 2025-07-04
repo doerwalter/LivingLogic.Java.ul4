@@ -152,6 +152,7 @@ public class Str extends AbstractType
 	private static final BuiltinMethodDescriptor methodFind = new BuiltinMethodDescriptor(type, "find", signatureCountFind);
 	private static final BuiltinMethodDescriptor methodRFind = new BuiltinMethodDescriptor(type, "rfind", signatureCountFind);
 	private static final BuiltinMethodDescriptor methodJoin = new BuiltinMethodDescriptor(type, "join", signatureJoin);
+	private static final BuiltinMethodDescriptor methodIsDigit = new BuiltinMethodDescriptor(type, "isdigit", Signature.noParameters);
 
 	public static List<String> split(String instance)
 	{
@@ -682,6 +683,25 @@ public class Str extends AbstractType
 		return join(instance, args.get(0));
 	}
 
+	public static boolean isdigit(String instance)
+	{
+		if (instance.isEmpty())
+			return false;
+
+		for (int i = 0; i < instance.length(); ++i)
+		{
+			char c = instance.charAt(i);
+			if (c < '0' || c > '9')
+				return false;
+		}
+		return true;
+	}
+
+	public static boolean isdigit(String instance, BoundArguments args)
+	{
+		return isdigit(instance);
+	}
+
 	protected static Set<String> attributes = Set.of(
 		"split",
 		"rsplit",
@@ -698,7 +718,8 @@ public class Str extends AbstractType
 		"count",
 		"find",
 		"rfind",
-		"join"
+		"join",
+		"isdigit"
 	);
 
 	@Override
@@ -746,6 +767,8 @@ public class Str extends AbstractType
 				return methodRFind.bindMethod(string);
 			case "join":
 				return methodJoin.bindMethod(string);
+			case "isdigit":
+				return methodIsDigit.bindMethod(string);
 			default:
 				return super.getAttr(context, instance, key);
 		}
@@ -790,6 +813,8 @@ public class Str extends AbstractType
 				return rfind(string, methodRFind.bindArguments(args, kwargs));
 			case "join":
 				return join(string, methodJoin.bindArguments(args, kwargs));
+			case "isdigit":
+				return isdigit(string, methodIsDigit.bindArguments(args, kwargs));
 			default:
 				return super.callAttr(context, instance, key, args, kwargs);
 		}

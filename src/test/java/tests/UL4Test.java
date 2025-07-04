@@ -504,6 +504,17 @@ public class UL4Test
 	}
 
 	@Test
+	public void string_method_isdigit()
+	{
+		checkOutput("True", T("<?print '123'.isdigit()?>"));
+		checkOutput("False", T("<?print '123a'.isdigit()?>"));
+		checkOutput("False", T("<?print ''.isdigit()?>"));
+		checkOutput("False", T("<?print 'abc'.isdigit()?>"));
+		checkOutput("False", T("<?print '+123'.isdigit()?>"));
+		checkOutput("False", T("<?print '-123'.isdigit()?>"));
+	}
+
+	@Test
 	public void type_date()
 	{
 		checkOutput("2000-02-29", T("<?print @(2000-02-29).isoformat()?>"));

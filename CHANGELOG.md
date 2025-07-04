@@ -1,3 +1,8 @@
+## HEAD (2025-??-??)
+
+Added the string method `isdigit`.
+
+
 ## 0.195 (2024-10-23)
 
 Added support for `operator.itemgetter`.
