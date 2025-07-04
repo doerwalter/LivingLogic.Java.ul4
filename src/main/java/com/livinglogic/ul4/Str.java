@@ -153,6 +153,7 @@ public class Str extends AbstractType
 	private static final BuiltinMethodDescriptor methodRFind = new BuiltinMethodDescriptor(type, "rfind", signatureCountFind);
 	private static final BuiltinMethodDescriptor methodJoin = new BuiltinMethodDescriptor(type, "join", signatureJoin);
 	private static final BuiltinMethodDescriptor methodIsDigit = new BuiltinMethodDescriptor(type, "isdigit", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodIsASCIIDigit = new BuiltinMethodDescriptor(type, "isasciidigit", Signature.noParameters);
 
 	public static List<String> split(String instance)
 	{
@@ -683,7 +684,49 @@ public class Str extends AbstractType
 		return join(instance, args.get(0));
 	}
 
+	private static Set<Integer> digitsUnknownToJava = Set.of(
+		178, 179, 185, 4969, 4970, 4971, 4972, 4973, 4974, 4975, 4976, 4977, 6618,
+		8304, 8308, 8309, 8310, 8311, 8312, 8313, 8320, 8321, 8322, 8323, 8324,
+		8325, 8326, 8327, 8328, 8329, 9312, 9313, 9314, 9315, 9316, 9317, 9318,
+		9319, 9320, 9332, 9333, 9334, 9335, 9336, 9337, 9338, 9339, 9340, 9352,
+		9353, 9354, 9355, 9356, 9357, 9358, 9359, 9360, 9450, 9461, 9462, 9463,
+		9464, 9465, 9466, 9467, 9468, 9469, 9471, 10102, 10103, 10104, 10105,
+		10106, 10107, 10108, 10109, 10110, 10112, 10113, 10114, 10115, 10116,
+		10117, 10118, 10119, 10120, 10122, 10123, 10124, 10125, 10126, 10127,
+		10128, 10129, 10130, 68160, 68161, 68162, 68163, 69216, 69217, 69218,
+		69219, 69220, 69221, 69222, 69223, 69224, 69714, 69715, 69716, 69717,
+		69718, 69719, 69720, 69721, 69722, 73552, 73553, 73554, 73555, 73556,
+		73557, 73558, 73559, 73560, 73561, 92864, 92865, 92866, 92867, 92868,
+		92869, 92870, 92871, 92872, 92873, 124144, 124145, 124146, 124147, 124148,
+		124149, 124150, 124151, 124152, 124153, 127232, 127233, 127234, 127235,
+		127236, 127237, 127238, 127239, 127240, 127241, 127242
+	);
+
 	public static boolean isdigit(String instance)
+	{
+		if (instance.isEmpty())
+			return false;
+
+		int length = instance.length();
+		for (int offset = 0; offset < length; )
+		{
+			int c = instance.codePointAt(offset);
+
+			if (!Character.isDigit(c) && !digitsUnknownToJava.contains(c))
+			{
+ 				return false;
+			}
+			offset += Character.charCount(c);
+		}
+		return true;
+	}
+
+	public static boolean isdigit(String instance, BoundArguments args)
+	{
+		return isdigit(instance);
+	}
+
+	public static boolean isasciidigit(String instance)
 	{
 		if (instance.isEmpty())
 			return false;
@@ -697,9 +740,9 @@ public class Str extends AbstractType
 		return true;
 	}
 
-	public static boolean isdigit(String instance, BoundArguments args)
+	public static boolean isasciidigit(String instance, BoundArguments args)
 	{
-		return isdigit(instance);
+		return isasciidigit(instance);
 	}
 
 	protected static Set<String> attributes = Set.of(
@@ -719,7 +762,8 @@ public class Str extends AbstractType
 		"find",
 		"rfind",
 		"join",
-		"isdigit"
+		"isdigit",
+		"isasciidigit"
 	);
 
 	@Override
@@ -769,6 +813,8 @@ public class Str extends AbstractType
 				return methodJoin.bindMethod(string);
 			case "isdigit":
 				return methodIsDigit.bindMethod(string);
+			case "isasciidigit":
+				return methodIsASCIIDigit.bindMethod(string);
 			default:
 				return super.getAttr(context, instance, key);
 		}
@@ -815,6 +861,8 @@ public class Str extends AbstractType
 				return join(string, methodJoin.bindArguments(args, kwargs));
 			case "isdigit":
 				return isdigit(string, methodIsDigit.bindArguments(args, kwargs));
+			case "isasciidigit":
+				return isasciidigit(string, methodIsASCIIDigit.bindArguments(args, kwargs));
 			default:
 				return super.callAttr(context, instance, key, args, kwargs);
 		}

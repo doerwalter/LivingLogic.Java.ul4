@@ -515,6 +515,17 @@ public class UL4Test
 	}
 
 	@Test
+	public void string_method_isasciidigit()
+	{
+		checkOutput("True", T("<?print '123'.isasciidigit()?>"));
+		checkOutput("False", T("<?print '123a'.isasciidigit()?>"));
+		checkOutput("False", T("<?print ''.isasciidigit()?>"));
+		checkOutput("False", T("<?print 'abc'.isasciidigit()?>"));
+		checkOutput("False", T("<?print '+123'.isasciidigit()?>"));
+		checkOutput("False", T("<?print '-123'.isasciidigit()?>"));
+	}
+
+	@Test
 	public void type_date()
 	{
 		checkOutput("2000-02-29", T("<?print @(2000-02-29).isoformat()?>"));
