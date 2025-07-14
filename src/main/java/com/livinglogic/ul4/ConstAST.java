@@ -70,6 +70,11 @@ public class ConstAST extends CodeAST
 		return "const";
 	}
 
+	public Object getValue()
+	{
+		return value;
+	}
+
 	public String toString(int indent)
 	{
 		return FunctionRepr.call(value);
