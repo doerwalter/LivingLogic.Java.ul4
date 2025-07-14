@@ -4834,6 +4834,27 @@ public class UL4Test
 		checkOutput("xyzzygurk", T("<?print obj.rstrip(chars=arg)?>"), V("obj", "xyzzygurkxyzzy", "arg", "xyz"));
 	}
 
+
+	@Test
+	public void string_method_removeprefix()
+	{
+		checkOutput("World", T("<?print 'Hello World'.removeprefix('Hello ')?>"));
+		checkOutput("Hello World", T("<?print 'Hello World'.removeprefix('Goodbye ')?>"));
+		checkOutput("Hello World", T("<?print 'Hello World'.removeprefix('')?>"));
+		checkOutput("", T("<?print ''.removeprefix('test')?>"));
+		checkOutput("", T("<?print ''.removeprefix('')?>"));
+	}
+
+	@Test
+	public void string_method_removesuffix()
+	{
+		checkOutput("Hello ", T("<?print 'Hello World'.removesuffix('World')?>"));
+		checkOutput("Hello World", T("<?print 'Hello World'.removesuffix(' Universe')?>"));
+		checkOutput("Hello World", T("<?print 'Hello World'.removesuffix('')?>"));
+		checkOutput("", T("<?print ''.removesuffix('test')?>"));
+		checkOutput("", T("<?print ''.removesuffix('')?>"));
+	}
+
 	@Test
 	public void method_split()
 	{

@@ -1,10 +1,11 @@
-## HEAD (2025-??-??)
+## 0.196 (2025-07-14)
 
 The `str()` output of colors with an alpha value that is not 255 no longer
 uses the `rgba()` function but the shorter `#rgba` or `@rrggbbaa` form.
 
-
 Added the string methods `isdigit()` and `isasciidigit()`.
+
+Added the string methods `removeprefix()` and `removesuffix()`.
 
 
 ## 0.195 (2024-10-23)
