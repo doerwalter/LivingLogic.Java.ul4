@@ -1,3 +1,8 @@
+## HEAD (2025-??-??)
+
+Add `vsql.AST.getValue()`.
+
+
 ## 0.196 (2025-07-14)
 
 The `str()` output of colors with an alpha value that is not 255 no longer
