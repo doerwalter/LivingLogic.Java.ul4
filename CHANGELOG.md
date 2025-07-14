@@ -1,6 +1,11 @@
-## HEAD (2025-??-??)
+## 0.196.2 (2025-07-14)
 
-Add `vsql.AST.getValue()`.
+Add `UnaryAST.getObj()`.
+
+
+## 0.196.1 (2025-07-14)
+
+Add `ConstAST.getValue()`
 
 
 ## 0.196 (2025-07-14)

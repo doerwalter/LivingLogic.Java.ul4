@@ -66,6 +66,11 @@ public abstract class UnaryAST extends CodeAST
 		this.obj = obj;
 	}
 
+	public CodeAST getObj()
+	{
+		return obj;
+	}
+
 	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
