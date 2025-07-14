@@ -136,6 +136,8 @@ public class Str extends AbstractType
 	private static final Signature signatureReplace = new Signature().addPositionalOnly("old").addPositionalOnly("new").addPositionalOnly("count", -1);
 	private static final Signature signatureCountFind = new Signature().addPositionalOnly("sub").addPositionalOnly("start", null).addPositionalOnly("end", null);
 	private static final Signature signatureJoin = new Signature().addPositionalOnly("iterable");
+	private static final Signature signatureRemovePrefix = new Signature().addPositionalOnly("prefix");
+	private static final Signature signatureRemoveSuffix = new Signature().addPositionalOnly("suffix");
 	private static final BuiltinMethodDescriptor methodSplit = new BuiltinMethodDescriptor(type, "split", signatureSplit);
 	private static final BuiltinMethodDescriptor methodRSplit = new BuiltinMethodDescriptor(type, "rsplit", signatureSplit);
 	private static final BuiltinMethodDescriptor methodSplitLines = new BuiltinMethodDescriptor(type, "splitlines", signatureSplitLines);
@@ -154,6 +156,8 @@ public class Str extends AbstractType
 	private static final BuiltinMethodDescriptor methodJoin = new BuiltinMethodDescriptor(type, "join", signatureJoin);
 	private static final BuiltinMethodDescriptor methodIsDigit = new BuiltinMethodDescriptor(type, "isdigit", Signature.noParameters);
 	private static final BuiltinMethodDescriptor methodIsASCIIDigit = new BuiltinMethodDescriptor(type, "isasciidigit", Signature.noParameters);
+	private static final BuiltinMethodDescriptor methodRemovePrefix = new BuiltinMethodDescriptor(type, "removeprefix", signatureRemovePrefix);
+	private static final BuiltinMethodDescriptor methodRemoveSuffix = new BuiltinMethodDescriptor(type, "removesuffix", signatureRemoveSuffix);
 
 	public static List<String> split(String instance)
 	{
@@ -388,6 +392,30 @@ public class Str extends AbstractType
 		throw new ArgumentTypeMismatchException("{!t}.rstrip({!t}) not supported", instance, arg);
 	}
 
+	public static String removeprefix(String instance, String prefix)
+	{
+		if (instance.startsWith(prefix))
+			return instance.substring(prefix.length());
+		return instance;
+	}
+
+	public static String removeprefix(String instance, BoundArguments args)
+	{
+		return removeprefix(instance, args.getString(0));
+	}
+
+	public static String removesuffix(String instance, String suffix)
+	{
+		if (instance.endsWith(suffix))
+			return instance.substring(0, instance.length() - suffix.length());
+		return instance;
+	}
+
+	public static String removesuffix(String instance, BoundArguments args)
+	{
+		return removesuffix(instance, args.getString(0));
+	}
+
 	public static String lower(String instance)
 	{
 		return instance.toLowerCase();
@@ -407,7 +435,6 @@ public class Str extends AbstractType
 	{
 		return upper(instance);
 	}
-
 
 	public static String capitalize(String instance)
 	{
@@ -752,6 +779,8 @@ public class Str extends AbstractType
 		"strip",
 		"lstrip",
 		"rstrip",
+		"removeprefix",
+		"removesuffix",
 		"upper",
 		"lower",
 		"capitalize",
@@ -791,6 +820,10 @@ public class Str extends AbstractType
 				return methodLStrip.bindMethod(string);
 			case "rstrip":
 				return methodRStrip.bindMethod(string);
+			case "removeprefix":
+				return methodRemovePrefix.bindMethod(string);
+			case "removesuffix":
+				return methodRemoveSuffix.bindMethod(string);
 			case "upper":
 				return methodUpper.bindMethod(string);
 			case "lower":
@@ -839,6 +872,10 @@ public class Str extends AbstractType
 				return lstrip(string, methodLStrip.bindArguments(args, kwargs));
 			case "rstrip":
 				return rstrip(string, methodRStrip.bindArguments(args, kwargs));
+			case "removeprefix":
+				return removeprefix(string, methodRemovePrefix.bindArguments(args, kwargs));
+			case "removesuffix":
+				return removesuffix(string, methodRemoveSuffix.bindArguments(args, kwargs));
 			case "upper":
 				return upper(string, methodUpper.bindArguments(args, kwargs));
 			case "lower":
