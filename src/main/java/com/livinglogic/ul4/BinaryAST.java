@@ -17,7 +17,7 @@ import com.livinglogic.ul4on.Encoder;
 /**
 The base class of all nodes that model binary operations.
 **/
-abstract class BinaryAST extends CodeAST
+public abstract class BinaryAST extends CodeAST
 {
 	protected static class Type extends CodeAST.Type
 	{
