@@ -1,3 +1,8 @@
+## 0.196.3 (2025-07-15)
+
+Add `BinaryAST.getObj1()` and `BinaryAST.getObj2()`.
+
+
 ## 0.196.2 (2025-07-14)
 
 Add `UnaryAST.getObj()`.
