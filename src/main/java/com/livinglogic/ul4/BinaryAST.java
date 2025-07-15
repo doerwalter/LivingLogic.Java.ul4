@@ -71,6 +71,16 @@ abstract class BinaryAST extends CodeAST
 		this.obj2 = obj2;
 	}
 
+	public CodeAST getObj1()
+	{
+		return obj1;
+	}
+
+	public CodeAST getObj2()
+	{
+		return obj2;
+	}
+
 	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
