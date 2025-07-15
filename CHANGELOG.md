@@ -1,3 +1,8 @@
+## 0.196.4 (2025-07-15)
+
+Make `BinaryAST` public.
+
+
 ## 0.196.3 (2025-07-15)
 
 Add `BinaryAST.getObj1()` and `BinaryAST.getObj2()`.
