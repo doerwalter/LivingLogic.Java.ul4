@@ -1,3 +1,8 @@
+## 0.196.5 (2025-07-16)
+
+Add methods `IfAST.getObjIf()`, `IfAST.getObjCond()` and `IfAST.getObjElse()`.
+
+
 ## 0.196.4 (2025-07-15)
 
 Make `BinaryAST` public.

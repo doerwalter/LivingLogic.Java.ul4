@@ -70,6 +70,21 @@ public class IfAST extends CodeAST
 		this.objElse = objElse;
 	}
 
+	public CodeAST getObjIf()
+	{
+		return objIf;
+	}
+
+	public CodeAST getObjCond()
+	{
+		return objCond;
+	}
+
+	public CodeAST getObjElse()
+	{
+		return objElse;
+	}
+
 	public String getType()
 	{
 		return "if";
