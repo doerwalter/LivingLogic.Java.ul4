@@ -71,6 +71,16 @@ public class SliceAST extends CodeAST
 		this.index2 = index2;
 	}
 
+	public AST getIndex1()
+	{
+		return index1;
+	}
+
+	public AST getIndex2()
+	{
+		return index2;
+	}
+
 	public String getType()
 	{
 		return "slice";

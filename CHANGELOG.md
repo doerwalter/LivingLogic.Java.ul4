@@ -1,3 +1,9 @@
+## 0.196.6 (2025-07-16)
+
+Add methods `SliceAST.getIndex1()`, `SliceAST.getIndex2()`, `ListAST.getItems()`
+and `SetAST.getItems()`.
+
+
 ## 0.196.5 (2025-07-16)
 
 Add methods `IfAST.getObjIf()`, `IfAST.getObjCond()` and `IfAST.getObjElse()`.

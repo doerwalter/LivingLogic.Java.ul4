@@ -67,6 +67,11 @@ public class ListAST extends CodeAST
 		super(template, posStart, posStop);
 	}
 
+	public List<SeqItemASTBase> getItems()
+	{
+		return items;
+	}
+
 	public void append(SeqItemASTBase item)
 	{
 		items.add(item);
