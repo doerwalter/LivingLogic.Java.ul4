@@ -1,3 +1,8 @@
+## 0.196.7 (2025-07-16)
+
+Redo release to really add the methods from 0.196.6.
+
+
 ## 0.196.6 (2025-07-16)
 
 Add methods `SliceAST.getIndex1()`, `SliceAST.getIndex2()`, `ListAST.getItems()`
