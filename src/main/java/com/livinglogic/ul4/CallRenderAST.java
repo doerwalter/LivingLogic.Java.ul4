@@ -51,7 +51,7 @@ public abstract class CallRenderAST extends CodeAST
 		return obj;
 	}
 
-	public List<ArgumentASTBase> arguments getArguments()
+	public List<ArgumentASTBase> getArguments()
 	{
 		return arguments;
 	}

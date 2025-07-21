@@ -1,3 +1,8 @@
+## 0.196.9 (2025-07-21)
+
+Fix method `CallRenderAST.getArguments()`.
+
+
 ## 0.196.8 (2025-07-21)
 
 Add methods `CallRenderAST.getObj()` and `CallRenderAST.getArguments()`.
