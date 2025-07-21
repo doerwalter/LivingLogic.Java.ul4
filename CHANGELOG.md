@@ -1,3 +1,8 @@
+## 0.196.8 (2025-07-21)
+
+Add methods `CallRenderAST.getObj()` and `CallRenderAST.getArguments()`.
+
+
 ## 0.196.7 (2025-07-16)
 
 Redo release to really add the methods from 0.196.6.
