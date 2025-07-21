@@ -46,6 +46,16 @@ public abstract class CallRenderAST extends CodeAST
 		arguments.add(argument);
 	}
 
+	public AST getObj()
+	{
+		return obj;
+	}
+
+	public List<ArgumentASTBase> arguments getArguments()
+	{
+		return arguments;
+	}
+
 	@Override
 	public void dumpUL4ON(Encoder encoder) throws IOException
 	{
