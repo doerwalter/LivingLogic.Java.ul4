@@ -1,3 +1,8 @@
+## 0.196.10 (2025-07-23)
+
+Add method `VarAST.getName()`.
+
+
 ## 0.196.9 (2025-07-21)
 
 Fix method `CallRenderAST.getArguments()`.
