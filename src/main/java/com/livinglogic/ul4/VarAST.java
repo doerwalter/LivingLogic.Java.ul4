@@ -65,6 +65,11 @@ public class VarAST extends CodeAST implements LValue
 		this.name = name;
 	}
 
+	public String getName()
+	{
+		return name;
+	}
+
 	public String getType()
 	{
 		return "var";
