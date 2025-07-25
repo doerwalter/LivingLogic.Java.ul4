@@ -72,6 +72,11 @@ public class PositionalArgumentAST extends ArgumentASTBase
 		return "posarg";
 	}
 
+	public AST getValue()
+	{
+		return value;
+	}
+
 	public void addToCall(CallRenderAST call)
 	{
 		for (ArgumentASTBase argument : call.arguments)
