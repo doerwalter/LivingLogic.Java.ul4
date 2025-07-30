@@ -656,8 +656,8 @@ public class Utils
 	}
 
 	/**
-	Format a message replacing placeholders of the form {}, {!r}, {!r} or
-	{0}, {0!r}, {0!t}.
+	Format a message replacing placeholders of the form {}, {!r}, {!R}, {!`}, {!t},
+	{0}, {0!r}, {!R}, {!`} or {0!t}.
 	**/
 	public static String formatMessage(String template, Object... args)
 	{
@@ -703,6 +703,33 @@ public class Utils
 					case 3:
 						buffer.append(objectType(arg));
 						break;
+					case 4:
+						String output = arg != null ? arg.toString() : "null";
+						int maxcount = 0;
+						int count = 0;
+						for (int pos = 0; pos < output.length(); ++pos)
+						{
+							char c = output.charAt(pos);
+							if (c == '`')
+							{
+								++count;
+							}
+							else
+							{
+								if (count > maxcount)
+									maxcount = count;
+								count = 0;
+							}
+						}
+						if (count > maxcount)
+							maxcount = count;
+						int i;
+						for (i = 0; i < maxcount + 1; ++i)
+							buffer.append('`');
+						buffer.append(output);
+						for (i = 0; i < maxcount + 1; ++i)
+							buffer.append('`');
+						break;
 				}
 				outsidePlaceholder = true;
 			}
@@ -723,6 +750,11 @@ public class Utils
 				else if (token.endsWith("!t"))
 				{
 					form = 3;
+					position = token.substring(0, token.length() - 2);
+				}
+				else if (token.endsWith("!`"))
+				{
+					form = 4;
 					position = token.substring(0, token.length() - 2);
 				}
 				else
