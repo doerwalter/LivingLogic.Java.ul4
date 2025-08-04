@@ -71,6 +71,11 @@ public class SeqItemAST extends SeqItemASTBase
 		return "seqitem";
 	}
 
+	public AST getValue()
+	{
+		return value;
+	}
+
 	public void evaluateList(EvaluationContext context, List result)
 	{
 		result.add(value.decoratedEvaluate(context));
