@@ -1,3 +1,8 @@
+## 0.196.13 (2025-08-04)
+
+Add method `SeqItemAST.getValue()`.
+
+
 ## 0.196.12 (2025-07-25)
 
 Add support for escaping arguments as Markdown code block in
