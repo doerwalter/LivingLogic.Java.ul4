@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
@@ -13,6 +14,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.livinglogic.vsql.VSQLAddAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
 
 public class AddAST extends BinaryAST
 {
@@ -65,6 +71,18 @@ public class AddAST extends BinaryAST
 	public String getType()
 	{
 		return "add";
+	}
+
+	@Override
+	public VSQLAddAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLAddAST(
+			VSQLUtils.getSourcePrefix(this, obj1),
+			obj1.asVSQL(vars),
+			VSQLUtils.getSourceInfix(obj1, obj2),
+			obj2.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj2, this)
+		);
 	}
 
 	@Override

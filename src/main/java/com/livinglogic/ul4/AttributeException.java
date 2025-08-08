@@ -6,6 +6,9 @@
 
 package com.livinglogic.ul4;
 
+import static com.livinglogic.utils.StringUtils.formatMessage;
+
+
 /**
 Thrown when an object doesn't have the requested attribute. This exception
 might be thrown by {@link UL4GetAttr#getAttrUL4}.
@@ -17,7 +20,7 @@ public class AttributeException extends RuntimeException
 
 	public AttributeException(Object object, Object key)
 	{
-		super(Utils.formatMessage("{!r} has no attribute {!r}!", object, key));
+		super(formatMessage("{!r} has no attribute {!r}!", object, key));
 		this.object = object;
 		this.key = key;
 	}

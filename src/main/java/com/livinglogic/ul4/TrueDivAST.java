@@ -6,9 +6,15 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+
+import com.livinglogic.vsql.VSQLTrueDivAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
 
 public class TrueDivAST extends BinaryAST
 {
@@ -61,6 +67,18 @@ public class TrueDivAST extends BinaryAST
 	public String getType()
 	{
 		return "truediv";
+	}
+
+	@Override
+	public VSQLTrueDivAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLTrueDivAST(
+			VSQLUtils.getSourcePrefix(this, obj1),
+			obj1.asVSQL(vars),
+			VSQLUtils.getSourceInfix(obj1, obj2),
+			obj2.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj2, this)
+		);
 	}
 
 	public Object evaluate(EvaluationContext context)

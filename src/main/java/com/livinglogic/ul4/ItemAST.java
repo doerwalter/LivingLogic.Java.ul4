@@ -6,10 +6,17 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Iterator;
+
+import com.livinglogic.vsql.VSQLAST;
+import com.livinglogic.vsql.VSQLItemAST;
+import com.livinglogic.vsql.VSQLSliceAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
 
 public class ItemAST extends BinaryAST implements LValue
 {
@@ -64,6 +71,82 @@ public class ItemAST extends BinaryAST implements LValue
 		return "item";
 	}
 
+	@Override
+	public VSQLAST asVSQL(Map<String, VSQLField> vars)
+	{
+		if (obj2 instanceof SliceAST sliceObj)
+		{
+			AST index1 = sliceObj.getIndex1();
+			AST index2 = sliceObj.getIndex2();
+
+			if (index1 != null)
+			{
+				if (index2 != null)
+				{
+					return new VSQLSliceAST(
+						VSQLUtils.getSourcePrefix(this, obj1),
+						obj1.asVSQL(vars),
+						VSQLUtils.getSourceInfix(obj1, index1),
+						index1.asVSQL(vars),
+						VSQLUtils.getSourceInfix(index1, index2),
+						index2.asVSQL(vars),
+						VSQLUtils.getSourceSuffix(index2, this)
+					);
+				}
+				else
+				{
+					return new VSQLSliceAST(
+						VSQLUtils.getSourcePrefix(this, obj1),
+						obj1.asVSQL(vars),
+						VSQLUtils.getSourceInfix(obj1, index1),
+						index1.asVSQL(vars),
+						null,
+						null,
+						VSQLUtils.getSourceSuffix(index1, this)
+					);
+				}
+			}
+			else
+			{
+				if (index2 != null)
+				{
+					return new VSQLSliceAST(
+						VSQLUtils.getSourcePrefix(this, obj1),
+						obj1.asVSQL(vars),
+						VSQLUtils.getSourceInfix(obj1, index2),
+						null,
+						null,
+						index2.asVSQL(vars),
+						VSQLUtils.getSourceSuffix(index2, this)
+					);
+				}
+				else
+				{
+					return new VSQLSliceAST(
+						VSQLUtils.getSourcePrefix(this, obj1),
+						VSQLAST.type.fromul4(obj1, vars),
+						VSQLUtils.getSourceSuffix(obj1, this),
+						null,
+						null,
+						null,
+						null
+					);
+				}
+			}
+		}
+		else
+		{
+			return new VSQLItemAST(
+				VSQLUtils.getSourcePrefix(this, obj1),
+				obj1.asVSQL(vars),
+				VSQLUtils.getSourceInfix(obj1, obj2),
+				obj2.asVSQL(vars),
+				VSQLUtils.getSourceSuffix(obj2, this)
+			);
+		}
+	}
+
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		return call(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));

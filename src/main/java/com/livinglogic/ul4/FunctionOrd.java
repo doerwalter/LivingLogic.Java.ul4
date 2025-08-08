@@ -8,6 +8,9 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 
+import static com.livinglogic.utils.StringUtils.formatMessage;
+
+
 public class FunctionOrd extends Function
 {
 	@Override
@@ -34,7 +37,7 @@ public class FunctionOrd extends Function
 	{
 		if (obj.length() != 1)
 		{
-			throw new IllegalArgumentException(Utils.formatMessage("String {!r} contains more than one unicode character!", obj));
+			throw new IllegalArgumentException(formatMessage("String {!r} contains more than one unicode character!", obj));
 		}
 		return (int)obj.charAt(0);
 	}

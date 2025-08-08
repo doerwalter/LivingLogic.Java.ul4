@@ -6,12 +6,17 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.livinglogic.vsql.VSQLMulAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
 
 
 public class MulAST extends BinaryAST
@@ -65,6 +70,18 @@ public class MulAST extends BinaryAST
 	public String getType()
 	{
 		return "mul";
+	}
+
+	@Override
+	public VSQLMulAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLMulAST(
+			VSQLUtils.getSourcePrefix(this, obj1),
+			obj1.asVSQL(vars),
+			VSQLUtils.getSourceInfix(obj1, obj2),
+			obj2.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj2, this)
+		);
 	}
 
 	public Object evaluate(EvaluationContext context)

@@ -1,3 +1,8 @@
+## HEAD (2025-??-??)
+
+vSQL has been merged into UL4.
+
+
 ## 0.196.13 (2025-08-04)
 
 Add method `SeqItemAST.getValue()`.

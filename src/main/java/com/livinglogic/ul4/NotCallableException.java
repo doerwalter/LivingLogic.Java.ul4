@@ -6,6 +6,9 @@
 
 package com.livinglogic.ul4;
 
+import static com.livinglogic.utils.StringUtils.formatMessage;
+
+
 /**
 Thrown by {@link CallAST} if the object is not callable.
 **/
@@ -13,6 +16,6 @@ public class NotCallableException extends UnsupportedOperationException
 {
 	public NotCallableException(Object obj)
 	{
-		super(Utils.formatMessage("{!R} is not callable!", obj));
+		super(formatMessage("{!R} is not callable!", obj));
 	}
 }
