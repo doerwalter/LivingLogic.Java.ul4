@@ -125,50 +125,7 @@ public abstract class VSQLAST implements UL4Instance, UL4ONSerializable, UL4Repr
 
 		public VSQLAST fromul4(AST ast, Map<String, VSQLField> vars)
 		{
-			if (ast instanceof AttrAST attrAST)
-			{
-				AST objAST = attrAST.getObj();
-				String attrName = attrAST.getAttrName();
-				VSQLAST objVAST = fromul4(objAST, vars);
-
-				String trailingSource = getSourceSuffix(objAST, attrAST);
-				int dotPos = trailingSource.indexOf(".");
-				
-				for (++dotPos; dotPos < trailingSource.length() && trailingSource.charAt(dotPos) == ' '; ++dotPos)
-					;
-
-				String attrNamePrefix = trailingSource.substring(0, dotPos);
-				String attrNameSuffix = trailingSource.substring(dotPos + attrName.length());
-				if (objVAST instanceof VSQLFieldRefAST fieldRefAST)
-				{
-					VSQLField field = fieldRefAST.getField();
-					VSQLGroup group = field.getRefGroup();
-					if (group != null)
-					{
-						VSQLField refField = group.getField(attrName);
-						if (refField != null)
-						{
-							return new VSQLFieldRefAST(
-								getSourcePrefix(attrAST, objAST),
-								fieldRefAST,
-								attrNamePrefix,
-								attrName,
-								attrNameSuffix,
-								refField
-							);
-						}
-					}
-					// Fall through to a normal attribute access
-				}
-				return new VSQLAttrAST(
-					getSourcePrefix(attrAST, objAST),
-					objVAST,
-					attrNamePrefix,
-					attrName,
-					attrNameSuffix
-				);
-			}
-			else if (ast instanceof CallAST callAST)
+			if (ast instanceof CallAST callAST)
 			{
 				AST objAST = callAST.getObj();
 				VSQLAST objVAST = fromul4(objAST, vars);

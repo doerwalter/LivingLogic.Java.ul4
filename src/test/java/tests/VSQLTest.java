@@ -1605,4 +1605,40 @@ public class VSQLTest
 
 		checkVSQL("select livingapi_pkg.global_mode /* mode() */ from dual", query);
 	}
+
+	@Test
+	public void selectVSQL_attr_color_r()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.selectVSQL("#123456.r");
+
+		checkVSQL("select vsqlimpl_pkg.attr_color_r(305420031) /* #123456.r */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_color_g()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.selectVSQL("#123456.g");
+
+		checkVSQL("select vsqlimpl_pkg.attr_color_g(305420031) /* #123456.g */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_color_b()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.selectVSQL("#123456.b");
+
+		checkVSQL("select vsqlimpl_pkg.attr_color_b(305420031) /* #123456.b */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_color_a()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.selectVSQL("#123456.a");
+
+		checkVSQL("select vsqlimpl_pkg.attr_color_a(305420031) /* #123456.a */ from dual", query);
+	}
 }
