@@ -536,21 +536,12 @@ public class VSQLTest
 	}
 
 	@Test
-	public void selectVSQL_func_abs()
-	{
-		VSQLQuery query = new VSQLQuery();
-		query.selectVSQL("abs(42)");
-
-		checkVSQL("select abs(42) /* abs(42) */ from dual", query);
-	}
-
-	@Test
 	public void selectVSQL_func_today()
 	{
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("today()");
 
-		checkVSQL("", query);
+		checkVSQL("select trunc(sysdate) /* today() */ from dual", query);
 	}
 
 	@Test
@@ -586,7 +577,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("bool(True)");
 
-		checkVSQL("", query);
+		checkVSQL("select 1 /* bool(True) */ from dual", query);
 	}
 
 	@Test
@@ -604,7 +595,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("bool(@(2000-02-29))");
 
-		checkVSQL("select case when to_date('2000-02-29', 'YYYY-MM-DD') is null then 0 else 1 end) /* bool(@(2000-02-29)) */ from dual", query);
+		checkVSQL("select (case when to_date('2000-02-29', 'YYYY-MM-DD') is null then 0 else 1 end) /* bool(@(2000-02-29)) */ from dual", query);
 	}
 
 	@Test
@@ -622,7 +613,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("int(False)");
 
-		checkVSQL("", query);
+		checkVSQL("select 0 /* int(False) */ from dual", query);
 	}
 
 	@Test
@@ -631,7 +622,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("int('42')");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.int_str('42') /* int('42') */ from dual", query);
 	}
 
 	@Test
@@ -694,7 +685,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("str(None)");
 
-		checkVSQL("", query);
+		checkVSQL("select null /* str(None) */ from dual", query);
 	}
 
 	@Test
@@ -703,7 +694,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("str('gurk')");
 
-		checkVSQL("", query);
+		checkVSQL("select 'gurk' /* str('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -730,7 +721,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("str(42.5)");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.str_number(42.5) /* str(42.5) */ from dual", query);
 	}
 
 	@Test
@@ -739,7 +730,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("str(geo(49, 11))");
 
-		checkVSQL("vsqlimpl_pkg.repr_geo(vsqlimpl_pkg.geo_number_number_str(49, 11, null)) /* str(geo(49, 11)) */ from dual", query);
+		checkVSQL("select vsqlimpl_pkg.repr_geo(vsqlimpl_pkg.geo_number_number_str(49, 11, null)) /* str(geo(49, 11)) */ from dual", query);
 	}
 
 	@Test
@@ -766,7 +757,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("str([])");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.repr_nulllist(0) /* str([]) */ from dual", query);
 	}
 
 	@Test
@@ -793,7 +784,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("str({/})");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.repr_nullset(0) /* str({/}) */ from dual", query);
 	}
 
 	@Test
@@ -802,7 +793,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("str({17, 23})");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.repr_intset(vsqlimpl_pkg.set_intlist(integers(17, 23))) /* str({17, 23}) */ from dual", query);
 	}
 
 	@Test
@@ -811,7 +802,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("str({17.5, 23.5})");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.repr_numberset(vsqlimpl_pkg.set_numberlist(numbers(17.5, 23.5))) /* str({17.5, 23.5}) */ from dual", query);
 	}
 
 	@Test
@@ -820,7 +811,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("str({'gurk', 'hurz'})");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.repr_strset(vsqlimpl_pkg.set_strlist(varchars('gurk', 'hurz'))) /* str({'gurk', 'hurz'}) */ from dual", query);
 	}
 
 	@Test
@@ -842,15 +833,6 @@ public class VSQLTest
 	}
 
 	@Test
-	public void selectVSQL_func_str_any()
-	{
-		VSQLQuery query = new VSQLQuery();
-		query.selectVSQL("str({ANY})");
-
-		checkVSQL("", query);
-	}
-
-	@Test
 	public void selectVSQL_func_repr_none()
 	{
 		VSQLQuery query = new VSQLQuery();
@@ -866,15 +848,6 @@ public class VSQLTest
 		query.selectVSQL("repr(True)");
 
 		checkVSQL("select (case 1 when 0 then 'False' when null then 'None' else 'True' end) /* repr(True) */ from dual", query);
-	}
-
-	@Test
-	public void selectVSQL_func_repr_clob()
-	{
-		VSQLQuery query = new VSQLQuery();
-		query.selectVSQL("repr(CLOB_CLOBLIST)");
-
-		checkVSQL("", query);
 	}
 
 	@Test
@@ -941,21 +914,12 @@ public class VSQLTest
 	}
 
 	@Test
-	public void selectVSQL_func_repr_datetimeset()
+	public void selectVSQL_func_repr_datetime()
 	{
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("repr(@(2000-02-29T12:34:56))");
 
 		checkVSQL("select vsqlimpl_pkg.repr_datetime(to_date('2000-02-29 12:34:56', 'YYYY-MM-DD HH24:MI:SS')) /* repr(@(2000-02-29T12:34:56)) */ from dual", query);
-	}
-
-	@Test
-	public void selectVSQL_func_repr_any()
-	{
-		VSQLQuery query = new VSQLQuery();
-		query.selectVSQL("repr({ANY})");
-
-		checkVSQL("", query);
 	}
 
 	@Test
@@ -982,7 +946,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("datetime(2000, 2, 29)");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.datetime_int(2000, 2, 29) /* datetime(2000, 2, 29) */ from dual", query);
 	}
 
 	@Test
@@ -991,7 +955,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("datetime(2000, 2, 29, 12)");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.datetime_int(2000, 2, 29, 12) /* datetime(2000, 2, 29, 12) */ from dual", query);
 	}
 
 	@Test
@@ -1000,25 +964,25 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("datetime(2000, 2, 29, 12, 34)");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.datetime_int(2000, 2, 29, 12, 34) /* datetime(2000, 2, 29, 12, 34) */ from dual", query);
 	}
 
 	@Test
 	public void selectVSQL_func_datetime_int6()
 	{
 		VSQLQuery query = new VSQLQuery();
-		query.selectVSQL("datetime(2000, 2, 29, 12, 34)");
+		query.selectVSQL("datetime(2000, 2, 29, 12, 34, 56)");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.datetime_int(2000, 2, 29, 12, 34, 56) /* datetime(2000, 2, 29, 12, 34, 56) */ from dual", query);
 	}
 
 	@Test
 	public void selectVSQL_func_datetime_date()
 	{
 		VSQLQuery query = new VSQLQuery();
-		query.selectVSQL("select to_date('2000-02-29', 'YYYY-MM-DD') /* datetime(@(2000-02-29)) */ from dual");
+		query.selectVSQL("datetime(@(2000-02-29))");
 
-		checkVSQL("", query);
+		checkVSQL("select to_date('2000-02-29', 'YYYY-MM-DD') /* datetime(@(2000-02-29)) */ from dual", query);
 	}
 
 	@Test
@@ -1036,7 +1000,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("datetime(@(2000-02-29), 12, 34)");
 
-		checkVSQL("", query);
+		checkVSQL("select (to_date('2000-02-29', 'YYYY-MM-DD') + 12/24 + 34/24/60) /* datetime(@(2000-02-29), 12, 34) */ from dual", query);
 	}
 
 	@Test
@@ -1045,7 +1009,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("datetime(@(2000-02-29), 12, 34, 56)");
 
-		checkVSQL("", query);
+		checkVSQL("select (to_date('2000-02-29', 'YYYY-MM-DD') + 12/24 + 34/24/60 + 56/24/60/60) /* datetime(@(2000-02-29), 12, 34, 56) */ from dual", query);
 	}
 
 	@Test
@@ -1054,7 +1018,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("len('gurk')");
 
-		checkVSQL("", query);
+		checkVSQL("select nvl(length('gurk'), 0) /* len('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1063,7 +1027,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("len([])");
 
-		checkVSQL("", query);
+		checkVSQL("select 0 /* len([]) */ from dual", query);
 	}
 
 	@Test
@@ -1072,7 +1036,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("len(['gurk'])");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.len_strlist(varchars('gurk')) /* len(['gurk']) */ from dual", query);
 	}
 
 	@Test
@@ -1081,7 +1045,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("len({/})");
 
-		checkVSQL("", query);
+		checkVSQL("select case when 0 > 0 then 1 else 0 end /* len({/}) */ from dual", query);
 	}
 
 	@Test
@@ -1090,7 +1054,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("len({42})");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.len_intlist(vsqlimpl_pkg.set_intlist(integers(42))) /* len({42}) */ from dual", query);
 	}
 
 	@Test
@@ -1099,7 +1063,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("timedelta()");
 
-		checkVSQL("", query);
+		checkVSQL("select 0 /* timedelta() */ from dual", query);
 	}
 
 	@Test
@@ -1108,7 +1072,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("timedelta(1)");
 
-		checkVSQL("", query);
+		checkVSQL("select 1 /* timedelta(1) */ from dual", query);
 	}
 
 	@Test
@@ -1117,7 +1081,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("timedelta(1, 12)");
 
-		checkVSQL("", query);
+		checkVSQL("select (1 + 12/86400) /* timedelta(1, 12) */ from dual", query);
 	}
 
 	@Test
@@ -1126,7 +1090,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("monthdelta()");
 
-		checkVSQL("", query);
+		checkVSQL("select 0 /* monthdelta() */ from dual", query);
 	}
 
 	@Test
@@ -1135,7 +1099,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("monthdelta(2)");
 
-		checkVSQL("", query);
+		checkVSQL("select 2 /* monthdelta(2) */ from dual", query);
 	}
 
 	@Test
@@ -1162,7 +1126,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("weeks(2)");
 
-		checkVSQL("", query);
+		checkVSQL("select (7 * 2) /* weeks(2) */ from dual", query);
 	}
 
 	@Test
@@ -1171,7 +1135,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("days(2)");
 
-		checkVSQL("", query);
+		checkVSQL("select 2 /* days(2) */ from dual", query);
 	}
 
 	@Test
@@ -1189,7 +1153,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("minutes(34)");
 
-		checkVSQL("", query);
+		checkVSQL("select (34 / 1440) /* minutes(34) */ from dual", query);
 	}
 
 	@Test
@@ -1198,7 +1162,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("seconds(56)");
 
-		checkVSQL("", query);
+		checkVSQL("select (56 / 86400) /* seconds(56) */ from dual", query);
 	}
 
 	@Test
@@ -1207,7 +1171,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("md5('gurk')");
 
-		checkVSQL("", query);
+		checkVSQL("select lower(rawtohex(dbms_crypto.hash(utl_raw.cast_to_raw('gurk'), 2))) /* md5('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1234,7 +1198,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("seq()");
 
-		checkVSQL("", query);
+		checkVSQL("select livingapi_pkg.seq() /* seq() */ from dual", query);
 	}
 
 	@Test
@@ -1243,7 +1207,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("rgb(0.2, 0.4, 0.6)");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.rgb(0.2, 0.4, 0.6) /* rgb(0.2, 0.4, 0.6) */ from dual", query);
 	}
 
 	@Test
@@ -1252,7 +1216,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("rgb(0.2, 0.4, 0.6, 0.8)");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.rgb(0.2, 0.4, 0.6, 0.8) /* rgb(0.2, 0.4, 0.6, 0.8) */ from dual", query);
 	}
 
 	@Test
@@ -1261,7 +1225,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("list('gurk')");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.list_str('gurk') /* list('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1270,7 +1234,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("list([17, 23])");
 
-		checkVSQL("", query);
+		checkVSQL("select integers(17, 23) /* list([17, 23]) */ from dual", query);
 	}
 
 	@Test
@@ -1279,7 +1243,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("list({/})");
 
-		checkVSQL("", query);
+		checkVSQL("select 0 /* list({/}) */ from dual", query);
 	}
 
 	@Test
@@ -1288,7 +1252,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("list({17, 23})");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.set_intlist(integers(17, 23)) /* list({17, 23}) */ from dual", query);
 	}
 
 	@Test
@@ -1297,7 +1261,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("list({17.5, 23.5})");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.set_numberlist(numbers(17.5, 23.5)) /* list({17.5, 23.5}) */ from dual", query);
 	}
 
 	@Test
@@ -1306,7 +1270,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("list({'gurk'})");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.set_strlist(varchars('gurk')) /* list({'gurk'}) */ from dual", query);
 	}
 
 	@Test
@@ -1315,7 +1279,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("list({@(2000-02-29)})");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.set_datetimelist(dates(to_date('2000-02-29', 'YYYY-MM-DD'))) /* list({@(2000-02-29)}) */ from dual", query);
 	}
 
 	@Test
@@ -1324,7 +1288,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("list({@(2000-02-29T12:34:56)})");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.set_datetimelist(dates(to_date('2000-02-29 12:34:56', 'YYYY-MM-DD HH24:MI:SS'))) /* list({@(2000-02-29T12:34:56)}) */ from dual", query);
 	}
 
 	@Test
@@ -1351,7 +1315,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("set([])");
 
-		checkVSQL("", query);
+		checkVSQL("select case when 0 > 0 then 1 else 0 end /* set([]) */ from dual", query);
 	}
 
 	@Test
@@ -1387,7 +1351,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("set([@(2000-02-29)])");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.set_datetimelist(dates(to_date('2000-02-29', 'YYYY-MM-DD'))) /* set([@(2000-02-29)]) */ from dual", query);
 	}
 
 	@Test
@@ -1396,7 +1360,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("set([@(2000-02-29T12:34:56)])");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.set_datetimelist(dates(to_date('2000-02-29 12:34:56', 'YYYY-MM-DD HH24:MI:SS'))) /* set([@(2000-02-29T12:34:56)]) */ from dual", query);
 	}
 
 	@Test
@@ -1405,7 +1369,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("dist(geo(49, 11), geo(0, 0))");
 
-		checkVSQL("", query);
+		checkVSQL("select vsqlimpl_pkg.dist_geo_geo(vsqlimpl_pkg.geo_number_number_str(49, 11, null), vsqlimpl_pkg.geo_number_number_str(0, 0, null)) /* dist(geo(49, 11), geo(0, 0)) */ from dual", query);
 	}
 
 	@Test
@@ -1414,7 +1378,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("abs(True)");
 
-		checkVSQL("", query);
+		checkVSQL("select 1 /* abs(True) */ from dual", query);
 	}
 
 	@Test
@@ -1495,7 +1459,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("request_url()");
 
-		checkVSQL("", query);
+		checkVSQL("select livingapi_pkg.requrl /* request_url() */ from dual", query);
 	}
 
 	@Test
@@ -1531,7 +1495,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("request_param_str('gurk')");
 
-		checkVSQL("select livingapi_ppgest_param_str('gurk') /* request_param_str('gurk') */ from dual", query);
+		checkVSQL("select livingapi_pkg.reqparam_str('gurk') /* request_param_str('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1540,7 +1504,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("request_param_strlist('gurk')");
 
-		checkVSQL("select livingapi_ppg.reqparam_strlist('gurk') /* request_param_strlist('gurk') */ from dual", query);
+		checkVSQL("select livingapi_pkg.reqparam_strlist('gurk') /* request_param_strlist('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1549,7 +1513,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("request_param_int('gurk')");
 
-		checkVSQL("select livingapi_ppgest_param_int('gurk') /* request_param_int('gurk') */ from dual", query);
+		checkVSQL("select livingapi_pkg.reqparam_int('gurk') /* request_param_int('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1558,7 +1522,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("request_param_intlist('gurk')");
 
-		checkVSQL("select livingapi_ppg.reqparam_intlist('gurk') /* request_param_intlist('gurk') */ from dual", query);
+		checkVSQL("select livingapi_pkg.reqparam_intlist('gurk') /* request_param_intlist('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1567,7 +1531,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("request_param_float('gurk')");
 
-		checkVSQL("select livingapi_ppg.rt_param_float('gurk') /* request_param_float('gurk') */ from dual", query);
+		checkVSQL("select livingapi_pkg.reqparam_float('gurk') /* request_param_float('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1576,7 +1540,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("request_param_floatlist('gurk')");
 
-		checkVSQL("select livingapi_ppg.requeram_floatlist('gurk') /* request_param_floatlist('gurk') */ from dual", query);
+		checkVSQL("select livingapi_pkg.reqparam_floatlist('gurk') /* request_param_floatlist('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1585,7 +1549,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("request_param_date('gurk')");
 
-		checkVSQL("select livingapi_ppg.st_param_date('gurk') /* request_param_date('gurk') */ from dual", query);
+		checkVSQL("select livingapi_pkg.reqparam_date('gurk') /* request_param_date('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1594,7 +1558,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("request_param_datelist('gurk')");
 
-		checkVSQL("select livingapi_ppg.requaram_datelist('gurk') /* request_param_datelist('gurk') */ from dual", query);
+		checkVSQL("select livingapi_pkg.reqparam_datelist('gurk') /* request_param_datelist('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1603,7 +1567,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("request_param_datetime('gurk')");
 
-		checkVSQL("select livingapi_ppg.requaram_datetime('gurk') /* request_param_datetime('gurk') */ from dual", query);
+		checkVSQL("select livingapi_pkg.reqparam_datetime('gurk') /* request_param_datetime('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1612,7 +1576,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("request_param_datetimelist('gurk')");
 
-		checkVSQL("select livingapi_ppg.request__datetimelist('gurk') /* request_param_datetimelist('gurk') */ from dual", query);
+		checkVSQL("select livingapi_pkg.reqparam_datetimelist('gurk') /* request_param_datetimelist('gurk') */ from dual", query);
 	}
 
 	@Test
@@ -1621,7 +1585,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("search()");
 
-		checkVSQL("", query);
+		checkVSQL("select livingapi_pkg.global_search /* search() */ from dual", query);
 	}
 
 	@Test
@@ -1630,7 +1594,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("lang()");
 
-		checkVSQL("", query);
+		checkVSQL("select livingapi_pkg.global_lang /* lang() */ from dual", query);
 	}
 
 	@Test
@@ -1639,8 +1603,6 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("mode()");
 
-		checkVSQL("", query);
+		checkVSQL("select livingapi_pkg.global_mode /* mode() */ from dual", query);
 	}
-
-
 }
