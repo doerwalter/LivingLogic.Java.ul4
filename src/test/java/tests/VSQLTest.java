@@ -41,9 +41,9 @@ public class VSQLTest
 	public void selectSQL_with_comment()
 	{
 		VSQLQuery query = new VSQLQuery();
-		query.selectSQL("42", "/*bad*/", null);
+		query.selectSQL("42", "/*little bobby tables*/", null);
 
-		checkVSQL("select 42 /* / *bad* / */ from dual", query);
+		checkVSQL("select 42 /* / *little bobby tables* / */ from dual", query);
 	}
 
 	@Test
@@ -59,9 +59,9 @@ public class VSQLTest
 	public void selectSQL_with_comment_and_alias()
 	{
 		VSQLQuery query = new VSQLQuery();
-		query.selectSQL("42", "/*bad*/", "answer");
+		query.selectSQL("42", "/*little bobby tables*/", "answer");
 
-		checkVSQL("select 42 /* / *bad* / */ as answer from dual", query);
+		checkVSQL("select 42 /* / *little bobby tables* / */ as answer from dual", query);
 	}
 
 	@Test
