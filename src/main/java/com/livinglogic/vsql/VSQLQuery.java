@@ -205,6 +205,11 @@ public class VSQLQuery
 		return selectSQL(sqlSource, comment, alias);
 	}
 
+	public VSQLQuery selectVSQL(String source)
+	{
+		return selectVSQL(source, null);
+	}
+
 	public VSQLQuery fromSQL(String tablename, String alias, String comment)
 	{
 		from.put(tablename + " " + alias, comment);

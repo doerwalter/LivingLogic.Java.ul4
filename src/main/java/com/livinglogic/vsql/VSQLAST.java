@@ -125,135 +125,7 @@ public abstract class VSQLAST implements UL4Instance, UL4ONSerializable, UL4Repr
 
 		public VSQLAST fromul4(AST ast, Map<String, VSQLField> vars)
 		{
-			if (ast instanceof ConstAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof NotAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof NegAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof BitNotAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof LTAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof LEAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof GTAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof GEAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof EQAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof NEAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof ContainsAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof IsAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof IsNotAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof AndAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof OrAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof NotContainsAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof AddAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof SubAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof MulAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof FloorDivAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof TrueDivAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof ModAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof ShiftLeftAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof ShiftRightAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof BitAndAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof BitOrAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof BitXOrAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof ItemAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof IfAST)
-			{
-				return VSQLIfAST.type.fromul4(ast, vars);
-			}
-			else if (ast instanceof ListAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof SetAST)
-			{
-				return ast.asVSQL(vars);
-			}
-			else if (ast instanceof VarAST)
-			{
-				return VSQLFieldRefAST.type.fromul4(ast, vars);
-			}
-			else if (ast instanceof AttrAST attrAST)
+			if (ast instanceof AttrAST attrAST)
 			{
 				AST objAST = attrAST.getObj();
 				String attrName = attrAST.getAttrName();
@@ -379,13 +251,9 @@ public abstract class VSQLAST implements UL4Instance, UL4ONSerializable, UL4Repr
 					return VSQLFuncAST.type.fromul4(ast, vars);
 				}
 			}
-			else if (ast instanceof ItemAST)
-			{
-				return VSQLAttrAST.type.fromul4(ast, vars);
-			}
 			else
 			{
-				throw new UnsupportedUL4ASTException(formatMessage("UL4 AST type {!r} not supported!", ast));
+				return ast.asVSQL(vars);
 			}
 		}
 	}

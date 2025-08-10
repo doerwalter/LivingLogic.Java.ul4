@@ -97,7 +97,7 @@ public class VSQLIfAST extends VSQLAST
 	protected VSQLAST objElse;
 	protected String sourceSuffix;
 
-	protected VSQLIfAST(String sourcePrefix, VSQLAST objIf, String sourceInfix1, VSQLAST objCond, String sourceInfix2, VSQLAST objElse, String sourceSuffix)
+	public VSQLIfAST(String sourcePrefix, VSQLAST objIf, String sourceInfix1, VSQLAST objCond, String sourceInfix2, VSQLAST objElse, String sourceSuffix)
 	{
 		super(sourcePrefix, objIf, sourceInfix1, objCond, sourceInfix2, objElse, sourceSuffix);
 		this.objIf = objIf;
@@ -106,17 +106,17 @@ public class VSQLIfAST extends VSQLAST
 		validate();
 	}
 
-	protected VSQLIfAST(String sourcePrefix, VSQLAST objIf, String sourceInfix1, VSQLAST objCond, String sourceInfix2, VSQLAST objElse)
+	public VSQLIfAST(String sourcePrefix, VSQLAST objIf, String sourceInfix1, VSQLAST objCond, String sourceInfix2, VSQLAST objElse)
 	{
 		this(sourcePrefix, objIf, sourceInfix1, objCond, sourceInfix2, objElse, null);
 	}
 
-	protected VSQLIfAST(VSQLAST objIf, String sourceInfix1, VSQLAST objCond, String sourceInfix2, VSQLAST objElse, String sourceSuffix)
+	public VSQLIfAST(VSQLAST objIf, String sourceInfix1, VSQLAST objCond, String sourceInfix2, VSQLAST objElse, String sourceSuffix)
 	{
 		this(null, objIf, sourceInfix1, objCond, sourceInfix2, objElse, sourceSuffix);
 	}
 
-	protected VSQLIfAST(VSQLAST objIf, String sourceInfix1, VSQLAST objCond, String sourceInfix2, VSQLAST objElse)
+	public VSQLIfAST(VSQLAST objIf, String sourceInfix1, VSQLAST objCond, String sourceInfix2, VSQLAST objElse)
 	{
 		this(null, objIf, sourceInfix1, objCond, sourceInfix2, objElse, null);
 	}
