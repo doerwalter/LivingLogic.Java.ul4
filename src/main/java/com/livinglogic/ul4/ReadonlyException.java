@@ -6,6 +6,9 @@
 
 package com.livinglogic.ul4;
 
+import static com.livinglogic.utils.StringUtils.formatMessage;
+
+
 /**
 Thrown when an attribute is read only
 **/
@@ -16,7 +19,7 @@ public class ReadonlyException extends RuntimeException
 
 	public ReadonlyException(Object object, Object key)
 	{
-		super(Utils.formatMessage("Attribute {!r} of {!t} instance is not writable!", key, object));
+		super(formatMessage("Attribute {!r} of {!t} instance is not writable!", key, object));
 		this.object = object;
 		this.key = key;
 	}

@@ -8,11 +8,13 @@ package com.livinglogic.ul4;
 
 import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
-import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
+import java.io.IOException;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
+
 
 /**
 The base class of all nodes that model unary operations.

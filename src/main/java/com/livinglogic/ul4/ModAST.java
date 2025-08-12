@@ -6,8 +6,14 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import com.livinglogic.vsql.VSQLModAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
 
 public class ModAST extends BinaryAST
 {
@@ -60,6 +66,18 @@ public class ModAST extends BinaryAST
 	public String getType()
 	{
 		return "mod";
+	}
+
+	@Override
+	public VSQLModAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLModAST(
+			VSQLUtils.getSourcePrefix(this, obj1),
+			obj1.asVSQL(vars),
+			VSQLUtils.getSourceInfix(obj1, obj2),
+			obj2.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj2, this)
+		);
 	}
 
 	public Object evaluate(EvaluationContext context)

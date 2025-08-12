@@ -8,12 +8,17 @@ package com.livinglogic.ul4;
 
 import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
+import java.util.Map;
 import java.util.Set;
 
 import java.io.IOException;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
+
+import com.livinglogic.vsql.VSQLIfAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
 
 public class IfAST extends CodeAST
 {
@@ -88,6 +93,20 @@ public class IfAST extends CodeAST
 	public String getType()
 	{
 		return "if";
+	}
+
+	@Override
+	public VSQLIfAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLIfAST(
+			VSQLUtils.getSourcePrefix(this, objIf),
+			objIf.asVSQL(vars),
+			VSQLUtils.getSourceInfix(objIf, objCond),
+			objCond.asVSQL(vars),
+			VSQLUtils.getSourceInfix(objCond, objElse),
+			objElse.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(objElse, this)
+		);
 	}
 
 	@Override

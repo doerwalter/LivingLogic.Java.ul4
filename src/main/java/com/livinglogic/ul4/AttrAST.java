@@ -6,16 +6,24 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Date;
+import java.io.IOException;
 
 import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
+
+import com.livinglogic.vsql.VSQLAST;
+import com.livinglogic.vsql.VSQLFieldRefAST;
+import com.livinglogic.vsql.VSQLAttrAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.vsql.VSQLGroup;
+import com.livinglogic.utils.VSQLUtils;
+
 
 public class AttrAST extends CodeAST implements LValue
 {
@@ -61,13 +69,13 @@ public class AttrAST extends CodeAST implements LValue
 	}
 
 	protected AST obj;
-	protected String attrname;
+	protected String attrName;
 
-	public AttrAST(Template template, int posStart, int posStop, AST obj, String attrname)
+	public AttrAST(Template template, int posStart, int posStop, AST obj, String attrName)
 	{
 		super(template, posStart, posStop);
 		this.obj = obj;
-		this.attrname = attrname;
+		this.attrName = attrName;
 	}
 
 	public String getType()
@@ -82,196 +90,241 @@ public class AttrAST extends CodeAST implements LValue
 
 	public String getAttrName()
 	{
-		return attrname;
+		return attrName;
 	}
+
+	@Override
+	public VSQLAST asVSQL(Map<String, VSQLField> vars)
+	{
+		String trailingSource = VSQLUtils.getSourceSuffix(obj, this);
+		int dotPos = trailingSource.indexOf(".");
+		
+		for (++dotPos; dotPos < trailingSource.length() && trailingSource.charAt(dotPos) == ' '; ++dotPos)
+			;
+
+		String attrNamePrefix = trailingSource.substring(0, dotPos);
+		String attrNameSuffix = trailingSource.substring(dotPos + attrName.length());
+
+		VSQLAST vsqlObj = obj.asVSQL(vars);
+
+		if (vsqlObj instanceof VSQLFieldRefAST vqlFieldRef)
+		{
+			VSQLField field = vqlFieldRef.getField();
+			VSQLGroup group = field.getRefGroup();
+			if (group != null)
+			{
+				VSQLField refField = group.getField(attrName);
+				if (refField != null)
+				{
+					return new VSQLFieldRefAST(
+						VSQLUtils.getSourcePrefix(this, obj),
+						vqlFieldRef,
+						attrNamePrefix,
+						attrName,
+						attrNameSuffix,
+						refField
+					);
+				}
+			}
+			// Fall through to a normal attribute access
+		}
+		return new VSQLAttrAST(
+			VSQLUtils.getSourcePrefix(this, obj),
+			vsqlObj,
+			attrNamePrefix,
+			attrName,
+			attrNameSuffix
+		);
+	}
+
 
 	@Override
 	public Object evaluate(EvaluationContext context)
 	{
-		return call(context, obj.decoratedEvaluate(context), attrname);
+		return call(context, obj.decoratedEvaluate(context), attrName);
 	}
 
 	public void evaluateSet(EvaluationContext context, Object value)
 	{
-		callSet(context, obj.decoratedEvaluate(context), attrname, value);
+		callSet(context, obj.decoratedEvaluate(context), attrName, value);
 	}
 
 	public void evaluateAdd(EvaluationContext context, Object value)
 	{
-		callAdd(context, obj.decoratedEvaluate(context), attrname, value);
+		callAdd(context, obj.decoratedEvaluate(context), attrName, value);
 	}
 
 	public void evaluateSub(EvaluationContext context, Object value)
 	{
-		callSub(context, obj.decoratedEvaluate(context), attrname, value);
+		callSub(context, obj.decoratedEvaluate(context), attrName, value);
 	}
 
 	public void evaluateMul(EvaluationContext context, Object value)
 	{
-		callMul(context, obj.decoratedEvaluate(context), attrname, value);
+		callMul(context, obj.decoratedEvaluate(context), attrName, value);
 	}
 
 	public void evaluateFloorDiv(EvaluationContext context, Object value)
 	{
-		callFloorDiv(context, obj.decoratedEvaluate(context), attrname, value);
+		callFloorDiv(context, obj.decoratedEvaluate(context), attrName, value);
 	}
 
 	public void evaluateTrueDiv(EvaluationContext context, Object value)
 	{
-		callTrueDiv(context, obj.decoratedEvaluate(context), attrname, value);
+		callTrueDiv(context, obj.decoratedEvaluate(context), attrName, value);
 	}
 
 	public void evaluateMod(EvaluationContext context, Object value)
 	{
-		callMod(context, obj.decoratedEvaluate(context), attrname, value);
+		callMod(context, obj.decoratedEvaluate(context), attrName, value);
 	}
 
 	public void evaluateShiftLeft(EvaluationContext context, Object value)
 	{
-		callShiftLeft(context, obj.decoratedEvaluate(context), attrname, value);
+		callShiftLeft(context, obj.decoratedEvaluate(context), attrName, value);
 	}
 
 	public void evaluateShiftRight(EvaluationContext context, Object value)
 	{
-		callShiftRight(context, obj.decoratedEvaluate(context), attrname, value);
+		callShiftRight(context, obj.decoratedEvaluate(context), attrName, value);
 	}
 
 	public void evaluateBitAnd(EvaluationContext context, Object value)
 	{
-		callBitAnd(context, obj.decoratedEvaluate(context), attrname, value);
+		callBitAnd(context, obj.decoratedEvaluate(context), attrName, value);
 	}
 
 	public void evaluateBitXOr(EvaluationContext context, Object value)
 	{
-		callBitXOr(context, obj.decoratedEvaluate(context), attrname, value);
+		callBitXOr(context, obj.decoratedEvaluate(context), attrName, value);
 	}
 
 	public void evaluateBitOr(EvaluationContext context, Object value)
 	{
-		callBitOr(context, obj.decoratedEvaluate(context), attrname, value);
+		callBitOr(context, obj.decoratedEvaluate(context), attrName, value);
 	}
 
-	public static Object call(EvaluationContext context, Object obj, String attrname)
+	public static Object call(EvaluationContext context, Object obj, String attrName)
 	{
 		try
 		{
-			return UL4Type.getType(obj).getAttr(context, obj, attrname);
+			return UL4Type.getType(obj).getAttr(context, obj, attrName);
 		}
 		catch (AttributeException exc)
 		{
 			if (exc.getObject() == obj)
-				return new UndefinedAttribute(obj, attrname);
+				return new UndefinedAttribute(obj, attrName);
 			else
 				// The {@code AttributeException} originated from another object
 				throw exc;
 		}
 	}
 
-	public static void callSet(EvaluationContext context, Object obj, String attrname, Object value)
+	public static void callSet(EvaluationContext context, Object obj, String attrName, Object value)
 	{
-		UL4Type.getType(obj).setAttr(context, obj, attrname, value);
+		UL4Type.getType(obj).setAttr(context, obj, attrName, value);
 	}
 
-	public static void callAdd(EvaluationContext context, Object obj, String attrname, Object value)
+	public static void callAdd(EvaluationContext context, Object obj, String attrName, Object value)
 	{
 		UL4Type type = UL4Type.getType(obj);
 
 		// We do not catch the {@code AttributeException} here, because we want
 		// to throw an {@code AttributeException} for non-existant attributes
 		// and {@code ReadonlyException} for read-only ones.
-		Object oldValue = type.getAttr(context, obj, attrname);
+		Object oldValue = type.getAttr(context, obj, attrName);
 		Object newValue = IAdd.call(context, oldValue, value);
-		type.setAttr(context, obj, attrname, newValue);
+		type.setAttr(context, obj, attrName, newValue);
 	}
 
-	public static void callSub(EvaluationContext context, Object obj, String attrname, Object value)
+	public static void callSub(EvaluationContext context, Object obj, String attrName, Object value)
 	{
 		UL4Type type = UL4Type.getType(obj);
 
-		Object oldValue = type.getAttr(context, obj, attrname);
+		Object oldValue = type.getAttr(context, obj, attrName);
 		Object newValue = SubAST.call(context, oldValue, value);
-		type.setAttr(context, obj, attrname, newValue);
+		type.setAttr(context, obj, attrName, newValue);
 	}
 
-	public static void callMul(EvaluationContext context, Object obj, String attrname, Object value)
+	public static void callMul(EvaluationContext context, Object obj, String attrName, Object value)
 	{
 		UL4Type type = UL4Type.getType(obj);
 
-		Object oldValue = type.getAttr(context, obj, attrname);
+		Object oldValue = type.getAttr(context, obj, attrName);
 		Object newValue = IMul.call(context, oldValue, value);
-		type.setAttr(context, obj, attrname, newValue);
+		type.setAttr(context, obj, attrName, newValue);
 	}
 
-	public static void callFloorDiv(EvaluationContext context, Object obj, String attrname, Object value)
+	public static void callFloorDiv(EvaluationContext context, Object obj, String attrName, Object value)
 	{
 		UL4Type type = UL4Type.getType(obj);
 
-		Object oldValue = type.getAttr(context, obj, attrname);
+		Object oldValue = type.getAttr(context, obj, attrName);
 		Object newValue = FloorDivAST.call(context, oldValue, value);
-		type.setAttr(context, obj, attrname, newValue);
+		type.setAttr(context, obj, attrName, newValue);
 	}
 
-	public static void callTrueDiv(EvaluationContext context, Object obj, String attrname, Object value)
+	public static void callTrueDiv(EvaluationContext context, Object obj, String attrName, Object value)
 	{
 		UL4Type type = UL4Type.getType(obj);
 
-		Object oldValue = type.getAttr(context, obj, attrname);
+		Object oldValue = type.getAttr(context, obj, attrName);
 		Object newValue = TrueDivAST.call(context, oldValue, value);
-		type.setAttr(context, obj, attrname, newValue);
+		type.setAttr(context, obj, attrName, newValue);
 	}
 
-	public static void callMod(EvaluationContext context, Object obj, String attrname, Object value)
+	public static void callMod(EvaluationContext context, Object obj, String attrName, Object value)
 	{
 		UL4Type type = UL4Type.getType(obj);
 
-		Object oldValue = type.getAttr(context, obj, attrname);
+		Object oldValue = type.getAttr(context, obj, attrName);
 		Object newValue = ModAST.call(oldValue, value);
-		type.setAttr(context, obj, attrname, newValue);
+		type.setAttr(context, obj, attrName, newValue);
 	}
 
-	public static void callShiftLeft(EvaluationContext context, Object obj, String attrname, Object value)
+	public static void callShiftLeft(EvaluationContext context, Object obj, String attrName, Object value)
 	{
 		UL4Type type = UL4Type.getType(obj);
 
-		Object oldValue = type.getAttr(context, obj, attrname);
+		Object oldValue = type.getAttr(context, obj, attrName);
 		Object newValue = ShiftLeftAST.call(context, oldValue, value);
-		type.setAttr(context, obj, attrname, newValue);
+		type.setAttr(context, obj, attrName, newValue);
 	}
 
-	public static void callShiftRight(EvaluationContext context, Object obj, String attrname, Object value)
+	public static void callShiftRight(EvaluationContext context, Object obj, String attrName, Object value)
 	{
 		UL4Type type = UL4Type.getType(obj);
 
-		Object oldValue = type.getAttr(context, obj, attrname);
+		Object oldValue = type.getAttr(context, obj, attrName);
 		Object newValue = ShiftRightAST.call(context, oldValue, value);
-		type.setAttr(context, obj, attrname, newValue);
+		type.setAttr(context, obj, attrName, newValue);
 	}
 
-	public static void callBitAnd(EvaluationContext context, Object obj, String attrname, Object value)
+	public static void callBitAnd(EvaluationContext context, Object obj, String attrName, Object value)
 	{
 		UL4Type type = UL4Type.getType(obj);
 
-		Object oldValue = type.getAttr(context, obj, attrname);
+		Object oldValue = type.getAttr(context, obj, attrName);
 		Object newValue = BitAndAST.call(context, oldValue, value);
-		type.setAttr(context, obj, attrname, newValue);
+		type.setAttr(context, obj, attrName, newValue);
 	}
 
-	public static void callBitXOr(EvaluationContext context, Object obj, String attrname, Object value)
+	public static void callBitXOr(EvaluationContext context, Object obj, String attrName, Object value)
 	{
 		UL4Type type = UL4Type.getType(obj);
 
-		Object oldValue = type.getAttr(context, obj, attrname);
+		Object oldValue = type.getAttr(context, obj, attrName);
 		Object newValue = BitXOrAST.call(context, oldValue, value);
-		type.setAttr(context, obj, attrname, newValue);
+		type.setAttr(context, obj, attrName, newValue);
 	}
 
-	public static void callBitOr(EvaluationContext context, Object obj, String attrname, Object value)
+	public static void callBitOr(EvaluationContext context, Object obj, String attrName, Object value)
 	{
 		UL4Type type = UL4Type.getType(obj);
 
-		Object oldValue = type.getAttr(context, obj, attrname);
+		Object oldValue = type.getAttr(context, obj, attrName);
 		Object newValue = BitOrAST.call(context, oldValue, value);
-		type.setAttr(context, obj, attrname, newValue);
+		type.setAttr(context, obj, attrName, newValue);
 	}
 
 	@Override
@@ -279,7 +332,7 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		super.dumpUL4ON(encoder);
 		encoder.dump(obj);
-		encoder.dump(attrname);
+		encoder.dump(attrName);
 	}
 
 	@Override
@@ -287,7 +340,7 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		super.loadUL4ON(decoder);
 		obj = (AST)decoder.load();
-		attrname = ((String)decoder.load()).intern();
+		attrName = ((String)decoder.load()).intern();
 	}
 
 	protected static Set<String> attributes = makeExtendedSet(CodeAST.attributes, "obj", "attrname");
@@ -306,7 +359,7 @@ public class AttrAST extends CodeAST implements LValue
 			case "obj":
 				return obj;
 			case "attrname":
-				return attrname;
+				return attrName;
 			default:
 				return super.getAttrUL4(context, key);
 		}

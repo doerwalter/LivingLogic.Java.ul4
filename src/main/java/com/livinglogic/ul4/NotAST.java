@@ -6,6 +6,13 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
+
+import com.livinglogic.vsql.VSQLNotAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
+
 public class NotAST extends UnaryAST
 {
 	protected static class Type extends UnaryAST.Type
@@ -57,6 +64,16 @@ public class NotAST extends UnaryAST
 	public String getType()
 	{
 		return "not";
+	}
+
+	@Override
+	public VSQLNotAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLNotAST(
+			VSQLUtils.getSourcePrefix(this, obj),
+			obj.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj, this)
+		);
 	}
 
 	public Object evaluate(EvaluationContext context)

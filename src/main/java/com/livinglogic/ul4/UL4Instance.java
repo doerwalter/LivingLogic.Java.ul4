@@ -9,6 +9,8 @@ package com.livinglogic.ul4;
 import java.util.Set;
 import java.util.Collections;
 
+import static com.livinglogic.utils.StringUtils.formatMessage;
+
 
 public interface UL4Instance extends UL4Bool, UL4Len, UL4Dir, UL4GetAttr, UL4SetAttr
 {
@@ -16,12 +18,12 @@ public interface UL4Instance extends UL4Bool, UL4Len, UL4Dir, UL4GetAttr, UL4Set
 
 	default Number intUL4(EvaluationContext context)
 	{
-		throw new UnsupportedOperationException(Utils.formatMessage("can't convert {!t} to int!", this));
+		throw new UnsupportedOperationException(formatMessage("can't convert {!t} to int!", this));
 	}
 
 	default Number floatUL4(EvaluationContext context)
 	{
-		throw new UnsupportedOperationException(Utils.formatMessage("can't convert {!t} to float!", this));
+		throw new UnsupportedOperationException(formatMessage("can't convert {!t} to float!", this));
 	}
 
 	default String strUL4(EvaluationContext context)

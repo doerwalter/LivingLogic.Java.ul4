@@ -8,11 +8,16 @@ package com.livinglogic.ul4;
 
 import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
-import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
+import java.io.IOException;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
+
+import com.livinglogic.vsql.VSQLFieldRefAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
 
 public class VarAST extends CodeAST implements LValue
 {
@@ -75,6 +80,25 @@ public class VarAST extends CodeAST implements LValue
 		return "var";
 	}
 
+	@Override
+	public VSQLFieldRefAST asVSQL(Map<String, VSQLField> vars)
+	{
+		String source = getSource();
+		// Note that we don't complain when `field` is `null` because this might turn out to be a method call later
+		VSQLField field = vars.get(name);
+		int pos = source.indexOf(name);
+
+		return new VSQLFieldRefAST(
+			source.substring(0, pos),
+			null,
+			null,
+			name,
+			source.substring(pos + name.length()),
+			field
+		);
+	}
+
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		return context.get(name);

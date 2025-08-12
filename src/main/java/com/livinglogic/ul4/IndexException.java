@@ -6,6 +6,9 @@
 
 package com.livinglogic.ul4;
 
+import static com.livinglogic.utils.StringUtils.formatMessage;
+
+
 /**
 Thrown when an object doesn't supported the requested index. This exception
 might be thrown by {@link UL4GetItem#getItemUL4}.
@@ -17,7 +20,7 @@ public class IndexException extends IndexOutOfBoundsException
 
 	public IndexException(Object object, Object key)
 	{
-		super(Utils.formatMessage("{!r} instance has no entry for index {!r}!", object, key));
+		super(formatMessage("{!r} instance has no entry for index {!r}!", object, key));
 		this.object = object;
 		this.key = key;
 	}

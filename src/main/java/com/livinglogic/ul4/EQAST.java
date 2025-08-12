@@ -6,6 +6,13 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
+
+import com.livinglogic.vsql.VSQLEqAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
+
 public class EQAST extends BinaryAST
 {
 	protected static class Type extends BinaryAST.Type
@@ -57,6 +64,18 @@ public class EQAST extends BinaryAST
 	public String getType()
 	{
 		return "eq";
+	}
+
+	@Override
+	public VSQLEqAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLEqAST(
+			VSQLUtils.getSourcePrefix(this, obj1),
+			obj1.asVSQL(vars),
+			VSQLUtils.getSourceInfix(obj1, obj2),
+			obj2.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj2, this)
+		);
 	}
 
 	@Override

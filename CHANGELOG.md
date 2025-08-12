@@ -1,3 +1,8 @@
+## 0.197.0 (2025-08-12)
+
+vSQL has been merged into UL4.
+
+
 ## 0.196.13 (2025-08-04)
 
 Add method `SeqItemAST.getValue()`.
@@ -5,7 +10,7 @@ Add method `SeqItemAST.getValue()`.
 
 ## 0.196.12 (2025-07-25)
 
-Add support for escaping arguments as Markdown code block in
+Add support for escaping arguments as Markdown code blocks in
 `Utils.formatMessage()` via ``{!`}`` or ``{0!`}`` placeholders.
 
 

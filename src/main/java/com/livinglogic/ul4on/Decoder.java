@@ -43,6 +43,8 @@ import com.livinglogic.ul4.BoundArguments;
 import com.livinglogic.ul4.AttributeException;
 import com.livinglogic.ul4.ArgumentTypeMismatchException;
 
+import static com.livinglogic.utils.StringUtils.formatMessage;
+
 
 /**
 A {@code Decoder} object wraps a {@code Reader} object and can read any object
@@ -525,7 +527,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 
 			UL4ONSerializable result = createObject(name, null);
 			if (result == null)
-				throw new DecoderException(position, path(), com.livinglogic.ul4.Utils.formatMessage("can't load object of type {!r}", name));
+				throw new DecoderException(position, path(), formatMessage("can't load object of type {!r}", name));
 
 			if (typecode == 'O')
 				endFakeLoading(oldpos, result);
@@ -559,7 +561,7 @@ public class Decoder implements Iterable<Object>, UL4Instance, UL4Repr, UL4Dir
 			UL4ONSerializable result = createObject(name, id);
 			if (result == null)
 			{
-				throw new DecoderException(position, path(), com.livinglogic.ul4.Utils.formatMessage("can't load object of type {!r} with id {!r}", name, id));
+				throw new DecoderException(position, path(), formatMessage("can't load object of type {!r} with id {!r}", name, id));
 			}
 
 			if (typecode == 'P')

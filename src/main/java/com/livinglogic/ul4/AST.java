@@ -6,15 +6,22 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
+import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 import com.livinglogic.ul4on.UL4ONSerializable;
+import static com.livinglogic.utils.StringUtils.formatMessage;
 import static com.livinglogic.ul4.Utils.findInnermostException;
+
+import com.livinglogic.vsql.VSQLAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.vsql.UnsupportedUL4ASTException;
+
 
 /**
 The base class of all syntax tree nodes. This can be either literal text
@@ -685,6 +692,11 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 	public void toStringFromSource(Formatter formatter)
 	{
 		formatter.write(getSource());
+	}
+
+	public VSQLAST asVSQL(Map<String, VSQLField> vars)
+	{
+		throw new UnsupportedUL4ASTException(formatMessage("vSQL expression {!`} of type {!t} is not supported", this, this));
 	}
 
 	@Override

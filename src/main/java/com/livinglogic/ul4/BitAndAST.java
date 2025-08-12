@@ -8,6 +8,13 @@ package com.livinglogic.ul4;
 
 import java.math.BigInteger;
 
+import java.util.Map;
+
+import com.livinglogic.vsql.VSQLBitAndAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
+
 public class BitAndAST extends BinaryAST
 {
 	protected static class Type extends BinaryAST.Type
@@ -59,6 +66,18 @@ public class BitAndAST extends BinaryAST
 	public String getType()
 	{
 		return "bitand";
+	}
+
+	@Override
+	public VSQLBitAndAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLBitAndAST(
+			VSQLUtils.getSourcePrefix(this, obj1),
+			obj1.asVSQL(vars),
+			VSQLUtils.getSourceInfix(obj1, obj2),
+			obj2.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj2, this)
+		);
 	}
 
 	@Override
