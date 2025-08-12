@@ -6,7 +6,13 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
 import java.math.BigInteger;
+
+import com.livinglogic.vsql.VSQLBitNotAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
 
 public class BitNotAST extends UnaryAST
 {
@@ -59,6 +65,16 @@ public class BitNotAST extends UnaryAST
 	public String getType()
 	{
 		return "bitnot";
+	}
+
+	@Override
+	public VSQLBitNotAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLBitNotAST(
+			VSQLUtils.getSourcePrefix(this, obj),
+			obj.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj, this)
+		);
 	}
 
 	@Override

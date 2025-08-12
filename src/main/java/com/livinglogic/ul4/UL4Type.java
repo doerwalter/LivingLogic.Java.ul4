@@ -20,6 +20,8 @@ import java.util.Date;
 import com.livinglogic.ul4on.ObjectFactory;
 import com.livinglogic.ul4on.UL4ONSerializable;
 
+import static com.livinglogic.utils.StringUtils.formatMessage;
+
 
 /**
 <p>An instance of {@code UL4Type} is returned when an object is asked for
@@ -186,7 +188,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	{
 		if (instance instanceof UL4GetItem)
 			return ((UL4GetItem)instance).getItemUL4(context, index);
-		throw new UnsupportedOperationException(Utils.formatMessage("{!t}[{!t}] not supported", instance, index));
+		throw new UnsupportedOperationException(formatMessage("{!t}[{!t}] not supported", instance, index));
 	}
 
 	/**
@@ -249,7 +251,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	@Override
 	default UL4ONSerializable create(String id)
 	{
-		throw new UnsupportedOperationException(Utils.formatMessage("Can't create {!r} instances from UL4ON dump", this));
+		throw new UnsupportedOperationException(formatMessage("Can't create {!r} instances from UL4ON dump", this));
 	}
 
 	/**
@@ -277,7 +279,7 @@ public interface UL4Type extends UL4Name, UL4Repr, UL4Call, ObjectFactory
 	**/
 	default Object create(EvaluationContext context, BoundArguments arguments)
 	{
-		throw new UnsupportedOperationException(Utils.formatMessage("Can't create {!r} instances", this));
+		throw new UnsupportedOperationException(formatMessage("Can't create {!r} instances", this));
 	}
 
 	/**

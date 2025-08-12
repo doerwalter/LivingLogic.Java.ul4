@@ -6,8 +6,15 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import com.livinglogic.vsql.VSQLFloorDivAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
 
 public class FloorDivAST extends BinaryAST
 {
@@ -60,6 +67,18 @@ public class FloorDivAST extends BinaryAST
 	public String getType()
 	{
 		return "floordiv";
+	}
+
+	@Override
+	public VSQLFloorDivAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLFloorDivAST(
+			VSQLUtils.getSourcePrefix(this, obj1),
+			obj1.asVSQL(vars),
+			VSQLUtils.getSourceInfix(obj1, obj2),
+			obj2.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj2, this)
+		);
 	}
 
 	@Override

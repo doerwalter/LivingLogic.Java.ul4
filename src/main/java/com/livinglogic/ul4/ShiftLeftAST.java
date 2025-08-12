@@ -6,11 +6,17 @@
 
 package com.livinglogic.ul4;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
+
+import com.livinglogic.vsql.VSQLShiftLeftAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
 
 public class ShiftLeftAST extends BinaryAST
 {
@@ -65,6 +71,19 @@ public class ShiftLeftAST extends BinaryAST
 		return "shiftleft";
 	}
 
+	@Override
+	public VSQLShiftLeftAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLShiftLeftAST(
+			VSQLUtils.getSourcePrefix(this, obj1),
+			obj1.asVSQL(vars),
+			VSQLUtils.getSourceInfix(obj1, obj2),
+			obj2.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj2, this)
+		);
+	}
+
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		return call(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));

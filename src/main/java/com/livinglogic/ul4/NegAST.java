@@ -6,8 +6,14 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import com.livinglogic.vsql.VSQLNegAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
 
 public class NegAST extends UnaryAST
 {
@@ -60,6 +66,16 @@ public class NegAST extends UnaryAST
 	public String getType()
 	{
 		return "neg";
+	}
+
+	@Override
+	public VSQLNegAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLNegAST(
+			VSQLUtils.getSourcePrefix(this, obj),
+			obj.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj, this)
+		);
 	}
 
 	public Object evaluate(EvaluationContext context)

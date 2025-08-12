@@ -6,16 +6,24 @@
 
 package com.livinglogic.ul4;
 
-import java.io.IOException;
+import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Set;
+import java.io.IOException;
 
 import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
+
+import com.livinglogic.vsql.VSQLListAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+import com.livinglogic.vsql.UnsupportedUL4ASTException;
+import static com.livinglogic.utils.StringUtils.formatMessage;
+
 
 public class ListAST extends CodeAST
 {
@@ -82,6 +90,44 @@ public class ListAST extends CodeAST
 		return "list";
 	}
 
+	@Override
+	public VSQLListAST asVSQL(Map<String, VSQLField> vars)
+	{
+		List<Object> content = new ArrayList<>();
+
+		int size = items.size();
+		if (size == 0)
+			content.add(getSource());
+		else
+		{
+			AST prevItem = null;
+			int i = 0;
+			for (AST item : items)
+			{
+				if (item instanceof SeqItemAST seqItem)
+				{
+					if (i == 0)
+						content.add(VSQLUtils.getSourcePrefix(this, item));
+					else
+						content.add(VSQLUtils.getSourceInfix(prevItem, item));
+
+					content.add(seqItem.getValue().asVSQL(vars));
+
+					if (i == size - 1)
+						content.add(VSQLUtils.getSourceSuffix(item, this));
+					else
+						prevItem = item;
+					++i;
+				}
+				else
+					throw new UnsupportedUL4ASTException(formatMessage("vSQL expression {!`} of type {!t} is not supported as list item", item, item));
+			}
+		}
+
+		return new VSQLListAST(content);
+	}
+
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		ArrayList result = new ArrayList(items.size());

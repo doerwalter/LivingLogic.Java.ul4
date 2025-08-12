@@ -16,8 +16,21 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.io.IOException;
 
+import com.livinglogic.ul4.PositionalArgumentAST;
+
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
+
+import com.livinglogic.vsql.VSQLAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.vsql.VSQLFieldRefAST;
+import com.livinglogic.vsql.VSQLMethAST;
+import com.livinglogic.vsql.VSQLFuncAST;
+import com.livinglogic.vsql.VSQLAttrAST;
+import com.livinglogic.vsql.UnsupportedUL4ASTException;
+import com.livinglogic.utils.VSQLUtils;
+
+import static com.livinglogic.utils.StringUtils.formatMessage;
 
 public class CallAST extends CallRenderAST
 {
@@ -70,6 +83,69 @@ public class CallAST extends CallRenderAST
 	public String getType()
 	{
 		return "call";
+	}
+
+	private void addVSQLArguments(List<Object> content, Map<String, VSQLField> vars)
+	{
+		AST prev = obj;
+		for (AST arg : arguments)
+		{
+			if (arg instanceof PositionalArgumentAST posArg)
+			{
+				content.add(VSQLUtils.getSourceInfix(prev, posArg));
+				content.add(posArg.getValue().asVSQL(vars));
+				prev = posArg;
+			}
+			else
+			{
+				throw new UnsupportedUL4ASTException(formatMessage("vSQL argument {!`} of type {!t} is not supported", arg, arg));
+			}
+		}
+		content.add(VSQLUtils.getSourceSuffix(prev, this));
+	}
+
+	@Override
+	public VSQLAST asVSQL(Map<String, VSQLField> vars)
+	{
+		VSQLAST objV = obj.asVSQL(vars);
+
+		if (objV instanceof VSQLFieldRefAST fieldRefV)
+		{
+			List<Object> content = new ArrayList<>();
+
+			VSQLFieldRefAST fieldRefParentV = fieldRefV.getParent();
+
+			if (fieldRefParentV != null)
+			{
+				content.add(VSQLUtils.getSourcePrefix(this, obj));
+				content.add(fieldRefParentV);
+				content.add(".");
+				content.add(fieldRefV.getIdentifier());
+				addVSQLArguments(content, vars);
+				return new VSQLMethAST(content);
+			}
+			else
+			{
+				content.add(VSQLUtils.getSourcePrefix(this, obj));
+				content.add(fieldRefV.getIdentifier());
+				addVSQLArguments(content, vars);
+				return new VSQLFuncAST(content);
+			}
+		}
+		else if (objV instanceof VSQLAttrAST attrV)
+		{
+			List<Object> content = new ArrayList<>();
+			content.add(VSQLUtils.getSourcePrefix(this, obj));
+			content.add(attrV.getObj());
+			content.add(".");
+			content.add(attrV.getName());
+			addVSQLArguments(content, vars);
+			return new VSQLMethAST(content);
+		}
+		else
+		{
+			throw new UnsupportedUL4ASTException(formatMessage("vSQL expression {!`} of type {} is not callable", obj, objV.getDataTypeString()));
+		}
 	}
 
 	private void makeArguments(EvaluationContext context, List<Object> realArguments, Map<String, Object> realKeywordArguments)

@@ -6,6 +6,9 @@
 
 package com.livinglogic.ul4;
 
+import static com.livinglogic.utils.StringUtils.formatMessage;
+
+
 public class UndefinedKey extends Undefined
 {
 	protected static class Type extends Undefined.Type
@@ -59,6 +62,6 @@ public class UndefinedKey extends Undefined
 
 	public String toString()
 	{
-		return Utils.formatMessage("undefined key {!r} of {!R}", key, object);
+		return formatMessage("undefined key {!r} of {!R}", key, object);
 	}
 }

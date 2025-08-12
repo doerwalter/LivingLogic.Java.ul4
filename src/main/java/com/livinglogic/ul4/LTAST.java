@@ -6,6 +6,13 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
+
+import com.livinglogic.vsql.VSQLLtAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
+
 public class LTAST extends BinaryAST
 {
 	protected static class Type extends BinaryAST.Type
@@ -59,6 +66,19 @@ public class LTAST extends BinaryAST
 		return "lt";
 	}
 
+	@Override
+	public VSQLLtAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLLtAST(
+			VSQLUtils.getSourcePrefix(this, obj1),
+			obj1.asVSQL(vars),
+			VSQLUtils.getSourceInfix(obj1, obj2),
+			obj2.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj2, this)
+		);
+	}
+
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		return call(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));

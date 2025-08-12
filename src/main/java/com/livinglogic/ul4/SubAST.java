@@ -6,6 +6,7 @@
 
 package com.livinglogic.ul4;
 
+import java.util.Map;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
@@ -13,6 +14,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+
+import com.livinglogic.vsql.VSQLSubAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
 
 public class SubAST extends BinaryAST
 {
@@ -67,6 +73,19 @@ public class SubAST extends BinaryAST
 		return "sub";
 	}
 
+	@Override
+	public VSQLSubAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLSubAST(
+			VSQLUtils.getSourcePrefix(this, obj1),
+			obj1.asVSQL(vars),
+			VSQLUtils.getSourceInfix(obj1, obj2),
+			obj2.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj2, this)
+		);
+	}
+
+	@Override
 	public Object evaluate(EvaluationContext context)
 	{
 		return call(context, obj1.decoratedEvaluate(context), obj2.decoratedEvaluate(context));

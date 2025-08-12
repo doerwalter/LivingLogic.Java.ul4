@@ -8,7 +8,7 @@ package com.livinglogic.ul4on;
 
 import java.io.IOException;
 
-import com.livinglogic.ul4.Utils;
+import static com.livinglogic.utils.StringUtils.formatMessage;
 
 
 /**
@@ -58,7 +58,7 @@ public interface UL4ONSerializable
 	**/
 	default public void dumpUL4ON(Encoder encoder) throws IOException
 	{
-		throw new UnsupportedOperationException(Utils.formatMessage("Can't create UL4ON dumps for {!t} instances", this));
+		throw new UnsupportedOperationException(formatMessage("Can't create UL4ON dumps for {!t} instances", this));
 	}
 
 	/**
@@ -71,7 +71,7 @@ public interface UL4ONSerializable
 	**/
 	default public void loadUL4ON(Decoder decoder) throws IOException
 	{
-		throw new UnsupportedOperationException(Utils.formatMessage("Can't load {!t} instances from UL4ON dumps", this));
+		throw new UnsupportedOperationException(formatMessage("Can't load {!t} instances from UL4ON dumps", this));
 
 	}
 }

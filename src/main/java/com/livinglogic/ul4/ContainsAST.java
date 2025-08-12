@@ -6,9 +6,14 @@
 
 package com.livinglogic.ul4;
 
-import java.util.Collection;
 import java.util.Map;
+import java.util.Collection;
 import static java.util.Arrays.asList;
+
+import com.livinglogic.vsql.VSQLContainsAST;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.utils.VSQLUtils;
+
 
 public class ContainsAST extends BinaryAST
 {
@@ -61,6 +66,18 @@ public class ContainsAST extends BinaryAST
 	public String getType()
 	{
 		return "contains";
+	}
+
+	@Override
+	public VSQLContainsAST asVSQL(Map<String, VSQLField> vars)
+	{
+		return new VSQLContainsAST(
+			VSQLUtils.getSourcePrefix(this, obj1),
+			obj1.asVSQL(vars),
+			VSQLUtils.getSourceInfix(obj1, obj2),
+			obj2.asVSQL(vars),
+			VSQLUtils.getSourceSuffix(obj2, this)
+		);
 	}
 
 	@Override

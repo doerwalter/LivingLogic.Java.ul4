@@ -13,6 +13,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
 
+import static com.livinglogic.utils.StringUtils.formatMessage;
 import static com.livinglogic.utils.MapUtils.makeMap;
 
 
@@ -424,7 +425,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 	{
 		Color color = _fromrepr(value);
 		if (color == null)
-			throw new ColorFormatException(Utils.formatMessage("Invalid color repr {!r}", value));
+			throw new ColorFormatException(formatMessage("Invalid color repr {!r}", value));
 		return color;
 	}
 
@@ -533,7 +534,7 @@ public class Color implements Collection, UL4Instance, UL4Repr, UL4GetItem, UL4D
 	{
 		Color color = _fromCSS(value);
 		if (color == null)
-			throw new ColorFormatException(Utils.formatMessage("Can't interpret {!r} as css value", value));
+			throw new ColorFormatException(formatMessage("Can't interpret {!r} as css value", value));
 		return color;
 	}
 

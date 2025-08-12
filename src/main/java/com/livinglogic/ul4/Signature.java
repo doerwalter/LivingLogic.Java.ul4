@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.Collection;
 
+import static com.livinglogic.utils.StringUtils.formatMessage;
+
 
 public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescription>
 {
@@ -190,51 +192,51 @@ public class Signature implements UL4Instance, UL4Repr, Iterable<ParameterDescri
 	private void checkPositionalOnly(String name)
 	{
 		if (countBoth > 0)
-			throw new SignatureException(Utils.formatMessage("positional only parameter {!r} must be before positional/keyword parameters", name));
+			throw new SignatureException(formatMessage("positional only parameter {!r} must be before positional/keyword parameters", name));
 		if (countKeywordOnly > 0)
-			throw new SignatureException(Utils.formatMessage("positional only parameter {!r} must be before keyword only parameters", name));
+			throw new SignatureException(formatMessage("positional only parameter {!r} must be before keyword only parameters", name));
 		if (varPositional != null)
-			throw new SignatureException(Utils.formatMessage("positional only parameter {!r} must be before * parameter", name));
+			throw new SignatureException(formatMessage("positional only parameter {!r} must be before * parameter", name));
 		if (varKeyword != null)
-			throw new SignatureException(Utils.formatMessage("positional only parameter {!r} must be before ** parameter", name));
+			throw new SignatureException(formatMessage("positional only parameter {!r} must be before ** parameter", name));
 	}
 
 	private void checkBoth(String name)
 	{
 		if (countKeywordOnly > 0)
-			throw new SignatureException(Utils.formatMessage("positional/keyword parameter {!r} must be before keyword only parameters", name));
+			throw new SignatureException(formatMessage("positional/keyword parameter {!r} must be before keyword only parameters", name));
 		if (varPositional != null)
-			throw new SignatureException(Utils.formatMessage("positional/keyword parameter {!r} must be before * parameter", name));
+			throw new SignatureException(formatMessage("positional/keyword parameter {!r} must be before * parameter", name));
 		if (varKeyword != null)
-			throw new SignatureException(Utils.formatMessage("positional/keyword parameter {!r} must be before ** parameter", name));
+			throw new SignatureException(formatMessage("positional/keyword parameter {!r} must be before ** parameter", name));
 	}
 
 	private void checkKeywordOnly(String name)
 	{
 		if (varPositional != null)
-			throw new SignatureException(Utils.formatMessage("keyword only parameter {!r} must be before * parameter", name));
+			throw new SignatureException(formatMessage("keyword only parameter {!r} must be before * parameter", name));
 		if (varKeyword != null)
-			throw new SignatureException(Utils.formatMessage("keyword only parameter {!r} must be before ** parameter", name));
+			throw new SignatureException(formatMessage("keyword only parameter {!r} must be before ** parameter", name));
 	}
 
 	private void checkVarPositional(String name)
 	{
 		if (varPositional != null)
-			throw new SignatureException(Utils.formatMessage("* parameter {!r} can only be specified once", name));
+			throw new SignatureException(formatMessage("* parameter {!r} can only be specified once", name));
 		if (varKeyword != null)
-			throw new SignatureException(Utils.formatMessage("* parameter {!r} must be before ** parameter", name));
+			throw new SignatureException(formatMessage("* parameter {!r} must be before ** parameter", name));
 	}
 
 	private void checkVarKeyword(String name)
 	{
 		if (varKeyword != null)
-			throw new SignatureException(Utils.formatMessage("** parameter {!r} can only be specified once", name));
+			throw new SignatureException(formatMessage("** parameter {!r} can only be specified once", name));
 	}
 
 	private void checkDefaults(String name)
 	{
 		if (countDefaults > 0)
-			throw new SignatureException(Utils.formatMessage("parameter {!r} without default can't be after paramters with defaults", name));
+			throw new SignatureException(formatMessage("parameter {!r} without default can't be after paramters with defaults", name));
 	}
 
 	public Signature addPositionalOnly(String name)

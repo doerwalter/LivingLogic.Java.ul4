@@ -20,11 +20,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.sql.SQLException;
 
-import com.livinglogic.ul4.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.livinglogic.ul4.*;
+import static com.livinglogic.utils.StringUtils.formatMessage;
 
 import com.livinglogic.ul4.UL4Bool;
 import com.livinglogic.ul4.UL4GetAttr;
@@ -6845,7 +6847,7 @@ public class UL4Test
 		{
 			return;
 		}
-		throw new RuntimeException(Utils.formatMessage(message, dividend, divisor, dividend, divisor));
+		throw new RuntimeException(formatMessage(message, dividend, divisor, dividend, divisor));
 	}
 
 	@Test

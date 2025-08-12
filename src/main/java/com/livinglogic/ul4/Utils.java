@@ -6,7 +6,6 @@
 
 package com.livinglogic.ul4;
 
-import java.util.StringTokenizer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -29,6 +28,7 @@ import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
 
+import static com.livinglogic.utils.StringUtils.formatMessage;
 import static com.livinglogic.utils.MapUtils.makeMap;
 
 
@@ -653,118 +653,6 @@ public class Utils
 	{
 		if (value.compareTo(BigDecimal.ZERO) == 0)
 			throw new ArithmeticException("division by zero");
-	}
-
-	/**
-	Format a message replacing placeholders of the form {}, {!r}, {!R}, {!`}, {!t},
-	{0}, {0!r}, {!R}, {!`} or {0!t}.
-	**/
-	public static String formatMessage(String template, Object... args)
-	{
-		StringBuilder buffer = new StringBuilder();
-		int argIndex = 0;
-
-		StringTokenizer tokenizer = new StringTokenizer(template, "{}", true);
-
-		boolean outsidePlaceholder = true;
-
-		int form = 0;
-		String position = null;
-		while (tokenizer.hasMoreTokens())
-		{
-			String token = tokenizer.nextToken();
-			if ("{".equals(token))
-			{
-				outsidePlaceholder = false;
-				form = 0;
-				token = null;
-			}
-			else if ("}".equals(token))
-			{
-				Object arg = args[position == null || position.length() == 0 ? argIndex++ : Integer.parseInt(position)];
-				switch (form)
-				{
-					case 0:
-						buffer.append(arg != null ? arg.toString() : "null");
-						break;
-					case 1:
-						String repr = FunctionRepr.call(arg);
-						if (repr.length() <= 300)
-							buffer.append(repr);
-						else
-						{
-							buffer.append(objectType(arg));
-							buffer.append(" instance");
-						}
-						break;
-					case 2:
-						buffer.append(FunctionRepr.call(arg));
-						break;
-					case 3:
-						buffer.append(objectType(arg));
-						break;
-					case 4:
-						String output = arg != null ? arg.toString() : "null";
-						int maxcount = 0;
-						int count = 0;
-						for (int pos = 0; pos < output.length(); ++pos)
-						{
-							char c = output.charAt(pos);
-							if (c == '`')
-							{
-								++count;
-							}
-							else
-							{
-								if (count > maxcount)
-									maxcount = count;
-								count = 0;
-							}
-						}
-						if (count > maxcount)
-							maxcount = count;
-						int i;
-						for (i = 0; i < maxcount + 1; ++i)
-							buffer.append('`');
-						buffer.append(output);
-						for (i = 0; i < maxcount + 1; ++i)
-							buffer.append('`');
-						break;
-				}
-				outsidePlaceholder = true;
-			}
-			else if (outsidePlaceholder)
-				buffer.append(token);
-			else
-			{
-				if (token.endsWith("!r"))
-				{
-					form = 1;
-					position = token.substring(0, token.length() - 2);
-				}
-				else if (token.endsWith("!R"))
-				{
-					form = 2;
-					position = token.substring(0, token.length() - 2);
-				}
-				else if (token.endsWith("!t"))
-				{
-					form = 3;
-					position = token.substring(0, token.length() - 2);
-				}
-				else if (token.endsWith("!`"))
-				{
-					form = 4;
-					position = token.substring(0, token.length() - 2);
-				}
-				else
-				{
-					form = 0;
-					position = token;
-				}
-			}
-		}
-		return buffer.toString();
 	}
 
 	public static String unescapeUL4String(String string)
