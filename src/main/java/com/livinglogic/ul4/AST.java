@@ -696,7 +696,7 @@ public abstract class AST implements UL4Instance, UL4ONSerializable, UL4Dir, UL4
 
 	public VSQLAST asVSQL(Map<String, VSQLField> vars)
 	{
-		throw new UnsupportedUL4ASTException(formatMessage("UL4 expression of type {!t} can't be converted to vSQL", this));
+		throw new UnsupportedUL4ASTException(formatMessage("vSQL expression {!`} of type {!t} is not supported", this, this));
 	}
 
 	@Override

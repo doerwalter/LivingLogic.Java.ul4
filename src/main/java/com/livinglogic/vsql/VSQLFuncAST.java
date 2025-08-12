@@ -60,14 +60,6 @@ public class VSQLFuncAST extends VSQLAST
 		{
 			return object instanceof VSQLFuncAST;
 		}
-
-		@Override
-		public VSQLAST fromul4(AST ast, Map<String, VSQLField> vars)
-		{
-			CallAST callAST = (CallAST)ast;
-			callAST.getObj();
-			return null;
-		}
 	}
 
 	public static final Type type = new Type();

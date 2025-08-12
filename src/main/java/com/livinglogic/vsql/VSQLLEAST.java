@@ -49,12 +49,6 @@ public class VSQLLEAST extends VSQLBinaryAST
 		{
 			return object instanceof VSQLLEAST;
 		}
-
-		@Override
-		public VSQLAST fromul4(String sourcePrefix, VSQLAST ast1, String sourceInfix, VSQLAST ast2, String sourceSuffix)
-		{
-			return new VSQLLEAST(sourcePrefix, ast1, sourceInfix, ast2, sourceSuffix);
-		}
 	}
 
 	public static final Type type = new Type();

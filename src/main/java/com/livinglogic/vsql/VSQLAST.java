@@ -114,105 +114,6 @@ public abstract class VSQLAST implements UL4Instance, UL4ONSerializable, UL4Repr
 		{
 			return object instanceof VSQLAST;
 		}
-
-		public VSQLAST fromsource(String source, Map<String, VSQLField> vars)
-		{
-			Template template = new Template("<?return " + source + "?>", "vSQL", null, Template.Whitespace.keep);
-			List<AST> content = template.getContent();
-			ReturnAST returnExpr = (ReturnAST)content.get(content.size() - 1);
-			return fromul4(returnExpr.getObj(), vars);
-		}
-
-		public VSQLAST fromul4(AST ast, Map<String, VSQLField> vars)
-		{
-			if (ast instanceof CallAST callAST)
-			{
-				AST objAST = callAST.getObj();
-				VSQLAST objVAST = fromul4(objAST, vars);
-				if (objVAST instanceof VSQLFieldRefAST fieldRefVAST)
-				{
-					VSQLFieldRefAST fieldRefParentVAST = fieldRefVAST.getParent();
-					if (fieldRefParentVAST != null)
-					{
-						List<Object> content = new ArrayList<>();
-						content.add(getSourcePrefix(callAST, objAST));
-						content.add(fieldRefParentVAST);
-						content.add(".");
-						content.add(fieldRefVAST.getIdentifier());
-						AST prevAST = objAST;
-						for (AST argAST : callAST.getArguments())
-						{
-							if (argAST instanceof PositionalArgumentAST posArgAST)
-							{
-								content.add(getSourceInfix(prevAST, posArgAST));
-								content.add(fromul4(posArgAST.getValue(), vars));
-								prevAST = posArgAST;
-							}
-							else
-							{
-								throw new RuntimeException(formatMessage("Can't compile UL4 expression of type {!t}", argAST));
-							}
-						}
-						content.add(getSourceSuffix(prevAST, callAST));
-						return new VSQLMethAST(content);
-					}
-					else
-					{
-						List<Object> content = new ArrayList<>();
-						content.add(getSourcePrefix(callAST, objAST));
-						content.add(fieldRefVAST.getIdentifier());
-						AST prevAST = objAST;
-						for (AST argAST : callAST.getArguments())
-						{
-							if (argAST instanceof PositionalArgumentAST posArgAST)
-							{
-								content.add(getSourceInfix(prevAST, posArgAST));
-								content.add(fromul4(posArgAST.getValue(), vars));
-								prevAST = posArgAST;
-							}
-							else
-							{
-								throw new RuntimeException(formatMessage("Can't compile UL4 expression of type {!t}", argAST));
-							}
-						}
-						content.add(getSourceSuffix(prevAST, callAST));
-						return new VSQLFuncAST(content);
-					}
-				}
-				else if (objVAST instanceof VSQLAttrAST attrASTVObj)
-				{
-					List<Object> content = new ArrayList<>();
-					content.add(getSourcePrefix(callAST, objAST));
-					content.add(attrASTVObj.getObj());
-					content.add(".");
-					content.add(attrASTVObj.getName());
-					AST prevAST = objAST;
-					for (AST argAST : callAST.getArguments())
-					{
-						if (argAST instanceof com.livinglogic.ul4.PositionalArgumentAST posArgAST)
-						{
-							content.add(getSourceInfix(prevAST, posArgAST));
-							content.add(fromul4(posArgAST.getValue(), vars));
-							prevAST = posArgAST;
-						}
-						else
-						{
-							throw new RuntimeException(formatMessage("Can't compile UL4 expression of type {!t}", argAST));
-						}
-					}
-					content.add(getSourceSuffix(prevAST, callAST));
-					return new VSQLMethAST(content);
-				}
-				else
-				{
-					return VSQLFuncAST.type.fromul4(ast, vars);
-				}
-			}
-			else
-			{
-				return ast.asVSQL(vars);
-			}
-		}
 	}
 
 	public static final Type type = new Type();
@@ -857,6 +758,14 @@ public abstract class VSQLAST implements UL4Instance, UL4ONSerializable, UL4Repr
 		}
 	}
 
+	public static VSQLAST fromsource(String source, Map<String, VSQLField> vars)
+	{
+		Template template = new Template("<?return " + source + "?>", "vSQL", null, Template.Whitespace.keep);
+		List<AST> content = template.getContent();
+		ReturnAST returnExpr = (ReturnAST)content.get(content.size() - 1);
+		return returnExpr.getObj().asVSQL(vars);
+	}
+
 	@Override
 	public String toString()
 	{
@@ -926,12 +835,12 @@ public abstract class VSQLAST implements UL4Instance, UL4ONSerializable, UL4Repr
 
 	protected void makeSQLSource(StringBuilder buffer, VSQLQuery query)
 	{
-		List<VSQLAST> children = getChildren();
 		VSQLRule rule = getRule();
 		if (rule == null)
 		{
 			throw new RuntimeException(getSource());
 		}
+		List<VSQLAST> children = getChildren();
 		rule.makeSQLSource(buffer, query, children);
 	}
 

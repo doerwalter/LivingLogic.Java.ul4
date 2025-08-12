@@ -121,7 +121,7 @@ public class SetAST extends CodeAST
 					++i;
 				}
 				else
-					throw new UnsupportedUL4ASTException(formatMessage("UL4 expressions of type {!t} are not supported as set items", this));
+					throw new UnsupportedUL4ASTException(formatMessage("vSQL expression {!`} of type {!t} is not supported as set item", item, item));
 			}
 		}
 

@@ -55,22 +55,6 @@ public abstract class VSQLBinaryAST extends VSQLAST
 		{
 			return object instanceof VSQLUnaryAST;
 		}
-
-		protected abstract VSQLAST fromul4(String sourcePrefix, VSQLAST ast1, String sourceInfix, VSQLAST ast2, String sourceSuffix);
-
-		@Override
-		public VSQLAST fromul4(AST ast, Map<String, VSQLField> vars)
-		{
-			AST arg1AST = ((BinaryAST)ast).getObj1();
-			AST arg2AST = ((BinaryAST)ast).getObj2();
-			return fromul4(
-				VSQLUtils.getSourcePrefix(ast, arg1AST),
-				VSQLAST.type.fromul4(arg1AST, vars),
-				VSQLUtils.getSourceInfix(arg1AST, arg2AST),
-				VSQLAST.type.fromul4(arg2AST, vars),
-				VSQLUtils.getSourceSuffix(arg2AST, ast)
-			);
-		}
 	}
 
 	// No type object since this is abstract

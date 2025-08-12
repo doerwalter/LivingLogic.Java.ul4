@@ -1607,6 +1607,144 @@ public class VSQLTest
 	}
 
 	@Test
+	public void selectVSQL_attr_datetime_year()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"INT <- DATE_DATETIME.year"
+		query.selectVSQL("now().year");
+
+		checkVSQL("select extract(year from sysdate) /* now().year */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_datetime_month()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"INT <- DATE_DATETIME.month"
+		query.selectVSQL("now().month");
+
+		checkVSQL("select extract(month from sysdate) /* now().month */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_datetime_day()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"INT <- DATE_DATETIME.day"
+		query.selectVSQL("now().day");
+
+		checkVSQL("select extract(day from sysdate) /* now().day */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_datetime_hour()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"INT <- DATETIME.hour"
+		query.selectVSQL("now().hour");
+
+		checkVSQL("select to_number(to_char(sysdate, 'HH24')) /* now().hour */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_datetime_minute()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"INT <- DATETIME.minute"
+		query.selectVSQL("now().minute");
+
+		checkVSQL("select to_number(to_char(sysdate, 'MI')) /* now().minute */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_datetime_second()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"INT <- DATETIME.second"
+		query.selectVSQL("now().second");
+
+		checkVSQL("select to_number(to_char(sysdate, 'SS')) /* now().second */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_datetime_weekday()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"INT <- DATE_DATETIME.weekday"
+		query.selectVSQL("now().weekday");
+
+		checkVSQL("select (to_char(sysdate, 'D')-1) /* now().weekday */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_datetime_yearday()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"INT <- DATE_DATETIME.yearday"
+		query.selectVSQL("now().yearday");
+
+		checkVSQL("select to_number(to_char(sysdate, 'DDD')) /* now().yearday */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_datetimedelta_days()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"INT <- DATEDELTA_DATETIMEDELTA.days"
+		query.selectVSQL("hours(12).days");
+
+		checkVSQL("select trunc((12 / 24)) /* hours(12).days */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_datetimedelta_seconds()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"INT <- DATETIMEDELTA.seconds"
+		query.selectVSQL("hours(12).seconds");
+
+		checkVSQL("select trunc(mod((12 / 24), 1) * 86400 + 0.5) /* hours(12).seconds */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_datetimedelta_total_days()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"NUMBER <- DATETIMEDELTA.total_days"
+		query.selectVSQL("hours(12).total_days");
+
+		checkVSQL("select (12 / 24) /* hours(12).total_days */ from dual", query);
+	}
+
+	public void selectVSQL_attr_datetimedelta_total_hours()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"NUMBER <- DATETIMEDELTA.total_hours"
+		query.selectVSQL("hours(12).total_hours");
+
+		checkVSQL("select (12 / 24) * 24 /* hours(12).total_hours */ from dual", query);
+	}
+
+	public void selectVSQL_attr_datetimedelta_total_minutes()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"NUMBER <- DATETIMEDELTA.total_minutes"
+		query.selectVSQL("hours(12).total_minutes");
+
+		checkVSQL("select (12 / 24) * 1440 /* hours(12).total_minutes */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_datetimedelta_total_seconds()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"NUMBER <- DATETIMEDELTA.total_seconds"
+		query.selectVSQL("hours(12).total_seconds");
+
+		checkVSQL("select ((12 / 24) * 86400) /* hours(12).total_seconds */ from dual", query);
+		}
+
+	@Test
 	public void selectVSQL_attr_color_r()
 	{
 		VSQLQuery query = new VSQLQuery();
@@ -1640,5 +1778,44 @@ public class VSQLTest
 		query.selectVSQL("#123456.a");
 
 		checkVSQL("select vsqlimpl_pkg.attr_color_a(305420031) /* #123456.a */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_geo_lat()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"NUMBER <- GEO.lat"
+		query.selectVSQL("geo(49, 11, 'Here').lat");
+
+		checkVSQL("select vsqlimpl_pkg.attr_geo_lat(vsqlimpl_pkg.geo_number_number_str(49, 11, 'Here')) /* geo(49, 11, 'Here').lat */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_geo_long()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"NUMBER <- GEO.long"
+		query.selectVSQL("geo(49, 11, 'Here').long");
+
+		checkVSQL("select vsqlimpl_pkg.attr_geo_long(vsqlimpl_pkg.geo_number_number_str(49, 11, 'Here')) /* geo(49, 11, 'Here').long */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_attr_geo_info()
+	{
+		VSQLQuery query = new VSQLQuery();
+		// AttrAST.add_rules(f"STR <- GEO.info"
+		query.selectVSQL("geo(49, 11, 'Here').info");
+
+		checkVSQL("select vsqlimpl_pkg.attr_geo_info(vsqlimpl_pkg.geo_number_number_str(49, 11, 'Here')) /* geo(49, 11, 'Here').info */ from dual", query);
+	}
+
+	@Test
+	public void selectVSQL_str_meth_lower()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.selectVSQL("'gurk'.lower()");
+
+		checkVSQL("select lower('gurk') /* 'gurk'.lower() */ from dual", query);
 	}
 }

@@ -57,55 +57,6 @@ public abstract class VSQLConstAST extends VSQLAST
 		{
 			return object instanceof VSQLConstAST;
 		}
-
-		@Override
-		public VSQLAST fromul4(AST ast, Map<String, VSQLField> vars)
-		{
-			Object value = ((ConstAST)ast).getValue();
-			if (value == null)
-			{
-				return VSQLNoneAST.make();
-			}
-			else if (value instanceof Boolean booleanValue)
-			{
-				return VSQLBoolAST.make(booleanValue);
-			}
-			else if (value instanceof Number numberValue)
-			{
-				if (value instanceof Float || value instanceof Double || value instanceof BigDecimal)
-				{
-					return VSQLNumberAST.make(numberValue);
-				}
-				else
-				{
-					return VSQLIntAST.make(numberValue);
-				}
-			}
-			else if (value instanceof String stringValue)
-			{
-				return VSQLStrAST.make(stringValue);
-			}
-			else if (value instanceof Color colorValue)
-			{
-				return VSQLColorAST.make(colorValue);
-			}
-			else if (value instanceof LocalDate localDateValue)
-			{
-				return VSQLDateAST.make(localDateValue);
-			}
-			else if (value instanceof Date dateValue)
-			{
-				return VSQLDateTimeAST.make(Utils.toLocalDateTime(dateValue));
-			}
-			else if (value instanceof LocalDateTime localDateTimeValue)
-			{
-				return VSQLDateTimeAST.make(localDateTimeValue);
-			}
-			else
-			{
-				throw new ArgumentTypeMismatchException("constant of type {!t} not supported", value);
-			}
-		}
 	}
 
 	public static final Type type = new Type();

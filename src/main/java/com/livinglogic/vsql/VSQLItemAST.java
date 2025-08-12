@@ -54,34 +54,6 @@ public class VSQLItemAST extends VSQLBinaryAST
 		{
 			return object instanceof VSQLItemAST;
 		}
-
-		@Override
-		public VSQLAST fromul4(String sourcePrefix, VSQLAST ast1, String sourceInfix, VSQLAST ast2, String sourceSuffix)
-		{
-			// unused, since we directly overwrite `fromul4(com.livinglogic.ul4.AST ast, Map<String, VSQLField> vars)`
-			return null;
-		}
-
-		@Override
-		public VSQLAST fromul4(AST ast, Map<String, VSQLField> vars)
-		{
-			AST arg1AST = ((ItemAST)ast).getObj1();
-			AST arg2AST = ((ItemAST)ast).getObj2();
-			if (arg2AST instanceof SliceAST)
-			{
-				return VSQLSliceAST.type.fromul4(ast, vars);
-			}
-			else
-			{
-				return new VSQLItemAST(
-					VSQLUtils.getSourcePrefix(ast, arg1AST),
-					VSQLAST.type.fromul4(arg1AST, vars),
-					VSQLUtils.getSourceInfix(arg1AST, arg2AST),
-					VSQLAST.type.fromul4(arg2AST, vars),
-					VSQLUtils.getSourceSuffix(arg2AST, ast)
-				);
-			}
-		}
 	}
 
 	public static final Type type = new Type();

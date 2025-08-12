@@ -49,12 +49,6 @@ public class VSQLNotAST extends VSQLUnaryAST
 		{
 			return object instanceof VSQLNotAST;
 		}
-
-		@Override
-		protected VSQLAST fromul4(String sourcePrefix, VSQLAST ast, String sourceSuffix)
-		{
-			return new VSQLNotAST(sourcePrefix, ast, sourceSuffix);
-		}
 	}
 
 	public static final Type type = new Type();

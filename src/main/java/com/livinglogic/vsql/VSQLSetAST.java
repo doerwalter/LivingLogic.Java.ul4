@@ -65,42 +65,6 @@ public class VSQLSetAST extends VSQLAST
 		{
 			return object instanceof VSQLSetAST;
 		}
-
-		@Override
-		public VSQLAST fromul4(AST ast, Map<String, VSQLField> vars)
-		{
-			List<Object> content = new ArrayList<>();
-			List<SeqItemASTBase> items = ((SetAST)ast).getItems();
-
-			int size = items.size();
-			if (size == 0)
-				content.add(ast.getSource());
-			else
-			{
-				AST prevAST = null;
-				int i = 0;
-				for (AST itemAST : items)
-				{
-					if (itemAST instanceof SeqItemAST seqItemAST)
-					{
-						if (i == 0)
-							content.add(getSourcePrefix(ast, itemAST));
-						else
-							content.add(getSourceInfix(prevAST, itemAST));
-
-						content.add(VSQLAST.type.fromul4(seqItemAST.getValue(), vars));
-
-						if (i == size - 1)
-							content.add(getSourceSuffix(itemAST, ast));
-						else
-							prevAST = itemAST;
-						++i;
-					}
-				}
-			}
-
-			return new VSQLSetAST(content);
-		}
 	}
 
 	public static final Type type = new Type();

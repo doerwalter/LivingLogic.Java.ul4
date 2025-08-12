@@ -124,7 +124,7 @@ public class ItemAST extends BinaryAST implements LValue
 				{
 					return new VSQLSliceAST(
 						VSQLUtils.getSourcePrefix(this, obj1),
-						VSQLAST.type.fromul4(obj1, vars),
+						obj1.asVSQL(vars),
 						VSQLUtils.getSourceSuffix(obj1, this),
 						null,
 						null,

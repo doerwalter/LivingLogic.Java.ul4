@@ -49,12 +49,6 @@ public class VSQLNegAST extends VSQLUnaryAST
 		{
 			return object instanceof VSQLNegAST;
 		}
-
-		@Override
-		protected VSQLAST fromul4(String sourcePrefix, VSQLAST ast, String sourceSuffix)
-		{
-			return new VSQLNegAST(sourcePrefix, ast, sourceSuffix);
-		}
 	}
 
 	public static final Type type = new Type();

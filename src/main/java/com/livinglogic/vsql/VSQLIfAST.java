@@ -59,24 +59,6 @@ public class VSQLIfAST extends VSQLAST
 		{
 			return object instanceof VSQLIfAST;
 		}
-
-		@Override
-		public VSQLAST fromul4(AST ast, Map<String, VSQLField> vars)
-		{
-			AST ifAST = ((IfAST)ast).getObjIf();
-			AST condAST = ((IfAST)ast).getObjCond();
-			AST elseAST = ((IfAST)ast).getObjElse();
-
-			return new VSQLIfAST(
-				VSQLUtils.getSourcePrefix(ast, ifAST),
-				VSQLAST.type.fromul4(ifAST, vars),
-				VSQLUtils.getSourceInfix(ifAST, condAST),
-				VSQLAST.type.fromul4(condAST, vars),
-				VSQLUtils.getSourceInfix(condAST, elseAST),
-				VSQLAST.type.fromul4(elseAST, vars),
-				VSQLUtils.getSourceSuffix(elseAST, ast)
-			);
-		}
 	}
 
 	public static final Type type = new Type();

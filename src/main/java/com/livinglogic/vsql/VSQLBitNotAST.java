@@ -49,12 +49,6 @@ public class VSQLBitNotAST extends VSQLUnaryAST
 		{
 			return object instanceof VSQLBitNotAST;
 		}
-
-		@Override
-		protected VSQLAST fromul4(String sourcePrefix, VSQLAST ast, String sourceSuffix)
-		{
-			return new VSQLBitNotAST(sourcePrefix, ast, sourceSuffix);
-		}
 	}
 
 	public static final Type type = new Type();

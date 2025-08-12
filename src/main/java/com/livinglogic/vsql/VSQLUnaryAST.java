@@ -57,19 +57,6 @@ public abstract class VSQLUnaryAST extends VSQLAST
 		{
 			return object instanceof VSQLUnaryAST;
 		}
-
-		protected abstract VSQLAST fromul4(String sourcePrefix, VSQLAST ast, String sourceSuffix);
-
-		@Override
-		public VSQLAST fromul4(AST ast, Map<String, VSQLField> vars)
-		{
-			AST argAST = ((UnaryAST)ast).getObj();
-			return fromul4(
-				VSQLUtils.getSourcePrefix(ast, argAST),
-				VSQLAST.type.fromul4(argAST, vars),
-				VSQLUtils.getSourceSuffix(argAST, ast)
-			);
-		}
 	}
 
 	// No type object since this is abstract

@@ -178,7 +178,7 @@ public class VSQLQuery
 
 	VSQLAST compile(String source)
 	{
-		VSQLAST expression = VSQLAST.type.fromsource(source, vars);
+		VSQLAST expression = VSQLAST.fromsource(source, vars);
 		for (VSQLFieldRefAST fieldRefAST : expression.getFieldRefs())
 		{
 			register(fieldRefAST);

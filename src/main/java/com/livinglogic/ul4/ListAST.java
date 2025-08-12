@@ -120,7 +120,7 @@ public class ListAST extends CodeAST
 					++i;
 				}
 				else
-					throw new UnsupportedUL4ASTException(formatMessage("UL4 expressions of type {!t} are not supported as list items", this));
+					throw new UnsupportedUL4ASTException(formatMessage("vSQL expression {!`} of type {!t} is not supported as list item", item, item));
 			}
 		}
 

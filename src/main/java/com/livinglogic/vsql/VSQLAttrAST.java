@@ -123,6 +123,12 @@ public class VSQLAttrAST extends VSQLAST
 	}
 
 	@Override
+	public String getTypeSignature()
+	{
+		return formatMessage("{}.{}", obj.getDataTypeString(), name);
+	}
+
+	@Override
 	public VSQLDataType getDataType()
 	{
 		return dataType;

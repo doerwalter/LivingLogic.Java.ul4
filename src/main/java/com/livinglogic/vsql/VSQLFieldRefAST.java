@@ -60,29 +60,6 @@ public class VSQLFieldRefAST extends VSQLAST implements UL4Repr
 		{
 			return object instanceof VSQLFieldRefAST;
 		}
-
-		@Override
-		public VSQLAST fromul4(AST ast, Map<String, VSQLField> vars)
-		{
-			if (ast instanceof VarAST varAST)
-			{
-				String source = varAST.getSource();
-				String name = varAST.getName();
-				VSQLField field = vars.get(name);
-				// Note that we don't complain when `field` is `null` because this might turn out to be a function call later
-
-				int pos = source.indexOf(name);
-				return new VSQLFieldRefAST(
-					source.substring(0, pos),
-					null,
-					null,
-					name,
-					source.substring(pos + name.length()),
-					field
-				);
-			}
-			return null;
-		}
 	}
 
 	public static final Type type = new Type();
