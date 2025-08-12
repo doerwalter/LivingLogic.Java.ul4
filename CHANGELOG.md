@@ -10,7 +10,7 @@ Add method `SeqItemAST.getValue()`.
 
 ## 0.196.12 (2025-07-25)
 
-Add support for escaping arguments as Markdown code block in
+Add support for escaping arguments as Markdown code blocks in
 `Utils.formatMessage()` via ``{!`}`` or ``{0!`}`` placeholders.
 
 
