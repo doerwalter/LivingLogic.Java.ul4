@@ -183,6 +183,6 @@ public class StringUtils
 		if (s == null)
 			return "null";
 
-		return "'" + s.replace("'", "''") + "'';
+		return "'" + s.replace("'", "''") + "'";
 	}
 }

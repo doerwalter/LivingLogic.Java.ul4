@@ -1,3 +1,8 @@
+## 0.198.1 (2025-08-15)
+
+Fixed a typo in `com.livinglogic.utils.StringUtils.stringAsSQL()`.
+
+
 ## 0.198.0 (2025-08-15)
 
 Addded the static method `com.livinglogic.utils.StringUtils.stringAsSQL()`.
