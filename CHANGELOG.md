@@ -1,3 +1,8 @@
+## 0.198.0 (2025-08-15)
+
+Addded the static method `com.livinglogic.utils.StringUtils.stringAsSQL()`.
+
+
 ## 0.197.0 (2025-08-12)
 
 vSQL has been merged into UL4.
