@@ -170,4 +170,19 @@ public class StringUtils
 		return "\"" + StringEscapeUtils.escapeJava(s).replace("<", "\\u003c") + "\"";
 	}
 
+	/**
+	Return a string converted to a SQL string literal.
+
+	`null` is supported and returns `"null"`.
+
+	@param s the string to be converted.
+	@return the converted string.
+	**/
+	public static String stringAsSQL(String s)
+	{
+		if (s == null)
+			return "null";
+
+		return "'" + s.replace("'", "''") + "'';
+	}
 }
