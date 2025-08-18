@@ -256,9 +256,14 @@ public class VSQLQuery
 		return "/* " + comment.replace("/*", "/ *").replace("*/", "* /") + " */";
 	}
 
+	private void indent(StringBuilder buffer, int indentLevel)
+	{
+		for (int i = 0; i < indentLevel; ++i)
+			buffer.append("\t");
+	}
+
 	private void output(StringBuilder buffer, String sql, String comment, String alias, String suffix)
 	{
-		buffer.append("\t");
 		buffer.append(sql);
 		if (comment != null)
 		{
@@ -281,7 +286,7 @@ public class VSQLQuery
 		}
 	}
 
-	public String getSQLSource()
+	public String getSQLSource(int indentLevel)
 	{
 		StringBuilder buffer = new StringBuilder();
 
@@ -290,10 +295,12 @@ public class VSQLQuery
 		// Output comment
 		if (comment != null)
 		{
+			indent(buffer, indentLevel);
 			buffer.append(makeComment(comment) + "\n");
 		}
 
 		// Output "select" field list
+		indent(buffer, indentLevel);
 		buffer.append("select\n");
 		first = true;
 		for (Map.Entry<String, Field> selectEntry : fields.entrySet())
@@ -306,15 +313,18 @@ public class VSQLQuery
 			{
 				buffer.append(",\n");
 			}
+			indent(buffer, indentLevel+1);
 			output(buffer, selectEntry.getKey(), selectEntry.getValue().comment, selectEntry.getValue().alias, null);
 		}
 		if (first)
 		{
-			buffer.append("\t42");
+			indent(buffer, indentLevel+1);
+			buffer.append("42");
 		}
 		buffer.append("\n");
 
 		// Output "from"
+		indent(buffer, indentLevel);
 		buffer.append("from\n");
 		first = true;
 		for (Map.Entry<String, String> fromEntry : from.entrySet())
@@ -327,17 +337,20 @@ public class VSQLQuery
 			{
 				buffer.append(",\n");
 			}
+			indent(buffer, indentLevel+1);
 			output(buffer, fromEntry.getKey(), fromEntry.getValue(), null, null);
 		}
 		if (first)
 		{
-			buffer.append("\tdual");
+			indent(buffer, indentLevel+1);
+			buffer.append("dual");
 		}
 		buffer.append("\n");
 
 		// Output "where"
 		if (where.size() > 0)
 		{
+			indent(buffer, indentLevel);
 			buffer.append("where\n");
 			first = true;
 			for (Map.Entry<String, String> whereEntry : where.entrySet())
@@ -350,6 +363,7 @@ public class VSQLQuery
 				{
 					buffer.append(" and\n");
 				}
+				indent(buffer, indentLevel+1);
 				output(buffer, whereEntry.getKey(), whereEntry.getValue(), null, null);
 			}
 			buffer.append("\n");
@@ -358,6 +372,7 @@ public class VSQLQuery
 		// Output "order by"
 		if (orderBys.size() > 0)
 		{
+			indent(buffer, indentLevel);
 			buffer.append("order by\n");
 			first = true;
 			for (OrderBy orderBy : orderBys)
@@ -370,11 +385,17 @@ public class VSQLQuery
 				{
 					buffer.append(",\n");
 				}
+				indent(buffer, indentLevel+1);
 				output(buffer, orderBy.sql, orderBy.comment, null, orderBy.suffix());
 			}
 			buffer.append("\n");
 		}
 
 		return buffer.toString();
+	}
+
+	public String getSQLSource()
+	{
+		return getSQLSource(0);
 	}
 }
