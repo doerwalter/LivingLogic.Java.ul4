@@ -65,6 +65,15 @@ public class VSQLTest
 	}
 
 	@Test
+	public void indentation_level()
+	{
+		VSQLQuery query = new VSQLQuery();
+
+		assertEquals("select\n\t42\nfrom\n\tdual\n", query.getSQLSource());
+		assertEquals("\tselect\n\t\t42\n\tfrom\n\t\tdual\n", query.getSQLSource(1));
+	}
+
+	@Test
 	public void selectVSQL_null()
 	{
 		VSQLQuery query = new VSQLQuery();

@@ -1,3 +1,9 @@
+## 0.198.2 (2025-08-18)
+
+`com.livinglogic.vql.VSQLQuery.getSQLSource()` now supports an additional
+argument for the indentation level.
+
+
 ## 0.198.1 (2025-08-15)
 
 Fixed a typo in `com.livinglogic.utils.StringUtils.stringAsSQL()`.
