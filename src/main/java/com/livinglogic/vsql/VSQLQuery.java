@@ -42,14 +42,14 @@ public class VSQLQuery
 		}
 	}
 
-	private static final class Sort
+	private static final class OrderBy
 	{
 		String sql;
 		String comment;
 		String ascDesc;
 		String nulls;
 
-		Sort(String sql, String comment, String ascDesc, String nulls)
+		OrderBy(String sql, String comment, String ascDesc, String nulls)
 		{
 			this.sql = sql;
 			this.comment = comment;
@@ -89,7 +89,7 @@ public class VSQLQuery
 	Map<String, Field> fields; // Keys are sql expression, values are comments/aliases
 	Map<String, String> from;  // Keys are table expressions with aliass, values are comments
 	Map<String, String> where; // Keys are sql conditions, values are comments
-	List<Sort> sorts;
+	List<OrderBy> orderBys;
 	long offset = -1; // used for `fetch first ? rows only (-1 omits this)
 	long limit = -1; // used for `offset ? rows` (-1 omits this)
 	// Map identifier chains to table aliases
@@ -104,7 +104,7 @@ public class VSQLQuery
 		fields = new LinkedHashMap<>();
 		from = new LinkedHashMap<>();
 		where = new LinkedHashMap<>();
-		sorts = new ArrayList<>();
+		orderBys = new ArrayList<>();
 		identifierAliases = new HashMap<>();
 	}
 
@@ -238,22 +238,22 @@ public class VSQLQuery
 		return whereSQL(sqlSource, comment);
 	}
 
-	public VSQLQuery sortSQL(String sqlSource, String comment, String ascDesc, String nulls)
+	public VSQLQuery orderBySQL(String sqlSource, String comment, String ascDesc, String nulls)
 	{
-		sorts.add(new Sort(sqlSource, comment, ascDesc, nulls));
+		orderBys.add(new OrderBy(sqlSource, comment, ascDesc, nulls));
 		return this;
 	}
 
-	public VSQLQuery sortVSQL(String source, String ascDesc, String nulls)
+	public VSQLQuery orderByVSQL(String source, String ascDesc, String nulls)
 	{
 		VSQLAST expression = compile(source);
 		// FIXME: Check validity
 		String sqlSource = expression.getSQLSource(this);
 		String comment = expression.getSource();
-		return sortSQL(sqlSource, comment, ascDesc, nulls);
+		return orderBySQL(sqlSource, comment, ascDesc, nulls);
 	}
 
-	public VSQLQuery sortVSQL(String source)
+	public VSQLQuery orderByVSQL(String source)
 	{
 		String nulls = null;
 		String ascDesc = null;
@@ -289,7 +289,7 @@ public class VSQLQuery
 				break;
 		}
 
-		return sortVSQL(source, ascDesc, nulls);
+		return orderByVSQL(source, ascDesc, nulls);
 	}
 
 	public VSQLQuery limit(long limit)
@@ -433,12 +433,12 @@ public class VSQLQuery
 		}
 
 		// Output "order by"
-		if (sorts.size() > 0)
+		if (orderBys.size() > 0)
 		{
 			indent(buffer, indentLevel);
 			buffer.append("order by\n");
 			first = true;
-			for (Sort sort : sorts)
+			for (OrderBy orderBy : orderBys)
 			{
 				if (first)
 				{
@@ -449,7 +449,7 @@ public class VSQLQuery
 					buffer.append(",\n");
 				}
 				indent(buffer, indentLevel+1);
-				output(buffer, sort.sql, sort.comment, null, sort.suffix());
+				output(buffer, orderBy.sql, orderBy.comment, null, orderBy.suffix());
 			}
 			buffer.append("\n");
 		}
