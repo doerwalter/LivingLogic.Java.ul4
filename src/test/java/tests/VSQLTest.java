@@ -74,6 +74,105 @@ public class VSQLTest
 	}
 
 	@Test
+	public void limit()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.limit(10);
+
+		checkVSQL("select 42 from dual fetch next 10 rows only", query);
+	}
+
+	@Test
+	public void offset()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.offset(10);
+
+		checkVSQL("select 42 from dual offset 10 rows", query);
+	}
+
+	@Test
+	public void sort()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.sortVSQL("'foo'");
+
+		checkVSQL("select 42 from dual order by 'foo' /* 'foo' */", query);
+	}
+
+	@Test
+	public void sort_asc()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.sortVSQL("'foo' asc");
+
+		checkVSQL("select 42 from dual order by 'foo' /* 'foo' */ asc", query);
+	}
+
+	@Test
+	public void sort_desc()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.sortVSQL("'foo' desc");
+
+		checkVSQL("select 42 from dual order by 'foo' /* 'foo' */ desc", query);
+	}
+
+	@Test
+	public void sort_nulls_first()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.sortVSQL("'foo' nulls first");
+
+		checkVSQL("select 42 from dual order by 'foo' /* 'foo' */ nulls first", query);
+	}
+
+	@Test
+	public void sort_nulls_last()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.sortVSQL("'foo' nulls last");
+
+		checkVSQL("select 42 from dual order by 'foo' /* 'foo' */ nulls last", query);
+	}
+
+	@Test
+	public void sort_asc_nulls_first()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.sortVSQL("'foo' asc nulls first");
+
+		checkVSQL("select 42 from dual order by 'foo' /* 'foo' */ asc nulls first", query);
+	}
+
+	@Test
+	public void sort_asc_nulls_last()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.sortVSQL("'foo' asc nulls last");
+
+		checkVSQL("select 42 from dual order by 'foo' /* 'foo' */ asc nulls last", query);
+	}
+
+	@Test
+	public void sort_desc_nulls_first()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.sortVSQL("'foo' desc nulls first");
+
+		checkVSQL("select 42 from dual order by 'foo' /* 'foo' */ desc nulls first", query);
+	}
+
+	@Test
+	public void sort_desc_nulls_last()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.sortVSQL("'foo' desc nulls last");
+
+		checkVSQL("select 42 from dual order by 'foo' /* 'foo' */ desc nulls last", query);
+	}
+
+	@Test
 	public void selectVSQL_null()
 	{
 		VSQLQuery query = new VSQLQuery();

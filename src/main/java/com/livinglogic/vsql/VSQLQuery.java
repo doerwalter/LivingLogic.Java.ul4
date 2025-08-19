@@ -42,14 +42,14 @@ public class VSQLQuery
 		}
 	}
 
-	private static final class OrderBy
+	private static final class Sort
 	{
 		String sql;
 		String comment;
 		String ascDesc;
 		String nulls;
 
-		OrderBy(String sql, String comment, String ascDesc, String nulls)
+		Sort(String sql, String comment, String ascDesc, String nulls)
 		{
 			this.sql = sql;
 			this.comment = comment;
@@ -89,10 +89,12 @@ public class VSQLQuery
 	Map<String, Field> fields; // Keys are sql expression, values are comments/aliases
 	Map<String, String> from;  // Keys are table expressions with aliass, values are comments
 	Map<String, String> where; // Keys are sql conditions, values are comments
-	List<OrderBy> orderBys;
+	List<Sort> sorts;
+	long offset = -1; // used for `fetch first ? rows only (-1 omits this)
+	long limit = -1; // used for `offset ? rows` (-1 omits this)
 	// Map identifier chains to table aliases
-	// we need that so that when `a.b.c` and `a.b.d` appear as VQL expressions
-	// in a quer we do the quer for `a.b` only once.
+	// we need this so that when `a.b.c` and `a.b.d` appear as VQL expressions
+	// in a query we do the join for `a.b` only once.
 	Map<String, String> identifierAliases;
 
 	public VSQLQuery(String comment, Map<String, VSQLField> vars)
@@ -102,7 +104,7 @@ public class VSQLQuery
 		fields = new LinkedHashMap<>();
 		from = new LinkedHashMap<>();
 		where = new LinkedHashMap<>();
-		orderBys = new ArrayList<>();
+		sorts = new ArrayList<>();
 		identifierAliases = new HashMap<>();
 	}
 
@@ -236,19 +238,80 @@ public class VSQLQuery
 		return whereSQL(sqlSource, comment);
 	}
 
-	public VSQLQuery orderBySQL(String sqlSource, String comment, String ascDesc, String nulls)
+	public VSQLQuery sortSQL(String sqlSource, String comment, String ascDesc, String nulls)
 	{
-		orderBys.add(new OrderBy(sqlSource, comment, ascDesc, nulls));
+		sorts.add(new Sort(sqlSource, comment, ascDesc, nulls));
 		return this;
 	}
 
-	public VSQLQuery orderByVSQL(String source, String ascDesc, String nulls)
+	public VSQLQuery sortVSQL(String source, String ascDesc, String nulls)
 	{
 		VSQLAST expression = compile(source);
 		// FIXME: Check validity
 		String sqlSource = expression.getSQLSource(this);
 		String comment = expression.getSource();
-		return orderBySQL(sqlSource, comment, ascDesc, nulls);
+		return sortSQL(sqlSource, comment, ascDesc, nulls);
+	}
+
+	public VSQLQuery sortVSQL(String source)
+	{
+		String nulls = null;
+		String ascDesc = null;
+
+		while (true)
+		{
+			boolean found = false;
+			if (nulls == null && source.endsWith(" nulls first"))
+			{
+				nulls = "first";
+				source = source.substring(0, source.length() - 12).trim();
+				found = true;
+			}
+			else if (nulls == null && source.endsWith(" nulls last"))
+			{
+				nulls = "last";
+				source = source.substring(0, source.length() - 11).trim();
+				found = true;
+			}
+			else if (ascDesc == null && source.endsWith(" asc"))
+			{
+				ascDesc = "asc";
+				source = source.substring(0, source.length() - 4).trim();
+				found = true;
+			}
+			else if (ascDesc == null && source.endsWith(" desc"))
+			{
+				ascDesc = "desc";
+				source = source.substring(0, source.length() - 5).trim();
+				found = true;
+			}
+			if (!found)
+				break;
+		}
+
+		return sortVSQL(source, ascDesc, nulls);
+	}
+
+	public VSQLQuery limit(long limit)
+	{
+		this.limit = limit;
+		return this;
+	}
+
+	public VSQLQuery noLimit()
+	{
+		return limit(-1);
+	}
+
+	public VSQLQuery offset(long offset)
+	{
+		this.offset = offset;
+		return this;
+	}
+
+	public VSQLQuery noOffset()
+	{
+		return offset(-1);
 	}
 
 	private static String makeComment(String comment)
@@ -370,12 +433,12 @@ public class VSQLQuery
 		}
 
 		// Output "order by"
-		if (orderBys.size() > 0)
+		if (sorts.size() > 0)
 		{
 			indent(buffer, indentLevel);
 			buffer.append("order by\n");
 			first = true;
-			for (OrderBy orderBy : orderBys)
+			for (Sort sort : sorts)
 			{
 				if (first)
 				{
@@ -386,9 +449,23 @@ public class VSQLQuery
 					buffer.append(",\n");
 				}
 				indent(buffer, indentLevel+1);
-				output(buffer, orderBy.sql, orderBy.comment, null, orderBy.suffix());
+				output(buffer, sort.sql, sort.comment, null, sort.suffix());
 			}
 			buffer.append("\n");
+		}
+
+		// Output "offset ? rows"
+		if (offset >= 0)
+		{
+			indent(buffer, indentLevel);
+			buffer.append("offset ").append(offset).append(" rows\n");
+		}
+
+		// Output "fetch next ? rows only"
+		if (limit >= 0)
+		{
+			indent(buffer, indentLevel);
+			buffer.append("fetch next ").append(limit).append(" rows only\n");
 		}
 
 		return buffer.toString();
