@@ -1,3 +1,8 @@
+## 0.200.0 (2025-08-19)
+
+Revert renaming of `com.livinglogic.vql.VSQLQuery.orderByVSQL()` to `sortVSQL()`.
+
+
 ## 0.199.0 (2025-08-19)
 
 Add support for `limit` and `offset` clauses in `VSQLQuery`.
