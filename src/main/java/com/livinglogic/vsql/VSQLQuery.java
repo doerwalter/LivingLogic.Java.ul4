@@ -178,6 +178,40 @@ public class VSQLQuery
 		return newAlias;
 	}
 
+	public String registerVSQL(String identifier)
+	{
+		VSQLField field = vars.get(identifier);
+		if (field == null)
+			throw new VSQLFieldUnknownException(formatMessage("Field {!r} unknown!", identifier));
+
+		String newAlias = "t" + String.valueOf(from.size() + 1);
+		String joinCondition = field.getJoinSQL();
+		// Only add to `where` if the join condition is not empty
+		if (joinCondition != null)
+		{
+			joinCondition = joinCondition.replace("{d}", newAlias);
+			where.put(joinCondition, field.getIdentifier());
+		}
+
+		String tableSQL = field.getRefGroup().getTableSQL();
+
+		if (tableSQL == null)
+		{
+			/*
+			If this field is not part of a table (which can happen e.g. for
+			the request parameters, which we get from function calls),
+			we don't add the table aliases to the list of table aliases
+			and we don't add a table to the "from" list.
+			*/
+			return null;
+		}
+
+		identifierAliases.put(field.getIdentifier(), newAlias);
+		String fromSQL = tableSQL + " " + newAlias;
+		from.put(fromSQL, field.getIdentifier());
+		return newAlias;
+	}
+
 	VSQLAST compile(String source)
 	{
 		VSQLAST expression = VSQLAST.fromsource(source, vars);

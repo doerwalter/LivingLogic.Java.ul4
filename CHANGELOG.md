@@ -1,3 +1,9 @@
+## 0.201.0 (2025-08-20)
+
+Added `com.livinglogic.vql.VSQLQuery.registerVSQL()` which can be used to force
+the table of a variable to be joined.
+
+
 ## 0.200.0 (2025-08-19)
 
 Revert renaming of `com.livinglogic.vql.VSQLQuery.orderByVSQL()` to `sortVSQL()`.
