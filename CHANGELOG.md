@@ -1,3 +1,10 @@
+## 0.202.0 (2025-09-04)
+
+Add support for `\U` escape sequences in strings. Codepoints outside the BMP
+will create the appropriate surrogate pairs (which *will* mess up string
+indexing, iteration and `len()` results).
+
+
 ## 0.201.0 (2025-08-20)
 
 Added `com.livinglogic.vql.VSQLQuery.registerVSQL()` which can be used to force
