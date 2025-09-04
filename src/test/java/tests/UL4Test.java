@@ -488,6 +488,8 @@ public class UL4Test
 		checkOutput("\u0008", T("<?print '\\b'?>"));
 		checkOutput("\u0007", T("<?print '\\a'?>"));
 		checkOutput("\u0000", T("<?print '\\x00'?>"));
+		checkOutput("🎉", T("<?print '🎉'?>"));
+		checkOutput("🎉", T("<?print '\\U0001f389'?>"));
 		checkOutput("\"", T("<?print \"\\\"\"?>"));
 		checkOutput("'", T("<?print \"\\'\"?>"));
 		checkOutput("\u20ac", T("<?print '\u20ac'?>"));
