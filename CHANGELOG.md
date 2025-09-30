@@ -1,3 +1,8 @@
+## 0.202.1 (2025-09-30)
+
+Enclose multiple where conditions in brackets.
+
+
 ## 0.202.0 (2025-09-04)
 
 Add support for `\U` escape sequences in strings. Codepoints outside the BMP

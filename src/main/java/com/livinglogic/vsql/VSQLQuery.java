@@ -461,7 +461,10 @@ public class VSQLQuery
 					buffer.append(" and\n");
 				}
 				indent(buffer, indentLevel+1);
-				output(buffer, whereEntry.getKey(), whereEntry.getValue(), null, null);
+				String sql = whereEntry.getKey();
+				if (where.size() > 1)
+					sql = "(" + sql + ")";
+				output(buffer, sql, whereEntry.getValue(), null, null);
 			}
 			buffer.append("\n");
 		}
