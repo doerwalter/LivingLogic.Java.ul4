@@ -1926,4 +1926,14 @@ public class VSQLTest
 
 		checkVSQL("select lower('gurk') /* 'gurk'.lower() */ from dual", query);
 	}
+
+	@Test
+	public void selectVSQL_non_bool_in_where()
+	{
+		VSQLQuery query = new VSQLQuery();
+		query.selectVSQL("42");
+		query.whereVSQL("'foo'");
+
+		checkVSQL("select 42 /* 42 */ from dual where (case when 'foo' is null then 0 else 1 end) = 1 /* bool('foo') */", query);
+	}
 }

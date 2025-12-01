@@ -265,6 +265,8 @@ public class VSQLQuery
 	public VSQLQuery whereVSQL(String source)
 	{
 		VSQLAST expression = compile(source);
+		if (expression.getDataType() != VSQLDataType.BOOL)
+			expression = VSQLFuncAST.make("bool", expression);
 		// FIXME: Check validity and type
 		String sqlSource = expression.getSQLSource(this) + " = 1";
 		String comment = expression.getSource();

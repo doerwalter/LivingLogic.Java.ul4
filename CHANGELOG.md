@@ -1,3 +1,12 @@
+# Changelog
+
+## HEAD (2025-12-??)
+
+When a vSQL expression that is not of type `BOOL` is used in the `where`
+condition of a vSQL query, the expression will be wrapped in a `bool()`
+function call auotmatically.
+
+
 ## 0.202.1 (2025-09-30)
 
 Enclose multiple where conditions in brackets.
