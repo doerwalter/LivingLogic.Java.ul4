@@ -4,7 +4,7 @@
 
 When a vSQL expression that is not of type `BOOL` is used in the `where`
 condition of a vSQL query, the expression will be wrapped in a `bool()`
-function call auotmatically.
+function call automatically.
 
 
 ## 0.202.1 (2025-09-30)
