@@ -98,7 +98,7 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		String trailingSource = VSQLUtils.getSourceSuffix(obj, this);
 		int dotPos = trailingSource.indexOf(".");
-		
+
 		for (++dotPos; dotPos < trailingSource.length() && trailingSource.charAt(dotPos) == ' '; ++dotPos)
 			;
 
@@ -110,20 +110,23 @@ public class AttrAST extends CodeAST implements LValue
 		if (vsqlObj instanceof VSQLFieldRefAST vqlFieldRef)
 		{
 			VSQLField field = vqlFieldRef.getField();
-			VSQLGroup group = field.getRefGroup();
-			if (group != null)
+			if (field != null)
 			{
-				VSQLField refField = group.getField(attrName);
-				if (refField != null)
+				VSQLGroup group = field.getRefGroup();
+				if (group != null)
 				{
-					return new VSQLFieldRefAST(
-						VSQLUtils.getSourcePrefix(this, obj),
-						vqlFieldRef,
-						attrNamePrefix,
-						attrName,
-						attrNameSuffix,
-						refField
-					);
+					VSQLField refField = group.getField(attrName);
+					if (refField != null)
+					{
+						return new VSQLFieldRefAST(
+							VSQLUtils.getSourcePrefix(this, obj),
+							vqlFieldRef,
+							attrNamePrefix,
+							attrName,
+							attrNameSuffix,
+							refField
+						);
+					}
 				}
 			}
 			// Fall through to a normal attribute access

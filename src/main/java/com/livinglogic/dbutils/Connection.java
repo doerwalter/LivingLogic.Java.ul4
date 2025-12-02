@@ -77,6 +77,11 @@ public class Connection implements UL4Instance, AutoCloseable, UL4GetAttr, UL4Di
 		this.connection = connection;
 	}
 
+	public java.sql.Connection getConnection()
+	{
+		return connection;
+	}
+
 	@Override
 	public void close() throws SQLException
 	{

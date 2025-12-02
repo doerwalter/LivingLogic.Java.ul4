@@ -84,7 +84,7 @@ public class VarAST extends CodeAST implements LValue
 	public VSQLFieldRefAST asVSQL(Map<String, VSQLField> vars)
 	{
 		String source = getSource();
-		// Note that we don't complain when `field` is `null` because this might turn out to be a method call later
+		// Note that we don't complain when `field` is `null` because this might turn out to be a function call later
 		VSQLField field = vars.get(name);
 		int pos = source.indexOf(name);
 

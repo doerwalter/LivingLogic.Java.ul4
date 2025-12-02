@@ -146,7 +146,7 @@ public class VSQLFieldRefAST extends VSQLAST implements UL4Repr
 	@Override
 	protected void makeSQLSource(StringBuilder buffer, VSQLQuery query)
 	{
-		String alias = query.register(this);
+		String alias = query.register(this).getAlias();
 		// FIXME: Handle `params.` (or don't?)
 		String source = getSource();
 		String fieldSQL = field.getFieldSQL();

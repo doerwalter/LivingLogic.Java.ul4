@@ -6,6 +6,12 @@ When a vSQL expression that is not of type `BOOL` is used in the `where`
 condition of a vSQL query, the expression will be wrapped in a `bool()`
 function call automatically.
 
+Parts of a `VSQLQuery` are now stored in instances of classes specific
+to their porpose. Those objects will be returned from the appropriate
+method. For example `selectVSQL()` returns `VSQLQuery.SelectExpr` that
+contains a `VSQLQuery.VSQLExpr`. This also means that chaining these
+methods is no longer possible.
+
 
 ## 0.202.1 (2025-09-30)
 

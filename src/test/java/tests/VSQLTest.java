@@ -6,7 +6,15 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Map;
+
+import com.livinglogic.vsql.VSQLDataType;
+import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.vsql.VSQLGroup;
 import com.livinglogic.vsql.VSQLQuery;
+import com.livinglogic.vsql.VSQLFieldUnknownException;
+import com.livinglogic.vsql.VSQLUnsupportedOperationException;
+
 
 @RunWith(CauseTestRunner.class)
 public class VSQLTest
@@ -185,7 +193,7 @@ public class VSQLTest
 	public void selectVSQL_null_with_alias()
 	{
 		VSQLQuery query = new VSQLQuery();
-		query.selectVSQL("None", "nix");
+		query.selectVSQL("None", null, "nix");
 
 		checkVSQL("select null /* None */ as nix from dual", query);
 	}
@@ -1934,6 +1942,142 @@ public class VSQLTest
 		query.selectVSQL("42");
 		query.whereVSQL("'foo'");
 
-		checkVSQL("select 42 /* 42 */ from dual where (case when 'foo' is null then 0 else 1 end) = 1 /* bool('foo') */", query);
+		checkVSQL("select 42 /* 42 */ from dual where (case when 'foo' is null then 0 else 1 end) = 1 /* 'foo' */", query);
+	}
+
+	private static Map<String, VSQLField> makeFields()
+	{
+		VSQLGroup field_table = new VSQLGroup("vsql_field");
+		field_table.addField("id", VSQLDataType.STR, "{a}.fld_id");
+		field_table.addField("name", VSQLDataType.STR, "{a}.fld_name");
+		field_table.addField("parent", VSQLDataType.STR, "{a}.fld_id_super", "{m}.fld_id_super = {d}.fld_id", field_table);
+
+
+		VSQLGroup person_table = new VSQLGroup("vsql_person");
+		person_table.addField("id", VSQLDataType.STR, "{a}.per_id");
+		person_table.addField("firstname", VSQLDataType.STR, "{a}.per_firstname");
+		person_table.addField("lastname", VSQLDataType.STR, "{a}.per_lastname");
+		person_table.addField("gender", VSQLDataType.STR, "{a}.per_gender");
+		person_table.addField("field", VSQLDataType.STR, "{a}.fld_id", "{m}.fld_id = {d}.fld_id", field_table);
+		person_table.addField("date_of_birth", VSQLDataType.DATE, "{a}.per_date_of_birth");
+		person_table.addField("date_of_death", VSQLDataType.DATE, "{a}.per_date_of_death");
+		person_table.addField("country_of_birth", VSQLDataType.STR, "{a}.per_country_of_birth");
+		person_table.addField("grave", VSQLDataType.GEO, "{a}.per_grave");
+		person_table.addField("nobel_prize", VSQLDataType.BOOL, "{a}.per_nobel_prize");
+		person_table.addField("url", VSQLDataType.STR, "{a}.per_url");
+		person_table.addField("createdat", VSQLDataType.DATETIME, "{a}.per_createdat");
+
+		Map<String, VSQLField> fields = Map.of(
+			"p",
+			new VSQLField("p", VSQLDataType.STR, "1 = 1", "2 = 2", person_table)
+		);
+		return fields;
+	}
+
+	@CauseTest(expectedCause=VSQLFieldUnknownException.class)
+	@Test
+	public void selectVSQL_undefined_var()
+	{
+		VSQLQuery query = new VSQLQuery("select comment", makeFields());
+		// We're using the wrong variable here (should have been `p`)
+		query.selectVSQL("r.field.parent.name");
+
+		checkVSQL("ignored", query);
+	}
+
+	@CauseTest(expectedCause=VSQLUnsupportedOperationException.class)
+	@Test
+	public void selectVSQL_undefined_field()
+	{
+		VSQLQuery query = new VSQLQuery("select comment", makeFields());
+		// We're using an attribute that doesn exist (and is not an attribute of a datatype either)
+		query.selectVSQL("p.unknown");
+
+		checkVSQL("ignored", query);
+	}
+
+	@Test
+	public void selectVSQL_table_fromVSQL()
+	{
+		VSQLQuery query = new VSQLQuery("select comment", makeFields());
+		query.fromVSQL("p");
+		query.selectSQL("count(*)", "count them", "c");
+
+		checkVSQL(
+			"""
+			/* select comment */
+			select
+				count(*) /* count them */ as c
+			from
+				vsql_person /* p */ t1
+			where
+				2 = 2 /* p */
+			""", query
+		);
+	}
+
+	@Test
+	public void selectVSQL_table_selectVSQL()
+	{
+		VSQLQuery query = new VSQLQuery("select comment", makeFields());
+		query.selectVSQL("p.firstname");
+
+		checkVSQL(
+			"""
+			/* select comment */
+			select
+				t1.per_firstname /* p.firstname */
+			from
+				vsql_person /* p */ t1
+			where
+				2 = 2 /* p */
+			""",
+			query
+		);
+	}
+
+	@Test
+	public void selectVSQL_reference_table_selectVSQL()
+	{
+		VSQLQuery query = new VSQLQuery("select comment", makeFields());
+		query.selectVSQL("p.field.name");
+
+		checkVSQL(
+			"""
+			/* select comment */
+			select
+				t2.fld_name /* p.field.name */
+			from
+				vsql_person /* p */ t1,
+				vsql_field /* p.field */ t2
+			where
+				(2 = 2 /* p */) and
+				(t1.fld_id = t2.fld_id /* p.field */)
+			""",
+			query
+		);
+	}
+
+	@Test
+	public void selectVSQL_reference_table_twice_selectVSQL()
+	{
+		VSQLQuery query = new VSQLQuery("select comment", makeFields());
+		query.selectVSQL("p.field.parent.name");
+
+		checkVSQL("""
+			/* select comment */
+			select
+				t3.fld_name /* p.field.parent.name */
+			from
+				vsql_person /* p */ t1,
+				vsql_field /* p.field */ t2,
+				vsql_field /* p.field.parent */ t3
+			where
+				(2 = 2 /* p */) and
+				(t1.fld_id = t2.fld_id /* p.field */) and
+				(t2.fld_id_super = t3.fld_id /* p.field.parent */)
+			""",
+			query
+		);
 	}
 }

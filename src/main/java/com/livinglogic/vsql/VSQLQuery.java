@@ -30,82 +30,209 @@ A class to build an SQL query defined via vSQL expressions.
 **/
 public class VSQLQuery
 {
-	private static final class Field
+	public static abstract class Expr
 	{
-		String comment;
-		String alias;
+		public abstract String getSQLSource();
+		public abstract String getSQLSourceWhere();
+	}
 
-		Field(String comment, String alias)
+	public static final class SQLExpr extends Expr
+	{
+		protected String expr;
+		protected String comment;
+
+		SQLExpr(String expr, String comment)
 		{
+			this.expr = expr;
 			this.comment = comment;
-			this.alias = alias;
+		}
+
+		public String getExpr()
+		{
+			return expr;
+		}
+
+		public String getComment()
+		{
+			return comment;
+		}
+
+		@Override
+		public String getSQLSource()
+		{
+			return addComment(expr, comment);
+		}
+
+		@Override
+		public String getSQLSourceWhere()
+		{
+			return addComment(expr, comment);
 		}
 	}
 
-	private static final class OrderBy
+	public final class VSQLExpr extends Expr
 	{
-		String sql;
+		VSQLAST expr;
 		String comment;
+
+		VSQLExpr(String expr, String comment)
+		{
+			this.expr = compile(expr);
+			this.comment = comment;
+		}
+
+		public VSQLAST getExpr()
+		{
+			return expr;
+		}
+
+		public String getComment()
+		{
+			return comment;
+		}
+
+		@Override
+		public String getSQLSource()
+		{
+			return addComment(expr.getSQLSource(VSQLQuery.this), comment, expr.getSource());
+		}
+
+		public String getSQLSourceWhere()
+		{
+			VSQLAST finalExpr = expr;
+			if (finalExpr.getDataType() != VSQLDataType.BOOL)
+				finalExpr = VSQLFuncAST.make("bool", finalExpr);
+			return addComment(finalExpr.getSQLSource(VSQLQuery.this) + " = 1", expr.getSource(), comment);
+		}
+	}
+
+	public static class AliasExpr
+	{
+		protected Expr expr;
+		protected String alias;
+
+		AliasExpr(Expr expr, String alias)
+		{
+			this.expr = expr;
+			this.alias = alias;
+		}
+
+		public String getAlias()
+		{
+			return alias;
+		}
+	}
+
+	public static final class SelectExpr extends AliasExpr
+	{
+		SelectExpr(Expr expr, String alias)
+		{
+			super(expr, alias);
+		}
+
+		public String getSQLSource()
+		{
+			String sqlSource = expr.getSQLSource();
+
+			if (alias != null)
+			{
+				sqlSource += " as ";
+				sqlSource += alias;
+			}
+
+			return sqlSource;
+		}
+	}
+
+	public static final class FromExpr extends AliasExpr
+	{
+		FromExpr(Expr expr, String alias)
+		{
+			super(expr, alias);
+		}
+
+		public String getSQLSource()
+		{
+			String sqlSource = expr.getSQLSource();
+
+			if (alias != null)
+			{
+				sqlSource += " ";
+				sqlSource += alias;
+			}
+
+			return sqlSource;
+		}
+	}
+
+	public static final class WhereExpr
+	{
+		protected Expr expr;
+
+		WhereExpr(Expr expr)
+		{
+			this.expr = expr;
+		}
+
+		public String getSQLSource()
+		{
+			return expr.getSQLSourceWhere();
+		}
+	}
+
+	private static final class OrderByExpr
+	{
+		Expr expr;
 		String ascDesc;
 		String nulls;
 
-		OrderBy(String sql, String comment, String ascDesc, String nulls)
+		OrderByExpr(Expr expr, String ascDesc, String nulls)
 		{
-			this.sql = sql;
-			this.comment = comment;
+			this.expr = expr;
 			this.ascDesc = ascDesc;
 			this.nulls = nulls;
 		}
 
-		public String suffix()
+		public String getSQLSource()
 		{
+			String sqlSource = expr.getSQLSource();
+
 			if (ascDesc != null)
 			{
-				if (nulls != null)
-				{
-					return " " + ascDesc + " nulls " + nulls;
-				}
-				else
-				{
-					return " " + ascDesc;
-				}
+				sqlSource += " " + ascDesc;
 			}
-			else
+
+			if (nulls != null)
 			{
-				if (nulls != null)
-				{
-					return " nulls " + nulls;
-				}
-				else
-				{
-					return null;
-				}
+				sqlSource += " nulls " + nulls;
 			}
+
+			return sqlSource;
 		}
 	}
 
 	String comment;
 	Map<String, VSQLField> vars;
-	Map<String, Field> fields; // Keys are sql expression, values are comments/aliases
-	Map<String, String> from;  // Keys are table expressions with aliass, values are comments
-	Map<String, String> where; // Keys are sql conditions, values are comments
-	List<OrderBy> orderBys;
+	List<SelectExpr> fields; // SQL and vSQL expression to be selected
+	List<FromExpr> from; // tables (and otehr stuff) to select from
+	Map<String, WhereExpr> where; // maps SQL source to filter expressions
+	List<OrderByExpr> orderBys;
 	long offset = -1; // used for `fetch first ? rows only (-1 omits this)
 	long limit = -1; // used for `offset ? rows` (-1 omits this)
-	// Map identifier chains to table aliases
+	// Map identifier chains to from expressions
 	// we need this so that when `a.b.c` and `a.b.d` appear as VQL expressions
 	// in a query we do the join for `a.b` only once.
-	Map<String, String> identifierAliases;
+	Map<String, FromExpr> identifier2Expr;
 
 	public VSQLQuery(String comment, Map<String, VSQLField> vars)
 	{
 		this.comment = comment;
 		this.vars = vars;
-		fields = new LinkedHashMap<>();
-		from = new LinkedHashMap<>();
+		fields = new ArrayList<>();
+		from = new ArrayList<>();
 		where = new LinkedHashMap<>();
 		orderBys = new ArrayList<>();
-		identifierAliases = new HashMap<>();
+		identifier2Expr = new HashMap<>();
 	}
 
 	public VSQLQuery(String comment)
@@ -123,7 +250,7 @@ public class VSQLQuery
 		this(null, new HashMap<>());
 	}
 
-	String register(VSQLFieldRefAST fieldRef)
+	FromExpr register(VSQLFieldRefAST fieldRef)
 	{
 		// Don't register broken expressions
 		if (fieldRef.getError() != null)
@@ -137,13 +264,13 @@ public class VSQLQuery
 		}
 
 		String parentIdentifier = fieldRefParent.getFullIdentifier();
-		String parentAlias = identifierAliases.get(parentIdentifier);
-		if (parentAlias != null && identifierAliases.containsKey(parentIdentifier))
+		FromExpr parentExpr = identifier2Expr.get(parentIdentifier);
+		if (parentExpr != null)
 		{
-			return parentAlias;
+			return parentExpr;
 		}
 
-		parentAlias = register(fieldRefParent);
+		parentExpr = register(fieldRefParent);
 
 		String newAlias = "t" + String.valueOf(from.size() + 1);
 		VSQLField field = fieldRefParent.getField();
@@ -151,12 +278,12 @@ public class VSQLQuery
 		// Only add to `where` if the join condition is not empty
 		if (joinCondition != null)
 		{
-			if (parentAlias != null)
+			if (parentExpr != null)
 			{
-				joinCondition = joinCondition.replace("{m}", parentAlias);
+				joinCondition = joinCondition.replace("{m}", parentExpr.getAlias());
 			}
 			joinCondition = joinCondition.replace("{d}", newAlias);
-			where.put(joinCondition, fieldRefParent.getSource());
+			where.put(joinCondition, new WhereExpr(new SQLExpr(joinCondition, fieldRefParent.getSource())));
 		}
 
 		String tableSQL = field.getRefGroup().getTableSQL();
@@ -172,13 +299,13 @@ public class VSQLQuery
 			return null;
 		}
 
-		identifierAliases.put(parentIdentifier, newAlias);
-		String fromSQL = tableSQL + " " + newAlias;
-		from.put(fromSQL, fieldRefParent.getSource());
-		return newAlias;
+		FromExpr fromExpr = new FromExpr(new SQLExpr(tableSQL, fieldRefParent.getSource()), newAlias);
+		identifier2Expr.put(parentIdentifier, fromExpr);
+		from.add(fromExpr);
+		return fromExpr;
 	}
 
-	public String registerVSQL(String identifier)
+	public FromExpr fromVSQL(String identifier)
 	{
 		VSQLField field = vars.get(identifier);
 		if (field == null)
@@ -190,7 +317,7 @@ public class VSQLQuery
 		if (joinCondition != null)
 		{
 			joinCondition = joinCondition.replace("{d}", newAlias);
-			where.put(joinCondition, field.getIdentifier());
+			where.put(joinCondition, new WhereExpr(new SQLExpr(joinCondition, field.getIdentifier())));
 		}
 
 		String tableSQL = field.getRefGroup().getTableSQL();
@@ -206,10 +333,10 @@ public class VSQLQuery
 			return null;
 		}
 
-		identifierAliases.put(field.getIdentifier(), newAlias);
-		String fromSQL = tableSQL + " " + newAlias;
-		from.put(fromSQL, field.getIdentifier());
-		return newAlias;
+		FromExpr fromExpr = new FromExpr(new SQLExpr(tableSQL, field.getIdentifier()), newAlias);
+		identifier2Expr.put(field.getIdentifier(), fromExpr);
+		from.add(fromExpr);
+		return fromExpr;
 	}
 
 	VSQLAST compile(String source)
@@ -222,74 +349,74 @@ public class VSQLQuery
 		return expression;
 	}
 
-	public VSQLQuery selectSQL(String sqlSource, String comment, String alias)
+	public SelectExpr selectSQL(String expr, String comment, String alias)
 	{
-		Field field = fields.get(sqlSource);
-		if (field == null)
-		{
-			fields.put(sqlSource, new Field(comment, alias));
-		}
-		return this;
+		SelectExpr selectExpr = new SelectExpr(new SQLExpr(expr, comment), alias);
+		fields.add(selectExpr);
+		return selectExpr;
 	}
 
-	public VSQLQuery selectVSQL(String source, String alias)
+	public SelectExpr selectVSQL(String expr, String comment, String alias)
 	{
-		VSQLAST expression = compile(source);
-		// FIXME: Check validity
-		String sqlSource = expression.getSQLSource(this);
-		String comment = expression.getSource();
-		return selectSQL(sqlSource, comment, alias);
+		SelectExpr selectExpr = new SelectExpr(new VSQLExpr(expr, comment), alias);
+		fields.add(selectExpr);
+		return selectExpr;
 	}
 
-	public VSQLQuery selectVSQL(String source)
+	public SelectExpr selectVSQL(String expr)
 	{
-		return selectVSQL(source, null);
+		return selectVSQL(expr, null, null);
 	}
 
-	public VSQLQuery fromSQL(String tablename, String alias, String comment)
+	public FromExpr fromSQL(String tablename, String comment, String alias)
 	{
-		from.put(tablename + " " + alias, comment);
-		return this;
+		FromExpr fromExpr = new FromExpr(new SQLExpr(tablename, comment), alias);
+		from.add(fromExpr);
+		return fromExpr;
 	}
 
-	public VSQLQuery whereSQL(String sqlSource, String comment)
+	public WhereExpr whereSQL(String expr, String comment)
 	{
-		String value = where.get(sqlSource);
-		if (value == null && !where.containsKey(sqlSource))
-		{
-			where.put(sqlSource, comment);
-		}
-		return this;
+		WhereExpr newWhereExpr = new WhereExpr(new SQLExpr(expr, comment));
+		String key = newWhereExpr.getSQLSource();
+		WhereExpr oldWhereExpr = where.get(key);
+		if (oldWhereExpr != null)
+			return oldWhereExpr;
+		where.put(key, newWhereExpr);
+		return newWhereExpr;
 	}
 
-	public VSQLQuery whereVSQL(String source)
+	public WhereExpr whereVSQL(String expr, String comment)
 	{
-		VSQLAST expression = compile(source);
-		if (expression.getDataType() != VSQLDataType.BOOL)
-			expression = VSQLFuncAST.make("bool", expression);
-		// FIXME: Check validity and type
-		String sqlSource = expression.getSQLSource(this) + " = 1";
-		String comment = expression.getSource();
-
-		return whereSQL(sqlSource, comment);
+		WhereExpr newWhereExpr = new WhereExpr(new VSQLExpr(expr, comment));
+		String key = newWhereExpr.getSQLSource();
+		WhereExpr oldWhereExpr = where.get(key);
+		if (oldWhereExpr != null)
+			return oldWhereExpr;
+		where.put(key, newWhereExpr);
+		return newWhereExpr;
 	}
 
-	public VSQLQuery orderBySQL(String sqlSource, String comment, String ascDesc, String nulls)
+	public WhereExpr whereVSQL(String expr)
 	{
-		orderBys.add(new OrderBy(sqlSource, comment, ascDesc, nulls));
-		return this;
+		return whereVSQL(expr, null);
 	}
 
-	public VSQLQuery orderByVSQL(String source, String ascDesc, String nulls)
+	public OrderByExpr orderBySQL(String expr, String comment, String ascDesc, String nulls)
 	{
-		VSQLAST expression = compile(source);
-		// FIXME: Check validity
-		String sqlSource = expression.getSQLSource(this);
-		String comment = expression.getSource();
-		return orderBySQL(sqlSource, comment, ascDesc, nulls);
+		OrderByExpr orderByExpr = new OrderByExpr(new SQLExpr(expr, comment), ascDesc, nulls);
+		orderBys.add(orderByExpr);
+		return orderByExpr;
 	}
 
-	public VSQLQuery orderByVSQL(String source)
+	public OrderByExpr orderByVSQL(String expr, String comment, String ascDesc, String nulls)
+	{
+		OrderByExpr orderByExpr = new OrderByExpr(new VSQLExpr(expr, comment), ascDesc, nulls);
+		orderBys.add(orderByExpr);
+		return orderByExpr;
+	}
+
+	public OrderByExpr orderByVSQL(String source, String comment)
 	{
 		String nulls = null;
 		String ascDesc = null;
@@ -325,34 +452,71 @@ public class VSQLQuery
 				break;
 		}
 
-		return orderByVSQL(source, ascDesc, nulls);
+		return orderByVSQL(source, comment, ascDesc, nulls);
 	}
 
-	public VSQLQuery limit(long limit)
+	public OrderByExpr orderByVSQL(String source)
+	{
+		return orderByVSQL(source, null);
+	}
+
+	public void limit(long limit)
 	{
 		this.limit = limit;
-		return this;
 	}
 
-	public VSQLQuery noLimit()
+	public void noLimit()
 	{
-		return limit(-1);
+		limit = -1;
 	}
 
-	public VSQLQuery offset(long offset)
+	public void offset(long offset)
 	{
 		this.offset = offset;
-		return this;
 	}
 
-	public VSQLQuery noOffset()
+	public void noOffset()
 	{
-		return offset(-1);
+		offset = -1;
 	}
 
 	private static String makeComment(String comment)
 	{
 		return "/* " + comment.replace("/*", "/ *").replace("*/", "* /") + " */";
+	}
+
+	private static String addComment(String expression, String comment)
+	{
+		if (comment == null)
+			return expression;
+		comment = makeComment(comment);
+		if (!expression.endsWith(comment))
+			return expression + " " + comment;
+		else
+			return expression;
+	}
+
+	private static String addComment(String expression, String comment1, String comment2)
+	{
+		if (comment1 == null)
+			return addComment(expression, comment2);
+		else if (comment2 == null)
+			return addComment(expression, comment1);
+
+		String testComment1 = makeComment(comment1);
+		String testComment2 = makeComment(comment2);
+
+		if (expression.endsWith(testComment1))
+			return expression + " " + testComment2;
+		else
+		{
+			if (expression.endsWith(testComment2))
+				return expression + " " + testComment1;
+			else
+			{
+				return expression + " " + makeComment(comment1 + ": " + comment2);
+			}
+		}
 	}
 
 	private void indent(StringBuilder buffer, int indentLevel)
@@ -402,7 +566,7 @@ public class VSQLQuery
 		indent(buffer, indentLevel);
 		buffer.append("select\n");
 		first = true;
-		for (Map.Entry<String, Field> selectEntry : fields.entrySet())
+		for (SelectExpr selectExpr : fields)
 		{
 			if (first)
 			{
@@ -413,7 +577,7 @@ public class VSQLQuery
 				buffer.append(",\n");
 			}
 			indent(buffer, indentLevel+1);
-			output(buffer, selectEntry.getKey(), selectEntry.getValue().comment, selectEntry.getValue().alias, null);
+			buffer.append(selectExpr.getSQLSource());
 		}
 		if (first)
 		{
@@ -426,7 +590,7 @@ public class VSQLQuery
 		indent(buffer, indentLevel);
 		buffer.append("from\n");
 		first = true;
-		for (Map.Entry<String, String> fromEntry : from.entrySet())
+		for (FromExpr fromExpr : from)
 		{
 			if (first)
 			{
@@ -437,7 +601,7 @@ public class VSQLQuery
 				buffer.append(",\n");
 			}
 			indent(buffer, indentLevel+1);
-			output(buffer, fromEntry.getKey(), fromEntry.getValue(), null, null);
+			buffer.append(fromExpr.getSQLSource());
 		}
 		if (first)
 		{
@@ -452,7 +616,7 @@ public class VSQLQuery
 			indent(buffer, indentLevel);
 			buffer.append("where\n");
 			first = true;
-			for (Map.Entry<String, String> whereEntry : where.entrySet())
+			for (WhereExpr whereExpr : where.values())
 			{
 				if (first)
 				{
@@ -463,10 +627,10 @@ public class VSQLQuery
 					buffer.append(" and\n");
 				}
 				indent(buffer, indentLevel+1);
-				String sql = whereEntry.getKey();
+				String sql = whereExpr.getSQLSource();
 				if (where.size() > 1)
 					sql = "(" + sql + ")";
-				output(buffer, sql, whereEntry.getValue(), null, null);
+				buffer.append(sql);
 			}
 			buffer.append("\n");
 		}
@@ -477,7 +641,7 @@ public class VSQLQuery
 			indent(buffer, indentLevel);
 			buffer.append("order by\n");
 			first = true;
-			for (OrderBy orderBy : orderBys)
+			for (OrderByExpr orderByExpr : orderBys)
 			{
 				if (first)
 				{
@@ -488,7 +652,7 @@ public class VSQLQuery
 					buffer.append(",\n");
 				}
 				indent(buffer, indentLevel+1);
-				output(buffer, orderBy.sql, orderBy.comment, null, orderBy.suffix());
+				buffer.append(orderByExpr.getSQLSource());
 			}
 			buffer.append("\n");
 		}

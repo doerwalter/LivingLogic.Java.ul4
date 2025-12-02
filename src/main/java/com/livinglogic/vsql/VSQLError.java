@@ -72,6 +72,13 @@ public enum VSQLError
 		{
 			return formatMessage("{} {!`} uses unsupported types of operands: {}", ast.getDescription(), ast.getSource(), ast.getTypeSignature());
 		}
+
+		@Override
+		public void throwError(VSQLAST ast)
+		{
+			throw new VSQLUnsupportedOperationException(getErrorMessage(ast));
+		}
+
 	},
 	/* The node references an unknown field */
 	FIELD
