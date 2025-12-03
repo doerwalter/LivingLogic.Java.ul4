@@ -101,6 +101,12 @@ public class VSQLQuery
 	}
 	public static abstract class Expr
 	{
+		/**
+		Return the source that is used to identify the expresions.
+
+		This is used to avoid adding this expression to the query multiple times.
+		**/
+		public abstract String getKey();
 		public abstract String getSQLSource();
 		public abstract String getSQLSourceWhere();
 	}
@@ -124,6 +130,12 @@ public class VSQLQuery
 		public String getComment()
 		{
 			return comment;
+		}
+
+		@Override
+		public String getKey()
+		{
+			return expr;
 		}
 
 		@Override
@@ -171,6 +183,12 @@ public class VSQLQuery
 		}
 
 		@Override
+		public String getKey()
+		{
+			return expr.getSQLSource(VSQLQuery.this);
+		}
+
+		@Override
 		public String getSQLSource()
 		{
 			return addComment(expr.getSQLSource(VSQLQuery.this), comment, expr.getSource());
@@ -204,6 +222,14 @@ public class VSQLQuery
 		public String getAlias()
 		{
 			return alias;
+		}
+
+		public String getKey()
+		{
+			String key = expr.getKey();
+			if (alias != null)
+				key += " " + alias;
+			return key;
 		}
 	}
 
@@ -285,6 +311,21 @@ public class VSQLQuery
 			return aggregate;
 		}
 
+		public String getKey()
+		{
+			if (expr instanceof VSQLExpr vsqlExpr)
+			{
+				String key = expr.getKey();
+				if (aggregate != null)
+					key = aggregate.toString() + "(" + key + ")";
+				if (alias != null)
+					key += " " + alias;
+				return key;
+			}
+			else
+				return super.getKey();
+		}
+
 		public String getSQLSource()
 		{
 			String sqlSource;
@@ -347,6 +388,11 @@ public class VSQLQuery
 			this.expr = expr;
 		}
 
+		public String getKey()
+		{
+			return expr.getKey();
+		}
+
 		public String getSQLSource()
 		{
 			return expr.getSQLSourceWhere();
@@ -364,6 +410,21 @@ public class VSQLQuery
 			this.expr = expr;
 			this.ascDesc = ascDesc;
 			this.nulls = nulls;
+		}
+
+		public String getKey()
+		{
+			String key = expr.getKey();
+			if (ascDesc != null)
+			{
+				key += " " + ascDesc;
+			}
+
+			if (nulls != null)
+			{
+				key += " nulls " + nulls;
+			}
+			return key;
 		}
 
 		public String getSQLSource()
@@ -391,6 +452,11 @@ public class VSQLQuery
 		GroupByExpr(Expr expr)
 		{
 			this.expr = expr;
+		}
+
+		public String getKey()
+		{
+			return expr.getKey();
 		}
 
 		public String getSQLSource()
@@ -592,7 +658,7 @@ public class VSQLQuery
 
 		if (aggregate == Aggregate.GROUP)
 		{
-			String key = aggregatedSelectExpr.getSQLSource();
+			String key = aggregatedSelectExpr.getKey();
 			if (!groupBys.containsKey(key))
 			{
 				// We know that our expression is a `VSQLExpr`, otherweise `aggregate` would be `null`.
@@ -613,7 +679,7 @@ public class VSQLQuery
 	public WhereExpr whereSQL(String expr, String comment)
 	{
 		WhereExpr newWhereExpr = new WhereExpr(new SQLExpr(expr, comment));
-		String key = newWhereExpr.getSQLSource();
+		String key = newWhereExpr.getKey();
 		WhereExpr oldWhereExpr = where.get(key);
 		if (oldWhereExpr != null)
 			return oldWhereExpr;
@@ -624,7 +690,7 @@ public class VSQLQuery
 	public WhereExpr whereVSQL(String expr, String comment)
 	{
 		WhereExpr newWhereExpr = new WhereExpr(new VSQLExpr(expr, comment));
-		String key = newWhereExpr.getSQLSource();
+		String key = newWhereExpr.getKey();
 		WhereExpr oldWhereExpr = where.get(key);
 		if (oldWhereExpr != null)
 			return oldWhereExpr;
@@ -701,7 +767,7 @@ public class VSQLQuery
 			throw new VSQLMixedAggregationException();
 
 		GroupByExpr newGroupByExpr = new GroupByExpr(new SQLExpr(expr, comment));
-		String key = newGroupByExpr.getSQLSource();
+		String key = newGroupByExpr.getKey();
 		GroupByExpr oldGroupByExpr = groupBys.get(key);
 		if (oldGroupByExpr != null)
 			return oldGroupByExpr;
@@ -720,7 +786,7 @@ public class VSQLQuery
 			throw new VSQLMixedAggregationException();
 
 		GroupByExpr newGroupByExpr = new GroupByExpr(new VSQLExpr(expr, comment));
-		String key = newGroupByExpr.getSQLSource();
+		String key = newGroupByExpr.getKey();
 		GroupByExpr oldGroupByExpr = groupBys.get(key);
 		if (oldGroupByExpr != null)
 			return oldGroupByExpr;

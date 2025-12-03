@@ -2017,7 +2017,7 @@ public class VSQLTest
 	}
 
 	@Test
-	public void selectVSQL_table_selectVSQL()
+	public void selectVSQL_table()
 	{
 		VSQLQuery query = new VSQLQuery("select comment", makeFields());
 		query.selectVSQL("p.firstname");
@@ -2035,7 +2035,7 @@ public class VSQLTest
 	}
 
 	@Test
-	public void selectVSQL_reference_table_selectVSQL()
+	public void selectVSQL_reference_table()
 	{
 		VSQLQuery query = new VSQLQuery("select comment", makeFields());
 		query.selectVSQL("p.field1.name");
@@ -2056,7 +2056,7 @@ public class VSQLTest
 	}
 
 	@Test
-	public void selectVSQL_reference_table_twice_selectVSQL()
+	public void selectVSQL_reference_table_twice()
 	{
 		VSQLQuery query = new VSQLQuery("select comment", makeFields());
 		query.selectVSQL("p.field1.parent1.name");
@@ -2098,6 +2098,9 @@ public class VSQLTest
 		query.aggregateSQL("count(*)", "count comment", "c");
 		query.fromSQL("vsql_person", "table comment", "t");
 		query.groupBySQL("per_gender", "group by comment");
+		// Adding the same `group by` condition multiple times should be ignored
+		query.groupBySQL("per_gender", "group by comment 2");
+		query.groupBySQL("per_gender", "group by comment 3");
 
 		checkVSQL("""
 			/* select comment */
@@ -2113,7 +2116,7 @@ public class VSQLTest
 	}
 
 	@Test
-	public void selectVSQL_aggrgateVSQL()
+	public void aggregateVSQL()
 	{
 		VSQLQuery query = new VSQLQuery("select comment", makeFields());
 		query.aggregateVSQL("group(p.gender)", "Group by gender", "g");
@@ -2121,6 +2124,9 @@ public class VSQLTest
 		query.aggregateVSQL("max(p.date_of_birth)", "Last birth", "max_dob");
 		query.aggregateVSQL("count()", "Count", "c");
 		query.whereVSQL("p.date_of_birth > @(1800-01-01)");
+		// Adding the same `where` condition multiple times should be ignored
+		query.whereVSQL("p.date_of_birth > @(1800-01-01)", "comment 1");
+		query.whereVSQL("p.date_of_birth > @(1800-01-01)", "comment 2");
 
 		checkVSQL("""
 			/* select comment */
