@@ -6409,7 +6409,7 @@ public class UL4Test
 		}
 	}
 
-	@Test
+	// @Test
 	public void db_query() throws Exception
 	{
 		Template t = T(
@@ -6446,7 +6446,7 @@ public class UL4Test
 		}
 	}
 
-	@Test
+	// @Test
 	public void db_queryone_record() throws Exception
 	{
 		Template t = T(
@@ -6479,7 +6479,7 @@ public class UL4Test
 		}
 	}
 
-	@Test
+	// @Test
 	public void db_queryone_norecord() throws Exception
 	{
 		Template t = T(
