@@ -6,7 +6,9 @@
 
 package com.livinglogic.vsql;
 
-
+/**
+An exception that is thrown when a field is unknown.
+**/
 public class VSQLFieldUnknownException extends RuntimeException
 {
 	public VSQLFieldUnknownException(String message)

@@ -6,7 +6,12 @@
 
 package com.livinglogic.vsql;
 
+/**
+An exception that is thrown when a VSQL operation is not supported.
 
+This normally means that the operation exists, but the type combination
+of argument is not supported.
+**/
 public class VSQLUnsupportedOperationException extends RuntimeException
 {
 	public VSQLUnsupportedOperationException(String message)

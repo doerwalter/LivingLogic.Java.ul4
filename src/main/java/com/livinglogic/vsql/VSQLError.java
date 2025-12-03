@@ -11,6 +11,10 @@ import static com.livinglogic.utils.StringUtils.formatMessage;
 import com.livinglogic.ul4.EnumValueException;
 import static com.livinglogic.utils.StringUtils.lowerCaseFirstLetter;
 
+/**
+An enum that specifies the various errors that can occur when parsing and
+validating a VSQL expression or query.
+**/
 public enum VSQLError
 {
 	/* Subnodes have failures */

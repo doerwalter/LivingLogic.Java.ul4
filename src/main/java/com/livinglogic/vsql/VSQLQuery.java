@@ -607,6 +607,16 @@ public class VSQLQuery
 		return expression;
 	}
 
+	/**
+	Add the SQL expression `expr` to the list of expression to select.
+
+	`comment` can be used to give the column a comment in the select list.
+
+	`alias` can be used to give the expression a column alias.
+
+	Note that that adds `expr` directly as "raw" SQL. To add a vSQL
+	expression use {@link #selectVSQL()} instead.
+	**/
 	public SelectExpr selectSQL(String expr, String comment, String alias)
 	{
 		if (aggregatedFields.size() > 0)

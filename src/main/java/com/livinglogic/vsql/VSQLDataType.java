@@ -8,6 +8,9 @@ package com.livinglogic.vsql;
 
 import com.livinglogic.ul4.EnumValueException;
 
+/**
+An enum that specifies the various data types available in vSQL.
+**/
 public enum VSQLDataType
 {
 	NULL
