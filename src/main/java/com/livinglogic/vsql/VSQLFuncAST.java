@@ -260,6 +260,12 @@ public class VSQLFuncAST extends VSQLAST
 		return name;
 	}
 
+
+	public List<VSQLAST> getArgs()
+	{
+		return args;
+	}
+
 	@Override
 	public VSQLRule getRule()
 	{

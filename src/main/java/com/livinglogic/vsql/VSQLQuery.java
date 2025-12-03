@@ -17,6 +17,7 @@ import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 
 import com.livinglogic.ul4.UL4Type;
+import com.livinglogic.ul4.EnumValueException;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
@@ -30,6 +31,74 @@ A class to build an SQL query defined via vSQL expressions.
 **/
 public class VSQLQuery
 {
+	public enum Aggregate
+	{
+		GROUP
+		{
+			@Override
+			public String toString()
+			{
+				return "group";
+			}
+		},
+		COUNT
+		{
+			@Override
+			public String toString()
+			{
+				return "count";
+			}
+		},
+		MIN
+		{
+			@Override
+			public String toString()
+			{
+				return "min";
+			}
+		},
+		MAX
+		{
+			@Override
+			public String toString()
+			{
+				return "max";
+			}
+		},
+		SUM
+		{
+			@Override
+			public String toString()
+			{
+				return "sum";
+			}
+		};
+
+		public String toString()
+		{
+			return null;
+		}
+
+		public static Aggregate fromString(String value)
+		{
+			if (value == null)
+				return null;
+			switch (value)
+			{
+				case "group":
+					return GROUP;
+				case "count":
+					return COUNT;
+				case "min":
+					return MIN;
+				case "max":
+					return MAX;
+				case "sum":
+					return SUM;
+			}
+			throw new EnumValueException("com.livinglogic.livingapps.vsql.VSQLQuery.Aggregate", value);
+		}
+	}
 	public static abstract class Expr
 	{
 		public abstract String getSQLSource();
@@ -86,9 +155,19 @@ public class VSQLQuery
 			return expr;
 		}
 
+		public void setExpr(VSQLAST expr)
+		{
+			this.expr = expr;
+		}
+
 		public String getComment()
 		{
 			return comment;
+		}
+
+		public String getSource()
+		{
+			return expr.getSource();
 		}
 
 		@Override
@@ -117,13 +196,18 @@ public class VSQLQuery
 			this.alias = alias;
 		}
 
+		public Expr getExpr()
+		{
+			return expr;
+		}
+
 		public String getAlias()
 		{
 			return alias;
 		}
 	}
 
-	public static final class SelectExpr extends AliasExpr
+	public static class SelectExpr extends AliasExpr
 	{
 		SelectExpr(Expr expr, String alias)
 		{
@@ -133,6 +217,95 @@ public class VSQLQuery
 		public String getSQLSource()
 		{
 			String sqlSource = expr.getSQLSource();
+
+			if (alias != null)
+			{
+				sqlSource += " as ";
+				sqlSource += alias;
+			}
+
+			return sqlSource;
+		}
+	}
+
+	public static class AggregatedSelectExpr extends SelectExpr
+	{
+		protected Aggregate aggregate;
+
+		AggregatedSelectExpr(Expr expr, String alias)
+		{
+			super(expr, alias);
+			if (expr instanceof VSQLExpr vsqlExpr)
+			{
+				VSQLAST vsqlAST = vsqlExpr.getExpr();
+				if (vsqlAST instanceof VSQLFuncAST vsqlFuncAST)
+				{
+					String name = vsqlFuncAST.getName();
+					List<VSQLAST> args = vsqlFuncAST.getArgs();
+					int argCount = args.size();
+					if ("count".equals(name) && argCount == 0)
+					{
+						vsqlExpr.setExpr(null);
+						this.aggregate = Aggregate.COUNT;
+					}
+					else if ("min".equals(name) && argCount == 1)
+					{
+						vsqlExpr.setExpr(args.get(0));
+						this.aggregate = Aggregate.MIN;
+					}
+					else if ("max".equals(name) && argCount == 1)
+					{
+						vsqlExpr.setExpr(args.get(0));
+						this.aggregate = Aggregate.MAX;
+					}
+					else if ("sum".equals(name) && argCount == 1)
+					{
+						vsqlExpr.setExpr(args.get(0));
+						this.aggregate = Aggregate.SUM;
+					}
+					else if ("group".equals(name) && argCount == 1)
+					{
+						vsqlExpr.setExpr(args.get(0));
+						this.aggregate = Aggregate.GROUP;
+					}
+					else
+					{
+						throw new VSQLAggregationException("Aggregation call is malformed.");
+					}
+				}
+				else
+				{
+					throw new VSQLAggregationException("Aggregation call is malformed.");
+				}
+			}
+		}
+
+		public Aggregate getAggregate()
+		{
+			return aggregate;
+		}
+
+		public String getSQLSource()
+		{
+			String sqlSource;
+
+			if (expr instanceof VSQLExpr vsqlExpr)
+			{
+				if (vsqlExpr.getExpr() == null)
+					sqlSource = addComment("count(*)", vsqlExpr.getComment());
+				else
+				{
+					sqlSource = vsqlExpr.getSQLSource();
+					if (aggregate != Aggregate.GROUP)
+					{
+						sqlSource = aggregate.toString() + "(" + sqlSource + ")";
+					}
+				}
+			}
+			else
+			{
+				sqlSource = expr.getSQLSource();
+			}
 
 			if (alias != null)
 			{
@@ -211,27 +384,46 @@ public class VSQLQuery
 		}
 	}
 
-	String comment;
-	Map<String, VSQLField> vars;
-	List<SelectExpr> fields; // SQL and vSQL expression to be selected
-	List<FromExpr> from; // tables (and otehr stuff) to select from
-	Map<String, WhereExpr> where; // maps SQL source to filter expressions
-	List<OrderByExpr> orderBys;
-	long offset = -1; // used for `fetch first ? rows only (-1 omits this)
-	long limit = -1; // used for `offset ? rows` (-1 omits this)
+	public static final class GroupByExpr
+	{
+		Expr expr;
+
+		GroupByExpr(Expr expr)
+		{
+			this.expr = expr;
+		}
+
+		public String getSQLSource()
+		{
+			return expr.getSQLSource();
+		}
+	}
+
+	protected String comment;
+	protected Map<String, VSQLField> vars;
+	protected List<SelectExpr> fields; // SQL and vSQL expression to be selected
+	protected List<AggregatedSelectExpr> aggregatedFields; // SQL and vSQL expression to be selected
+	protected List<FromExpr> from; // tables (and otehr stuff) to select from
+	protected Map<String, WhereExpr> where; // maps SQL source to filter expressions
+	protected List<OrderByExpr> orderBys;
+	protected Map<String, GroupByExpr> groupBys;
+	protected long offset = -1; // used for `fetch first ? rows only (-1 omits this)
+	protected long limit = -1; // used for `offset ? rows` (-1 omits this)
 	// Map identifier chains to from expressions
 	// we need this so that when `a.b.c` and `a.b.d` appear as VQL expressions
 	// in a query we do the join for `a.b` only once.
-	Map<String, FromExpr> identifier2Expr;
+	protected Map<String, FromExpr> identifier2Expr;
 
 	public VSQLQuery(String comment, Map<String, VSQLField> vars)
 	{
 		this.comment = comment;
 		this.vars = vars;
 		fields = new ArrayList<>();
+		aggregatedFields = new ArrayList<>();
 		from = new ArrayList<>();
 		where = new LinkedHashMap<>();
 		orderBys = new ArrayList<>();
+		groupBys = new LinkedHashMap<>();
 		identifier2Expr = new HashMap<>();
 	}
 
@@ -351,6 +543,9 @@ public class VSQLQuery
 
 	public SelectExpr selectSQL(String expr, String comment, String alias)
 	{
+		if (aggregatedFields.size() > 0)
+			throw new VSQLMixedAggregationException();
+
 		SelectExpr selectExpr = new SelectExpr(new SQLExpr(expr, comment), alias);
 		fields.add(selectExpr);
 		return selectExpr;
@@ -358,6 +553,9 @@ public class VSQLQuery
 
 	public SelectExpr selectVSQL(String expr, String comment, String alias)
 	{
+		if (aggregatedFields.size() > 0)
+			throw new VSQLMixedAggregationException();
+
 		SelectExpr selectExpr = new SelectExpr(new VSQLExpr(expr, comment), alias);
 		fields.add(selectExpr);
 		return selectExpr;
@@ -366,6 +564,43 @@ public class VSQLQuery
 	public SelectExpr selectVSQL(String expr)
 	{
 		return selectVSQL(expr, null, null);
+	}
+
+	public AggregatedSelectExpr aggregateSQL(String expr, String comment, String alias)
+	{
+		if (fields.size() > 0)
+			throw new VSQLMixedAggregationException();
+
+		AggregatedSelectExpr aggregatedSelectExpr = new AggregatedSelectExpr(new SQLExpr(expr, comment), alias);
+		aggregatedFields.add(aggregatedSelectExpr);
+		return aggregatedSelectExpr;
+	}
+
+	public AggregatedSelectExpr aggregateSQL(String expr)
+	{
+		return aggregateSQL(expr, null, null);
+	}
+
+	public AggregatedSelectExpr aggregateVSQL(String expr, String comment, String alias)
+	{
+		if (fields.size() > 0)
+			throw new VSQLMixedAggregationException();
+
+		AggregatedSelectExpr aggregatedSelectExpr = new AggregatedSelectExpr(new VSQLExpr(expr, comment), alias);
+		aggregatedFields.add(aggregatedSelectExpr);
+		Aggregate aggregate = aggregatedSelectExpr.getAggregate();
+
+		if (aggregate == Aggregate.GROUP)
+		{
+			String key = aggregatedSelectExpr.getSQLSource();
+			if (!groupBys.containsKey(key))
+			{
+				// We know that our expression is a `VSQLExpr`, otherweise `aggregate` would be `null`.
+				VSQLExpr vsqlExpr = (VSQLExpr)aggregatedSelectExpr.getExpr();
+				groupBys.put(key, new GroupByExpr(new VSQLExpr(vsqlExpr.getSource(), vsqlExpr.getComment())));
+			}
+		}
+		return aggregatedSelectExpr;
 	}
 
 	public FromExpr fromSQL(String tablename, String comment, String alias)
@@ -416,7 +651,7 @@ public class VSQLQuery
 		return orderByExpr;
 	}
 
-	public OrderByExpr orderByVSQL(String source, String comment)
+	public OrderByExpr orderByVSQL(String expr, String comment)
 	{
 		String nulls = null;
 		String ascDesc = null;
@@ -424,40 +659,73 @@ public class VSQLQuery
 		while (true)
 		{
 			boolean found = false;
-			if (nulls == null && source.endsWith(" nulls first"))
+			if (nulls == null && expr.endsWith(" nulls first"))
 			{
 				nulls = "first";
-				source = source.substring(0, source.length() - 12).trim();
+				expr = expr.substring(0, expr.length() - 12).trim();
 				found = true;
 			}
-			else if (nulls == null && source.endsWith(" nulls last"))
+			else if (nulls == null && expr.endsWith(" nulls last"))
 			{
 				nulls = "last";
-				source = source.substring(0, source.length() - 11).trim();
+				expr = expr.substring(0, expr.length() - 11).trim();
 				found = true;
 			}
-			else if (ascDesc == null && source.endsWith(" asc"))
+			else if (ascDesc == null && expr.endsWith(" asc"))
 			{
 				ascDesc = "asc";
-				source = source.substring(0, source.length() - 4).trim();
+				expr = expr.substring(0, expr.length() - 4).trim();
 				found = true;
 			}
-			else if (ascDesc == null && source.endsWith(" desc"))
+			else if (ascDesc == null && expr.endsWith(" desc"))
 			{
 				ascDesc = "desc";
-				source = source.substring(0, source.length() - 5).trim();
+				expr = expr.substring(0, expr.length() - 5).trim();
 				found = true;
 			}
 			if (!found)
 				break;
 		}
 
-		return orderByVSQL(source, comment, ascDesc, nulls);
+		return orderByVSQL(expr, comment, ascDesc, nulls);
 	}
 
-	public OrderByExpr orderByVSQL(String source)
+	public OrderByExpr orderByVSQL(String expr)
 	{
-		return orderByVSQL(source, null);
+		return orderByVSQL(expr, null);
+	}
+
+	public GroupByExpr groupBySQL(String expr, String comment)
+	{
+		if (fields.size() > 0)
+			throw new VSQLMixedAggregationException();
+
+		GroupByExpr newGroupByExpr = new GroupByExpr(new SQLExpr(expr, comment));
+		String key = newGroupByExpr.getSQLSource();
+		GroupByExpr oldGroupByExpr = groupBys.get(key);
+		if (oldGroupByExpr != null)
+			return oldGroupByExpr;
+		groupBys.put(key, newGroupByExpr);
+		return newGroupByExpr;
+	}
+
+	public GroupByExpr groupBySQL(String expr)
+	{
+		return groupBySQL(expr, null);
+	}
+
+	public GroupByExpr groupByVSQL(String expr, String comment)
+	{
+		if (fields.size() > 0)
+			throw new VSQLMixedAggregationException();
+
+		GroupByExpr newGroupByExpr = new GroupByExpr(new VSQLExpr(expr, comment));
+		String key = newGroupByExpr.getSQLSource();
+		GroupByExpr oldGroupByExpr = groupBys.get(key);
+		if (oldGroupByExpr != null)
+			return oldGroupByExpr;
+		groupBys.put(key, newGroupByExpr);
+		return newGroupByExpr;
 	}
 
 	public void limit(long limit)
@@ -579,6 +847,19 @@ public class VSQLQuery
 			indent(buffer, indentLevel+1);
 			buffer.append(selectExpr.getSQLSource());
 		}
+		for (AggregatedSelectExpr aggregatedSelectExpr : aggregatedFields)
+		{
+			if (first)
+			{
+				first = false;
+			}
+			else
+			{
+				buffer.append(",\n");
+			}
+			indent(buffer, indentLevel+1);
+			buffer.append(aggregatedSelectExpr.getSQLSource());
+		}
 		if (first)
 		{
 			indent(buffer, indentLevel+1);
@@ -653,6 +934,28 @@ public class VSQLQuery
 				}
 				indent(buffer, indentLevel+1);
 				buffer.append(orderByExpr.getSQLSource());
+			}
+			buffer.append("\n");
+		}
+
+		// Output "group by"
+		if (groupBys.size() > 0)
+		{
+			indent(buffer, indentLevel);
+			buffer.append("group by\n");
+			first = true;
+			for (GroupByExpr groupByExpr : groupBys.values())
+			{
+				if (first)
+				{
+					first = false;
+				}
+				else
+				{
+					buffer.append(",\n");
+				}
+				indent(buffer, indentLevel+1);
+				buffer.append(groupByExpr.getSQLSource());
 			}
 			buffer.append("\n");
 		}

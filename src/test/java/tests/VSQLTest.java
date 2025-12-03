@@ -1971,7 +1971,7 @@ public class VSQLTest
 
 		Map<String, VSQLField> fields = Map.of(
 			"p",
-			new VSQLField("p", VSQLDataType.STR, "1 = 1", "2 = 2", person_table)
+			new VSQLField("p", VSQLDataType.STR, "1 = 1", null, person_table)
 		);
 		return fields;
 	}
@@ -2012,8 +2012,6 @@ public class VSQLTest
 				count(*) /* count them */ as c
 			from
 				vsql_person /* p */ t1
-			where
-				2 = 2 /* p */
 			""", query
 		);
 	}
@@ -2031,8 +2029,6 @@ public class VSQLTest
 				t1.per_firstname /* p.firstname */
 			from
 				vsql_person /* p */ t1
-			where
-				2 = 2 /* p */
 			""",
 			query
 		);
@@ -2053,8 +2049,7 @@ public class VSQLTest
 				vsql_person /* p */ t1,
 				vsql_field /* p.field1 */ t2
 			where
-				(2 = 2 /* p */) and
-				(t1.fld_id_1 = t2.fld_id /* p.field1 */)
+				t1.fld_id_1 = t2.fld_id /* p.field1 */
 			""",
 			query
 		);
@@ -2085,13 +2080,61 @@ public class VSQLTest
 				vsql_field /* p.field2.parent1 */ t6,
 				vsql_field /* p.field2.parent2 */ t7
 			where
-				(2 = 2 /* p */) and
 				(t1.fld_id_1 = t2.fld_id /* p.field1 */) and
 				(t2.fld_id_super_1 = t3.fld_id /* p.field1.parent1 */) and
 				(t2.fld_id_super_2 = t4.fld_id /* p.field1.parent2 */) and
 				(t1.fld_id_2 = t5.fld_id /* p.field2 */) and
 				(t5.fld_id_super_1 = t6.fld_id /* p.field2.parent1 */) and
 				(t5.fld_id_super_2 = t7.fld_id /* p.field2.parent2 */)
+			""",
+			query
+		);
+	}
+
+	@Test
+	public void aggregateSQL()
+	{
+		VSQLQuery query = new VSQLQuery("select comment");
+		query.aggregateSQL("count(*)", "count comment", "c");
+		query.fromSQL("vsql_person", "table comment", "t");
+		query.groupBySQL("per_gender", "group by comment");
+
+		checkVSQL("""
+			/* select comment */
+			select
+				count(*) /* count comment */ as c
+			from
+				vsql_person /* table comment */ t
+			group by
+				per_gender /* group by comment */
+			""",
+			query
+		);
+	}
+
+	@Test
+	public void selectVSQL_aggrgateVSQL()
+	{
+		VSQLQuery query = new VSQLQuery("select comment", makeFields());
+		query.aggregateVSQL("group(p.gender)", "Group by gender", "g");
+		query.aggregateVSQL("min(p.date_of_birth)", "Firth birth", "min_dob");
+		query.aggregateVSQL("max(p.date_of_birth)", "Last birth", "max_dob");
+		query.aggregateVSQL("count()", "Count", "c");
+		query.whereVSQL("p.date_of_birth > @(1800-01-01)");
+
+		checkVSQL("""
+			/* select comment */
+			select
+				t1.per_gender /* p.gender */ /* Group by gender */ as g,
+				min(t1.per_date_of_birth /* p.date_of_birth */ /* Firth birth */) as min_dob,
+				max(t1.per_date_of_birth /* p.date_of_birth */ /* Last birth */) as max_dob,
+				count(*) /* Count */ as c
+			from
+				vsql_person /* p */ t1
+			where
+				(case when vsqlimpl_pkg.cmp_datetime_datetime(t1.per_date_of_birth /* p.date_of_birth */, to_date('1800-01-01', 'YYYY-MM-DD')) > 0 then 1 else 0 end) = 1 /* p.date_of_birth > @(1800-01-01) */
+			group by
+				t1.per_gender /* p.gender */ /* Group by gender */
 			""",
 			query
 		);

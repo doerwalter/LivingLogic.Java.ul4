@@ -12,6 +12,12 @@ method. For example `selectVSQL()` returns `VSQLQuery.SelectExpr` that
 contains a `VSQLQuery.VSQLExpr`. This also means that chaining these
 methods is no longer possible.
 
+Added support for aggregated vSQL queries (i.e. using `group by` and
+the aggregation functions `count()`, `min()`, `max()` and `sum()`).
+For this the new methods `VSQLQuery.aggregateSQL()`,
+`VSQLQuery.aggregateVSQL()`, `VSQLQuery.groupBySQL()` and
+`VSQLQuery.groupByVSQL()` have been added.
+
 
 ## 0.202.1 (2025-09-30)
 
