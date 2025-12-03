@@ -1950,7 +1950,8 @@ public class VSQLTest
 		VSQLGroup field_table = new VSQLGroup("vsql_field");
 		field_table.addField("id", VSQLDataType.STR, "{a}.fld_id");
 		field_table.addField("name", VSQLDataType.STR, "{a}.fld_name");
-		field_table.addField("parent", VSQLDataType.STR, "{a}.fld_id_super", "{m}.fld_id_super = {d}.fld_id", field_table);
+		field_table.addField("parent1", VSQLDataType.STR, "{a}.fld_id_super_1", "{m}.fld_id_super_1 = {d}.fld_id", field_table);
+		field_table.addField("parent2", VSQLDataType.STR, "{a}.fld_id_super_2", "{m}.fld_id_super_2 = {d}.fld_id", field_table);
 
 
 		VSQLGroup person_table = new VSQLGroup("vsql_person");
@@ -1958,7 +1959,8 @@ public class VSQLTest
 		person_table.addField("firstname", VSQLDataType.STR, "{a}.per_firstname");
 		person_table.addField("lastname", VSQLDataType.STR, "{a}.per_lastname");
 		person_table.addField("gender", VSQLDataType.STR, "{a}.per_gender");
-		person_table.addField("field", VSQLDataType.STR, "{a}.fld_id", "{m}.fld_id = {d}.fld_id", field_table);
+		person_table.addField("field1", VSQLDataType.STR, "{a}.fld_id_1", "{m}.fld_id_1 = {d}.fld_id", field_table);
+		person_table.addField("field2", VSQLDataType.STR, "{a}.fld_id_2", "{m}.fld_id_2 = {d}.fld_id", field_table);
 		person_table.addField("date_of_birth", VSQLDataType.DATE, "{a}.per_date_of_birth");
 		person_table.addField("date_of_death", VSQLDataType.DATE, "{a}.per_date_of_death");
 		person_table.addField("country_of_birth", VSQLDataType.STR, "{a}.per_country_of_birth");
@@ -2040,19 +2042,19 @@ public class VSQLTest
 	public void selectVSQL_reference_table_selectVSQL()
 	{
 		VSQLQuery query = new VSQLQuery("select comment", makeFields());
-		query.selectVSQL("p.field.name");
+		query.selectVSQL("p.field1.name");
 
 		checkVSQL(
 			"""
 			/* select comment */
 			select
-				t2.fld_name /* p.field.name */
+				t2.fld_name /* p.field1.name */
 			from
 				vsql_person /* p */ t1,
-				vsql_field /* p.field */ t2
+				vsql_field /* p.field1 */ t2
 			where
 				(2 = 2 /* p */) and
-				(t1.fld_id = t2.fld_id /* p.field */)
+				(t1.fld_id_1 = t2.fld_id /* p.field1 */)
 			""",
 			query
 		);
@@ -2062,20 +2064,34 @@ public class VSQLTest
 	public void selectVSQL_reference_table_twice_selectVSQL()
 	{
 		VSQLQuery query = new VSQLQuery("select comment", makeFields());
-		query.selectVSQL("p.field.parent.name");
+		query.selectVSQL("p.field1.parent1.name");
+		query.selectVSQL("p.field1.parent2.name");
+		query.selectVSQL("p.field2.parent1.name");
+		query.selectVSQL("p.field2.parent2.name");
 
 		checkVSQL("""
 			/* select comment */
 			select
-				t3.fld_name /* p.field.parent.name */
+				t3.fld_name /* p.field1.parent1.name */,
+				t4.fld_name /* p.field1.parent2.name */,
+				t6.fld_name /* p.field2.parent1.name */,
+				t7.fld_name /* p.field2.parent2.name */
 			from
 				vsql_person /* p */ t1,
-				vsql_field /* p.field */ t2,
-				vsql_field /* p.field.parent */ t3
+				vsql_field /* p.field1 */ t2,
+				vsql_field /* p.field1.parent1 */ t3,
+				vsql_field /* p.field1.parent2 */ t4,
+				vsql_field /* p.field2 */ t5,
+				vsql_field /* p.field2.parent1 */ t6,
+				vsql_field /* p.field2.parent2 */ t7
 			where
 				(2 = 2 /* p */) and
-				(t1.fld_id = t2.fld_id /* p.field */) and
-				(t2.fld_id_super = t3.fld_id /* p.field.parent */)
+				(t1.fld_id_1 = t2.fld_id /* p.field1 */) and
+				(t2.fld_id_super_1 = t3.fld_id /* p.field1.parent1 */) and
+				(t2.fld_id_super_2 = t4.fld_id /* p.field1.parent2 */) and
+				(t1.fld_id_2 = t5.fld_id /* p.field2 */) and
+				(t5.fld_id_super_1 = t6.fld_id /* p.field2.parent1 */) and
+				(t5.fld_id_super_2 = t7.fld_id /* p.field2.parent2 */)
 			""",
 			query
 		);
