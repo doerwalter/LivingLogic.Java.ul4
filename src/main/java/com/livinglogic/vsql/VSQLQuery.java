@@ -203,28 +203,23 @@ public class VSQLQuery
 					int argCount = args.size();
 					if ("count".equals(name) && argCount == 0)
 					{
-						vsqlExpr.setExpr(null);
-						this.aggregate = VSQLAggregate.COUNT;
+						setExprASTAndAggregate(null, VSQLAggregate.COUNT);
 					}
 					else if ("min".equals(name) && argCount == 1)
 					{
-						vsqlExpr.setExpr(args.get(0));
-						this.aggregate = VSQLAggregate.MIN;
+						setExprASTAndAggregate(args.get(0), VSQLAggregate.MIN);
 					}
 					else if ("max".equals(name) && argCount == 1)
 					{
-						vsqlExpr.setExpr(args.get(0));
-						this.aggregate = VSQLAggregate.MAX;
+						setExprASTAndAggregate(args.get(0), VSQLAggregate.MAX);
 					}
 					else if ("sum".equals(name) && argCount == 1)
 					{
-						vsqlExpr.setExpr(args.get(0));
-						this.aggregate = VSQLAggregate.SUM;
+						setExprASTAndAggregate(args.get(0), VSQLAggregate.SUM);
 					}
 					else if ("group".equals(name) && argCount == 1)
 					{
-						vsqlExpr.setExpr(args.get(0));
-						this.aggregate = VSQLAggregate.GROUP;
+						setExprASTAndAggregate(args.get(0), VSQLAggregate.GROUP);
 					}
 					else
 					{
@@ -236,6 +231,16 @@ public class VSQLQuery
 					throw new VSQLAggregationException("Aggregation call is malformed.");
 				}
 			}
+		}
+
+		private void setExprASTAndAggregate(VSQLAST ast, VSQLAggregate aggregate)
+		{
+			if (ast != null && !ast.getDataType().getAllowedAggregates().contains(aggregate))
+			{
+				throw new VSQLAggregationException(formatMessage("Values of type {!`} can not be aggragted with function {!`}", ast.getDataTypeString().toUpperCase(), aggregate.toString()));
+			}
+			((VSQLExpr)expr).setExpr(ast);
+			this.aggregate = aggregate;
 		}
 
 		public VSQLAggregate getAggregate()

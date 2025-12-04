@@ -6,6 +6,9 @@
 
 package com.livinglogic.vsql;
 
+import java.util.Set;
+import java.util.Collections;
+
 import com.livinglogic.ul4.EnumValueException;
 
 /**
@@ -28,6 +31,12 @@ public enum VSQLDataType
 		{
 			return "bool";
 		}
+
+		@Override
+		public Set<VSQLAggregate> getAllowedAggregates()
+		{
+			return Set.of(VSQLAggregate.GROUP, VSQLAggregate.MIN, VSQLAggregate.MAX, VSQLAggregate.SUM);
+		}
 	},
 	INT
 	{
@@ -35,6 +44,12 @@ public enum VSQLDataType
 		public String toString()
 		{
 			return "int";
+		}
+
+		@Override
+		public Set<VSQLAggregate> getAllowedAggregates()
+		{
+			return Set.of(VSQLAggregate.GROUP, VSQLAggregate.MIN, VSQLAggregate.MAX, VSQLAggregate.SUM);
 		}
 	},
 	NUMBER
@@ -44,6 +59,12 @@ public enum VSQLDataType
 		{
 			return "number";
 		}
+
+		@Override
+		public Set<VSQLAggregate> getAllowedAggregates()
+		{
+			return Set.of(VSQLAggregate.GROUP, VSQLAggregate.MIN, VSQLAggregate.MAX, VSQLAggregate.SUM);
+		}
 	},
 	STR
 	{
@@ -51,6 +72,12 @@ public enum VSQLDataType
 		public String toString()
 		{
 			return "str";
+		}
+
+		@Override
+		public Set<VSQLAggregate> getAllowedAggregates()
+		{
+			return Set.of(VSQLAggregate.GROUP, VSQLAggregate.MIN, VSQLAggregate.MAX);
 		}
 	},
 	CLOB
@@ -68,6 +95,12 @@ public enum VSQLDataType
 		{
 			return "color";
 		}
+
+		@Override
+		public Set<VSQLAggregate> getAllowedAggregates()
+		{
+			return Set.of(VSQLAggregate.GROUP);
+		}
 	},
 	GEO
 	{
@@ -84,6 +117,12 @@ public enum VSQLDataType
 		{
 			return "date";
 		}
+
+		@Override
+		public Set<VSQLAggregate> getAllowedAggregates()
+		{
+			return Set.of(VSQLAggregate.GROUP, VSQLAggregate.MIN, VSQLAggregate.MAX);
+		}
 	},
 	DATETIME
 	{
@@ -91,6 +130,12 @@ public enum VSQLDataType
 		public String toString()
 		{
 			return "datetime";
+		}
+
+		@Override
+		public Set<VSQLAggregate> getAllowedAggregates()
+		{
+			return Set.of(VSQLAggregate.GROUP, VSQLAggregate.MIN, VSQLAggregate.MAX);
 		}
 	},
 	DATEDELTA
@@ -100,6 +145,12 @@ public enum VSQLDataType
 		{
 			return "datedelta";
 		}
+
+		@Override
+		public Set<VSQLAggregate> getAllowedAggregates()
+		{
+			return Set.of(VSQLAggregate.GROUP, VSQLAggregate.MIN, VSQLAggregate.MAX, VSQLAggregate.SUM);
+		}
 	},
 	DATETIMEDELTA
 	{
@@ -108,6 +159,12 @@ public enum VSQLDataType
 		{
 			return "datetimedelta";
 		}
+
+		@Override
+		public Set<VSQLAggregate> getAllowedAggregates()
+		{
+			return Set.of(VSQLAggregate.GROUP, VSQLAggregate.MIN, VSQLAggregate.MAX, VSQLAggregate.SUM);
+		}
 	},
 	MONTHDELTA
 	{
@@ -115,6 +172,12 @@ public enum VSQLDataType
 		public String toString()
 		{
 			return "monthdelta";
+		}
+
+		@Override
+		public Set<VSQLAggregate> getAllowedAggregates()
+		{
+			return Set.of(VSQLAggregate.GROUP, VSQLAggregate.MIN, VSQLAggregate.MAX, VSQLAggregate.SUM);
 		}
 	},
 	NULLLIST
@@ -225,6 +288,11 @@ public enum VSQLDataType
 	public String toString()
 	{
 		return null;
+	}
+
+	public Set<VSQLAggregate> getAllowedAggregates()
+	{
+		return Collections.emptySet();
 	}
 
 	public static VSQLDataType fromString(String value)

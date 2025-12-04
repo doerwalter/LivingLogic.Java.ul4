@@ -14,6 +14,7 @@ import com.livinglogic.vsql.VSQLGroup;
 import com.livinglogic.vsql.VSQLQuery;
 import com.livinglogic.vsql.VSQLFieldUnknownException;
 import com.livinglogic.vsql.VSQLUnsupportedOperationException;
+import com.livinglogic.vsql.VSQLAggregationException;
 
 
 @RunWith(CauseTestRunner.class)
@@ -2154,5 +2155,16 @@ public class VSQLTest
 			""",
 			query
 		);
+	}
+
+	@CauseTest(expectedCause=VSQLAggregationException.class)
+	@Test
+	public void aggregateVSQL_str_cant_be_summed()
+	{
+		VSQLQuery query = new VSQLQuery("select comment", makeFields());
+		query.aggregateVSQL("group(p.gender)", "Group by gender", "g");
+		query.aggregateVSQL("sum(p.firstname)", "Min first name", "min_fn");
+
+		checkVSQL("ignored", query);
 	}
 }
