@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -39,7 +39,7 @@ public class IfAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for the ternary inline ``if/else`` operator (e.g. ``x if y else z``).";
+			return "AST node for the ternary inline `if/else` operator (e.g. `x if y else z`).";
 		}
 
 		@Override

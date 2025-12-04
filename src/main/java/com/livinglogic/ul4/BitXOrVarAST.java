@@ -1,11 +1,17 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
 
 package com.livinglogic.ul4;
 
+
+/**
+AST node for an augmented assignment expression that assigns the result
+of a binary bitwise "exclusive or" expression to its left operand.
+(e.g. {@code x ^= y}).
+**/
 public class BitXOrVarAST extends ChangeVarAST
 {
 	protected static class Type extends ChangeVarAST.Type
@@ -25,7 +31,7 @@ public class BitXOrVarAST extends ChangeVarAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an augmented assignment expression that assigns the result\nof a binary bitwise \"exclusive or\" expression to its left operand.\n(e.g. ``x ^= y``).";
+			return "AST node for an augmented assignment expression that assigns the result\nof a binary bitwise \"exclusive or\" expression to its left operand.\n(e.g. `x ^= y`).";
 		}
 
 		@Override

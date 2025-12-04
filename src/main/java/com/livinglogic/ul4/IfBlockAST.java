@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -25,7 +25,7 @@ public class IfBlockAST extends ConditionalBlockWithCondition
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an ``<?if?>`` block in an ``<?if?>/<?elif?>/<?else?>`` block.";
+			return "AST node for an `<?if?>` block in an `<?if?>/<?elif?>/<?else?>` block.";
 		}
 
 		@Override

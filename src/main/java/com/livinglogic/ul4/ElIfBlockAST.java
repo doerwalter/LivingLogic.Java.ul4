@@ -1,11 +1,15 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
 
 package com.livinglogic.ul4;
 
+
+/**
+AST node for an {@code <?elif?>} block.
+**/
 public class ElIfBlockAST extends ConditionalBlockWithCondition
 {
 	protected static class Type extends ConditionalBlockWithCondition.Type
@@ -25,7 +29,7 @@ public class ElIfBlockAST extends ConditionalBlockWithCondition
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an ``<?elif?>`` block.";
+			return "AST node for an `<?elif?>` block.";
 		}
 
 		@Override

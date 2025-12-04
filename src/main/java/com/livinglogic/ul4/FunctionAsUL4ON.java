@@ -1,11 +1,15 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
 
 package com.livinglogic.ul4;
 
+
+/**
+Implements the `asul4on` function, which serializes a UL4 object to its UL4ON representation.
+**/
 public class FunctionAsUL4ON extends Function
 {
 	@Override

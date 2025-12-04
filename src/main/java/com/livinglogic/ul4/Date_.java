@@ -1,5 +1,5 @@
 /*
-** Copyright 2021-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2021-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -17,6 +17,9 @@ import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
 
 
+/**
+Represents the date type in UL4. It provides methods for working with dates.
+**/
 public class Date_ extends AbstractType
 {
 	public static final Date_ type = new Date_();

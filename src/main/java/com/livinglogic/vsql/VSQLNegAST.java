@@ -1,5 +1,5 @@
 /*
-** Copyright 2019-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2019-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -41,7 +41,7 @@ public class VSQLNegAST extends VSQLUnaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a unary negation expression (e.g. ``-x``).";
+			return "AST node for a unary negation expression (e.g. `-x`).";
 		}
 
 		@Override

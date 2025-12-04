@@ -1,3 +1,27 @@
+# Changelog
+
+## 0.203.0 (2025-12-04)
+
+When a vSQL expression that is not of type `BOOL` is used in the `where`
+condition of a vSQL query, the expression will be wrapped in a `bool()`
+function call automatically.
+
+The method `VSQLQuery.registerVSQL()` has been renamed to
+`VSQLQuery.fromVSQL()`.
+
+Parts of a `VSQLQuery` are now stored in instances of classes specific
+to their purpose. Those objects will be returned from the appropriate
+method. For example `selectVSQL()` returns a `VSQLQuery.SelectExpr` that
+contains a `VSQLQuery.VSQLExpr`. This also means that chaining these
+methods is no longer possible.
+
+Added support for aggregated vSQL queries (i.e. using `group by` and
+the aggregation functions `count()`, `min()`, `max()` and `sum()`).
+For this the new methods `VSQLQuery.aggregateSQL()`,
+`VSQLQuery.aggregateVSQL()`, `VSQLQuery.groupBySQL()` and
+`VSQLQuery.groupByVSQL()` have been added.
+
+
 ## 0.202.1 (2025-09-30)
 
 Enclose multiple where conditions in brackets.

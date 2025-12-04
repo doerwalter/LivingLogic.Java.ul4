@@ -1,5 +1,5 @@
 /*
-** Copyright 2021-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2021-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -15,6 +15,9 @@ import java.util.Vector;
 import java.util.Collection;
 
 
+/**
+Represents the dictionary type in UL4. It provides methods for working with dictionaries (maps).
+**/
 public class Dict extends AbstractType
 {
 	public static final UL4Type type = new Dict();

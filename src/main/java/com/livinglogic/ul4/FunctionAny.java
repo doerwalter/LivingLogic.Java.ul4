@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -11,6 +11,10 @@ import java.util.Map;
 import java.util.Collection;
 import java.util.Iterator;
 
+
+/**
+Implements the `any` function, returning {@code true} if any element of an iterable is true.
+**/
 public class FunctionAny extends Function
 {
 	@Override

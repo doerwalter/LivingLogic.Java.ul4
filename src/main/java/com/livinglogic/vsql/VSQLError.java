@@ -1,5 +1,5 @@
 /*
-** Copyright 2019-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2019-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -11,6 +11,10 @@ import static com.livinglogic.utils.StringUtils.formatMessage;
 import com.livinglogic.ul4.EnumValueException;
 import static com.livinglogic.utils.StringUtils.lowerCaseFirstLetter;
 
+/**
+An enum that specifies the various errors that can occur when parsing and
+validating a VSQL expression or query.
+**/
 public enum VSQLError
 {
 	/* Subnodes have failures */
@@ -72,6 +76,13 @@ public enum VSQLError
 		{
 			return formatMessage("{} {!`} uses unsupported types of operands: {}", ast.getDescription(), ast.getSource(), ast.getTypeSignature());
 		}
+
+		@Override
+		public void throwError(VSQLAST ast)
+		{
+			throw new VSQLUnsupportedOperationException(getErrorMessage(ast));
+		}
+
 	},
 	/* The node references an unknown field */
 	FIELD

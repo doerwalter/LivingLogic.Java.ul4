@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -14,6 +14,9 @@ import java.util.Iterator;
 import static java.util.Arrays.asList;
 
 
+/**
+Represents the arguments that have been bound to a function or method signature.
+**/
 public class BoundArguments
 {
 	protected String name;

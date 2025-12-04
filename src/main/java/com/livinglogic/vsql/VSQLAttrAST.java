@@ -1,5 +1,5 @@
 /*
-** Copyright 2019-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2019-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -44,7 +44,7 @@ public class VSQLAttrAST extends VSQLAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an expression that gets or sets an attribute of an object.\n(e.g. ``x.y``).";
+			return "AST node for an expression that gets or sets an attribute of an object.\n(e.g. `x.y`).";
 		}
 
 		@Override

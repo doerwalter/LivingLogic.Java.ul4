@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.io.IOException;
 
+
+/**
+Stores the name and signature of a defined function or template.
+**/
 public class Definition
 {
 	protected String name;

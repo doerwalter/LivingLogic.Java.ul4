@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -14,6 +14,10 @@ import java.util.Map;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
+
+/**
+AST node for a dictionary comprehension (e.g. {@code {k: v for (a, b) in w if c}}).
+**/
 public class DictComprehensionAST extends CodeAST
 {
 	protected static class Type extends CodeAST.Type
@@ -33,7 +37,7 @@ public class DictComprehensionAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a dictionary comprehension (e.g. ``{k: v for (a, b) in w if c}``.";
+			return "AST node for a dictionary comprehension (e.g. `{k: v for (a, b) in w if c}`.";
 		}
 
 		@Override

@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -9,6 +9,10 @@ package com.livinglogic.ul4;
 import java.util.Set;
 
 
+/**
+The abstract base class for all UL4 type objects.
+It provides default implementations for several methods.
+**/
 public abstract class AbstractType implements UL4Type, UL4GetAttr, UL4Dir
 {
 	public String getModuleName()

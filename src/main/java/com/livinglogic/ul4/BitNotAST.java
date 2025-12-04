@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -14,6 +14,10 @@ import com.livinglogic.vsql.VSQLField;
 import com.livinglogic.utils.VSQLUtils;
 
 
+/**
+AST node for a bitwise unary "not" expression that returns its operand
+with its bits inverted (e.g. {@code ~x}).
+**/
 public class BitNotAST extends UnaryAST
 {
 	protected static class Type extends UnaryAST.Type
@@ -33,7 +37,7 @@ public class BitNotAST extends UnaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a bitwise unary \"not\" expression that returns its operand\nwith its bits inverted (e.g. ``~x``).";
+			return "AST node for a bitwise unary \"not\" expression that returns its operand\nwith its bits inverted (e.g. `~x`).";
 		}
 
 		@Override

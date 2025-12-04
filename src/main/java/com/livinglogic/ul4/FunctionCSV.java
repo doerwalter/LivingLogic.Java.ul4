@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -8,6 +8,10 @@ package com.livinglogic.ul4;
 
 import org.apache.commons.text.StringEscapeUtils;
 
+
+/**
+Implements the `csv` function, which escapes a string for use in CSV files.
+**/
 public class FunctionCSV extends Function
 {
 	@Override

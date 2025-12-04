@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -37,7 +37,7 @@ public class ItemAST extends BinaryAST implements LValue
 		@Override
 		public String getDoc()
 		{
-			return "AST node for subscripting expression (e.g. ``x[y]``).";
+			return "AST node for subscripting expression (e.g. `x[y]`).";
 		}
 
 		@Override

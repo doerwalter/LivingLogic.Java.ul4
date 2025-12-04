@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -10,6 +10,10 @@ import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+
+/**
+Implements the `abs` function, returning the absolute value of a number.
+**/
 public class FunctionAbs extends Function
 {
 	@Override

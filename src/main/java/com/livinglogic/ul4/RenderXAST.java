@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -41,7 +41,7 @@ public class RenderXAST extends RenderAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for rendering a template and XML-escaping the output\n(e.g. ``<?renderx t(x)?>``.";
+			return "AST node for rendering a template and XML-escaping the output\n(e.g. `<?renderx t(x)?>`.";
 		}
 
 		@Override

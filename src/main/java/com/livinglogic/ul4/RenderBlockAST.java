@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -39,7 +39,7 @@ public class RenderBlockAST extends RenderAST implements BlockLike
 		@Override
 		public String getDoc()
 		{
-			return "AST node for rendering a template via a ``<?renderblock?>`` block and\npassing the content of the block as one additional keyword argument named\n``content``.";
+			return "AST node for rendering a template via a `<?renderblock?>` block and\npassing the content of the block as one additional keyword argument named\n`content`.";
 		}
 
 		@Override

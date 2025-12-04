@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -31,7 +31,7 @@ public class PrintXAST extends UnaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a ``<?printx?>`` tag (e.g. ``<?printx x?>``).";
+			return "AST node for a `<?printx?>` tag (e.g. `<?printx x?>`).";
 		}
 
 		@Override

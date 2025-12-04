@@ -1,5 +1,5 @@
 /*
-** Copyright 2021-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2021-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -9,6 +9,9 @@ package com.livinglogic.ul4;
 import org.apache.commons.lang3.math.NumberUtils;
 
 
+/**
+Represents the boolean type in UL4.
+**/
 public class Bool extends AbstractType
 {
 	@Override

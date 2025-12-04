@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -12,6 +12,10 @@ import java.util.Iterator;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
+
+/**
+AST node for a {@code <?for?>} loop.
+**/
 public class ForBlockAST extends BlockAST
 {
 	protected static class Type extends BlockAST.Type
@@ -31,7 +35,7 @@ public class ForBlockAST extends BlockAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a ``<?for?>`` loop.";
+			return "AST node for a `<?for?>` loop.";
 		}
 
 		@Override

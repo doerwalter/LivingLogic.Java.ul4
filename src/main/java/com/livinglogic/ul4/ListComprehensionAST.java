@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -34,7 +34,7 @@ public class ListComprehensionAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a list comprehension (e.g. ``[v for (a, b) in w if c]``.";
+			return "AST node for a list comprehension (e.g. `[v for (a, b) in w if c]`.";
 		}
 
 		@Override

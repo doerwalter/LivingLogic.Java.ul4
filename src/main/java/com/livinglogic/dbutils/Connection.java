@@ -1,5 +1,5 @@
 /*
-** Copyright 2013-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2013-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -75,6 +75,11 @@ public class Connection implements UL4Instance, AutoCloseable, UL4GetAttr, UL4Di
 	public Connection(java.sql.Connection connection)
 	{
 		this.connection = connection;
+	}
+
+	public java.sql.Connection getConnection()
+	{
+		return connection;
 	}
 
 	@Override

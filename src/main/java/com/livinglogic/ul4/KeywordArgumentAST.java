@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -35,7 +35,7 @@ public class KeywordArgumentAST extends ArgumentASTBase
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a keyword argument in a :class:`CallAST` (e.g. the ``x=y``\nin the function call ``f(x=y)``).";
+			return "AST node for a keyword argument in a :class:`CallAST` (e.g. the `x=y`\nin the function call `f(x=y)`).";
 		}
 
 		@Override

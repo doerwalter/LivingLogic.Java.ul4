@@ -1,5 +1,5 @@
 /*
-** Copyright 2021-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2021-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -7,6 +7,9 @@
 package com.livinglogic.ul4;
 
 
+/**
+Implements the `cos` function, which returns the cosine of a number (in radians).
+**/
 public class FunctionCos extends Function
 {
 	@Override

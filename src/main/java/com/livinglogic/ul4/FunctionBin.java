@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -10,6 +10,10 @@ import java.util.List;
 
 import java.math.BigInteger;
 
+
+/**
+Implements the `bin` function, which returns a string version of an integer in binary representation.
+**/
 public class FunctionBin extends Function
 {
 	@Override

@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -32,7 +32,7 @@ public class IsAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a binary ``is`` comparison expression (e.g. ``x is y``).";
+			return "AST node for a binary `is` comparison expression (e.g. `x is y`).";
 		}
 
 		@Override

@@ -1,11 +1,15 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
 
 package com.livinglogic.ul4;
 
+
+/**
+AST node for a conditional {@code <?if?>/<?elif?>/<?else?>} block.
+**/
 public class ConditionalBlocksAST extends BlockAST
 {
 	protected static class Type extends BlockAST.Type
@@ -25,7 +29,7 @@ public class ConditionalBlocksAST extends BlockAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a conditional ``<?if?>/<?elif?>/<?else?>`` block.";
+			return "AST node for a conditional `<?if?>/<?elif?>/<?else?>` block.";
 		}
 
 		@Override

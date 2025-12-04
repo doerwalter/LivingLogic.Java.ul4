@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -8,6 +8,12 @@ package com.livinglogic.ul4;
 
 import java.util.Iterator;
 
+
+/**
+Abstract base class for iterators that filter elements from an underlying iterator.
+
+Since `next` and `hasNext` can be called in any order, we need to store some internal state.
+**/
 public abstract class FilteredIterator<T> implements Iterator<T>
 {
 	protected T nextItem;

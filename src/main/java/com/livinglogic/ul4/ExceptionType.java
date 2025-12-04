@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -11,6 +11,9 @@ import java.util.Set;
 import static com.livinglogic.ul4.Utils.getInnerException;
 
 
+/**
+A {@code GenericType} for exceptions, providing specific handling for their attributes, like {@code context}.
+**/
 public class ExceptionType extends GenericType
 {
 	public ExceptionType(Class clazz)

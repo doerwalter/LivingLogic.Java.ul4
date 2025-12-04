@@ -1,5 +1,5 @@
 /*
-** Copyright 2021-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2021-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -12,6 +12,9 @@ import java.math.BigInteger;
 import org.apache.commons.lang3.StringUtils;
 
 
+/**
+Implements the `ceil` function, which rounds a number up to the next integer or to a specified number of digits.
+**/
 public class FunctionCeil extends Function
 {
 	@Override

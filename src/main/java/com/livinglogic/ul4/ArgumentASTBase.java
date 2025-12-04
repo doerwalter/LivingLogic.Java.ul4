@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -9,6 +9,10 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+Abstract base class for AST nodes that represent arguments.
+**/
 public abstract class ArgumentASTBase extends CodeAST
 {
 	public ArgumentASTBase(Template template, int posStart, int posStop)

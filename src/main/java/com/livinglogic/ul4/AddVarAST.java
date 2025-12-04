@@ -1,11 +1,16 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
 
 package com.livinglogic.ul4;
 
+
+/**
+AST node for an augmented assignment expression that adds a value to a
+variable (e.g. {@code x += y}).
+**/
 public class AddVarAST extends ChangeVarAST
 {
 	protected static class Type extends ChangeVarAST.Type
@@ -25,7 +30,7 @@ public class AddVarAST extends ChangeVarAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an augmented assignment expression that adds a value to a\nvariable (e.g. ``x += y``).";
+			return "AST node for an augmented assignment expression that adds a value to a\nvariable (e.g. `x += y`).";
 		}
 
 		@Override

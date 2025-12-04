@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -25,6 +25,10 @@ import com.livinglogic.vsql.VSQLGroup;
 import com.livinglogic.utils.VSQLUtils;
 
 
+/**
+AST node for an expression that gets or sets an attribute of an object.
+(e.g. {@code x.y}).
+**/
 public class AttrAST extends CodeAST implements LValue
 {
 	protected static class Type extends CodeAST.Type
@@ -44,7 +48,7 @@ public class AttrAST extends CodeAST implements LValue
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an expression that gets or sets an attribute of an object.\n(e.g. ``x.y``).";
+			return "AST node for an expression that gets or sets an attribute of an object.\n(e.g. `x.y`).";
 		}
 
 		@Override
@@ -98,7 +102,7 @@ public class AttrAST extends CodeAST implements LValue
 	{
 		String trailingSource = VSQLUtils.getSourceSuffix(obj, this);
 		int dotPos = trailingSource.indexOf(".");
-		
+
 		for (++dotPos; dotPos < trailingSource.length() && trailingSource.charAt(dotPos) == ' '; ++dotPos)
 			;
 
@@ -110,20 +114,23 @@ public class AttrAST extends CodeAST implements LValue
 		if (vsqlObj instanceof VSQLFieldRefAST vqlFieldRef)
 		{
 			VSQLField field = vqlFieldRef.getField();
-			VSQLGroup group = field.getRefGroup();
-			if (group != null)
+			if (field != null)
 			{
-				VSQLField refField = group.getField(attrName);
-				if (refField != null)
+				VSQLGroup group = field.getRefGroup();
+				if (group != null)
 				{
-					return new VSQLFieldRefAST(
-						VSQLUtils.getSourcePrefix(this, obj),
-						vqlFieldRef,
-						attrNamePrefix,
-						attrName,
-						attrNameSuffix,
-						refField
-					);
+					VSQLField refField = group.getField(attrName);
+					if (refField != null)
+					{
+						return new VSQLFieldRefAST(
+							VSQLUtils.getSourcePrefix(this, obj),
+							vqlFieldRef,
+							attrNamePrefix,
+							attrName,
+							attrNameSuffix,
+							refField
+						);
+					}
 				}
 			}
 			// Fall through to a normal attribute access

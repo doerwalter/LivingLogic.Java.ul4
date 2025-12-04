@@ -1,5 +1,5 @@
 /*
-** Copyright 2021-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2021-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -11,6 +11,9 @@ import java.math.BigDecimal;
 import org.apache.commons.lang3.StringUtils;
 
 
+/**
+Represents the float type in UL4. It provides methods for working with floating-point numbers.
+**/
 public class Float_ extends AbstractType
 {
 	@Override

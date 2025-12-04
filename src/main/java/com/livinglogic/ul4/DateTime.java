@@ -1,5 +1,5 @@
 /*
-** Copyright 2021-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2021-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -20,6 +20,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+Represents the datetime type in UL4. It provides methods for working with dates and times.
+**/
 public class DateTime extends AbstractType
 {
 	public static final UL4Type type = new DateTime();

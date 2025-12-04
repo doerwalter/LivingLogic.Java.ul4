@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
@@ -20,6 +20,9 @@ import com.livinglogic.vsql.VSQLField;
 import com.livinglogic.utils.VSQLUtils;
 
 
+/**
+AST node for a binary addition expression (e.g. {@code x + y}).
+**/
 public class AddAST extends BinaryAST
 {
 	protected static class Type extends BinaryAST.Type
@@ -39,7 +42,7 @@ public class AddAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a binary addition expression (e.g. ``x + y``).";
+			return "AST node for a binary addition expression (e.g. `x + y`).";
 		}
 
 		@Override

@@ -1,11 +1,16 @@
 /*
-** Copyright 2009-2024 by LivingLogic AG, Bayreuth/Germany
+** Copyright 2009-2025 by LivingLogic AG, Bayreuth/Germany
 ** All Rights Reserved
 ** See LICENSE for the license
 */
 
 package com.livinglogic.ul4;
 
+
+/**
+AST node for augmented assignment expression that divides a variable by a
+value, truncating to an integer value (e.g. {@code x //= y}).
+**/
 public class FloorDivVarAST extends ChangeVarAST
 {
 	protected static class Type extends ChangeVarAST.Type
@@ -25,7 +30,7 @@ public class FloorDivVarAST extends ChangeVarAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for augmented assignment expression that divides a variable by a\nvalue, truncating to an integer value (e.g. ``x //= y``).";
+			return "AST node for augmented assignment expression that divides a variable by a\nvalue, truncating to an integer value (e.g. `x //= y`).";
 		}
 
 		@Override
