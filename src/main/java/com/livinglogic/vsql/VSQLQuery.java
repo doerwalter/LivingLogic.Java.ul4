@@ -616,6 +616,11 @@ public class VSQLQuery
 		return aggregatedSelectExpr;
 	}
 
+	public AggregatedSelectExpr aggregateVSQL(String expr)
+	{
+		return aggregateVSQL(expr, null, null);
+	}
+
 	public FromExpr fromSQL(String tablename, String comment, String alias)
 	{
 		FromExpr fromExpr = new FromExpr(new SQLExpr(tablename, comment), alias);

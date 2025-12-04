@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.203.1 (2025-12-04)
+
+Add the missing convenience method `VSQLQuery.aggregateVSQL(String)`.
+
+
 ## 0.203.0 (2025-12-04)
 
 When a vSQL expression that is not of type `BOOL` is used in the `where`
