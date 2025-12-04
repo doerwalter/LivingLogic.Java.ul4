@@ -1,6 +1,6 @@
 # Changelog
 
-## HEAD (2025-12-??)
+## 0.203.0 (2025-12-04)
 
 When a vSQL expression that is not of type `BOOL` is used in the `where`
 condition of a vSQL query, the expression will be wrapped in a `bool()`
