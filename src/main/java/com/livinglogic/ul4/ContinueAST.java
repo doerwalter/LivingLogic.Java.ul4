@@ -6,6 +6,10 @@
 
 package com.livinglogic.ul4;
 
+
+/**
+AST node for a {@code <?continue?>} tag inside a {@code <?for?>} block.
+**/
 public class ContinueAST extends CodeAST
 {
 	protected static class Type extends CodeAST.Type

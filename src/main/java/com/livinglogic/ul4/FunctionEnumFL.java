@@ -9,6 +9,10 @@ package com.livinglogic.ul4;
 import java.util.Iterator;
 import java.util.Vector;
 
+
+/**
+Implements the ``enumfl`` function, which is similar to {@code enumerate} but also provides {@code isfirst} and {@code islast} flags for each item.
+**/
 public class FunctionEnumFL extends Function
 {
 	@Override

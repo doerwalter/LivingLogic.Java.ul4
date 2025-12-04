@@ -16,6 +16,9 @@ import com.livinglogic.vsql.VSQLField;
 import com.livinglogic.utils.VSQLUtils;
 
 
+/**
+AST node for a binary truncating division expression (e.g. {@code x // y}).
+**/
 public class FloorDivAST extends BinaryAST
 {
 	protected static class Type extends BinaryAST.Type

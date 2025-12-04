@@ -8,6 +8,10 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 
+
+/**
+Implements the ``chr`` function, which returns a string representing a character whose Unicode code point is the integer specified.
+**/
 public class FunctionChr extends Function
 {
 	@Override

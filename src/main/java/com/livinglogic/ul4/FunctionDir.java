@@ -6,6 +6,10 @@
 
 package com.livinglogic.ul4;
 
+
+/**
+Implements the ``dir`` function, which returns a list of valid attributes for an object.
+**/
 public class FunctionDir extends Function
 {
 	@Override

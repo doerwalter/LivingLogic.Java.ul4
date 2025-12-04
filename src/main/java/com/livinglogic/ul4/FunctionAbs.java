@@ -10,6 +10,10 @@ import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+
+/**
+Implements the ``abs`` function, returning the absolute value of a number.
+**/
 public class FunctionAbs extends Function
 {
 	@Override

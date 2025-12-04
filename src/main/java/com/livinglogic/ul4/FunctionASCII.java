@@ -16,6 +16,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+
+/**
+Implements the ``ascii`` function, which converts an object to a string containing only ASCII characters.
+**/
 public class FunctionASCII extends Function
 {
 	@Override

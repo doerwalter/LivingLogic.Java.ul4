@@ -12,6 +12,10 @@ import java.util.Iterator;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
+
+/**
+AST node for a {@code <?for?>} loop.
+**/
 public class ForBlockAST extends BlockAST
 {
 	protected static class Type extends BlockAST.Type

@@ -6,6 +6,10 @@
 
 package com.livinglogic.ul4;
 
+
+/**
+AST node for a {@code <?break?>} tag inside a {@code <?for?>} loop.
+**/
 public class BreakAST extends CodeAST
 {
 	protected static class Type extends CodeAST.Type

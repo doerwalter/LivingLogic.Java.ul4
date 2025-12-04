@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.io.IOException;
 
+
+/**
+Stores the name and signature of a defined function or template.
+**/
 public class Definition
 {
 	protected String name;

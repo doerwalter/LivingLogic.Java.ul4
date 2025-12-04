@@ -6,6 +6,11 @@
 
 package com.livinglogic.ul4;
 
+
+/**
+AST node for augmented assignment expression that divides a variable by a
+value, truncating to an integer value (e.g. {@code x //= y}).
+**/
 public class FloorDivVarAST extends ChangeVarAST
 {
 	protected static class Type extends ChangeVarAST.Type

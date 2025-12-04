@@ -12,6 +12,9 @@ import java.math.BigInteger;
 import org.apache.commons.lang3.StringUtils;
 
 
+/**
+Implements the ``floor`` function, which rounds a number down to the next integer or to a specified number of digits.
+**/
 public class FunctionFloor extends Function
 {
 	@Override

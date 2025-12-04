@@ -6,6 +6,10 @@
 
 package com.livinglogic.ul4;
 
+
+/**
+AST node for an {@code <?elif?>} block.
+**/
 public class ElIfBlockAST extends ConditionalBlockWithCondition
 {
 	protected static class Type extends ConditionalBlockWithCondition.Type

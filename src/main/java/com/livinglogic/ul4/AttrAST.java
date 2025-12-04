@@ -25,6 +25,10 @@ import com.livinglogic.vsql.VSQLGroup;
 import com.livinglogic.utils.VSQLUtils;
 
 
+/**
+AST node for an expression that gets or sets an attribute of an object.
+(e.g. {@code x.y}).
+**/
 public class AttrAST extends CodeAST implements LValue
 {
 	protected static class Type extends CodeAST.Type

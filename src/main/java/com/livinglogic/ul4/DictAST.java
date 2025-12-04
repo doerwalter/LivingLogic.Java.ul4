@@ -19,6 +19,9 @@ import com.livinglogic.ul4on.Encoder;
 import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 
 
+/**
+AST node for creating a dict object (e.g. {@code {k: v, **u}}).
+**/
 public class DictAST extends CodeAST
 {
 	protected static class Type extends CodeAST.Type

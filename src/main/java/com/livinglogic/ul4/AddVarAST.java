@@ -6,6 +6,11 @@
 
 package com.livinglogic.ul4;
 
+
+/**
+AST node for an augmented assignment expression that adds a value to a
+variable (e.g. {@code x += y}).
+**/
 public class AddVarAST extends ChangeVarAST
 {
 	protected static class Type extends ChangeVarAST.Type

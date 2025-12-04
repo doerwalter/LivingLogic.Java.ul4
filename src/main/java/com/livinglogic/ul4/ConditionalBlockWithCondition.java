@@ -14,6 +14,10 @@ import java.util.Set;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
+
+/**
+Abstract base class for conditional blocks that have a condition, like {@code if} and {@code elif}.
+**/
 abstract class ConditionalBlockWithCondition extends ConditionalBlock
 {
 	protected AST condition;

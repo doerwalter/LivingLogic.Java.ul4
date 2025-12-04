@@ -9,6 +9,10 @@ package com.livinglogic.ul4;
 import java.io.IOException;
 import java.util.Map;
 
+
+/**
+Abstract base class for AST nodes that represent items in a dictionary (key-value pairs, or and unpacking expression (`**expr`)).
+**/
 public abstract class DictItemASTBase extends CodeAST
 {
 	public DictItemASTBase(Template template, int posStart, int posStop)

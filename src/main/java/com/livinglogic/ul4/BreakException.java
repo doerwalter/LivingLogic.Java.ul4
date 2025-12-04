@@ -6,6 +6,10 @@
 
 package com.livinglogic.ul4;
 
+
+/**
+Thrown to break out of a loop.
+**/
 public class BreakException extends RuntimeException
 {
 }

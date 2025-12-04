@@ -8,6 +8,10 @@ package com.livinglogic.ul4;
 
 import java.util.List;
 
+
+/**
+Implements the ``css`` function, which converts a CSS color string to a {@link Color} object.
+**/
 public class FunctionCSS extends Function
 {
 	@Override

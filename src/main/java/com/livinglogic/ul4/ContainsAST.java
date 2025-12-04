@@ -15,6 +15,9 @@ import com.livinglogic.vsql.VSQLField;
 import com.livinglogic.utils.VSQLUtils;
 
 
+/**
+AST node for the binary containment testing operator (e.g. {@code x in y}).
+**/
 public class ContainsAST extends BinaryAST
 {
 	protected static class Type extends BinaryAST.Type

@@ -9,6 +9,10 @@ package com.livinglogic.ul4;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+Abstract base class for AST nodes that represent arguments.
+**/
 public abstract class ArgumentASTBase extends CodeAST
 {
 	public ArgumentASTBase(Template template, int posStart, int posStop)

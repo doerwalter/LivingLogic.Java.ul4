@@ -9,6 +9,9 @@ package com.livinglogic.ul4;
 import org.apache.commons.lang3.math.NumberUtils;
 
 
+/**
+Represents the boolean type in UL4.
+**/
 public class Bool extends AbstractType
 {
 	@Override

@@ -6,6 +6,12 @@
 
 package com.livinglogic.ul4;
 
+
+/**
+AST node for an augmented assignment expression that assigns the result
+of a binary bitwise "and" expression to its left operand.
+(e.g. {@code x &= y}).
+**/
 public class BitAndVarAST extends ChangeVarAST
 {
 	protected static class Type extends ChangeVarAST.Type

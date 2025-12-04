@@ -11,6 +11,9 @@ import java.math.BigDecimal;
 import org.apache.commons.lang3.StringUtils;
 
 
+/**
+Represents the float type in UL4. It provides methods for working with floating-point numbers.
+**/
 public class Float_ extends AbstractType
 {
 	@Override

@@ -17,6 +17,9 @@ import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
 
 
+/**
+Represents the date type in UL4. It provides methods for working with dates.
+**/
 public class Date_ extends AbstractType
 {
 	public static final Date_ type = new Date_();

@@ -14,6 +14,10 @@ import com.livinglogic.vsql.VSQLField;
 import com.livinglogic.utils.VSQLUtils;
 
 
+/**
+AST node for a bitwise unary "not" expression that returns its operand
+with its bits inverted (e.g. {@code ~x}).
+**/
 public class BitNotAST extends UnaryAST
 {
 	protected static class Type extends UnaryAST.Type

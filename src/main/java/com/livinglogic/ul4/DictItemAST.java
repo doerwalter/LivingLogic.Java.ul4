@@ -15,6 +15,10 @@ import static com.livinglogic.utils.SetUtils.makeExtendedSet;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
+
+/**
+AST node for a dictionary entry (i.e. a key/value pair) in a dict expression ({@link DictAST}).
+**/
 public class DictItemAST extends DictItemASTBase
 {
 	protected static class Type extends DictItemASTBase.Type
@@ -34,7 +38,7 @@ public class DictItemAST extends DictItemASTBase
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a dictionary entry in a dict expression (:class:`DictAST`).";
+			return "AST node for a dictionary entry in a dict expression (`DictAST`).";
 		}
 
 		@Override

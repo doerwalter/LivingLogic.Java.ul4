@@ -6,6 +6,10 @@
 
 package com.livinglogic.ul4;
 
+
+/**
+AST node for an {@code <?else?>} block.
+**/
 public class ElseBlockAST extends ConditionalBlock
 {
 	protected static class Type extends ConditionalBlock.Type

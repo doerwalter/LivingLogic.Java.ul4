@@ -6,6 +6,10 @@
 
 package com.livinglogic.ul4;
 
+
+/**
+Thrown to skip the rest of the current loop iteration.
+**/
 public class ContinueException extends RuntimeException
 {
 }

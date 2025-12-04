@@ -20,6 +20,9 @@ import com.livinglogic.vsql.VSQLField;
 import com.livinglogic.utils.VSQLUtils;
 
 
+/**
+AST node for a binary addition expression (e.g. {@code x + y}).
+**/
 public class AddAST extends BinaryAST
 {
 	protected static class Type extends BinaryAST.Type

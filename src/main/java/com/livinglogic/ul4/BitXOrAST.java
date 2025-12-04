@@ -15,6 +15,9 @@ import com.livinglogic.vsql.VSQLField;
 import com.livinglogic.utils.VSQLUtils;
 
 
+/**
+AST node for the binary bitwise "exclusive or" expression (e.g. {@code x ^ y}).
+**/
 public class BitXOrAST extends BinaryAST
 {
 	protected static class Type extends BinaryAST.Type

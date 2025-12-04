@@ -7,6 +7,9 @@
 package com.livinglogic.ul4;
 
 
+/**
+Thrown when an invalid enum value is encountered.
+**/
 public class EnumValueException extends RuntimeException
 {
 	public EnumValueException(String enumName, String value)

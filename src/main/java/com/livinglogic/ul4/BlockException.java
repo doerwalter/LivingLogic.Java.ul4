@@ -6,6 +6,10 @@
 
 package com.livinglogic.ul4;
 
+
+/**
+Exception class for issues related to block nesting in the UL4 template engine.
+**/
 public class BlockException extends RuntimeException
 {
 	public BlockException(String message)

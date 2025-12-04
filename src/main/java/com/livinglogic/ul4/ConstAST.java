@@ -31,6 +31,9 @@ import com.livinglogic.vsql.VSQLDateTimeAST;
 import com.livinglogic.vsql.VSQLField;
 
 
+/**
+AST node for a constant value.
+**/
 public class ConstAST extends CodeAST
 {
 	protected static class Type extends CodeAST.Type

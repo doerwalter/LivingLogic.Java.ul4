@@ -20,6 +20,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+Represents the datetime type in UL4. It provides methods for working with dates and times.
+**/
 public class DateTime extends AbstractType
 {
 	public static final UL4Type type = new DateTime();
