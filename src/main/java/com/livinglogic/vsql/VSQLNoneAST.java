@@ -36,7 +36,7 @@ public class VSQLNoneAST extends VSQLConstAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for the constant ``None``";
+			return "AST node for the constant `None`";
 		}
 
 		@Override

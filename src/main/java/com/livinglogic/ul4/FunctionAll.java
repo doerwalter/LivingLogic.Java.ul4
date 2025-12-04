@@ -13,7 +13,7 @@ import java.util.Map;
 
 
 /**
-Implements the ``all`` function, returning {@code true} if all elements of an iterable are true.
+Implements the `all` function, returning {@code true} if all elements of an iterable are true.
 **/
 public class FunctionAll extends Function
 {

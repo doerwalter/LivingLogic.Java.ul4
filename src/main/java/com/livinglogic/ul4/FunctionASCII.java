@@ -18,7 +18,7 @@ import java.util.Stack;
 
 
 /**
-Implements the ``ascii`` function, which converts an object to a string containing only ASCII characters.
+Implements the `ascii` function, which converts an object to a string containing only ASCII characters.
 **/
 public class FunctionASCII extends Function
 {

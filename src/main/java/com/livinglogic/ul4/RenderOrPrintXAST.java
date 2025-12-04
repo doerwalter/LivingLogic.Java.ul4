@@ -28,7 +28,7 @@ public class RenderOrPrintXAST extends RenderAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for rendering a template or printing an object\n(e.g. ``<?render_or_printx t(x)?>``.";
+			return "AST node for rendering a template or printing an object\n(e.g. `<?render_or_printx t(x)?>`.";
 		}
 
 		@Override

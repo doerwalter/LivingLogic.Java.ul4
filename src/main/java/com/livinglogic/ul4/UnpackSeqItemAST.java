@@ -35,7 +35,7 @@ public class UnpackSeqItemAST extends SeqItemASTBase
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an ``*`` unpacking expression in a list/set \"literal\"\n(e.g. the ``y`` in ``{x, *y}`` or ``[x, *y]``)";
+			return "AST node for an `*` unpacking expression in a list/set \"literal\"\n(e.g. the `y` in `{x, *y}` or `[x, *y]`)";
 		}
 
 		@Override

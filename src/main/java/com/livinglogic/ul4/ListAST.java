@@ -44,7 +44,7 @@ public class ListAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for creating a list object (e.g. ``[x, y, *z]``).";
+			return "AST node for creating a list object (e.g. `[x, y, *z]`).";
 		}
 
 		@Override

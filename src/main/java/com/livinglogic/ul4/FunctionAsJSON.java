@@ -21,7 +21,7 @@ import org.apache.commons.text.StringEscapeUtils;
 
 
 /**
-Implements the ``asjson`` function, converting a UL4 object to its JSON representation.
+Implements the `asjson` function, converting a UL4 object to its JSON representation.
 
 This only supports objects that are "JSON compatible" (like lists and maps etc.).
 **/

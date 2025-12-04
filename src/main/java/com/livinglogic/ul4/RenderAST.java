@@ -39,7 +39,7 @@ public class RenderAST extends CallRenderAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for rendering a template (e.g. ``<?render t(x)?>``.";
+			return "AST node for rendering a template (e.g. `<?render t(x)?>`.";
 		}
 
 		@Override

@@ -30,7 +30,7 @@ public class AddVarAST extends ChangeVarAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an augmented assignment expression that adds a value to a\nvariable (e.g. ``x += y``).";
+			return "AST node for an augmented assignment expression that adds a value to a\nvariable (e.g. `x += y`).";
 		}
 
 		@Override

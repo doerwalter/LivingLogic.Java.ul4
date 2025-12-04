@@ -32,7 +32,7 @@ public class GTAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for the binary \"greater than\" comparison (e.g. ``x > y``).";
+			return "AST node for the binary \"greater than\" comparison (e.g. `x > y`).";
 		}
 
 		@Override

@@ -29,7 +29,7 @@ public class ElseBlockAST extends ConditionalBlock
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an ``<?else?>`` block.";
+			return "AST node for an `<?else?>` block.";
 		}
 
 		@Override

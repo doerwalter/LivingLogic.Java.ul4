@@ -29,7 +29,7 @@ public class BreakAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a ``<?break?>`` tag inside a ``<?for?>`` loop.";
+			return "AST node for a `<?break?>` tag inside a `<?for?>` loop.";
 		}
 
 		@Override

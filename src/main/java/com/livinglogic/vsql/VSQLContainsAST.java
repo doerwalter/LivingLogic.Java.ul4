@@ -41,7 +41,7 @@ public class VSQLContainsAST extends VSQLBinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for the binary containment testing operator (e.g. ``x in y``).";
+			return "AST node for the binary containment testing operator (e.g. `x in y`).";
 		}
 
 		@Override

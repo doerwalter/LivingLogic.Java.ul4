@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 
 /**
-Implements the ``ceil`` function, which rounds a number up to the next integer or to a specified number of digits.
+Implements the `ceil` function, which rounds a number up to the next integer or to a specified number of digits.
 **/
 public class FunctionCeil extends Function
 {

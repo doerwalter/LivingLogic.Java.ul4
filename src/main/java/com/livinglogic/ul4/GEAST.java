@@ -32,7 +32,7 @@ public class GEAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for the binary \"greater than or equal\" comparison (e.g. ``x >= y``).";
+			return "AST node for the binary \"greater than or equal\" comparison (e.g. `x >= y`).";
 		}
 
 		@Override

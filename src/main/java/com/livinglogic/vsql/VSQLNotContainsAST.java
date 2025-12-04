@@ -41,7 +41,7 @@ public class VSQLNotContainsAST extends VSQLBinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an inverted containment testing expression (e.g. ``x not in y``).";
+			return "AST node for an inverted containment testing expression (e.g. `x not in y`).";
 		}
 
 		@Override

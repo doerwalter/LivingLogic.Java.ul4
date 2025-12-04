@@ -11,7 +11,7 @@ import java.util.Vector;
 
 
 /**
-Implements the ``enumfl`` function, which is similar to {@code enumerate} but also provides {@code isfirst} and {@code islast} flags for each item.
+Implements the `enumfl` function, which is similar to {@code enumerate} but also provides {@code isfirst} and {@code islast} flags for each item.
 **/
 public class FunctionEnumFL extends Function
 {

@@ -12,7 +12,7 @@ import java.math.BigInteger;
 
 
 /**
-Implements the ``abs`` function, returning the absolute value of a number.
+Implements the `abs` function, returning the absolute value of a number.
 **/
 public class FunctionAbs extends Function
 {

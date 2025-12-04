@@ -31,7 +31,7 @@ public class BitOrVarAST extends ChangeVarAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an augmented assignment expression that assigns the result\nof a binary bitwise \"or\" expression to its left operand.\n(e.g. ``x |= y``).";
+			return "AST node for an augmented assignment expression that assigns the result\nof a binary bitwise \"or\" expression to its left operand.\n(e.g. `x |= y`).";
 		}
 
 		@Override

@@ -29,7 +29,7 @@ public class PrintAST extends UnaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a ``<?print?>`` tag (e.g. ``<?print x?>``).";
+			return "AST node for a `<?print?>` tag (e.g. `<?print x?>`).";
 		}
 
 		@Override

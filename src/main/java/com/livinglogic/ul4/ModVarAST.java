@@ -25,7 +25,7 @@ public class ModVarAST extends ChangeVarAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an augmented assignment expression that assigns the result\nof a modulo expression to its left operand. (e.g. ``x %= y``).";
+			return "AST node for an augmented assignment expression that assigns the result\nof a modulo expression to its left operand. (e.g. `x %= y`).";
 		}
 
 		@Override

@@ -37,7 +37,7 @@ public class DictComprehensionAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a dictionary comprehension (e.g. ``{k: v for (a, b) in w if c}``.";
+			return "AST node for a dictionary comprehension (e.g. `{k: v for (a, b) in w if c}`.";
 		}
 
 		@Override

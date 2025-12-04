@@ -37,7 +37,7 @@ public class SliceAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for creating a slice object (used in ``obj[index1:index2]``).";
+			return "AST node for creating a slice object (used in `obj[index1:index2]`).";
 		}
 
 		@Override

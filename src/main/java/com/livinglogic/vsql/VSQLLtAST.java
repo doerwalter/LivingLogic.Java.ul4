@@ -41,7 +41,7 @@ public class VSQLLtAST extends VSQLBinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for the binary \"less than\" comparison (e.g. ``x < y``).";
+			return "AST node for the binary \"less than\" comparison (e.g. `x < y`).";
 		}
 
 		@Override

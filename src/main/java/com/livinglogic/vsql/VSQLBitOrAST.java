@@ -41,7 +41,7 @@ public class VSQLBitOrAST extends VSQLBinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a binary bitwise \"or\" expression (e.g. ``x | y``).";
+			return "AST node for a binary bitwise \"or\" expression (e.g. `x | y`).";
 		}
 
 		@Override

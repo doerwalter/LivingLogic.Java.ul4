@@ -41,7 +41,7 @@ public class VSQLNegAST extends VSQLUnaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a unary negation expression (e.g. ``-x``).";
+			return "AST node for a unary negation expression (e.g. `-x`).";
 		}
 
 		@Override

@@ -51,7 +51,7 @@ public class VSQLSliceAST extends VSQLAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a slice expression (e.g. ``x[y:z]``).";
+			return "AST node for a slice expression (e.g. `x[y:z]`).";
 		}
 
 		@Override

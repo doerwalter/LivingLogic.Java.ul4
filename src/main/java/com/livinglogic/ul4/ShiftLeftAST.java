@@ -37,7 +37,7 @@ public class ShiftLeftAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a bitwise left shift expression (e.g. ``x << y``).";
+			return "AST node for a bitwise left shift expression (e.g. `x << y`).";
 		}
 
 		@Override

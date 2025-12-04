@@ -10,7 +10,7 @@ import org.apache.commons.text.StringEscapeUtils;
 
 
 /**
-Implements the ``csv`` function, which escapes a string for use in CSV files.
+Implements the `csv` function, which escapes a string for use in CSV files.
 **/
 public class FunctionCSV extends Function
 {

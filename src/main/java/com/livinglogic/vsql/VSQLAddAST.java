@@ -41,7 +41,7 @@ public class VSQLAddAST extends VSQLBinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a binary addition expression that adds its two operands and\nreturns the result  (e.g. ``x + y``).";
+			return "AST node for a binary addition expression that adds its two operands and\nreturns the result  (e.g. `x + y`).";
 		}
 
 		@Override

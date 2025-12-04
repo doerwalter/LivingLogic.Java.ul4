@@ -46,7 +46,7 @@ public class VSQLItemAST extends VSQLBinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for subscripting expression (e.g. ``x[y]``).";
+			return "AST node for subscripting expression (e.g. `x[y]`).";
 		}
 
 		@Override

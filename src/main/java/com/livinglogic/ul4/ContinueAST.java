@@ -29,7 +29,7 @@ public class ContinueAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a ``<?continue?>`` tag inside a ``<?for?>`` block.";
+			return "AST node for a `<?continue?>` tag inside a `<?for?>` block.";
 		}
 
 		@Override

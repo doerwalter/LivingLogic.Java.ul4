@@ -45,7 +45,7 @@ public class SetAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for creating a set object (e.g. ``{x, y, *z}``.";
+			return "AST node for creating a set object (e.g. `{x, y, *z}`.";
 		}
 
 		@Override

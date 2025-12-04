@@ -8,7 +8,7 @@ package com.livinglogic.ul4;
 
 
 /**
-Implements the ``cos`` function, which returns the cosine of a number (in radians).
+Implements the `cos` function, which returns the cosine of a number (in radians).
 **/
 public class FunctionCos extends Function
 {

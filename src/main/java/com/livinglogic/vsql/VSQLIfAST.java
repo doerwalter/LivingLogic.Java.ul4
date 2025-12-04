@@ -51,7 +51,7 @@ public class VSQLIfAST extends VSQLAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for the ternary ``if/else`` operator (e.g. ``x if y else z``).";
+			return "AST node for the ternary `if/else` operator (e.g. `x if y else z`).";
 		}
 
 		@Override

@@ -37,7 +37,7 @@ public class ItemAST extends BinaryAST implements LValue
 		@Override
 		public String getDoc()
 		{
-			return "AST node for subscripting expression (e.g. ``x[y]``).";
+			return "AST node for subscripting expression (e.g. `x[y]`).";
 		}
 
 		@Override

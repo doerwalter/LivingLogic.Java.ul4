@@ -32,7 +32,7 @@ public class NotAST extends UnaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a unary \"not\" expression (e.g. ``not x``).";
+			return "AST node for a unary \"not\" expression (e.g. `not x`).";
 		}
 
 		@Override

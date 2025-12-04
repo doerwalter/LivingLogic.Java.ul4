@@ -32,7 +32,7 @@ public class IsNotAST extends BinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a binary ``is not`` comparison expression (e.g. ``x is not y``).";
+			return "AST node for a binary `is not` comparison expression (e.g. `x is not y`).";
 		}
 
 		@Override

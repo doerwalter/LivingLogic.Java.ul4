@@ -34,7 +34,7 @@ public class ListComprehensionAST extends CodeAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a list comprehension (e.g. ``[v for (a, b) in w if c]``.";
+			return "AST node for a list comprehension (e.g. `[v for (a, b) in w if c]`.";
 		}
 
 		@Override

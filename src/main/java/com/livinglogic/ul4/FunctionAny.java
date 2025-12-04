@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 
 /**
-Implements the ``any`` function, returning {@code true} if any element of an iterable is true.
+Implements the `any` function, returning {@code true} if any element of an iterable is true.
 **/
 public class FunctionAny extends Function
 {

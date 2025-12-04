@@ -30,7 +30,7 @@ public class FloorDivVarAST extends ChangeVarAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for augmented assignment expression that divides a variable by a\nvalue, truncating to an integer value (e.g. ``x //= y``).";
+			return "AST node for augmented assignment expression that divides a variable by a\nvalue, truncating to an integer value (e.g. `x //= y`).";
 		}
 
 		@Override

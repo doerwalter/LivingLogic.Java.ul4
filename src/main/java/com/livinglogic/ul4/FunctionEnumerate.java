@@ -11,7 +11,7 @@ import java.util.Vector;
 
 
 /**
-Implements the ``enumerate`` function, which returns an iterator that yields pairs of (index, item) for a sequence or iterable.
+Implements the `enumerate` function, which returns an iterator that yields pairs of (index, item) for a sequence or iterable.
 **/
 public class FunctionEnumerate extends Function
 {

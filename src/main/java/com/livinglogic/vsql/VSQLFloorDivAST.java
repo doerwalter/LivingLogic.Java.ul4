@@ -41,7 +41,7 @@ public class VSQLFloorDivAST extends VSQLBinaryAST
 		@Override
 		public String getDoc()
 		{
-			return "AST node for a binary truncating division expression (e.g. ``x // y``).";
+			return "AST node for a binary truncating division expression (e.g. `x // y`).";
 		}
 
 		@Override

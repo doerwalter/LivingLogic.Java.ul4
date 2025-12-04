@@ -48,7 +48,7 @@ public class AttrAST extends CodeAST implements LValue
 		@Override
 		public String getDoc()
 		{
-			return "AST node for an expression that gets or sets an attribute of an object.\n(e.g. ``x.y``).";
+			return "AST node for an expression that gets or sets an attribute of an object.\n(e.g. `x.y`).";
 		}
 
 		@Override
