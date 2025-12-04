@@ -31,74 +31,6 @@ A class to build an SQL query defined via vSQL expressions.
 **/
 public class VSQLQuery
 {
-	public enum Aggregate
-	{
-		GROUP
-		{
-			@Override
-			public String toString()
-			{
-				return "group";
-			}
-		},
-		COUNT
-		{
-			@Override
-			public String toString()
-			{
-				return "count";
-			}
-		},
-		MIN
-		{
-			@Override
-			public String toString()
-			{
-				return "min";
-			}
-		},
-		MAX
-		{
-			@Override
-			public String toString()
-			{
-				return "max";
-			}
-		},
-		SUM
-		{
-			@Override
-			public String toString()
-			{
-				return "sum";
-			}
-		};
-
-		public String toString()
-		{
-			return null;
-		}
-
-		public static Aggregate fromString(String value)
-		{
-			if (value == null)
-				return null;
-			switch (value)
-			{
-				case "group":
-					return GROUP;
-				case "count":
-					return COUNT;
-				case "min":
-					return MIN;
-				case "max":
-					return MAX;
-				case "sum":
-					return SUM;
-			}
-			throw new EnumValueException("com.livinglogic.livingapps.vsql.VSQLQuery.Aggregate", value);
-		}
-	}
 	public static abstract class Expr
 	{
 		/**
@@ -256,7 +188,7 @@ public class VSQLQuery
 
 	public static class AggregatedSelectExpr extends SelectExpr
 	{
-		protected Aggregate aggregate;
+		protected VSQLAggregate aggregate;
 
 		AggregatedSelectExpr(Expr expr, String alias)
 		{
@@ -272,27 +204,27 @@ public class VSQLQuery
 					if ("count".equals(name) && argCount == 0)
 					{
 						vsqlExpr.setExpr(null);
-						this.aggregate = Aggregate.COUNT;
+						this.aggregate = VSQLAggregate.COUNT;
 					}
 					else if ("min".equals(name) && argCount == 1)
 					{
 						vsqlExpr.setExpr(args.get(0));
-						this.aggregate = Aggregate.MIN;
+						this.aggregate = VSQLAggregate.MIN;
 					}
 					else if ("max".equals(name) && argCount == 1)
 					{
 						vsqlExpr.setExpr(args.get(0));
-						this.aggregate = Aggregate.MAX;
+						this.aggregate = VSQLAggregate.MAX;
 					}
 					else if ("sum".equals(name) && argCount == 1)
 					{
 						vsqlExpr.setExpr(args.get(0));
-						this.aggregate = Aggregate.SUM;
+						this.aggregate = VSQLAggregate.SUM;
 					}
 					else if ("group".equals(name) && argCount == 1)
 					{
 						vsqlExpr.setExpr(args.get(0));
-						this.aggregate = Aggregate.GROUP;
+						this.aggregate = VSQLAggregate.GROUP;
 					}
 					else
 					{
@@ -306,7 +238,7 @@ public class VSQLQuery
 			}
 		}
 
-		public Aggregate getAggregate()
+		public VSQLAggregate getAggregate()
 		{
 			return aggregate;
 		}
@@ -337,7 +269,7 @@ public class VSQLQuery
 				else
 				{
 					sqlSource = vsqlExpr.getSQLSource();
-					if (aggregate != Aggregate.GROUP)
+					if (aggregate != VSQLAggregate.GROUP)
 					{
 						sqlSource = aggregate.toString() + "(" + sqlSource + ")";
 					}
@@ -662,17 +594,17 @@ public class VSQLQuery
 		if (fields.size() > 0)
 			throw new VSQLMixedAggregationException();
 
-		AggregatedSelectExpr aggregatedSelectExpr = new AggregatedSelectExpr(new VSQLExpr(expr, comment), alias);
+		VSQLExpr vsqlExpr = new VSQLExpr(expr, comment);
+		AggregatedSelectExpr aggregatedSelectExpr = new AggregatedSelectExpr(vsqlExpr, alias);
 		aggregatedFields.add(aggregatedSelectExpr);
-		Aggregate aggregate = aggregatedSelectExpr.getAggregate();
+		VSQLAggregate aggregate = aggregatedSelectExpr.getAggregate();
 
-		if (aggregate == Aggregate.GROUP)
+		if (aggregate == VSQLAggregate.GROUP)
 		{
 			String key = aggregatedSelectExpr.getKey();
 			if (!groupBys.containsKey(key))
 			{
-				// We know that our expression is a `VSQLExpr`, otherweise `aggregate` would be `null`.
-				VSQLExpr vsqlExpr = (VSQLExpr)aggregatedSelectExpr.getExpr();
+				// create a copy of our initial `VSQLExpr`
 				groupBys.put(key, new GroupByExpr(new VSQLExpr(vsqlExpr.getSource(), vsqlExpr.getComment())));
 			}
 		}
