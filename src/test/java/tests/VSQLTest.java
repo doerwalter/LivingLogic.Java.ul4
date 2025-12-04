@@ -1998,6 +1998,16 @@ public class VSQLTest
 		checkVSQL("ignored", query);
 	}
 
+	@CauseTest(expectedCause=VSQLUnsupportedOperationException.class)
+	@Test
+	public void selectVSQL_bad_types()
+	{
+		VSQLQuery query = new VSQLQuery("select comment", makeFields());
+		query.selectVSQL("len(42)");
+
+		checkVSQL("ignored", query);
+	}
+
 	@Test
 	public void selectVSQL_table_fromVSQL()
 	{
