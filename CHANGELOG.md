@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.204.0 (2025-12-05)
+
+Add the method `VSQLDataType.conform(Object)` that convert a value to
+the type that is appropriate for that vSQL datatype.
+
+
 ## 0.203.1 (2025-12-04)
 
 Add the missing convenience method `VSQLQuery.aggregateVSQL(String)`.

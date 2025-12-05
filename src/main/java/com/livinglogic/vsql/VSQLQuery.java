@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.livinglogic.ul4.UL4Type;
 import com.livinglogic.ul4.EnumValueException;
+import com.livinglogic.ul4.Utils;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
@@ -132,6 +133,19 @@ public class VSQLQuery
 			if (finalExpr.getDataType() != VSQLDataType.BOOL)
 				finalExpr = VSQLFuncAST.make("bool", finalExpr);
 			return addComment(finalExpr.getSQLSource(VSQLQuery.this) + " = 1", expr.getSource(), comment);
+		}
+
+		public Object conform(Object value)
+		{
+			if (expr == null) // this was a count
+				return VSQLDataType.INT.conform(value);
+			else
+			{
+				VSQLDataType dataType = expr.getDataType();
+				if (dataType != null)
+					value = dataType.conform(value);
+				return value;
+			}
 		}
 	}
 
