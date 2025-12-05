@@ -8,7 +8,12 @@ package com.livinglogic.vsql;
 
 import java.util.Set;
 import java.util.Collections;
+import java.sql.Timestamp;
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.math.BigDecimal;
 
+import com.livinglogic.ul4.Utils;
 import com.livinglogic.ul4.EnumValueException;
 
 /**
@@ -32,6 +37,15 @@ public enum VSQLDataType
 			return "bool";
 		}
 
+		public Object conform(Object value)
+		{
+			if (value instanceof BigDecimal bigDecimalValue)
+			{
+				value = bigDecimalValue.signum() != 0;
+			}
+			return value;
+		}
+
 		@Override
 		public Set<VSQLAggregate> getAllowedAggregates()
 		{
@@ -44,6 +58,15 @@ public enum VSQLDataType
 		public String toString()
 		{
 			return "int";
+		}
+
+		public Object conform(Object value)
+		{
+			if (value instanceof BigDecimal bigDecimalValue)
+			{
+				value = Utils.narrowBigInteger(bigDecimalValue.toBigInteger());
+			}
+			return value;
 		}
 
 		@Override
@@ -60,6 +83,15 @@ public enum VSQLDataType
 			return "number";
 		}
 
+		public Object conform(Object value)
+		{
+			if (value instanceof BigDecimal bigDecimalValue)
+			{
+				value = Utils.narrowBigDecimal(bigDecimalValue);
+			}
+			return value;
+		}
+
 		@Override
 		public Set<VSQLAggregate> getAllowedAggregates()
 		{
@@ -74,6 +106,11 @@ public enum VSQLDataType
 			return "str";
 		}
 
+		public Object conform(Object value)
+		{
+			return clobToString(value);
+		}
+
 		@Override
 		public Set<VSQLAggregate> getAllowedAggregates()
 		{
@@ -86,6 +123,11 @@ public enum VSQLDataType
 		public String toString()
 		{
 			return "clob";
+		}
+
+		public Object conform(Object value)
+		{
+			return clobToString(value);
 		}
 	},
 	COLOR
@@ -118,6 +160,15 @@ public enum VSQLDataType
 			return "date";
 		}
 
+		public Object conform(Object value)
+		{
+			if (value instanceof Timestamp timestampValue)
+			{
+				value = timestampValue.toLocalDateTime().toLocalDate();
+			}
+			return value;
+		}
+
 		@Override
 		public Set<VSQLAggregate> getAllowedAggregates()
 		{
@@ -130,6 +181,15 @@ public enum VSQLDataType
 		public String toString()
 		{
 			return "datetime";
+		}
+
+		public Object conform(Object value)
+		{
+			if (value instanceof Timestamp timestampValue)
+			{
+				value = timestampValue.toLocalDateTime();
+			}
+			return value;
 		}
 
 		@Override
@@ -295,6 +355,16 @@ public enum VSQLDataType
 		return Collections.emptySet();
 	}
 
+	/**
+	Convert to the canonical type excepted for that datatype.
+
+	E.g. for `DATE` convert `java.sql.Timestamp` and `java.util.Date` to `java.date.LocalDate`.
+	**/
+	public Object conform(Object value)
+	{
+		return value;
+	}
+
 	public static VSQLDataType fromString(String value)
 	{
 		if (value == null)
@@ -355,5 +425,22 @@ public enum VSQLDataType
 				return DATETIMESET;
 		}
 		throw new EnumValueException("com.livinglogic.livingapps.vsql.VSQLDataType", value);
+	}
+
+	private static Object clobToString(Object value)
+	{
+		if (value instanceof Clob clobValue)
+		{
+			try
+			{
+				value = clobValue.getSubString(1, (int)clobValue.length());
+				clobValue.free();
+			}
+			catch (SQLException ex)
+			{
+				throw new RuntimeException(ex);
+			}
+		}
+		return value;
 	}
 };
