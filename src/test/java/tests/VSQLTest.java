@@ -496,7 +496,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("'a' < 'b'");
 
-		checkVSQL("select (case when vsqlimpl_pkg.cmp_str_str('a', 'b') < 0 then 1 else 0 end) /* 'a' < 'b' */ from dual", query);
+		checkVSQL("select case vsqlimpl_pkg.cmp_str_str('a', 'b') when -1 then 1 when null then null else 0 end /* 'a' < 'b' */ from dual", query);
 	}
 
 	@Test
@@ -505,7 +505,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("'a' <= 'b'");
 
-		checkVSQL("select (case when vsqlimpl_pkg.cmp_str_str('a', 'b') <= 0 then 1 else 0 end) /* 'a' <= 'b' */ from dual", query);
+		checkVSQL("select case vsqlimpl_pkg.cmp_str_str('a', 'b') when 1 then 0 when null then null else 1 end /* 'a' <= 'b' */ from dual", query);
 	}
 
 	@Test
@@ -514,7 +514,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("'a' > 'b'");
 
-		checkVSQL("select (case when vsqlimpl_pkg.cmp_str_str('a', 'b') > 0 then 1 else 0 end) /* 'a' > 'b' */ from dual", query);
+		checkVSQL("select case vsqlimpl_pkg.cmp_str_str('a', 'b') when 1 then 1 when null then null else 0 end /* 'a' > 'b' */ from dual", query);
 	}
 
 	@Test
@@ -523,7 +523,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("'a' >= 'b'");
 
-		checkVSQL("select (case when vsqlimpl_pkg.cmp_str_str('a', 'b') >= 0 then 1 else 0 end) /* 'a' >= 'b' */ from dual", query);
+		checkVSQL("select case vsqlimpl_pkg.cmp_str_str('a', 'b') when -1 then 0 when null then null else 1 end /* 'a' >= 'b' */ from dual", query);
 	}
 
 	@Test
@@ -1315,7 +1315,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("seq()");
 
-		checkVSQL("select livingapi_pkg.seq() /* seq() */ from dual", query);
+		checkVSQL("select vsqlimpl_pkg.seq() /* seq() */ from dual", query);
 	}
 
 	@Test
@@ -1790,7 +1790,7 @@ public class VSQLTest
 		// AttrAST.add_rules(f"INT <- DATE_DATETIME.weekday"
 		query.selectVSQL("now().weekday");
 
-		checkVSQL("select (to_char(sysdate, 'D')-1) /* now().weekday */ from dual", query);
+		checkVSQL("select vsqlimpl_pkg.attr_date_weekday(sysdate) /* now().weekday */ from dual", query);
 	}
 
 	@Test
@@ -2149,7 +2149,7 @@ public class VSQLTest
 			from
 				vsql_person /* p */ t1
 			where
-				(case when vsqlimpl_pkg.cmp_datetime_datetime(t1.per_date_of_birth /* p.date_of_birth */, to_date('1800-01-01', 'YYYY-MM-DD')) > 0 then 1 else 0 end) = 1 /* p.date_of_birth > @(1800-01-01) */
+				case vsqlimpl_pkg.cmp_datetime_datetime(t1.per_date_of_birth /* p.date_of_birth */, to_date('1800-01-01', 'YYYY-MM-DD')) when 1 then 1 when null then null else 0 end = 1 /* p.date_of_birth > @(1800-01-01) */
 			group by
 				t1.per_gender /* p.gender */ /* Group by gender */
 			""",

@@ -497,7 +497,7 @@ public class VSQLFuncAST extends VSQLAST
 		addRule(rules, VSQLDataType.STR, List.of("md5", VSQLDataType.STR), List.of("lower(rawtohex(dbms_crypto.hash(utl_raw.cast_to_raw(", 1, "), 2)))"));
 		addRule(rules, VSQLDataType.NUMBER, List.of("random"), List.of("dbms_random.value"));
 		addRule(rules, VSQLDataType.INT, List.of("randrange", VSQLDataType.INT, VSQLDataType.INT), List.of("floor(dbms_random.value(", 1, ", ", 2, "))"));
-		addRule(rules, VSQLDataType.INT, List.of("seq"), List.of("livingapi_pkg.seq()"));
+		addRule(rules, VSQLDataType.INT, List.of("seq"), List.of("vsqlimpl_pkg.seq()"));
 		addRule(rules, VSQLDataType.COLOR, List.of("rgb", VSQLDataType.BOOL, VSQLDataType.BOOL, VSQLDataType.BOOL), List.of("vsqlimpl_pkg.rgb(", 1, ", ", 2, ", ", 3, ")"));
 		addRule(rules, VSQLDataType.COLOR, List.of("rgb", VSQLDataType.BOOL, VSQLDataType.BOOL, VSQLDataType.INT), List.of("vsqlimpl_pkg.rgb(", 1, ", ", 2, ", ", 3, ")"));
 		addRule(rules, VSQLDataType.COLOR, List.of("rgb", VSQLDataType.BOOL, VSQLDataType.BOOL, VSQLDataType.NUMBER), List.of("vsqlimpl_pkg.rgb(", 1, ", ", 2, ", ", 3, ")"));
