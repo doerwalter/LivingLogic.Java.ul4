@@ -566,7 +566,7 @@ public class VSQLQuery
 	`alias` can be used to give the expression a column alias.
 
 	Note that that adds `expr` directly as "raw" SQL. To add a vSQL
-	expression use {@link #selectVSQL()} instead.
+	expression use {@link #selectVSQL(String)} instead.
 	**/
 	public SelectExpr selectSQL(String expr, String comment, String alias)
 	{

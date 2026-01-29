@@ -8,7 +8,7 @@ package com.livinglogic.vsql;
 
 /**
 An exception that is thrown when aggregated and non-aggregated values
-are mixed in a {@link VSQLQUery}.
+are mixed in a {@link VSQLQuery}.
 **/
 public class VSQLMixedAggregationException extends RuntimeException
 {
