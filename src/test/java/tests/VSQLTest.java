@@ -496,7 +496,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("'a' < 'b'");
 
-		checkVSQL("select case vsqlimpl_pkg.cmp_str_str('a', 'b') when -1 then 1 when null then null else 0 end /* 'a' < 'b' */ from dual", query);
+		checkVSQL("select case vsqlimpl_pkg.cmp_str_str('a', 'b') when -1 then 1 when 0 then 0 when 1 then 0 end /* 'a' < 'b' */ from dual", query);
 	}
 
 	@Test
@@ -505,7 +505,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("'a' <= 'b'");
 
-		checkVSQL("select case vsqlimpl_pkg.cmp_str_str('a', 'b') when 1 then 0 when null then null else 1 end /* 'a' <= 'b' */ from dual", query);
+		checkVSQL("select case vsqlimpl_pkg.cmp_str_str('a', 'b') when -1 then 1 when 0 then 1 when 1 then 0 end /* 'a' <= 'b' */ from dual", query);
 	}
 
 	@Test
@@ -514,7 +514,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("'a' > 'b'");
 
-		checkVSQL("select case vsqlimpl_pkg.cmp_str_str('a', 'b') when 1 then 1 when null then null else 0 end /* 'a' > 'b' */ from dual", query);
+		checkVSQL("select case vsqlimpl_pkg.cmp_str_str('a', 'b') when -1 then 0 when 0 then 0 when 1 then 1 end /* 'a' > 'b' */ from dual", query);
 	}
 
 	@Test
@@ -523,7 +523,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("'a' >= 'b'");
 
-		checkVSQL("select case vsqlimpl_pkg.cmp_str_str('a', 'b') when -1 then 0 when null then null else 1 end /* 'a' >= 'b' */ from dual", query);
+		checkVSQL("select case vsqlimpl_pkg.cmp_str_str('a', 'b') when -1 then 0 when 0 then 1 when 1 then 1 end /* 'a' >= 'b' */ from dual", query);
 	}
 
 	@Test
@@ -694,7 +694,7 @@ public class VSQLTest
 		VSQLQuery query = new VSQLQuery();
 		query.selectVSQL("bool(True)");
 
-		checkVSQL("select 1 /* bool(True) */ from dual", query);
+		checkVSQL("select nvl(1, 0) /* bool(True) */ from dual", query);
 	}
 
 	@Test
@@ -2149,7 +2149,7 @@ public class VSQLTest
 			from
 				vsql_person /* p */ t1
 			where
-				case vsqlimpl_pkg.cmp_datetime_datetime(t1.per_date_of_birth /* p.date_of_birth */, to_date('1800-01-01', 'YYYY-MM-DD')) when 1 then 1 when null then null else 0 end = 1 /* p.date_of_birth > @(1800-01-01) */
+				case vsqlimpl_pkg.cmp_datetime_datetime(t1.per_date_of_birth /* p.date_of_birth */, to_date('1800-01-01', 'YYYY-MM-DD')) when -1 then 0 when 0 then 0 when 1 then 1 end = 1 /* p.date_of_birth > @(1800-01-01) */
 			group by
 				t1.per_gender /* p.gender */ /* Group by gender */
 			""",
