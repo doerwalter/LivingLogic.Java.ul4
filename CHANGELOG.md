@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.205.1 (2026-03-30)
+
+Fixed the vSQL comparison operators `>`, `>=`, `<` and `>=` to return `null`
+when exactly one of the operands is `null`. Fixed the vSQL function `bool(bool)`
+to return `0` when `null` is passed.
+
+
+## 0.205.0 (2026-01-28)
+
+Updated the implementation of several vSQL expressions:
+
+-	The attributes `DATE.weekday` and `DATETIME.weekday` now use
+	`vsqlimpl_pkg.attr_date_weekday()` to avoid problems with different database
+	configurations for the first day of the week.
+-	`DATEDELTA.days` can simply return the value unchanged, since `DATEDELTA`
+	object have no hours/minutes/seconds.
+-	Support for `CLOB in STR`, `CLOB in CLOB`, `CLOB in STRLIST`,
+	`CLOB in CLOBLIST` and `CLOB in STRSET` has been added.
+-	Support for `CLOB not in STR`, `CLOB not in CLOB`, `CLOB not in STRLIST`,
+	`CLOB not in CLOBLIST` and `CLOB not in STRSET` has been added.
+-	`seq()` now uses `vsqlimpl_pkg.seq()` instead of `livingapi_pkg.seq()`
+	(to reduce dependencies on `livingapi_pkg`).
+-	The comparison operators `<`, `<=`, `>` and `>=` no longer treat `null`
+	as the smallest value when comparing it with a non-`null` value. Instead
+	`null` will be returned as the comparison result. This avoids unexpected
+	results from `r.v_date_of_death <= @(1900-01-01)` when `r.v_date_of_death`
+	is `null`.
+
+
 ## 0.204.0 (2025-12-05)
 
 Add the method `VSQLDataType.conform(Object)` that convert a value to

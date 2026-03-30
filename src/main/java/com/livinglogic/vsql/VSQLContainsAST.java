@@ -149,6 +149,11 @@ public class VSQLContainsAST extends VSQLBinaryAST
 		addRule(rules, VSQLDataType.BOOL, List.of(VSQLDataType.STR, VSQLDataType.STRLIST), List.of("vsqlimpl_pkg.contains_str_strlist(", 1, ", ", 2, ")"));
 		addRule(rules, VSQLDataType.BOOL, List.of(VSQLDataType.STR, VSQLDataType.CLOBLIST), List.of("vsqlimpl_pkg.contains_str_cloblist(", 1, ", ", 2, ")"));
 		addRule(rules, VSQLDataType.BOOL, List.of(VSQLDataType.STR, VSQLDataType.STRSET), List.of("vsqlimpl_pkg.contains_str_strlist(", 1, ", ", 2, ")"));
+		addRule(rules, VSQLDataType.BOOL, List.of(VSQLDataType.CLOB, VSQLDataType.STR), List.of("vsqlimpl_pkg.contains_clob_str(", 1, ", ", 2, ")"));
+		addRule(rules, VSQLDataType.BOOL, List.of(VSQLDataType.CLOB, VSQLDataType.CLOB), List.of("vsqlimpl_pkg.contains_clob_clob(", 1, ", ", 2, ")"));
+		addRule(rules, VSQLDataType.BOOL, List.of(VSQLDataType.CLOB, VSQLDataType.STRLIST), List.of("vsqlimpl_pkg.contains_clob_strlist(", 1, ", ", 2, ")"));
+		addRule(rules, VSQLDataType.BOOL, List.of(VSQLDataType.CLOB, VSQLDataType.CLOBLIST), List.of("vsqlimpl_pkg.contains_clob_cloblist(", 1, ", ", 2, ")"));
+		addRule(rules, VSQLDataType.BOOL, List.of(VSQLDataType.CLOB, VSQLDataType.STRSET), List.of("vsqlimpl_pkg.contains_clob_strlist(", 1, ", ", 2, ")"));
 		addRule(rules, VSQLDataType.BOOL, List.of(VSQLDataType.INT, VSQLDataType.INTLIST), List.of("vsqlimpl_pkg.contains_int_intlist(", 1, ", ", 2, ")"));
 		addRule(rules, VSQLDataType.BOOL, List.of(VSQLDataType.INT, VSQLDataType.NUMBERLIST), List.of("vsqlimpl_pkg.contains_int_numberlist(", 1, ", ", 2, ")"));
 		addRule(rules, VSQLDataType.BOOL, List.of(VSQLDataType.INT, VSQLDataType.INTSET), List.of("vsqlimpl_pkg.contains_int_intlist(", 1, ", ", 2, ")"));

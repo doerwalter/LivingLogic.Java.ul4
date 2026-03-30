@@ -220,11 +220,11 @@ public class VSQLAttrAST extends VSQLAST
 		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATETIME, "hour"), List.of("to_number(to_char(", 1, ", 'HH24'))"));
 		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATETIME, "minute"), List.of("to_number(to_char(", 1, ", 'MI'))"));
 		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATETIME, "second"), List.of("to_number(to_char(", 1, ", 'SS'))"));
-		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATE, "weekday"), List.of("(to_char(", 1, ", 'D')-1)"));
-		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATETIME, "weekday"), List.of("(to_char(", 1, ", 'D')-1)"));
+		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATE, "weekday"), List.of("vsqlimpl_pkg.attr_date_weekday(", 1, ")"));
+		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATETIME, "weekday"), List.of("vsqlimpl_pkg.attr_date_weekday(", 1, ")"));
 		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATE, "yearday"), List.of("to_number(to_char(", 1, ", 'DDD'))"));
 		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATETIME, "yearday"), List.of("to_number(to_char(", 1, ", 'DDD'))"));
-		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATEDELTA, "days"), List.of("trunc(", 1, ")"));
+		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATEDELTA, "days"), List.of(1));
 		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATETIMEDELTA, "days"), List.of("trunc(", 1, ")"));
 		addRule(rules, VSQLDataType.INT, List.of(VSQLDataType.DATETIMEDELTA, "seconds"), List.of("trunc(mod(", 1, ", 1) * 86400 + 0.5)"));
 		addRule(rules, VSQLDataType.NUMBER, List.of(VSQLDataType.DATETIMEDELTA, "total_days"), List.of(1));
