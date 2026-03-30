@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.205.1 (2026-03-30)
+
+Fixed the vSQL comparison operators `>`, `>=`, `<` and `>=` to return `null`
+when exactly one of the operands is `null`. Fixed the vSQL function `bool(bool)`
+to return `0` when `null` is passed.
+
+
 ## 0.205.0 (2026-01-28)
 
 Updated the implementation of several vSQL expressions:

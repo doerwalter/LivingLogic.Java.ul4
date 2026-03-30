@@ -345,7 +345,7 @@ public class VSQLFuncAST extends VSQLAST
 		addRule(rules, VSQLDataType.DATETIME, List.of("now"), List.of("sysdate"));
 		addRule(rules, VSQLDataType.BOOL, List.of("bool"), List.of("0"));
 		addRule(rules, VSQLDataType.BOOL, List.of("bool", VSQLDataType.NULL), List.of("0"));
-		addRule(rules, VSQLDataType.BOOL, List.of("bool", VSQLDataType.BOOL), List.of(1));
+		addRule(rules, VSQLDataType.BOOL, List.of("bool", VSQLDataType.BOOL), List.of("nvl(", 1, ", 0)"));
 		addRule(rules, VSQLDataType.BOOL, List.of("bool", VSQLDataType.INT), List.of("(case when nvl(", 1, ", 0) = 0 then 0 else 1 end)"));
 		addRule(rules, VSQLDataType.BOOL, List.of("bool", VSQLDataType.NUMBER), List.of("(case when nvl(", 1, ", 0) = 0 then 0 else 1 end)"));
 		addRule(rules, VSQLDataType.BOOL, List.of("bool", VSQLDataType.DATEDELTA), List.of("(case when nvl(", 1, ", 0) = 0 then 0 else 1 end)"));
