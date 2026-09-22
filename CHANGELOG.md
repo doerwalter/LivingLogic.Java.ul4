@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.207.0 (2026-??-??)
+
+`VSQLAST.fromsource()` has a new overload with a third parameter
+`replacements`: a map of additional variable names to vSQL expressions that
+reference the real variables. Every reference to such a "replacement
+variable" is replaced by that expression, so an expression that has been
+written for one variable can be compiled for another one: compiling
+`p.lastname == 'Einstein'` with the replacement `b.author` for `p` gives the
+same expression as `b.author.lastname == 'Einstein'`. The methods
+`selectVSQL()`, `aggregateVSQL()`, `whereVSQL()`, `groupByVSQL()` and
+`orderByVSQL()` of `VSQLQuery` have overloads with such a map as their last
+parameter; the replacement variables are only available in that expression
+and replace a query variable with the same name there. A replacement
+expression may only reference real variables, otherwise a
+`VSQLReplacementVariableException` is thrown.
+
+`VSQLQuery.fromVSQL()` now accepts an attribute path (e.g. `"b.author"`) in
+addition to the name of a query variable, and returns the `FromExpr` of an
+already joined table too, so SQL conditions (via `whereSQL()`) can reference
+the tables that vSQL expressions join. Passing an expression that is not a
+field reference or a field that doesn't reference a table throws an
+`IllegalArgumentException`.
+
+
 ## 0.206.0 (2026-08-17)
 
 Added support for generating PostgreSQL code from vSQL expressions (which
