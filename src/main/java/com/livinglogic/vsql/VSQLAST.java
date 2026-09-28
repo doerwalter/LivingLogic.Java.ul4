@@ -9,6 +9,7 @@ package com.livinglogic.vsql;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.Collections;
 
@@ -758,12 +759,86 @@ public abstract class VSQLAST implements UL4Instance, UL4ONSerializable, UL4Repr
 		}
 	}
 
+	/**
+	<p>Create a vSQL expression from its source code.</p>
+
+	<p>{@code vars} contains the "root" variables that can be referenced in
+	the vSQL expression.</p>
+	**/
 	public static VSQLAST fromsource(String source, Map<String, VSQLField> vars)
 	{
 		Template template = new Template("<?return " + source + "?>", "vSQL", null, Template.Whitespace.keep);
 		List<AST> content = template.getContent();
 		ReturnAST returnExpr = (ReturnAST)content.get(content.size() - 1);
 		return returnExpr.getObj().asVSQL(vars);
+	}
+
+	/**
+	<p>Create a vSQL expression from its source code, with replacement
+	variables.</p>
+
+	<p>{@code vars} contains the "root" variables that can be referenced in
+	the vSQL expression. {@code replacements} maps additional variable names to
+	vSQL expressions that reference the variables in {@code vars}. Every
+	reference to such a variable in {@code source} is replaced by that
+	expression, so an expression that has been written for one variable can be
+	compiled for another one. For example the condition
+	{@code p.lastname == 'Einstein'} on a person {@code p} can be compiled for
+	the author {@code b.author} of a book {@code b} like this:</p>
+
+	<pre>
+	VSQLAST.fromsource("p.lastname == 'Einstein'", Map.of("b", book), Map.of("p", "b.author"))
+	</pre>
+
+	<p>which is equivalent to:</p>
+
+	<pre>
+	VSQLAST.fromsource("b.author.lastname == 'Einstein'", Map.of("b", book))
+	</pre>
+
+	<p>A replacement variable replaces a variable in {@code vars} with the same
+	name. The replacement expression is enclosed in parentheses unless it is a
+	simple variable or attribute reference like {@code b.author}, so the
+	precedence of the operators around the variable is preserved. A replacement
+	expression can only reference the variables in {@code vars}; referencing a
+	replacement variable throws a {@link VSQLReplacementVariableException}.</p>
+	**/
+	public static VSQLAST fromsource(String source, Map<String, VSQLField> vars, Map<String, String> replacements)
+	{
+		if (replacements == null || replacements.isEmpty())
+			return fromsource(source, vars);
+
+		Map<String, VSQLField> allVars = new LinkedHashMap<>(vars);
+		for (Map.Entry<String, String> entry : replacements.entrySet())
+		{
+			String name = entry.getKey();
+			String replacementSource = entry.getValue();
+			// Compile the replacement expression against the real variables to
+			// check which variables it references and to determine its type.
+			VSQLAST replacementAST = fromsource(replacementSource, vars);
+			for (VSQLFieldRefAST fieldRef : replacementAST.getFieldRefs())
+			{
+				VSQLFieldRefAST root = fieldRef;
+				while (root.getParent() != null)
+					root = root.getParent();
+				if (replacements.containsKey(root.getIdentifier()))
+					throw new VSQLReplacementVariableException(name, root.getIdentifier());
+			}
+			allVars.put(name, new VSQLReplacementField(name, replacementSource, replacementAST.getDataType()));
+		}
+		return fromsource(source, allVars);
+	}
+
+	/**
+	Add {@code prefix} and {@code suffix} to the source of this expression
+	(without changing its meaning), e.g. to enclose it in parentheses.
+	**/
+	void wrapSource(String prefix, String suffix)
+	{
+		if (prefix != null && !prefix.isEmpty())
+			content.add(0, prefix);
+		if (suffix != null && !suffix.isEmpty())
+			content.add(suffix);
 	}
 
 	@Override

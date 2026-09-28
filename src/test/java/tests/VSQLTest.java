@@ -7,13 +7,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
+import java.util.HashMap;
 
+import com.livinglogic.vsql.VSQLAST;
 import com.livinglogic.vsql.VSQLDataType;
 import com.livinglogic.vsql.VSQLField;
 import com.livinglogic.vsql.VSQLGroup;
 import com.livinglogic.vsql.VSQLQuery;
 import com.livinglogic.vsql.OracleVSQLQuery;
 import com.livinglogic.vsql.VSQLFieldUnknownException;
+import com.livinglogic.vsql.VSQLReplacementVariableException;
 import com.livinglogic.vsql.VSQLUnsupportedOperationException;
 import com.livinglogic.vsql.VSQLAggregationException;
 
@@ -2065,6 +2068,151 @@ public class VSQLTest
 			""",
 			query
 		);
+	}
+
+	@Test
+	public void selectVSQL_replacement_var()
+	{
+		// `f` is a replacement variable that stands for `p.field1` in this
+		// select expression only.
+		VSQLQuery query = new OracleVSQLQuery("select comment", makeFields());
+		query.selectVSQL("f.name", null, null, Map.of("f", "p.field1"));
+
+		checkVSQL(
+			"""
+			/* select comment */
+			select
+				t2.fld_name /* p.field1.name */
+			from
+				vsql_person /* p */ t1,
+				vsql_field /* p.field1 */ t2
+			where
+				t1.fld_id_1 = t2.fld_id /* p.field1 */
+			""",
+			query
+		);
+	}
+
+	@Test
+	public void whereVSQL_replacement_var_shares_join()
+	{
+		// The replaced expression references the same fields as the direct
+		// expression, so the table is joined only once.
+		VSQLQuery query = new OracleVSQLQuery("select comment", makeFields());
+		query.selectVSQL("p.field1.name");
+		query.whereVSQL("f.name == 'Physics'", null, Map.of("f", "p.field1"));
+
+		checkVSQL(
+			"""
+			/* select comment */
+			select
+				t2.fld_name /* p.field1.name */
+			from
+				vsql_person /* p */ t1,
+				vsql_field /* p.field1 */ t2
+			where
+				(t1.fld_id_1 = t2.fld_id /* p.field1 */) and
+				(vsqlimpl_pkg.eq_str_str(t2.fld_name /* p.field1.name */, 'Physics') = 1 /* p.field1.name == 'Physics' */)
+			""",
+			query
+		);
+	}
+
+	@Test
+	public void whereVSQL_replacement_var_overrides_query_var()
+	{
+		// A replacement variable replaces the query variable with the same
+		// name for this expression only, so the table of `r` isn't joined.
+		Map<String, VSQLField> fields = new HashMap<>(makeFields());
+		fields.put("r", new VSQLField("r", VSQLDataType.STR, "1 = 1", null, fields.get("p").getRefGroup()));
+		VSQLQuery query = new OracleVSQLQuery("select comment", fields);
+		query.selectVSQL("p.firstname");
+		query.whereVSQL("r.lastname == 'Einstein'", null, Map.of("r", "p"));
+
+		checkVSQL(
+			"""
+			/* select comment */
+			select
+				t1.per_firstname /* p.firstname */
+			from
+				vsql_person /* p */ t1
+			where
+				vsqlimpl_pkg.eq_str_str(t1.per_lastname /* p.lastname */, 'Einstein') = 1 /* p.lastname == 'Einstein' */
+			""",
+			query
+		);
+	}
+
+	@CauseTest(expectedCause=VSQLFieldUnknownException.class)
+	@Test
+	public void whereVSQL_replacement_var_unavailable_elsewhere()
+	{
+		VSQLQuery query = new OracleVSQLQuery("select comment", makeFields());
+		query.whereVSQL("f.name == 'Physics'", null, Map.of("f", "p.field1"));
+		// `f` is only defined for the condition above.
+		query.whereVSQL("f.name == 'Physics'");
+	}
+
+	@CauseTest(expectedCause=VSQLReplacementVariableException.class)
+	@Test
+	public void whereVSQL_replacement_var_references_replacement_var()
+	{
+		// Replacement variables may only reference real variables.
+		VSQLQuery query = new OracleVSQLQuery("select comment", makeFields());
+		query.whereVSQL("g.name == 'Physics'", null, Map.of("f", "p.field1", "g", "f"));
+	}
+
+	@CauseTest(expectedCause=VSQLReplacementVariableException.class)
+	@Test
+	public void whereVSQL_replacement_var_references_itself()
+	{
+		VSQLQuery query = new OracleVSQLQuery("select comment", makeFields());
+		query.whereVSQL("f.name == 'Physics'", null, Map.of("f", "f"));
+	}
+
+	@Test
+	public void replacement_var_parenthesized()
+	{
+		// A replacement expression that isn't a simple field reference is
+		// parenthesized in the source, so the precedence is preserved.
+		VSQLAST ast = VSQLAST.fromsource("x * 2 > len(f.name)", makeFields(), Map.of("x", "len(p.lastname) + 1", "f", "p.field1"));
+
+		assertEquals("(len(p.lastname) + 1) * 2 > len(p.field1.name)", ast.getSource());
+	}
+
+	@Test
+	public void fromVSQL_path()
+	{
+		// `fromVSQL()` accepts an attribute path and returns the table for
+		// use in SQL expressions.
+		VSQLQuery query = new OracleVSQLQuery("select comment", makeFields());
+		VSQLQuery.FromExpr fromExpr = query.fromVSQL("p.field1");
+		query.selectSQL(fromExpr.getAlias() + ".fld_name", "the field name", null);
+		// Registering the table again returns the existing join.
+		assertEquals(fromExpr.getAlias(), query.fromVSQL("p.field1").getAlias());
+
+		checkVSQL(
+			"""
+			/* select comment */
+			select
+				t2.fld_name /* the field name */
+			from
+				vsql_person /* p */ t1,
+				vsql_field /* p.field1 */ t2
+			where
+				t1.fld_id_1 = t2.fld_id /* p.field1 */
+			""",
+			query
+		);
+	}
+
+	@CauseTest(expectedCause=IllegalArgumentException.class)
+	@Test
+	public void fromVSQL_no_table()
+	{
+		VSQLQuery query = new OracleVSQLQuery("select comment", makeFields());
+		// `p.firstname` is a field, but doesn't reference a table.
+		query.fromVSQL("p.firstname");
 	}
 
 	@Test

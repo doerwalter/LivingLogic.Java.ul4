@@ -15,8 +15,10 @@ import java.io.IOException;
 import com.livinglogic.ul4on.Decoder;
 import com.livinglogic.ul4on.Encoder;
 
+import com.livinglogic.vsql.VSQLAST;
 import com.livinglogic.vsql.VSQLFieldRefAST;
 import com.livinglogic.vsql.VSQLField;
+import com.livinglogic.vsql.VSQLReplacementField;
 import com.livinglogic.utils.VSQLUtils;
 
 public class VarAST extends CodeAST implements LValue
@@ -81,19 +83,26 @@ public class VarAST extends CodeAST implements LValue
 	}
 
 	@Override
-	public VSQLFieldRefAST asVSQL(Map<String, VSQLField> vars)
+	public VSQLAST asVSQL(Map<String, VSQLField> vars)
 	{
 		String source = getSource();
 		// Note that we don't complain when `field` is `null` because this might turn out to be a function call later
 		VSQLField field = vars.get(name);
 		int pos = source.indexOf(name);
+		String sourcePrefix = source.substring(0, pos);
+		String sourceSuffix = source.substring(pos + name.length());
+
+		// A replacement variable stands for another vSQL expression, which
+		// replaces the reference to the variable.
+		if (field instanceof VSQLReplacementField replacementField)
+			return replacementField.makeAST(vars, sourcePrefix, sourceSuffix);
 
 		return new VSQLFieldRefAST(
-			source.substring(0, pos),
+			sourcePrefix,
 			null,
 			null,
 			name,
-			source.substring(pos + name.length()),
+			sourceSuffix,
 			field
 		);
 	}

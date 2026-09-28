@@ -98,7 +98,12 @@ public abstract class VSQLQuery
 
 		VSQLExpr(String expr, String comment)
 		{
-			this.expr = compile(expr);
+			this(expr, comment, null);
+		}
+
+		VSQLExpr(String expr, String comment, Map<String, String> replacements)
+		{
+			this.expr = compile(expr, replacements);
 			this.comment = comment;
 		}
 
@@ -550,17 +555,31 @@ public abstract class VSQLQuery
 			return null;
 		}
 
-		String parentIdentifier = fieldRefParent.getFullIdentifier();
-		FromExpr parentExpr = identifier2Expr.get(parentIdentifier);
-		if (parentExpr != null)
+		return registerTable(fieldRefParent);
+	}
+
+	/**
+	<p>Register the table that the field reference {@code fieldRef} references
+	(i.e. the table containing the fields of {@code fieldRef}).</p>
+
+	<p>The table (and its join condition) is added to the {@code from} and
+	{@code where} clauses (together with all the tables required to join it),
+	unless that has been done before. Returns the {@link FromExpr} of the table
+	(or {@code null} if the field isn't part of a table).</p>
+	**/
+	FromExpr registerTable(VSQLFieldRefAST fieldRef)
+	{
+		String identifier = fieldRef.getFullIdentifier();
+		FromExpr fromExpr = identifier2Expr.get(identifier);
+		if (fromExpr != null)
 		{
-			return parentExpr;
+			return fromExpr;
 		}
 
-		parentExpr = register(fieldRefParent);
+		FromExpr parentExpr = register(fieldRef);
 
 		String newAlias = "t" + String.valueOf(from.size() + 1);
-		VSQLField field = fieldRefParent.getField();
+		VSQLField field = fieldRef.getField();
 		String joinCondition = field.getJoinSQL();
 		// Only add to `where` if the join condition is not empty
 		if (joinCondition != null)
@@ -570,7 +589,7 @@ public abstract class VSQLQuery
 				joinCondition = joinCondition.replace("{m}", parentExpr.getAlias());
 			}
 			joinCondition = joinCondition.replace("{d}", newAlias);
-			where.put(joinCondition, new WhereExpr(new SQLExpr(joinCondition, fieldRefParent.getSource())));
+			where.put(joinCondition, new WhereExpr(new SQLExpr(joinCondition, fieldRef.getSource())));
 		}
 
 		String tableSQL = field.getRefGroup().getTableSQL();
@@ -586,49 +605,57 @@ public abstract class VSQLQuery
 			return null;
 		}
 
-		FromExpr fromExpr = new FromExpr(new SQLExpr(tableSQL, fieldRefParent.getSource()), newAlias);
-		identifier2Expr.put(parentIdentifier, fromExpr);
+		fromExpr = new FromExpr(new SQLExpr(tableSQL, fieldRef.getSource()), newAlias);
+		identifier2Expr.put(identifier, fromExpr);
 		from.add(fromExpr);
 		return fromExpr;
 	}
 
+	/**
+	<p>Register the field {@code identifier} as a table to select from and
+	return its {@link FromExpr} (which provides the alias of the table).</p>
+
+	<p>{@code identifier} is either the name of one of the variables passed to
+	the constructor or an attribute path starting with such a variable (e.g.
+	{@code "b.author"}); it must reference a table.</p>
+
+	<p>This makes sure that the table is added to the {@code from} list, even if
+	it is never referenced by a vSQL expression. Since the {@link FromExpr} is
+	returned, the table can be used in SQL expressions (e.g. via
+	{@link #whereSQL(String, String)}) too. Registering a table that has been
+	joined before (explicitly or by a vSQL expression) returns the
+	{@link FromExpr} of the existing join.</p>
+	**/
 	public FromExpr fromVSQL(String identifier)
 	{
-		VSQLField field = vars.get(identifier);
-		if (field == null)
+		VSQLAST ast = VSQLAST.fromsource(identifier, vars);
+		if (!(ast instanceof VSQLFieldRefAST fieldRef))
+			throw new IllegalArgumentException(formatMessage("{!r} is not a field reference!", identifier));
+		if (fieldRef.getField() == null)
 			throw new VSQLFieldUnknownException(formatMessage("Field {!r} unknown!", identifier));
-
-		String newAlias = "t" + String.valueOf(from.size() + 1);
-		String joinCondition = field.getJoinSQL();
-		// Only add to `where` if the join condition is not empty
-		if (joinCondition != null)
-		{
-			joinCondition = joinCondition.replace("{d}", newAlias);
-			where.put(joinCondition, new WhereExpr(new SQLExpr(joinCondition, field.getIdentifier())));
-		}
-
-		String tableSQL = field.getRefGroup().getTableSQL();
-
-		if (tableSQL == null)
-		{
-			/*
-			If this field is not part of a table (which can happen e.g. for
-			the request parameters, which we get from function calls),
-			we don't add the table aliases to the list of table aliases
-			and we don't add a table to the "from" list.
-			*/
-			return null;
-		}
-
-		FromExpr fromExpr = new FromExpr(new SQLExpr(tableSQL, field.getIdentifier()), newAlias);
-		identifier2Expr.put(field.getIdentifier(), fromExpr);
-		from.add(fromExpr);
-		return fromExpr;
+		if (fieldRef.getField().getRefGroup() == null)
+			throw new IllegalArgumentException(formatMessage("Field {!r} doesn't reference a table!", identifier));
+		return registerTable(fieldRef);
 	}
 
 	VSQLAST compile(String source)
 	{
-		VSQLAST expression = VSQLAST.fromsource(source, vars);
+		return compile(source, null);
+	}
+
+	/**
+	<p>Compile the vSQL expression {@code source} and register all field
+	references in it.</p>
+
+	<p>{@code replacements} are additional variables for this expression only,
+	given as vSQL expressions that reference the variables of the query (see
+	{@link VSQLAST#fromsource(String, Map, Map)}). Such a variable replaces a
+	variable of the query with the same name for this expression. May be
+	{@code null}.</p>
+	**/
+	VSQLAST compile(String source, Map<String, String> replacements)
+	{
+		VSQLAST expression = VSQLAST.fromsource(source, vars, replacements);
 		for (VSQLFieldRefAST fieldRefAST : expression.getFieldRefs())
 		{
 			register(fieldRefAST);
@@ -658,10 +685,22 @@ public abstract class VSQLQuery
 
 	public SelectExpr selectVSQL(String expr, String comment, String alias)
 	{
+		return selectVSQL(expr, comment, alias, null);
+	}
+
+	/**
+	<p>Add the vSQL expression {@code expr} to the list of expression to select.</p>
+
+	<p>{@code replacements} are additional variables for {@code expr} only,
+	given as vSQL expressions that reference the variables of the query (see
+	{@link #whereVSQL(String, String, Map)} for an example).</p>
+	**/
+	public SelectExpr selectVSQL(String expr, String comment, String alias, Map<String, String> replacements)
+	{
 		if (aggregatedFields.size() > 0)
 			throw new VSQLMixedAggregationException();
 
-		SelectExpr selectExpr = new SelectExpr(new VSQLExpr(expr, comment), alias);
+		SelectExpr selectExpr = new SelectExpr(new VSQLExpr(expr, comment, replacements), alias);
 		fields.add(selectExpr);
 		return selectExpr;
 	}
@@ -688,10 +727,23 @@ public abstract class VSQLQuery
 
 	public AggregatedSelectExpr aggregateVSQL(String expr, String comment, String alias)
 	{
+		return aggregateVSQL(expr, comment, alias, null);
+	}
+
+	/**
+	<p>Add the aggregating vSQL expression {@code expr} to the list of
+	expression to select.</p>
+
+	<p>{@code replacements} are additional variables for {@code expr} only,
+	given as vSQL expressions that reference the variables of the query (see
+	{@link #whereVSQL(String, String, Map)} for an example).</p>
+	**/
+	public AggregatedSelectExpr aggregateVSQL(String expr, String comment, String alias, Map<String, String> replacements)
+	{
 		if (fields.size() > 0)
 			throw new VSQLMixedAggregationException();
 
-		VSQLExpr vsqlExpr = new VSQLExpr(expr, comment);
+		VSQLExpr vsqlExpr = new VSQLExpr(expr, comment, replacements);
 		AggregatedSelectExpr aggregatedSelectExpr = new AggregatedSelectExpr(vsqlExpr, alias);
 		aggregatedFields.add(aggregatedSelectExpr);
 		VSQLAggregate aggregate = aggregatedSelectExpr.getAggregate();
@@ -733,7 +785,37 @@ public abstract class VSQLQuery
 
 	public WhereExpr whereVSQL(String expr, String comment)
 	{
-		WhereExpr newWhereExpr = new WhereExpr(new VSQLExpr(expr, comment));
+		return whereVSQL(expr, comment, null);
+	}
+
+	/**
+	<p>Add the vSQL condition {@code expr} to the {@code where} clause.</p>
+
+	<p>{@code replacements} are additional variables for {@code expr} only,
+	given as vSQL expressions that reference the variables of the query. Every
+	reference to such a variable in {@code expr} is replaced by that expression
+	(see {@link VSQLAST#fromsource(String, Map, Map)}). This makes it possible
+	to apply a condition that has been written for one variable to another one.
+	For example a condition on a person {@code p} can be applied to the author
+	{@code b.author} of a book {@code b} like this:</p>
+
+	<pre>
+	VSQLQuery query = new OracleVSQLQuery("Example query", Map.of("b", book));
+	query.whereVSQL("p.lastname == 'Einstein'", null, Map.of("p", "b.author"));
+	</pre>
+
+	<p>which is equivalent to:</p>
+
+	<pre>
+	query.whereVSQL("b.author.lastname == 'Einstein'");
+	</pre>
+
+	<p>A replacement variable replaces a variable of the query with the same
+	name for this condition, and it isn't available to other expressions.</p>
+	**/
+	public WhereExpr whereVSQL(String expr, String comment, Map<String, String> replacements)
+	{
+		WhereExpr newWhereExpr = new WhereExpr(new VSQLExpr(expr, comment, replacements));
 		String key = newWhereExpr.getKey();
 		WhereExpr oldWhereExpr = where.get(key);
 		if (oldWhereExpr != null)
@@ -756,12 +838,39 @@ public abstract class VSQLQuery
 
 	public OrderByExpr orderByVSQL(String expr, String comment, String ascDesc, String nulls)
 	{
-		OrderByExpr orderByExpr = new OrderByExpr(new VSQLExpr(expr, comment), ascDesc, nulls);
+		return orderByVSQL(expr, comment, ascDesc, nulls, null);
+	}
+
+	/**
+	<p>Add the "order by" vSQL expression {@code expr} to this query.</p>
+
+	<p>{@code replacements} are additional variables for {@code expr} only,
+	given as vSQL expressions that reference the variables of the query (see
+	{@link #whereVSQL(String, String, Map)} for an example).</p>
+	**/
+	public OrderByExpr orderByVSQL(String expr, String comment, String ascDesc, String nulls, Map<String, String> replacements)
+	{
+		OrderByExpr orderByExpr = new OrderByExpr(new VSQLExpr(expr, comment, replacements), ascDesc, nulls);
 		orderBys.add(orderByExpr);
 		return orderByExpr;
 	}
 
 	public OrderByExpr orderByVSQL(String expr, String comment)
+	{
+		return orderByVSQL(expr, comment, (Map<String, String>)null);
+	}
+
+	/**
+	<p>Add the "order by" vSQL expression {@code expr} to this query.</p>
+
+	<p>{@code expr} may be followed by {@code asc} or {@code desc}, optionally
+	followed by {@code nulls first} or {@code nulls last}.</p>
+
+	<p>{@code replacements} are additional variables for {@code expr} only,
+	given as vSQL expressions that reference the variables of the query (see
+	{@link #whereVSQL(String, String, Map)} for an example).</p>
+	**/
+	public OrderByExpr orderByVSQL(String expr, String comment, Map<String, String> replacements)
 	{
 		String nulls = null;
 		String ascDesc = null;
@@ -797,7 +906,7 @@ public abstract class VSQLQuery
 				break;
 		}
 
-		return orderByVSQL(expr, comment, ascDesc, nulls);
+		return orderByVSQL(expr, comment, ascDesc, nulls, replacements);
 	}
 
 	public OrderByExpr orderByVSQL(String expr)
@@ -826,10 +935,23 @@ public abstract class VSQLQuery
 
 	public GroupByExpr groupByVSQL(String expr, String comment)
 	{
+		return groupByVSQL(expr, comment, null);
+	}
+
+	/**
+	<p>Add the grouping vSQL expression {@code expr} to the list of expression
+	to group by.</p>
+
+	<p>{@code replacements} are additional variables for {@code expr} only,
+	given as vSQL expressions that reference the variables of the query (see
+	{@link #whereVSQL(String, String, Map)} for an example).</p>
+	**/
+	public GroupByExpr groupByVSQL(String expr, String comment, Map<String, String> replacements)
+	{
 		if (fields.size() > 0)
 			throw new VSQLMixedAggregationException();
 
-		GroupByExpr newGroupByExpr = new GroupByExpr(new VSQLExpr(expr, comment));
+		GroupByExpr newGroupByExpr = new GroupByExpr(new VSQLExpr(expr, comment, replacements));
 		String key = newGroupByExpr.getKey();
 		GroupByExpr oldGroupByExpr = groupBys.get(key);
 		if (oldGroupByExpr != null)
