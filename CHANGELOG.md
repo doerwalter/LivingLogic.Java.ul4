@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.207.0 (2026-??-??)
+## 0.207.0 (2026-09-28)
 
 `VSQLAST.fromsource()` has a new overload with a third parameter
 `replacements`: a map of additional variable names to vSQL expressions that
